@@ -809,8 +809,7 @@ class CheckoutController extends BaseController {
 		// Check if we already have a payment object
 		// If we don't have one, try to create a new one from the config
 		if (!isset($paymentObj)) {
-			$config =
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
+			$config = SettingsFactory::getInstance()->getConfiguration('SYSPRODUCTS.PAYMENT.types.' . strtolower((string) $paymentType));
 
 			$errorStr = NULL;
 			if (!isset($config['class'])) {
@@ -992,7 +991,7 @@ class CheckoutController extends BaseController {
 
 		if (!is_object($paymentObj)) {
 			$paymentType = $this->getPaymentType();
-			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][strtolower((string) $paymentType)];
+			$config = SettingsFactory::getInstance()->getConfiguration('SYSPRODUCTS.PAYMENT.types.' . strtolower((string) $paymentType));
 
 			if (!isset($config['class']) || !file_exists($config['path'])) {
 				throw new \Exception('FINISHING: FATAL! No payment possible because no payment handler is configured!', 1395665876);
@@ -1000,7 +999,7 @@ class CheckoutController extends BaseController {
 
 			$paymentObj = GeneralUtility::makeInstance($config['class'], $this);
 		} else {
-			$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][$paymentObj->getType()];
+			$config = SettingsFactory::getInstance()->getConfiguration('SYSPRODUCTS.PAYMENT.types.' . $paymentObj->getType());
 		}
 
 		if ($paymentObj instanceof \CommerceTeam\Commerce\Payment\PaymentInterface) {

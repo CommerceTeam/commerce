@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\Controller;
  */
 
 use CommerceTeam\Commerce\Factory\SettingsFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Module 'Statistics' for the 'commerce' extension.
@@ -99,16 +100,6 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 		$this->doc->backPath = $this->getBackPath();
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
-
-		if (!$this->doc->moduleTemplate) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('cannot set moduleTemplate', 'commerce', 2, array(
-				'backpath' => $this->getBackPath(),
-				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html'],
-				'full path' => $this->getBackPath() . $GLOBALS['TBE_STYLES']['htmlTemplates']['mod_index.html']
-			));
-			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_index.html';
-			$this->doc->moduleTemplate = \TYPO3\CMS\Core\Utility\GeneralUtility::getURL(PATH_site . $templateFile);
-		}
 
 		$this->doc->form = '<form action="" method="POST" name="editform">';
 
@@ -299,7 +290,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 		$database = $this->getDatabaseConnection();
 
 		$result = '';
-		if (isset($GLOBALS['HTTP_POST_VARS']['fullaggregation'])) {
+		if (GeneralUtility::_POST('fullaggregation')) {
 			$endselect = 'SELECT max(crdate) FROM tx_commerce_order_articles';
 			$endres = $database->sql_query($endselect);
 			$endtime2 = 0;
@@ -355,7 +346,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 		$database = $this->getDatabaseConnection();
 
 		$result = '';
-		if (isset($GLOBALS['HTTP_POST_VARS']['incrementalaggregation'])) {
+		if (GeneralUtility::_POST('incrementalaggregation')) {
 			$lastAggregationTime = 'SELECT max(tstamp) FROM tx_commerce_salesfigures';
 			$lastAggregationTimeres = $database->sql_query($lastAggregationTime);
 			$lastAggregationTimeValue = 0;

@@ -98,17 +98,6 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 		$this->doc->docType = 'xhtml_trans';
 		$this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
 
-		if (!$this->doc->moduleTemplate) {
-			GeneralUtility::devLog('cannot set moduleTemplate', 'commerce', 2, array(
-				'backpath' => $this->getBackPath(),
-				'filename from TBE_STYLES' => $GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_index.html'],
-				'full path' => $this->getBackPath() .
-					$GLOBALS['TBE_STYLES']['htmlTemplates']['commerce/Resources/Private/Backend/mod_index.html']
-			));
-			$templateFile = PATH_TXCOMMERCE_REL . 'Resources/Private/Backend/mod_index.html';
-			$this->doc->moduleTemplate = GeneralUtility::getURL(PATH_site . $templateFile);
-		}
-
 		$this->doc->form = '<form action="" method="POST">';
 	}
 

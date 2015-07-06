@@ -19,6 +19,7 @@ use CommerceTeam\Commerce\Domain\Model\BasketItem;
 use CommerceTeam\Commerce\Domain\Model\Category;
 use CommerceTeam\Commerce\Domain\Model\Product;
 use CommerceTeam\Commerce\Factory\HookFactory;
+use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -294,7 +295,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 			throw new \Exception('Empty payment type given.', 1307015821);
 		}
 
-		$config = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['SYSPRODUCTS']['PAYMENT']['types'][$paymentType];
+		$config = SettingsFactory::getInstance()->getConfiguration('SYSPRODUCTS.PAYMENT.types.' . $paymentType);
 
 		if (!is_array($config)) {
 			throw new \Exception('No configuration found for payment type ' . $paymentType, 1305675991);

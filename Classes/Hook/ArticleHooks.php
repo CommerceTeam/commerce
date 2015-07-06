@@ -69,7 +69,7 @@ class ArticleHooks {
 	 * @return \CommerceTeam\Commerce\Domain\Model\Article $result
 	 */
 	protected function getDeliveryArticle(\CommerceTeam\Commerce\Domain\Model\Article &$article) {
-		$deliveryConf = ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY']['types']);
+		$deliveryConf = SettingsFactory::getInstance()->getConfiguration('SYSPRODUCTS.DELIVERY.types');
 		$classname = array_shift(array_keys($deliveryConf));
 
 		$database = $this->getDatabaseConnection();

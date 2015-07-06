@@ -278,9 +278,7 @@ class Navigation {
 
 		$this->nodeArrayAdditionalFields = GeneralUtility::trimExplode(',', $this->mConf['additionalFields'], 0);
 
-		$this->pid = $this->mConf['overridePid'] ?
-			$this->mConf['overridePid'] :
-			$GLOBALS['TSFE']->id;
+		$this->pid = $this->mConf['overridePid'] ? $this->mConf['overridePid'] : $this->getFrontendController()->id;
 		$this->gpVars = GeneralUtility::_GPmerged($this->prefixId);
 
 		\CommerceTeam\Commerce\Utility\GeneralUtility::initializeFeUserBasket();

@@ -69,9 +69,8 @@ abstract class ProviderAbstract implements ProviderInterface {
 	 */
 	protected function loadCriteria() {
 		// Get and instantiate registered criteria of this payment provider
-		$commerceConfiguration = & $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY];
-		$paymentConfiguration = & $commerceConfiguration['SYSPRODUCTS']['PAYMENT']['types'][$this->paymentObject->getType()];
-		$criteraConfigurations = $paymentConfiguration['provider'][$this->type]['criteria'];
+		$criteraConfigurations = SettingsFactory::getInstance()
+			->getConfiguration('SYSPRODUCTS.PAYMENT.types.' . $this->paymentObject->getType() . '.provider.' . $this->type . '.criteria');
 
 		if (is_array($criteraConfigurations)) {
 			foreach ($criteraConfigurations as $criterionConfiguration) {

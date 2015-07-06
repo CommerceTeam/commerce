@@ -48,6 +48,13 @@ class SettingsFactory implements SingletonInterface {
 	 *
 	 * @var array
 	 */
+	protected $configurationValueCache = array();
+
+	/**
+	 * Values of path cache
+	 *
+	 * @var array
+	 */
 	protected $tcaValueCache = array();
 
 
@@ -142,6 +149,32 @@ class SettingsFactory implements SingletonInterface {
 	 */
 	public function getExtConfComplete() {
 		return $this->settings['extConf'];
+	}
+
+	/**
+	 * Get configuration located in [COMMERCE_EXTKEY]
+	 *
+	 * @return array|string|int|bool
+	 */
+	public function getConfiguration() {
+		if (!isset($this->configurationValueCache[$path])) {
+			$pathParts = GeneralUtility::trimExplode('.', $path);
+
+			$configuration = $this->settings;
+
+			foreach ($pathParts as $pathPart) {
+				if (isset($configuration[$pathPart])) {
+					$configuration = $configuration[$pathPart];
+				} else {
+					$configuration = '';
+					break;
+				}
+			}
+
+			$this->configurationValueCache[$path] = $configuration;
+		}
+
+		return $this->configurationValueCache[$path];
 	}
 
 	/**

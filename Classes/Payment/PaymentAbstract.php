@@ -129,8 +129,9 @@ abstract class PaymentAbstract implements PaymentInterface {
 	 */
 	protected function findCriterion() {
 		// Create criterion objects if defined
-		$commerceConfiguration = & $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY];
-		$criteraConfigurations = $commerceConfiguration['SYSPRODUCTS']['PAYMENT']['types'][$this->type]['criteria'];
+		$criteraConfigurations = SettingsFactory::getInstance()
+			->getConfiguration('SYSPRODUCTS.PAYMENT.types.' . $this->type . '.criteria');
+
 		if (is_array($criteraConfigurations)) {
 			foreach ($criteraConfigurations as $criterionConfiguration) {
 				if (!is_array($criterionConfiguration['options'])) {
@@ -167,8 +168,8 @@ abstract class PaymentAbstract implements PaymentInterface {
 	 */
 	protected function findProvider() {
 		// Check if type has criteria, create all needed objects
-		$commerceConfiguration = & $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY];
-		$providerConfigurations = $commerceConfiguration['SYSPRODUCTS']['PAYMENT']['types'][$this->type]['provider'];
+		$providerConfigurations = SettingsFactory::getInstance()
+					->getConfiguration('SYSPRODUCTS.PAYMENT.types.' . $this->type . '.provider');
 
 		if (is_array($providerConfigurations)) {
 			foreach ($providerConfigurations as $providerConfiguration) {
