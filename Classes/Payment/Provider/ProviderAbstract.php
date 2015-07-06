@@ -13,6 +13,8 @@ namespace CommerceTeam\Commerce\Payment\Provider;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
+
 /**
  * Abstract payment provider implementation
  *

@@ -13,6 +13,8 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Factory\SettingsFactory;
+
 /**
  * Part of the COMMERCE (Advanced Shopping System) extension.
  *
