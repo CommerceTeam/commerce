@@ -1253,7 +1253,7 @@ class Tx_Commerce_Controller_BasketController extends Tx_Commerce_Controller_Bas
 			// Check stock
 			$stockOk = TRUE;
 			if ($this->conf['checkStock'] == 1) {
-				if (!$basketItem->article->hasStock($basketItem->getQuantity())) {
+				if (!$basketItem->getArticle()->hasStock($basketItem->getQuantity())) {
 					$stockOk = FALSE;
 				}
 			}
