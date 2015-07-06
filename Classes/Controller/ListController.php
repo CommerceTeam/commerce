@@ -160,6 +160,13 @@ class ListController extends BaseController {
 		if (!$this->master_cat) {
 			$this->master_cat = $this->conf['catUid'];
 		}
+		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'listPid', 's_template')) {
+			$this->conf['listPid'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'listPid', 's_template');
+		}
+		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'singlePid', 's_template')) {
+			$this->conf['singlePid'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'singlePid', 's_template');
+		}
+		// @deprecated flexform value to be removed in 5.0.9
 		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'displayPID', 's_template')) {
 			$this->conf['overridePid'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'displayPID', 's_template');
 		}

@@ -266,6 +266,12 @@ plugin.tx_commerce_pi1 {
 	# ID wo das Basket als Template eingebunden ist.
 	basketPid = {$plugin.tx_commerce_lib.basketPid}
 
+	# Page ID for list view
+	listPid = {$plugin.tx_commerce_lib.listPid}
+
+	# Page ID for single view
+	singlePid = {$plugin.tx_commerce_lib.singlePid}
+
 	# OverridePID for Detailview
 	overridePid = {$plugin.tx_commerce_lib.overridePid}
 

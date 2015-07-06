@@ -39,7 +39,9 @@
 			<label index="tx_commerce_pi1.pi_flexform.type">Display type</label>
 			<label index="tx_commerce_pi1.pi_flexform.currency">Currency</label>
 			<label index="tx_commerce_pi1.pi_flexform.basketPID">Basket page</label>
-			<label index="tx_commerce_pi1.pi_flexform.displayPID">Detail page</label>
+			<label index="tx_commerce_pi1.pi_flexform.listPid">List page</label>
+			<label index="tx_commerce_pi1.pi_flexform.singlePid">Single page</label>
+			<label index="tx_commerce_pi1.pi_flexform.displayPID">DEPRECATED use List or Single page instead! Detail page</label>
 			<label index="tx_commerce_pi1.pi_flexform.type.normal">Default view</label>
 			<label index="tx_commerce_pi1.pi_flexform.type.teaser">Teaser view</label>
 

@@ -27,7 +27,13 @@ plugin.tx_commerce_lib {
 	# cat=plugin.commerce: General/links/b1; type=int+; label= Checkout PID: The PID of the checkout
 	checkoutPid = 0
 
-	# cat=plugin.commerce: General/links/b0; type=int+; label= Override PID: The PID of the ProductListing needed for navigation and products insert on normal pages
+	# cat=plugin.commerce: General/links/b0; type=int+; label= List PID: The PID of the ProductListing needed for navigation and products insert on normal pages
+	listPid = 0
+
+	# cat=plugin.commerce: General/links/b0; type=int+; label= Single PID: The PID of the single view page
+	singlePid = 0
+
+	# cat=plugin.commerce: General/links/b0; type=int+; label= DEPRECATED USE listPid or singlePid instead! Override PID: The PID of the ProductListing needed for navigation and products insert on normal pages
 	overridePid = 0
 
 	# cat=plugin.commerce: General/Others/a2; type=int+; label= Payment Article: The ID of the default Payment Article

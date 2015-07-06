@@ -583,7 +583,9 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 				 */
 				$localTs = $this->conf['categoryListView.']['categories.'];
 
-				if ($this->conf['overridePid']) {
+				if ($this->conf['listPid']) {
+					$typoLinkConf['parameter'] = $this->conf['listPid'];
+				} elseif ($this->conf['overridePid']) {
 					$typoLinkConf['parameter'] = $this->conf['overridePid'];
 				} else {
 					$typoLinkConf['parameter'] = $this->pid;
@@ -1715,7 +1717,9 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 		/**
 		 * Generate TypoLink Configuration and ad to fields by addTypoLinkToTs
 		 */
-		if ($this->conf['overridePid']) {
+		if ($this->conf['singlePid']) {
+			$typoLinkConf['parameter'] = $this->conf['singlePid'];
+		} elseif ($this->conf['overridePid']) {
 			$typoLinkConf['parameter'] = $this->conf['overridePid'];
 		} else {
 			$typoLinkConf['parameter'] = $this->pid;
