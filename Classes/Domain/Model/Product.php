@@ -139,7 +139,7 @@ class Product extends AbstractEntity {
 	 *
 	 * @var array
 	 */
-	protected $articles = array();
+	protected $articles;
 
 	/**
 	 * Array of article uids
@@ -147,14 +147,6 @@ class Product extends AbstractEntity {
 	 * @var array
 	 */
 	protected $articles_uids = array();
-
-	/**
-	 * If articles are loaded, so load articles can simply
-	 * return with the values from the object
-	 *
-	 * @var bool
-	 */
-	protected $articlesLoaded = FALSE;
 
 	/**
 	 * Attributes
@@ -308,7 +300,50 @@ class Product extends AbstractEntity {
 	 * @return \CommerceTeam\Commerce\Domain\Model\Article Article uids
 	 */
 	public function getArticle($uid) {
+		$this->loadArticles();
 		return $this->articles[$uid];
+	}
+
+	/**
+	 * Get number of articles of this product
+	 *
+	 * @return int Number of articles
+	 */
+	public function getArticlesCount() {
+		$this->loadArticles();
+		return count($this->articles);
+	}
+
+	/**
+	 * Get list of article objects
+	 *
+	 * @return array Article objects
+	 */
+	public function getArticleObjects() {
+		$this->loadArticles();
+		return $this->articles;
+	}
+
+	/**
+	 * Get list of article uids
+	 *
+	 * @param int $index Index
+	 *
+	 * @return int Article uid
+	 */
+	public function getArticleUid($index) {
+		$this->loadArticles();
+		return $this->articles_uids[$index];
+	}
+
+	/**
+	 * Get list of article uids
+	 *
+	 * @return array Article uids
+	 */
+	public function getArticleUids() {
+		$this->loadArticles();
+		return $this->articles_uids;
 	}
 
 	/**
@@ -469,44 +504,6 @@ class Product extends AbstractEntity {
 		}
 
 		return !empty($articleUidList) ? $articleUidList : array();
-	}
-
-	/**
-	 * Get number of articles of this product
-	 *
-	 * @return int Number of articles
-	 */
-	public function getArticlesCount() {
-		return count($this->articles);
-	}
-
-	/**
-	 * Get list of article objects
-	 *
-	 * @return array Article objects
-	 */
-	public function getArticleObjects() {
-		return $this->articles;
-	}
-
-	/**
-	 * Get list of article uids
-	 *
-	 * @param int $index Index
-	 *
-	 * @return int Article uid
-	 */
-	public function getArticleUid($index) {
-		return $this->articles_uids[$index];
-	}
-
-	/**
-	 * Get list of article uids
-	 *
-	 * @return array Article uids
-	 */
-	public function getArticleUids() {
-		return $this->articles_uids;
 	}
 
 	/**
@@ -979,7 +976,6 @@ class Product extends AbstractEntity {
 						$this->lang_uid
 					);
 					$product->loadData();
-					$product->loadArticles();
 
 					// Check if the user is allowed to access the product and if the product
 					// has at least one article
@@ -1340,7 +1336,7 @@ class Product extends AbstractEntity {
 	 * @return array Article uids
 	 */
 	public function loadArticles() {
-		if ($this->articlesLoaded == FALSE) {
+		if (!is_array($this->articles)) {
 			$uidToLoadFrom = $this->uid;
 			if (
 				$this->getT3verOid() > 0 && $this->getT3verOid() <> $this->uid &&
@@ -1348,6 +1344,7 @@ class Product extends AbstractEntity {
 			) {
 				$uidToLoadFrom = $this->getT3verOid();
 			}
+			$this->articles = array();
 			if (($this->articles_uids = $this->databaseConnection->getArticles($uidToLoadFrom))) {
 				foreach ($this->articles_uids as $articleUid) {
 					/**
@@ -1363,7 +1360,6 @@ class Product extends AbstractEntity {
 					$article->loadData();
 					$this->articles[$articleUid] = $article;
 				}
-				$this->articlesLoaded = TRUE;
 
 				return $this->articles_uids;
 			} else {
@@ -1457,6 +1453,7 @@ class Product extends AbstractEntity {
 	 * @return void
 	 */
 	public function removeArticleUid($index) {
+		$this->loadArticles();
 		unset($this->articles_uids[$index]);
 	}
 

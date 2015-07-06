@@ -188,7 +188,10 @@ class Products {
 						'compareTo' => 'DEF',
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_attributes, attributes',
+						'text' => '
+							,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_attributes,
+								attributes
+						',
 					),
 				),
 				// 1 - add "edit attributes" tab if minimum one attribute with correlationtype 4
@@ -213,7 +216,10 @@ class Products {
 						),
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes, attributesedit',
+						'text' => '
+							,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes,
+								attributesedit
+						',
 					),
 				),
 				// 2 - "localise attributes" tab if minimum one attribute with correlationtype
@@ -237,7 +243,10 @@ class Products {
 						),
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.localedit_attributes, attributesedit',
+						'text' => '
+							,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.localedit_attributes,
+								attributesedit
+						',
 					),
 				),
 				// 3 - add "create articles" tab if minimum one attribute with correlationtype 1
@@ -252,7 +261,10 @@ class Products {
 						'compareTo' => 'DEF',
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_articles, articles',
+						'text' => '
+							,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_articles,
+								articles
+						',
 					),
 				),
 				// 4 - add "Localisze Articel" tab if we are in a localised language
@@ -268,7 +280,10 @@ class Products {
 						'compareTo' => 0,
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles, articleslok',
+						'text' => '
+							,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,
+								articleslok
+						',
 					),
 				),
 				// 5 - add "Localize Articel" tab if we are in a localised language
@@ -284,7 +299,10 @@ class Products {
 						'compareTo' => 0,
 					),
 					'config' => array(
-						'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles, articles',
+						'text' => '
+							,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,
+								articles
+						',
 					),
 				),
 				// 6

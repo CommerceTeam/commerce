@@ -629,7 +629,6 @@ class BasketController extends BaseController {
 			$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 		);
 		$this->deliveryProduct->loadData();
-		$this->deliveryProduct->loadArticles();
 
 		$deliverySelectTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###DELIVERY_ARTICLE_SELECT###');
 		$deliveryOptionTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###DELIVERY_ARTICLE_OPTION###');
@@ -718,7 +717,6 @@ class BasketController extends BaseController {
 			$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 		);
 		$this->paymentProduct->loadData();
-		$this->paymentProduct->loadArticles();
 
 		$this->basketPaymentArticles = $this->basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
 

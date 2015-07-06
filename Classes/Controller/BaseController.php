@@ -1644,7 +1644,6 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 					$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
 				);
 				$myProduct->loadData();
-				$myProduct->loadArticles();
 
 				if ($this->conf['useStockHandling'] == 1 AND $myProduct->hasStock() === FALSE) {
 					$typoScript = $this->conf['listView' . $typoscriptMarker . '.']['products.']['nostock.'];
