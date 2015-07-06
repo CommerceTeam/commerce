@@ -246,7 +246,7 @@ class CheckoutController extends BaseController {
 		}
 
 		// Get the template
-		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
+		$this->templateCode = $content . $this->cObj->fileResource($this->conf['templateFile']);
 
 		$this->debug($this->currentStep, '$this->currentSteps', __FILE__ . ' ' . __LINE__);
 
@@ -527,8 +527,9 @@ class CheckoutController extends BaseController {
 		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId .
 			'[check]" value="billing" />';
 
-		$billingForm = '<form name="addressForm" action="' . $this->pi_getPageLink($frontendController->id) . '" method="post">';
-		$billingForm .= '<input type="hidden" name="' . $this->prefixId . '[check]" value="billing" />';
+		// @todo is this art or...?
+		//$billingForm = '<form name="addressForm" action="' . $this->pi_getPageLink($frontendController->id) . '" method="post">';
+		//$billingForm .= '<input type="hidden" name="' . $this->prefixId . '[check]" value="billing" />';
 
 		$markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="' . $this->prefixId . '[check]" value="billing" />';
 
@@ -559,7 +560,8 @@ class CheckoutController extends BaseController {
 			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $this->getInputForm($this->conf['billing.'], 'billing');
 		}
 
-		$billingForm .= $markerArray['###ADDRESS_FORM_INPUTFIELDS###'];
+		// @todo is this art or...?
+		//$billingForm .= $markerArray['###ADDRESS_FORM_INPUTFIELDS###'];
 
 		// Marker for the delivery address chooser
 		$stepNodelivery = $this->getStepAfter('delivery');
@@ -2651,9 +2653,11 @@ class CheckoutController extends BaseController {
 
 		// create backend user for inserting the order data
 		$orderData = array();
-		$orderData['cust_deliveryaddress'] = (isset($uids['delivery']) && !empty($uids['delivery'])) ?
-			$uids['delivery'] :
-			$uids['billing'];
+		if (isset($uids['delivery']) && !empty($uids['delivery'])) {
+			$orderData['cust_deliveryaddress'] = $uids['delivery'];
+		} else {
+			$orderData['cust_deliveryaddress'] = $uids['billing'];
+		}
 		$orderData['cust_invoice'] = $uids['billing'];
 		$orderData['paymenttype'] = $this->getPaymentType(TRUE);
 		$orderData['sum_price_net'] = $basket->getSumNet();
