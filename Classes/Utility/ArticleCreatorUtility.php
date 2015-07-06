@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\Utility;
  */
 
 use TYPO3\CMS\Backend\Form\FormEngine;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\Utility\BackendUtility AS CoreBackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -132,7 +132,7 @@ class ArticleCreatorUtility {
 		}
 
 		// generate the security token
-		$formSecurityToken = '&prErr=1&vC=' . $this->getBackendUser()->veriCode() . BackendUtility::getUrlToken('tceAction');
+		$formSecurityToken = '&prErr=1&vC=' . $this->getBackendUser()->veriCode() . CoreBackendUtility::getUrlToken('tceAction');
 
 		$colCount = 0;
 		$headRow = $this->getHeadRow($colCount, NULL, NULL, FALSE);
@@ -554,7 +554,7 @@ class ArticleCreatorUtility {
 				$this->createArticle($parameter, $key);
 			}
 
-			BackendUtility::setUpdateSignal('updateFolderTree');
+			CoreBackendUtility::setUpdateSignal('updateFolderTree');
 		}
 	}
 
@@ -666,9 +666,9 @@ class ArticleCreatorUtility {
 			'article_type_uid' => 1,
 		);
 
-		$temp = BackendUtility::getModTSconfig($this->pid, 'mod.commerce.category');
+		$temp = CoreBackendUtility::getModTSconfig($this->pid, 'mod.commerce.category');
 		if ($temp) {
-			$moduleConfig = BackendUtility::implodeTSParams($temp['properties']);
+			$moduleConfig = CoreBackendUtility::implodeTSParams($temp['properties']);
 			$defaultTax = (int) $moduleConfig['defaultTaxValue'];
 			if ($defaultTax > 0) {
 				$articleData['tax'] = $defaultTax;
@@ -777,8 +777,8 @@ class ArticleCreatorUtility {
 				// walk thru and create articles
 				$destLanguage = $localizedProducts['sys_language_uid'];
 				// get the highest sorting
-				$langIsoCode = BackendUtility::getRecord('sys_language', (int) $destLanguage, 'static_lang_isocode');
-				$langIdent = BackendUtility::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
+				$langIsoCode = CoreBackendUtility::getRecord('sys_language', (int) $destLanguage, 'static_lang_isocode');
+				$langIdent = CoreBackendUtility::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
 				$langIdent = strtoupper($langIdent['lg_typo3']);
 
 				// create article data array

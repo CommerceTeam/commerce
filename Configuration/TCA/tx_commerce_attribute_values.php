@@ -1,4 +1,17 @@
 <?php
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 return array(
 	'ctrl' => array(
 		'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attribute_values',
@@ -149,8 +162,11 @@ return array(
 		),
 	),
 	'types' => array(
-		'0' => array('showitem' =>
-			'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, value, showvalue, icon, attributes_uid')
+		'0' => array(
+			'showitem' => '
+					sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, value, showvalue, icon, attributes_uid
+				'
+		)
 	),
 	'palettes' => array(
 		'1' => array('showitem' => 'starttime, endtime')

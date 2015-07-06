@@ -15,7 +15,6 @@ namespace CommerceTeam\Commerce\Utility;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * A metaclass for creating inputfield fields in the backend.
@@ -95,7 +94,7 @@ class BackendUserUtility implements SingletonInterface {
 		$id = (int)$id;
 		// Check if input id is an offline version page
 		// in which case we will map id to the online version:
-		$checkRec = BackendUtility::getRecord('tx_commerce_categories', $id, 'uid,t3ver_oid');
+		$checkRec = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('tx_commerce_categories', $id, 'uid,t3ver_oid');
 		if ($checkRec['uid'] == -1) {
 			$id = (int)$checkRec['t3ver_oid'];
 		}
