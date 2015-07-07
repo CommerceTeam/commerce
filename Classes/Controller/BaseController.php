@@ -704,7 +704,11 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 		);
 		$markerArray = array_merge($markerArrayCat, $markerArray);
 
-		if (($this->conf['showPageBrowser'] == 1) && (is_array($this->conf['pageBrowser.']['wraps.']))) {
+		if (
+			!empty($this->category_products)
+			&& $this->conf['showPageBrowser'] == 1
+			&& is_array($this->conf['pageBrowser.']['wraps.'])
+		) {
 			$this->internal['pagefloat'] = (int) $this->piVars['pointer'];
 			$this->internal['dontLinkActivePage'] = $this->conf['pageBrowser.']['dontLinkActivePage'];
 			$this->internal['showFirstLast'] = $this->conf['pageBrowser.']['showFirstLast'];
