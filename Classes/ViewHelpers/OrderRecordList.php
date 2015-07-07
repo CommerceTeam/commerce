@@ -836,7 +836,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 			$label = BackendUtility::getItemLabel($table, $fN, 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml:|');
 			$fl = $label ? $label : '[' . $fN . ']';
 			// Field label
-			$labelForField = SettingsFactory::getInstance()->getTcaValue($table . '.columns.' . $fN . 'label');
+			$labelForField = SettingsFactory::getInstance()->getTcaValue($table . '.columns.' . $fN . '.label');
 			$fL = $labelForField ? rtrim($language->sL($labelForField), ':') : $fl;
 			$opt[] = '
 				<option value="' . $fN . '"' .

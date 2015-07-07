@@ -6,6 +6,6 @@
 conf.py:
   copyright: 2006-2015
   project: commerce
-  version: 3.9
-  release: 3.9.99
+  version: 3.0
+  release: 3.0.0
 ...
