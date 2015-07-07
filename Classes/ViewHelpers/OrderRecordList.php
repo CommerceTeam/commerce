@@ -374,14 +374,16 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 						BackendUtility::wrapInHelp($table, '', $language->sL($tableConfig['ctrl']['title'], TRUE)) .
 					'</span> (' . $this->totalItems . ')';
 			} else {
+				$title = $language->getLL(($this->table ? 'contractView' : 'expandView'), TRUE);
 				$theData[$titleCol] = $this->linkWrapTable(
 					$table,
 					'<span class="c-table">' .
 						$language->sL($tableConfig['ctrl']['title'], TRUE) .
 					'</span> (' . $this->totalItems . ') ' .
-						($this->table ?
-							IconUtility::getSpriteIcon('actions-view-table-collapse', array('title' => $language->getLL('contractView', TRUE))) :
-							IconUtility::getSpriteIcon('actions-view-table-expand', array('title' => $language->getLL('expandView', TRUE))))
+						IconUtility::getSpriteIcon(
+							'actions-view-table-' . ($this->table ? 'collapse' : 'expand'),
+							array('title' => $title)
+						)
 				);
 			}
 
@@ -395,12 +397,14 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 				$collapseIcon = '';
 				if (!$this->table) {
 					$href = htmlspecialchars($this->listURL() . '&collapse[' . $table . ']=' . ($tableCollapsed ? '0' : '1'));
-					$title = $tableCollapsed ?
-						$language->sL('LLL:EXT:lang/locallang_core.php:labels.expandTable', TRUE) :
-						$language->sL('LLL:EXT:lang/locallang_core.php:labels.collapseTable', TRUE);
-					$label = $tableCollapsed ?
-						IconUtility::getSpriteIcon('actions-view-list-expand', array('class' => 'collapseIcon')) :
-						IconUtility::getSpriteIcon('actions-view-list-collapse', array('class' => 'collapseIcon'));
+					$title = $language->sL(
+						'LLL:EXT:lang/locallang_core.php:labels.' . ($tableCollapsed ? 'expandTable' : 'collapseTable'),
+						TRUE
+					);
+					$label = IconUtility::getSpriteIcon(
+						'actions-view-list-' . ($tableCollapsed ? 'expand' : 'collapse'),
+						array('class' => 'collapseIcon')
+					);
 
 					$collapseIcon = '<a href="' . $href . '" title="' . $title . '">' . $label . '</a>';
 				}
