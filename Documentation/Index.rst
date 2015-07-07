@@ -25,7 +25,8 @@ Commerce: TYPO3 commerce shopping system
 	|today|
 
 
-|img-logo| Commerce: TYPO3 commerce shopping system
+|img-logo|
+Commerce: TYPO3 commerce shopping system
 
 The content of this document is related to TYPO3,
 
@@ -38,11 +39,16 @@ a GNU/GPL CMS/Framework available from www.typo3.org_
 
 	Introduction/Index
 	Installation/Index
+	UserGuide/Index
+	Adminstration/Index
 	Configuration/Index
 	PaymentApi/Index
 	CodingGuidelines/Index
 	Deprecation/Index
 	BreakingChanges/Index
+	Support/Index
+	KnownProblems/Index
+	Changelog/Index
 	Targets
 
 .. _License: http://www.opencontent.org/opl.shtml
