@@ -73,13 +73,6 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 	public $disableSingleTableView;
 
 	/**
-	 * Module menu
-	 *
-	 * @var array
-	 */
-	public $MOD_MENU = array();
-
-	/**
 	 * Create the panel of buttons for submitting
 	 * the form or otherwise perform operations.
 	 *
