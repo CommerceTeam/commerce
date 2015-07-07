@@ -17,6 +17,8 @@ namespace CommerceTeam\Commerce\Utility;
  * Implements the Commerce Engine
  */
 
+use TYPO3\CMS\Backend\Utility\IconUtility;
+
 unset($MCONF);
 define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/Classes/Utility/');
 $BACK_PATH = '../../../../../typo3/';
@@ -326,9 +328,8 @@ class DataHandlerUtility {
 					for ($i = 0; $i < $l; $i++) {
 						$tmpProd = $prods[$i];
 
-						$flag = ($tmpProd['flag'] != '') ?
-							'<img src="' . $this->getBackPath() . 'gfx/flags/' . $tmpProd['flag'] . '" alt="Flag" />' :
-							'';
+						$flag = ($tmpProd['flag'] != '') ? '<img src="' . $this->getBackPath() . 'gfx/flags/' . $tmpProd['flag'] .
+							'" alt="Flag" />' : '';
 
 						$str .= '<li><input type="checkbox" name="locale[]" id="loc_' . $tmpProd['uid'] . '" value="' .
 							$tmpProd['sys_language'] . '" /><label for="loc_' . $tmpProd['uid'] . '">' . $flag .
@@ -371,12 +372,15 @@ class DataHandlerUtility {
 					$str .= '<input type="submit" value="' . $language->getLL('copy.submit') . '" />';
 				} elseif (0 < $l) {
 					// at least 1 item - offer choice
-					$icon = '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
+					$icon = '<img' . IconUtility::skinImg(
 							$this->getBackPath(), 'gfx/newrecord_marker_d.gif', 'width="281" height="8"'
 						) . ' alt="" title="Insert the category" />';
-					$prodIcon = \TYPO3\CMS\Backend\Utility\IconUtility::getIconImage(
-						'tx_commerce_products', array('uid' => $uidTarget), $this->getBackPath(), 'align="top" class="c-recIcon"'
-					);
+					$prodIcon = '<img' . IconUtility::skinImg(
+							$this->getBackPath(),
+							IconUtility::getIcon('tx_commerce_products', array('uid' => $uidTarget)),
+							'width="18" height="16"'
+						) .
+						'align="top" class="c-recIcon"/>';
 					$str .= '<h1>' . $language->getLL('copy.position') . '</h1>';
 
 					$onClickAction = 'onclick="submitForm(' . $records['pid'][$uidTarget][0]['uid'] . ')"';
@@ -459,13 +463,15 @@ class DataHandlerUtility {
 					$str .= '<input type="submit" value="' . $language->getLL('copy.submit') . '" />';
 				} elseif (0 < $l) {
 					// at least 1 item - offer choice
-					$icon = '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
+					$icon = '<img' . IconUtility::skinImg(
 							$this->getBackPath(), 'gfx/newrecord_marker_d.gif', 'width="281" height="8"'
 						) . ' alt="" title="Insert the category" />';
-					$catIcon = \TYPO3\CMS\Backend\Utility\IconUtility::getIconImage(
-						'tx_commerce_categories', array('uid' => $uidTarget), $this->getBackPath(),
-						'align="top" class="c-recIcon"'
-					);
+					$catIcon = '<img' . IconUtility::skinImg(
+							$this->getBackPath(),
+							IconUtility::getIcon('tx_commerce_categories', array('uid' => $uidTarget)),
+							'width="18" height="16"'
+						) .
+						'align="top" class="c-recIcon"/>';
 					$str .= '<h1>' . $language->getLL('copy.position') . '</h1>';
 
 					$onClickAction = 'onclick="submitForm(' . $records['pid'][$uidTarget][0]['uid'] . ')"';

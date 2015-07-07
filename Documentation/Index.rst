@@ -32,16 +32,18 @@ The content of this document is related to TYPO3,
 a GNU/GPL CMS/Framework available from www.typo3.org_
 
 .. toctree::
-   :maxdepth: 5
-   :titlesonly:
-   :glob:
+	:maxdepth: 5
+	:titlesonly:
+	:glob:
 
-   Configuration/Index
-   PaymentApi/Index
-   CodingGuidelines/Index
-   Deprecation/Index
-   BreakingChanges/Index
-   Targets
+	Introduction/Index
+	Installation/Index
+	Configuration/Index
+	PaymentApi/Index
+	CodingGuidelines/Index
+	Deprecation/Index
+	BreakingChanges/Index
+	Targets
 
 .. _License: http://www.opencontent.org/opl.shtml
 .. _www.typo3.org: http://www.typo3.org/
