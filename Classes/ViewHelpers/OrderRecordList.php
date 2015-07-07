@@ -628,7 +628,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 			if ($row['tx_commerce_address_type_id'] == 2) {
 				$iconPath = 'orders_add.gif';
 			} else {
-				$iconImg = IconUtility::skinImg($this->backPath, IconUtility::getIcon($table, $row), $iconAttributes);
+				$iconImg = '<img ' . IconUtility::skinImg($this->backPath, IconUtility::getIcon($table, $row), $iconAttributes) . ' />';
 			}
 		}
 
