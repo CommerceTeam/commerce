@@ -158,7 +158,6 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 		$dblist->newWizards = $this->modTSconfig['properties']['newWizards'] ? 1 : 0;
 		$dblist->pageRow = $this->pageinfo;
 		$dblist->counter++;
-		$dblist->MOD_MENU = array('bigControlPanel' => '', 'clipBoard' => '', 'localization' => '');
 		$dblist->modTSconfig = $this->modTSconfig;
 		$clickTitleMode = trim($this->modTSconfig['properties']['clickTitleMode']);
 		$dblist->clickTitleMode = $clickTitleMode === '' ? 'edit' : $clickTitleMode;
@@ -380,9 +379,9 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 			$sectionTitle = BackendUtility::wrapInHelp(
 				'xMOD_csh_corebe', 'list_searchbox', $language->sL('LLL:EXT:lang/locallang_core.xlf:labels.search', TRUE)
 			);
-			$this->body .= '<div class="db_list-searchbox">' .
+			$this->body = '<div class="db_list-searchbox">' .
 				$this->doc->section($sectionTitle, $dblist->getSearchBox(), FALSE, TRUE, FALSE, TRUE) .
-				'</div>';
+				'</div>' . $this->body;
 		}
 		// Additional footer content
 		$footerContentHook = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['recordlist/mod1/index.php']['drawFooterHook'];

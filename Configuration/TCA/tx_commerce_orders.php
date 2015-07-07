@@ -23,6 +23,7 @@ return array(
 		'delete' => 'deleted',
 		'dividers2tabs' => '1',
 		'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'orders.gif',
+		'searchFields' => 'order_id, comment',
 	),
 	'feInterface' => array(
 		'fe_admin_fieldList' => 'cust_deliveryaddress, order_type_uid, order_id, cust_fe_user, cust_invoice,

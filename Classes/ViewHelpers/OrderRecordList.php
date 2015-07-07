@@ -310,7 +310,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 			$this->firstElementNumber = $this->firstElementNumber + 2;
 			$this->iLimit = $this->iLimit - 2;
 		} else {
-				// (API function from class.db_list.inc)
+			// (API function from class.db_list.inc)
 			$queryParts = $this->makeQueryArray($table, $id, $addWhere, $selFieldList);
 		}
 
@@ -987,6 +987,15 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 
 		// Adding search constraints:
 		$search = $this->makeSearchString($table);
+		// specialhandling of search for joins
+		if ($search) {
+			$searchParts = GeneralUtility::trimExplode('OR', $search);
+			foreach ($searchParts as &$part) {
+				$part = str_replace('LOWER(', 'LOWER(' . $table . '.', $part);
+				$part = str_replace('LOWER(' . $table . '.\'', 'LOWER(\'', $part);
+			}
+			$search = implode(' OR ', $searchParts);
+		}
 
 		$queryParts = array(
 			'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id, delivery_table.order_id AS order_number,
