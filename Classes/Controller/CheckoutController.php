@@ -1980,25 +1980,43 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
 
 				$result = $this->staticInfo->buildStaticInfoSelector(
-					$fieldConfig['field'], $this->prefixId . '[' . $step . '][' . $fieldName . ']', $fieldConfig['cssClass'],
-					$selected, '', '', $step . '-' . $fieldName, '', $fieldConfig['select'],
+					$fieldConfig['field'],
+					$this->prefixId . '[' . $step . '][' . $fieldName . ']',
+					$fieldConfig['cssClass'],
+					$selected,
+					'',
+					'',
+					$step . '-' . $fieldName,
+					'',
+					$fieldConfig['select'],
 					$this->getFrontendController()->tmpl->setup['config.']['language']
 				);
 				break;
 
 			case 'static_info_country':
-				$countries = $this->staticInfo->initCountries(
-					$fieldConfig['country_association'], $this->getFrontendController()->tmpl->setup['config.']['language'], 1,
+				$nameArray = $this->staticInfo->initCountries(
+					$fieldConfig['country_association'],
+					$this->getFrontendController()->tmpl->setup['config.']['language'],
+					1,
 					$fieldConfig['select']
 				);
-				asort($countries, SORT_LOCALE_STRING);
+				asort($nameArray, SORT_LOCALE_STRING);
+				$countries = array();
+				foreach ($nameArray as $itemKey => $itemName) {
+					$countries[] = array('name' => $itemName, 'value' => $itemKey);
+				}
 
 				$selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
 
 				$result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step . '][' .
-					$fieldName . ']" class="' . $fieldConfig['cssClass'] . '">' . LF;
-				$result .= $this->staticInfo->optionsConstructor($countries, array($selected), array());
-				$result .= '</select>' . LF;
+						  $fieldName . ']" class="' . $fieldConfig['cssClass'] . '">' . LF;
+				$options = array();
+				$result .= \SJBR\StaticInfoTables\Utility\HtmlElementUtility::optionsConstructor(
+					$countries,
+					array($selected),
+					$options
+				);
+				$result .= implode(LF, $options) . '</select>' . LF;
 				break;
 
 			case 'check':
