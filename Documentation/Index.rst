@@ -37,6 +37,8 @@ a GNU/GPL CMS/Framework available from www.typo3.org_
    :glob:
 
    Configuration/Index
+   PaymentApi/Index
+   CodingGuidelines/Index
    Deprecation/Index
    BreakingChanges/Index
    Targets

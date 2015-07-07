@@ -1,4 +1,14 @@
+.. ==================================================
+.. FOR YOUR INFORMATION
+.. --------------------------------------------------
+.. -*- coding: utf-8 -*- with BOM.
+
+.. include:: ../Includes.txt
+
+
 New payment API
+===============
+
 
 Related to issue: http://forge.typo3.org/issues/4980
 
