@@ -1161,67 +1161,6 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 	}
 
 	/**
-	 * As we can't use BackendUtility::getModuleUrl this method needs to be
-	 * overridden to set the url to $this->script
-	 *
-	 * NOTE: Since Typo3 4.5 we can't use listURL from parent class we need
-	 * to link to $this->script instead of web_list
-	 *
-	 * Creates the URL to this script, including all relevant GPvars
-	 * Fixed GPvars are id, table, imagemode, returlUrl, search_field,
-	 * search_levels and showLimit The GPvars "sortField" and "sortRev"
-	 * are also included UNLESS they are found in the $exclList variable.
-	 *
-	 * @param string $altId Alternative id value.
-	 * 	Enter blank string for the current id ($this->id)
-	 * @param string|int $table Tablename to display.
-	 * 	Enter "-1" for the current table.
-	 * @param string $excludeList Commalist of fields NOT
-	 * 	to include ("sortField" or "sortRev")
-	 *
-	 * @return string URL
-	 */
-	public function listURL($altId = '', $table = -1, $excludeList = '') {
-		$urlParameters = array();
-		if (strcmp($altId, '')) {
-			$urlParameters['id'] = $altId;
-		} else {
-			$urlParameters['id'] = $this->id;
-		}
-		if ($table === -1) {
-			$urlParameters['table'] = $this->table;
-		} else {
-			$urlParameters['table'] = $table;
-		}
-		if ($this->thumbs) {
-			$urlParameters['imagemode'] = $this->thumbs;
-		}
-		if ($this->returnUrl) {
-			$urlParameters['returnUrl'] = $this->returnUrl;
-		}
-		if ($this->searchString) {
-			$urlParameters['search_field'] = $this->searchString;
-		}
-		if ($this->searchLevels) {
-			$urlParameters['search_levels'] = $this->searchLevels;
-		}
-		if ($this->showLimit) {
-			$urlParameters['showLimit'] = $this->showLimit;
-		}
-		if ((!$excludeList || !GeneralUtility::inList($excludeList, 'firstElementNumber')) && $this->firstElementNumber) {
-			$urlParameters['pointer'] = $this->firstElementNumber;
-		}
-		if ((!$excludeList || !GeneralUtility::inList($excludeList, 'sortField')) && $this->sortField) {
-			$urlParameters['sortField'] = $this->sortField;
-		}
-		if ((!$excludeList || !GeneralUtility::inList($excludeList, 'sortRev')) && $this->sortRev) {
-			$urlParameters['sortRev'] = $this->sortRev;
-		}
-
-		return $this->script . '?' . GeneralUtility::implodeArrayForUrl('', $urlParameters, '', TRUE);
-	}
-
-	/**
 	 * Makes the list of fields to select for a table
 	 *
 	 * @param string $table Table name
