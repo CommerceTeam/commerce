@@ -7,8 +7,8 @@
 
 
 
-Realurl post var sets configuration
-===================================
+Realurl post var sets
+=====================
 
 The following configuration enables urls like
 http://www.example.com/de/somepath/product/CategoryName/ProductName.html

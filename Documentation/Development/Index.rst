@@ -15,6 +15,5 @@ Adminstration
    :titlesonly:
    :glob:
 
-   WebmodulCommerce/Index
-   Configuration/Index
-   Tutorial/Index
+   PaymentApi/Index
+   Hooks/Index

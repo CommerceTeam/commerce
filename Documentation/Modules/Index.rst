@@ -3,7 +3,7 @@
 .. --------------------------------------------------
 .. -*- coding: utf-8 -*- with BOM.
 
-.. include:: ../../Includes.txt
+.. include:: ../Includes.txt
 
 
 Webmodule Commerce
@@ -17,7 +17,7 @@ Now – or after having cleared the cache – you see the category **Commerce** 
 Orders, Systemdata and Statistics.
 
 
-.. figure:: ../../Images/webmodule.jpg
+.. figure:: ../Images/webmodule.jpg
    :align: LEFT
 
    Illustration 8: Webmodule Commerce
@@ -44,7 +44,7 @@ category, you have to open the product and assign another category using the for
 view of the category tree in illustration 9.
 
 
-.. figure:: ../../Images/category_tree.jpg
+.. figure:: ../Images/category_tree.jpg
    :align: LEFT
 
    Illustration 9: Category tree
@@ -85,7 +85,7 @@ set in the template pi1/category_product.tpl.
 Select the desired product in the backend and enter the related products in the „General“ tab.
 
 
-.. figure:: ../../Images/related_products.png
+.. figure:: ../Images/related_products.png
    :align: LEFT
 
    Illustration 10: Related products
@@ -233,7 +233,7 @@ In doing so you can see the status of the order (tab customer date), **delivery 
 delivered and the transaction is closed.
 
 
-.. figure:: ../../Images/order_list.png
+.. figure:: ../Images/order_list.png
    :align: LEFT
 
    Illustration 11: Order list
@@ -261,7 +261,7 @@ Create this folder as sysFolder in the „orders“-area. In the field includes 
 (see illustration).
 
 
-.. figure:: ../../Images/folder_cancelation.jpg
+.. figure:: ../Images/folder_cancelation.jpg
    :align: LEFT
 
    Illustration 12: creating a folder for cancellations
@@ -270,7 +270,7 @@ Create this folder as sysFolder in the „orders“-area. In the field includes 
 In the web module \menu{Commerce\sm orders} you can now move your cancelled orders via the combobox into this folder.
 
 
-.. figure:: ../../Images/order_move.jpg
+.. figure:: ../Images/order_move.jpg
    :align: LEFT
 
    Illustration 13: Move order in cancellation folder
@@ -295,7 +295,7 @@ You can also assign a good or a bad payment history to customers.
 Types and states of orders will be set using the web module list in the folder **orders** (create new record).
 
 
-.. figure:: ../../Images/create_ordertype.png
+.. figure:: ../Images/create_ordertype.png
    :align: LEFT
 
    Illustration 14: Create new record: type and status of orders
@@ -304,7 +304,7 @@ Types and states of orders will be set using the web module list in the folder *
 As soon as you have created a type of order, e.g. B2C, you can select it using the combobox type of order and assign it.
 
 
-.. figure:: ../../Images/order_select_type.png
+.. figure:: ../Images/order_select_type.png
    :align: LEFT
 
    Illustration 15: Select type of order
@@ -322,7 +322,7 @@ term **aggregation** is important, i.e. the total of values in a table. In this 
 will be saved in so-called aggregation-tables. You have to start the complete aggregation once.
 
 
-.. figure:: ../../Images/aggregation.jpg
+.. figure:: ../Images/aggregation.jpg
    :align: LEFT
 
    Illustration 16: Aggregation
@@ -347,7 +347,7 @@ With the selection statistics in the list box you will get an overview, which do
 though. Statistics for single days, months or hours will also be possible.
 
 
-.. figure:: ../../Images/daily_statistics.jpg
+.. figure:: ../Images/daily_statistics.jpg
    :align: LEFT
 
    Illustration 17: Daily statistics

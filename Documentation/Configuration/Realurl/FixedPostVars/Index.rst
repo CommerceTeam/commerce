@@ -7,8 +7,8 @@
 
 
 
-Realurl fixed post var configuration
-====================================
+Realurl fixed post vars
+=======================
 
 The following configuration enables urls like
 http://www.example.com/de/somepath/CategoryName/ProductName.html

@@ -15,5 +15,7 @@ Configuration
    :titlesonly:
    :glob:
 
+   TypoScript/Index
    Realurl/FixedPostVars/Index
    Realurl/PostVarSets/Index
+   Tutorial/Index

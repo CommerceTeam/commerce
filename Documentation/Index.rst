@@ -43,9 +43,9 @@ a GNU/GPL CMS/Framework available from www.typo3.org_
 	Introduction/Index
 	Installation/Index
 	UserGuide/Index
-	Adminstration/Index
+	Modules/Index
 	Configuration/Index
-	PaymentApi/Index
+	Development/Index
 	CodingGuidelines/Index
 	Deprecation/Index
 	BreakingChanges/Index
