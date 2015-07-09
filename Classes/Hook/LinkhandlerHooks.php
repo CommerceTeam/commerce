@@ -34,12 +34,12 @@ class Tx_Commerce_Hook_LinkhandlerHooks {
 	 * @param array $conf Configuration
 	 * @param string $linkHandlerKeyword Keyword
 	 * @param string $linkHandlerValue Value
-	 * @param array $linkParameter Link parameter
+	 * @param string $linkParameter Link parameter
 	 * @param ContentObjectRenderer $pObj Parent
 
 	 * @return string
 	 */
-	public function main($linktxt, array $conf, $linkHandlerKeyword, $linkHandlerValue, array $linkParameter,
+	public function main($linktxt, array $conf, $linkHandlerKeyword, $linkHandlerValue, $linkParameter,
 		ContentObjectRenderer &$pObj
 	) {
 		$this->pObj = &$pObj;
