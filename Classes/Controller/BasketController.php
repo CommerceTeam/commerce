@@ -987,7 +987,10 @@ class BasketController extends BaseController {
 		$hookObject = HookFactory::getHook('Controller/BasketController', 'alternativePrefixId');
 
 		if (is_object($hookObject) && method_exists($hookObject, 'SingeDisplayPrefixId')) {
+			// @deprecated this method gets remmoved in 5.0.0
 			$altPrefixSingle = $hookObject->SingeDisplayPrefixId();
+		} elseif (is_object($hookObject) && method_exists($hookObject, 'singleDisplayPrefixId')) {
+			$altPrefixSingle = $hookObject->singleDisplayPrefixId();
 		} else {
 			$altPrefixSingle = $this->prefixId;
 		}

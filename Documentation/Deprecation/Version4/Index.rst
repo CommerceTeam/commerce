@@ -456,7 +456,7 @@ Removed hooks since 4.x
 	, makeProductList, ['commerce/pi2/class.tx_commerce_pi2.php']['makeProductList'], ['commerce/Controller/BasketController']['makeProductList']
 	, , ['commerce/Classes/Controller/BasketController.php']['makeProductList'], ['commerce/Controller/BasketController']['makeProductList']
 	, , ['commerce/pi2/class.tx_commerce_pi2.php']['alternativePrefixId'], ['commerce/Controller/BasketController']['alternativePrefixId']
-	, , ['commerce/Classes/Controller/BasketController.php']['alternativePrefixId'], ['commerce/Controller/BasketController']['alternativePrefixId']
+	, , ['commerce/Classes/Controller/BasketController.php']['alternativePrefixId'], ['commerce/Controller/BasketController']['alternativePrefixId'] method to call changed from SingeDisplayPrefixId to singleDisplayPrefixId
 
 
 .. _\CommerceTeam\Commerce\Controller\CheckoutController_hooks:
