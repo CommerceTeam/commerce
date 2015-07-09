@@ -166,7 +166,7 @@ class ListController extends BaseController {
 		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'singlePid', 's_template')) {
 			$this->conf['singlePid'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'singlePid', 's_template');
 		}
-		// @deprecated flexform value to be removed in 5.0.9
+		// @deprecated flexform value to be removed in 5.0.0
 		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'displayPID', 's_template')) {
 			$this->conf['overridePid'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'displayPID', 's_template');
 		}

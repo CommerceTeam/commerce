@@ -314,7 +314,10 @@ class OrdermailHooks {
 		 */
 		$hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook('Hook/OrdermailHooks', 'generateMail');
 		if (is_object($hookObject) && method_exists($hookObject, 'ProcessMarker')) {
+			// @deprecated this method call gets remmoved in 5.0.0
 			$markerArray = $hookObject->ProcessMarker($markerArray, $this);
+		} elseif (is_object($hookObject) && method_exists($hookObject, 'processMarker')) {
+			$markerArray = $hookObject->processMarker($markerArray, $this);
 		}
 
 		$content = $this->cObj->substituteMarkerArray($content, $markerArray);

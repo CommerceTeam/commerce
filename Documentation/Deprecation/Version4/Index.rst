@@ -423,7 +423,7 @@ Removed hooks since 4.x
 	, renderProductsForList, ['commerce/lib/class.tx_commerce_pibase.php']['renderProductsForList'], ['commerce/Controller/BaseController']['renderProductsForList']
 	, , ['commerce/Classes/Controller/BaseController.php']['renderProductsForList'], ['commerce/Controller/BaseController']['renderProductsForList']
 	, renderProduct, ['commerce/lib/class.tx_commerce_pibase.php']['product'], ['commerce/Controller/BaseController']['renderProduct']
-	, , ['commerce/Classes/Controller/BaseController.php']['renderProduct'], ['commerce/Controller/BaseController']['renderProduct']
+	, , ['commerce/Classes/Controller/BaseController.php']['renderProduct'], ['commerce/Controller/BaseController']['renderProduct'] method to call changed from ModifyContentProduct to modifyContentProduct
 
 
 .. _\CommerceTeam\Commerce\Controller\BasketController_hooks:
@@ -662,7 +662,7 @@ Removed hooks since 4.x
 	\CommerceTeam\Commerce\Hook\OrdermailHooks, ordermoveSendMail, ['commerce/Classes/Hook/class.tx_commerce_ordermailhooks.php']['ordermoveSendMail'], ['commerce/Hook/OrdermailHooks']['ordermoveSendMail']
 	, , ['commerce/Classes/Hook/OrdermailHooks.php']['ordermoveSendMail'], ['commerce/Hook/OrdermailHooks']['ordermoveSendMail']
 	, generateMail, ['commerce_ordermails/mod1/class.tx_commerce_moveordermail.php']['generateMail'], ['commerce/Hook/OrdermailHooks']['generateMail']
-	, , ['commerce/Classes/Hook/OrdermailHooks.php']['generateMail'], ['commerce/Hook/OrdermailHooks']['generateMail']
+	, , ['commerce/Classes/Hook/OrdermailHooks.php']['generateMail'], ['commerce/Hook/OrdermailHooks']['generateMail'] method to call changed from ProcessMarker to processMarker
 
 
 .. _\CommerceTeam\Commerce\Tree\Leaf\Data_hooks:
