@@ -25,8 +25,11 @@ Commerce: TYPO3 commerce shopping system
 	|today|
 
 
-|img-logo|
-Commerce: TYPO3 commerce shopping system
+.. container:: ts-properties
+
+	=============================================== ===============================================
+	.. figure:: Images/commerce_logo.jpg            .. figure:: Images/typo3-400px-transparent.png
+	=============================================== ===============================================
 
 The content of this document is related to TYPO3,
 
