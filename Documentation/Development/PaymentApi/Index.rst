@@ -6,8 +6,8 @@
 .. include:: ../../Includes.txt
 
 
-New payment API
-===============
+Payment API
+===========
 
 
 Related to issue: http://forge.typo3.org/issues/4980

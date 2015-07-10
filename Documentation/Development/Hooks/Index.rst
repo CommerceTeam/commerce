@@ -30,9 +30,14 @@ _________________________
 .. container:: ts-properties
 
 	========================================= ========================================= ====================================== ===================================================
-	Hookname                                  Call                                      Parameter                              Type
+	Hookname                                  Call                                      Parameter / Result                     Type
 	========================================= ========================================= ====================================== ===================================================
-	formatAttributeValue                      formatAttributeValue
+	formatAttributeValue                      formatAttributeValue                      $matrixKey                             Integer
+	                                                                                    $attributeUid                          Integer
+	                                                                                    $attributeValue                        String
+	                                                                                    $result                                String
+	                                                                                    $parentController                      \\CommerceTeam\\Commerce\\Controller\\BaseController
+	                                                                                    Result                                 String
 	========================================= ========================================= ====================================== ===================================================
 
 Controller/BasketController
@@ -41,11 +46,17 @@ ___________________________
 .. container:: ts-properties
 
 	========================================= ========================================= ====================================== ===================================================
-	Hookname                                  Call                                      Parameter                              Type
+	Hookname                                  Call                                      Parameter / Result                     Type
 	========================================= ========================================= ====================================== ===================================================
-	generateBasket                            makeDelivery
-	                                          makePayment
-	alternativePrefixId                       singleDisplayPrefixId
+	generateBasket                            makeDelivery                              $parentController                      \\CommerceTeam\\Commerce\\Controller\\BasketController
+	                                                                                    $basket                                \\CommerceTeam\\Commerce\\Domain\\Model\\Basket
+	                                                                                    $result                                String
+	                                                                                    Result                                 String
+	                                          makePayment                               $parentController                      \\CommerceTeam\\Commerce\\Controller\\BasketController
+	                                                                                    $basket                                \\CommerceTeam\\Commerce\\Domain\\Model\\Basket
+	                                                                                    $result                                String
+	                                                                                    Result                                 String
+	alternativePrefixId                       singleDisplayPrefixId                     Result                                 String
 	========================================= ========================================= ====================================== ===================================================
 
 Domain/Model/Article
@@ -56,10 +67,18 @@ ____________________
 	========================================= ========================================= ====================================== ===================================================
 	Hookname                                  Call                                      Parameter                              Type
 	========================================= ========================================= ====================================== ===================================================
-	getActualPriceforScaleUid                 getActualPriceforScaleUid
-	getSpecialPrice                           specialPrice
-	calculateDeliveryCosts                    calculateDeliveryCostNet
-	                                          calculateDeliveryCostGross
+	getActualPriceforScaleUid                 getActualPriceforScaleUid                 $count                                 Integer
+	                                                                                    $parentModel                           \\CommerceTeam\\Commerce\\Domain\\Model\\Article
+	                                                                                    Result                                 Integer
+	getSpecialPrice                           specialPrice                              $specialPrice                          Array
+	                                                                                    $priceUids                             Array
+	                                                                                    Result                                 void
+	calculateDeliveryCosts                    calculateDeliveryCostNet                  $deliveryCostNet                       Integer
+	                                                                                    $parentModel                           \\CommerceTeam\\Commerce\\Domain\\Model\\Article
+	                                                                                    Result                                 void
+	                                          calculateDeliveryCostGross                $deliveryCostGross                     Integer
+	                                                                                    $parentModel                           \\CommerceTeam\\Commerce\\Domain\\Model\\Article
+	                                                                                    Result                                 void
 	========================================= ========================================= ====================================== ===================================================
 
 Domain/Repository/ArticleRepository
@@ -70,8 +89,11 @@ ___________________________________
 	========================================= ========================================= ====================================== ===================================================
 	Hookname                                  Call                                      Parameter                              Type
 	========================================= ========================================= ====================================== ===================================================
-	getPrices                                 priceOrder
-	                                          additionalPriceWhere
+	getPrices                                 priceOrder                                $orderField                            String
+	                                                                                    Result                                 String
+	                                          additionalPriceWhere                      $parentRepository                      \
+	                                                                                    $uid                                   Integer
+	                                                                                    Result                                 String
 	========================================= ========================================= ====================================== ===================================================
 
 Domain/Repository/CategoryRepository
@@ -198,7 +220,7 @@ ______________________________
 	init                                      checkoutSteps
 	main                                      processData
 	                                          preSwitch
-	                                          *
+	                                          {*}
 	                                          postSwitch
 	                                          postRender
 	getBillingAddress                         processMarker
@@ -213,7 +235,7 @@ ______________________________
 	                                          postFinish
 	getInstanceOfTceMain                      generateOrderId
 	getBasketSum                              processMarker
-	validateAddress                           *
+	validateAddress                           {*}
 	                                          validateField
 	getInputForm                              processInputForm
 	handleAddress                             preProcessUserData
