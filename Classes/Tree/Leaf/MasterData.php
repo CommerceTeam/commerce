@@ -237,7 +237,10 @@ abstract class MasterData extends Data {
 		// Hook: getRecordsByMountpoints_preLoadRecords
 		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'getRecordsByMountpoints_preLoadRecords')) {
+				// @deprecated This method call gets removed in 5.0.0
 				$hookObj->getRecordsByMountpoints_preLoadRecords($positions, $this);
+			} elseif (method_exists($hookObj, 'getRecordsByMountpointsPreLoadRecords')) {
+				$hookObj->getRecordsByMountpointsPreLoadRecords($positions, $this);
 			}
 		}
 
@@ -250,7 +253,10 @@ abstract class MasterData extends Data {
 		// the relations in the MM table to the fictional root record
 		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'getRecordsByMountpoints_postProcessRecords')) {
+				// @deprecated This method call gets removed in 5.0.0
 				$hookObj->getRecordsByMountpoints_postProcessRecords($records, $this);
+			} elseif (method_exists($hookObj, 'getRecordsByMountpointsPostProcessRecords')) {
+				$hookObj->getRecordsByMountpointsPostProcessRecords($records, $this);
 			}
 		}
 

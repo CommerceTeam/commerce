@@ -351,7 +351,10 @@ class DataMapHooks {
 
 					foreach ($hooks as $hookObj) {
 						if (method_exists($hookObj, 'moveOrders_preMoveOrder')) {
+							// @deprecated This method call gets removed in 5.0.0
 							$hookObj->moveOrders_preMoveOrder($order, $incomingFieldArray);
+						} elseif (method_exists($hookObj, 'moveOrdersPreMoveOrder')) {
+							$hookObj->moveOrdersPreMoveOrder($order, $incomingFieldArray);
 						}
 					}
 
@@ -381,7 +384,10 @@ class DataMapHooks {
 
 					foreach ($hooks as $hookObj) {
 						if (method_exists($hookObj, 'moveOrders_postMoveOrder')) {
+							// @deprecated This method call gets removed in 5.0.0
 							$hookObj->moveOrders_postMoveOrder($order, $incomingFieldArray);
+						} elseif (method_exists($hookObj, 'moveOrdersPostMoveOrder')) {
+							$hookObj->moveOrdersPostMoveOrder($order, $incomingFieldArray);
 						}
 					}
 				}

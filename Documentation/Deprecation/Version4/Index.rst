@@ -475,23 +475,23 @@ Removed hooks since 4.x
 	, generateMail, ['commerce/pi3/class.tx_commerce_pi3.php']['generateMail'], ['commerce/Controller/CheckoutController']['generateMail']
 	, , ['commerce/Classes/Controller/CheckoutController.php']['generateMail'], ['commerce/Controller/CheckoutController']['generateMail']
 	, init, ['commerce/pi3/class.tx_commerce_pi3.php']['init'], ['commerce/Controller/CheckoutController']['init']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['init'], ['commerce/Controller/CheckoutController']['init']
+	, , ['commerce/Classes/Controller/CheckoutController.php']['init'], ['commerce/Controller/CheckoutController']['init'] method to call changed from CheckoutSteps to checkoutSteps
 	, main, ['commerce/pi3/class.tx_commerce_pi3.php']['main'], ['commerce/Controller/CheckoutController']['main']
 	, , ['commerce/Classes/Controller/CheckoutController.php']['main'], ['commerce/Controller/CheckoutController']['main']
 	, getBillingAddress, ['commerce/pi3/class.tx_commerce_pi3.php']['getBillingAddress'], ['commerce/Controller/CheckoutController']['getBillingAddress']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['getBillingAddress'], ['commerce/Controller/CheckoutController']['getBillingAddress']
+	, , ['commerce/Classes/Controller/CheckoutController.php']['getBillingAddress'], ['commerce/Controller/CheckoutController']['getBillingAddress'] method to call changed from ProcessMarker to processMarker
 	, getDeliveryAddress, ['commerce/pi3/class.tx_commerce_pi3.php']['getDeliveryAddress'], ['commerce/Controller/CheckoutController']['getDeliveryAddress']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['getDeliveryAddress'], ['commerce/Controller/CheckoutController']['getDeliveryAddress']
+	, , ['commerce/Classes/Controller/CheckoutController.php']['getDeliveryAddress'], ['commerce/Controller/CheckoutController']['getDeliveryAddress'] method to call changed from ProcessMarker to processMarker
 	, handlePayment, ['commerce/pi3/class.tx_commerce_pi3.php']['handlePayment'], ['commerce/Controller/CheckoutController']['handlePayment']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['handlePayment'], ['commerce/Controller/CheckoutController']['handlePayment']
+	, , ['commerce/Classes/Controller/CheckoutController.php']['handlePayment'], ['commerce/Controller/CheckoutController']['handlePayment'] method to call changed from ProcessMarker to processMarker
 	, getListing, ['commerce/pi3/class.tx_commerce_pi3.php']['getListing'], ['commerce/Controller/CheckoutController']['getListing']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['getListing'], ['commerce/Controller/CheckoutController']['getListing']
+	, , ['commerce/Classes/Controller/CheckoutController.php']['getListing'], ['commerce/Controller/CheckoutController']['getListing'] method to call changed from ProcessMarker to processMarker
 	, finishIt, ['commerce/pi3/class.tx_commerce_pi3.php']['finishIt'], ['commerce/Controller/CheckoutController']['finishIt']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['finishIt'], ['commerce/Controller/CheckoutController']['finishIt']
+	, , ['commerce/Classes/Controller/CheckoutController.php']['finishIt'], ['commerce/Controller/CheckoutController']['finishIt'] method to call changed from ProcessMarker to processMarker
 	, getOrderId, ['commerce/pi3/class.tx_commerce_pi3.php']['finishIt'], ['commerce/Controller/CheckoutController']['getOrderId']
 	, , ['commerce/Classes/Controller/CheckoutController.php']['finishIt'], ['commerce/Controller/CheckoutController']['getOrderId']
 	, getBasketSum, ['commerce/pi3/class.tx_commerce_pi3.php']['getBasketSum'], ['commerce/Controller/CheckoutController']['getBasketSum']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['getBasketSum'], ['commerce/Controller/CheckoutController']['getBasketSum']
+	, , ['commerce/Classes/Controller/CheckoutController.php']['getBasketSum'], ['commerce/Controller/CheckoutController']['getBasketSum'] method to call changed from ProcessMarker to processMarker
 	, getInputForm, ['commerce/pi3/class.tx_commerce_pi3.php']['processInputForm'], ['commerce/Controller/CheckoutController']['getInputForm']
 	, , ['commerce/Classes/Controller/CheckoutController.php']['processInputForm'], ['commerce/Controller/CheckoutController']['getInputForm']
 	, handleAddress, ['commerce/pi3/class.tx_commerce_pi3.php']['handleAddress'], ['commerce/Controller/CheckoutController']['handleAddress']
@@ -499,9 +499,9 @@ Removed hooks since 4.x
 	, canMakeCheckout, ['commerce/pi3/class.tx_commerce_pi3.php']['canMakeCheckout'], ['commerce/Controller/CheckoutController']['canMakeCheckout']
 	, , ['commerce/Classes/Controller/CheckoutController.php']['canMakeCheckout'], ['commerce/Controller/CheckoutController']['canMakeCheckout']
 	, sendUserMail, ['commerce/pi3/class.tx_commerce_pi3.php']['sendUserMail'], ['commerce/Controller/CheckoutController']['sendUserMail']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['sendUserMail'], ['commerce/Controller/CheckoutController']['sendUserMail']
+	, , ['commerce/Classes/Controller/CheckoutController.php']['sendUserMail'], ['commerce/Controller/CheckoutController']['sendUserMail'] method to call changed from PostGenerateMail to postGenerateMail
 	, sendAdminMail, ['commerce/pi3/class.tx_commerce_pi3.php']['sendAdminMail'], ['commerce/Controller/CheckoutController']['sendAdminMail']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['sendAdminMail'], ['commerce/Controller/CheckoutController']['sendAdminMail']
+	, , ['commerce/Classes/Controller/CheckoutController.php']['sendAdminMail'], ['commerce/Controller/CheckoutController']['sendAdminMail'] method to call changed from PostGenerateMail to postGenerateMail
 
 
 .. _\CommerceTeam\Commerce\Controller\InvoiceController_hooks:
@@ -651,7 +651,7 @@ Removed hooks since 4.x
 	:widths: 25, 10, 35, 30
 
 	\CommerceTeam\Commerce\Hook\DataMapHooks, preProcessOrder, ['commerce/Classes/Hook/class.tx_commerce_dmhooks.php']['moveOrders'], ['commerce/Hook/DataMapHooks']['preProcessOrder']
-	, , ['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'], ['commerce/Hook/DataMapHooks']['preProcessOrder']
+	, , ['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'], ['commerce/Hook/DataMapHooks']['preProcessOrder'] -method to call changed from moveOrders_preMoveOrder to moveOrdersPreMoveOrder -method to call changed from moveOrders_postMoveOrder to moveOrdersPostMoveOrder
 
 
 .. _\CommerceTeam\Commerce\Hook\OrdermailHooks_hooks:
@@ -754,4 +754,4 @@ Removed hooks since 4.x
 	:header: Class, Method, Hook, Replacement
 	:widths: 25, 10, 35, 30
 
-	\CommerceTeam\Commerce\Tree\Leaf\MasterData, getRecordsByMountpoints, $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['commerce/class.leafMasterData.php']['getRecordsByMountpointsClass'], $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Tree/Leaf/MasterData']['getRecordsByMountpoints']
+	\CommerceTeam\Commerce\Tree\Leaf\MasterData, getRecordsByMountpoints, $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['commerce/class.leafMasterData.php']['getRecordsByMountpointsClass'], $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Tree/Leaf/MasterData']['getRecordsByMountpoints'] -method to call changed from getRecordsByMountpoints_preLoadRecords to getRecordsByMountpointsPreLoadRecords -method to call changed from getRecordsByMountpoints_postProcessRecords to getRecordsByMountpointsPostProcessRecords

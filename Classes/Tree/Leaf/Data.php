@@ -648,7 +648,7 @@ class Data extends Base {
 				$uidItem = $rows['uid'][$rows['pid'][$keys[$i]][$lastIndex]['uid']];
 
 				$rows['uid'][$rows['pid'][$keys[$i]][$lastIndex]['uid']]['lastNode'] =
-					($uidItem['lastNode'] !== FALSE) ? $uidItem['lastNode'] . ',' . $keys[$i] : $keys[$i];
+					$uidItem['lastNode'] !== FALSE ? $uidItem['lastNode'] . ',' . $keys[$i] : $keys[$i];
 				$rows['pid'][$keys[$i]][$lastIndex]['lastNode'] = $keys[$i];
 			}
 		}

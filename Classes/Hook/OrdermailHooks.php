@@ -229,7 +229,7 @@ class OrdermailHooks {
 	 *
 	 * @return void
 	 */
-	public function moveOrders_preMoveOrder(array &$orderdata, array &$detaildata) {
+	public function moveOrdersPreMoveOrder(array &$orderdata, array &$detaildata) {
 		$this->processOrdermails($orderdata, $detaildata, 1);
 	}
 
@@ -244,7 +244,7 @@ class OrdermailHooks {
 	 *
 	 * @return void
 	 */
-	public function moveOrders_postMoveOrder(array &$orderdata, array &$detaildata) {
+	public function moveOrdersPostMoveOrder(array &$orderdata, array &$detaildata) {
 		$this->processOrdermails($orderdata, $detaildata, 0);
 	}
 
@@ -314,7 +314,7 @@ class OrdermailHooks {
 		 */
 		$hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook('Hook/OrdermailHooks', 'generateMail');
 		if (is_object($hookObject) && method_exists($hookObject, 'ProcessMarker')) {
-			// @deprecated this method call gets remmoved in 5.0.0
+			// @deprecated This method call gets removed in 5.0.0
 			$markerArray = $hookObject->ProcessMarker($markerArray, $this);
 		} elseif (is_object($hookObject) && method_exists($hookObject, 'processMarker')) {
 			$markerArray = $hookObject->processMarker($markerArray, $this);

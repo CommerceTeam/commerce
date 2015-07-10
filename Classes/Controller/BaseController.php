@@ -1858,7 +1858,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 
 		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'ModifyContentProduct')) {
-				// @deprecated this method call gets remmoved in 5.0.0
+				// @deprecated This method call gets removed in 5.0.0
 				$content = $hookObj->ModifyContentProduct($content, $product, $this);
 			} elseif (method_exists($hookObj, 'modifyContentProduct')) {
 				$content = $hookObj->modifyContentProduct($content, $product, $this);
