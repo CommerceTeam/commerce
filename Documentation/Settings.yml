@@ -8,4 +8,14 @@ conf.py:
   project: commerce
   version: 3.0
   release: 3.0.0
+  latex_documents:
+  - - Index
+    - commerce.tex
+    - commerce
+    - Commerce Team
+    - manual
+  latex_elements:
+    papersize: a4paper
+    pointsize: 10pt
+    preamble: \usepackage{typo3}
 ...

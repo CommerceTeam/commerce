@@ -1,0 +1,7 @@
+On ubuntu to build a pdf install
+
+sudo apt-get install python-sphinx texlive-latex-base
+
+Run in shell:
+
+make latexpdf
