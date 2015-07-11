@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Misc commerce db functions
@@ -47,6 +48,14 @@ class FolderRepository {
 		}
 
 		$currentFolder = current($folders);
+
+		/**
+		 * Update utility
+		 *
+		 * @var \CommerceTeam\Commerce\Utility\UpdateUtility $updateUtility
+		 */
+		$updateUtility = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\UpdateUtility');
+		$updateUtility->main();
 
 		return array($currentFolder['uid'], implode(',', array_keys($folders)));
 	}
