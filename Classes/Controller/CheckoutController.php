@@ -1524,7 +1524,7 @@ class CheckoutController extends BaseController {
 							$actMethod = 'validationMethod_' . strtolower($method[0]);
 							foreach ($hooks as $hookObj) {
 								if (method_exists($hookObj, $actMethod)) {
-									if (!$hookObj->$actMethod($this, $name, $value)) {
+									if (!$hookObj->{$actMethod}($this, $name, $value)) {
 										$returnVal = FALSE;
 									}
 								}

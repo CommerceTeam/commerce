@@ -1789,7 +1789,7 @@ class BackendUtility {
 		// Hook: afterCopy
 		foreach ($hooks as $hookObj) {
 			if (method_exists($hookObj, 'afterCopy')) {
-				$hookObj->afterCopy($newUid, $uid, $$overrideArray);
+				$hookObj->afterCopy($newUid, $uid, $overrideArray);
 			}
 		}
 

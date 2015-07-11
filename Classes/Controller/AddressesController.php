@@ -647,6 +647,7 @@ class AddressesController extends BaseController {
 		$isMainAddressCodeField .= ' />';
 		$isMainAddressCodeLabel = $this->pi_getLL('label_is_main_address');
 
+		$baseMarkerArray = array();
 		// Fill additional information
 		if ($addressData['tx_commerce_address_type_id'] == 1) {
 			$baseMarkerArray['###MESSAGE_EDIT###'] = $this->pi_getLL('message_edit_billing');
@@ -1003,7 +1004,7 @@ class AddressesController extends BaseController {
 							$currentMethod = 'validationMethod_' . strtolower($method[0]);
 							foreach ($hooks as $hookObj) {
 								if (method_exists($hookObj, $currentMethod)) {
-									if (!$hookObj->$currentMethod($this,$name,$value)) {
+									if (!$hookObj->{$currentMethod}($this, $name, $value)) {
 										$result = FALSE;
 									}
 								}

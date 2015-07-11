@@ -111,7 +111,7 @@ class OrdermailHooks {
 		$mailconf['plain']['content'] = $this->csConvObj->conv($mailconf['plain']['content'], 'utf-8', 'utf-8');
 		$mailconf['alternateSubject'] = $this->csConvObj->conv($mailconf['alternateSubject'], 'utf-8', 'utf-8');
 
-		$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Hook/OrdermailHooks', 'ordermoveSendMail');
+		$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Hook/OrdermailHooks', 'ordermoveSendMail');
 		foreach ($hooks as $hook) {
 			if (method_exists($hook, 'postOrdermoveSendMail')) {
 				$hook->postOrdermoveSendMail($mailconf, $orderdata, $template);

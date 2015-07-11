@@ -211,7 +211,7 @@ abstract class MasterData extends Data {
 		}
 
 		// First prepare hook objects
-		$hooks = HookFactory::getHooks('commerce/Tree/Leaf/MasterData', 'getRecordsByMountpoints');
+		$hooks = HookFactory::getHooks('Tree/Leaf/MasterData', 'getRecordsByMountpoints');
 
 		$positions = $this->getPositionsByIndices($index, $indices);
 
