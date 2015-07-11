@@ -71,7 +71,7 @@ class ListController extends BaseController {
 	 *
 	 * @var string
 	 */
-	public $templateFolder = '';
+	public $templateFolder = 'uploads/tx_commerce/';
 
 	/**
 	 * Markers
@@ -122,9 +122,6 @@ class ListController extends BaseController {
 				$hook->preInit($this);
 			}
 		}
-
-		$this->templateFolder = 'uploads/tx_commerce/';
-		$this->pi_USER_INT_obj = 0;
 
 		$this->conf['singleProduct'] = (int) $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'product_id', 's_product');
 
@@ -641,7 +638,8 @@ class ListController extends BaseController {
 	 * @return string the content for a single product
 	 */
 	public function makeArticleView($viewKind, array $conf = array(), Product $product,
-			$templateMarkerArray = '', $template = '') {
+		$templateMarkerArray = '', $template = ''
+	) {
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'makeArticleView');
 
 		$count = is_array($product->getArticleUids()) ? count($product->getArticleUids()) : FALSE;
@@ -758,17 +756,27 @@ class ListController extends BaseController {
 							$attributeObj->loadData();
 
 							$markerArray['###SELECT_ATTRIBUTES_TITLE###'] = $myAttribute['title'];
-							$markerArray['###SELECT_ATTRIBUTES_ICON###'] = $myAttribute['icon'];
+
 							// @todo check where the attribute values are
+							$attrIcon = '';
+							$attrValue = '';
 							if (count($myAttribute['values'])) {
 								$v = current(array_splice(each($myAttribute['values']), 1, 1));
-								if (is_array($v) && isset($v['value']) && $v['value'] != '') {
-									$v = $v['value'];
+								if (is_array($v)) {
+									if (isset($v['value']) && $v['value'] != '') {
+										$attrValue = $v['value'];
+									}
+									if (isset($v['icon']) && $v['icon'] != '') {
+										$attrIcon = $this->renderValue(
+											$v['icon'],
+											'IMAGE',
+											$this->conf[$this->handle . '.']['products.']['productAttributes.']['fields.']['icon.']
+										);
+									}
 								}
-							} else {
-								$v = '';
 							}
-							$markerArray['###SELECT_ATTRIBUTES_VALUE###'] = $v;
+							$markerArray['###SELECT_ATTRIBUTES_ICON###'] = $attrIcon;
+							$markerArray['###SELECT_ATTRIBUTES_VALUE###'] = $attrValue;
 							$markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $myAttribute['unit'];
 							$numTemplate = $ct % $countTemplateInterations;
 							$attCode .= $this->cObj->substituteMarkerArray($templateAttr[$numTemplate], $markerArray);
