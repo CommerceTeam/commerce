@@ -254,13 +254,15 @@ class OrdermailHooks {
 	 * in your template by you own
 	 *
 	 * @param array $addressArray Address (als Resultset from Select DB or Session)
-	 * @param array $subpartMarker Template subpart
+	 * @param string $subpartMarker Subpart marker
+	 * @param string $template Template
 	 *
 	 * @return string $content HTML-Content from the given Subpart.
 	 */
-	protected function makeAdressView(array $addressArray, array $subpartMarker) {
-		$template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
+	protected function makeAdressView(array $addressArray, $subpartMarker, $template) {
+		$template = $this->cObj->getSubpart($template, $subpartMarker);
 		$content = $this->cObj->substituteMarkerArray($template, $addressArray, '###|###', 1);
+
 		return $content;
 	}
 
@@ -278,36 +280,33 @@ class OrdermailHooks {
 	protected function generateMail($orderUid, array $orderData, $templateCode) {
 		$database = $this->getDatabaseConnection();
 
-		$markerArray = array();
-		$markerArray['###ORDERID###'] = $orderUid;
+		$markerArray = array(
+			'###ORDERID###' => $orderUid,
+		);
 
-		/**
-		 * Since The first line of the mail is the Subject, trim the template
-		 */
-		$content = ltrim($this->cObj->getSubpart($templateCode, '###MAILCONTENT###'));
+		$content = $this->cObj->getSubpart($templateCode, '###MAILCONTENT###');
 
-			// Get The addresses
+		// Get The addresses
 		$deliveryAdress = '';
 		if ($orderData['cust_deliveryaddress']) {
-			$data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid=' . (int) $orderData['cust_deliveryaddress']);
+			$data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = ' . (int) $orderData['cust_deliveryaddress']);
 			if (is_array($data)) {
-				$deliveryAdress = $this->makeAdressView($data, '###DELIVERY_ADDRESS###');
+				$deliveryAdress = $this->makeAdressView($data, '###DELIVERY_ADDRESS###', $content);
 			}
 		}
 		$content = $this->cObj->substituteSubpart($content, '###DELIVERY_ADDRESS###', $deliveryAdress);
 
 		$billingAdress = '';
 		if ($orderData['cust_invoice']) {
-			$data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid=' . (int) $orderData['cust_invoice']);
+			$data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = ' . (int) $orderData['cust_invoice']);
 			if (is_array($data)) {
-				$billingAdress = $this->makeAdressView($data, '###BILLING_ADDRESS###');
+				$billingAdress = $this->makeAdressView($data, '###BILLING_ADDRESS###', $content);
 				$this->customermailadress = $data['email'];
 			}
 		}
 		$content = $this->cObj->substituteSubpart($content, '###BILLING_ADDRESS###', $billingAdress);
 
-		$invoicelist = '';
-		$content = $this->cObj->substituteSubpart($content, '###INVOICE_VIEW###', $invoicelist);
+		$content = $this->cObj->substituteSubpart($content, '###INVOICE_VIEW###', '');
 
 		/**
 		 * Hook for processing Marker Array
@@ -319,6 +318,7 @@ class OrdermailHooks {
 
 		$content = $this->cObj->substituteMarkerArray($content, $markerArray);
 
+		// Since The first line of the mail is the Subject, trim the template
 		return ltrim($content);
 	}
 
