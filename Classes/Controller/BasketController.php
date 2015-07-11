@@ -986,10 +986,7 @@ class BasketController extends BaseController {
 		$hooks = HookFactory::getHooks('Controller/BasketController', 'makeProductList');
 		$hookObject = HookFactory::getHook('Controller/BasketController', 'alternativePrefixId');
 
-		if (is_object($hookObject) && method_exists($hookObject, 'SingeDisplayPrefixId')) {
-			// @deprecated This method call gets removed in 5.0.0
-			$altPrefixSingle = $hookObject->SingeDisplayPrefixId();
-		} elseif (is_object($hookObject) && method_exists($hookObject, 'singleDisplayPrefixId')) {
+		if (is_object($hookObject) && method_exists($hookObject, 'singleDisplayPrefixId')) {
 			$altPrefixSingle = $hookObject->singleDisplayPrefixId();
 		} else {
 			$altPrefixSingle = $this->prefixId;

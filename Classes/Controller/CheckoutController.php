@@ -179,10 +179,7 @@ class CheckoutController extends BaseController {
 
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'init');
 		foreach ($hooks as $hook) {
-			if (method_exists($hook, 'CheckoutSteps')) {
-				// @deprecated This method call gets removed in 5.0.0
-				$hook->CheckoutSteps($this->checkoutSteps, $this);
-			} elseif (method_exists($hook, 'checkoutSteps')) {
+			if (method_exists($hook, 'checkoutSteps')) {
 				$hook->checkoutSteps($this->checkoutSteps, $this);
 			}
 		}
@@ -631,10 +628,7 @@ class CheckoutController extends BaseController {
 
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'getBillingAddress');
 		foreach ($hooks as $hook) {
-			if (method_exists($hook, 'ProcessMarker')) {
-				// @deprecated This method call gets removed in 5.0.0
-				$markerArray = $hook->ProcessMarker($markerArray, $this);
-			} elseif (method_exists($hook, 'processMarker')) {
+			if (method_exists($hook, 'processMarker')) {
 				$markerArray = $hook->processMarker($markerArray, $this);
 			}
 		}
@@ -755,10 +749,7 @@ class CheckoutController extends BaseController {
 
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'getDeliveryAddress');
 		foreach ($hooks as $hook) {
-			if (method_exists($hook, 'ProcessMarker')) {
-				// @deprecated This method call gets removed in 5.0.0
-				$markerArray = $hook->ProcessMarker($markerArray, $this);
-			} elseif (method_exists($hook, 'processMarker')) {
+			if (method_exists($hook, 'processMarker')) {
 				$markerArray = $hook->processMarker($markerArray, $this);
 			}
 		}
@@ -884,10 +875,7 @@ class CheckoutController extends BaseController {
 		}
 
 		foreach ($hooks as $hookObj) {
-			if (method_exists($hookObj, 'ProcessMarker')) {
-				// @deprecated This method call gets removed in 5.0.0
-				$markerArray = $hookObj->ProcessMarker($markerArray, $this);
-			} elseif (method_exists($hookObj, 'processMarker')) {
+			if (method_exists($hookObj, 'processMarker')) {
 				$markerArray = $hookObj->processMarker($markerArray, $this);
 			}
 		}
@@ -967,10 +955,7 @@ class CheckoutController extends BaseController {
 
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'getListing');
 		foreach ($hooks as $hook) {
-			if (method_exists($hook, 'ProcessMarker')) {
-				// @deprecated This method call gets removed in 5.0.0
-				$markerArray = $hook->ProcessMarker($markerArray, $this);
-			} elseif (method_exists($hook, 'processMarker')) {
+			if (method_exists($hook, 'processMarker')) {
 				$markerArray = $hook->processMarker($markerArray, $this);
 			}
 		}
@@ -1155,10 +1140,7 @@ class CheckoutController extends BaseController {
 		$markerArray = $this->finishItRenderGoodBadMarker($markerArray);
 
 		foreach ($hooks as $hookObj) {
-			if (method_exists($hookObj, 'ProcessMarker')) {
-				// @deprecated This method call gets removed in 5.0.0
-				$markerArray = $hookObj->ProcessMarker($markerArray, $this);
-			} elseif (method_exists($hookObj, 'processMarker')) {
+			if (method_exists($hookObj, 'processMarker')) {
 				$markerArray = $hookObj->processMarker($markerArray, $this);
 			}
 		}
@@ -1378,10 +1360,7 @@ class CheckoutController extends BaseController {
 
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'getBasketSum');
 		foreach ($hooks as $hook) {
-			if (method_exists($hook, 'ProcessMarker')) {
-				// @deprecated This method call gets removed in 5.0.0
-				$markerArray = $hook->ProcessMarker($markerArray, $this);
-			} elseif (method_exists($hook, 'processMarker')) {
+			if (method_exists($hook, 'processMarker')) {
 				$markerArray = $hook->processMarker($markerArray, $this);
 			}
 		}
@@ -2263,10 +2242,7 @@ class CheckoutController extends BaseController {
 
 				$basket = $this->getBasket();
 				foreach ($hooks as $hookObj) {
-					if (method_exists($hookObj, 'PostGenerateMail')) {
-						// @deprecated This method call gets removed in 5.0.0
-						$hookObj->PostGenerateMail($userMailObj, $this, $basket, $mailcontent);
-					} elseif (method_exists($hookObj, 'postGenerateMail')) {
+					if (method_exists($hookObj, 'postGenerateMail')) {
 						$hookObj->postGenerateMail($userMailObj, $this, $basket, $mailcontent);
 					}
 				}
@@ -2277,10 +2253,7 @@ class CheckoutController extends BaseController {
 					$htmlContent = $userMailObj->generateMail($orderUid, $orderData, $userMarker);
 					$userMailObj->isHtmlMail = TRUE;
 					foreach ($hooks as $hookObj) {
-						if (method_exists($hookObj, 'PostGenerateMail')) {
-							// @deprecated This method call gets removed in 5.0.0
-							$hookObj->PostGenerateMail($userMailObj, $this, $basket, $htmlContent);
-						} elseif (method_exists($hookObj, 'postGenerateMail')) {
+						if (method_exists($hookObj, 'postGenerateMail')) {
 							$hookObj->postGenerateMail($userMailObj, $this, $basket, $htmlContent);
 						}
 					}
@@ -2413,10 +2386,7 @@ class CheckoutController extends BaseController {
 
 			$basket = $this->getBasket();
 			foreach ($hooks as $hookObj) {
-				if (method_exists($hookObj, 'PostGenerateMail')) {
-					// @deprecated This method call gets removed in 5.0.0
-					$hookObj->PostGenerateMail($adminMailObj, $this, $basket, $mailcontent, $this);
-				} elseif (method_exists($hookObj, 'postGenerateMail')) {
+				if (method_exists($hookObj, 'postGenerateMail')) {
 					$hookObj->postGenerateMail($adminMailObj, $this, $basket, $mailcontent, $this);
 				}
 			}
@@ -2428,10 +2398,7 @@ class CheckoutController extends BaseController {
 				$adminMailObj->isHtmlMail = TRUE;
 
 				foreach ($hooks as $hookObj) {
-					if (method_exists($hookObj, 'PostGenerateMail')) {
-						// @deprecated This method call gets removed in 5.0.0
-						$hookObj->PostGenerateMail($adminMailObj, $this, $basket, $htmlContent);
-					} elseif (method_exists($hookObj, 'postGenerateMail')) {
+					if (method_exists($hookObj, 'postGenerateMail')) {
 						$hookObj->postGenerateMail($adminMailObj, $this, $basket, $htmlContent);
 					}
 				}
@@ -2587,10 +2554,7 @@ class CheckoutController extends BaseController {
 		// Hook to process marker array
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'generateMail');
 		foreach ($hooks as $hookObj) {
-			if (method_exists($hookObj, 'ProcessMarker')) {
-				// @deprecated This method call gets removed in 5.0.0
-				$markerArray = $hookObj->ProcessMarker($markerArray, $this);
-			} elseif (method_exists($hookObj, 'processMarker')) {
+			if (method_exists($hookObj, 'processMarker')) {
 				$markerArray = $hookObj->processMarker($markerArray, $this);
 			}
 		}

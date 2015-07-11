@@ -313,10 +313,7 @@ class OrdermailHooks {
 		 * Hook for processing Marker Array
 		 */
 		$hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook('Hook/OrdermailHooks', 'generateMail');
-		if (is_object($hookObject) && method_exists($hookObject, 'ProcessMarker')) {
-			// @deprecated This method call gets removed in 5.0.0
-			$markerArray = $hookObject->ProcessMarker($markerArray, $this);
-		} elseif (is_object($hookObject) && method_exists($hookObject, 'processMarker')) {
+		if (is_object($hookObject) && method_exists($hookObject, 'processMarker')) {
 			$markerArray = $hookObject->processMarker($markerArray, $this);
 		}
 
