@@ -195,6 +195,7 @@ _______________________
 	Property                            Data type         Description                                                             Default
 	=================================== ================= ======================================================================= ==================
 	templateFile                        String            Path to the HTML template of the shopping cart                          EXT:commerce/pi2/shoppingcarttpl
+	basketStoragePid                    Integer           Basket storage pid                                                      0
 	=================================== ================= ======================================================================= ==================
 
 [tx_commerce_pi2]
@@ -350,6 +351,8 @@ ______________________
 	regularArticleTypes                 String            Regular type of article (article = 1, payment =2 , delivery = 3)
 	listPid                             Integer           PID of the list view
 	checkoutPid                         Integer           PID of checkout
+	basketPid                           Integer           PID of basket
+	basketStoragePid                    Integer           PID of basket storage
 	defaultPaymentArticleId             Integer           ID of article of default payment method
 	templateMarker                      String            configuration of template marker
 	fields                              COA               the fieldObject -> see reference fieldObject

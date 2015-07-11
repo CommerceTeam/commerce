@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Utility;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 
 /**

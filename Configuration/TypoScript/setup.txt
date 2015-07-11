@@ -475,6 +475,9 @@ plugin.tx_commerce_pi2 {
 	# also used for the quickview
 	basketPid = {$plugin.tx_commerce_lib.basketPid}
 
+	# Basket storage pid
+	basketStoragePid = {$plugin.tx_commerce_lib.basketStoragePid}
+
 	# The default Payment Article
 	# If set to > 1 this article Uid will be added by default, if no Payment
 	# is selected by the user

@@ -56,6 +56,13 @@ class Basket extends BasicBasket {
 	protected $isAlreadyLoaded = FALSE;
 
 	/**
+	 * Basket storage pid
+	 *
+	 * @var int
+	 */
+	protected $basketStoragePid;
+
+	/**
 	 * Constructor for a commerce basket.
 	 * Loads configuration data
 	 *
@@ -183,8 +190,8 @@ class Basket extends BasicBasket {
 	 */
 	protected function loadDataFromDatabase() {
 		$where = '';
-		if (SettingsFactory::getInstance()->getExtConf('BasketStoragePid') > 0) {
-			$where .= ' AND pid = ' . SettingsFactory::getInstance()->getExtConf('BasketStoragePid');
+		if ($this->getBasketStoragePid()) {
+			$where .= ' AND pid = ' . $this->getBasketStoragePid();
 		}
 
 		$database = $this->getDatabaseConnection();
@@ -241,7 +248,7 @@ class Basket extends BasicBasket {
 			'*',
 			'tx_commerce_baskets',
 			'sid = ' . $database->fullQuoteStr($sessionId, 'tx_commerce_baskets') . ' AND finished_time = 0 AND pid = ' .
-				SettingsFactory::getInstance()->getExtConf('BasketStoragePid'),
+				$this->getBasketStoragePid(),
 			'',
 			'pos'
 		);
@@ -332,7 +339,7 @@ class Basket extends BasicBasket {
 		 */
 		foreach ($this->basketItems as $oneuid => $oneItem) {
 			$insertData = array();
-			$insertData['pid'] = SettingsFactory::getInstance()->getExtConf('BasketStoragePid');
+			$insertData['pid'] = $this->getBasketStoragePid();
 			$insertData['pos'] = $arBasketItemsKeys[$oneuid];
 			$insertData['sid'] = $this->sessionId;
 			$insertData['article_id'] = $oneItem->getArticleUid();
@@ -365,6 +372,25 @@ class Basket extends BasicBasket {
 			$oneItem->calculateNetSum();
 			$oneItem->calculateGrossSum();
 		}
+	}
+
+	/**
+	 * Gets the basket storage pid
+	 *
+	 * @return int
+	 */
+	protected function getBasketStoragePid() {
+		if (is_null($this->basketStoragePid)) {
+			if ($this->getFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi2.']['basketStoragePid']) {
+				$this->basketStoragePid = (int) $this->getFrontendController()
+					->tmpl
+						->setup['plugin.']['tx_commerce_pi2.']['basketStoragePid'];
+			} else {
+				$this->basketStoragePid = SettingsFactory::getInstance()->getExtConf('BasketStoragePid');
+			}
+		}
+
+		return $this->basketStoragePid;
 	}
 
 

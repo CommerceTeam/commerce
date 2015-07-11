@@ -18,6 +18,9 @@ plugin.tx_commerce_lib {
 	# cat=plugin.commerce: General/links/a8; type=int+; label= Basket PID: The PID of the basket
 	basketPid = 0
 
+	# cat=plugin.commerce: General/links/a8; type=int+; label= Basket storage PID: The PID of the storage to store the baskets in
+	basketStoragePid = 0
+
 	# cat=plugin.commerce: General/links/b2; type=int+; label= Empty basket PID: The PID of the content which is displayed if the basket is empty
 	emptyBasketPid = 0
 
