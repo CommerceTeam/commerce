@@ -423,7 +423,7 @@ Removed hooks since 4.x
 	, renderProductsForList, ['commerce/lib/class.tx_commerce_pibase.php']['renderProductsForList'], ['commerce/Controller/BaseController']['renderProductsForList']
 	, , ['commerce/Classes/Controller/BaseController.php']['renderProductsForList'], ['commerce/Controller/BaseController']['renderProductsForList']
 	, renderProduct, ['commerce/lib/class.tx_commerce_pibase.php']['product'], ['commerce/Controller/BaseController']['renderProduct']
-	, , ['commerce/Classes/Controller/BaseController.php']['renderProduct'], ['commerce/Controller/BaseController']['renderProduct'] method to call changed from ModifyContentProduct to modifyContentProduct
+	, , ['commerce/Classes/Controller/BaseController.php']['renderProduct'], ['commerce/Controller/BaseController']['renderProduct']
 
 
 .. _\CommerceTeam\Commerce\Controller\BasketController_hooks:
@@ -475,23 +475,23 @@ Removed hooks since 4.x
 	, generateMail, ['commerce/pi3/class.tx_commerce_pi3.php']['generateMail'], ['commerce/Controller/CheckoutController']['generateMail']
 	, , ['commerce/Classes/Controller/CheckoutController.php']['generateMail'], ['commerce/Controller/CheckoutController']['generateMail']
 	, init, ['commerce/pi3/class.tx_commerce_pi3.php']['init'], ['commerce/Controller/CheckoutController']['init']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['init'], ['commerce/Controller/CheckoutController']['init'] method to call changed from CheckoutSteps to checkoutSteps
+	, , ['commerce/Classes/Controller/CheckoutController.php']['init'], ['commerce/Controller/CheckoutController']['init']
 	, main, ['commerce/pi3/class.tx_commerce_pi3.php']['main'], ['commerce/Controller/CheckoutController']['main']
 	, , ['commerce/Classes/Controller/CheckoutController.php']['main'], ['commerce/Controller/CheckoutController']['main']
 	, getBillingAddress, ['commerce/pi3/class.tx_commerce_pi3.php']['getBillingAddress'], ['commerce/Controller/CheckoutController']['getBillingAddress']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['getBillingAddress'], ['commerce/Controller/CheckoutController']['getBillingAddress'] method to call changed from ProcessMarker to processMarker
+	, , ['commerce/Classes/Controller/CheckoutController.php']['getBillingAddress'], ['commerce/Controller/CheckoutController']['getBillingAddress']
 	, getDeliveryAddress, ['commerce/pi3/class.tx_commerce_pi3.php']['getDeliveryAddress'], ['commerce/Controller/CheckoutController']['getDeliveryAddress']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['getDeliveryAddress'], ['commerce/Controller/CheckoutController']['getDeliveryAddress'] method to call changed from ProcessMarker to processMarker
+	, , ['commerce/Classes/Controller/CheckoutController.php']['getDeliveryAddress'], ['commerce/Controller/CheckoutController']['getDeliveryAddress']
 	, handlePayment, ['commerce/pi3/class.tx_commerce_pi3.php']['handlePayment'], ['commerce/Controller/CheckoutController']['handlePayment']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['handlePayment'], ['commerce/Controller/CheckoutController']['handlePayment'] method to call changed from ProcessMarker to processMarker
+	, , ['commerce/Classes/Controller/CheckoutController.php']['handlePayment'], ['commerce/Controller/CheckoutController']['handlePayment']
 	, getListing, ['commerce/pi3/class.tx_commerce_pi3.php']['getListing'], ['commerce/Controller/CheckoutController']['getListing']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['getListing'], ['commerce/Controller/CheckoutController']['getListing'] method to call changed from ProcessMarker to processMarker
+	, , ['commerce/Classes/Controller/CheckoutController.php']['getListing'], ['commerce/Controller/CheckoutController']['getListing']
 	, finishIt, ['commerce/pi3/class.tx_commerce_pi3.php']['finishIt'], ['commerce/Controller/CheckoutController']['finishIt']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['finishIt'], ['commerce/Controller/CheckoutController']['finishIt'] method to call changed from ProcessMarker to processMarker
+	, , ['commerce/Classes/Controller/CheckoutController.php']['finishIt'], ['commerce/Controller/CheckoutController']['finishIt']
 	, getOrderId, ['commerce/pi3/class.tx_commerce_pi3.php']['finishIt'], ['commerce/Controller/CheckoutController']['getOrderId']
 	, , ['commerce/Classes/Controller/CheckoutController.php']['finishIt'], ['commerce/Controller/CheckoutController']['getOrderId']
 	, getBasketSum, ['commerce/pi3/class.tx_commerce_pi3.php']['getBasketSum'], ['commerce/Controller/CheckoutController']['getBasketSum']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['getBasketSum'], ['commerce/Controller/CheckoutController']['getBasketSum'] method to call changed from ProcessMarker to processMarker
+	, , ['commerce/Classes/Controller/CheckoutController.php']['getBasketSum'], ['commerce/Controller/CheckoutController']['getBasketSum']
 	, getInputForm, ['commerce/pi3/class.tx_commerce_pi3.php']['processInputForm'], ['commerce/Controller/CheckoutController']['getInputForm']
 	, , ['commerce/Classes/Controller/CheckoutController.php']['processInputForm'], ['commerce/Controller/CheckoutController']['getInputForm']
 	, handleAddress, ['commerce/pi3/class.tx_commerce_pi3.php']['handleAddress'], ['commerce/Controller/CheckoutController']['handleAddress']
@@ -499,9 +499,9 @@ Removed hooks since 4.x
 	, canMakeCheckout, ['commerce/pi3/class.tx_commerce_pi3.php']['canMakeCheckout'], ['commerce/Controller/CheckoutController']['canMakeCheckout']
 	, , ['commerce/Classes/Controller/CheckoutController.php']['canMakeCheckout'], ['commerce/Controller/CheckoutController']['canMakeCheckout']
 	, sendUserMail, ['commerce/pi3/class.tx_commerce_pi3.php']['sendUserMail'], ['commerce/Controller/CheckoutController']['sendUserMail']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['sendUserMail'], ['commerce/Controller/CheckoutController']['sendUserMail'] method to call changed from PostGenerateMail to postGenerateMail
+	, , ['commerce/Classes/Controller/CheckoutController.php']['sendUserMail'], ['commerce/Controller/CheckoutController']['sendUserMail']
 	, sendAdminMail, ['commerce/pi3/class.tx_commerce_pi3.php']['sendAdminMail'], ['commerce/Controller/CheckoutController']['sendAdminMail']
-	, , ['commerce/Classes/Controller/CheckoutController.php']['sendAdminMail'], ['commerce/Controller/CheckoutController']['sendAdminMail'] method to call changed from PostGenerateMail to postGenerateMail
+	, , ['commerce/Classes/Controller/CheckoutController.php']['sendAdminMail'], ['commerce/Controller/CheckoutController']['sendAdminMail']
 
 
 .. _\CommerceTeam\Commerce\Controller\InvoiceController_hooks:
@@ -662,7 +662,7 @@ Removed hooks since 4.x
 	\CommerceTeam\Commerce\Hook\OrdermailHooks, ordermoveSendMail, ['commerce/Classes/Hook/class.tx_commerce_ordermailhooks.php']['ordermoveSendMail'], ['commerce/Hook/OrdermailHooks']['ordermoveSendMail']
 	, , ['commerce/Classes/Hook/OrdermailHooks.php']['ordermoveSendMail'], ['commerce/Hook/OrdermailHooks']['ordermoveSendMail']
 	, generateMail, ['commerce_ordermails/mod1/class.tx_commerce_moveordermail.php']['generateMail'], ['commerce/Hook/OrdermailHooks']['generateMail']
-	, , ['commerce/Classes/Hook/OrdermailHooks.php']['generateMail'], ['commerce/Hook/OrdermailHooks']['generateMail'] method to call changed from ProcessMarker to processMarker
+	, , ['commerce/Classes/Hook/OrdermailHooks.php']['generateMail'], ['commerce/Hook/OrdermailHooks']['generateMail']
 
 
 .. _\CommerceTeam\Commerce\Tree\Leaf\Data_hooks:
