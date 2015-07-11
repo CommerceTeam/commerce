@@ -705,8 +705,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 		$markerArray = array_merge($markerArrayCat, $markerArray);
 
 		if (
-			!empty($this->category_products)
-			&& $this->conf['showPageBrowser'] == 1
+			$this->conf['showPageBrowser'] == 1
+			&& count($this->category_products) > $this->conf['maxRecords']
 			&& is_array($this->conf['pageBrowser.']['wraps.'])
 		) {
 			$this->internal['pagefloat'] = (int) $this->piVars['pointer'];
