@@ -762,9 +762,7 @@ class Navigation {
 		}
 
 		if ($treeList == NULL && $this->mConf['showProducts'] == 1) {
-			$treeList = $this->makeSubChildArrayPostRender(
-				$uidPage, $tableSubMain, $tableSubMm, $uidRoot, $mDepth, $path, $maxLevel
-			);
+			$treeList = $this->makeSubChildArrayPostRender($uidPage, $tableSubMain, $tableSubMm, $uidRoot, $mDepth, $path, $maxLevel);
 		}
 
 		return $treeList;
