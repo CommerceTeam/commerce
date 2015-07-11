@@ -242,7 +242,7 @@ class ListController extends BaseController {
 			$tmpCategory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
 				'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 				$this->cat,
-				$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
+				$this->getFrontendController()->sys_language_uid
 			);
 			$accessible = $tmpCategory->isAccessible();
 		}
@@ -253,7 +253,7 @@ class ListController extends BaseController {
 			$tmpCategory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
 				'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 				$this->cat,
-				$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
+				$this->getFrontendController()->sys_language_uid
 			);
 		}
 		if (!isset($this->piVars['catUid'])) {
@@ -293,7 +293,7 @@ class ListController extends BaseController {
 			$this->masterCategoryObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
 				'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 				$this->master_cat,
-				$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
+				$this->getFrontendController()->sys_language_uid
 			);
 			$this->masterCategoryObj->loadData();
 			/**
@@ -323,7 +323,7 @@ class ListController extends BaseController {
 			$this->category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
 				'CommerceTeam\\Commerce\\Domain\\Model\\Category',
 				$this->cat,
-				$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
+				$this->getFrontendController()->sys_language_uid
 			);
 			$this->category->loadData();
 		}
@@ -454,7 +454,7 @@ class ListController extends BaseController {
 			$this->product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 				'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 				$productId,
-				$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
+				$this->getFrontendController()->sys_language_uid
 			);
 			$this->product->loadData();
 
@@ -753,7 +753,7 @@ class ListController extends BaseController {
 							$attributeObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 								'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
 								$attributeUid,
-								$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
+								$this->getFrontendController()->sys_language_uid
 							);
 							$attributeObj->loadData();
 
@@ -841,7 +841,7 @@ class ListController extends BaseController {
 						$attributeObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 							'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
 							$attrUid,
-							$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
+							$this->getFrontendController()->sys_language_uid
 						);
 						$attributeObj->loadData();
 

@@ -173,7 +173,7 @@ class CategoryRepository extends Repository {
 	 * @return array Array of UIDs
 	 */
 	public function getL18nCategories($uid) {
-		if ((empty($uid)) || (!is_numeric($uid))) {
+		if (empty($uid) || !is_numeric($uid)) {
 			return FALSE;
 		}
 
@@ -209,8 +209,8 @@ class CategoryRepository extends Repository {
 		}
 		$this->uid = $uid;
 		$frontend = $this->getFrontendController();
-		if ($languageUid == 0 && $frontend->tmpl->setup['config.']['sys_language_uid'] > 0) {
-			$languageUid = $frontend->tmpl->setup['config.']['sys_language_uid'];
+		if ($languageUid == 0 && $frontend->sys_language_uid) {
+			$languageUid = $frontend->sys_language_uid;
 		}
 		$this->lang_uid = $languageUid;
 
@@ -233,7 +233,7 @@ class CategoryRepository extends Repository {
 			'uid_local',
 			$this->databaseTable, $this->databaseParentCategoryRelationTable,
 			$this->databaseTable,
-			' AND ' . $this->databaseParentCategoryRelationTable . '.uid_foreign= ' . (int) $uid . ' ' . $additionalWhere,
+			' AND ' . $this->databaseParentCategoryRelationTable . '.uid_foreign = ' . (int) $uid . ' ' . $additionalWhere,
 			'',
 			$localOrderField
 		);
@@ -249,9 +249,9 @@ class CategoryRepository extends Repository {
 					// @todo Check if this is correct in Multi Tree Sites
 					$lresult = $database->exec_SELECTquery(
 						'uid',
-						'tx_commerce_categories',
-						'l18n_parent = ' . (int) $row['uid_local'] . ' AND sys_language_uid=' . $languageUid .
-							$this->enableFields('tx_commerce_categories', $frontend->showHiddenRecords)
+						$this->databaseTable,
+						'l18n_parent = ' . (int) $row['uid_local'] . ' AND sys_language_uid = ' . $this->lang_uid .
+							$this->enableFields($this->databaseTable, $frontend->showHiddenRecords)
 					);
 
 					if ($database->sql_num_rows($lresult)) {
@@ -288,8 +288,8 @@ class CategoryRepository extends Repository {
 		}
 		$this->uid = $uid;
 		$frontend = $this->getFrontendController();
-		if ($languageUid == 0 && $frontend->tmpl->setup['config.']['sys_language_uid'] > 0) {
-			$languageUid = $frontend->tmpl->setup['config.']['sys_language_uid'];
+		if ($languageUid == 0 && $frontend->sys_language_uid) {
+			$languageUid = $frontend->sys_language_uid;
 		}
 		$this->lang_uid = $languageUid;
 
@@ -340,7 +340,8 @@ class CategoryRepository extends Repository {
 					// @todo Check if this is correct in multi tree sites
 					$lresult = $database->exec_SELECTquery(
 						'uid',
-						'tx_commerce_products', 'l18n_parent = ' . (int) $row['uid'] . ' AND sys_language_uid=' . $languageUid .
+						'tx_commerce_products',
+						'l18n_parent = ' . (int) $row['uid'] . ' AND sys_language_uid = ' . $this->lang_uid .
 							$this->enableFields('tx_commerce_products', $frontend->showHiddenRecords)
 					);
 					if ($database->sql_num_rows($lresult)) {

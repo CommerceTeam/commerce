@@ -626,7 +626,7 @@ class BasketController extends BaseController {
 		$this->deliveryProduct = GeneralUtility::makeInstance(
 			'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 			$this->conf['delProdId'],
-			$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
+			$this->getFrontendController()->sys_language_uid
 		);
 		$this->deliveryProduct->loadData();
 
@@ -714,7 +714,7 @@ class BasketController extends BaseController {
 		$this->paymentProduct = GeneralUtility::makeInstance(
 			'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 			$this->conf['payProdId'],
-			$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
+			$this->getFrontendController()->sys_language_uid
 		);
 		$this->paymentProduct->loadData();
 
@@ -862,7 +862,7 @@ class BasketController extends BaseController {
 					$attributeObj = GeneralUtility::makeInstance(
 						'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
 						$attributeUid,
-						$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
+						$this->getFrontendController()->sys_language_uid
 					);
 					$attributeObj->loadData();
 

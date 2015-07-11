@@ -177,7 +177,7 @@ class ProductRepository extends Repository {
 	 * @return array $uid uids
 	 */
 	public function getL18nProducts($uid) {
-		if (!(int)$uid) {
+		if (!(int) $uid) {
 			return FALSE;
 		}
 
@@ -186,7 +186,7 @@ class ProductRepository extends Repository {
 		$rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
 			't1.title, t1.uid, t2.flag, t2.uid as sys_language',
 			$this->databaseTable . ' AS t1 LEFT JOIN sys_language AS t2 ON t1.sys_language_uid = t2.uid',
-			'l18n_parent = ' . (int)$uid . ' AND deleted = 0'
+			'l18n_parent = ' . (int) $uid . ' AND deleted = 0'
 		);
 
 		return $rows;

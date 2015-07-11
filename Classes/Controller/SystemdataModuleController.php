@@ -306,7 +306,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 		return $this->getDatabaseConnection()->exec_SELECTquery(
 			'*',
 			'tx_commerce_attributes',
-			'pid=' . (int) $this->attributePid . ' AND hidden=0 AND deleted=0 and (sys_language_uid = 0 OR sys_language_uid = -1)',
+			'pid = ' . (int) $this->attributePid . ' AND hidden = 0 AND deleted = 0 and (sys_language_uid = 0 OR sys_language_uid = -1)',
 			'',
 			'internal_title, title'
 		);
@@ -323,7 +323,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 		return $this->getDatabaseConnection()->exec_SELECTquery(
 			'*',
 			'tx_commerce_attributes',
-			'pid = ' . (int) $this->attributePid . ' AND hidden=0 AND deleted=0 and sys_language_uid <>0 and l18n_parent =' .
+			'pid = ' . (int) $this->attributePid . ' AND hidden = 0 AND deleted = 0 AND sys_language_uid != 0 and l18n_parent =' .
 				(int) $uid,
 			'',
 			'sys_language_uid'

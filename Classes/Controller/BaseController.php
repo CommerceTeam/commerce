@@ -1648,7 +1648,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 				$myProduct = GeneralUtility::makeInstance(
 					'CommerceTeam\\Commerce\\Domain\\Model\\Product',
 					$myProductId,
-					$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
+					$this->getFrontendController()->sys_language_uid
 				);
 				$myProduct->loadData();
 

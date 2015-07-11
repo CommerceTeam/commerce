@@ -95,8 +95,8 @@ class Repository {
 			$langUid = 0;
 		}
 
-		if (empty($langUid) && $frontend->tmpl->setup['config.']['sys_language_uid'] > 0) {
-			$langUid = $frontend->tmpl->setup['config.']['sys_language_uid'];
+		if (empty($langUid) && $frontend->sys_language_uid) {
+			$langUid = $frontend->sys_language_uid;
 		}
 
 		$proofSql = '';

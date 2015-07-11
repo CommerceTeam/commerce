@@ -653,10 +653,10 @@ class Navigation {
 				$nodeArray['pid'] = $dataRow['pid'];
 				$nodeArray['uid'] = $uidPage;
 				$nodeArray['title'] = htmlspecialchars(strip_tags($dataRow['title']));
+				/**
+				 * Add Pages Overlay to Array, if sys language uid set
+				 */
 				if ($this->getFrontendController()->sys_language_uid) {
-					/**
-					 * Add Pages Overlayto Array, if not syslaguage
-					 */
 					$nodeArray['_PAGES_OVERLAY'] = htmlspecialchars(strip_tags($dataRow['title']));
 				}
 				$nodeArray['parent_id'] = $uidRoot;
@@ -824,9 +824,11 @@ class Navigation {
 				foreach ($this->nodeArrayAdditionalFields as $field) {
 					$nodeArray[$field] = htmlspecialchars(strip_tags($dataRow[$field]));
 				}
-				// Add Pages Overlay to Array, if sys_language_uid ist set
+				/**
+				 * Add Pages Overlay to Array, if sys language uid set
+				 */
 				if ($this->getFrontendController()->sys_language_uid) {
-					$nodeArray['_PAGES_OVERLAY'] = $dataRow['title'];
+					$nodeArray['_PAGES_OVERLAY'] = htmlspecialchars(strip_tags($dataRow['title']));
 				}
 				$nodeArray['depth'] = $mDepth;
 				$nodeArray['leaf'] = 1;
@@ -1007,22 +1009,24 @@ class Navigation {
 		if ($uid == '' or $tableName == '') {
 			return '';
 		}
-		$addWhere = $this->getFrontendController()->sys_page->enableFields($tableName, $this->getFrontendController()->showHiddenRecords);
-		$where = 'uid = ' . (int) $uid;
-		$row = $database->exec_SELECTgetRows(
-			'*', $tableName, $where . $addWhere, $groupBy = '', $orderBy = '', '1', ''
+		$addWhere = $this->getFrontendController()->sys_page->enableFields(
+			$tableName,
+			$this->getFrontendController()->showHiddenRecords
+		);
+		$row = $database->exec_SELECTgetSingleRow(
+			'*', $tableName, 'uid = ' . (int) $uid . $addWhere
 		);
 
-		if (($this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'] > 0) && $row[0]) {
-			$langUid = $this->getFrontendController()->tmpl->setup['config.']['sys_language_uid'];
+		if ($this->getFrontendController()->sys_language_uid && $row) {
+			$langUid = $this->getFrontendController()->sys_language_uid;
 
 			/**
 			 * Get Overlay, if available
 			 */
-			$row[0] = $this->getFrontendController()->sys_page->getRecordOverlay($tableName, $row[0], $langUid, $this->translationMode);
+			$row = $this->getFrontendController()->sys_page->getRecordOverlay($tableName, $row, $langUid, $this->translationMode);
 		}
 
-		if ($this->mConf['hideEmptyCategories'] == 1 && $tableName == 'tx_commerce_categories' && is_array($row[0])) {
+		if ($this->mConf['hideEmptyCategories'] == 1 && $tableName == 'tx_commerce_categories' && is_array($row)) {
 			// Process Empty Categories
 			/**
 			 * Category
@@ -1030,7 +1034,9 @@ class Navigation {
 			 * @var \CommerceTeam\Commerce\Domain\Model\Category $localCategory
 			 */
 			$localCategory = GeneralUtility::makeinstance(
-				'CommerceTeam\\Commerce\\Domain\\Model\\Category', $row[0]['uid'], $row[0]['sys_language_uid']
+				'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+				$row['uid'],
+				$row['sys_language_uid']
 			);
 			$localCategory->loadData();
 			if (!$localCategory->hasProductsInSubCategories()) {
@@ -1038,8 +1044,8 @@ class Navigation {
 			}
 		}
 
-		if ($row[0]) {
-			return $row[0];
+		if ($row) {
+			return $row;
 		}
 
 		return array();
@@ -1174,7 +1180,9 @@ class Navigation {
 		$this->gpVars['basketHashValue'] = $this->getBasket()->getBasketHashValue();
 		if (!is_object($this->category)) {
 			$this->category = GeneralUtility::makeInstance(
-				'CommerceTeam\\Commerce\\Domain\\Model\\Category', $this->mConf['category'], $this->getFrontendController()->sys_language_uid
+				'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+				$this->mConf['category'],
+				$this->getFrontendController()->sys_language_uid
 			);
 			$this->category->loadData();
 		}
@@ -1260,7 +1268,9 @@ class Navigation {
 			 * @var \CommerceTeam\Commerce\Domain\Model\Category $categoryObject
 			 */
 			$categoryObject = GeneralUtility::makeInstance(
-				'CommerceTeam\\Commerce\\Domain\\Model\\Category', $categoryUid, $this->getFrontendController()->sys_language_uid
+				'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+				$categoryUid,
+				$this->getFrontendController()->sys_language_uid
 			);
 			$categoryObject->loadData();
 

@@ -638,7 +638,7 @@ class Product extends AbstractEntity {
 					// (lang_uid = selected lang and l18n_parent = current article)
 					$localizedArticleUid = $database->exec_SELECTgetRows(
 						'uid', $parentTable,
-						'l18n_parent=' . $attributeDataRow['parent_uid'] . ' AND sys_language_uid=' . $this->lang_uid .
+						'l18n_parent = ' . $attributeDataRow['parent_uid'] . ' AND sys_language_uid = ' . $this->lang_uid .
 						$this->getFrontendController()->sys_page->enableFields($parentTable, $this->getFrontendController()->showHiddenRecords)
 					);
 
@@ -1048,7 +1048,7 @@ class Product extends AbstractEntity {
 
 			$database = $this->getDatabaseConnection();
 			$result = $database->exec_SELECT_mm_query(
-				'distinct tx_commerce_attributes.uid, tx_commerce_attributes.sys_language_uid, tx_commerce_articles.uid as article,
+				'DISTINCT tx_commerce_attributes.uid, tx_commerce_attributes.sys_language_uid, tx_commerce_articles.uid as article,
 					tx_commerce_attributes.title, tx_commerce_attributes.unit, tx_commerce_attributes.valueformat,
 					tx_commerce_attributes.internal_title, tx_commerce_attributes.icon, tx_commerce_attributes.iconmode,
 					' . $sortingTable . '.sorting', 'tx_commerce_articles', 'tx_commerce_articles_article_attributes_mm',
@@ -1254,7 +1254,7 @@ class Product extends AbstractEntity {
 				$attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 					'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
 					$attributeUid,
-					$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
+					$this->getFrontendController()->sys_language_uid
 				);
 				$attribute->loadData();
 				$attributeValues[$attributeUid] = $selected = $attribute->getFirstAttributeValueUid($possible);

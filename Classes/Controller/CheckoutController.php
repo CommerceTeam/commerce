@@ -2662,7 +2662,7 @@ class CheckoutController extends BaseController {
 		$orderData['paymenttype'] = $this->getPaymentType(TRUE);
 		$orderData['sum_price_net'] = $basket->getSumNet();
 		$orderData['sum_price_gross'] = $basket->getSumGross();
-		$orderData['order_sys_language_uid'] = $this->getFrontendController()->config['config']['sys_language_uid'];
+		$orderData['order_sys_language_uid'] = $this->getFrontendController()->sys_language_uid;
 		$orderData['pid'] = $pid;
 		$orderData['order_id'] = $orderId;
 		$orderData['crdate'] = $GLOBALS['EXEC_TIME'];

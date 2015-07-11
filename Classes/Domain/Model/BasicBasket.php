@@ -642,7 +642,7 @@ class BasicBasket {
 				$article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 					'CommerceTeam\\Commerce\\Domain\\Model\\Article',
 					$articleUid,
-					$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
+					$this->getFrontendController()->sys_language_uid
 				);
 				$article->loadData('basket');
 
@@ -672,7 +672,7 @@ class BasicBasket {
 					$articleUid,
 					$quantity,
 					$priceid,
-					$this->getFrontendController()->tmpl->setup['config.']['sys_language_uid']
+					$this->getFrontendController()->sys_language_uid
 				);
 
 				if ($basketItem->article) {
