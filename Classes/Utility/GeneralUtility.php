@@ -72,16 +72,17 @@ class GeneralUtility {
 		$settingsFactory = SettingsFactory::getInstance();
 
 		if (!is_object($basket)) {
-			$basketId = $feUser->getKey('ses', 'commerceBasketId');
+			$commerceBasketIdKey = 'commerceBasketId-' . self::getBasketStoragePid();
+			$basketId = $feUser->getKey('ses', $commerceBasketIdKey);
 			$useCookieAsBasketIdFallback = $settingsFactory->getExtConf('useCookieAsBasketIdFallback');
 
-			if (empty($basketId) && $useCookieAsBasketIdFallback && $_COOKIE['commerceBasketId']) {
-				$basketId = $_COOKIE['commerceBasketId'];
+			if (empty($basketId) && $useCookieAsBasketIdFallback && $_COOKIE[$commerceBasketIdKey]) {
+				$basketId = $_COOKIE[$commerceBasketIdKey];
 			}
 
 			if (empty($basketId)) {
 				$basketId = md5($feUser->id . ':' . rand(0, PHP_INT_MAX));
-				$feUser->setKey('ses', 'commerceBasketId', $basketId);
+				$feUser->setKey('ses', $commerceBasketIdKey, $basketId);
 				self::setCookie($basketId);
 			}
 
@@ -89,7 +90,7 @@ class GeneralUtility {
 			$basket->setSessionId($basketId);
 			$basket->loadData();
 
-			if ($useCookieAsBasketIdFallback && !$_COOKIE['commerceBasketId']) {
+			if ($useCookieAsBasketIdFallback && !$_COOKIE[$commerceBasketIdKey]) {
 				self::setCookie($basketId);
 			}
 		}
@@ -104,7 +105,7 @@ class GeneralUtility {
 	 */
 	protected function setCookie($basketId) {
 		setcookie(
-			'commerceBasketId',
+			'commerceBasketId-' . self::getBasketStoragePid(),
 			$basketId,
 			$GLOBALS['EXEC_TIME'] + intval($GLOBALS['TYPO3_CONF_VARS']['FE']['sessionDataLifetime']),
 			'/'
@@ -370,6 +371,23 @@ class GeneralUtility {
 	public static function sanitizeAlphaNum($value) {
 		preg_match('@[ a-z0-9].*@i', $value, $matches);
 		return $matches[0];
+	}
+
+	/**
+	 * Gets the basket storage pid
+	 *
+	 * @return int
+	 */
+	public static function getBasketStoragePid() {
+		if (self::getFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi2.']['basketStoragePid']) {
+			$basketStoragePid = (int) self::getFrontendController()
+				->tmpl
+					->setup['plugin.']['tx_commerce_pi2.']['basketStoragePid'];
+		} else {
+			$basketStoragePid = SettingsFactory::getInstance()->getExtConf('BasketStoragePid');
+		}
+
+		return $basketStoragePid;
 	}
 
 

@@ -15,6 +15,7 @@ namespace CommerceTeam\Commerce\Domain\Model;
 
 use CommerceTeam\Commerce\Factory\HookFactory;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\GeneralUtility;
 
 /**
  * Frontend library for handling the basket. This class should be used
@@ -379,15 +380,9 @@ class Basket extends BasicBasket {
 	 *
 	 * @return int
 	 */
-	protected function getBasketStoragePid() {
+	public function getBasketStoragePid() {
 		if (is_null($this->basketStoragePid)) {
-			if ($this->getFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi2.']['basketStoragePid']) {
-				$this->basketStoragePid = (int) $this->getFrontendController()
-					->tmpl
-						->setup['plugin.']['tx_commerce_pi2.']['basketStoragePid'];
-			} else {
-				$this->basketStoragePid = SettingsFactory::getInstance()->getExtConf('BasketStoragePid');
-			}
+			$this->basketStoragePid = GeneralUtility::getBasketStoragePid();
 		}
 
 		return $this->basketStoragePid;

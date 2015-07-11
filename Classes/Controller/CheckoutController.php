@@ -1176,7 +1176,7 @@ class CheckoutController extends BaseController {
 		$basket->loadData();
 
 		$feUser->setKey('ses', 'orderId', NULL);
-		$feUser->setKey('ses', 'commerceBasketId', $basket->getSessionId());
+		$feUser->setKey('ses', 'commerceBasketId-' . $basket->getBasketStoragePid(), $basket->getSessionId());
 		$feUser->tx_commerce_basket = $basket;
 
 		return $content;
