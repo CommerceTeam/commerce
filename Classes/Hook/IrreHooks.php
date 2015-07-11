@@ -54,9 +54,13 @@ class IrreHooks implements \TYPO3\CMS\Backend\Form\Element\InlineElementHookInte
 	 * @return void
 	 */
 	public function renderForeignRecordHeaderControl_preProcess($parentUid, $foreignTable, array $childRecord, array $childConfig,
-		$isVirtual, array &$enabledControls) {
+		$isVirtual, array &$enabledControls = NULL
+	) {
 		$settingsFactory = SettingsFactory::getInstance();
-		if (
+
+		if (is_null($enabledControls)) {
+			$enabledControls = array('new' => TRUE, 'hide' => TRUE, 'delete' => TRUE);
+		} elseif (
 			$settingsFactory->getExtConf('simpleMode') == 1
 			&& $foreignTable == 'tx_commerce_articles'
 			&& $parentUid == $settingsFactory->getExtConf('deliveryID')
