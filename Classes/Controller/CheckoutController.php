@@ -1756,25 +1756,33 @@ class CheckoutController extends BaseController {
 
 		$config = $this->conf[$type . '.'];
 
-		$fieldList = $this->parseFieldList($config['sourceFields.']);
-		if (is_array($fieldList)) {
-			foreach ($fieldList as $fieldName) {
-				$dataArray[$fieldName] = $this->sessionData[$type][$fieldName];
-			}
-		}
-
 		// Check if a uid is set, so address handling can be used.
 		// Only possible if user is logged in
 		if ($this->sessionData[$type]['uid'] && $this->getFrontendController()->loginUser) {
 			$uid = $this->sessionData[$type]['uid'];
 		} else {
 			// Create
+			$dataArray = array(
+				'tstamp' => time(),
+				// First address should be main address by default
+				'tx_commerce_is_main_address' => 1,
+			);
+
+			// Address folder
 			if (isset($this->conf['addressPid'])) {
 				$dataArray['pid'] = $this->conf['addressPid'];
 			} else {
 				$modPid = 0;
 				list($commercePid) = FolderRepository::initFolders($this->extKey, $this->extKey, $modPid);
 				$dataArray['pid'] = $commercePid;
+			}
+
+			// Address fields
+			$fieldList = $this->parseFieldList($config['sourceFields.']);
+			if (is_array($fieldList)) {
+				foreach ($fieldList as $fieldName) {
+					$dataArray[$fieldName] = $this->sessionData[$type][$fieldName];
+				}
 			}
 
 			if (isset($this->getFrontendUser()->user['uid'])) {
@@ -1787,10 +1795,17 @@ class CheckoutController extends BaseController {
 					// 2) fill in new fields in table
 					// 3) provide data for usermail
 					// 4) use billing as default type
-					$feuData = array();
-					$feuData['pid'] = $this->conf['userPID'];
-					$feuData['usergroup'] = $this->conf['userGroup'];
-					$feuData['tstamp'] = time();
+					$feuData = array(
+						'pid' => $this->conf['userPID'],
+						'tstamp' => $GLOBALS['EXEC_TIME'],
+						'usergroup' => $this->conf['userGroup'],
+						'email' => $this->sessionData['billing']['email'],
+						'name' => $this->sessionData['billing']['name'] . ' ' . $this->sessionData['billing']['surname'],
+						'first_name' => $this->sessionData['billing']['name'],
+						'last_name' => $this->sessionData['billing']['surname'],
+					);
+
+					// Username
 					if ($this->conf['randomUser']) {
 						$feuData['username'] = substr($this->sessionData['billing']['name'], 0, 2) . substr(
 								$this->sessionData['billing']['surname'], 0, 4
@@ -1809,13 +1824,7 @@ class CheckoutController extends BaseController {
 					} else {
 						$password = substr(uniqid(rand()), 0, 6);
 					}
-
 					$feuData['password'] = $this->getHashedSaltedPassword($password);
-
-					$feuData['email'] = $this->sessionData['billing']['email'];
-					$feuData['name'] = $this->sessionData['billing']['name'] . ' ' . $this->sessionData['billing']['surname'];
-					$feuData['first_name'] = $this->sessionData['billing']['name'];
-					$feuData['last_name'] = $this->sessionData['billing']['surname'];
 
 					foreach ($hooks as $hookObj) {
 						if (method_exists($hookObj, 'preProcessUserData')) {
@@ -1848,9 +1857,6 @@ class CheckoutController extends BaseController {
 					unset($dataArray[$excludeField]);
 				}
 			}
-
-			// First address should be main address by default
-			$dataArray['tx_commerce_is_main_address'] = 1;
 
 			foreach ($hooks as $hookObj) {
 				if (method_exists($hookObj, 'preProcessAddressData')) {
