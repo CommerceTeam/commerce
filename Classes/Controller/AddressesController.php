@@ -941,10 +941,10 @@ class AddressesController extends BaseController {
 		// If the address doesn't exsist in session it's valid. In case no delivery
 		// address was set.
 		foreach ($this->fieldList as $name) {
-			$value = $this->piVars[$name];
+			$value = trim($this->piVars[$name]);
 			$options = $this->conf['formFields.'][$name . '.'];
 
-			if ($options['mandatory'] == 1 && strlen($value) == 0) {
+			if ($options['mandatory'] == 1 && $value == '') {
 				$this->setFormError($name, $this->pi_getLL('error_field_mandatory'));
 				$result = FALSE;
 			}

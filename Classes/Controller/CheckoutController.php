@@ -1433,7 +1433,8 @@ class CheckoutController extends BaseController {
 		}
 
 		foreach ($this->sessionData[$typeLower] as $name => $value) {
-			if ($config['sourceFields.'][$name . '.']['mandatory'] == 1 && strlen($value) == 0) {
+			$value = trim($value);
+			if ($config['sourceFields.'][$name . '.']['mandatory'] == 1 && $value == '') {
 				$this->formError[$name] = $this->pi_getLL('error_field_mandatory');
 				$returnVal = FALSE;
 			}
