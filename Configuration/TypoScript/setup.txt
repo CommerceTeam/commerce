@@ -764,6 +764,7 @@ plugin.tx_commerce_pi4 {
 	yesLinkWrap.wrap = |
 	noLinkWrap.wrap = |
 	sysMessageWrap.wrap = <div style="color:green">|</div>
+	sysErrorMessageWrap.wrap = <div style="color:red">|</div>
 
 	# general options for display
 	hideEmptyFields = 0

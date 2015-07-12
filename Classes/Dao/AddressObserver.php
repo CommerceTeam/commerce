@@ -13,6 +13,9 @@ namespace CommerceTeam\Commerce\Dao;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Controller\AddressesController;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
+
 /**
  * For the takeaday feuser extension
  * The class satisfies the observer design pattern.
@@ -97,10 +100,11 @@ class AddressObserver {
 	 * Check if address may get deleted
 	 *
 	 * @param int $uid Uid
+	 * @param AddressesController|DataHandler $parentObject Parent object
 	 *
 	 * @return bool|string
 	 */
-	public static function checkDelete($uid) {
+	public static function checkDelete($uid, $parentObject) {
 		$dbFields = 'uid';
 		$dbTable = 'fe_users';
 		$dbWhere = 'tx_commerce_tt_address_id = "' . (int) $uid . '" AND deleted = "0"';
@@ -109,16 +113,22 @@ class AddressObserver {
 
 		$res = $database->exec_SELECTquery($dbFields, $dbTable, $dbWhere);
 
+		// no errormessage
+		$msg = FALSE;
 		// check dependencies (selected rows)
 		if ($database->sql_num_rows($res) > 0) {
 			// errormessage
-			$msg = 'Main feuser address. You can not delete this address.';
-		} else {
-			// no errormessage
-			$msg = FALSE;
+			if ($parentObject instanceof AddressesController) {
+				$msg = $parentObject->pi_getLL('error_deleted_address_is_default');
+			}
+			if ($parentObject instanceof DataHandler) {
+				$msg = self::getLanguageService()->sl(
+					'LLL:EXT:commerce/Resources/Private/Language/locallang.xml:error_deleted_address_is_default'
+				);
+			}
 		}
 
-			// free results
+		// free results
 		$database->sql_free_result($res);
 
 		return $msg;
@@ -132,5 +142,14 @@ class AddressObserver {
 	 */
 	protected static function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Get language service
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected static function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

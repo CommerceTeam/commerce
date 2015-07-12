@@ -67,6 +67,13 @@ class AddressesController extends BaseController {
 	public $sysMessage = '';
 
 	/**
+	 * System message is error
+	 *
+	 * @var bool
+	 */
+	protected $sysMessageIsError = FALSE;
+
+	/**
 	 * Instance of static info view helper
 	 *
 	 * @var \SJBR\StaticInfoTables\PiBaseApi
@@ -126,6 +133,7 @@ class AddressesController extends BaseController {
 				);
 				if (count($addresses) <= $this->conf['minAddressCount']) {
 					$this->sysMessage = $this->pi_getLL('message_cant_delete');
+					$this->sysMessageIsError = TRUE;
 					$content .= $this->getListing();
 					break;
 				}
@@ -504,7 +512,10 @@ class AddressesController extends BaseController {
 
 		// Fill sysMessage marker if set
 		if (!empty($this->sysMessage)) {
-			$baseMarkerArray['###SYS_MESSAGE###'] = $this->cObj->stdWrap($this->sysMessage, $this->conf['sysMessageWrap.']);
+			$baseMarkerArray['###SYS_MESSAGE###'] = $this->cObj->stdWrap(
+				$this->sysMessage,
+				$this->sysMessageIsError ? $this->conf['sysErrorMessageWrap.'] : $this->conf['sysMessageWrap.']
+			);
 		} else {
 			$baseMarkerArray['###SYS_MESSAGE###'] = '';
 		}
@@ -749,6 +760,7 @@ class AddressesController extends BaseController {
 
 		if ($message) {
 			$this->sysMessage = $message;
+			$this->sysMessageIsError = TRUE;
 			return TRUE;
 		}
 

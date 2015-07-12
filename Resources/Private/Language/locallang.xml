@@ -152,6 +152,7 @@
 			<label index="error_field_min">Please enter a minimum number of %d characters</label>
 			<label index="error_field_max">Please enter a maximum number of %d characters</label>
 			<label index="error_field_alpha">Only characters from A to Z or a to z are allowed</label>
+			<label index="error_deleted_address_is_default">You cannot delete this address, since it is your default address. Please choose a different address as the default address and try again.</label>
 			<label index="question_delete">Do you really want to delete the address above?</label>
 			<label index="message_address_changed">The address was changed</label>
 			<label index="message_address_deleted">The address was deleted</label>

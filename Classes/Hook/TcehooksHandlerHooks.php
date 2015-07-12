@@ -154,12 +154,14 @@ class TcehooksHandlerHooks {
 	 * @param string $command Reference to: move,copy,version,delete or undelete
 	 * @param string $table Database table
 	 * @param string $id Database record uid
+	 * @param mixed $value Value
+	 * @param DataHandler $parentObject Parent object
 	 *
 	 * @return void
 	 */
-	public function processCmdmap_preProcess(&$command, $table, $id) {
+	public function processCmdmap_preProcess(&$command, $table, $id, $value, DataHandler $parentObject) {
 		if ($table == 'tt_address' && $command == 'delete') {
-			if ($this->checkAddressDelete($id)) {
+			if ($this->checkAddressDelete($id, $parentObject)) {
 				// remove delete command
 				$command = '';
 			};
@@ -249,11 +251,12 @@ class TcehooksHandlerHooks {
 	 * Check if an address is deleted
 	 *
 	 * @param int $id Id
+	 * @param DataHandler $parentObject Parent object
 	 *
 	 * @return bool|string
 	 */
-	protected function checkAddressDelete($id) {
-		return \CommerceTeam\Commerce\Dao\AddressObserver::checkDelete($id);
+	protected function checkAddressDelete($id, DataHandler $parentObject) {
+		return \CommerceTeam\Commerce\Dao\AddressObserver::checkDelete($id, $parentObject);
 	}
 
 

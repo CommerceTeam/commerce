@@ -13,6 +13,8 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Controller\AddressesController;
+
 /**
  * Hook for the extension openbc feuser extension
  * This class handles backend updates
@@ -28,11 +30,12 @@ class Pi4Hooks {
 	 * delete address operations return false to permit delete operation
 	 *
 	 * @param int $uid Reference to the incoming fields
+	 * @param AddressesController $parentObject Parent object
 	 *
 	 * @return string error: do not delete message
 	 */
-	public function beforeDeleteAddress($uid) {
-		return \CommerceTeam\Commerce\Dao\AddressObserver::checkDelete($uid);
+	public function deleteAddress($uid, AddressesController $parentObject) {
+		return \CommerceTeam\Commerce\Dao\AddressObserver::checkDelete($uid, $parentObject);
 	}
 
 	/**
