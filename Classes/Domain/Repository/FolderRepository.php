@@ -93,21 +93,22 @@ class FolderRepository {
 	 * @todo sorting
 	 */
 	protected function createFolder($title = 'Commerce', $module = 'commerce', $pid = 0) {
-		$fieldValues = array();
-		$fieldValues['pid'] = $pid;
-		$fieldValues['sorting'] = 10111;
-		$fieldValues['perms_user'] = 31;
-		$fieldValues['perms_group'] = 31;
-		$fieldValues['perms_everybody'] = 31;
-		$fieldValues['title'] = $title;
-
-		$fieldValues['tx_commerce_foldername'] = strtolower($title);
-		$fieldValues['doktype'] = 254;
-		$fieldValues['module'] = $module;
-		$fieldValues['crdate'] = time();
-		$fieldValues['tstamp'] = time();
-
-		self::getDatabaseConnection()->exec_INSERTquery('pages', $fieldValues);
+		self::getDatabaseConnection()->exec_INSERTquery(
+			'pages',
+			array(
+				'sorting' => 10111,
+				'perms_user' => 31,
+				'perms_group' => 31,
+				'perms_everybody' => 31,
+				'doktype' => 254,
+				'pid' => $pid,
+				'crdate' => $GLOBALS['EXEC_TIME'],
+				'tstamp' => $GLOBALS['EXEC_TIME'],
+				'title' => $title,
+				'tx_commerce_foldername' => strtolower($title),
+				'module' => $module,
+			)
+		);
 
 		return self::getDatabaseConnection()->sql_insert_id();
 	}
