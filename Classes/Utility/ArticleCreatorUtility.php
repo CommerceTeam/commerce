@@ -147,7 +147,7 @@ class ArticleCreatorUtility {
 
 		$buttonUp = IconUtility::getSpriteIcon('actions-move-up');
 		$buttonDown = IconUtility::getSpriteIcon('actions-move-down');
-		$clear = '<img src="/' . TYPO3_mainDir . 'clear.gif" width="11" height="10">';
+		$clear = '<img src="' . $this->getControllerDocumentTemplate()->backPath . 'clear.gif" width="11" height="10">';
 		$delete = IconUtility::getSpriteIcon('actions-edit-delete');
 		$edit = IconUtility::getSpriteIcon('actions-document-open');
 		$hide = IconUtility::getSpriteIcon('actions-edit-hide');

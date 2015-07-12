@@ -265,7 +265,7 @@ class TceFunc {
 		}
 
 		.x-tree-root-ct ul li.expanded ul {
-			background: url("/' . TYPO3_mainDir . 'sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
+			background: url("' . $this->tceForms->backPath . 'sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
 		}
 
 		.x-tree-root-ct ul li.expanded.last ul {

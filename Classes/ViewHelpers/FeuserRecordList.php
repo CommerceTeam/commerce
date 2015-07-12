@@ -640,7 +640,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 			if (!$listOnlyInSingleTableMode) {
 				$theData = Array();
 				if (!$this->table && !$rowlist) {
-					$theData[$titleCol] = '<img src="/' . TYPO3_mainDir . '/clear.gif" width="' .
+					$theData[$titleCol] = '<img src="' . $this->backPath . '/clear.gif" width="' .
 						($this->getController()->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
 				}
 				$out .= $this->addelement(0, '', $theData, '', $this->leftMargin);

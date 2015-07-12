@@ -56,7 +56,7 @@ abstract class Leaf extends Base {
 	 *
 	 * @var string
 	 */
-	protected $BACK_PATH = '../../../../typo3/';
+	protected $backPath = '../../../../../../typo3/';
 
 	/**
 	 * Tree name

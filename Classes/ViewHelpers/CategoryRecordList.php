@@ -390,7 +390,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 			if (!$listOnlyInSingleTableMode) {
 				$theData = array();
 				if (!$this->table && !$rowlist) {
-					$theData[$titleCol] = '<img src="/' . TYPO3_mainDir . '/clear.gif" width="' .
+					$theData[$titleCol] = '<img src="' . $this->backPath . '/clear.gif" width="' .
 						($this->getController()->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') . '" height="1" alt="" />';
 					if (in_array('_CONTROL_', $this->fieldArray)) {
 						$theData['_CONTROL_'] = '';
@@ -716,7 +716,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 			<td class="col-icon">';
 
 			if (!$h) {
-				$out .= '<img src="/' . TYPO3_mainDir . '/clear.gif" width="1" height="8" alt="" />';
+				$out .= '<img src="' . $this->backPath . '/clear.gif" width="1" height="8" alt="" />';
 			} else {
 				for ($a = 0; $a < $h; $a++) {
 					if (!$a) {
@@ -910,7 +910,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 							if ($table == 'tt_content' && $this->newWizards) {
 								// If mod.web_list.newContentWiz.overrideWithExtension is set,
 								// use that extension's create new content wizard instead:
-								$tmpTyposcriptConfig = BackendUtility::getModTSconfig($this->pageinfo['uid'], 'mod.web_list');
+								$tmpTyposcriptConfig = BackendUtility::getModTSconfig((int) $this->pageinfo['uid'], 'mod.web_list');
 								$tmpTyposcriptConfig = $tmpTyposcriptConfig['properties']['newContentWiz.']['overrideWithExtension'];
 								$newContentWizScriptPath = $this->backPath . ExtensionManagementUtility::isLoaded($tmpTyposcriptConfig) ?
 									(ExtensionManagementUtility::extRelPath($tmpTyposcriptConfig) . 'mod1/db_new_content_el.php') :
@@ -1631,7 +1631,10 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 		// If the title is blank, make a "no title" label:
 		if (!strcmp($code, '')) {
 			$code = '<i>[' . $language->sL('LLL:EXT:lang/locallang_core.php:labels.no_title', 1) . ']</i> - ' .
-				htmlspecialchars(GeneralUtility::fixed_lgd_cs(BackendUtility::getRecordTitle($table, $row), $backendUser->uc['titleLen']));
+				htmlspecialchars(GeneralUtility::fixed_lgd_cs(
+					BackendUtility::getRecordTitle($table, $row),
+					(int) $backendUser->uc['titleLen']
+				));
 		} else {
 			$code = htmlspecialchars(GeneralUtility::fixed_lgd_cs($code, $this->fixedL));
 		}

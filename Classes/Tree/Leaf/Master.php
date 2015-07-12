@@ -141,7 +141,7 @@ class Master extends Leaf {
 	 */
 	protected function loadMountpoints() {
 		$this->mounts = GeneralUtility::makeInstance($this->mountClass);
-		$this->mounts->init($this->getBackendUser()->user['uid']);
+		$this->mounts->init((int) $this->getBackendUser()->user['uid']);
 
 		$this->setMounts($this->mounts->getMountData());
 	}
@@ -358,7 +358,7 @@ class Master extends Leaf {
 			 * Printing the Item
 			 *******************/
 			// Give class 'expanded' if it is
-			$exp = $child['uid'] ? $this->data->isExpanded($child['uid']) : TRUE;
+			$exp = $child['uid'] ? $this->data->isExpanded((int) $child['uid']) : TRUE;
 			$cssExpanded = ($exp) ? 'expanded' : '';
 
 			if ($pid !== FALSE) {
@@ -386,7 +386,8 @@ class Master extends Leaf {
 			if ($child['uid']) {
 				$out .= $this->view->PMicon($child, $isLast, $exp, $isBank, $hasChildren);
 			} else {
-				$out .= '<img alt="" src="/' . TYPO3_mainDir . 'clear.gif" class="x-tree-ec-icon x-tree-elbow-end-minus">';
+				$backPath = $this->getControllerDocumentTemplate()->backPath;
+				$out .= '<img alt="" src="' . $backPath . 'clear.gif" class="x-tree-ec-icon x-tree-elbow-end-minus">';
 			}
 
 			$out .= $child['uid'] ? $this->view->getIcon($child) : $this->view->getRootIcon($child);
@@ -399,7 +400,7 @@ class Master extends Leaf {
 			 *****************/
 
 			// read the children
-			$childElements = ($exp) ? $this->data->getChildrenByPid($child['uid']) : array();
+			$childElements = ($exp) ? $this->data->getChildrenByPid((int) $child['uid']) : array();
 			$m  = count($childElements);
 
 			// if there are children
@@ -427,7 +428,7 @@ class Master extends Leaf {
 				// Print the children from the slave leafs if the current leaf is expanded
 				if ($exp) {
 					$out .= '<ul>';
-					$out .= $this->getSlaveElements($child['uid'], $bank);
+					$out .= $this->getSlaveElements((int) $child['uid'], $bank);
 					$out .= '</ul>';
 				}
 
@@ -499,5 +500,18 @@ class Master extends Leaf {
 		}
 
 		return $out;
+	}
+
+
+	/**
+	 * Get controller document template
+	 *
+	 * @return \TYPO3\CMS\Backend\Template\DocumentTemplate
+	 */
+	protected function getControllerDocumentTemplate() {
+		// $GLOBALS['SOBE'] might be any kind of PHP class (controller most
+		// of the times) These class do not inherit from any common class,
+		// but they all seem to have a "doc" member
+		return $GLOBALS['SOBE']->doc;
 	}
 }

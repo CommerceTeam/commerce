@@ -106,7 +106,7 @@ class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		}
 
 		.x-tree-root-ct ul li.expanded ul {
-			background: url("/' . TYPO3_mainDir . '/sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
+			background: url("' . $this->getBackPath() . 'sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
 		}
 
 		.x-tree-root-ct ul li.expanded.last ul {

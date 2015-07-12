@@ -64,7 +64,7 @@ class View extends Base {
 	 *
 	 * @var string
 	 */
-	protected $backPath = '../../../../typo3/';
+	protected $backPath = '../../../../../../typo3/';
 
 	/**
 	 * Prefix for DOM Id
@@ -502,7 +502,7 @@ class View extends Base {
 		$plusMinus = $hasChildren ? $plusMinus : '';
 		$bottom = ($isLast) ? '-end' : '';
 		$bottom  = ($isBank) ? '' : $bottom;
-		$icon = '<img alt="" src="/' . TYPO3_mainDir . 'clear.gif" class="x-tree-ec-icon x-tree-elbow' . $bottom . $plusMinus . '">';
+		$icon = '<img alt="" src="' . $this->backPath . 'clear.gif" class="x-tree-ec-icon x-tree-elbow' . $bottom . $plusMinus . '">';
 
 		if ($hasChildren) {
 			// Calculate the command
