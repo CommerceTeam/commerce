@@ -12,44 +12,86 @@
 Commerce: TYPO3 commerce shopping system
 ==================================================================
 
-:Extension Key: commerce
-:Language: en
-:Keywords: forEditors, forAdmins, forBeginners, forIntermediates
-:Copyright: 2015
-:Author: Sebastian Fischer
-:Email: typo3@evoweb.de
-:License: Open Content License_
+.. only:: html
 
-:Rendered:
-	|today|
+	:Classification:
+		commerce
 
-.. container:: ts-properties
+	:Version:
+		|release|
 
-	=============================================== ===============================================
-	.. image:: Images/commerce_logo.jpg             .. image:: Images/typo3-400px-transparent.png
-	=============================================== ===============================================
+	:Language:
+		en
 
-The content of this document is related to TYPO3,
+	:Keywords:
+		forEditors, forAdmins, forBeginners, forIntermediates
 
-a GNU/GPL CMS/Framework available from www.typo3.org_
+	:Copyright:
+		2015
 
-.. toctree::
-	:maxdepth: 5
-	:titlesonly:
-	:glob:
+	:Author:
+		Sebastian Fischer
 
-	Introduction/Index
-	Installation/Index
-	UserGuide/Index
-	Modules/Index
-	Configuration/Index
-	Development/Index
-	CodingGuidelines/Index
-	Deprecation/Index
-	BreakingChanges/Index
-	Support/Index
-	KnownProblems/Index
-	Changelog/Index
+	:Email:
+		typo3@evoweb.de
 
-.. _License: http://www.opencontent.org/opl.shtml
-.. _www.typo3.org: http://www.typo3.org/
+	:License:
+		This document is published under the Open Content License
+		available from http://www.opencontent.org/opl.shtml
+
+	:Rendered:
+		|today|
+
+	.. container:: ts-properties
+
+		=============================================== ===============================================
+		.. image:: Images/commerce_logo.jpg             .. image:: Images/typo3-400px-transparent.png
+		=============================================== ===============================================
+
+	The content of this document is related to TYPO3,
+	a GNU/GPL CMS/Framework available from `www.typo3.org <http://www.typo3.org/>`_.
+
+	**Other versions of this document**
+
+	:PDF:
+		http://docs.typo3.org/typo3cms/extensions/commerce/3.0.0/_pdf/
+
+
+	**Table of Contents**
+
+	.. toctree::
+		:maxdepth: 5
+		:titlesonly:
+
+		Introduction/Index
+		Installation/Index
+		UserGuide/Index
+		Modules/Index
+		Configuration/Index
+		Development/Index
+		CodingGuidelines/Index
+		Deprecation/Index
+		BreakingChanges/Index
+		Support/Index
+		KnownProblems/Index
+		Changelog/Index
+
+
+.. only:: latex
+
+	.. toctree::
+		:maxdepth: 5
+		:titlesonly:
+
+		Introduction/Index
+		Installation/Index
+		UserGuide/Index
+		Modules/Index
+		Configuration/Index
+		Development/Index
+		CodingGuidelines/Index
+		Deprecation/Index
+		BreakingChanges/Index
+		Support/Index
+		KnownProblems/Index
+		Changelog/Index
