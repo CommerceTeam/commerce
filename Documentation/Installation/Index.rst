@@ -16,14 +16,12 @@ A quick introduction can be found in the doc-directory **commerce_quickinstall.t
 Install the extension with the key commerce and all other required extensions in the Extension Manager. Before starting the
 configuration of Commerce, some pages of the shop need to be set up and some other preparations are required too.
 
-Please remember that the **Graytree Library** is required, at least in version 0.2.1. Additionally, PHP version 5.3.x and TYPO3
-version 4.5 are used here.
+PHP version 5.3.x and TYPO3 version 6.2 are needed here.
 
 The following extensions need to be installed and running:
 
 
 - Commerce Extension Key: commerce
-- Graytree Library, Extension Key: graytree
 - Address list, Extension Key: tt_address
 - Dynamic Flexforms, Extension Key: dynaflex
 - Money code Library, Extension Key: moneylib

@@ -26,9 +26,8 @@ Orders, Systemdata and Statistics.
 Categories
 __________
 
-Commerce manages products and the corresponding articles in so-called **categories**. The presentation of the category-tree in
-the backend is done by the extension **Graytree Library**. There are main categories and subcategories for the management of
-products and articles.
+Commerce manages products and the corresponding articles in so-called **categories**. There are main categories and subcategories
+for the management of products and articles.
 
 Go to the web module **Commerce** and click on **category** in order to create the first category. There is an entry *system* in
 the list, where you have to select *create new record* → **category** and assign a name in the back end form, in our example
