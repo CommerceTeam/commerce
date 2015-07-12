@@ -583,7 +583,7 @@ class DataMapHooks {
 				 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 				 */
 				$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-				$mounts->init($backendUser->user['uid']);
+				$mounts->init((int) $backendUser->user['uid']);
 
 				// check
 				if (!$category->isPermissionSet('edit') || !$mounts->isInCommerceMounts($category->getUid())) {
@@ -651,12 +651,12 @@ class DataMapHooks {
 					 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 					 */
 					$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-					$mounts->init($backendUser->user['uid']);
+					$mounts->init((int) $backendUser->user['uid']);
 
 					// if the user has no right to see one of the parent categories or its not
 					// in the mounts it would miss afterwards
 					// by this its readded to the parent_category field
-					if (!$parent->isPermissionSet('read') || !$mounts->isInCommerceMounts($parent->getUid())) {
+					if (!$parent->isPermissionSet('show') || !$mounts->isInCommerceMounts($parent->getUid())) {
 						$fieldArray['parent_category'] .= ',' . $parent->getUid();
 					}
 				}
@@ -673,7 +673,7 @@ class DataMapHooks {
 				 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 				 */
 				$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-				$mounts->init($backendUser->user['uid']);
+				$mounts->init((int) $backendUser->user['uid']);
 
 				if ($mounts->isInCommerceMounts(0)) {
 					// assign the root as the parent category if it is empty
@@ -715,7 +715,7 @@ class DataMapHooks {
 					 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
 					 */
 					$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-					$mounts->init($backendUser->user['uid']);
+					$mounts->init((int) $backendUser->user['uid']);
 
 					// abort if the parent category is not in the webmounts
 					if (!$mounts->isInCommerceMounts($uid)) {
@@ -1155,7 +1155,7 @@ class DataMapHooks {
 		$backendUser->uc['txcommerce_afterDatabaseOperations'] = 1;
 		$backendUser->writeUC();
 
-		$dynaFlexConf = \Tx_Dynaflex_Utility_TcaUtility::loadDynaFlexConfig($table, $record['pid'], $record);
+		$dynaFlexConf = \Tx_Dynaflex_Utility_TcaUtility::loadDynaFlexConfig($table, (int) $record['pid'], $record);
 		$dynaFlexConf = $dynaFlexConf['DCA'];
 
 		$backendUser->uc['txcommerce_afterDatabaseOperations'] = 0;
