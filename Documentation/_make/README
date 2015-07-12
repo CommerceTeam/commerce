@@ -1,14 +1,21 @@
 On ubuntu to build a pdf install
 
-sudo apt-get install python-sphinx texlive-latex-base texlive-latex-extra xzdec
+sudo apt-get install python-sphinx texlive-latex-base texlive-latex-extra texlive-latex-recommended texlive-fonts-recommended xzdec
 tlmgr init-usertree
 sudo tlmgr update --all
-tlmgr install ec
+sudo tlmgr install ec
+sudo tlmgr install cm-super
 cd /path/to/uploads/tx_sphinx/
 sudo rm -rf RestTools
 git clone git://git.typo3.org/Documentation/RestTools.git
 sudo /path/to/uploads/tx_sphinx/RestTools/LaTeX/font/convert-share.sh
-copy
+
+For using the console to make latexpdf
+cd /path/to/uploads/tx_sphinx/RestTools/LaTeX/
+sudo mkdir /usr/share/texmf/tex/latex/typo3
+sudo cp typo3.sty /usr/share/texmf/tex/latex/typo3
+sudo cp typo3_logo_color.png /usr/share/texmf/tex/latex/typo3
+sudo texhash
 
 Run in shell:
 
