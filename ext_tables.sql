@@ -29,9 +29,12 @@ CREATE TABLE fe_users (
 #
 CREATE TABLE pages (
 	tx_commerce_foldereditorder tinyint(4) unsigned DEFAULT '0' NOT NULL,
+	tx_commerce_foldername varchar(30) DEFAULT '' NOT NULL,
+# @todo deprecated remove after June 2016
 	tx_graytree_foldername varchar(30) DEFAULT '' NOT NULL,
 
 	KEY tx_commerce_foldereditorder (tx_commerce_foldereditorder),
+	KEY tx_commerce_folder (tx_commerce_foldername),
 	KEY tx_gray_folder (tx_graytree_foldername)
 );
 

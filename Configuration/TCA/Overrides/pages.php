@@ -19,7 +19,13 @@ $GLOBALS['TCA']['pages']['columns']['module']['config']['items'][] = array(
 
 $tempColumns = array(
 	'tx_commerce_foldereditorder' => array(
-		'displayCond' => 'FIELD:tx_graytree_foldername:REQ:true',
+		'displayCond' => array(
+			'AND' => array(
+				'FIELD:tx_commerce_foldername:REQ:true',
+				// @todo deprecated remove after June 2016
+				'FIELD:tx_graytree_foldername:REQ:true',
+			)
+		),
 		'exclude' => 1,
 		'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_pages.tx_commerce_foldereditorder',
 		'config' => array(

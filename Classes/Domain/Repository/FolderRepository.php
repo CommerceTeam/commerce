@@ -73,7 +73,7 @@ class FolderRepository {
 		$row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
 			'uid,pid,title',
 			'pages',
-			'doktype = 254 AND tx_graytree_foldername = \'' . strtolower($title) . '\' AND pid = ' . (int) $pid . ' AND module=\'' .
+			'doktype = 254 AND tx_commerce_foldername = \'' . strtolower($title) . '\' AND pid = ' . (int) $pid . ' AND module=\'' .
 				$module . '\' ' . \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('pages')
 		);
 
@@ -101,8 +101,7 @@ class FolderRepository {
 		$fieldValues['perms_everybody'] = 31;
 		$fieldValues['title'] = $title;
 
-		// @todo MAKE IT tx_commerce_foldername
-		$fieldValues['tx_graytree_foldername'] = strtolower($title);
+		$fieldValues['tx_commerce_foldername'] = strtolower($title);
 		$fieldValues['doktype'] = 254;
 		$fieldValues['module'] = $module;
 		$fieldValues['crdate'] = time();
