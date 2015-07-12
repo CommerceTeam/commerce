@@ -114,8 +114,10 @@ class UpdateUtility {
 		/**
 		 * Get data from folder
 		 */
-		list($modPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Commerce', 'commerce');
-		list($prodPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Products', 'commerce', $modPid);
+		list($modPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Commerce', 'commerce', 0, '', FALSE);
+		list($prodPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders(
+			'Products', 'commerce', $modPid, '', FALSE
+		);
 		$resrights = $database->exec_SELECTquery(
 			'perms_userid, perms_groupid, perms_user, perms_group, perms_everybody',
 			'pages',
@@ -185,7 +187,7 @@ class UpdateUtility {
 			'pages',
 			'tx_commerce_foldername = \'\' AND tx_graytree_foldername != \'\'',
 			array('tx_commerce_foldername' => 'tx_graytree_foldername'),
-			array('tx_graytree_foldername')
+			array('tx_commerce_foldername')
 		);
 
 		return $row['count'];
@@ -223,13 +225,14 @@ class UpdateUtility {
 	 * @return bool
 	 */
 	protected function isCategoryWithoutParentMm() {
-		return count($this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-			'uid',
+		$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+			'COUNT(uid) AS count',
 			'tx_commerce_categories',
 			'uid NOT IN (
 				SELECT uid_local FROM tx_commerce_categories_parent_category_mm
 			) AND tx_commerce_categories.deleted = 0 AND sys_language_uid = 0 AND l18n_parent = 0'
-		)) > 0;
+		);
+		return $row['count'] > 0;
 	}
 
 	/**
@@ -238,11 +241,12 @@ class UpdateUtility {
 	 * @return bool
 	 */
 	protected function isCategoryWithoutUserrights() {
-		return count($this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-			'uid',
+		$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+			'COUNT(uid) AS count',
 			'tx_commerce_categories',
 			'perms_user = 0 AND perms_group = 0 AND perms_everybody = 0'
-		)) > 0;
+		);
+		return $row['count'] > 0;
 	}
 
 	/**
@@ -260,11 +264,12 @@ class UpdateUtility {
 	 * @return bool
 	 */
 	protected function isGreytreeFolder() {
-		return count($this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-			'uid',
+		$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+			'COUNT(uid) AS count',
 			'pages',
 			'tx_commerce_foldername = \'\' AND tx_graytree_foldername != \'\''
-		)) > 0;
+		);
+		return $row['count'] > 0;
 	}
 
 

@@ -4,7 +4,6 @@
 .. -*- coding: utf-8 -*- with BOM.
 
 .. include:: Includes.txt
-.. include:: Images.txt
 
 
 .. _start:
@@ -25,11 +24,9 @@ Commerce: TYPO3 commerce shopping system
 	|today|
 
 
-.. container:: ts-properties
-
-	=============================================== ===============================================
-	.. figure:: Images/commerce_logo.jpg            .. figure:: Images/typo3-400px-transparent.png
-	=============================================== ===============================================
+=============================================== ===============================================
+.. figure:: Images/commerce_logo.jpg            .. figure:: Images/typo3-400px-transparent.png
+=============================================== ===============================================
 
 The content of this document is related to TYPO3,
 

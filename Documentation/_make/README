@@ -1,6 +1,14 @@
 On ubuntu to build a pdf install
 
-sudo apt-get install python-sphinx texlive-latex-base
+sudo apt-get install python-sphinx texlive-latex-base texlive-latex-extra xzdec
+tlmgr init-usertree
+sudo tlmgr update --all
+tlmgr install ec
+cd /path/to/uploads/tx_sphinx/
+sudo rm -rf RestTools
+git clone git://git.typo3.org/Documentation/RestTools.git
+sudo /path/to/uploads/tx_sphinx/RestTools/LaTeX/font/convert-share.sh
+copy
 
 Run in shell:
 

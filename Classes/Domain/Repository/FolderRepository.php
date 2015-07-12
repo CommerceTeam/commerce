@@ -29,10 +29,13 @@ class FolderRepository {
 	 * @param string $module Extension Moduke
 	 * @param int $pid Parent Page id
 	 * @param string $parentTitle Parent Folder Title
+	 * @param bool $executeUpdateUtility Execute update utility
 	 *
 	 * @return array
 	 */
-	public static function initFolders($title = 'Commerce', $module = 'commerce', $pid = 0, $parentTitle = '') {
+	public static function initFolders($title = 'Commerce', $module = 'commerce', $pid = 0, $parentTitle = '',
+		$executeUpdateUtility = TRUE
+	) {
 		// creates a Commerce folder on the fly
 		// not really a clean way ...
 		if ($parentTitle) {
@@ -49,13 +52,15 @@ class FolderRepository {
 
 		$currentFolder = current($folders);
 
-		/**
-		 * Update utility
-		 *
-		 * @var \CommerceTeam\Commerce\Utility\UpdateUtility $updateUtility
-		 */
-		$updateUtility = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\UpdateUtility');
-		$updateUtility->main();
+		if ($executeUpdateUtility) {
+			/**
+			 * Update utility
+			 *
+			 * @var \CommerceTeam\Commerce\Utility\UpdateUtility $updateUtility
+			 */
+			$updateUtility = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\UpdateUtility');
+			$updateUtility->main();
+		}
 
 		return array($currentFolder['uid'], implode(',', array_keys($folders)));
 	}
