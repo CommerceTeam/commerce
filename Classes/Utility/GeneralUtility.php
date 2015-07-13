@@ -89,6 +89,7 @@ class GeneralUtility {
 			$basket = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Basket');
 			$basket->setSessionId($basketId);
 			$basket->loadData();
+			$feUser->tx_commerce_basket = $basket;
 
 			if ($useCookieAsBasketIdFallback && !$_COOKIE[$commerceBasketIdKey]) {
 				self::setCookie($basketId);
