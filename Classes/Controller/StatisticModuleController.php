@@ -276,8 +276,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
 		$result = '';
 		if (GeneralUtility::_POST('fullaggregation')) {
-			$endselect = 'SELECT max(crdate) FROM tx_commerce_order_articles';
-			$endres = $database->sql_query($endselect);
+			$endres = $database->exec_SELECTquery('MAX(crdate)', 'tx_commerce_order_articles', '1=1');
 			$endtime2 = 0;
 			if ($endres && ($endrow = $database->sql_fetch_row($endres))) {
 				$endtime2 = $endrow[0];
@@ -285,8 +284,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
 			$endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
-			$startselect = 'SELECT min(crdate) FROM tx_commerce_order_articles WHERE crdate > 0';
-			$startres = $database->sql_query($startselect);
+			$startres = $database->exec_SELECTquery('MIN(crdate)', 'tx_commerce_order_articles', 'crdate > 0 AND deleted = 0');
 			if ($startres AND ($startrow = $database->sql_fetch_row($startres)) AND $startrow[0] != NULL) {
 				$starttime = $startrow[0];
 				$database->sql_query('truncate tx_commerce_salesfigures');
@@ -295,16 +293,14 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 				$result .= 'no sales data available';
 			}
 
-			$endselect = 'SELECT max(crdate) FROM fe_users';
-			$endres = $database->sql_query($endselect);
+			$endres = $database->exec_SELECTquery('MAX(crdate)', 'fe_users', '1=1');
 			if ($endres AND ($endrow = $database->sql_fetch_row($endres))) {
 				$endtime2 = $endrow[0];
 			}
 
 			$endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
-			$startselect = 'SELECT min(crdate) FROM fe_users WHERE crdate > 0 AND deleted = 0';
-			$startres = $database->sql_query($startselect);
+			$startres = $database->exec_SELECTquery('MIN(crdate)', 'fe_users', 'crdate > 0 AND deleted = 0');
 			if ($startres AND ($startrow = $database->sql_fetch_row($startres)) AND $startrow[0] != NULL) {
 				$starttime = $startrow[0];
 				$database->sql_query('truncate tx_commerce_newclients');
@@ -332,8 +328,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
 		$result = '';
 		if (GeneralUtility::_POST('incrementalaggregation')) {
-			$lastAggregationTime = 'SELECT max(tstamp) FROM tx_commerce_salesfigures';
-			$lastAggregationTimeres = $database->sql_query($lastAggregationTime);
+			$lastAggregationTimeres = $database->exec_SELECTquery('MAX(tstamp)', 'tx_commerce_salesfigures', '1=1');
 			$lastAggregationTimeValue = 0;
 			if (
 				$lastAggregationTimeres
@@ -343,8 +338,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 				$lastAggregationTimeValue = $lastAggregationTimerow[0];
 			}
 
-			$endselect = 'SELECT max(crdate) FROM tx_commerce_order_articles';
-			$endres = $database->sql_query($endselect);
+			$endres = $database->exec_SELECTquery('MAX(crdate)', 'tx_commerce_order_articles', '1=1');
 			$endtime2 = 0;
 			if ($endres AND ($endrow = $database->sql_fetch_row($endres))) {
 				$endtime2 = $endrow[0];
@@ -362,9 +356,8 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 				$result .= 'No new Orders<br />';
 			}
 
-			$changeselect = 'SELECT DISTINCT crdate FROM tx_commerce_order_articles where tstamp > ' .
-				($lastAggregationTimeValue - ($this->statistics->getDaysBack() * 24 * 60 * 60));
-			$changeres = $database->sql_query($changeselect);
+			$changeWhere = 'tstamp > ' . ($lastAggregationTimeValue - ($this->statistics->getDaysBack() * 24 * 60 * 60));
+			$changeres = $database->exec_SELECTquery('DISTINCT crdate', 'tx_commerce_order_articles', $changeWhere);
 			$changeDaysArray = array();
 			$changes = 0;
 			while ($changeres AND ($changerow = $database->sql_fetch_assoc($changeres))) {
@@ -383,13 +376,12 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
 			$result .= $changes . ' Days changed<br />';
 
-			$lastAggregationTime = 'SELECT max(tstamp) FROM tx_commerce_newclients';
-			$lastAggregationTimeres = $database->sql_query($lastAggregationTime);
+			$lastAggregationTimeres = $database->exec_SELECTquery('MAX(tstamp)', 'tx_commerce_newclients', '1=1');
 			if ($lastAggregationTimeres AND ($lastAggregationTimerow = $database->sql_fetch_row($lastAggregationTimeres))) {
 				$lastAggregationTimeValue = $lastAggregationTimerow[0];
 			}
-			$endselect = 'SELECT max(crdate) FROM fe_users';
-			$endres = $database->sql_query($endselect);
+
+			$endres = $database->exec_SELECTquery('MAX(crdate)', 'fe_users', '1=1');
 			if ($endres AND ($endrow = $database->sql_fetch_row($endres))) {
 				$endtime2 = $endrow[0];
 			}
