@@ -672,7 +672,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 		// set Empty default
 		$markerArray['SUBPART_CATEGORY_ITEMS_LISTVIEW_TOP'] = '';
 
-		if ((!$this->conf['groupProductsByCategory']) && $this->conf['displayTopProducts'] && $this->conf['numberOfTopproducts']) {
+		if (!$this->conf['groupProductsByCategory'] && $this->conf['displayTopProducts'] && $this->conf['numberOfTopproducts']) {
 			$this->top_products = array_slice($this->category_products, $startPoint, $this->conf['numberOfTopproducts']);
 			$internalStartPoint = $startPoint + $this->conf['numberOfTopproducts'];
 			$internalResults = $this->internal['results_at_a_time'] - $this->conf['numberOfTopproducts'];
@@ -683,7 +683,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 			);
 		}
 
-		// ###########    product list    ######################
+		// ###################### product list ######################
 		if (is_array($this->category_products)) {
 			$this->category_products = array_slice($this->category_products, $internalStartPoint, $internalResults);
 		}
@@ -692,7 +692,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 			// Write the current page to The session to have a back to last product link
 			$this->getFrontendController()->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
 			$markerArray['SUBPART_CATEGORY_ITEMS_LISTVIEW'] = $this->renderProductsForList(
-				$this->category_products, $this->conf['templateMarker.']['categoryProductList.'],
+				$this->category_products,
+				(array) $this->conf['templateMarker.']['categoryProductList.'],
 				$this->conf['templateMarker.']['categoryProductListIterations']
 			);
 		}
@@ -700,7 +701,10 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 		$templateMarker = '###' . strtoupper($this->conf['templateMarker.']['categoryView']) . '###';
 
 		$markerArrayCat = $this->generateMarkerArray(
-			$this->category->returnAssocArray(), $this->conf['singleView.']['categories.'], 'category_', 'tx_commerce_categories'
+			$this->category->returnAssocArray(),
+			(array) $this->conf['singleView.']['categories.'],
+			'category_',
+			'tx_commerce_categories'
 		);
 		$markerArray = array_merge($markerArrayCat, $markerArray);
 
@@ -1227,7 +1231,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 				}
 
 				$markerArray[strtoupper($prefix . $fieldName)] = $this->renderValue(
-					$columnValue, $type, $config, $fieldName, $table, $data['uid']
+					$columnValue, $type, (array) $config, $fieldName, $table, $data['uid']
 				);
 			}
 
@@ -1654,9 +1658,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 
 				if ($this->conf['useStockHandling'] == 1 AND $myProduct->hasStock() === FALSE) {
 					$typoScript = $this->conf['listView' . $typoscriptMarker . '.']['products.']['nostock.'];
-					$tempTemplate = $this->cObj->getSubpart(
-						$this->templateCode, '###' . $templateMarker[$iterationCount] . '_NOSTOCK###'
-					);
+					$tempTemplate = $this->cObj->getSubpart($this->templateCode, '###' . $templateMarker[$iterationCount] . '_NOSTOCK###');
 					if ($tempTemplate != '') {
 						$template = $tempTemplate;
 					}
@@ -1665,7 +1667,10 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 				}
 				$iterationCount++;
 				$categoryItemsListview .= $this->renderProduct(
-					$myProduct, $template, $typoScript, $this->conf['templateMarker.']['basketListView.'],
+					$myProduct,
+					$template,
+					(array) $typoScript,
+					(array) $this->conf['templateMarker.']['basketListView.'],
 					$this->conf['templateMarker.']['basketListViewMarker']
 				);
 			}
