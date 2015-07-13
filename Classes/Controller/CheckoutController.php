@@ -527,10 +527,6 @@ class CheckoutController extends BaseController {
 		$markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId .
 			'[check]" value="billing" />';
 
-		// @todo is this art or...?
-		//$billingForm = '<form name="addressForm" action="' . $this->pi_getPageLink($frontendController->id) . '" method="post">';
-		//$billingForm .= '<input type="hidden" name="' . $this->prefixId . '[check]" value="billing" />';
-
 		$markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="' . $this->prefixId . '[check]" value="billing" />';
 
 		// If a user is logged in, get the form from the address management
@@ -559,9 +555,6 @@ class CheckoutController extends BaseController {
 		} else {
 			$markerArray['###ADDRESS_FORM_INPUTFIELDS###'] = $this->getInputForm($this->conf['billing.'], 'billing');
 		}
-
-		// @todo is this art or...?
-		//$billingForm .= $markerArray['###ADDRESS_FORM_INPUTFIELDS###'];
 
 		// Marker for the delivery address chooser
 		$stepNodelivery = $this->getStepAfter('delivery');
