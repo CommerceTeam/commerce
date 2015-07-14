@@ -907,7 +907,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 					if (!$tableConfig['ctrl']['readOnly']) {
 						// If new records can be created on this page, add links:
 						if ($this->calcPerms & ($table == 'tx_commerce_categories' ? 8 : 16) && $this->showNewRecLink($table) && $this->parentUid) {
-							if ($table == 'tt_content' && $this->newWizards) {
+							if ($table == 'tx_commerce_products' && $this->newWizards) {
 								// If mod.web_list.newContentWiz.overrideWithExtension is set,
 								// use that extension's create new content wizard instead:
 								$tmpTyposcriptConfig = BackendUtility::getModTSconfig((int) $this->pageinfo['uid'], 'mod.web_list');
@@ -918,19 +918,11 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
 								$icon = '<a href="#" onclick="' .
 									htmlspecialchars('return jumpExt(\'' . $newContentWizScriptPath . '?id=' . $this->id . '\');') .
-									'" title="' . $language->getLL('new', TRUE) . '">' . (
-										$table == 'tx_commerce_categories' ?
-										IconUtility::getSpriteIcon('actions-page-new') :
-										IconUtility::getSpriteIcon('actions-document-new')
-									) . '</a>';
+									'" title="' . $language->getLL('new', TRUE) . '">' . IconUtility::getSpriteIcon('actions-document-new') . '</a>';
 							} elseif ($table == 'tx_commerce_categories' && $this->newWizards) {
 								$icon = '<a href="' . htmlspecialchars($this->backPath . 'db_new.php?id=' . $this->id .
 									'&pagesOnly=1&returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'))) .
-									'" title="' . $language->getLL('new', TRUE) . '">' . (
-										$table == 'tx_commerce_categories' ?
-										IconUtility::getSpriteIcon('actions-page-new') :
-										IconUtility::getSpriteIcon('actions-document-new')
-									) . '</a>';
+									'" title="' . $language->getLL('new', TRUE) . '">' . IconUtility::getSpriteIcon('actions-page-new') . '</a>';
 							} else {
 								$parameters = '&edit[' . $table . '][' . $this->id . ']=new';
 								if ($table == 'pages_language_overlay') {
@@ -965,7 +957,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 								IconUtility::getSpriteIcon('actions-document-open') . '</a>';
 						}
 
-							// add an empty entry, so column count fits again after moving this into $icon
+						// add an empty entry, so column count fits again after moving this into $icon
 						$theData[$fCol] = '&nbsp;';
 					}
 					break;
@@ -1092,12 +1084,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 			$params = '&edit[' . $table . '][' . $row['uid'] . ']=edit';
 			$cells['edit'] = '<a href="#" onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $this->backPath, -1)) .
 				'" title="' . $language->getLL('edit', TRUE) . '">' .
-				(
-					$tableConfig['ctrl']['readOnly'] ?
-					IconUtility::getSpriteIcon('actions-document-open-read-only') :
-					IconUtility::getSpriteIcon('actions-document-open')
-				) .
-				'</a>';
+				IconUtility::getSpriteIcon('actions-document-open' . ($tableConfig['ctrl']['readOnly'] ? '-read-only' : '')) . '</a>';
 		} elseif (!$this->table) {
 			$cells['edit'] = $this->spaceIcon;
 		}
@@ -1108,10 +1095,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 			$cells['move'] = '<a href="#" onclick="' .
 				htmlspecialchars('return jumpExt(\'' . $this->backPath . 'move_el.php?table=' . $table . '&uid=' . $row['uid'] . '\');') .
 				'">' .
-				($table == 'tx_commerce_products' ?
-					IconUtility::getSpriteIcon('actions-document-move', $options) :
-					IconUtility::getSpriteIcon('actions-page-move', $options)
-				) .
+				IconUtility::getSpriteIcon($table == 'tx_commerce_products' ? 'actions-document-move' : 'actions-page-move', $options) .
 				'</a>';
 		} elseif (!$this->table) {
 			$cells['move'] = $this->spaceIcon;
@@ -1187,10 +1171,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 							$options = array('title' => $language->getLL('new' . ($table == 'tx_commerce_categories' ? 'Category' : 'Record'), TRUE));
 							$cells['new'] = '<a href="#" onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $this->backPath, -1)) .
 								'"' .
-								($table == 'tx_commerce_categories' ?
-									IconUtility::getSpriteIcon('actions-page-new', $options) :
-									IconUtility::getSpriteIcon('actions-document-new', $options)
-								) .
+								IconUtility::getSpriteIcon($table == 'tx_commerce_categories' ? 'actions-page-new' : 'actions-document-new', $options) .
 								'</a>';
 						}
 					}
@@ -1396,28 +1377,20 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 		if ($this->clipObj->current == 'normal') {
 			// Show copy/cut icons:
 			$isSel = (string) $this->clipObj->isSelected($table, $row['uid']);
+			$copyIcon = IconUtility::getSpriteIcon(!$isSel == 'copy' ? 'actions-edit-copy' : 'actions-edit-copy-release');
 			$cells['copy'] = $isL10nOverlay ? $this->spaceIcon : '<a href="#" onclick="' .
 				htmlspecialchars(
 					'return jumpSelf(\'' .
 					$this->clipObj->selUrlDB($table, $row['uid'], 1, ($isSel == 'copy'), array('returnUrl' => '')) . '\');'
 				) .
-				'" title="' . $language->sL('LLL:EXT:lang/locallang_core.php:cm.copy', TRUE) . '">' .
-				((!$isSel == 'copy') ?
-					IconUtility::getSpriteIcon('actions-edit-copy') :
-					IconUtility::getSpriteIcon('actions-edit-copy-release')
-				) .
-				'</a>';
+				'" title="' . $language->sL('LLL:EXT:lang/locallang_core.php:cm.copy', TRUE) . '">' . $copyIcon . '</a>';
+			$cutIcon = IconUtility::getSpriteIcon(!$isSel == 'cut' ? 'actions-edit-cut' : 'actions-edit-cut-release');
 			$cells['cut'] = $isL10nOverlay ? $this->spaceIcon : '<a href="#" onclick="' .
 				htmlspecialchars(
 					'return jumpSelf(\'' .
 					$this->clipObj->selUrlDB($table, $row['uid'], 0, ($isSel == 'cut'), array('returnUrl' => '')) . '\');'
 				) .
-				'" title="' . $language->sL('LLL:EXT:lang/locallang_core.php:cm.cut', TRUE) . '">' .
-				((!$isSel == 'cut') ?
-					IconUtility::getSpriteIcon('actions-edit-cut') :
-					IconUtility::getSpriteIcon('actions-edit-cut-release')
-				) .
-				'</a>';
+				'" title="' . $language->sL('LLL:EXT:lang/locallang_core.php:cm.cut', TRUE) . '">' . $cutIcon . '</a>';
 		// For the numeric clipboard pads (showing checkboxes
 		// where one can select elements on/off)
 		} else {
@@ -1440,9 +1413,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 			}
 
 			// Adding the checkbox to the panel:
-			$cells['select'] = $isL10nOverlay ?
-				$this->spaceIcon :
-				'<input type="hidden" name="CBH[' . $n . ']" value="0" /><input type="checkbox" name="CBC[' . $n .
+			$cells['select'] = $isL10nOverlay ? $this->spaceIcon : '<input type="hidden" name="CBH[' . $n .
+				']" value="0" /><input type="checkbox" name="CBC[' . $n .
 				']" value="1" class="smallCheckboxes"' . $checked . ' />';
 		}
 
