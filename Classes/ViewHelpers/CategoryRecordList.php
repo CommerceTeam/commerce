@@ -409,15 +409,16 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 					BackendUtility::wrapInHelp($table, '', $language->sL($tableConfig['ctrl']['title'], TRUE)) .
 					'</span> (' . $this->totalItems . ')';
 			} else {
+				if ($this->table) {
+					$icon = IconUtility::getSpriteIcon('actions-view-table-collapse', array('title' => $language->getLL('contractView', TRUE)));
+				} else {
+					$icon = IconUtility::getSpriteIcon('actions-view-table-expand', array('title' => $language->getLL('expandView', TRUE)));
+				}
+
 				$theData[$titleCol] = $this->linkWrapTable(
 					$table,
 					'<span class="c-table">' . $language->sL($tableConfig['ctrl']['title'], TRUE) .
-						'</span> (' . $this->totalItems . ') ' .
-					(
-						$this->table ?
-						IconUtility::getSpriteIcon('actions-view-table-collapse', array('title' => $language->getLL('contractView', TRUE))) :
-						IconUtility::getSpriteIcon('actions-view-table-expand', array('title' => $language->getLL('expandView', TRUE)))
-					)
+						'</span> (' . $this->totalItems . ') ' . $icon
 				);
 			}
 
@@ -444,12 +445,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 					$value = $tableCollapsed ? '0' : '1';
 
 					$collapseIcon = '<a href="' . htmlspecialchars($this->listURL() . '&collapse[' . $table . ']=' . $value) . '">' .
-						(
-							$tableCollapsed ?
-							IconUtility::getSpriteIcon('actions-view-list-expand', $options) :
-							IconUtility::getSpriteIcon('actions-view-list-collapse', $options)
-						) .
-						'</a>';
+						IconUtility::getSpriteIcon('actions-view-list' . ($tableCollapsed ? '-expand' : '-collapse'), $options) . '</a>';
 				}
 				$out .= $this->addElement(1, $collapseIcon, $theData, ' class="t3-row-header"', '');
 			}
@@ -912,9 +908,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 								// use that extension's create new content wizard instead:
 								$tmpTyposcriptConfig = BackendUtility::getModTSconfig((int) $this->pageinfo['uid'], 'mod.web_list');
 								$tmpTyposcriptConfig = $tmpTyposcriptConfig['properties']['newContentWiz.']['overrideWithExtension'];
-								$newContentWizScriptPath = $this->backPath . ExtensionManagementUtility::isLoaded($tmpTyposcriptConfig) ?
+								$newContentWizScriptPath = $this->backPath . (ExtensionManagementUtility::isLoaded($tmpTyposcriptConfig) ?
 									(ExtensionManagementUtility::extRelPath($tmpTyposcriptConfig) . 'mod1/db_new_content_el.php') :
-									'sysext/cms/layout/db_new_content_el.php';
+									'sysext/cms/layout/db_new_content_el.php');
 
 								$icon = '<a href="#" onclick="' .
 									htmlspecialchars('return jumpExt(\'' . $newContentWizScriptPath . '?id=' . $this->id . '\');') .
@@ -1141,10 +1137,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 				}
 
 				// "Edit Perms" link:
-				if (
-					$table == 'tx_commerce_categories'
-					&& $backendUser->check('modules', 'txcommerceM1_permission')
-				) {
+				if ($table == 'tx_commerce_categories' && $backendUser->check('modules', 'txcommerceM1_permission')) {
 					$cells['perms'] = '<a href="' .
 						htmlspecialchars(
 							BackendUtility::getModuleUrl('txcommerceM1_permission') . '&control[tx_commerce_categories][uid]=' . $row['uid'] .
