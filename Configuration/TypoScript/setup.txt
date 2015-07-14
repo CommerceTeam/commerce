@@ -1,8 +1,8 @@
-plugin.tx_commerce_pi1.userFunc = \CommerceTeam\Commerce\Controller\ListController->main
-plugin.tx_commerce_pi2.userFunc = \CommerceTeam\Commerce\Controller\BasketController->main
-plugin.tx_commerce_pi3.userFunc = \CommerceTeam\Commerce\Controller\CheckoutController->main
-plugin.tx_commerce_pi4.userFunc = \CommerceTeam\Commerce\Controller\AddressesController->main
-plugin.tx_commerce_pi6.userFunc = \CommerceTeam\Commerce\Controller\InvoiceController->main
+plugin.tx_commerce_pi1.userFunc = CommerceTeam\Commerce\Controller\ListController->main
+plugin.tx_commerce_pi2.userFunc = CommerceTeam\Commerce\Controller\BasketController->main
+plugin.tx_commerce_pi3.userFunc = CommerceTeam\Commerce\Controller\CheckoutController->main
+plugin.tx_commerce_pi4.userFunc = CommerceTeam\Commerce\Controller\AddressesController->main
+plugin.tx_commerce_pi6.userFunc = CommerceTeam\Commerce\Controller\InvoiceController->main
 
 # gerneral TS skript definition
 # could be overwritten by local definition in pi1 - pin
