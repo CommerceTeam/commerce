@@ -45,7 +45,7 @@ class FolderRepository {
 		}
 
 		$folders = self::getFolders($module, $pid, $title);
-		if (!count($folders)) {
+		if (empty($folders)) {
 			self::createFolder($title, $module, $pid);
 			$folders = self::getFolders($module, $pid, $title);
 		}

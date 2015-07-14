@@ -352,7 +352,7 @@ abstract class Leaf extends Base {
 
 		for ($i = 0; $i < $this->leafcount; $i++) {
 			// if the childleaf has children for the parent
-			if (0 < count($this->leafs[$i]->data->getChildrenByPid($pid))) {
+			if (!empty($this->leafs[$i]->data->getChildrenByPid($pid))) {
 				return TRUE;
 			}
 		}
@@ -432,8 +432,6 @@ abstract class Leaf extends Base {
 			return FALSE;
 		}
 
-		$children = $this->data->getChildrenByPid($row['uid']);
-
-		return (0 < count($children));
+		return !empty($this->data->getChildrenByPid($row['uid']));
 	}
 }

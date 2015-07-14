@@ -578,7 +578,7 @@ class CheckoutController extends BaseController {
 		}
 
 		$this->debug($this->sessionData, 'sessionData', __FILE__ . ' ' . __LINE__);
-		if (is_array($this->sessionData['delivery']) && count($this->sessionData['delivery']) > 0) {
+		if (is_array($this->sessionData['delivery']) && !empty($this->sessionData['delivery'])) {
 			$deliveryChecked = ' checked="checked" ';
 			$paymentChecked = '  ';
 		}
@@ -1374,7 +1374,7 @@ class CheckoutController extends BaseController {
 
 		$data = $this->parseRawData($this->sessionData[$typeLower], $this->conf[$typeLower . '.']['sourceFields.']);
 
-		if (is_array($this->sessionData[$typeLower]) && (count($this->sessionData[$typeLower]) > 0) && is_array($data)) {
+		if (is_array($this->sessionData[$typeLower]) && !empty($this->sessionData[$typeLower]) && is_array($data)) {
 			$addressArray = array();
 
 			$addressArray['###HEADER###'] = $this->pi_getLL($addressType . '_title');
@@ -1616,7 +1616,7 @@ class CheckoutController extends BaseController {
 					'classname = ' . $database->fullQuoteStr(strtolower($this->piVars['payArt']), 'tx_commerce_articles') .
 						$this->cObj->enableFields('tx_commerce_articles')
 				);
-				if (count($articleRow)) {
+				if (!empty($articleRow)) {
 					$basket->addArticle($articleRow['uid']);
 					$basket->storeData();
 				} else {
@@ -2167,7 +2167,7 @@ class CheckoutController extends BaseController {
 		// Check if we have a payment article in the basket
 		if (in_array('nopayment', $checks) && $this->currentStep == 'finish') {
 			$paymentArticles = $basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
-			if (count($paymentArticles) <= 0) {
+			if (empty($paymentArticles)) {
 				return 'nopayment';
 			}
 		}
@@ -2510,7 +2510,7 @@ class CheckoutController extends BaseController {
 
 		// Added replacing marker for new users
 		$templateUser = '';
-		if (count($this->userData)) {
+		if (!empty($this->userData)) {
 			$templateUser = trim($this->cObj->getSubpart($template, '###NEW_USER###'));
 			$templateUser = $this->cObj->substituteMarkerArray($templateUser, $this->userData, '###|###', 1);
 		}

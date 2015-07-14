@@ -668,7 +668,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 		$recsPerLevel = $tree->getRecordsPerLevelArray($this->categoryUid);
 
 		// If there are a hierarchy of category ids, then...
-		if ($backendUser->user['uid'] && count($recsPerLevel)) {
+		if ($backendUser->user['uid'] && !empty($recsPerLevel)) {
 			// Init:
 			$labelRecursive = $language->getLL('recursive');
 			$labelLevels = $language->getLL('levels');

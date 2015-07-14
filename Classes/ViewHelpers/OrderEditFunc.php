@@ -171,10 +171,9 @@ class OrderEditFunc {
 					$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:order_view.items.print_invoice', 1) . ' *</a>';
 			}
 
-			$colCount = count($fieldRows);
 			$out .= '
 				<tr>
-					<td class="c-headLineTable" style="width: 95%;" colspan="' . ($colCount + 1) . '">' . $theData[$titleCol] . '</td>
+					<td class="c-headLineTable" style="width: 95%;" colspan="' . (count($fieldRows) + 1) . '">' . $theData[$titleCol] . '</td>
 				</tr>';
 
 			/**

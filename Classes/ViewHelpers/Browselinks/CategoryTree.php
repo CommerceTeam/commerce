@@ -256,7 +256,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree {
 		$positions = unserialize($this->getBackendUser()->uc['browseTrees'][$this->treeName]);
 
 		// In case the array is not set, initialize it
-		if (!is_array($positions) || 0 >= count($positions) || key($positions[0][key($positions[0])]) !== 'items') {
+		if (!is_array($positions) || empty($positions) || key($positions[0][key($positions[0])]) !== 'items') {
 			// reinitialize damaged array
 			$positions = array();
 			$this->savePosition($positions);
@@ -321,7 +321,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree {
 		// we also set the uid of the selected category
 		// so we can highlight the category and its product
 		if (0 != $this->openCategory) {
-			if (0 >= count($positions)) {
+			if (empty($positions)) {
 				// we simply add the category and all its parents,
 				// starting from the mountpoint, to the positions
 				$positions[0] = array();
@@ -380,7 +380,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree {
 
 					$tmpParents = $cat->getParentCategories();
 
-					if (is_array($tmpParents) && 0 < count($tmpParents)) {
+					if (is_array($tmpParents) && !empty($tmpParents)) {
 						$tmpCats = array_merge($tmpCats, $tmpParents);
 					}
 					$i--;

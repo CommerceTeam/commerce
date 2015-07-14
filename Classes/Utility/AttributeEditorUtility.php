@@ -193,7 +193,7 @@ class AttributeEditorUtility {
 				$onlyDisplay = (($ctUid == 1 && ($attribute['has_valuelist'])) || $ctUid == 4);
 				$fieldConfig = $this->getAttributeEditField($attribute, $baseConfig, FALSE, $onlyDisplay);
 
-				if (is_array($fieldConfig) && (count($fieldConfig) > 0)) {
+				if (is_array($fieldConfig) && !empty($fieldConfig)) {
 					$result[] = $fieldConfig;
 				}
 			}

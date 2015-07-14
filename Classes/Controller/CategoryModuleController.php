@@ -279,7 +279,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 			// selected table.
 			if ($this->cmd == 'delete') {
 				$items = $dbList->clipObj->cleanUpCBC(GeneralUtility::_POST('CBC'), $this->cmd_table, 1);
-				if (count($items)) {
+				if (!empty($items)) {
 					$cmd = array();
 					foreach ($items as $iK => $_) {
 						$iKparts = explode('|', $iK);

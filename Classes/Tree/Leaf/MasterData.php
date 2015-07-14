@@ -199,7 +199,7 @@ abstract class MasterData extends Data {
 	 * @return array Records-Array
 	 */
 	protected function getRecordsByMountpoints($index, array &$indices) {
-		if (!is_numeric($index) || !is_array($indices) || !is_array($this->mountIds) || 0 == count($this->mountIds)) {
+		if (!is_numeric($index) || !is_array($indices) || !is_array($this->mountIds) || empty($this->mountIds)) {
 			if (TYPO3_DLOG) {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
 					'getRecordsByMountpoints (CommerceTeam\\Commerce\\Tree\\Leaf\\MasterData) gets passed invalid parameters.',
@@ -272,7 +272,7 @@ abstract class MasterData extends Data {
 		// Get all Uids
 		$uids = $this->getRecursiveUids($this->uid, $this->depth);
 
-		if (!is_array($uids) || 0 == count($uids)) {
+		if (!is_array($uids) || empty($uids)) {
 			$result = NULL;
 		} else {
 			$this->where['uid_local'] = implode(',', $uids);

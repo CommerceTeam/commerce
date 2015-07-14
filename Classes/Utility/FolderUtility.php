@@ -164,7 +164,7 @@ class FolderUtility {
 			$pList[] = (int)$pUid['uid_local'];
 		}
 		// if no products where found for this category, we can return false
-		if (count($pList) <= 0) {
+		if (empty($pList)) {
 			return FALSE;
 		}
 
@@ -205,7 +205,7 @@ class FolderUtility {
 		$belib = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUtility');
 		$articles = $belib->getArticlesOfProduct($pUid, 'classname=\'' . $key . '\'');
 
-		if (is_array($articles) AND count($articles) > 0) {
+		if (is_array($articles) AND !empty($articles)) {
 			return $articles[0]['uid'];
 		}
 

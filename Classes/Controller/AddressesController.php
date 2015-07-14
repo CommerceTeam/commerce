@@ -1189,7 +1189,7 @@ class AddressesController extends BaseController {
 	 * @return bool
 	 */
 	public function formErrors() {
-		return count($this->formError);
+		return !empty($this->formError);
 	}
 
 	/**

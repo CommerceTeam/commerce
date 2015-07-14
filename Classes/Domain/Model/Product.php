@@ -1339,8 +1339,12 @@ class Product extends AbstractEntity {
 		if (!is_array($this->articles)) {
 			$uidToLoadFrom = $this->uid;
 			if (
-				$this->getT3verOid() > 0 && $this->getT3verOid() <> $this->uid &&
-				(is_Object($this->getFrontendController()) && $this->getFrontendController()->beUserLogin)
+				$this->getT3verOid() > 0
+				&& $this->getT3verOid() <> $this->uid
+				&& (
+					is_Object($this->getFrontendController())
+					&& $this->getFrontendController()->beUserLogin
+				)
 			) {
 				$uidToLoadFrom = $this->getT3verOid();
 			}

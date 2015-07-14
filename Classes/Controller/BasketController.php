@@ -648,7 +648,6 @@ class BasketController extends BaseController {
 			}
 		}
 
-		$allArticlesAllowed = !count($allowedArticles);
 		$activeFlag = strpos($deliveryOptionTemplate, '<option') !== FALSE ? ' selected="selected"' : ' checked="checked"';
 
 		$priceNet = '';
@@ -661,7 +660,7 @@ class BasketController extends BaseController {
 		 * @var $deliveryArticle Article
 		 */
 		foreach ($this->deliveryProduct->getArticleObjects() as $deliveryArticle) {
-			if ($allArticlesAllowed || in_array($deliveryArticle->getUid(), $allowedArticles)) {
+			if (empty($allowedArticles) || in_array($deliveryArticle->getUid(), $allowedArticles)) {
 				$selected = '';
 
 				if ($deliveryArticle->getUid() == $this->basketDeliveryArticles[0]) {
@@ -675,7 +674,7 @@ class BasketController extends BaseController {
 
 					$priceNet = Money::format($deliveryArticle->getPriceNet(), $this->currency);
 					$priceGross = Money::format($deliveryArticle->getPriceGross(), $this->currency);
-					if (!is_array($this->basketDeliveryArticles) || count($this->basketDeliveryArticles) < 1) {
+					if (!is_array($this->basketDeliveryArticles) || empty($this->basketDeliveryArticles)) {
 						$this->getBasket()->addArticle($deliveryArticle->getUid());
 						$this->getBasket()->storeData();
 					}
@@ -725,7 +724,7 @@ class BasketController extends BaseController {
 		$addPleaseSelect = FALSE;
 		$addDefaultPaymentToBasket = FALSE;
 		// Check if a Payment is selected if not, add standard payment
-		if (count($this->basketPaymentArticles) == 0) {
+		if (empty($this->basketPaymentArticles)) {
 			// Check if Payment selection is forced
 			if ($this->conf['payment.']['forceSelection']) {
 				// Add Please Select Option
@@ -750,7 +749,7 @@ class BasketController extends BaseController {
 		 * @var Article $article
 		 */
 		foreach ($this->paymentProduct->getArticleObjects() as $articleUid => $article) {
-			if (!count($allowedArticles) || in_array($articleUid, $allowedArticles)) {
+			if (empty($allowedArticles) || in_array($articleUid, $allowedArticles)) {
 				$article->loadData();
 				$payment = $this->getPaymentObject($article->getClassname());
 				if ($payment->isAllowed()) {
@@ -788,7 +787,7 @@ class BasketController extends BaseController {
 		 * @var $article Article
 		 */
 		foreach ($this->paymentProduct->getArticleObjects() as $articleUid => $article) {
-			if (!count($allowedArticles) || in_array($articleUid, $allowedArticles)) {
+			if (empty($allowedArticles) || in_array($articleUid, $allowedArticles)) {
 				$select .= '<option value="' . $articleUid . '"';
 				if (
 					($articleUid == $this->basketPaymentArticles[0]) || ($addDefaultPaymentToBasket

@@ -235,7 +235,7 @@ class Attribute extends AbstractEntity {
 	public function getFirstAttributeValueUid($includeValues = FALSE) {
 		$attributes = $this->databaseConnection->getAttributeValueUids($this->uid);
 
-		if (is_array($includeValues) && count($includeValues) > 0) {
+		if (is_array($includeValues) && !empty($includeValues)) {
 			$attributes = array_intersect($attributes, array_keys($includeValues));
 		}
 
@@ -382,6 +382,6 @@ class Attribute extends AbstractEntity {
 	 * @return bool
 	 */
 	public function hasChildren() {
-		return count($this->children) > 0;
+		return !empty($this->children);
 	}
 }

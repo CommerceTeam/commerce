@@ -130,7 +130,7 @@ class CategoryMounts extends \CommerceTeam\Commerce\Tree\Leaf\Mounts {
 
 			$tmpParents = $category->getParentCategories();
 
-			if (is_array($tmpParents) && 0 < count($tmpParents)) {
+			if (is_array($tmpParents) && !empty($tmpParents)) {
 				$tmpCats = array_merge($tmpCats, $tmpParents);
 			}
 			$i--;

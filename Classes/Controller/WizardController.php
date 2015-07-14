@@ -438,7 +438,7 @@ class WizardController {
 	 */
 	protected function showNewRecLink($table, array $allowedNewTables = array()) {
 		$allowedNewTables = is_array($allowedNewTables) ? $allowedNewTables : $this->allowedNewTables;
-		return !count($allowedNewTables) || in_array($table, $allowedNewTables);
+		return empty($allowedNewTables) || in_array($table, $allowedNewTables);
 	}
 
 

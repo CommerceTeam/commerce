@@ -219,7 +219,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList {
 			// submitted entries to only the selected table.
 			if ($this->cmd == 'delete') {
 				$items = $dblist->clipObj->cleanUpCBC(GeneralUtility::_POST('CBC'), $this->cmd_table, 1);
-				if (count($items)) {
+				if (!empty($items)) {
 					$cmd = array();
 					foreach (array_keys($items) as $iK) {
 						$iKparts = explode('|', $iK);

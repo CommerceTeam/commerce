@@ -521,7 +521,7 @@ abstract class Browsetree {
 		$positions = unserialize($this->getBackendUser()->uc['browseTrees'][$this->treeName]);
 
 		// In case the array is not set, initialize it
-		if (!is_array($positions) || 0 >= count($positions) || key($positions[0][key($positions[0])]) !== 'items') {
+		if (!is_array($positions) || empty($positions) || key($positions[0][key($positions[0])]) !== 'items') {
 			// reinitialize damaged array
 			$positions = array();
 			$this->savePosition($positions);

@@ -317,7 +317,7 @@ class DataHandlerUtility {
 				$product->loadData();
 				$prods = $product->getL18nProducts();
 
-				if (count($prods)) {
+				if (!empty($prods)) {
 					$str .= '<h1>' . $language->getLL('copy.head.l18n') . '</h1>
 						<h2>' . $language->getLL('copy.product') . ': ' . $product->getTitle() . '</h2>
 						<ul>';
@@ -366,7 +366,7 @@ class DataHandlerUtility {
 					}
 				}
 
-				if (0 >= $l && (0 != count($prods) || $userIgnoreClose)) {
+				if (0 >= $l && (!empty($prods) || $userIgnoreClose)) {
 					// no child object - sorting position is irrelevant - just print a submit button
 					// and notify users that there are not products in the category yet
 					$str .= '<input type="submit" value="' . $language->getLL('copy.submit') . '" />';
@@ -412,7 +412,7 @@ class DataHandlerUtility {
 				$category->loadData();
 				$cats = $category->getL18nCategories();
 
-				if (0 != count($cats)) {
+				if (!empty($cats)) {
 					$str .= '<h1>' . $language->getLL('copy.head.l18n') . '</h1>
 						<h2>' . $language->getLL('copy.category') . ': ' . $category->getTitle() . '</h2>
 						<ul>';
@@ -458,7 +458,7 @@ class DataHandlerUtility {
 					}
 				}
 
-				if (0 == $l && (0 != count($cats) || $userIgnoreClose)) {
+				if ($l == 0 && (!empty($cats) || $userIgnoreClose)) {
 					// no child object - sorting position is irrelevant - just print a submit button
 					$str .= '<input type="submit" value="' . $language->getLL('copy.submit') . '" />';
 				} elseif (0 < $l) {

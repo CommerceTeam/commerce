@@ -230,7 +230,7 @@ class ProductRepository extends Repository {
 		}
 
 		// If $uids is empty, the record might be a localized product
-		if (count($uids) === 0) {
+		if (empty($uids)) {
 			$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
 				'l18n_parent',
 				$this->databaseTable,

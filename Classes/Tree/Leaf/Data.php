@@ -465,7 +465,7 @@ class Data extends Base {
 			return FALSE;
 		}
 
-		return (count($this->records['uid']) > 0 && count($this->records['pid']) > 0);
+		return (!empty($this->records['uid']) && !empty($this->records['pid']));
 	}
 
 	/**

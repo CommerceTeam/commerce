@@ -336,7 +336,7 @@ class ClickmenuUtility extends ClickMenu {
 		);
 
 		// check if we may paste into this category
-		if (count($this->clickMenu->clipObj->elFromTable('tx_commerce_categories'))) {
+		if (!empty($this->clickMenu->clipObj->elFromTable('tx_commerce_categories'))) {
 			// if category is in clipboard, check new-right
 			$rights['paste'] = $rights['new'];
 
@@ -364,7 +364,7 @@ class ClickmenuUtility extends ClickMenu {
 					break;
 				}
 			}
-		} elseif (count($this->clickMenu->clipObj->elFromTable('tx_commerce_products'))) {
+		} elseif (!empty($this->clickMenu->clipObj->elFromTable('tx_commerce_products'))) {
 			// if product is in clipboard, check editcontent right
 			$rights['paste'] = \CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
 				array($uid),
@@ -392,7 +392,7 @@ class ClickmenuUtility extends ClickMenu {
 		 */
 		$category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $categoryToCheckRightsOn);
 		if ($categoryToCheckRightsOn) {
-			$rights['DBmount'] = count($category->getParentCategories()) ? $rights['DBmount'] : TRUE;
+			$rights['DBmount'] = !empty($category->getParentCategories()) ? $rights['DBmount'] : TRUE;
 		} else {
 			// to enable new link on top most node
 			$rights['new'] = TRUE;
@@ -442,7 +442,7 @@ class ClickmenuUtility extends ClickMenu {
 		$rights['paste'] = $rights['overwrite'] = (($this->rec['t3ver_state'] == 0) && $rights['delete']);
 
 			// make sure we do not allowed to overwrite a product with itself
-		if (count($this->clipObj->elFromTable('tx_commerce_products'))) {
+		if (!empty($this->clipObj->elFromTable('tx_commerce_products'))) {
 			$set = 0;
 			if ($this->clipObj->clipData[$this->clipObj->current]['el']['tx_commerce_products|' . $uid . '|' .
 				$this->additionalParameter['category']]

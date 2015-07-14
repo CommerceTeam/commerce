@@ -372,7 +372,7 @@ class Category extends AbstractEntity {
 		$this->getChildCategories();
 
 		$returnList = array();
-		if (count($this->categories) > 0) {
+		if (!empty($this->categories)) {
 			if (($depth === FALSE) || ($depth > 0)) {
 				/**
 				 * Category
@@ -747,8 +747,8 @@ class Category extends AbstractEntity {
 
 			$this->perms_record = $this->databaseConnection->getPermissionsRecord($this->uid);
 
-				// if the record is´nt loaded, abort.
-			if (count($this->perms_record) <= 0) {
+			// if the record isn't loaded, abort.
+			if (empty($this->perms_record)) {
 				$this->perms_record = NULL;
 
 				return;
@@ -785,7 +785,7 @@ class Category extends AbstractEntity {
 	 * @return bool TRUE if the category has subcategories, FALSE if not
 	 */
 	public function hasSubcategories() {
-		return count($this->categories_uid) > 0;
+		return !empty($this->categories_uid);
 	}
 
 	/**
@@ -794,7 +794,7 @@ class Category extends AbstractEntity {
 	 * @return bool TRUE, if this category has products, FALSE if not
 	 */
 	public function hasProducts() {
-		return count($this->getProductUids());
+		return !empty($this->getProductUids());
 	}
 
 	/**
@@ -806,7 +806,7 @@ class Category extends AbstractEntity {
 		$result = FALSE;
 
 		if ($this->hasProducts()) {
-			$result = count(\CommerceTeam\Commerce\Utility\GeneralUtility::removeNoStockProducts($this->getProducts(), 0));
+			$result = !empty(\CommerceTeam\Commerce\Utility\GeneralUtility::removeNoStockProducts($this->getProducts(), 0));
 		}
 
 		return $result;

@@ -89,7 +89,7 @@ class LinkhandlerHooks {
 		$linkParamArray = explode(' ', $linkParameter);
 		if (is_array($linkParamArray)) {
 			$linkParamArray = array_splice($linkParamArray, 1);
-			if (count($linkParamArray) > 0) {
+			if (!empty($linkParamArray)) {
 				$linkParameter = $displayPageId . ' ' . implode(' ', $linkParamArray);
 			} else {
 				$linkParameter = $displayPageId;

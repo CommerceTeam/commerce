@@ -100,7 +100,7 @@ class ArticleRepository extends Repository {
 			if ($database->sql_num_rows($result) > 0) {
 				while (($data = $database->sql_fetch_assoc($result))) {
 					$feGroups = \TYPO3\CMS\Core\Utility\GeneralUtility::intExplode(',', $data['fe_group'], TRUE);
-					if (count($feGroups)) {
+					if (!empty($feGroups)) {
 						foreach ($feGroups as $feGroup) {
 							$priceUidList[(string)$feGroup][] = $data['uid'];
 						}

@@ -114,7 +114,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 		// "Paste into page" link:
 		if (($localCalcPerms & 8) || ($localCalcPerms & 16)) {
 			$elFromTable = $this->clipObj->elFromTable('');
-			if (count($elFromTable)) {
+			if (!empty($elFromTable)) {
 				$theCtrlPanel[] = '<a href="' . htmlspecialchars($this->clipObj->pasteUrl('', $this->id)) . '" onclick="' .
 					htmlspecialchars('return ' . $this->clipObj->confirmMsg('pages', $this->pageRow, 'into', $elFromTable)) . '">' .
 					IconUtility::getSpriteIcon(
@@ -125,7 +125,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 		}
 
 		// Finally, compile all elements of the control panel into table cells:
-		if (count($theCtrlPanel)) {
+		if (!empty($theCtrlPanel)) {
 			$theData['up'][] = '
 
 				<!--

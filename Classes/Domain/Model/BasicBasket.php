@@ -285,7 +285,7 @@ class BasicBasket {
 
 		if (
 			!$this->getFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi1.']['dontUseBasketHashValue']
-			&& count($this->basketItems) > 0
+			&& !empty($this->basketItems)
 		) {
 			$result = \TYPO3\CMS\Core\Utility\GeneralUtility::shortMD5(serialize($this->basketItems));
 		}
@@ -613,7 +613,7 @@ class BasicBasket {
 	 */
 	public function loadData() {
 		// Check if payment article is available and set default if not
-		if (count($this->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE)) < 1) {
+		if (empty($this->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE))) {
 			$this->addArticle($this->conf['defaultPaymentArticleId']);
 		}
 	}
@@ -758,7 +758,7 @@ class BasicBasket {
 					$this->deleteArticle($articleUid);
 				}
 				$items = $this->getArticlesByArticleTypeUidAsUidlist(NORMALARTICLETYPE);
-				if (count($items) == 0) {
+				if (empty($items)) {
 					$this->deleteAllArticles();
 				}
 				return TRUE;
@@ -831,7 +831,7 @@ class BasicBasket {
 	 * @return bool TRUE if count of articles is greater than 0
 	 */
 	public function hasArticles() {
-		return count($this->basketItems) > 0;
+		return !empty($this->basketItems);
 	}
 
 	/**

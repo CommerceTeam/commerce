@@ -90,7 +90,7 @@ class CategoryRepository extends Repository {
 				$this->databaseParentCategoryRelationTable,
 				'uid_local = ' . (int) $uid . ' and is_reference = 0'
 			);
-			if (is_array($row) && count($row)) {
+			if (is_array($row) && !empty($row)) {
 				$result = $row['uid_foreign'];
 			}
 		}
@@ -380,7 +380,7 @@ class CategoryRepository extends Repository {
 				$this->enableFields('tx_commerce_categories', $this->getFrontendController()->showHiddenRecords)
 			);
 
-			if (is_array($row) && count($row) && $row['parent'] <> $categoryUid) {
+			if (is_array($row) && !empty($row) && $row['parent'] <> $categoryUid) {
 				$result = $this->getCategoryRootline((int) $row['parent'], $clause, $result);
 			}
 

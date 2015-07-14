@@ -506,15 +506,14 @@ class View extends Base {
 
 		if ($hasChildren) {
 			// Calculate the command
-			$indexFirst = (0 >= count($this->parentIndices)) ? $this->leafIndex : $this->parentIndices[0];
+			$indexFirst = empty($this->parentIndices) ? $this->leafIndex : $this->parentIndices[0];
 
 			$cmd = array($this->treeName, $indexFirst, $this->bank, ($isExpanded ? 0 : 1));
 
 			// Add the parentIndices to the Command (also its own index since
 			// it has not been added if we HAVE parent indices
-			if (0 < count($this->parentIndices)) {
-				$l = count($this->parentIndices);
-
+			$l = count($this->parentIndices);
+			if ($l > 0) {
 				// Add parent indices - first parent Index is already in the command
 				for ($i = 1; $i < $l; $i++) {
 					$cmd[] = $this->parentIndices[$i];

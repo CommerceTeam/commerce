@@ -135,7 +135,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 			// Paste
 			if (($localCalcPerms & 8 || $localCalcPerms & 16) && $this->parentUid) {
 				$elFromTable = $this->clipObj->elFromTable('');
-				if (count($elFromTable)) {
+				if (!empty($elFromTable)) {
 					$buttons['paste'] = '<a href="' . htmlspecialchars($this->clipObj->pasteUrl('', $this->id)) . '" onclick="' .
 						htmlspecialchars(('return ' . $this->clipObj->confirmMsg('tx_commerce_categories', $this->pageRow, 'into', $elFromTable))) .
 						'" title="' . $language->getLL('clip_paste', TRUE) . '">' .
@@ -830,7 +830,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 					// If there are elements on the clipboard for this table,
 					// then display the "paste into" icon:
 					$elFromTable = $this->clipObj->elFromTable($table);
-					if (count($elFromTable)) {
+					if (!empty($elFromTable)) {
 						$cells['pasteAfter'] = '<a href="' . htmlspecialchars($this->clipObj->pasteUrl($table, $this->id)) .
 							'" onclick="' .
 							htmlspecialchars('return ' . $this->clipObj->confirmMsg('tx_commerce_categories', $this->pageRow, 'into', $elFromTable)) .
@@ -1415,7 +1415,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 		$elFromTable = $this->clipObj->elFromTable($table);
 		// IF elements are found and they can be individually ordered,
 		// then add a "paste after" icon:
-		if (count($elFromTable) && SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.sortby')) {
+		if (!empty($elFromTable) && SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.sortby')) {
 			$cells['pasteAfter'] = $isL10nOverlay ? $this->spaceIcon : '<a href="' .
 				htmlspecialchars($this->clipObj->pasteUrl($table, - $row['uid'])) . '" onclick="' .
 				htmlspecialchars('return ' . $this->clipObj->confirmMsg($table, $row, 'after', $elFromTable)) .
@@ -1426,7 +1426,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
 		// Now, looking for elements in general:
 		$elFromTable = $this->clipObj->elFromTable('');
-		if ($table == 'tx_commerce_categories' && count($elFromTable)) {
+		if ($table == 'tx_commerce_categories' && !empty($elFromTable)) {
 			$cells['pasteInto'] = '<a href="' . htmlspecialchars($this->clipObj->pasteUrl('', $row['uid'])) .
 				'" onclick="' . htmlspecialchars('return ' . $this->clipObj->confirmMsg($table, $row, 'into', $elFromTable)) .
 				'">' .

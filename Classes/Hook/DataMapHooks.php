@@ -163,7 +163,7 @@ class DataMapHooks {
 	protected function preProcessCategory(array $incomingFieldArray, $id) {
 		$categories = array_diff(GeneralUtility::trimExplode(',', $incomingFieldArray['parent_category'], TRUE), array($id));
 
-		$incomingFieldArray['parent_category'] = count($categories) ? implode(',', $categories) : NULL;
+		$incomingFieldArray['parent_category'] = !empty($categories) ? implode(',', $categories) : NULL;
 
 		$this->catList = $this->belib->getUidListFromList($categories);
 
@@ -754,7 +754,7 @@ class DataMapHooks {
 
 			// if there is no parent_category left from the ones the user wanted to add,
 			// abort and inform him.
-			if ($fieldArray['parent_category'] == '' && count($newParents)) {
+			if ($fieldArray['parent_category'] == '' && !empty($newParents)) {
 				$pObj->newlog('You dont have the permissions to use any of the parent categories you chose as a parent.', 1);
 				$fieldArray = array();
 			}
@@ -806,7 +806,7 @@ class DataMapHooks {
 
 						$tmpParents = $cat->getParentCategories();
 
-						if (is_array($tmpParents) && 0 < count($tmpParents)) {
+						if (is_array($tmpParents) && !empty($tmpParents)) {
 							$tmpCats = array_merge($tmpCats, $tmpParents);
 						}
 
@@ -968,7 +968,7 @@ class DataMapHooks {
 	 */
 	public function processDatamap_afterDatabaseOperations($status, $table, $id, array $fieldArray, DataHandler $pObj) {
 		// get the UID of the created record if it was just created
-		if ($status == 'new' && count($fieldArray)) {
+		if ($status == 'new' && !empty($fieldArray)) {
 			$this->unsubstitutedId = $id;
 			$id = $pObj->substNEWwithIDs[$id];
 		}
@@ -1006,7 +1006,7 @@ class DataMapHooks {
 	 */
 	protected function afterDatabaseCategory(array $fieldArray, $id) {
 		// if unset, do not save anything, but load the dynaflex
-		if (count($fieldArray)) {
+		if (!empty($fieldArray)) {
 			if (isset($fieldArray['parent_category'])) {
 				// get the list of parent categories and save the relations in the database
 				$catList = explode(',', $fieldArray['parent_category']);
@@ -1046,7 +1046,7 @@ class DataMapHooks {
 	 */
 	protected function afterDatabaseProduct($status, $table, $id, array $fieldArray, DataHandler $pObj) {
 		// if fieldArray has been unset, do not save anything, but load dynaflex config
-		if (count($fieldArray)) {
+		if (!empty($fieldArray)) {
 			/**
 			 * Product
 			 *
@@ -1161,7 +1161,7 @@ class DataMapHooks {
 		$backendUser->uc['txcommerce_afterDatabaseOperations'] = 0;
 		$backendUser->writeUC();
 
-		if (!is_array($dynaFlexConf) || !count($dynaFlexConf)) {
+		if (!is_array($dynaFlexConf) || empty($dynaFlexConf)) {
 			return;
 		}
 
@@ -1312,7 +1312,7 @@ class DataMapHooks {
 			// save all attributes of this category into all poroducts,
 			// that are related to it
 			$products = $this->belib->getProductsOfCategory($cUid);
-			if (count($products) > 0) {
+			if (!empty($products)) {
 				foreach ($products as $product) {
 					$this->belib->saveRelations($product['uid_local'], $uidList, 'tx_commerce_products_attributes_mm', FALSE, FALSE);
 					$this->belib->updateXML('attributes', 'tx_commerce_products', $product['uid_local'], 'product', $correlationTypeList);
@@ -1464,7 +1464,7 @@ class DataMapHooks {
 			$articles = $this->belib->getArticlesOfProduct($productId);
 
 			// build relation table
-			if (is_array($articles) && count($articles)) {
+			if (is_array($articles) && !empty($articles)) {
 				$uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', TRUE);
 				foreach ($articles as $article) {
 					$this->belib->saveRelations($article['uid'], $uidList, 'tx_commerce_articles_article_attributes_mm', TRUE, FALSE);
@@ -1536,7 +1536,7 @@ class DataMapHooks {
 					}
 
 					// update articles
-					if (is_array($articles) && count($articles) > 0) {
+					if (is_array($articles) && !empty($articles)) {
 						foreach ($articles as $article) {
 							if ($attributeData['multiple'] == 1) {
 								// if we have a multiple valuelist we need to handle the attributes a little
@@ -1631,7 +1631,7 @@ class DataMapHooks {
 				$this->belib->updateArticleXML($articleRelations, FALSE, NULL, $productId);
 
 				// And add those datas from the database to the articles
-				if (is_array($articles) && count($articles) > 0) {
+				if (is_array($articles) && !empty($articles)) {
 					foreach ($articles as $article) {
 						$thisArticleRelations = $this->belib->getAttributesForArticle($article['uid']);
 

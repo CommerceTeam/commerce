@@ -397,7 +397,7 @@ class CommandMapHooks {
 
 		// Check product has attrinutes and no attributes are
 		// avaliable for localized version
-		if ($localizedProductAttributes == FALSE && count($productAttributes)) {
+		if ($localizedProductAttributes == FALSE && !empty($productAttributes)) {
 			// if true
 			$langIsoCode = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('sys_language', (int) $value, 'static_lang_isocode');
 			$langIdent = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord(
@@ -468,13 +468,13 @@ class CommandMapHooks {
 		$localizedProductArticles = $this->belib->getArticlesOfProduct($localizedProductUid);
 		// get all related articles
 		$articles = $this->belib->getArticlesOfProduct($productUid);
-		if (!count($articles)) {
+		if (empty($articles)) {
 			// Error Output, no Articles
 			$this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:product.localization_without_article');
 		}
 
 		// Check if product has articles and localized product has no articles
-		if (count($articles) && !count($localizedProductArticles)) {
+		if (!empty($articles) && empty($localizedProductArticles)) {
 			// determine language identifier
 			// this is needed for updating the XML of the new created articles
 			$langIsoCode = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('sys_language', (int) $value, 'static_lang_isocode');
@@ -656,17 +656,17 @@ class CommandMapHooks {
 		$childCategories = array();
 		$this->belib->getChildCategories($categoryUid, $childCategories, 0, 0, TRUE);
 
-		if (count($childCategories)) {
+		if (!empty($childCategories)) {
 			foreach ($childCategories as $childCategoryUid) {
 				$products = $this->belib->getProductsOfCategory($childCategoryUid);
 
-				if (count($products)) {
+				if (!empty($products)) {
 					$productList = array();
 					foreach ($products as $product) {
 						$productList[] = $product['uid_local'];
 
 						$articles = $this->belib->getArticlesOfProduct($product['uid_local']);
-						if (count($articles)) {
+						if (!empty($articles)) {
 							$articleList = array();
 							foreach ($articles as $article) {
 								$articleList[] = $article['uid'];
@@ -696,7 +696,7 @@ class CommandMapHooks {
 	 */
 	protected function deleteArticlesAndPricesOfProduct($productUid) {
 		$articles = $this->belib->getArticlesOfProduct($productUid);
-		if (count($articles)) {
+		if (!empty($articles)) {
 			$articleList = array();
 			foreach ($articles as $article) {
 				$articleList[] = $article['uid'];
@@ -783,13 +783,13 @@ class CommandMapHooks {
 		$translatedArticles = array();
 		foreach ($productList as $productId) {
 			$articlesOfProduct = $this->belib->getArticlesOfProductAsUidList($productId);
-			if (is_array($articlesOfProduct) && count($articlesOfProduct)) {
+			if (is_array($articlesOfProduct) && !empty($articlesOfProduct)) {
 				$translatedArticles = array_merge($translatedArticles, $articlesOfProduct);
 			}
 		}
 		$translatedArticles = array_unique($translatedArticles);
 
-		if (count($translatedArticles)) {
+		if (!empty($translatedArticles)) {
 			$this->deletePricesByArticleList($translatedArticles);
 			$this->deleteArticlesByArticleList($translatedArticles);
 		}

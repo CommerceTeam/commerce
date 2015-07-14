@@ -594,7 +594,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 				$typoLinkConf['additionalParams'] = $this->argSeparator . $this->prefixId . '[catUid]=' . $oneCategory->getUid();
 
 				$productArray = $oneCategory->getProducts();
-				if (1 == $this->conf['displayProductIfOneProduct'] && 1 == count($productArray)) {
+				if ($this->conf['displayProductIfOneProduct'] == 1 && count($productArray) == 1) {
 					$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[showUid]=' . $productArray[0];
 				}
 
@@ -949,7 +949,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 			foreach ($basketObj->getBasketItems() as $itemObj) {
 				$part = $count % $templateElements;
 
-				if (is_array($articletypes) && count($articletypes)) {
+				if (is_array($articletypes) && !empty($articletypes)) {
 					if (in_array($itemObj->getArticleTypeUid(), $articletypes)) {
 						$articleLines .= $this->makeLineView($itemObj, $lineTemplate[$part]);
 					}
@@ -1467,7 +1467,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 		}
 		$markerWrap .= '|###';
 
-		if (is_array($markerArray) && count($markerArray)) {
+		if (is_array($markerArray) && !empty($markerArray)) {
 			$output = $this->cObj->substituteMarkerArray($output, $markerArray, $markerWrap, 1);
 			$output = $this->cObj->stdWrap($output, $typoscript['stdWrap.']);
 		} else {
@@ -1977,7 +1977,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 		$sPkeys = array_keys($subpartContentArray);
 		$wPkeys = array_keys($wrappedSubpartContentArray);
 		$aKeys = array_merge(array_keys($markContentArray), $sPkeys, $wPkeys);
-		if (!count($aKeys)) {
+		if (empty($aKeys)) {
 			$timeTrack->pull();
 
 			return $content;

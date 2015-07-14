@@ -74,10 +74,10 @@ class AttributeEditFunc {
 			$theData[$titleCol] = '<span class="c-table">' .
 				$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:attributeview.valuelist', 1) .
 				'</span> (' . $dbCount . ')';
-			$fieldCount = count($rowFields);
+
 			$out .= '
 					<tr>
-						<td class="c-headLineTable" style="width: 95%;" colspan="' . ($fieldCount + 1) . '">' . $theData[$titleCol] . '</td>
+						<td class="c-headLineTable" style="width: 95%;" colspan="' . (count($rowFields) + 1) . '">' . $theData[$titleCol] . '</td>
 					</tr>';
 			/**
 			 * Header colum

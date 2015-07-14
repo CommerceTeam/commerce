@@ -127,7 +127,7 @@ class ArticleCreatorUtility {
 			$this->existingArticles = $this->belib->getArticlesOfProduct($this->uid, '', 'sorting');
 		}
 
-		if ((count($this->existingArticles) == 0) || ($this->uid == 0) || ($this->existingArticles === FALSE)) {
+		if (empty($this->existingArticles) || $this->uid == 0 || $this->existingArticles === FALSE) {
 			return 'No articles existing for this product';
 		}
 
@@ -344,7 +344,7 @@ class ArticleCreatorUtility {
 		</script>';
 
 		$selectAllRow = '';
-		if (count($valueMatrix) > 0) {
+		if (!empty($valueMatrix)) {
 			$onClick = 'onclick="updateArticleList()"';
 			$selectAllRow = '<tr><td><input type="checkbox" id="selectAllArticles" ' . $onClick . '/></td>';
 			$selectAllRow .= '<td colspan="' . ($colCount - 1) . '">' .
@@ -451,7 +451,7 @@ class ArticleCreatorUtility {
 							\CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($labelData)
 						) .
 						'</td>';
-					if (count($extraRowData) > 0) {
+					if (!empty($extraRowData)) {
 						$resultRows .= '<td style="' . $class . '">' .
 							implode(
 								'</td><td style="' . $class . '">',
@@ -607,14 +607,14 @@ class ArticleCreatorUtility {
 	 */
 	protected function createArticleTitleFromAttributes(array $parameter, array $data) {
 		$content = $parameter['title'];
-		if (is_array($data) && count($data)) {
+		if (is_array($data) && !empty($data)) {
 			$selectedValues = array();
 			foreach ($data as $value) {
 				if ($this->flattedAttributes[$value]) {
 					$selectedValues[] = $this->flattedAttributes[$value];
 				}
 			}
-			if (count($selectedValues)) {
+			if (!empty($selectedValues)) {
 				$content .= ' (' . implode(', ', $selectedValues) . ')';
 			}
 		}

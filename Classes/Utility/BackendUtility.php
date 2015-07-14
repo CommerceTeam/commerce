@@ -345,7 +345,7 @@ class BackendUtility {
 		}
 
 		// should we exclude some attributes
-		if (is_array($excludeAttributes) && count($excludeAttributes) > 0) {
+		if (is_array($excludeAttributes) && !empty($excludeAttributes)) {
 			$eAttributes = array();
 			foreach ($excludeAttributes as $eAttribute) {
 				$eAttributes[] = (int) $eAttribute['uid_foreign'];
@@ -396,7 +396,7 @@ class BackendUtility {
 	 */
 	public function getAttributeTitles(array $attributeList, $uidField = 'uid') {
 		$result = array();
-		if (is_array($attributeList) && count($attributeList) > 0) {
+		if (is_array($attributeList) && !empty($attributeList)) {
 			foreach ($attributeList as $attribute) {
 				$result[] = $this->getAttributeTitle($attribute[$uidField]);
 			}
@@ -613,14 +613,14 @@ class BackendUtility {
 						$ctAttributes[] = $productAttribute['uid_foreign'];
 					}
 				}
-				if (count($ctAttributes) > 0) {
+				if (!empty($ctAttributes)) {
 					$where .= ' AND uid_foreign IN (' . implode(',', $ctAttributes) . ')';
 				}
 			}
 		}
 
 		// should we exclude some attributes
-		if (is_array($excludeAttributes) && count($excludeAttributes) > 0) {
+		if (is_array($excludeAttributes) && !empty($excludeAttributes)) {
 			$eAttributes = array();
 			foreach ($excludeAttributes as $eAttribute) {
 				$eAttributes[] = (int) $eAttribute['uid_foreign'];
@@ -654,11 +654,11 @@ class BackendUtility {
 
 		$hashData = array();
 
-		if (count($fullAttributeList) > 0) {
+		if (!empty($fullAttributeList)) {
 			$res = $database->exec_SELECTquery(
 				'*',
 				'tx_commerce_articles_article_attributes_mm',
-				'uid_local=' . (int) $aUid . ' AND uid_foreign IN (' . implode(',', $fullAttributeList) . ')'
+				'uid_local = ' . (int) $aUid . ' AND uid_foreign IN (' . implode(',', $fullAttributeList) . ')'
 			);
 
 			while (($attributeData = $database->sql_fetch_assoc($res))) {
@@ -686,7 +686,7 @@ class BackendUtility {
 		if ($fullAttributeList == NULL) {
 			$fullAttributeList = array();
 			$articleAttributes = $this->getAttributesForArticle($aUid, 1);
-			if (count($articleAttributes) > 0) {
+			if (!empty($articleAttributes)) {
 				foreach ($articleAttributes as $articleAttribute) {
 					$fullAttributeList[] = $articleAttribute['uid_foreign'];
 				}
@@ -863,11 +863,8 @@ class BackendUtility {
 			}
 		}
 
-		if ($delete && (count($delWhere) > 0)) {
-			$where = '';
-			if (count($delWhere) > 0) {
-				$where = ' AND NOT ((' . implode(') OR (', $delWhere) . '))';
-			}
+		if ($delete && !empty($delWhere)) {
+			$where = ' AND NOT ((' . implode(') OR (', $delWhere) . '))';
 			$database->exec_DELETEquery($relationTable, 'uid_local = ' . $uidLocal . $where);
 		}
 	}
@@ -944,7 +941,7 @@ class BackendUtility {
 			}
 		}
 
-		if (count($relationData)) {
+		if (!empty($relationData)) {
 			foreach ($articleRelations as $articleRelation) {
 				if ($articleRelation['uid_valuelist'] != 0) {
 					$value = $articleRelation['uid_valuelist'];
@@ -1034,14 +1031,14 @@ class BackendUtility {
 					}
 				}
 
-				if (count($value) > 0) {
+				if (!empty($value)) {
 					$xmlData['data']['sDEF']['lDEF']['ct_' . (string) $ct['uid']] = array('vDEF' => (string) implode(',', $value));
 				}
 			}
 		}
 
 		// rebuild
-		if ($rebuild && 0 < count($cTypes) && is_array($ctList)) {
+		if ($rebuild && !empty($cTypes) && is_array($ctList)) {
 			foreach ($ctList as $ct) {
 				if (!in_array($ct['uid'], $cTypes)) {
 					$xmlData['data']['sDEF']['lDEF']['ct_' . (string) $ct['uid']] = array('vDEF' => '');
@@ -1124,7 +1121,7 @@ class BackendUtility {
 				}
 				if ($makeArray) {
 					$newItem = array($field => $item[$field]);
-					if (count($extraFields)) {
+					if (!empty($extraFields)) {
 						foreach ($extraFields as $extraFieldName) {
 							$newItem[$extraFieldName] = $item[$extraFieldName];
 						}
@@ -1284,7 +1281,7 @@ class BackendUtility {
 			}
 			$database->sql_free_result($result);
 		}
-		if (count($returnArray) > 0) {
+		if (!empty($returnArray)) {
 			return $returnArray;
 		}
 
@@ -1560,7 +1557,7 @@ class BackendUtility {
 		self::overwriteArticleAttributes($uid, $newUid);
 
 		// copy locales
-		if (count($locale)) {
+		if (!empty($locale)) {
 			foreach ($locale as $loc) {
 				self::copyLocale('tx_commerce_articles', $uid, $newUid, $loc);
 			}
@@ -1798,7 +1795,7 @@ class BackendUtility {
 		}
 
 		// copy locales
-		if (is_array($locale) && 0 != count($locale)) {
+		if (is_array($locale) && !empty($locale)) {
 			foreach ($locale as $loc) {
 				self::copyLocale('tx_commerce_products', $uid, $newUid, $loc, $ignoreWs);
 			}
@@ -2181,7 +2178,7 @@ class BackendUtility {
 		self::chmodCategoryByCategory($newUid, $uid);
 
 		// copy locale
-		if (is_array($locale) && 0 != count($locale)) {
+		if (is_array($locale) && !empty($locale)) {
 			foreach ($locale as $loc) {
 				self::copyLocale('tx_commerce_categories', $uid, $newUid, $loc);
 			}
@@ -2578,7 +2575,7 @@ class BackendUtility {
 		$parents = self::getProductParentCategories($uid);
 
 		// check the permissions
-		if (0 < count($parents)) {
+		if (!empty($parents)) {
 			$l = count($parents);
 
 			for ($i = 0; $i < $l; $i++) {
@@ -2981,7 +2978,7 @@ class BackendUtility {
 		}
 
 		// Overwrite locales
-		if (count($locale) > 0) {
+		if (!empty($locale)) {
 			foreach ($locale as $loc) {
 				self::overwriteLocale($table, $uidFrom, $uidTo, $loc);
 			}
@@ -3253,7 +3250,7 @@ class BackendUtility {
 		$backendUser->writeUC();
 
 		// overwrite locales
-		if (is_array($locale) && 0 != count($locale)) {
+		if (is_array($locale) && !empty($locale)) {
 			foreach ($locale as $loc) {
 				self::overwriteLocale($table, $uidFrom, $uidTo, $loc);
 			}

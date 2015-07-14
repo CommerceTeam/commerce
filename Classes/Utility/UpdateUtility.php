@@ -255,7 +255,7 @@ class UpdateUtility {
 	 * @return int
 	 */
 	protected function isBackendUserSet() {
-		return count($this->getDatabaseConnection()->exec_SELECTgetSingleRow('uid', 'be_users', 'username = \'_fe_commerce\'')) > 0;
+		return !empty($this->getDatabaseConnection()->exec_SELECTgetSingleRow('uid', 'be_users', 'username = \'_fe_commerce\''));
 	}
 
 	/**

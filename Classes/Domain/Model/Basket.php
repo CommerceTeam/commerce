@@ -206,7 +206,7 @@ class Basket extends BasicBasket {
 			'pos'
 		);
 
-		if (is_array($rows) && count($rows)) {
+		if (is_array($rows) && !empty($rows)) {
 			$hooks = HookFactory::getHooks('Domain/Model/Basket', 'loadDataFromDatabase');
 
 			$basketReadonly = FALSE;

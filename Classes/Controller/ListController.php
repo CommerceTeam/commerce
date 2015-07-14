@@ -642,7 +642,7 @@ class ListController extends BaseController {
 	) {
 		$hooks = HookFactory::getHooks('Controller/CheckoutController', 'makeArticleView');
 
-		$count = is_array($product->getArticleUids()) ? count($product->getArticleUids()) : FALSE;
+		$count = is_array($product->getArticleUids()) ? count($product->getArticleUids()) : 0;
 
 		// do nothing if no articles, BE-user-error, should not happen
 		if (strlen($template) < 1) {
@@ -760,7 +760,7 @@ class ListController extends BaseController {
 							// @todo check where the attribute values are
 							$attrIcon = '';
 							$attrValue = '';
-							if (count($myAttribute['values'])) {
+							if (!empty($myAttribute['values'])) {
 								$v = current(array_splice(each($myAttribute['values']), 1, 1));
 								if (is_array($v)) {
 									if (isset($v['value']) && $v['value'] != '') {

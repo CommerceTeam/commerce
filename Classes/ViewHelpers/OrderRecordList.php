@@ -1031,7 +1031,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 		if ($deliveryProductUid > 0) {
 			$deliveryArticles = \CommerceTeam\Commerce\Utility\BackendUtility::getArticlesOfProductAsUidList($deliveryProductUid);
 
-			if (count($deliveryArticles)) {
+			if (!empty($deliveryArticles)) {
 				$queryParts['WHERE'] .= ' AND delivery_table.article_uid IN (' . implode(',', $deliveryArticles) . ') ';
 			}
 		}
@@ -1040,7 +1040,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 		if ($paymentProductUid > 0) {
 			$paymentArticles = \CommerceTeam\Commerce\Utility\BackendUtility::getArticlesOfProductAsUidList($paymentProductUid);
 
-			if (count($paymentArticles)) {
+			if (!empty($paymentArticles)) {
 				$queryParts['WHERE'] .= ' AND delivery_table.article_uid IN (' . implode(',', $paymentArticles) . ') ';
 			}
 		}

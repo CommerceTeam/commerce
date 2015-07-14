@@ -324,7 +324,7 @@ class Navigation {
 			$menuErrorName[] = 'No OveridePID defined in TypoScript: lib.tx_commerce.navigation.special.overridePid';
 		}
 
-		if (count($menuErrorName) > 0) {
+		if (!empty($menuErrorName)) {
 			foreach ($menuErrorName as $oneError) {
 				\TYPO3\CMS\Core\Utility\DebugUtility::debug($this->mConf, $oneError);
 			}
@@ -918,7 +918,7 @@ class Navigation {
 					/**
 					 * Set IFSUB:
 					 */
-					if (count($treeArray[$path[0]]['--subLevel--']) > 0) {
+					if (!empty($treeArray[$path[0]]['--subLevel--'])) {
 						$treeArray[$path[0]]['ITEM_STATE'] = 'IFSUB';
 						$treeArray[$path[0]]['ITEM_STATES_LIST'] = 'CURIFSUB,CUR,ACTIFSUB,ACT,IFSUB,NO';
 					}
@@ -941,7 +941,7 @@ class Navigation {
 				}
 
 				if ($this->showUid == $path[0]) {
-					if (count($treeArray[$path[0]]['--subLevel--']) > 0) {
+					if (!empty($treeArray[$path[0]]['--subLevel--'])) {
 						$treeArray[$path[0]]['ITEM_STATE'] = 'IFSUB';
 						$treeArray[$path[0]]['ITEM_STATES_LIST'] = 'IFSUB,NO';
 					} else {
@@ -950,7 +950,7 @@ class Navigation {
 					}
 				}
 
-				if (count($treeArray[$path[0]]['--subLevel--']) > 0) {
+				if (!empty($treeArray[$path[0]]['--subLevel--'])) {
 					$treeArray[$path[0]]['_SUB_MENU'] = $treeArray[$path[0]]['--subLevel--'];
 				}
 			} else {
@@ -959,13 +959,13 @@ class Navigation {
 						$nodeId = array_pop($path);
 						$treeArray[$nodeId]['ITEM_STATE'] = 'ACT';
 						$treeArray[$nodeId]['ITEM_STATES_LIST'] = 'ACT,NO';
-						if (count($treeArray[$nodeId]['--subLevel--']) > 0) {
+						if (!empty($treeArray[$nodeId]['--subLevel--'])) {
 							$treeArray[$nodeId]['ITEM_STATE'] = 'IFSUB';
 							$treeArray[$nodeId]['ITEM_STATES_LIST'] = 'ACTIFSUB,ACT,IFSUB,NO';
 						}
 
 						if ($nodeId == $this->choosenCat) {
-							if (count($treeArray[$nodeId]['--subLevel--']) > 0) {
+							if (!empty($treeArray[$nodeId]['--subLevel--'])) {
 								$treeArray[$nodeId]['ITEM_STATE'] = 'CUR';
 								$treeArray[$nodeId]['ITEM_STATES_LIST'] = 'CURIFSUB,CUR,ACTIFSUB,ACT,NO';
 							}
@@ -978,13 +978,13 @@ class Navigation {
 							$treeArray[$nodeId]['ITEM_STATE'] = 'CUR';
 							$treeArray[$nodeId]['ITEM_STATES_LIST'] = 'CUR,ACT,NO';
 
-							if (count($treeArray[$nodeId]['--subLevel--']) > 0) {
+							if (!empty($treeArray[$nodeId]['--subLevel--'])) {
 								$treeArray[$nodeId]['ITEM_STATE'] = 'IFSUB';
 								$treeArray[$nodeId]['ITEM_STATES_LIST'] = 'CURIFSUB,CUR,ACTIFSUB,ACT,NO';
 							}
 						}
 						$this->processArrayPostRender($treeArray[$nodeId]['--subLevel--'], $path, $mDepth - 1);
-						if (count($treeArray[$nodeId]['--subLevel--']) > 0) {
+						if (!empty($treeArray[$nodeId]['--subLevel--'])) {
 							$treeArray[$nodeId]['_SUB_MENU'] = $treeArray[$nodeId]['--subLevel--'];
 						}
 					}
@@ -1452,7 +1452,7 @@ class Navigation {
 			$productUids[] = (int) $mmRow['uid_local'];
 		}
 
-		if (!count($productUids)) {
+		if (empty($productUids)) {
 			return FALSE;
 		}
 
