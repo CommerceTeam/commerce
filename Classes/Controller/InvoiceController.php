@@ -149,6 +149,13 @@ class InvoiceController extends BaseController {
 		$this->content = '';
 		$this->order = $this->getOrderData();
 		if ($this->order) {
+			$row = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+				'cu_iso_3',
+				'static_currencies',
+				'uid = ' . (int) $this->order['cu_iso_3_uid']
+			);
+			$this->conf['currency'] = !empty($row) ? $row['cu_iso_3'] : $this->conf['currency'];
+
 			$this->orderPayment = $this->getOrderSystemArticles($this->order['uid'], '2', 'PAYMENT_');
 			$this->orderDelivery = $this->getOrderSystemArticles($this->order['uid'], '3', 'SHIPPING_');
 
