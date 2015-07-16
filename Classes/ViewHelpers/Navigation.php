@@ -361,9 +361,9 @@ class Navigation {
 			if ($this->mConf['sortAllitems.']['type'] == 'alphabetiDesc') {
 				$this->sortAllMenuArray($this->mTree, 'alphabetiDesc');
 			}
-		} elseif ($cachedMatrix != '') {
+		} elseif (!empty($cachedMatrix)) {
 			// User the cached version
-			$this->mTree = unserialize($cachedMatrix);
+			$this->mTree = $cachedMatrix;
 		} else {
 			// no cache present buld data and stor it in cache
 			$this->mTree = $this->makeArrayPostRender(
@@ -380,7 +380,8 @@ class Navigation {
 			if ($this->mConf['sortAllitems.']['type'] == 'alphabetiDesc') {
 				$this->sortAllMenuArray($this->mTree, 'alphabetiDesc');
 			}
-			$this->storeHash($hash, serialize($this->mTree), self::navigationIdent . $this->cat);
+
+			$this->storeHash($hash, $this->mTree);
 		}
 
 		/*
@@ -1315,23 +1316,17 @@ class Navigation {
 	 *        array identifying the data being stored)
 	 * @param string $data The data string. If you want to store an array,
 	 *        then just serialize it first.
-	 * @param string $ident Is just a textual identification in order to inform
-	 *        about the content! May be 20 characters long.
 	 *
 	 * @return void
 	 */
-	public function storeHash($hash, $data, $ident) {
-		$insertFields = array(
-			'hash' => $hash,
-			'content' => $data,
-			'ident' => $ident,
-			'tstamp' => time()
-		);
-
-		$database = $this->getDatabaseConnection();
-
-		$database->exec_DELETEquery('cache_hash', 'hash=' . $database->fullQuoteStr($hash, 'cache_hash'));
-		$database->exec_INSERTquery('cache_hash', $insertFields);
+	public function storeHash($hash, $data) {
+		/**
+		 * Navigation cache frontend
+		 *
+		 * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend $navigationCache
+		 */
+		$navigationCache = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')->getCache('commerce_navigation');
+		$navigationCache->set($hash, $data);
 	}
 
 	/**
@@ -1340,29 +1335,17 @@ class Navigation {
 	 * Usage: 2
 	 *
 	 * @param string $hash Hash key, 32 bytes hex
-	 * @param int $expTime Represents the expire time in seconds. For instance
-	 *        a value of 3600 would allow cached content within the last hour,
-	 *        otherwise nothing is returned.
 	 *
 	 * @return string
 	 */
-	public function getHash($hash, $expTime = 0) {
-		$database = $this->getDatabaseConnection();
-
-		// if expTime is not set, the hash will never expire
-		$expTime = (int) $expTime;
-		$whereAdd = '';
-		if ($expTime) {
-			$whereAdd = ' AND tstamp > ' . (time() - $expTime);
-		}
-		$res = $database->exec_SELECTquery(
-			'content', 'cache_hash', 'hash=' . $database->fullQuoteStr($hash, 'cache_hash') . $whereAdd
-		);
-		if (($row = $database->sql_fetch_assoc($res))) {
-			return $row['content'];
-		}
-
-		return '';
+	public function getHash($hash) {
+		/**
+		 * Navigation cache frontend
+		 *
+		 * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend $navigationCache
+		 */
+		$navigationCache = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')->getCache('commerce_navigation');
+		return $navigationCache->get($hash);
 	}
 
 	/**

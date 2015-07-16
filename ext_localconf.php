@@ -154,6 +154,9 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY
 	0
 );
 
+if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['commerce_navigation'])) {
+	$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['commerce_navigation'] = array();
+}
 
 if (TYPO3_MODE == 'BE') {
 	// XCLASS for version preview
@@ -169,6 +172,17 @@ if (TYPO3_MODE == 'BE') {
 	);
 
 	require_once(PATH_TXCOMMERCE . 'Classes/Utility/TyposcriptConfig.php');
+
+	// CLI Script configuration
+	// Add statistic task
+	/** @noinspection PhpUndefinedVariableInspection */
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['CommerceTeam\\Commerce\\Task\\StatisticTask'] = array(
+		'extension' => $_EXTKEY,
+		'title' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.name',
+		'description' => 'LLL:EXT:' . $_EXTKEY .
+			'/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.description',
+		'additionalFields' => 'CommerceTeam\\Commerce\\Task\\StatisticTaskAdditionalFieldProvider',
+	);
 }
 
 
@@ -233,24 +247,6 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesCon
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['saveAddress'][] =
 	'EXT:commerce/Classes/Hook/Pi4Hooks.php:CommerceTeam\\Commerce\\Hook\\Pi4Hooks';
 
-// CLI Script configuration
-if (TYPO3_MODE == 'BE') {
-	// Setting up scripts that can be run from the cli_dispatch.phpsh script
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][COMMERCE_EXTKEY] = array(
-		PATH_TXCOMMERCE . 'Classes/Cli/Statistic.php',
-		'_CLI_commerce'
-	);
-
-	// Add statistic task
-	/** @noinspection PhpUndefinedVariableInspection */
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['CommerceTeam\\Commerce\\Task\\StatisticTask'] = array(
-		'extension' => $_EXTKEY,
-		'title' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.name',
-		'description' => 'LLL:EXT:' . $_EXTKEY .
-			'/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.description',
-		'additionalFields' => 'CommerceTeam\\Commerce\\Task\\StatisticTaskAdditionalFieldProvider',
-	);
-}
 
 // Register dynaflex dca files
 $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_categories'][] =
