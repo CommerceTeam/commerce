@@ -391,4 +391,34 @@ class CategoryRepository extends Repository {
 
 		return $result;
 	}
+
+	/**
+	 * Get relation
+	 *
+	 * @param int $foreignUid Foreign uid
+	 *
+	 * @return array
+	 */
+	public function findRelationByForeignUid($foreignUid) {
+		return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+			'*',
+			$this->databaseParentCategoryRelationTable,
+			'uid_foreign = ' . (int) $foreignUid
+		);
+	}
+
+	/**
+	 * Find by uid
+	 *
+	 * @param int $uid Product uid
+	 *
+	 * @return array
+	 */
+	public function findByUid($uid) {
+		return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+			'*',
+			$this->databaseTable,
+			'uid = ' . (int) $uid . $this->enableFields($this->databaseTable)
+		);
+	}
 }

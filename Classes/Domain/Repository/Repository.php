@@ -314,6 +314,7 @@ class Repository {
 	 */
 	public function enableFields($tableName, $showHiddenRecords = -1) {
 		if (TYPO3_MODE === 'FE') {
+			$showHiddenRecords = $showHiddenRecords ? $showHiddenRecords : $this->getFrontendController()->showHiddenRecords;
 			$result = $this->getFrontendController()->sys_page->enableFields($tableName, $showHiddenRecords);
 		} else {
 			$result = \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($tableName);

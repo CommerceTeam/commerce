@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Database Class for tx_commerce_products. All database calle should
@@ -259,5 +260,54 @@ class ProductRepository extends Repository {
 		);
 
 		return is_array($row) && isset($row['title']) ? $row['title'] : '';
+	}
+
+	/**
+	 * Get relation
+	 *
+	 * @param int $foreignUid Foreign uid
+	 *
+	 * @return array
+	 */
+	public function findRelationByForeignUid($foreignUid) {
+		return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+			'*',
+			$this->databaseCategoryRelationTable,
+			'uid_foreign = ' . (int) $foreignUid
+		);
+	}
+
+	/**
+	 * Find by uids
+	 *
+	 * @param array|string $uids Product uids
+	 *
+	 * @return array
+	 */
+	public function findByUids($uids) {
+		if (!is_array($uids)) {
+			GeneralUtility::intExplode(',', $uids, TRUE);
+		}
+
+		return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+			'uid, manufacturer_uid',
+			$this->databaseTable,
+			'uid IN (' . implode(',', $uids) . ')' . $this->enableFields($this->databaseTable)
+		);
+	}
+
+	/**
+	 * Find by uid
+	 *
+	 * @param int $uid Product uid
+	 *
+	 * @return array
+	 */
+	public function findByUid($uid) {
+		return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+			'*',
+			$this->databaseTable,
+			'uid = ' . (int) $uid . $this->enableFields($this->databaseTable)
+		);
 	}
 }

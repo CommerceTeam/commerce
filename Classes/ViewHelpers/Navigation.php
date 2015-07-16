@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -262,6 +263,25 @@ class Navigation {
 	protected $category;
 
 	/**
+	 * Repository names with table name as key
+	 *
+	 * @var array
+	 */
+	protected $repositoryNames = array(
+		'tx_commerce_categories' => 'CommerceTeam\\Commerce\\Domain\\Repository\\CategoryRepository',
+		'tx_commerce_products' => 'CommerceTeam\\Commerce\\Domain\\Repository\\ProductRepository',
+		'tx_commerce_categories_parent_category_mm' => 'CommerceTeam\\Commerce\\Domain\\Repository\\CategoryRepository',
+		'tx_commerce_products_categories_mm' => 'CommerceTeam\\Commerce\\Domain\\Repository\\ProductRepository',
+	);
+
+	/**
+	 * Repository stack
+	 *
+	 * @var array
+	 */
+	protected $repositoryStack = array();
+
+	/**
 	 * Init Method for initialising the navigation
 	 *
 	 * @param string $content Content passed to method
@@ -340,7 +360,7 @@ class Navigation {
 			$this->getFrontendController()->linkVars . ':' . GeneralUtility::getIndpEnv('HTTP_HOST')
 		);
 
-		$cachedMatrix = $this->getHash($hash, 0);
+		$cachedMatrix = $this->getHash($hash);
 
 		/**
 		 * Render Menue Array and store in cache, if possible
@@ -1003,18 +1023,11 @@ class Navigation {
 	 * @return array
 	 */
 	public function getDataRow($uid, $tableName) {
-		$database = $this->getDatabaseConnection();
-
-		if ($uid == '' or $tableName == '') {
-			return '';
+		if ($uid == '' || $tableName == '') {
+			return array();
 		}
-		$addWhere = $this->getFrontendController()->sys_page->enableFields(
-			$tableName,
-			$this->getFrontendController()->showHiddenRecords
-		);
-		$row = $database->exec_SELECTgetSingleRow(
-			'*', $tableName, 'uid = ' . (int) $uid . $addWhere
-		);
+
+		$row = $this->getRepository($this->repositoryNames[$tableName])->findByUid($uid);
 
 		if ($this->getFrontendController()->sys_language_uid && $row) {
 			$langUid = $this->getFrontendController()->sys_language_uid;
@@ -1064,11 +1077,10 @@ class Navigation {
 			return 2;
 		}
 
-		$database = $this->getDatabaseConnection();
-		$res = $database->exec_SELECTquery('*', $tableMm, 'uid_foreign = ' . (int) $uid, '', '', 1);
+		$row = $this->getRepository($this->repositoryNames[$tableMm])->findRelationByForeignUid($uid);
 
 		$hasSubChild = $this->hasSubchild($uid, $subTableMm);
-		if (($row = $database->sql_fetch_assoc($res)) or $hasSubChild == 1) {
+		if (!empty($row) || $hasSubChild == 1) {
 			return 0;
 		}
 
@@ -1088,10 +1100,9 @@ class Navigation {
 			return 2;
 		}
 
-		$database = $this->getDatabaseConnection();
-		$res = $database->exec_SELECTquery('*', $tableMm, 'uid_foreign = ' . (int) $uid, '', '', 1);
+		$row = $this->getRepository($this->repositoryNames[$tableMm])->findRelationByForeignUid($uid);
 
-		if (($row = $database->sql_fetch_assoc($res))) {
+		if (!empty($row)) {
 			return 1;
 		}
 
@@ -1426,12 +1437,16 @@ class Navigation {
 	 * @return array|bool
 	 */
 	public function getManufacturerAsCategory($pid, $uidPage, $tableMm, $tableSubMain, $tableSubMm, $categoryUid, $mDepth, $path) {
-		$database = $this->getDatabaseConnection();
-
-		$result = $database->exec_SELECTquery('*', 'tx_commerce_products_categories_mm', 'uid_foreign = ' . (int) $categoryUid);
+		/**
+		 * Category repository
+		 *
+		 * @var ProductRepository $productRepository
+		 */
+		$productRepository = $this->getRepository($this->repositoryNames[$tableSubMm]);
+		$productRelations = $productRepository->findRelationByForeignUid($categoryUid);
 
 		$productUids = array();
-		while (($mmRow = $database->sql_fetch_assoc($result)) !== FALSE) {
+		foreach ($productRelations as $mmRow) {
 			$productUids[] = (int) $mmRow['uid_local'];
 		}
 
@@ -1439,18 +1454,13 @@ class Navigation {
 			return FALSE;
 		}
 
-		$result = $database->exec_SELECTquery(
-			'uid, manufacturer_uid', 'tx_commerce_products',
-			'uid IN (' . implode(',', $productUids) . ')' . $this->cObj->enableFields('tx_commerce_products')
-		);
+		$products = $productRepository->findByUids($productUids);
 
-		$outout = array();
+		$output = array();
 		$firstPath = $path;
-		while (($productRow = $database->sql_fetch_assoc($result)) !== FALSE) {
+		foreach ($products as $productRow) {
 			if ($productRow['manufacturer_uid'] != '0') {
-				/*
-				 * @todo not a realy good solution
-				 */
+				// @todo not a realy good solution
 				$path = $this->manufacturerIdentifier . $productRow['manufacturer_uid'] . ',' . $firstPath;
 
 				/**
@@ -1498,11 +1508,11 @@ class Navigation {
 					$aLevel['_SUB_MENU'] = $aLevel['--subLevel--'];
 				}
 
-				$outout[$this->manufacturerIdentifier . $productRow['manufacturer_uid']] = $aLevel;
+				$output[$this->manufacturerIdentifier . $productRow['manufacturer_uid']] = $aLevel;
 			}
 		}
 
-		return $outout;
+		return $output;
 	}
 
 	/**
@@ -1560,6 +1570,20 @@ class Navigation {
 		 */
 		$cacheHashCalculator = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
 		return $cacheHashCalculator->calculateCacheHash($cacheHashCalculator->getRelevantParameters($parameter));
+	}
+
+	/**
+	 * Get repository by name
+	 *
+	 * @param string $repositoryName Repository name
+	 *
+	 * @return mixed
+	 */
+	protected function getRepository($repositoryName) {
+		if (!isset($this->repositoryStack[$repositoryName])) {
+			$this->repositoryStack[$repositoryName] = GeneralUtility::makeInstance($repositoryName);
+		}
+		return $this->repositoryStack[$repositoryName];
 	}
 
 
