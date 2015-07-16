@@ -73,12 +73,14 @@ class BasicDaoMapper {
 	 *
 	 * @return self
 	 */
-	public function __construct(BasicDaoParser &$parser, $createPid = 0, $dbTable = NULL) {
+	public function __construct(BasicDaoParser $parser, $createPid = 0, $dbTable = NULL) {
 		$this->init();
-		$this->parser = &$parser;
+		$this->parser = $parser;
+
 		if (!empty($createPid)) {
 			$this->createPid = $createPid;
 		}
+
 		if (!empty($dbTable)) {
 			$this->dbTable = $dbTable;
 		}
@@ -99,7 +101,7 @@ class BasicDaoMapper {
 	 *
 	 * @return void
 	 */
-	public function load(BasicDaoObject &$object) {
+	public function load(BasicDaoObject $object) {
 		if ($object->issetId()) {
 			$this->dbSelectById($object->getId(), $object);
 		}
@@ -112,7 +114,7 @@ class BasicDaoMapper {
 	 *
 	 * @return void
 	 */
-	public function save(BasicDaoObject &$object) {
+	public function save(BasicDaoObject $object) {
 		if ($object->issetId()) {
 			$this->dbUpdate($object->getId(), $object);
 		} else {
@@ -127,7 +129,7 @@ class BasicDaoMapper {
 	 *
 	 * @return void
 	 */
-	public function remove(BasicDaoObject &$object) {
+	public function remove(BasicDaoObject $object) {
 		if ($object->issetId()) {
 			$this->dbDelete($object->getId(), $object);
 		}
@@ -140,23 +142,23 @@ class BasicDaoMapper {
 	 *
 	 * @return void
 	 */
-	protected function dbInsert(BasicDaoObject &$object) {
-		$dbTable = $this->dbTable;
+	protected function dbInsert(BasicDaoObject $object) {
 		$dbModel = $this->parser->parseObjectToModel($object);
 
 		// set pid
 		$this->parser->setPid($dbModel, $this->createPid);
 
+		// @todo extract db action into repsitory
 		$database = $this->getDatabaseConnection();
 		// execute query
-		$database->exec_INSERTquery($dbTable, $dbModel);
+		$database->exec_INSERTquery($this->dbTable, $dbModel);
 
 		// any errors
 		$error = $database->sql_error();
 		if (!empty($error)) {
 			$this->addError(array(
 				$error,
-				$database->INSERTquery($dbTable, $dbModel),
+				$database->INSERTquery($this->dbTable, $dbModel),
 				'$dbModel' => $dbModel
 			));
 		}
@@ -173,22 +175,22 @@ class BasicDaoMapper {
 	 *
 	 * @return void
 	 */
-	protected function dbUpdate($uid, BasicDaoObject &$object) {
-		$dbTable = $this->dbTable;
+	protected function dbUpdate($uid, BasicDaoObject $object) {
 		$dbWhere = 'uid = ' . (int) $uid;
 		$dbModel = $this->parser->parseObjectToModel($object);
 
+		// @todo extract db action into repsitory
 		$database = $this->getDatabaseConnection();
 
 		// execute query
-		$database->exec_UPDATEquery($dbTable, $dbWhere, $dbModel);
+		$database->exec_UPDATEquery($this->dbTable, $dbWhere, $dbModel);
 
 		// any errors
 		$error = $database->sql_error();
 		if (!empty($error)) {
 			$this->addError(array(
 				$error,
-				$database->UPDATEquery($dbTable, $dbWhere, $dbModel),
+				$database->UPDATEquery($this->dbTable, $dbWhere, $dbModel),
 				'$dbModel' => $dbModel
 			));
 		}
@@ -202,7 +204,8 @@ class BasicDaoMapper {
 	 *
 	 * @return void
 	 */
-	protected function dbDelete($uid, BasicDaoObject &$object) {
+	protected function dbDelete($uid, BasicDaoObject $object) {
+		// @todo extract db action into repsitory
 		$database = $this->getDatabaseConnection();
 
 		// execute query
@@ -229,16 +232,12 @@ class BasicDaoMapper {
 	 *
 	 * @return void
 	 */
-	protected function dbSelectById($uid, BasicDaoObject &$object) {
-		$dbFields = '*';
-		$dbTable = $this->dbTable;
-		$dbWhere = 'uid = ' . (int) $uid;
-		$dbWhere .= 'AND deleted = 0';
-
+	protected function dbSelectById($uid, BasicDaoObject $object) {
+		// @todo extract db action into repsitory
 		$database = $this->getDatabaseConnection();
 
 		// execute query
-		$res = $database->exec_SELECTquery($dbFields, $dbTable, $dbWhere);
+		$res = $database->exec_SELECTquery('*', $this->dbTable, 'uid = ' . (int) $uid . 'AND deleted = 0');
 
 		// insert into object
 		$model = $database->sql_fetch_assoc($res);

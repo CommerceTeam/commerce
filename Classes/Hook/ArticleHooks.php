@@ -13,7 +13,9 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Part of the COMMERCE (Advanced Shopping System) extension.
@@ -74,13 +76,13 @@ class ArticleHooks {
 		$deliveryConf = SettingsFactory::getInstance()->getConfiguration('SYSPRODUCTS.DELIVERY.types');
 		$classname = array_shift(array_keys($deliveryConf));
 
-		$database = $this->getDatabaseConnection();
-
-		$row = $database->exec_SELECTgetSingleRow(
-			'uid',
-			'tx_commerce_articles',
-			'classname = \'' . $classname . '\''
-		);
+		/**
+		 * Article repository
+		 *
+		 * @var ArticleRepository $articleRepository
+		 */
+		$articleRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\ArticleRepository');
+		$row = $articleRepository->findByClassname($classname);
 
 		$result = FALSE;
 		if (!empty($row)) {

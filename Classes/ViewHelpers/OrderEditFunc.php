@@ -13,6 +13,8 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\OrderRepository;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
@@ -104,8 +106,8 @@ class OrderEditFunc {
 		$settingsFactory = SettingsFactory::getInstance();
 
 		$content = '';
-		$foreignTable = 'tx_commerce_order_articles';
-		$table = 'tx_commerce_orders';
+		$orderArticleTable = 'tx_commerce_order_articles';
+		$orderTable = 'tx_commerce_orders';
 
 		/**
 		 * Document template
@@ -131,38 +133,34 @@ class OrderEditFunc {
 		/**
 		 * Taken from class.db_list_extra.php
 		 */
-		$titleCol = $settingsFactory->getTcaValue($foreignTable . '.ctrl.label');
+		$titleCol = $settingsFactory->getTcaValue($orderArticleTable . '.ctrl.label');
 
 		// Check if Orders in this folder are editable
-		$orderEditable = FALSE;
-		$checkResult = $database->exec_SELECTquery('tx_commerce_foldereditorder', 'pages', 'uid = ' . $orderStoragePid);
-		if ($database->sql_num_rows($checkResult) == 1) {
-			if (($checkRow = $database->sql_fetch_assoc($checkResult))) {
-				if ($checkRow['tx_commerce_foldereditorder'] == 1) {
-					$orderEditable = TRUE;
-				}
-			}
-		}
+		/**
+		 * Page repository
+		 *
+		 * @var \CommerceTeam\Commerce\Domain\Repository\PageRepository $pageRepository
+		 */
+		$pageRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\PageRepository');
+		$orderEditable = !empty($pageRepository->findEditFolderByUid($orderStoragePid));
 
-		// Create the SQL query for selecting the elements in the listing:
-		$result = $database->exec_SELECTquery(
-			'*',
-			$foreignTable,
-			'pid = ' . $orderStoragePid . BackendUtility::deleteClause($foreignTable) .
-				' AND order_id = \'' . $database->quoteStr($orderId, $foreignTable) . '\''
-		);
-
-		$dbCount = $database->sql_num_rows($result);
+		/**
+		 * Order article repository
+		 *
+		 * @var OrderArticleRepository $orderArticleRepository
+		 */
+		$orderArticleRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\OrderArticleRepository');
+		$orderArticles = $orderArticleRepository->findByOrderIdInPage($orderId, $orderStoragePid);
 
 		$sum = array();
 		$out = '';
-		if ($dbCount) {
+		if (!empty($orderArticles)) {
 			/**
 			* Only if we have a result
 			*/
 			$theData[$titleCol] = '<span class="c-table">' .
 				$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:order_view.items.article_list', 1) .
-				'</span> (' . $dbCount . ')';
+				'</span> (' . count($orderArticles) . ')';
 
 			if ($settingsFactory->getExtConf('invoicePageID')) {
 				$theData[$titleCol] .= '<a href="../index.php?id=' . $settingsFactory->getExtConf('invoicePageID') .
@@ -181,7 +179,7 @@ class OrderEditFunc {
 			 */
 			foreach ($fieldRows as $field) {
 				$out .= '<td class="c-headLineTable"><b>' .
-						$language->sL(BackendUtility::getItemLabel($foreignTable, $field)) .
+					$language->sL(BackendUtility::getItemLabel($orderArticleTable, $field)) .
 					'</b></td>';
 			}
 
@@ -190,7 +188,7 @@ class OrderEditFunc {
 			// @todo Switch to moneylib to use formating
 			$cc = 0;
 			$iOut = '';
-			while (($row = $database->sql_fetch_assoc($result))) {
+			foreach ($orderArticles as $row) {
 				$cc++;
 				$sum['amount'] += $row['amount'];
 
@@ -212,7 +210,7 @@ class OrderEditFunc {
 					GeneralUtility::modifyHTMLColor($this->getControllerDocumentTemplate()->bgColor4, + 10, + 10, + 10) . '"');
 
 				/**
-				 * Not very noice to render html_code directly
+				 * Not very nice to render html_code directly
 				 * @todo change rendering html code here
 				 */
 				$iOut .= '<tr ' . $rowBgColor . '>';
@@ -222,7 +220,7 @@ class OrderEditFunc {
 						case $titleCol:
 							$iOut .= '<td>';
 							if ($orderEditable) {
-								$params = '&edit[' . $foreignTable . '][' . $row['uid'] . ']=edit';
+								$params = '&edit[' . $orderArticleTable . '][' . $row['uid'] . ']=edit';
 								$wrap = array(
 									'<a href="#" onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) . '">',
 									'</a>'
@@ -233,7 +231,7 @@ class OrderEditFunc {
 						case 'amount':
 							$iOut .= '<td>';
 							if ($orderEditable) {
-								$params = '&edit[' . $foreignTable . '][' . $row['uid'] . ']=edit&columnsOnly=amount';
+								$params = '&edit[' . $orderArticleTable . '][' . $row['uid'] . ']=edit&columnsOnly=amount';
 								$onclickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) . '"';
 								$wrap = array(
 									'<b><a href="#" ' . $onclickAction . '>' . IconUtility::getSpriteIcon('actions-document-open'),
@@ -252,7 +250,7 @@ class OrderEditFunc {
 							$iOut .= '<td>';
 					}
 
-					$iOut .= implode(BackendUtility::getProcessedValue($foreignTable, $field, $row[$field], 100), $wrap);
+					$iOut .= implode(BackendUtility::getProcessedValue($orderArticleTable, $field, $row[$field], 100), $wrap);
 					$iOut .= '</td>';
 				}
 
@@ -284,7 +282,7 @@ class OrderEditFunc {
 				}
 
 				if ($sum[$field] > 0) {
-					$out .= BackendUtility::getProcessedValueExtra($foreignTable, $field, $sum[$field], 100);
+					$out .= BackendUtility::getProcessedValueExtra($orderArticleTable, $field, $sum[$field], 100);
 				}
 
 				$out .= '</b></td>';
@@ -298,12 +296,18 @@ class OrderEditFunc {
 			 * To Be shure everything is ok
 			 */
 			$values = array('sum_price_gross' => $sum['price_gross_value'] * 100, 'sum_price_net' => $sum['price_net_value'] * 100);
-			$database->exec_UPDATEquery($table, 'order_id=\'' . $database->quoteStr($orderId, $foreignTable) . '\'', $values);
+			/**
+			 * Order repository
+			 *
+			 * @var OrderRepository $orderRepository
+			 */
+			$orderRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\OrderRepository');
+			$orderRepository->updateByOrderId($orderId, $values);
 		}
 
 		$out = '
 			<!--
-				DB listing of elements: "' . htmlspecialchars($table) . '"
+				DB listing of elements: "' . htmlspecialchars($orderTable) . '"
 			-->
 			<table border="0" cellpadding="0" cellspacing="0" class="typo3-dblist">
 				' . $out . '
@@ -358,21 +362,15 @@ class OrderEditFunc {
 		}
 
 		if (in_array($orderPid, $rootlinePids)) {
-			$database = $this->getDatabaseConnection();
-
-			$result = $database->exec_SELECTquery(
-				'pid ',
-				'pages',
-				'uid = ' . $localOrderPid . BackendUtility::deleteClause('pages'),
-				'',
-				'sorting'
-			);
-
-			if ($database->sql_num_rows($result) > 0) {
-				while (($row = $database->sql_fetch_assoc($result))) {
-					$orderPid = $row['pid'];
-				}
-				$database->sql_free_result($result);
+			/**
+			 * Page repository
+			 *
+			 * @var \CommerceTeam\Commerce\Domain\Repository\PageRepository $pageRepository
+			 */
+			$pageRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\PageRepository');
+			$page = $pageRepository->findByUid($localOrderPid);
+			if (!empty($page)) {
+				$orderPid = $page['pid'];
 			}
 		}
 

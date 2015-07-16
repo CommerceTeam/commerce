@@ -14,7 +14,9 @@ namespace CommerceTeam\Commerce\Dao;
  */
 
 use CommerceTeam\Commerce\Controller\AddressesController;
+use CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * For the takeaday feuser extension
@@ -105,18 +107,18 @@ class AddressObserver {
 	 * @return bool|string
 	 */
 	public static function checkDelete($uid, $parentObject) {
-		$dbFields = 'uid';
-		$dbTable = 'fe_users';
-		$dbWhere = 'tx_commerce_tt_address_id = "' . (int) $uid . '" AND deleted = "0"';
-
-		$database = self::getDatabaseConnection();
-
-		$res = $database->exec_SELECTquery($dbFields, $dbTable, $dbWhere);
+		/**
+		 * Frontend user repository
+		 *
+		 * @var FrontendUserRepository $userRepository
+		 */
+		$userRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\FrontendUserRepository');
+		$frontendUser = $userRepository->findByAddressId((int) $uid);
 
 		// no errormessage
 		$msg = FALSE;
 		// check dependencies (selected rows)
-		if ($database->sql_num_rows($res) > 0) {
+		if (!empty($frontendUser)) {
 			// errormessage
 			if ($parentObject instanceof AddressesController) {
 				$msg = $parentObject->pi_getLL('error_deleted_address_is_default');
@@ -127,9 +129,6 @@ class AddressObserver {
 				);
 			}
 		}
-
-		// free results
-		$database->sql_free_result($res);
 
 		return $msg;
 	}

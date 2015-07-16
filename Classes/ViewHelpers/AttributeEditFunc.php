@@ -13,8 +13,10 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * User Class for displaying Orders
@@ -32,7 +34,6 @@ class AttributeEditFunc {
 	 * @return string HTML-Content
 	 */
 	public function valuelist(array $parameter) {
-		$database = $this->getDatabaseConnection();
 		$language = $this->getLanguageService();
 
 		$content = '';
@@ -57,23 +58,24 @@ class AttributeEditFunc {
 		$rowFields = array('attributes_uid', 'value');
 		$titleCol = SettingsFactory::getInstance()->getTcaValue($foreignTable . '.ctrl.label');
 
-			// Create the SQL query for selecting the elements in the listing:
-		$result = $database->exec_SELECTquery(
-			'*',
-			$foreignTable,
-			'pid = $attributeStoragePid ' . BackendUtility::deleteClause($foreignTable) .
-				' AND attributes_uid=\'' . $database->quoteStr($attributeUid, $foreignTable) . '\''
+		/**
+		 * Attribute value repository
+		 *
+		 * @var AttributeValueRepository $attributeValueRepository
+		 */
+		$attributeValueRepository = GeneralUtility::makeInstance(
+			'CommerceTeam\\Commerce\\Domain\\Repository\\AttributeValueRepository'
 		);
-		$dbCount = $database->sql_num_rows($result);
+		$attributeValues = $attributeValueRepository->findByAttributeInPage($attributeUid, $attributeStoragePid);
 
 		$out = '';
-		if ($dbCount) {
+		if (!empty($attributeValues)) {
 			/**
 			 * Only if we have a result
 			 */
 			$theData[$titleCol] = '<span class="c-table">' .
 				$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:attributeview.valuelist', 1) .
-				'</span> (' . $dbCount . ')';
+				'</span> (' . count($attributeValues) . ')';
 
 			$out .= '
 					<tr>
@@ -94,7 +96,7 @@ class AttributeEditFunc {
 			 */
 			$cc = 0;
 			$iOut = '';
-			while (($row = $database->sql_fetch_assoc($result))) {
+			foreach ($attributeValues as $row) {
 				$cc++;
 				$rowBackgroundColor = (
 					($cc % 2) ? '' : ' bgcolor="' .
@@ -145,6 +147,7 @@ class AttributeEditFunc {
 
 			foreach ($rowFields as $field) {
 				$out .= '<td class="c-headLineTable"><b>';
+				// @todo this makes no sense how to fix?
 				if ($sum[$field] > 0) {
 					$out .= BackendUtility::getProcessedValueExtra($foreignTable, $field, $sum[$field], 100);
 				}
@@ -180,15 +183,6 @@ class AttributeEditFunc {
 		return $content;
 	}
 
-
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
 
 	/**
 	 * Get language service

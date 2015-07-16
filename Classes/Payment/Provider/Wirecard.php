@@ -13,6 +13,9 @@ namespace CommerceTeam\Commerce\Payment\Provider;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\OrderRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Wirecard payment provider implementation
  *
@@ -167,20 +170,15 @@ class Wirecard extends ProviderAbstract {
 		// given by wirecard?!)
 		// To update the order something like this should be sufficient:
 		// $this->paymentRefId should probably be set in finishingFunction()
-		$this->getDatabaseConnection()->exec_UPDATEquery(
-			'tx_commerce_orders',
-			'uid = ' . (int) $orderUid,
+		/**
+		 * Order repository
+		 *
+		 * @var OrderRepository $orderRepository
+		 */
+		$orderRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\OrderRepository');
+		$orderRepository->updateByUid(
+			$orderUid,
 			array('payment_ref_id' => $this->paymentRefId)
 		);
-	}
-
-
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
 	}
 }

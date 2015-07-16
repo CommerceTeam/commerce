@@ -260,4 +260,19 @@ class ArticleRepository extends Repository {
 		}
 		return FALSE;
 	}
+
+	/**
+	 * Find article by classname
+	 *
+	 * @param string $classname Classname
+	 *
+	 * @return array
+	 */
+	public function findByClassname($classname) {
+		return (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+			'uid',
+			'tx_commerce_articles',
+			'classname = \'' . $classname . '\''
+		);
+	}
 }

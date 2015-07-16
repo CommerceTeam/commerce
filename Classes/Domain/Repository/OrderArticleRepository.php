@@ -16,37 +16,32 @@ namespace CommerceTeam\Commerce\Domain\Repository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
- * Database Class for tx_commerce_products. All database calle should
- * be made by this class. In most cases you should use the methodes
- * provided by tx_commerce_product to get informations for articles.
- * Inherited from \CommerceTeam\Commerce\Domain\Repository\Repository
+ * Class \CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository
  *
- * Class \CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository
- *
- * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
+ * @author Sebastian Fischer <typo3@evoweb.de>
  */
-class AttributeValueRepository extends Repository {
+class OrderArticleRepository extends Repository {
 	/**
-	 * Database table
+	 * Database table concerning the data
 	 *
 	 * @var string
 	 */
-	public $databaseTable = 'tx_commerce_attribute_values';
+	protected $databaseTable = 'tx_commerce_order_articles';
 
 	/**
-	 * Find by attribute in page
+	 * Find order articles by order id in page
 	 *
-	 * @param int $attributeUid Attribute uid
+	 * @param string $orderId Order Id
 	 * @param int $pageId Page id
 	 *
 	 * @return array
 	 */
-	public function findByAttributeInPage($attributeUid, $pageId) {
+	public function findByOrderIdInPage($orderId, $pageId) {
 		return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
 			'*',
 			$this->databaseTable,
 			'pid = ' . $pageId . BackendUtility::deleteClause($this->databaseTable) .
-				' AND attributes_uid = ' . $attributeUid
+				' AND order_id = \'' . $this->getDatabaseConnection()->quoteStr($orderId, $this->databaseTable) . '\''
 		);
 	}
 }

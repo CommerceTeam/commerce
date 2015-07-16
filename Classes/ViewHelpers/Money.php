@@ -13,6 +13,9 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\CurrencyRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Code library for display of different currencies
  * widely used in EXT: commerce
@@ -28,9 +31,11 @@ class Money {
 	 * Use this function from TS, example:
 	 * includeLibs.moneylib = EXT:commerce/Classes/ViewHelpers/Money.php
 	 * price_net = stdWrap
-	 * price_net.postUserFunc = CommerceTeam\\Commerce\\ViewHelpers\\Money->user_tsFormat
-	 * price_net.postUserFunc.currency = EUR
-	 * price_net.postUserFunc.withSymbol = 0
+	 * price_net {
+	 *   postUserFunc = CommerceTeam\\Commerce\\ViewHelpers\\Money->user_tsFormat
+	 *   postUserFunc.currency = EUR
+	 *   postUserFunc.withSymbol = 0
+	 * }
 	 *
 	 * @param string $content Content
 	 * @param array $conf Config
@@ -56,56 +61,48 @@ class Money {
 	 *        format ('872331', 'EUR');    --> '8.723,31 EUR'
 	 *
 	 * @param int|string $amount Amount to be formatted. Must be the smalles unit
-	 * @param string $currency ISO 3 letter code of the currency, for example "EUR"
+	 * @param string $currencyKey ISO 3 letter code of the currency
 	 * @param bool $withSymbol If set the currency symbol will be rendered
 	 *
 	 * @return string|bool String representation of the amount including currency
 	 * 	symbol(s) or FALSE if $amount was of the type float
 	 */
-	public static function format($amount, $currency, $withSymbol = TRUE) {
+	public static function format($amount, $currencyKey, $withSymbol = TRUE) {
 		if (is_float($amount)) {
 			return FALSE;
 		}
 
-		$database = self::getDatabaseConnection();
+		/**
+		 * Currency repository
+		 *
+		 * @var CurrencyRepository $currencyRepository
+		 */
+		$currencyRepository = GeneralUtility::makeInstance('CommerceTeam\Commerce\Domain\Repository\CurrencyRepository');
+		$currency = $currencyRepository->findByIso3($currencyKey);
 
-		$row = $database->exec_SELECTgetSingleRow(
-			'cu_symbol_left, cu_symbol_right, cu_sub_symbol_left, cu_sub_symbol_right, cu_decimal_point, cu_thousands_point,
-				cu_decimal_digits, cu_sub_divisor',
-			'static_currencies',
-			'cu_iso_3 = ' . $database->fullQuoteStr(strtoupper($currency), 'static_currencies')
-		);
-
-		if (!is_array($row)) {
+		if (empty($currency)) {
 			return FALSE;
 		}
 
 		$formattedAmount = number_format(
-			$amount / $row['cu_sub_divisor'], $row['cu_decimal_digits'], $row['cu_decimal_point'], $row['cu_thousands_point']
+			$amount / $currency['cu_sub_divisor'],
+			$currency['cu_decimal_digits'],
+			$currency['cu_decimal_point'],
+			$currency['cu_thousands_point']
 		);
 
 		if ($withSymbol) {
 			$wholeString = $formattedAmount;
-			if (!empty($row['cu_symbol_left'])) {
-				$wholeString = $row['cu_symbol_left'] . chr(32) . $wholeString;
+			if (!empty($currency['cu_symbol_left'])) {
+				$wholeString = $currency['cu_symbol_left'] . chr(32) . $wholeString;
 			}
-			if (!empty($row['cu_symbol_right'])) {
-				$wholeString .= chr(32) . $row['cu_symbol_right'];
+			if (!empty($currency['cu_symbol_right'])) {
+				$wholeString .= chr(32) . $currency['cu_symbol_right'];
 			}
 		} else {
 			$wholeString = $formattedAmount;
 		}
 
 		return $wholeString;
-	}
-
-
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected static function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
 	}
 }

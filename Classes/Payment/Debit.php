@@ -12,6 +12,8 @@ namespace CommerceTeam\Commerce\Payment;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use CommerceTeam\Commerce\Domain\Repository\OrderRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Debit payment implementation
@@ -123,9 +125,14 @@ class Debit extends PaymentAbstract {
 	 * @return void
 	 */
 	public function updateOrder($orderUid, array $session = array()) {
-		$this->getDatabaseConnection()->exec_UPDATEquery(
-			'tx_commerce_orders',
-			'uid = ' . $orderUid,
+		/**
+		 * Order repository
+		 *
+		 * @var OrderRepository $orderRepository
+		 */
+		$orderRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\OrderRepository');
+		$orderRepository->updateByUid(
+			$orderUid,
 			array(
 				'payment_debit_bic' => $session['payment']['debit_bic'],
 				'payment_debit_an' => $session['payment']['debit_an'],
@@ -134,15 +141,5 @@ class Debit extends PaymentAbstract {
 				'payment_debit_company' => $session['payment']['debit_company'],
 			)
 		);
-	}
-
-
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
 	}
 }
