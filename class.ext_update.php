@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,10 +13,10 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-require_once(PATH_site . 'typo3conf/ext/commerce/Classes/Utility/UpdateUtility.php');
+require_once PATH_site . 'typo3conf/ext/commerce/Classes/Utility/UpdateUtility.php';
 
 /**
- * Update Class for DB Updates
+ * Update Class for DB Updates.
  *
  * Basically checks for the new Tree, if all records have a MM
  * relation to Record UID 0 if not, these records are created
@@ -24,5 +25,6 @@ require_once(PATH_site . 'typo3conf/ext/commerce/Classes/Utility/UpdateUtility.p
  *
  * @author 2008 - 2009 Ingo Schmitt <is@marketing-factory.de>
  */
-class ext_update extends \CommerceTeam\Commerce\Utility\UpdateUtility {
+class ext_update extends \CommerceTeam\Commerce\Utility\UpdateUtility
+{
 }

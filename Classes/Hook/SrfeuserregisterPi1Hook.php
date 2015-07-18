@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Hook;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,7 +18,7 @@ namespace CommerceTeam\Commerce\Hook;
 /**
  * Hook for the extension takeaday feuser
  * The method registrationProcess_afterSaveCreate() is called by save()
- * The method registrationProcess_afterSaveEdit() is called by save()
+ * The method registrationProcess_afterSaveEdit() is called by save().
  *
  * This class handles frontend feuser updates
  *
@@ -24,34 +26,33 @@ namespace CommerceTeam\Commerce\Hook;
  *
  * @author 2005-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
-class SrfeuserregisterPi1Hook {
-	/**
-	 * After save create
-	 *
-	 * Sr_feuser_register registration process after saving new dataset
-	 *
-	 * @param string $theTable Table
-	 * @param array $dataArray Complete array of feuser fields
-	 *
-	 * @return void
-	 */
-	public function registrationProcess_afterSaveCreate($theTable, array $dataArray) {
-		// notify observer
-		\CommerceTeam\Commerce\Dao\FeuserObserver::update('new', $dataArray['uid']);
-	}
+class SrfeuserregisterPi1Hook
+{
+    /**
+     * After save create.
+     *
+     * Sr_feuser_register registration process after saving new dataset
+     *
+     * @param string $theTable  Table
+     * @param array  $dataArray Complete array of feuser fields
+     */
+    public function registrationProcess_afterSaveCreate($theTable, array $dataArray)
+    {
+        // notify observer
+        \CommerceTeam\Commerce\Dao\FeuserObserver::update('new', $dataArray['uid']);
+    }
 
-	/**
-	 * After edit create
-	 *
-	 * Sr_feuser_register registration process after saving edited dataset
-	 *
-	 * @param string $theTable Table
-	 * @param array $dataArray Complete array of feuser fields
-	 *
-	 * @return void
-	 */
-	public function registrationProcess_afterSaveEdit($theTable, array $dataArray) {
-		// notify observer
-		\CommerceTeam\Commerce\Dao\FeuserObserver::update('update', $dataArray['uid']);
-	}
+    /**
+     * After edit create.
+     *
+     * Sr_feuser_register registration process after saving edited dataset
+     *
+     * @param string $theTable  Table
+     * @param array  $dataArray Complete array of feuser fields
+     */
+    public function registrationProcess_afterSaveEdit($theTable, array $dataArray)
+    {
+        // notify observer
+        \CommerceTeam\Commerce\Dao\FeuserObserver::update('update', $dataArray['uid']);
+    }
 }

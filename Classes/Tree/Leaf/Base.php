@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Tree\Leaf;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,83 +16,87 @@ namespace CommerceTeam\Commerce\Tree\Leaf;
  */
 
 /**
- * Implements the i18n base for the tree
+ * Implements the i18n base for the tree.
  *
  * Class \CommerceTeam\Commerce\Tree\Leaf\Base
  *
  * @author 2008-2009 Erik Frister <typo3@marketing-factory.de>
  */
-class Base {
-	/**
-	 * Flag if is loaded
-	 *
-	 * @var bool
-	 */
-	protected $isLoaded = FALSE;
+class Base
+{
+    /**
+     * Flag if is loaded.
+     *
+     * @var bool
+     */
+    protected $isLoaded = false;
 
-	/**
-	 * Path to language file
-	 *
-	 * @var string
-	 */
-	protected $llFile = 'EXT:commerce/Resources/Private/Language/locallang_treelib.xml';
+    /**
+     * Path to language file.
+     *
+     * @var string
+     */
+    protected $llFile = 'EXT:commerce/Resources/Private/Language/locallang_treelib.xml';
 
-	/**
-	 * Load the LocalLang features
-	 *
-	 * @return self
-	 */
-	public function __construct() {
-		$this->loadLL();
-	}
+    /**
+     * Load the LocalLang features.
+     *
+     * @return self
+     */
+    public function __construct()
+    {
+        $this->loadLL();
+    }
 
-	/**
-	 * Loads the LocalLang file
-	 * Extending this class if you want to change the ll file implementation
-	 * If you only want to use a different ll file, overwrite the variable instead!
-	 *
-	 * @return void
-	 */
-	public function loadLL() {
-		$this->getLanguageService()->includeLLFile($this->llFile);
-	}
+    /**
+     * Loads the LocalLang file
+     * Extending this class if you want to change the ll file implementation
+     * If you only want to use a different ll file, overwrite the variable instead!
+     */
+    public function loadLL()
+    {
+        $this->getLanguageService()->includeLLFile($this->llFile);
+    }
 
-	/**
-	 * Gets a Locallang-Field inside the LANG
-	 *
-	 * @param string $field LL Field
-	 *
-	 * @return string
-	 */
-	public function getLL($field) {
-		return $this->getLanguageService()->getLL($field);
-	}
+    /**
+     * Gets a Locallang-Field inside the LANG.
+     *
+     * @param string $field LL Field
+     *
+     * @return string
+     */
+    public function getLL($field)
+    {
+        return $this->getLanguageService()->getLL($field);
+    }
 
+    /**
+     * Get database connection.
+     *
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
+    }
 
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
+    /**
+     * Get language service.
+     *
+     * @return \TYPO3\CMS\Lang\LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
+    }
 
-	/**
-	 * Get language service
-	 *
-	 * @return \TYPO3\CMS\Lang\LanguageService
-	 */
-	protected function getLanguageService() {
-		return $GLOBALS['LANG'];
-	}
-
-	/**
-	 * Get backend user
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
-	}
+    /**
+     * Get backend user.
+     *
+     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     */
+    protected function getBackendUser()
+    {
+        return $GLOBALS['BE_USER'];
+    }
 }

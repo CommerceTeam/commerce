@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Tree\Leaf;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,55 +16,58 @@ namespace CommerceTeam\Commerce\Tree\Leaf;
  */
 
 /**
- * Implements the \CommerceTeam\Commerce\Tree\Leaf\View for the Category
+ * Implements the \CommerceTeam\Commerce\Tree\Leaf\View for the Category.
  *
  * Class \CommerceTeam\Commerce\Tree\Leaf\CategoryView
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class CategoryView extends View {
-	/**
-	 * DB Table isn't this read automatically?
-	 *
-	 * @var string
-	 */
-	protected $table = 'tx_commerce_categories';
+class CategoryView extends View
+{
+    /**
+     * DB Table isn't this read automatically?
+     *
+     * @var string
+     */
+    protected $table = 'tx_commerce_categories';
 
-	/**
-	 * Dom id prefix
-	 *
-	 * @var string
-	 */
-	protected $domIdPrefix = 'txcommerceCategory';
+    /**
+     * Dom id prefix.
+     *
+     * @var string
+     */
+    protected $domIdPrefix = 'txcommerceCategory';
 
-	/**
-	 * Returns the link from the tree used to jump to a destination
-	 *
-	 * @param array $row Array with the ID Information
-	 *
-	 * @return string
-	 */
-	public function getJumpToParam(array $row) {
-		if (!is_array($row)) {
-			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'getJumpToParam (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
-					COMMERCE_EXTKEY,
-					3
-				);
-			}
-			return '';
-		}
+    /**
+     * Returns the link from the tree used to jump to a destination.
+     *
+     * @param array $row Array with the ID Information
+     *
+     * @return string
+     */
+    public function getJumpToParam(array $row)
+    {
+        if (!is_array($row)) {
+            if (TYPO3_DLOG) {
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+                    'getJumpToParam (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
+            }
 
-		// get the UID of the Products SysFolder
-		$productPid = \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid();
+            return '';
+        }
 
-		$res = '&id=' . $productPid . '&control[' . $this->table . '][uid]=' . $row['uid'];
+        // get the UID of the Products SysFolder
+        $productPid = \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid();
 
-		if ($this->realValues) {
-			$res = $this->table . '_' . $row['uid'];
-		}
+        $res = '&id='.$productPid.'&control['.$this->table.'][uid]='.$row['uid'];
 
-		return $res;
-	}
+        if ($this->realValues) {
+            $res = $this->table.'_'.$row['uid'];
+        }
+
+        return $res;
+    }
 }

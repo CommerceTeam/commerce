@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Dao;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -21,80 +23,82 @@ namespace CommerceTeam\Commerce\Dao;
  *
  * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
-class FeuserDaoObject extends BasicDaoObject {
-	/**
-	 * Address id
-	 *
-	 * @var int
-	 */
-	public $tx_commerce_tt_address_id;
+class FeuserDaoObject extends BasicDaoObject
+{
+    /**
+     * Address id.
+     *
+     * @var int
+     */
+    public $tx_commerce_tt_address_id;
 
-	/**
-	 * Name
-	 *
-	 * @var string
-	 */
-	protected $name;
+    /**
+     * Name.
+     *
+     * @var string
+     */
+    protected $name;
 
-	/**
-	 * Constructor
-	 *
-	 * @return self
-	 */
-	public function __construct() {
-		// add any mapped fields to object
-		/**
-		 * Frontend user address mapper
-		 *
-		 * @var FeuserAddressFieldmapper $feuserAddressMapper
-		 */
-		$feuserAddressMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-			'CommerceTeam\\Commerce\\Dao\\FeuserAddressFieldmapper'
-		);
-		$fields = $feuserAddressMapper->getFeuserFields();
+    /**
+     * Constructor.
+     *
+     * @return self
+     */
+    public function __construct()
+    {
+        // add any mapped fields to object
+        /**
+         * Frontend user address mapper.
+         *
+         * @var FeuserAddressFieldmapper
+         */
+        $feuserAddressMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            'CommerceTeam\\Commerce\\Dao\\FeuserAddressFieldmapper'
+        );
+        $fields = $feuserAddressMapper->getFeuserFields();
 
-		foreach ($fields as $field) {
-			$this->$field = NULL;
-		}
-	}
+        foreach ($fields as $field) {
+            $this->$field = null;
+        }
+    }
 
-	/**
-	 * Getter
-	 *
-	 * @return string
-	 */
-	public function getName() {
-		return $this->name;
-	}
+    /**
+     * Getter.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	/**
-	 * Setter
-	 *
-	 * @param string $name Name
-	 *
-	 * @return void
-	 */
-	public function setName($name) {
-		$this->name = $name;
-	}
+    /**
+     * Setter.
+     *
+     * @param string $name Name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
 
-	/**
-	 * Getter
-	 *
-	 * @return int
-	 */
-	public function getTx_commerce_tt_address_id() {
-		return $this->tx_commerce_tt_address_id;
-	}
+    /**
+     * Getter.
+     *
+     * @return int
+     */
+    public function getTx_commerce_tt_address_id()
+    {
+        return $this->tx_commerce_tt_address_id;
+    }
 
-	/**
-	 * Setter
-	 *
-	 * @param int $value Value
-	 *
-	 * @return void
-	 */
-	public function setTx_commerce_tt_address_id($value) {
-		$this->tx_commerce_tt_address_id = $value;
-	}
+    /**
+     * Setter.
+     *
+     * @param int $value Value
+     */
+    public function setTx_commerce_tt_address_id($value)
+    {
+        $this->tx_commerce_tt_address_id = $value;
+    }
 }

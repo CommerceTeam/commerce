@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,23 +14,23 @@
  */
 
 /**
- * Systemdata module navigation frame
+ * Systemdata module navigation frame.
  */
 unset($MCONF);
 
-require_once('conf.php');
+require_once 'conf.php';
 define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/Classes/Module/Systemdata/');
 $BACK_PATH = '../../../../../../typo3/';
 
-require_once($BACK_PATH . 'init.php');
+require_once $BACK_PATH.'init.php';
 
 /**
- * System data navigation viewhelper
+ * System data navigation viewhelper.
  *
- * @var $SOBE \CommerceTeam\Commerce\ViewHelpers\Navigation\SystemdataViewHelper
+ * @var \CommerceTeam\Commerce\ViewHelpers\Navigation\SystemdataViewHelper
  */
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-	'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\SystemdataViewHelper'
+    'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\SystemdataViewHelper'
 );
 $SOBE->init();
 $SOBE->initPage();

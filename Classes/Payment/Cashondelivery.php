@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Payment;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,17 +16,18 @@ namespace CommerceTeam\Commerce\Payment;
  */
 
 /**
- * Cash on delivery payment implementation
+ * Cash on delivery payment implementation.
  *
  * Class \CommerceTeam\Commerce\Payment\Cashondelivery
  *
  * @author 2005-2011 Thomas Hempel <thomas@work.de>
  */
-class Cashondelivery extends PaymentAbstract {
-	/**
-	 * Payment type
-	 *
-	 * @var string
-	 */
-	protected $type = 'cashondelivery';
+class Cashondelivery extends PaymentAbstract
+{
+    /**
+     * Payment type.
+     *
+     * @var string
+     */
+    protected $type = 'cashondelivery';
 }

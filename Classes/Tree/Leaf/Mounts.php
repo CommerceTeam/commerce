@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Tree\Leaf;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,289 +16,296 @@ namespace CommerceTeam\Commerce\Tree\Leaf;
  */
 
 /**
- * Implements the mounts for \CommerceTeam\Commerce\Tree\Leaf\Master
+ * Implements the mounts for \CommerceTeam\Commerce\Tree\Leaf\Master.
  *
  * Class \CommerceTeam\Commerce\Tree\Leaf\Mounts
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class Mounts extends Base {
-	/**
-	 * Uid of the User
-	 *
-	 * @var int
-	 */
-	protected $user_uid;
+class Mounts extends Base
+{
+    /**
+     * Uid of the User.
+     *
+     * @var int
+     */
+    protected $user_uid;
 
-	/**
-	 * List with all mounts
-	 *
-	 * @var string
-	 */
-	protected $mountlist;
+    /**
+     * List with all mounts.
+     *
+     * @var string
+     */
+    protected $mountlist;
 
-	/**
-	 * Array with all mounts
-	 *
-	 * @var array
-	 */
-	protected $mountdata;
+    /**
+     * Array with all mounts.
+     *
+     * @var array
+     */
+    protected $mountdata;
 
-	/**
-	 * Walk-Pointer
-	 *
-	 * @var int
-	 */
-	protected $pointer;
+    /**
+     * Walk-Pointer.
+     *
+     * @var int
+     */
+    protected $pointer;
 
-	/**
-	 * User for this mount
-	 *
-	 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected $user;
+    /**
+     * User for this mount.
+     *
+     * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     */
+    protected $user;
 
-	/**
-	 * Group for this mount
-	 *
-	 * @var int
-	 */
-	protected $group;
+    /**
+     * Group for this mount.
+     *
+     * @var int
+     */
+    protected $group;
 
-	/**
-	 * Flag if we want to read the mounts by group
-	 *
-	 * @var bool
-	 */
-	protected $byGroup;
+    /**
+     * Flag if we want to read the mounts by group.
+     *
+     * @var bool
+     */
+    protected $byGroup;
 
-	/**
-	 * Table
-	 *
-	 * @var string
-	 */
-	protected $table = 'be_users';
+    /**
+     * Table.
+     *
+     * @var string
+     */
+    protected $table = 'be_users';
 
-	/**
-	 * Group table
-	 *
-	 * @var string
-	 */
-	protected $grouptable = 'be_groups';
+    /**
+     * Group table.
+     *
+     * @var string
+     */
+    protected $grouptable = 'be_groups';
 
-	/**
-	 * Field
-	 *
-	 * @var string
-	 */
-	protected $field = NULL;
+    /**
+     * Field.
+     *
+     * @var string
+     */
+    protected $field = null;
 
-	/**
-	 * Usergroup field
-	 *
-	 * @var string
-	 */
-	protected $usergroupField = 'usergroup';
+    /**
+     * Usergroup field.
+     *
+     * @var string
+     */
+    protected $usergroupField = 'usergroup';
 
-	/**
-	 * Where
-	 *
-	 * @var string
-	 */
-	protected $where = '';
+    /**
+     * Where.
+     *
+     * @var string
+     */
+    protected $where = '';
 
-	/**
-	 * Constructor - initializes the values
-	 *
-	 * @return self
-	 */
-	public function __construct() {
-		parent::__construct();
+    /**
+     * Constructor - initializes the values.
+     *
+     * @return self
+     */
+    public function __construct()
+    {
+        parent::__construct();
 
-		$this->user_uid  = 0;
-		$this->mountlist = '';
-		$this->mountdata = array();
-		$this->pointer = 0;
-		$this->user = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-			'TYPO3\\CMS\\Core\\Authentication\\BackendUserAuthentication'
-		);
-		$this->group = 0;
-		$this->byGroup = FALSE;
-	}
+        $this->user_uid = 0;
+        $this->mountlist = '';
+        $this->mountdata = array();
+        $this->pointer = 0;
+        $this->user = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            'TYPO3\\CMS\\Core\\Authentication\\BackendUserAuthentication'
+        );
+        $this->group = 0;
+        $this->byGroup = false;
+    }
 
-	/**
-	 * Initializes the Mounts for a user
-	 * Overwrite this function if you plan to not
-	 * read Mountpoints from the be_users table
-	 *
-	 * @param int $uid User UID
-	 *
-	 * @return void
-	 */
-	public function init($uid) {
-		// Return if the UID is not numeric - could also be because we have a new user
-		if (!is_numeric($uid) || $this->field == NULL) {
-			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'init (CommerceTeam\\Commerce\\Tree\\Leaf\\Mounts) gets passed invalid parameters. Script is aborted.',
-					COMMERCE_EXTKEY,
-					2
-				);
-			}
-			return;
-		}
+    /**
+     * Initializes the Mounts for a user
+     * Overwrite this function if you plan to not
+     * read Mountpoints from the be_users table.
+     *
+     * @param int $uid User UID
+     */
+    public function init($uid)
+    {
+        // Return if the UID is not numeric - could also be because we have a new user
+        if (!is_numeric($uid) || $this->field == null) {
+            if (TYPO3_DLOG) {
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+                    'init (CommerceTeam\\Commerce\\Tree\\Leaf\\Mounts) gets passed invalid parameters. Script is aborted.',
+                    COMMERCE_EXTKEY,
+                    2
+                );
+            }
 
-		$this->user_uid = $uid;
-		$this->user->setBeUserByUid($uid);
+            return;
+        }
 
-		$mounts = $this->getMounts();
+        $this->user_uid = $uid;
+        $this->user->setBeUserByUid($uid);
 
-		// If neither User nor Group have mounts, return
-		if ($mounts == NULL) {
-			return;
-		}
+        $mounts = $this->getMounts();
 
-		// Store the results
-		$this->mountlist = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($mounts);
-		// Clean duplicates
-		$this->mountdata = explode(',', $this->mountlist);
-	}
+        // If neither User nor Group have mounts, return
+        if ($mounts == null) {
+            return;
+        }
 
-	/**
-	 * Initializes the Mounts for a group
-	 * Overwrite this function if you plan to not
-	 * read Mountpoints from the be_groups table
-	 *
-	 * @param int $uid Group UID
-	 *
-	 * @return void
-	 */
-	public function initByGroup($uid) {
-		// Return if the UID is not numeric - could also be because we have a new user
-		if (!is_numeric($uid) || $this->field == NULL) {
-			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'initByGroup (mounts) gets passed invalid parameters. Script is aborted.',
-					COMMERCE_EXTKEY,
-					2
-				);
-			}
-			return;
-		}
+        // Store the results
+        $this->mountlist = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($mounts);
+        // Clean duplicates
+        $this->mountdata = explode(',', $this->mountlist);
+    }
 
-		$this->byGroup = TRUE;
-		$this->group = $uid;
-		$this->user_uid = 0;
+    /**
+     * Initializes the Mounts for a group
+     * Overwrite this function if you plan to not
+     * read Mountpoints from the be_groups table.
+     *
+     * @param int $uid Group UID
+     */
+    public function initByGroup($uid)
+    {
+        // Return if the UID is not numeric - could also be because we have a new user
+        if (!is_numeric($uid) || $this->field == null) {
+            if (TYPO3_DLOG) {
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+                    'initByGroup (mounts) gets passed invalid parameters. Script is aborted.',
+                    COMMERCE_EXTKEY,
+                    2
+                );
+            }
 
-		$mounts = $this->getMounts();
+            return;
+        }
 
-		// If the Group has no mounts, return
-		if ($mounts == NULL) {
-			return;
-		}
+        $this->byGroup = true;
+        $this->group = $uid;
+        $this->user_uid = 0;
 
-		// Store the results
-		$this->mountlist = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($mounts);
-		// Clean duplicates
-		$this->mountdata = explode(',', $this->mountlist);
-	}
+        $mounts = $this->getMounts();
 
-	/**
-	 * Returns a comma-separeted list of mounts
-	 *
-	 * @return string item1, item2, ..., itemN
-	 */
-	protected function getMounts() {
-		$mounts = '';
+        // If the Group has no mounts, return
+        if ($mounts == null) {
+            return;
+        }
 
-		// Set mount to 0 if the User is a admin
-		if (!$this->byGroup && $this->user->isAdmin()) {
-			$mounts = '0';
-		} else {
-			$database = $this->getDatabaseConnection();
-			// Read usermounts - if none are set, mounts are set to NULL
-			if (!$this->byGroup) {
-				$result = $database->exec_SELECTquery(
-					$this->field . ',' . $this->usergroupField,
-					$this->table,
-					'uid = ' . $this->user_uid,
-					$this->where
-				);
+        // Store the results
+        $this->mountlist = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($mounts);
+        // Clean duplicates
+        $this->mountdata = explode(',', $this->mountlist);
+    }
 
-				$row = $database->sql_fetch_assoc($result);
-				$mounts = $row[$this->field];
+    /**
+     * Returns a comma-separeted list of mounts.
+     *
+     * @return string item1, item2, ..., itemN
+     */
+    protected function getMounts()
+    {
+        $mounts = '';
 
-				// Read Usergroup mounts
-				$groups = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($row[$this->usergroupField]);
-			} else {
-				$groups = $this->group;
-			}
+        // Set mount to 0 if the User is a admin
+        if (!$this->byGroup && $this->user->isAdmin()) {
+            $mounts = '0';
+        } else {
+            $database = $this->getDatabaseConnection();
+            // Read usermounts - if none are set, mounts are set to NULL
+            if (!$this->byGroup) {
+                $result = $database->exec_SELECTquery(
+                    $this->field.','.$this->usergroupField,
+                    $this->table,
+                    'uid = '.$this->user_uid,
+                    $this->where
+                );
 
-			if (trim($groups)) {
-				$result = $database->exec_SELECTquery($this->field, $this->grouptable, 'uid IN (' . $groups . ')');
+                $row = $database->sql_fetch_assoc($result);
+                $mounts = $row[$this->field];
 
-				// Walk the groups and add the mounts
-				while (($row = $database->sql_fetch_assoc($result))) {
-					$mounts .= ',' . $row[$this->field];
-				}
+                // Read Usergroup mounts
+                $groups = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($row[$this->usergroupField]);
+            } else {
+                $groups = $this->group;
+            }
 
-				// Make nicely formated list
-				$mounts = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($mounts);
-			}
-		}
+            if (trim($groups)) {
+                $result = $database->exec_SELECTquery($this->field, $this->grouptable, 'uid IN ('.$groups.')');
 
-		return $mounts;
-	}
+                // Walk the groups and add the mounts
+                while (($row = $database->sql_fetch_assoc($result))) {
+                    $mounts .= ','.$row[$this->field];
+                }
 
-	/**
-	 * Checks whether the User has mounts
-	 *
-	 * @return bool
-	 */
-	public function hasMounts() {
-		return ($this->mountlist != '');
-	}
+                // Make nicely formated list
+                $mounts = \TYPO3\CMS\Core\Utility\GeneralUtility::uniqueList($mounts);
+            }
+        }
 
-	/**
-	 * Returns the mountlist of the current BE User
-	 *
-	 * @return string
-	 */
-	public function getMountList() {
-		return $this->mountlist;
-	}
+        return $mounts;
+    }
 
-	/**
-	 * Returns the array with the mounts of the current BE User
-	 *
-	 * @return array
-	 */
-	public function getMountData() {
-		return $this->mountdata;
-	}
+    /**
+     * Checks whether the User has mounts.
+     *
+     * @return bool
+     */
+    public function hasMounts()
+    {
+        return ($this->mountlist != '');
+    }
 
-	/**
-	 * Walks the category mounts
-	 * Returns the mount-id or FALSE
-	 *
-	 * @return int
-	 */
-	public function walk() {
-			// Abort if we reached the end of this collection
-		if (!isset($this->mountdata[$this->pointer])) {
-			$this->resetPointer();
-			return FALSE;
-		}
+    /**
+     * Returns the mountlist of the current BE User.
+     *
+     * @return string
+     */
+    public function getMountList()
+    {
+        return $this->mountlist;
+    }
 
-		return $this->mountdata[$this->pointer++];
-	}
+    /**
+     * Returns the array with the mounts of the current BE User.
+     *
+     * @return array
+     */
+    public function getMountData()
+    {
+        return $this->mountdata;
+    }
 
-	/**
-	 * Sets the internal pointer to 0
-	 *
-	 * @return void
-	 */
-	public function resetPointer() {
-		$this->pointer = 0;
-	}
+    /**
+     * Walks the category mounts
+     * Returns the mount-id or FALSE.
+     *
+     * @return int
+     */
+    public function walk()
+    {
+        // Abort if we reached the end of this collection
+        if (!isset($this->mountdata[$this->pointer])) {
+            $this->resetPointer();
+
+            return false;
+        }
+
+        return $this->mountdata[$this->pointer++];
+    }
+
+    /**
+     * Sets the internal pointer to 0.
+     */
+    public function resetPointer()
+    {
+        $this->pointer = 0;
+    }
 }

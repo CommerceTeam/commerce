@@ -9,3 +9,4 @@ $MCONF['name'] = 'txcommerceM1_systemdata';
 $MCONF['navFrameScript'] = 'navigation.php';
 // @todo try to implement https://forge.typo3.org/issues/59369
 // $MCONF['navigationFrameModule'] = 'systemdatanavigation';
+

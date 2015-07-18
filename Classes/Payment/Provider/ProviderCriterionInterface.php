@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Payment\Provider;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,27 +16,28 @@ namespace CommerceTeam\Commerce\Payment\Provider;
  */
 
 /**
- * Payment provider criterion interface
+ * Payment provider criterion interface.
  *
  * Class \CommerceTeam\Commerce\Payment\Provider\ProviderCriterionInterface
  *
  * @author 2011 Christian Kuhn <lolli@schwarzbu.ch>
  */
-interface ProviderCriterionInterface {
-	/**
-	 * Constructor
-	 *
-	 * @param ProviderInterface $providerObject Parent payment
-	 * @param array $options Configuration array
-	 *
-	 * @return self
-	 */
-	public function __construct(ProviderInterface $providerObject, array $options = array());
+interface ProviderCriterionInterface
+{
+    /**
+     * Constructor.
+     *
+     * @param ProviderInterface $providerObject Parent payment
+     * @param array             $options        Configuration array
+     *
+     * @return self
+     */
+    public function __construct(ProviderInterface $providerObject, array $options = array());
 
-	/**
-	 * Return TRUE if this payment type is allowed.
-	 *
-	 * @return bool
-	 */
-	public function isAllowed();
+    /**
+     * Return TRUE if this payment type is allowed.
+     *
+     * @return bool
+     */
+    public function isAllowed();
 }

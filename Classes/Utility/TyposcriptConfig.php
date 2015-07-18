@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Utility;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,33 +16,36 @@ namespace CommerceTeam\Commerce\Utility;
  */
 
 /**
- * Typoscript config functions
+ * Typoscript config functions.
  *
  * Class \CommerceTeam\Commerce\Utility\TyposcriptConfig
  *
  * @author 2014 Sebastian Fischer <typo3@marketing-factory.de>
  */
-class TyposcriptConfig {
-	/**
-	 * Is commerce page check
-	 *
-	 * @return bool
-	 */
-	public static function isCommercePage() {
-		$table = 'pages';
-		$pageId = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
+class TyposcriptConfig
+{
+    /**
+     * Is commerce page check.
+     *
+     * @return bool
+     */
+    public static function isCommercePage()
+    {
+        $table = 'pages';
+        $pageId = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
 
-		$record = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL($table, $pageId);
+        $record = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL($table, $pageId);
 
-		return is_array($record) && isset($record['module']) && $record['module'] == 'commerce';
-	}
+        return is_array($record) && isset($record['module']) && $record['module'] == 'commerce';
+    }
 }
 
 /**
- * Check if a commerce plugin is on the page
+ * Check if a commerce plugin is on the page.
  *
  * @return bool
  */
-function user_isCommercePage() {
-	return \CommerceTeam\Commerce\Utility\TyposcriptConfig::isCommercePage();
+function user_isCommercePage()
+{
+    return \CommerceTeam\Commerce\Utility\TyposcriptConfig::isCommercePage();
 }

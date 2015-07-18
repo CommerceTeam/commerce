@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Dao;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -23,21 +25,21 @@ use CommerceTeam\Commerce\Factory\SettingsFactory;
  *
  * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
-class FeuserDaoMapper extends BasicDaoMapper {
-	/**
-	 * Table for persistence
-	 *
-	 * @var string
-	 */
-	protected $dbTable = 'fe_users';
+class FeuserDaoMapper extends BasicDaoMapper
+{
+    /**
+     * Table for persistence.
+     *
+     * @var string
+     */
+    protected $dbTable = 'fe_users';
 
-	/**
-	 * Initialization
-	 *
-	 * @return void
-	 */
-	public function init() {
-		parent::init();
-		$this->createPid = SettingsFactory::getInstance()->getExtConf('create_feuser_pid');
-	}
+    /**
+     * Initialization.
+     */
+    public function init()
+    {
+        parent::init();
+        $this->createPid = SettingsFactory::getInstance()->getExtConf('create_feuser_pid');
+    }
 }

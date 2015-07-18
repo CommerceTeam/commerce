@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,9 +18,9 @@
  */
 
 /**
- * Orders module
+ * Orders module.
  *
- * @var \CommerceTeam\Commerce\Controller\OrdersModuleController $SOBE
+ * @var \CommerceTeam\Commerce\Controller\OrdersModuleController
  */
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\OrdersModuleController');
 $SOBE->init();

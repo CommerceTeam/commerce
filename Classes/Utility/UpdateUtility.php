@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Utility;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,7 +16,7 @@ namespace CommerceTeam\Commerce\Utility;
  */
 
 /**
- * Update Class for DB Updates of version 0.11.0
+ * Update Class for DB Updates of version 0.11.0.
  *
  * Basically checks for the new Tree, if all records have a MM
  * relation to Record UID 0 if not, these records are created
@@ -23,262 +25,279 @@ namespace CommerceTeam\Commerce\Utility;
  *
  * @author 2008-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class UpdateUtility {
-	/**
-	 * Performes the Updates
-	 * Outputs HTML Content
-	 *
-	 * @return string
-	 */
-	public function main() {
-		$htmlCode = array();
+class UpdateUtility
+{
+    /**
+     * Performes the Updates
+     * Outputs HTML Content.
+     *
+     * @return string
+     */
+    public function main()
+    {
+        $htmlCode = array();
 
-		$htmlCode[] = 'This updates were performed successfully:
+        $htmlCode[] = 'This updates were performed successfully:
 			<ul>';
 
-		if ($this->isCategoryWithoutParentMm()) {
-			$createdRelations = $this->createParentMmRecords();
-			if ($createdRelations > 0) {
-				$htmlCode[] = '<li>' . $createdRelations .
-					' updated mm-Relations for the Category Records. <b>Please Check you Category Tree!</b></li>';
-			}
-		}
+        if ($this->isCategoryWithoutParentMm()) {
+            $createdRelations = $this->createParentMmRecords();
+            if ($createdRelations > 0) {
+                $htmlCode[] = '<li>'.$createdRelations.
+                    ' updated mm-Relations for the Category Records. <b>Please Check you Category Tree!</b></li>';
+            }
+        }
 
-		if ($this->isCategoryWithoutUserrights()) {
-			$createDefaultRights = $this->createDefaultRights();
-			if ($createDefaultRights > 0) {
-				$htmlCode[] = '<li>' . $createDefaultRights .
-					' updated User-rights on categories. Set to rights on the commerce products folder</li>';
-			}
-		}
+        if ($this->isCategoryWithoutUserrights()) {
+            $createDefaultRights = $this->createDefaultRights();
+            if ($createDefaultRights > 0) {
+                $htmlCode[] = '<li>'.$createDefaultRights.
+                    ' updated User-rights on categories. Set to rights on the commerce products folder</li>';
+            }
+        }
 
-		if (!$this->isBackendUserSet()) {
-			$createBackendUser = $this->createBackendUser();
-			if ($createBackendUser) {
-				$htmlCode[] = '<li>Default user created</li>';
-			}
-		}
+        if (!$this->isBackendUserSet()) {
+            $createBackendUser = $this->createBackendUser();
+            if ($createBackendUser) {
+                $htmlCode[] = '<li>Default user created</li>';
+            }
+        }
 
-		if ($this->isGreytreeFolder()) {
-			$updatedFolders = $this->updateFolders();
-			if ($updatedFolders) {
-				$htmlCode[] = '<li>' . $updatedFolders . ' updated commerce foldernames that were graytree foldernames before</li>';
-			}
-		}
+        if ($this->isGreytreeFolder()) {
+            $updatedFolders = $this->updateFolders();
+            if ($updatedFolders) {
+                $htmlCode[] = '<li>'.$updatedFolders.' updated commerce foldernames that were graytree foldernames before</li>';
+            }
+        }
 
-		$htmlCode[] = '</ul>';
+        $htmlCode[] = '</ul>';
 
-		return implode(chr(10), $htmlCode);
-	}
+        return implode(chr(10), $htmlCode);
+    }
 
-	/**
-	 * Creates the missing MM records for categories below the root (UID=0) element
-	 *
-	 * @return int Num Records Changed
-	 */
-	public function createParentMmRecords() {
-		$database = $this->getDatabaseConnection();
-		$countRecords = 0;
+    /**
+     * Creates the missing MM records for categories below the root (UID=0) element.
+     *
+     * @return int Num Records Changed
+     */
+    public function createParentMmRecords()
+    {
+        $database = $this->getDatabaseConnection();
+        $countRecords = 0;
 
-		$result = $database->exec_SELECTquery(
-			'uid',
-			'tx_commerce_categories',
-			'sys_language_uid = 0 AND l18n_parent = 0 AND uid NOT IN (
+        $result = $database->exec_SELECTquery(
+            'uid',
+            'tx_commerce_categories',
+            'sys_language_uid = 0 AND l18n_parent = 0 AND uid NOT IN (
 				SELECT uid_local FROM tx_commerce_categories_parent_category_mm
 			) AND tx_commerce_categories.deleted = 0'
-		);
-		while (($row = $database->sql_fetch_assoc($result))) {
-			$data = array(
-				'uid_local' => $row['uid'],
-				'uid_foreign' => 0,
-				'tablenames' => '',
-				'sorting' => 99,
-			);
+        );
+        while (($row = $database->sql_fetch_assoc($result))) {
+            $data = array(
+                'uid_local' => $row['uid'],
+                'uid_foreign' => 0,
+                'tablenames' => '',
+                'sorting' => 99,
+            );
 
-			$database->exec_INSERTquery('tx_commerce_categories_parent_category_mm', $data);
-			$countRecords++;
-		}
-		return $countRecords;
-	}
+            $database->exec_INSERTquery('tx_commerce_categories_parent_category_mm', $data);
+            ++$countRecords;
+        }
 
-	/**
-	 * Sets the default user rights, based on the
-	 * <User-Rights in the commerce-products folder
-	 *
-	 * @return int
-	 */
-	public function createDefaultRights() {
-		$database = $this->getDatabaseConnection();
-		$countRecords = 0;
+        return $countRecords;
+    }
 
-		/**
-		 * Get data from folder
-		 */
-		list($modPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Commerce', 'commerce', 0, '', FALSE);
-		list($prodPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders(
-			'Products', 'commerce', $modPid, '', FALSE
-		);
-		$resrights = $database->exec_SELECTquery(
-			'perms_userid, perms_groupid, perms_user, perms_group, perms_everybody',
-			'pages',
-			'uid = ' . $prodPid
-		);
-		$data = $database->sql_fetch_assoc($resrights);
+    /**
+     * Sets the default user rights, based on the
+     * <User-Rights in the commerce-products folder.
+     *
+     * @return int
+     */
+    public function createDefaultRights()
+    {
+        $database = $this->getDatabaseConnection();
+        $countRecords = 0;
 
-		$result = $database->exec_SELECTquery(
-			'uid',
-			'tx_commerce_categories',
-			'perms_user = 0 OR perms_group = 0 OR perms_everybody = 0'
-		);
-		while (($row = $database->sql_fetch_assoc($result))) {
-			$database->exec_UPDATEquery('tx_commerce_categories', 'uid = ' . $row['uid'], $data);
-			$countRecords++;
-		}
-		return ++$countRecords;
-	}
+        /*
+         * Get data from folder
+         */
+        list($modPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Commerce', 'commerce', 0, '', false);
+        list($prodPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders(
+            'Products', 'commerce', $modPid, '', false
+        );
+        $resrights = $database->exec_SELECTquery(
+            'perms_userid, perms_groupid, perms_user, perms_group, perms_everybody',
+            'pages',
+            'uid = '.$prodPid
+        );
+        $data = $database->sql_fetch_assoc($resrights);
 
-	/**
-	 * Creates the missing MM records for categories below the root (UID=0) element
-	 *
-	 * @return int
-	 */
-	public function createBackendUser() {
-		$userId = 0;
-		$database = $this->getDatabaseConnection();
+        $result = $database->exec_SELECTquery(
+            'uid',
+            'tx_commerce_categories',
+            'perms_user = 0 OR perms_group = 0 OR perms_everybody = 0'
+        );
+        while (($row = $database->sql_fetch_assoc($result))) {
+            $database->exec_UPDATEquery('tx_commerce_categories', 'uid = '.$row['uid'], $data);
+            ++$countRecords;
+        }
 
-		$result = $database->exec_SELECTquery('uid', 'be_users', 'username = \'_fe_commerce\'');
-		if ($result && $database->sql_num_rows($result) == 0) {
-			$data = array(
-				'pid' => 0,
-				'username' => '_fe_commerce',
-				'password' => 'MD5(RAND())',
-				'tstamp' => $GLOBALS['EXEC_TIME'],
-				'crdate' => $GLOBALS['EXEC_TIME'],
-			);
+        return ++$countRecords;
+    }
 
-			$database->exec_INSERTquery(
-				'be_users',
-				$data,
-				array(
-					'password',
-					'tstamp',
-					'crdate'
-				)
-			);
-			$userId = $this->getDatabaseConnection()->sql_insert_id();
-		}
-		return $userId;
-	}
+    /**
+     * Creates the missing MM records for categories below the root (UID=0) element.
+     *
+     * @return int
+     */
+    public function createBackendUser()
+    {
+        $userId = 0;
+        $database = $this->getDatabaseConnection();
 
-	/**
-	 * Update pages to set empty tx_commerce_foldername with tx_graytree_foldername
-	 * if tx_graytree_foldername is not empty
-	 *
-	 * @return int
-	 */
-	public function updateFolders() {
-		$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-			'COUNT(uid) AS count',
-			'pages',
-			'tx_commerce_foldername = \'\' AND tx_graytree_foldername != \'\''
-		);
+        $result = $database->exec_SELECTquery('uid', 'be_users', 'username = \'_fe_commerce\'');
+        if ($result && $database->sql_num_rows($result) == 0) {
+            $data = array(
+                'pid' => 0,
+                'username' => '_fe_commerce',
+                'password' => 'MD5(RAND())',
+                'tstamp' => $GLOBALS['EXEC_TIME'],
+                'crdate' => $GLOBALS['EXEC_TIME'],
+            );
 
-		$this->getDatabaseConnection()->exec_UPDATEquery(
-			'pages',
-			'tx_commerce_foldername = \'\' AND tx_graytree_foldername != \'\'',
-			array('tx_commerce_foldername' => 'tx_graytree_foldername'),
-			array('tx_commerce_foldername')
-		);
+            $database->exec_INSERTquery(
+                'be_users',
+                $data,
+                array(
+                    'password',
+                    'tstamp',
+                    'crdate',
+                )
+            );
+            $userId = $this->getDatabaseConnection()->sql_insert_id();
+        }
 
-		return $row['count'];
-	}
+        return $userId;
+    }
 
+    /**
+     * Update pages to set empty tx_commerce_foldername with tx_graytree_foldername
+     * if tx_graytree_foldername is not empty.
+     *
+     * @return int
+     */
+    public function updateFolders()
+    {
+        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'COUNT(uid) AS count',
+            'pages',
+            'tx_commerce_foldername = \'\' AND tx_graytree_foldername != \'\''
+        );
 
-	/**
-	 * Check if the Ipdate is necessary
-	 *
-	 * @return bool True if update should be perfomed
-	 */
-	public function access() {
-		if (!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('commerce')) {
-			return FALSE;
-		}
+        $this->getDatabaseConnection()->exec_UPDATEquery(
+            'pages',
+            'tx_commerce_foldername = \'\' AND tx_graytree_foldername != \'\'',
+            array('tx_commerce_foldername' => 'tx_graytree_foldername'),
+            array('tx_commerce_foldername')
+        );
 
-		if ($this->isCategoryWithoutParentMm()) {
-			return TRUE;
-		}
-		if ($this->isCategoryWithoutUserrights()) {
-			return TRUE;
-		}
-		if (!$this->isBackendUserSet()) {
-			return TRUE;
-		}
-		if ($this->isGreytreeFolder()) {
-			return TRUE;
-		}
+        return $row['count'];
+    }
 
-		return FALSE;
-	}
+    /**
+     * Check if the Ipdate is necessary.
+     *
+     * @return bool True if update should be perfomed
+     */
+    public function access()
+    {
+        if (!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('commerce')) {
+            return false;
+        }
 
-	/**
-	 * Check if category without parent mm relation is present
-	 * @return bool
-	 */
-	protected function isCategoryWithoutParentMm() {
-		$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-			'COUNT(uid) AS count',
-			'tx_commerce_categories',
-			'uid NOT IN (
+        if ($this->isCategoryWithoutParentMm()) {
+            return true;
+        }
+        if ($this->isCategoryWithoutUserrights()) {
+            return true;
+        }
+        if (!$this->isBackendUserSet()) {
+            return true;
+        }
+        if ($this->isGreytreeFolder()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if category without parent mm relation is present.
+     *
+     * @return bool
+     */
+    protected function isCategoryWithoutParentMm()
+    {
+        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'COUNT(uid) AS count',
+            'tx_commerce_categories',
+            'uid NOT IN (
 				SELECT uid_local FROM tx_commerce_categories_parent_category_mm
 			) AND tx_commerce_categories.deleted = 0 AND sys_language_uid = 0 AND l18n_parent = 0'
-		);
-		return $row['count'] > 0;
-	}
+        );
 
-	/**
-	 * Checks if category records without any user rights are present
-	 *
-	 * @return bool
-	 */
-	protected function isCategoryWithoutUserrights() {
-		$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-			'COUNT(uid) AS count',
-			'tx_commerce_categories',
-			'perms_user = 0 AND perms_group = 0 AND perms_everybody = 0'
-		);
-		return $row['count'] > 0;
-	}
+        return $row['count'] > 0;
+    }
 
-	/**
-	 * Check if backend user is set
-	 *
-	 * @return int
-	 */
-	protected function isBackendUserSet() {
-		return !empty($this->getDatabaseConnection()->exec_SELECTgetSingleRow('uid', 'be_users', 'username = \'_fe_commerce\''));
-	}
+    /**
+     * Checks if category records without any user rights are present.
+     *
+     * @return bool
+     */
+    protected function isCategoryWithoutUserrights()
+    {
+        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'COUNT(uid) AS count',
+            'tx_commerce_categories',
+            'perms_user = 0 AND perms_group = 0 AND perms_everybody = 0'
+        );
 
-	/**
-	 * Check if graytree_foldername is set but commerce_foldername is not
-	 *
-	 * @return bool
-	 */
-	protected function isGreytreeFolder() {
-		$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-			'COUNT(uid) AS count',
-			'pages',
-			'tx_commerce_foldername = \'\' AND tx_graytree_foldername != \'\''
-		);
-		return $row['count'] > 0;
-	}
+        return $row['count'] > 0;
+    }
 
+    /**
+     * Check if backend user is set.
+     *
+     * @return int
+     */
+    protected function isBackendUserSet()
+    {
+        return !empty($this->getDatabaseConnection()->exec_SELECTgetSingleRow('uid', 'be_users', 'username = \'_fe_commerce\''));
+    }
 
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
+    /**
+     * Check if graytree_foldername is set but commerce_foldername is not.
+     *
+     * @return bool
+     */
+    protected function isGreytreeFolder()
+    {
+        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'COUNT(uid) AS count',
+            'pages',
+            'tx_commerce_foldername = \'\' AND tx_graytree_foldername != \'\''
+        );
+
+        return $row['count'] > 0;
+    }
+
+    /**
+     * Get database connection.
+     *
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
+    }
 }

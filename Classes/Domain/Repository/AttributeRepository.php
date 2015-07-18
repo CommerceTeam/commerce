@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Domain\Repository;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,78 +24,81 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class AttributeRepository extends Repository {
-	/**
-	 * Database table
-	 *
-	 * @var string
-	 */
-	public $databaseTable = 'tx_commerce_attributes';
+class AttributeRepository extends Repository
+{
+    /**
+     * Database table.
+     *
+     * @var string
+     */
+    public $databaseTable = 'tx_commerce_attributes';
 
-	/**
-	 * Database value table
-	 *
-	 * @var string Child database table
-	 */
-	protected $childDatabaseTable = 'tx_commerce_attribute_values';
+    /**
+     * Database value table.
+     *
+     * @var string Child database table
+     */
+    protected $childDatabaseTable = 'tx_commerce_attribute_values';
 
-	/**
-	 * Gets a list of attribute_value_uids
-	 *
-	 * @param int $uid Uid
-	 *
-	 * @return array
-	 */
-	public function getAttributeValueUids($uid) {
-		$database = $this->getDatabaseConnection();
+    /**
+     * Gets a list of attribute_value_uids.
+     *
+     * @param int $uid Uid
+     *
+     * @return array
+     */
+    public function getAttributeValueUids($uid)
+    {
+        $database = $this->getDatabaseConnection();
 
-		$result = $database->exec_SELECTquery(
-			'uid',
-			$this->childDatabaseTable,
-			'attributes_uid = ' . (int) $uid . $this->enableFields($this->childDatabaseTable),
-			'',
-			'sorting'
-		);
+        $result = $database->exec_SELECTquery(
+            'uid',
+            $this->childDatabaseTable,
+            'attributes_uid = '.(int) $uid.$this->enableFields($this->childDatabaseTable),
+            '',
+            'sorting'
+        );
 
-		$attributeValueList = array();
-		if ($database->sql_num_rows($result) > 0) {
-			while (($data = $database->sql_fetch_assoc($result))) {
-				$attributeValueList[] = (int) $data['uid'];
-			}
-		}
-		$database->sql_free_result($result);
+        $attributeValueList = array();
+        if ($database->sql_num_rows($result) > 0) {
+            while (($data = $database->sql_fetch_assoc($result))) {
+                $attributeValueList[] = (int) $data['uid'];
+            }
+        }
+        $database->sql_free_result($result);
 
-		return $attributeValueList;
-	}
+        return $attributeValueList;
+    }
 
-	/**
-	 * Get child attribute uids
-	 *
-	 * @param int $uid Uid
-	 *
-	 * @return array
-	 */
-	public function getChildAttributeUids($uid) {
-		$database = $this->getDatabaseConnection();
+    /**
+     * Get child attribute uids.
+     *
+     * @param int $uid Uid
+     *
+     * @return array
+     */
+    public function getChildAttributeUids($uid)
+    {
+        $database = $this->getDatabaseConnection();
 
-		$childAttributeList = array();
-		if ((int) $uid) {
-			$result = $database->exec_SELECTquery(
-				'uid',
-				$this->databaseTable,
-				'parent = ' . (int) $uid . $this->enableFields($this->databaseTable),
-				'',
-				'sorting'
-			);
+        $childAttributeList = array();
+        if ((int) $uid) {
+            $result = $database->exec_SELECTquery(
+                'uid',
+                $this->databaseTable,
+                'parent = '.(int) $uid.$this->enableFields($this->databaseTable),
+                '',
+                'sorting'
+            );
 
-			if ($database->sql_num_rows($result) > 0) {
-				while (($data = $database->sql_fetch_assoc($result))) {
-					$childAttributeList[] = (int) $data['uid'];
-				}
-			}
-			$database->sql_free_result($result);
-		}
+            if ($database->sql_num_rows($result) > 0) {
+                while (($data = $database->sql_fetch_assoc($result))) {
+                    $childAttributeList[] = (int) $data['uid'];
+                }
+            }
+            $database->sql_free_result($result);
+        }
 
-		return $childAttributeList;
-	}
+        return $childAttributeList;
+    }
 }

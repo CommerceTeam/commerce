@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\ViewHelpers\Navigation;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,49 +19,48 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Main script class for the systemData navigation frame
+ * Main script class for the systemData navigation frame.
  *
  * Class \CommerceTeam\Commerce\ViewHelpers\Navigation\SystemdataViewHelper
  *
  * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
-class SystemdataViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
-	/**
-	 * Has filter box
-	 *
-	 * @var bool
-	 */
-	protected $hasFilterBox = FALSE;
+class SystemdataViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass
+{
+    /**
+     * Has filter box.
+     *
+     * @var bool
+     */
+    protected $hasFilterBox = false;
 
-	/**
-	 * Initialization
-	 *
-	 * @return void
-	 */
-	public function init() {
-		$this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
+    /**
+     * Initialization.
+     */
+    public function init()
+    {
+        $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
 
-		$this->id = reset(\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Commerce', 'commerce'));
-	}
+        $this->id = reset(\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Commerce', 'commerce'));
+    }
 
-	/**
-	 * Initializes the Page
-	 *
-	 * @return void
-	 */
-	public function initPage() {
-		/**
-		 * Document template
-		 *
-		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
-		 */
-		$doc = GeneralUtility::makeInstance('\TYPO3\CMS\Backend\Template\DocumentTemplate');
-		$this->doc = $doc;
-		$this->doc->backPath = $this->getBackPath();
-		$this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_systemdata_navigation.html');
-		$this->doc->showFlashMessages = FALSE;
+    /**
+     * Initializes the Page.
+     */
+    public function initPage()
+    {
+        /**
+         * Document template.
+         *
+         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
+         */
+        $doc = GeneralUtility::makeInstance('\TYPO3\CMS\Backend\Template\DocumentTemplate');
+        $this->doc = $doc;
+        $this->doc->backPath = $this->getBackPath();
+        $this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_systemdata_navigation.html');
+        $this->doc->showFlashMessages = false;
 
-		$this->doc->JScode = $this->doc->wrapScriptTags('
+        $this->doc->JScode = $this->doc->wrapScriptTags('
 			function jumpTo(func, linkObj) {
 				var theUrl = top.TS.PATH_typo3 + top.currentSubScript+"&SET[function]=" + func;
 
@@ -69,97 +70,96 @@ class SystemdataViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					parent.list_frame.document.location=theUrl;
 				}
 
-				' . (!$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) {linkObj.blur();}') . '
+				'.(!$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) {linkObj.blur();}').'
 				return false;
 			}
 		');
 
-		$this->doc->postCode = $this->doc->wrapScriptTags('
+        $this->doc->postCode = $this->doc->wrapScriptTags('
 			script_ended = 1;
 			if (top.fsMod) {
-				top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
+				top.fsMod.recentIds["web"] = '.(int) $this->id.';
 			}
 		');
 
-		$this->doc->bodyTagId = 'typo3-pagetree';
-	}
+        $this->doc->bodyTagId = 'typo3-pagetree';
+    }
 
-	/**
-	 * Main method
-	 *
-	 * @return void
-	 */
-	public function main() {
-		$docHeaderButtons = $this->getButtons();
+    /**
+     * Main method.
+     */
+    public function main()
+    {
+        $docHeaderButtons = $this->getButtons();
 
-		$markers = array(
-			'ATTRIBUTES_TITLE' => $this->getLanguageService()->getLL('title_attributes'),
-			'ATTRIBUTES_DESCRIPTION' => $this->getLanguageService()->getLL('desc_attributes'),
+        $markers = array(
+            'ATTRIBUTES_TITLE' => $this->getLanguageService()->getLL('title_attributes'),
+            'ATTRIBUTES_DESCRIPTION' => $this->getLanguageService()->getLL('desc_attributes'),
 
-			'MANUFACTURER_TITLE' => $this->getLanguageService()->getLL('title_manufacturer'),
-			'MANUFACTURER_DESCRIPTION' => $this->getLanguageService()->getLL('desc_manufacturer'),
+            'MANUFACTURER_TITLE' => $this->getLanguageService()->getLL('title_manufacturer'),
+            'MANUFACTURER_DESCRIPTION' => $this->getLanguageService()->getLL('desc_manufacturer'),
 
-			'SUPPLIER_TITLE' => $this->getLanguageService()->getLL('title_supplier'),
-			'SUPPLIER_DESCRIPTION' => $this->getLanguageService()->getLL('desc_supplier'),
-		);
+            'SUPPLIER_TITLE' => $this->getLanguageService()->getLL('title_supplier'),
+            'SUPPLIER_DESCRIPTION' => $this->getLanguageService()->getLL('desc_supplier'),
+        );
 
-		$subparts = array();
-		if (!$this->hasFilterBox) {
-			$subparts['###SECOND_ROW###'] = '';
-		}
+        $subparts = array();
+        if (!$this->hasFilterBox) {
+            $subparts['###SECOND_ROW###'] = '';
+        }
 
-		// put it all together
-		$this->content = $this->doc->startPage(
-			$this->getLanguageService()->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title')
-		);
-		$this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers, $subparts);
-		$this->content .= $this->doc->endPage();
-		$this->content = $this->doc->insertStylesAndJS($this->content);
-	}
+        // put it all together
+        $this->content = $this->doc->startPage(
+            $this->getLanguageService()->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title')
+        );
+        $this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers, $subparts);
+        $this->content .= $this->doc->endPage();
+        $this->content = $this->doc->insertStylesAndJS($this->content);
+    }
 
-	/**
-	 * Outputting the accumulated content to screen
-	 *
-	 * @return void
-	 */
-	public function printContent() {
-		echo $this->content;
-	}
+    /**
+     * Outputting the accumulated content to screen.
+     */
+    public function printContent()
+    {
+        echo $this->content;
+    }
 
-	/**
-	 * Create the panel of buttons for submitting the
-	 * form or otherwise perform operations.
-	 *
-	 * @return array all available buttons as an assoc. array
-	 */
-	protected function getButtons() {
-		$buttons = array(
-			'csh' => '',
-			'refresh' => '',
-		);
+    /**
+     * Create the panel of buttons for submitting the
+     * form or otherwise perform operations.
+     *
+     * @return array all available buttons as an assoc. array
+     */
+    protected function getButtons()
+    {
+        $buttons = array(
+            'csh' => '',
+            'refresh' => '',
+        );
 
-		// Refresh
-		$buttons['refresh'] = '<a href="' . htmlspecialchars(GeneralUtility::getIndpEnv('REQUEST_URI')) . '">' .
-			\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh') .
-			'</a>';
+        // Refresh
+        $buttons['refresh'] = '<a href="'.htmlspecialchars(GeneralUtility::getIndpEnv('REQUEST_URI')).'">'.
+            \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh').
+            '</a>';
 
-		// CSH
-		$buttons['csh'] = str_replace(
-			'typo3-csh-inline',
-			'typo3-csh-inline show-right',
-			BackendUtility::cshItem('xMOD_csh_commercebe', 'systemdata', $this->getBackPath())
-		);
+        // CSH
+        $buttons['csh'] = str_replace(
+            'typo3-csh-inline',
+            'typo3-csh-inline show-right',
+            BackendUtility::cshItem('xMOD_csh_commercebe', 'systemdata', $this->getBackPath())
+        );
 
-		return $buttons;
-	}
+        return $buttons;
+    }
 
-
-	/**
-	 * Get back path
-	 *
-	 * @return string
-	 */
-	protected function getBackPath() {
-		return $GLOBALS['BACK_PATH'];
-	}
+    /**
+     * Get back path.
+     *
+     * @return string
+     */
+    protected function getBackPath()
+    {
+        return $GLOBALS['BACK_PATH'];
+    }
 }

@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Dao;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -23,74 +25,76 @@ namespace CommerceTeam\Commerce\Dao;
  *
  * @author 2005-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
-class BasicDaoParser {
-	/**
-	 * Constructor
-	 *
-	 * @return self
-	 */
-	public function __construct() {
-	}
+class BasicDaoParser
+{
+    /**
+     * Constructor.
+     *
+     * @return self
+     */
+    public function __construct()
+    {
+    }
 
-	/**
-	 * Parse object to model
-	 *
-	 * @param BasicDaoObject $object Object
-	 *
-	 * @return array
-	 */
-	public function parseObjectToModel(BasicDaoObject $object) {
-		$model = array();
+    /**
+     * Parse object to model.
+     *
+     * @param BasicDaoObject $object Object
+     *
+     * @return array
+     */
+    public function parseObjectToModel(BasicDaoObject $object)
+    {
+        $model = array();
 
-			// parse attribs
-		$propertyNames = array_keys(get_object_vars($object));
-		foreach ($propertyNames as $attrib) {
-			if ($attrib != 'id') {
-				if (method_exists($object, 'get' . ucfirst($attrib))) {
-					$model[$attrib] = call_user_func(array($object, 'get' . ucfirst($attrib)), NULL);
-				} else {
-					$model[$attrib] = $object->$attrib;
-				}
-			}
-		}
+            // parse attribs
+        $propertyNames = array_keys(get_object_vars($object));
+        foreach ($propertyNames as $attrib) {
+            if ($attrib != 'id') {
+                if (method_exists($object, 'get'.ucfirst($attrib))) {
+                    $model[$attrib] = call_user_func(array($object, 'get'.ucfirst($attrib)), null);
+                } else {
+                    $model[$attrib] = $object->$attrib;
+                }
+            }
+        }
 
-		unset ($model['uid']);
-		return $model;
-	}
+        unset($model['uid']);
 
-	/**
-	 * Parse model to object
-	 *
-	 * @param array $model Model
-	 * @param BasicDaoObject $object Object
-	 *
-	 * @return void
-	 */
-	public function parseModelToObject(array $model, BasicDaoObject &$object) {
-			// parse attribs
-		$propertyNames = array_keys(get_object_vars($object));
-		foreach ($propertyNames as $attrib) {
-			if ($attrib != 'id') {
-				if (array_key_exists($attrib, $model)) {
-					if (method_exists($object, 'set' . ucfirst($attrib))) {
-						call_user_func(array($object, 'set' . ucfirst($attrib)), $model[$attrib]);
-					} else {
-						$object->$attrib = $model[$attrib];
-					}
-				}
-			}
-		}
-	}
+        return $model;
+    }
 
-	/**
-	 * Setter
-	 *
-	 * @param array $model Model
-	 * @param int $pid Page id
-	 *
-	 * @return void
-	 */
-	public function setPid(array &$model, $pid) {
-		$model['pid'] = $pid;
-	}
+    /**
+     * Parse model to object.
+     *
+     * @param array          $model  Model
+     * @param BasicDaoObject $object Object
+     */
+    public function parseModelToObject(array $model, BasicDaoObject &$object)
+    {
+        // parse attribs
+        $propertyNames = array_keys(get_object_vars($object));
+        foreach ($propertyNames as $attrib) {
+            if ($attrib != 'id') {
+                if (array_key_exists($attrib, $model)) {
+                    if (method_exists($object, 'set'.ucfirst($attrib))) {
+                        call_user_func(array($object, 'set'.ucfirst($attrib)), $model[$attrib]);
+                    } else {
+                        $object->$attrib = $model[$attrib];
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Setter.
+     *
+     * @param array $model Model
+     * @param int   $pid   Page id
+     */
+    public function setPid(array &$model, $pid)
+    {
+        $model['pid'] = $pid;
+    }
 }

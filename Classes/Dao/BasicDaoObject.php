@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Dao;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,62 +24,62 @@ namespace CommerceTeam\Commerce\Dao;
  *
  * @author 2006-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
-class BasicDaoObject {
-	/**
-	 * Object id
-	 *
-	 * @var int
-	 */
-	protected $id = 0;
+class BasicDaoObject
+{
+    /**
+     * Object id.
+     *
+     * @var int
+     */
+    protected $id = 0;
 
-	/**
-	 * Setter
-	 *
-	 * @param int $id Id
-	 *
-	 * @return void
-	 */
-	public function setId($id) {
-		if (empty($this->id)) {
-			$this->id = $id;
-		}
-	}
+    /**
+     * Setter.
+     *
+     * @param int $id Id
+     */
+    public function setId($id)
+    {
+        if (empty($this->id)) {
+            $this->id = $id;
+        }
+    }
 
-	/**
-	 * Getter
-	 *
-	 * @return int
-	 */
-	public function getId() {
-		return $this->id;
-	}
+    /**
+     * Getter.
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	/**
-	 * Check if id is set
-	 *
-	 * @return bool
-	 */
-	public function issetId() {
-		return !empty($this->id);
-	}
+    /**
+     * Check if id is set.
+     *
+     * @return bool
+     */
+    public function issetId()
+    {
+        return !empty($this->id);
+    }
 
-	/**
-	 * Clear values
-	 *
-	 * @return void
-	 */
-	public function clear() {
-		$attribList = array_keys(get_class_vars(get_class($this)));
-		foreach ($attribList as $attrib) {
-			$this->$attrib = NULL;
-		}
-	}
+    /**
+     * Clear values.
+     */
+    public function clear()
+    {
+        $attribList = array_keys(get_class_vars(get_class($this)));
+        foreach ($attribList as $attrib) {
+            $this->$attrib = null;
+        }
+    }
 
-	/**
-	 * Destructor
-	 *
-	 * @return void
-	 */
-	public function destroy() {
-	}
+    /**
+     * Destructor.
+     */
+    public function destroy()
+    {
+    }
 }

@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Domain\Repository;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,32 +18,34 @@ namespace CommerceTeam\Commerce\Domain\Repository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
- * Class \CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository
+ * Class \CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository.
  *
  * @author Sebastian Fischer <typo3@evoweb.de>
  */
-class OrderArticleRepository extends Repository {
-	/**
-	 * Database table concerning the data
-	 *
-	 * @var string
-	 */
-	protected $databaseTable = 'tx_commerce_order_articles';
+class OrderArticleRepository extends Repository
+{
+    /**
+     * Database table concerning the data.
+     *
+     * @var string
+     */
+    protected $databaseTable = 'tx_commerce_order_articles';
 
-	/**
-	 * Find order articles by order id in page
-	 *
-	 * @param string $orderId Order Id
-	 * @param int $pageId Page id
-	 *
-	 * @return array
-	 */
-	public function findByOrderIdInPage($orderId, $pageId) {
-		return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-			'*',
-			$this->databaseTable,
-			'pid = ' . $pageId . BackendUtility::deleteClause($this->databaseTable) .
-				' AND order_id = \'' . $this->getDatabaseConnection()->quoteStr($orderId, $this->databaseTable) . '\''
-		);
-	}
+    /**
+     * Find order articles by order id in page.
+     *
+     * @param string $orderId Order Id
+     * @param int    $pageId  Page id
+     *
+     * @return array
+     */
+    public function findByOrderIdInPage($orderId, $pageId)
+    {
+        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            '*',
+            $this->databaseTable,
+            'pid = '.$pageId.BackendUtility::deleteClause($this->databaseTable).
+                ' AND order_id = \''.$this->getDatabaseConnection()->quoteStr($orderId, $this->databaseTable).'\''
+        );
+    }
 }

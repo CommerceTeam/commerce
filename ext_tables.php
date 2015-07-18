@@ -1,115 +1,118 @@
 <?php
 
 if (!defined('TYPO3_MODE')) {
-	die('Access denied.');
+    die('Access denied.');
 }
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(COMMERCE_EXTKEY, 'Configuration/TypoScript/', 'COMMERCE');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+    COMMERCE_EXTKEY,
+    'Configuration/TypoScript/',
+    'COMMERCE'
+);
 
 if (TYPO3_MODE == 'BE') {
-	/**
-	 * WIZICON
-	 * Default PageTS
-	 */
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
-		'<INCLUDE_TYPOSCRIPT: source="FILE:EXT:' . COMMERCE_EXTKEY . '/Configuration/PageTS/ModWizards.ts">'
-	);
+    /*
+     * WIZICON
+     * Default PageTS
+     */
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
+        '<INCLUDE_TYPOSCRIPT: source="FILE:EXT:'.COMMERCE_EXTKEY.'/Configuration/PageTS/ModWizards.ts">'
+    );
 
-	// add module after 'File'
-	if (!isset($TBE_MODULES['txcommerceM1'])) {
-		$tbeModules = array();
-		foreach ($TBE_MODULES as $key => $val) {
-			if ($key == 'file') {
-				$tbeModules[$key] = $val;
-				$tbeModules['txcommerceM1'] = $val;
-			} else {
-				$tbeModules[$key] = $val;
-			}
-		}
-		$TBE_MODULES = $tbeModules;
-	}
+    // add module after 'File'
+    if (!isset($TBE_MODULES['txcommerceM1'])) {
+        $tbeModules = array();
+        foreach ($TBE_MODULES as $key => $val) {
+            if ($key == 'file') {
+                $tbeModules[$key] = $val;
+                $tbeModules['txcommerceM1'] = $val;
+            } else {
+                $tbeModules[$key] = $val;
+            }
+        }
+        $TBE_MODULES = $tbeModules;
+    }
 
-	if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('t3skin')) {
-		$presetSkinImgs = is_array($GLOBALS['TBE_STYLES']['skinImg']) ? $GLOBALS['TBE_STYLES']['skinImg'] : array();
+    if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('t3skin')) {
+        $presetSkinImgs = is_array($GLOBALS['TBE_STYLES']['skinImg']) ? $GLOBALS['TBE_STYLES']['skinImg'] : array();
 
-		$GLOBALS['TBE_STYLES']['skinImg'] = array_merge($presetSkinImgs, array(
-			'MOD:txcommerceM1_permission/../../../Resources/Public/Icons/mod_access.gif' => array(
-				\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('t3skin') . 'icons/module_web_perms.png',
-				'width="24" height="24"'
-			),
-		));
-	}
+        $GLOBALS['TBE_STYLES']['skinImg'] = array_merge($presetSkinImgs, array(
+            'MOD:txcommerceM1_permission/../../../Resources/Public/Icons/mod_access.gif' => array(
+                \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('t3skin').'icons/module_web_perms.png',
+                'width="24" height="24"',
+            ),
+        ));
+    }
 
-	// add main module
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-		'txcommerceM1',
-		'',
-		'',
-		PATH_TXCOMMERCE . 'Classes/Module/Main/'
-	);
+    // add main module
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+        'txcommerceM1',
+        '',
+        '',
+        PATH_TXCOMMERCE.'Classes/Module/Main/'
+    );
 
-	// add category module
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-		'txcommerceM1',
-		'category',
-		'',
-		PATH_TXCOMMERCE . 'Classes/Module/Category/'
-	);
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-		'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct',
-		'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper->ajaxExpandCollapseWithoutProduct'
-	);
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-		'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse',
-		'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper->ajaxExpandCollapse'
-	);
+    // add category module
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+        'txcommerceM1',
+        'category',
+        '',
+        PATH_TXCOMMERCE.'Classes/Module/Category/'
+    );
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
+        'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct',
+        'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper->ajaxExpandCollapseWithoutProduct'
+    );
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
+        'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse',
+        'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper->ajaxExpandCollapse'
+    );
 
-	// Access Module
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-		'txcommerceM1',
-		'permission',
-		'',
-		PATH_TXCOMMERCE . 'Classes/Module/Permission/'
-	);
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-		'CommerceTeam_Commerce_PermissionAjaxController::dispatch',
-		'CommerceTeam\\Commerce\\Controller\\PermissionAjaxController->dispatch'
-	);
+    // Access Module
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+        'txcommerceM1',
+        'permission',
+        '',
+        PATH_TXCOMMERCE.'Classes/Module/Permission/'
+    );
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
+        'CommerceTeam_Commerce_PermissionAjaxController::dispatch',
+        'CommerceTeam\\Commerce\\Controller\\PermissionAjaxController->dispatch'
+    );
 
-	// Orders module
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-		'txcommerceM1',
-		'orders',
-		'',
-		PATH_TXCOMMERCE . 'Classes/Module/Orders/'
-	);
+    // Orders module
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+        'txcommerceM1',
+        'orders',
+        '',
+        PATH_TXCOMMERCE.'Classes/Module/Orders/'
+    );
 
-	// Statistic Module
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-		'txcommerceM1',
-		'statistic',
-		'',
-		PATH_TXCOMMERCE . 'Classes/Module/Statistic/'
-	);
+    // Statistic Module
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+        'txcommerceM1',
+        'statistic',
+        '',
+        PATH_TXCOMMERCE.'Classes/Module/Statistic/'
+    );
 
-	// Systemdata module
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-		'txcommerceM1',
-		'systemdata',
-		'',
-		PATH_TXCOMMERCE . 'Classes/Module/Systemdata/'
-	);
+    // Systemdata module
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+        'txcommerceM1',
+        'systemdata',
+        '',
+        PATH_TXCOMMERCE.'Classes/Module/Systemdata/'
+    );
 
-	// commerce icon
-	\TYPO3\CMS\Backend\Sprite\SpriteManager::addTcaTypeIcon(
-		'pages',
-		'contains-commerce',
-		PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/commerce_folder.gif'
-	);
+    // commerce icon
+    \TYPO3\CMS\Backend\Sprite\SpriteManager::addTcaTypeIcon(
+        'pages',
+        'contains-commerce',
+        PATH_TXCOMMERCE_REL.'Resources/Public/Icons/Table/commerce_folder.gif'
+    );
 
-
-	// Add default User TS config
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
+    // Add default User TS config
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
 		options.saveDocNew {
 			tx_commerce_products = 1
 			tx_commerce_article_types = 1
@@ -121,8 +124,8 @@ if (TYPO3_MODE == 'BE') {
 		}
 	');
 
-	// Add default page TS config
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('
+    // Add default page TS config
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('
 		# CONFIGURATION of RTE in table "tx_commerce_products", field "description"
 		RTE.config.tx_commerce_products.description {
 			hidePStyleItems = H1, H4, H5, H6
@@ -140,13 +143,11 @@ if (TYPO3_MODE == 'BE') {
 	');
 }
 
-
 // Add context menu for category trees in BE
 $GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = array(
-	'name' => 'CommerceTeam\\Commerce\\Utility\\ClickmenuUtility',
-	'path' => PATH_TXCOMMERCE . 'Classes/Utility/ClickmenuUtility.php'
+    'name' => 'CommerceTeam\\Commerce\\Utility\\ClickmenuUtility',
+    'path' => PATH_TXCOMMERCE.'Classes/Utility/ClickmenuUtility.php',
 );
-
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToInsertRecords('tx_commerce_categories');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToInsertRecords('tx_commerce_products');

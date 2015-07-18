@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\ViewHelpers;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,7 +19,7 @@ use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Base class for the (iframe) treeview in TCEforms elements
+ * Base class for the (iframe) treeview in TCEforms elements.
  *
  * Can display
  * - non-browseable trees (all expanded)
@@ -42,100 +44,100 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author 2003-2011 Rene Fritz <r.fritz@colorcube.de>
  */
-class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
-	/**
-	 * Table
-	 *
-	 * @var string
-	 */
-	protected $table;
+class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass
+{
+    /**
+     * Table.
+     *
+     * @var string
+     */
+    protected $table;
 
-	/**
-	 * Field
-	 *
-	 * @var string
-	 */
-	protected $field;
+    /**
+     * Field.
+     *
+     * @var string
+     */
+    protected $field;
 
-	/**
-	 * Uid
-	 *
-	 * @var int
-	 */
-	protected $uid;
+    /**
+     * Uid.
+     *
+     * @var int
+     */
+    protected $uid;
 
-	/**
-	 * Item form element name
-	 *
-	 * @var string
-	 */
-	protected $itemFormElName;
+    /**
+     * Item form element name.
+     *
+     * @var string
+     */
+    protected $itemFormElName;
 
-	/**
-	 * Flex config
-	 *
-	 * @var string
-	 */
-	protected $flexConfig;
+    /**
+     * Flex config.
+     *
+     * @var string
+     */
+    protected $flexConfig;
 
-	/**
-	 * Back path
-	 *
-	 * @var string
-	 */
-	protected $backPath;
+    /**
+     * Back path.
+     *
+     * @var string
+     */
+    protected $backPath;
 
-	/**
-	 * Current sub script
-	 *
-	 * @var string
-	 */
-	protected $currentSubScript;
+    /**
+     * Current sub script.
+     *
+     * @var string
+     */
+    protected $currentSubScript;
 
-	/**
-	 * Constructor function for script class.
-	 *
-	 * @return void
-	 */
-	public function init() {
-		parent::init();
+    /**
+     * Constructor function for script class.
+     */
+    public function init()
+    {
+        parent::init();
 
-		// Setting GPvars:
-		$this->table = GeneralUtility::_GP('table');
-		$this->field = GeneralUtility::_GP('field');
-		$this->uid = GeneralUtility::_GP('uid');
-		$this->itemFormElName = GeneralUtility::_GP('elname');
-		$this->flexConfig = GeneralUtility::_GP('config');
-		$seckey = GeneralUtility::_GP('seckey');
-		$allowProducts = GeneralUtility::_GP('allowProducts');
+        // Setting GPvars:
+        $this->table = GeneralUtility::_GP('table');
+        $this->field = GeneralUtility::_GP('field');
+        $this->uid = GeneralUtility::_GP('uid');
+        $this->itemFormElName = GeneralUtility::_GP('elname');
+        $this->flexConfig = GeneralUtility::_GP('config');
+        $seckey = GeneralUtility::_GP('seckey');
+        $allowProducts = GeneralUtility::_GP('allowProducts');
 
-		if (!($seckey === GeneralUtility::shortMD5($this->table . '|' . $this->field . '|' . $this->uid . '|' . $this->itemFormElName .
-				'|' . $this->flexConfig . '|' . $allowProducts . '|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']))) {
-			die('access denied');
-		}
+        if (!($seckey === GeneralUtility::shortMD5($this->table.'|'.$this->field.'|'.$this->uid.'|'.$this->itemFormElName.
+                '|'.$this->flexConfig.'|'.$allowProducts.'|'.$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']))) {
+            die('access denied');
+        }
 
-		if ($this->flexConfig) {
-			$this->flexConfig = unserialize(base64_decode($this->flexConfig));
-		}
+        if ($this->flexConfig) {
+            $this->flexConfig = unserialize(base64_decode($this->flexConfig));
+        }
 
-		// Initialize template object
-		/**
-		 * Document template
-		 *
-		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
-		 */
-		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-		$this->doc = $doc;
-		$this->doc->docType = 'xhtml_trans';
-		$this->doc->backPath = $this->getBackPath();
+        // Initialize template object
+        /**
+         * Document template.
+         *
+         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
+         */
+        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $this->doc = $doc;
+        $this->doc->docType = 'xhtml_trans';
+        $this->doc->backPath = $this->getBackPath();
 
-		// from tx_dam_SCbase
-		$buttonColor = '#e3dfdb';
-		$buttonColorHover = GeneralUtility::modifyHTMLcolor($buttonColor, -20, -20, -20);
+        // from tx_dam_SCbase
+        $buttonColor = '#e3dfdb';
+        $buttonColorHover = GeneralUtility::modifyHTMLcolor($buttonColor, -20, -20, -20);
 
-		// in typo3/stylesheets.css css is defined with id instead of
-		// a class: TABLE#typo3-tree that's why we need TABLE.typo3-browsetree
-		$this->doc->inDocStylesArray['typo3-browsetree'] = '
+        // in typo3/stylesheets.css css is defined with id instead of
+        // a class: TABLE#typo3-tree that's why we need TABLE.typo3-browsetree
+        $this->doc->inDocStylesArray['typo3-browsetree'] = '
 			/* Trees */
 			TABLE.typo3-browsetree A { text-decoration: none;  }
 			TABLE.typo3-browsetree TR TD { white-space: nowrap; vertical-align: middle; }
@@ -148,135 +150,134 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			}
 			TABLE.typo3-browsetree TR TD.typo3-browsetree-control a {
 				padding: 0px 3px 0px 3px;
-				background-color: ' . $buttonColor . ';
+				background-color: '.$buttonColor.';
 			}
 			TABLE.typo3-browsetree TR TD.typo3-browsetree-control > a:hover {
-				background-color:' . $buttonColorHover . ';
+				background-color:'.$buttonColorHover.';
 			}';
 
-		$this->doc->inDocStylesArray['background-color'] = '
+        $this->doc->inDocStylesArray['background-color'] = '
 			#ext-dam-mod-treebrowser-index-php { background-color:#fff; }
 			#ext-treelib-browser { background-color:#fff; }
 		';
 
-		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
-		$this->doc->loadJavascriptLib('js/tree.js');
+        $this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
+        $this->doc->loadJavascriptLib('js/tree.js');
 
-		if ($allowProducts) {
-			// Check if we need to allow browsing of products.
-			$this->doc->JScode .= $this->doc->wrapScriptTags('
+        if ($allowProducts) {
+            // Check if we need to allow browsing of products.
+            $this->doc->JScode .= $this->doc->wrapScriptTags('
 				Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse";
 			');
-		} else {
-			// Check if we need to allow browsing of products.
-			$this->doc->JScode .= $this->doc->wrapScriptTags('
+        } else {
+            // Check if we need to allow browsing of products.
+            $this->doc->JScode .= $this->doc->wrapScriptTags('
 				Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct";
 			');
-		}
+        }
 
-		// Setting JavaScript for menu
-		// in this context, the function jumpTo is different
-		// it adds the Category to the mountpoints
-		$this->doc->JScode .= $this->doc->wrapScriptTags(
-			($this->currentSubScript ? 'top.currentSubScript=unescape("' . rawurlencode($this->currentSubScript) . '");' : '') . '
+        // Setting JavaScript for menu
+        // in this context, the function jumpTo is different
+        // it adds the Category to the mountpoints
+        $this->doc->JScode .= $this->doc->wrapScriptTags(
+            ($this->currentSubScript ? 'top.currentSubScript=unescape("'.rawurlencode($this->currentSubScript).'");' : '').'
 
 			function jumpTo(id, linkObj, highLightID, script) {
 				var catUid = id.substr(id.lastIndexOf("=") + 1); //We can leave out the "="
 				var text   = (linkObj.firstChild) ? linkObj.firstChild.nodeValue : "Unknown";
 				//Params (field, value, caption)
-				parent.setFormValueFromBrowseWin("data[' . $this->table . '][' . $this->uid . '][' . $this->field . ']", catUid, text);
+				parent.setFormValueFromBrowseWin("data['.$this->table.']['.$this->uid.']['.$this->field.']", catUid, text);
 			}
 		');
-	}
+    }
 
-	/**
-	 * Main function - generating the click menu in whatever form it has.
-	 *
-	 * @return void
-	 */
-	public function main() {
-		// get the data of the field - the currently selected items
-		$row = $this->getRecordProcessed();
+    /**
+     * Main function - generating the click menu in whatever form it has.
+     */
+    public function main()
+    {
+        // get the data of the field - the currently selected items
+        $row = $this->getRecordProcessed();
 
-		$this->content .= $this->doc->startPage('Treeview Browser');
+        $this->content .= $this->doc->startPage('Treeview Browser');
 
-		/**
-		 * Form engine
-		 *
-		 * @var \TYPO3\CMS\Backend\Form\FormEngine $form
-		 */
-		$form = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
-		$form->initDefaultBEmode();
-		$form->backPath = $this->getBackPath();
+        /**
+         * Form engine.
+         *
+         * @var \TYPO3\CMS\Backend\Form\FormEngine
+         */
+        $form = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
+        $form->initDefaultBEmode();
+        $form->backPath = $this->getBackPath();
 
-		$row['uid'] = $this->uid;
+        $row['uid'] = $this->uid;
 
-		$parameter = array();
+        $parameter = array();
 
-		if (is_array($this->flexConfig)) {
-			$parameter['fieldConf'] = array(
-				'label' => $form->sL($this->flexConfig['label']),
-				'config' => $this->flexConfig['config'],
-				'defaultExtras' => $this->flexConfig['defaultExtras']
-			);
-		} else {
-			$settingsFactory = SettingsFactory::getInstance();
-			$parameter['fieldConf'] = array(
-				'label' => $form->sL($settingsFactory->getTcaValue($this->table . '.columns.' . $this->field . '.label')),
-				'config' => $settingsFactory->getTcaValue($this->table . '.columns.' . $this->field . '.config')
-			);
-		}
+        if (is_array($this->flexConfig)) {
+            $parameter['fieldConf'] = array(
+                'label' => $form->sL($this->flexConfig['label']),
+                'config' => $this->flexConfig['config'],
+                'defaultExtras' => $this->flexConfig['defaultExtras'],
+            );
+        } else {
+            $settingsFactory = SettingsFactory::getInstance();
+            $parameter['fieldConf'] = array(
+                'label' => $form->sL($settingsFactory->getTcaValue($this->table.'.columns.'.$this->field.'.label')),
+                'config' => $settingsFactory->getTcaValue($this->table.'.columns.'.$this->field.'.config'),
+            );
+        }
 
-		$parameter['fieldConf']['config']['treeViewBrowseable'] = 'iframeContent';
-		$parameter['fieldConf']['config']['noTableWrapping'] = TRUE;
-		$parameter['itemFormElName'] = $this->itemFormElName;
-		$parameter['itemFormElName_file'] = $this->itemFormElName;
+        $parameter['fieldConf']['config']['treeViewBrowseable'] = 'iframeContent';
+        $parameter['fieldConf']['config']['noTableWrapping'] = true;
+        $parameter['itemFormElName'] = $this->itemFormElName;
+        $parameter['itemFormElName_file'] = $this->itemFormElName;
 
-		$this->content .= $form->getSingleField_SW($this->table, $this->field, $row, $parameter);
-	}
+        $this->content .= $form->getSingleField_SW($this->table, $this->field, $row, $parameter);
+    }
 
-	/**
-	 * End page and output content.
-	 *
-	 * @return void
-	 */
-	public function printContent() {
-		$this->content .= $this->doc->endPage();
-		$this->content = $this->doc->insertStylesAndJS($this->content);
-		echo $this->content;
-	}
+    /**
+     * End page and output content.
+     */
+    public function printContent()
+    {
+        $this->content .= $this->doc->endPage();
+        $this->content = $this->doc->insertStylesAndJS($this->content);
+        echo $this->content;
+    }
 
-	/**
-	 * Fetch the record data and return processed data for TCEforms
-	 *
-	 * @return array Record
-	 */
-	protected function getRecordProcessed() {
-		// This will render MM relation fields in the correct way.
-		// Read the whole record, which is not needed, but there's no other way.
-		/**
-		 * Data preprocessor
-		 *
-		 * @var \TYPO3\CMS\Backend\Form\DataPreprocessor $trData
-		 */
-		$trData = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\DataPreprocessor');
-		$trData->addRawData = TRUE;
-		$trData->lockRecords = TRUE;
-		$trData->fetchRecord($this->table, $this->uid, '');
-		reset($trData->regTableItems_data);
+    /**
+     * Fetch the record data and return processed data for TCEforms.
+     *
+     * @return array Record
+     */
+    protected function getRecordProcessed()
+    {
+        // This will render MM relation fields in the correct way.
+        // Read the whole record, which is not needed, but there's no other way.
+        /**
+         * Data preprocessor.
+         *
+         * @var \TYPO3\CMS\Backend\Form\DataPreprocessor
+         */
+        $trData = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\DataPreprocessor');
+        $trData->addRawData = true;
+        $trData->lockRecords = true;
+        $trData->fetchRecord($this->table, $this->uid, '');
+        reset($trData->regTableItems_data);
 
-		$row = current($trData->regTableItems_data);
+        $row = current($trData->regTableItems_data);
 
-		return $row;
-	}
+        return $row;
+    }
 
-
-	/**
-	 * Get back path
-	 *
-	 * @return string
-	 */
-	protected function getBackPath() {
-		return $GLOBALS['BACK_PATH'];
-	}
+    /**
+     * Get back path.
+     *
+     * @return string
+     */
+    protected function getBackPath()
+    {
+        return $GLOBALS['BACK_PATH'];
+    }
 }

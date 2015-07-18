@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Dao;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -24,21 +26,21 @@ use CommerceTeam\Commerce\Factory\SettingsFactory;
  *
  * @author 2006-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
-class AddressDaoMapper extends BasicDaoMapper {
-	/**
-	 * Table for persistence
-	 *
-	 * @var string
-	 */
-	protected $dbTable = 'tt_address';
+class AddressDaoMapper extends BasicDaoMapper
+{
+    /**
+     * Table for persistence.
+     *
+     * @var string
+     */
+    protected $dbTable = 'tt_address';
 
-	/**
-	 * Initialization
-	 *
-	 * @return void
-	 */
-	protected function init() {
-		parent::init();
-		$this->createPid = SettingsFactory::getInstance()->getExtConf('create_address_pid');
-	}
+    /**
+     * Initialization.
+     */
+    protected function init()
+    {
+        parent::init();
+        $this->createPid = SettingsFactory::getInstance()->getExtConf('create_address_pid');
+    }
 }

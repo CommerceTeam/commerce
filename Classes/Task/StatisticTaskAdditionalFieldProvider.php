@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Task;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,152 +18,156 @@ namespace CommerceTeam\Commerce\Task;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 
 /**
- * Class \CommerceTeam\Commerce\Task\StatisticTaskAdditionalFieldProvider
+ * Class \CommerceTeam\Commerce\Task\StatisticTaskAdditionalFieldProvider.
  *
  * @author 2013 Sebastian Fischer <typo3@marketing-factory.de>
  */
-class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface {
-	/**
-	 * Submitted data
-	 *
-	 * @var array
-	 */
-	protected $submittedData = array();
+class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface
+{
+    /**
+     * Submitted data.
+     *
+     * @var array
+     */
+    protected $submittedData = array();
 
-	/**
-	 * Aggregation
-	 *
-	 * @var array
-	 */
-	protected $aggregation = array(
-		'completeAggregation' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.completeAggregation',
-		'incrementalAggregation' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.incrementalAggregation',
-	);
+    /**
+     * Aggregation.
+     *
+     * @var array
+     */
+    protected $aggregation = array(
+        'completeAggregation' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.completeAggregation',
+        'incrementalAggregation' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.incrementalAggregation',
+    );
 
-	/**
-	 * Add a multi select box with all available cache backends.
-	 *
-	 * @param array $taskInfo Reference to the array containing the info used
-	 * @param StatisticTask $task When editing, reference to
-	 * 	the current task object. Null when adding.
-	 * @param SchedulerModuleController $parentObject Reference to the calling object
-	 *
-	 * @return array containing the information pertaining to the additional fields
-	 */
-	public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $parentObject) {
-		$this->submittedData = $taskInfo;
-		$uid = $this->getTaskUid();
+    /**
+     * Add a multi select box with all available cache backends.
+     *
+     * @param array                     $taskInfo     Reference to the array containing the info used
+     * @param StatisticTask             $task         When editing, reference to
+     *                                                the current task object. Null when adding.
+     * @param SchedulerModuleController $parentObject Reference to the calling object
+     *
+     * @return array containing the information pertaining to the additional fields
+     */
+    public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $parentObject)
+    {
+        $this->submittedData = $taskInfo;
+        $uid = $this->getTaskUid();
 
-		$additionalFields = array();
+        $additionalFields = array();
 
-		// Initialize selected fields
-		if (empty($taskInfo[$uid]['commerce_statisticTask_aggregation'])) {
-			$taskInfo[$uid]['commerce_statisticTask_aggregation'] = '';
-			if ($parentObject->CMD == 'add') {
-				// In case of new task, set to incrementalAggregation if it's available
-				$taskInfo[$uid]['commerce_statisticTask_aggregation'] = 'incrementalAggregation';
-			} elseif ($parentObject->CMD == 'edit') {
-				// In case of editing the task, set to currently selected value
-				$taskInfo[$uid]['commerce_statisticTask_aggregation'] = $task->getSelectedAggregation();
-			}
-		}
+        // Initialize selected fields
+        if (empty($taskInfo[$uid]['commerce_statisticTask_aggregation'])) {
+            $taskInfo[$uid]['commerce_statisticTask_aggregation'] = '';
+            if ($parentObject->CMD == 'add') {
+                // In case of new task, set to incrementalAggregation if it's available
+                $taskInfo[$uid]['commerce_statisticTask_aggregation'] = 'incrementalAggregation';
+            } elseif ($parentObject->CMD == 'edit') {
+                // In case of editing the task, set to currently selected value
+                $taskInfo[$uid]['commerce_statisticTask_aggregation'] = $task->getSelectedAggregation();
+            }
+        }
 
-		$fieldId = 'task_commerce_statisticTask_aggregation';
-		$fieldHtml = $this->renderOptions(
-			'tx_scheduler[' . $uid . '][commerce_statisticTask_aggregation]',
-			$fieldId,
-			$this->aggregation,
-			$taskInfo[$uid]['commerce_statisticTask_aggregation']
-		);
+        $fieldId = 'task_commerce_statisticTask_aggregation';
+        $fieldHtml = $this->renderOptions(
+            'tx_scheduler['.$uid.'][commerce_statisticTask_aggregation]',
+            $fieldId,
+            $this->aggregation,
+            $taskInfo[$uid]['commerce_statisticTask_aggregation']
+        );
 
-		$additionalFields[$fieldId] = array(
-			'code' => $fieldHtml,
-			'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.selectAggregation',
-			'cshKey' => '_MOD_tools_txcommerceM1',
-			'cshLabel' => $fieldId,
-		);
+        $additionalFields[$fieldId] = array(
+            'code' => $fieldHtml,
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.selectAggregation',
+            'cshKey' => '_MOD_tools_txcommerceM1',
+            'cshLabel' => $fieldId,
+        );
 
-		return $additionalFields;
-	}
+        return $additionalFields;
+    }
 
-	/**
-	 * Checks that all selected backends exist in available backend list
-	 *
-	 * @param array $submittedData Reference to data submitted by the user
-	 * @param SchedulerModuleController $parentObject Reference to Scheduler module
-	 *
-	 * @return bool True if validation was ok, false otherwise
-	 */
-	public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $parentObject) {
-		$this->submittedData = $submittedData;
-		$uid = $this->getTaskUid();
-		$validData = TRUE;
+    /**
+     * Checks that all selected backends exist in available backend list.
+     *
+     * @param array                     $submittedData Reference to data submitted by the user
+     * @param SchedulerModuleController $parentObject  Reference to Scheduler module
+     *
+     * @return bool True if validation was ok, false otherwise
+     */
+    public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $parentObject)
+    {
+        $this->submittedData = $submittedData;
+        $uid = $this->getTaskUid();
+        $validData = true;
 
-		if (!in_array($submittedData[$uid]['commerce_statisticTask_aggregation'], $this->aggregation)) {
-			$validData = FALSE;
-		}
+        if (!in_array($submittedData[$uid]['commerce_statisticTask_aggregation'], $this->aggregation)) {
+            $validData = false;
+        }
 
-		return $validData;
-	}
+        return $validData;
+    }
 
-	/**
-	 * Save selected backends in task object
-	 *
-	 * @param array $submittedData Contains data submitted by the user
-	 * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task Reference to current task
-	 *
-	 * @return void
-	 */
-	public function saveAdditionalFields(array $submittedData, \TYPO3\CMS\Scheduler\Task\AbstractTask $task) {
-		$this->submittedData = $submittedData;
-		$uid = $this->getTaskUid();
+    /**
+     * Save selected backends in task object.
+     *
+     * @param array                                  $submittedData Contains data submitted by the user
+     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task          Reference to current task
+     */
+    public function saveAdditionalFields(array $submittedData, \TYPO3\CMS\Scheduler\Task\AbstractTask $task)
+    {
+        $this->submittedData = $submittedData;
+        $uid = $this->getTaskUid();
 
-		/**
-		 * Task
-		 *
-		 * @var StatisticTask $task
-		 */
-		$task->setSelectedAggregation($submittedData[$uid]['commerce_statisticTask_aggregation']);
-	}
+        /*
+         * Task
+         *
+         * @var StatisticTask $task
+         */
+        $task->setSelectedAggregation($submittedData[$uid]['commerce_statisticTask_aggregation']);
+    }
 
-	/**
-	 * Build select options of available backends and set currently selected backends
-	 *
-	 * @param string $fieldName Field name
-	 * @param string $fieldId Field id
-	 * @param array $valuesAndLabels Values and labels
-	 * @param string|int $selectedValue Selected backends
-	 *
-	 * @return string HTML of selectbox options
-	 */
-	protected function renderOptions($fieldName, $fieldId, array $valuesAndLabels, $selectedValue) {
-		$language = $this->getLanguageService();
-		$options = array();
+    /**
+     * Build select options of available backends and set currently selected backends.
+     *
+     * @param string     $fieldName       Field name
+     * @param string     $fieldId         Field id
+     * @param array      $valuesAndLabels Values and labels
+     * @param string|int $selectedValue   Selected backends
+     *
+     * @return string HTML of selectbox options
+     */
+    protected function renderOptions($fieldName, $fieldId, array $valuesAndLabels, $selectedValue)
+    {
+        $language = $this->getLanguageService();
+        $options = array();
 
-		foreach ($valuesAndLabels as $value => $label) {
-			$selected = $value == $selectedValue ? ' selected="selected"' : '';
-			$options[] = '<option value="' . $value . '"' . $selected . '>' . $language->sL($label) . '</option>';
-		}
+        foreach ($valuesAndLabels as $value => $label) {
+            $selected = $value == $selectedValue ? ' selected="selected"' : '';
+            $options[] = '<option value="'.$value.'"'.$selected.'>'.$language->sL($label).'</option>';
+        }
 
-		return '<select name="' . $fieldName . '" id="' . $fieldId . '">' . implode('', $options) . '</select>';
-	}
+        return '<select name="'.$fieldName.'" id="'.$fieldId.'">'.implode('', $options).'</select>';
+    }
 
-	/**
-	 * Getter for task uid
-	 *
-	 * @return int
-	 */
-	protected function getTaskUid() {
-		return $this->submittedData['uid'];
-	}
+    /**
+     * Getter for task uid.
+     *
+     * @return int
+     */
+    protected function getTaskUid()
+    {
+        return $this->submittedData['uid'];
+    }
 
-
-	/**
-	 * Get language service
-	 *
-	 * @return \TYPO3\CMS\Lang\LanguageService
-	 */
-	protected function getLanguageService() {
-		return $GLOBALS['LANG'];
-	}
+    /**
+     * Get language service.
+     *
+     * @return \TYPO3\CMS\Lang\LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
+    }
 }

@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\ViewHelpers\Navigation;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,94 +21,92 @@ use TYPO3\CMS\Core\Http\AjaxRequestHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class \CommerceTeam\Commerce\ViewHelpers\Navigation\CategoryViewHelper
+ * Class \CommerceTeam\Commerce\ViewHelpers\Navigation\CategoryViewHelper.
  *
  * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
-class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
-	/**
-	 * Category tree
-	 *
-	 * @var \CommerceTeam\Commerce\Tree\CategoryTree
-	 */
-	protected $categoryTree;
+class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass
+{
+    /**
+     * Category tree.
+     *
+     * @var \CommerceTeam\Commerce\Tree\CategoryTree
+     */
+    protected $categoryTree;
 
-	/**
-	 * Current sub script
-	 *
-	 * @var string
-	 */
-	protected $currentSubScript;
+    /**
+     * Current sub script.
+     *
+     * @var string
+     */
+    protected $currentSubScript;
 
-	/**
-	 * Do highlight
-	 *
-	 * @var bool
-	 */
-	protected $doHighlight;
+    /**
+     * Do highlight.
+     *
+     * @var bool
+     */
+    protected $doHighlight;
 
-	/**
-	 * Has filter box
-	 *
-	 * @var bool
-	 */
-	protected $hasFilterBox;
+    /**
+     * Has filter box.
+     *
+     * @var bool
+     */
+    protected $hasFilterBox;
 
-	/**
-	 * Setter for currentSubScript
-	 *
-	 * @param string $currentSubScript Current sub script
-	 *
-	 * @return void
-	 */
-	public function setCurrentSubScript($currentSubScript) {
-		$this->currentSubScript = $currentSubScript;
-	}
+    /**
+     * Setter for currentSubScript.
+     *
+     * @param string $currentSubScript Current sub script
+     */
+    public function setCurrentSubScript($currentSubScript)
+    {
+        $this->currentSubScript = $currentSubScript;
+    }
 
-	/**
-	 * Initializes the Tree
-	 *
-	 * @param bool $bare If TRUE only categories get rendered
-	 *
-	 * @return void
-	 */
-	public function init($bare = FALSE) {
-		$this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_category.xml');
+    /**
+     * Initializes the Tree.
+     *
+     * @param bool $bare If TRUE only categories get rendered
+     */
+    public function init($bare = false)
+    {
+        $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_category.xml');
 
-		// Get the Category Tree
-		$this->categoryTree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
-		$this->categoryTree->setBare($bare);
-		$this->categoryTree->setSimpleMode((int) SettingsFactory::getInstance()->getExtConf('simpleMode'));
-		$this->categoryTree->init();
-	}
+        // Get the Category Tree
+        $this->categoryTree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
+        $this->categoryTree->setBare($bare);
+        $this->categoryTree->setSimpleMode((int) SettingsFactory::getInstance()->getExtConf('simpleMode'));
+        $this->categoryTree->init();
+    }
 
-	/**
-	 * Initializes the Page
-	 *
-	 * @param bool $bare If TRUE only categories get rendered
-	 *
-	 * @return void
-	 */
-	public function initPage($bare = FALSE) {
-		/**
-		 * Document template
-		 *
-		 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
-		 */
-		$doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-		$this->doc = $doc;
-		$this->doc->backPath = $this->getBackPath();
-		$this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');
-		$this->doc->showFlashMessages = FALSE;
+    /**
+     * Initializes the Page.
+     *
+     * @param bool $bare If TRUE only categories get rendered
+     */
+    public function initPage($bare = false)
+    {
+        /**
+         * Document template.
+         *
+         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
+         */
+        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $this->doc = $doc;
+        $this->doc->backPath = $this->getBackPath();
+        $this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');
+        $this->doc->showFlashMessages = false;
 
-		$this->doc->inDocStyles .= '
+        $this->doc->inDocStyles .= '
 		#typo3-pagetree .x-tree-root-ct ul {
 			padding-left: 19px;
 			margin: 0;
 		}
 
 		.x-tree-root-ct ul li.expanded ul {
-			background: url("' . $this->getBackPath() . 'sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
+			background: url("'.$this->getBackPath().'sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
 		}
 
 		.x-tree-root-ct ul li.expanded.last ul {
@@ -119,21 +119,21 @@ class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		}
 		';
 
-		$currentSubScript = '';
-		if ($this->currentSubScript) {
-			$currentSubScript = 'top.currentSubScript = unescape("' . rawurlencode($this->currentSubScript) . '");';
-		}
+        $currentSubScript = '';
+        if ($this->currentSubScript) {
+            $currentSubScript = 'top.currentSubScript = unescape("'.rawurlencode($this->currentSubScript).'");';
+        }
 
-		$doHighlight = '';
-		if ($this->doHighlight) {
-			$doHighlight = 'hilight_row("row" + top.fsMod.recentIds["txcommerceM1"], highLightID);';
-		}
+        $doHighlight = '';
+        if ($this->doHighlight) {
+            $doHighlight = 'hilight_row("row" + top.fsMod.recentIds["txcommerceM1"], highLightID);';
+        }
 
-		$formStyle = (!$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) { linkObj.blur(); }');
+        $formStyle = (!$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) { linkObj.blur(); }');
 
-		// Setting JavaScript for menu.
-		$this->doc->JScode = $this->doc->wrapScriptTags(
-			$currentSubScript . '
+        // Setting JavaScript for menu.
+        $this->doc->JScode = $this->doc->wrapScriptTags(
+            $currentSubScript.'
 
 			function jumpTo(id, linkObj, highLightID, script) {
 				var theUrl;
@@ -151,8 +151,8 @@ class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 				} else {
 					parent.list_frame.document.location = theUrl;
 				}
-				' . $doHighlight . '
-				' . $formStyle . '
+				'.$doHighlight.'
+				'.$formStyle.'
 				return false;
 			}
 
@@ -164,170 +164,170 @@ class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 				window.setTimeout(\'Tree.refresh();\', 0);
 			}
 		'
-		);
+        );
 
-		$this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
-		$this->doc->loadJavascriptLib('js/tree.js');
-		$this->doc->JScode .= $this->doc->wrapScriptTags('
-			Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse' .
-			($bare ? 'WithoutProduct' : '') . '";
+        $this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
+        $this->doc->loadJavascriptLib('js/tree.js');
+        $this->doc->JScode .= $this->doc->wrapScriptTags('
+			Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse'.
+            ($bare ? 'WithoutProduct' : '').'";
 		');
 
-		// Adding javascript code for AJAX (prototype), drag&drop and the
-		// pagetree as well as the click menu code
-		$this->doc->getContextMenuCode();
+        // Adding javascript code for AJAX (prototype), drag&drop and the
+        // pagetree as well as the click menu code
+        $this->doc->getContextMenuCode();
 
-		$this->doc->bodyTagId = 'typo3-pagetree';
-	}
+        $this->doc->bodyTagId = 'typo3-pagetree';
+    }
 
-	/**
-	 * Main method
-	 *
-	 * @return void
-	 */
-	public function main() {
-		$language = $this->getLanguageService();
+    /**
+     * Main method.
+     */
+    public function main()
+    {
+        $language = $this->getLanguageService();
 
-		// Check if commerce needs to be updated.
-		if ($this->isUpdateNecessary()) {
-			$tree = $language->getLL('ext.update');
-		} else {
-			// Get the browseable Tree
-			$tree = $this->categoryTree->getBrowseableTree();
-		}
+        // Check if commerce needs to be updated.
+        if ($this->isUpdateNecessary()) {
+            $tree = $language->getLL('ext.update');
+        } else {
+            // Get the browseable Tree
+            $tree = $this->categoryTree->getBrowseableTree();
+        }
 
-		$docHeaderButtons = $this->getButtons();
+        $docHeaderButtons = $this->getButtons();
 
-		$markers = array(
-			'IMG_RESET' => '',
-			'WORKSPACEINFO' => '',
-			'CONTENT' => $tree
-		);
+        $markers = array(
+            'IMG_RESET' => '',
+            'WORKSPACEINFO' => '',
+            'CONTENT' => $tree,
+        );
 
-		$subparts = array();
-		if (!$this->hasFilterBox) {
-			$subparts['###SECOND_ROW###'] = '';
-		}
+        $subparts = array();
+        if (!$this->hasFilterBox) {
+            $subparts['###SECOND_ROW###'] = '';
+        }
 
-		// Build the <body> for the module
-		$this->content = $this->doc->startPage(
-			$language->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title')
-		);
-		$this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers, $subparts);
-		$this->content .= $this->doc->endPage();
-		$this->content = $this->doc->insertStylesAndJS($this->content);
-	}
+        // Build the <body> for the module
+        $this->content = $this->doc->startPage(
+            $language->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title')
+        );
+        $this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers, $subparts);
+        $this->content .= $this->doc->endPage();
+        $this->content = $this->doc->insertStylesAndJS($this->content);
+    }
 
-	/**
-	 * Print content
-	 *
-	 * @return void
-	 */
-	public function printContent() {
-		echo $this->content;
-	}
+    /**
+     * Print content.
+     */
+    public function printContent()
+    {
+        echo $this->content;
+    }
 
-	/**
-	 * Create the panel of buttons for submitting the
-	 * form or otherwise perform operations.
-	 *
-	 * @return array all available buttons as an assoc. array
-	 */
-	protected function getButtons() {
-		$buttons = array(
-			'csh' => '',
-			'refresh' => '',
-		);
+    /**
+     * Create the panel of buttons for submitting the
+     * form or otherwise perform operations.
+     *
+     * @return array all available buttons as an assoc. array
+     */
+    protected function getButtons()
+    {
+        $buttons = array(
+            'csh' => '',
+            'refresh' => '',
+        );
 
-		// Refresh
-		$buttons['refresh'] = '<a href="' . htmlspecialchars(GeneralUtility::getIndpEnv('REQUEST_URI')) . '">' .
-			\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh') . '</a>';
+        // Refresh
+        $buttons['refresh'] = '<a href="'.htmlspecialchars(GeneralUtility::getIndpEnv('REQUEST_URI')).'">'.
+            \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh').'</a>';
 
-		// CSH
-		$buttons['csh'] = str_replace(
-			'typo3-csh-inline',
-			'typo3-csh-inline show-right',
-			BackendUtility::cshItem('xMOD_csh_commercebe', 'categorytree', $this->getBackPath())
-		);
+        // CSH
+        $buttons['csh'] = str_replace(
+            'typo3-csh-inline',
+            'typo3-csh-inline show-right',
+            BackendUtility::cshItem('xMOD_csh_commercebe', 'categorytree', $this->getBackPath())
+        );
 
-		return $buttons;
-	}
+        return $buttons;
+    }
 
-	/**
-	 * Checks if an update of the commerce extension is necessary
-	 *
-	 * @return bool
-	 */
-	protected function isUpdateNecessary() {
-		/**
-		 * Updater
-		 *
-		 * @var \CommerceTeam\Commerce\Utility\UpdateUtility $updater
-		 */
-		$updater = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\UpdateUtility');
+    /**
+     * Checks if an update of the commerce extension is necessary.
+     *
+     * @return bool
+     */
+    protected function isUpdateNecessary()
+    {
+        /**
+         * Updater.
+         *
+         * @var \CommerceTeam\Commerce\Utility\UpdateUtility
+         */
+        $updater = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\UpdateUtility');
 
-		return $updater->access();
-	}
+        return $updater->access();
+    }
 
-	/**
-	 * Makes the AJAX call to expand or collapse the categorytree.
-	 * Called by typo3/ajax.php
-	 *
-	 * @param array $params Additional parameters (not used here)
-	 * @param AjaxRequestHandler $ajaxObj Ajax object
-	 *
-	 * @return void
-	 */
-	public function ajaxExpandCollapse(array $params, AjaxRequestHandler &$ajaxObj) {
-		$parameter = $this->getParameter();
+    /**
+     * Makes the AJAX call to expand or collapse the categorytree.
+     * Called by typo3/ajax.php.
+     *
+     * @param array              $params  Additional parameters (not used here)
+     * @param AjaxRequestHandler $ajaxObj Ajax object
+     */
+    public function ajaxExpandCollapse(array $params, AjaxRequestHandler &$ajaxObj)
+    {
+        $parameter = $this->getParameter();
 
-		// Get the Category Tree
-		$this->init();
-		$tree = $this->categoryTree->getBrowseableAjaxTree($parameter);
+        // Get the Category Tree
+        $this->init();
+        $tree = $this->categoryTree->getBrowseableAjaxTree($parameter);
 
-		$ajaxObj->addContent('tree', $tree);
-	}
+        $ajaxObj->addContent('tree', $tree);
+    }
 
-	/**
-	 * Makes the AJAX call to expand or collapse the categorytree.
-	 * Called by typo3/ajax.php
-	 *
-	 * @param array $params Additional parameters (not used here)
-	 * @param AjaxRequestHandler $ajaxObj Ajax object
-	 *
-	 * @return void
-	 */
-	public function ajaxExpandCollapseWithoutProduct(array $params, AjaxRequestHandler &$ajaxObj) {
-		$parameter = $this->getParameter();
+    /**
+     * Makes the AJAX call to expand or collapse the categorytree.
+     * Called by typo3/ajax.php.
+     *
+     * @param array              $params  Additional parameters (not used here)
+     * @param AjaxRequestHandler $ajaxObj Ajax object
+     */
+    public function ajaxExpandCollapseWithoutProduct(array $params, AjaxRequestHandler &$ajaxObj)
+    {
+        $parameter = $this->getParameter();
 
-		// Get the category tree without the products and the articles
-		$this->init(TRUE);
-		$tree = $this->categoryTree->getBrowseableAjaxTree($parameter);
+        // Get the category tree without the products and the articles
+        $this->init(true);
+        $tree = $this->categoryTree->getBrowseableAjaxTree($parameter);
 
-		$ajaxObj->addContent('tree', $tree);
-	}
+        $ajaxObj->addContent('tree', $tree);
+    }
 
-	/**
-	 * Parameter getter
-	 *
-	 * @return array
-	 */
-	protected function getParameter() {
-		$parameter = GeneralUtility::_GP('PM');
-		// IE takes anchor as parameter
-		if (($parameterPosition = strpos($parameter, '#')) !== FALSE) {
-			$parameter = substr($parameter, 0, $parameterPosition);
-		}
-		return explode('_', $parameter);
-	}
+    /**
+     * Parameter getter.
+     *
+     * @return array
+     */
+    protected function getParameter()
+    {
+        $parameter = GeneralUtility::_GP('PM');
+        // IE takes anchor as parameter
+        if (($parameterPosition = strpos($parameter, '#')) !== false) {
+            $parameter = substr($parameter, 0, $parameterPosition);
+        }
 
+        return explode('_', $parameter);
+    }
 
-	/**
-	 * Get back path
-	 *
-	 * @return string
-	 */
-	protected function getBackPath() {
-		return $GLOBALS['BACK_PATH'];
-	}
+    /**
+     * Get back path.
+     *
+     * @return string
+     */
+    protected function getBackPath()
+    {
+        return $GLOBALS['BACK_PATH'];
+    }
 }

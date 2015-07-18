@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\ViewHelpers\Browselinks;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,96 +16,101 @@ namespace CommerceTeam\Commerce\ViewHelpers\Browselinks;
  */
 
 /**
- * Implements the \CommerceTeam\Commerce\Tree\Leaf\View for Product
+ * Implements the \CommerceTeam\Commerce\Tree\Leaf\View for Product.
  *
  * Class \CommerceTeam\Commerce\ViewHelpers\Browselinks\ProductView
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class ProductView extends \CommerceTeam\Commerce\Tree\Leaf\View {
-	/**
-	 * DB Table
-	 *
-	 * @var string
-	 */
-	protected $table = 'tx_commerce_products';
+class ProductView extends \CommerceTeam\Commerce\Tree\Leaf\View
+{
+    /**
+     * DB Table.
+     *
+     * @var string
+     */
+    protected $table = 'tx_commerce_products';
 
-	/**
-	 * Dom id prefix
-	 *
-	 * @var string
-	 */
-	protected $domIdPrefix = 'txcommerceProduct';
+    /**
+     * Dom id prefix.
+     *
+     * @var string
+     */
+    protected $domIdPrefix = 'txcommerceProduct';
 
-	/**
-	 * Uid of the open product
-	 *
-	 * @var int
-	 */
-	protected $openProd = 0;
+    /**
+     * Uid of the open product.
+     *
+     * @var int
+     */
+    protected $openProd = 0;
 
-	/**
-	 * Returns the link from the tree used to jump to a destination
-	 *
-	 * @param array $row Array with the ID Information
-	 *
-	 * @return string
-	 */
-	public function getJumpToParam(array &$row) {
-		if (!is_array($row)) {
-			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'getJumpToParam (productview) gets passed invalid parameters.',
-					COMMERCE_EXTKEY,
-					3
-				);
-			}
-			return '';
-		}
-		$res = 'commerce:tx_commerce_products:' . $row['uid'] . '|tx_commerce_categories:' . $row['item_parent'];
-		return $res;
-	}
+    /**
+     * Returns the link from the tree used to jump to a destination.
+     *
+     * @param array $row Array with the ID Information
+     *
+     * @return string
+     */
+    public function getJumpToParam(array &$row)
+    {
+        if (!is_array($row)) {
+            if (TYPO3_DLOG) {
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+                    'getJumpToParam (productview) gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
+            }
 
-	/**
-	 * Setter
-	 *
-	 * @param int $uid Uid
-	 *
-	 * @return void
-	 */
-	public function setOpenProduct($uid) {
-		$this->openProd = $uid;
-	}
+            return '';
+        }
+        $res = 'commerce:tx_commerce_products:'.$row['uid'].'|tx_commerce_categories:'.$row['item_parent'];
 
-	/**
-	 * Wrapping $title in a-tags.
-	 *
-	 * @param string $title Title string
-	 * @param array $row Item record
-	 * @param int $bank Bank pointer (which mount point number)
-	 *
-	 * @return string
-	 */
-	public function wrapTitle($title, array &$row, $bank = 0) {
-		if (!is_array($row) || !is_numeric($bank)) {
-			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'wrapTitle (CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\ProductView) gets passed invalid parameters.',
-					COMMERCE_EXTKEY,
-					3
-				);
-			}
-			return '';
-		}
+        return $res;
+    }
 
-		// Max. size for Title of 30
-		$title = ('' != trim($title)) ? \TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
+    /**
+     * Setter.
+     *
+     * @param int $uid Uid
+     */
+    public function setOpenProduct($uid)
+    {
+        $this->openProd = $uid;
+    }
 
-		$aOnClick = 'return link_commerce(\'' . $this->getJumpToParam($row) . '\');';
+    /**
+     * Wrapping $title in a-tags.
+     *
+     * @param string $title Title string
+     * @param array  $row   Item record
+     * @param int    $bank  Bank pointer (which mount point number)
+     *
+     * @return string
+     */
+    public function wrapTitle($title, array &$row, $bank = 0)
+    {
+        if (!is_array($row) || !is_numeric($bank)) {
+            if (TYPO3_DLOG) {
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+                    'wrapTitle (CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\ProductView) gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
+            }
 
-		$style = ($row['uid'] == $this->openProd) ? 'style="color: red; font-weight: bold"' : '';
-		$res = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '" ' . $style . '>' . $title . '</a>';
+            return '';
+        }
 
-		return $res;
-	}
+        // Max. size for Title of 30
+        $title = ('' != trim($title)) ? \TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
+
+        $aOnClick = 'return link_commerce(\''.$this->getJumpToParam($row).'\');';
+
+        $style = ($row['uid'] == $this->openProd) ? 'style="color: red; font-weight: bold"' : '';
+        $res = '<a href="#" onclick="'.htmlspecialchars($aOnClick).'" '.$style.'>'.$title.'</a>';
+
+        return $res;
+    }
 }

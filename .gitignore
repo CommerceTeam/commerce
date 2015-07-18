@@ -1,0 +1,48 @@
+########################
+# TYPO3 CMS
+# global ignore file
+########################
+#
+# Don't ignore .rej and .orig as we want to see/clean files after conflict resolution.
+#
+# If you feel this file needs adaption please report on http://forge.typo3.org/issues/13627.
+#
+# For local exclude patterns please edit .git/info/exclude.
+#
+########################
+#
+# Ignore temporary files (left by editors)
+*~
+*.bak
+*.swp
+#
+# Ignore by common IDEs used directories/files
+nbproject
+*.idea
+*.project
+.buildpath
+.project
+.settings
+.TemporaryItems
+.webprj
+#
+# Ignore build stuff
+Build/bower_components/*
+Build/node_modules/*
+.cache
+.sass-cache
+.session
+typo3/sysext/core/Build/Configuration/Acceptance/Support/_generated/*
+typo3/sysext/core/Build/Configuration/Acceptance/Support/AcceptanceTester.php
+#
+# Ignore composer stuff
+bin/*
+Packages/*
+typo3/vendor/*
+#
+# Ignore common TYPO3 CMS directories
+typo3temp/*
+typo3conf/*
+fileadmin/*
+uploads/*
+/.htaccess

@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\ViewHelpers;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,7 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Code library for display of different currencies
- * widely used in EXT: commerce
+ * widely used in EXT: commerce.
  *
  * Class \CommerceTeam\Commerce\ViewHelpers\Money
  *
@@ -26,83 +28,87 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Franz Ripfel <typo3@abezet.de>
  * @author Ingo Schmitt <is@marketing-factory.de>
  */
-class Money {
-	/**
-	 * Use this function from TS, example:
-	 * includeLibs.moneylib = EXT:commerce/Classes/ViewHelpers/Money.php
-	 * price_net = stdWrap
-	 * price_net {
-	 *   postUserFunc = CommerceTeam\\Commerce\\ViewHelpers\\Money->user_tsFormat
-	 *   postUserFunc.currency = EUR
-	 *   postUserFunc.withSymbol = 0
-	 * }
-	 *
-	 * @param string $content Content
-	 * @param array $conf Config
-	 *
-	 * @return string representation of the amount including currency symbol(s)
-	 */
-	public function user_tsFormat($content, array $conf) {
-		$withSymbol = is_null($conf['withSymbol']) ? TRUE : $conf['withSymbol'];
-		return (string)self::format($content, $conf['currency'], $withSymbol);
-	}
+class Money
+{
+    /**
+     * Use this function from TS, example:
+     * includeLibs.moneylib = EXT:commerce/Classes/ViewHelpers/Money.php
+     * price_net = stdWrap
+     * price_net {
+     *   postUserFunc = CommerceTeam\\Commerce\\ViewHelpers\\Money->user_tsFormat
+     *   postUserFunc.currency = EUR
+     *   postUserFunc.withSymbol = 0
+     * }.
+     *
+     * @param string $content Content
+     * @param array  $conf    Config
+     *
+     * @return string representation of the amount including currency symbol(s)
+     */
+    public function user_tsFormat($content, array $conf)
+    {
+        $withSymbol = is_null($conf['withSymbol']) ? true : $conf['withSymbol'];
 
-	/**
-	 * Returns the given amount as a formatted string according to the
-	 * given currency.
-	 * IMPORTANT NOTE:
-	 * The amount must always be the smallest unit passed as a string
-	 * or int! It is a very bad idea to use float for monetary
-	 * calculations if you need exact values, therefore
-	 * this method won't accept float values.
-	 * Examples:
-	 *        format (500, 'EUR');        --> '5,00 EUR'
-	 *        format (4.23, 'EUR');    --> FALSE
-	 *        format ('872331', 'EUR');    --> '8.723,31 EUR'
-	 *
-	 * @param int|string $amount Amount to be formatted. Must be the smalles unit
-	 * @param string $currencyKey ISO 3 letter code of the currency
-	 * @param bool $withSymbol If set the currency symbol will be rendered
-	 *
-	 * @return string|bool String representation of the amount including currency
-	 * 	symbol(s) or FALSE if $amount was of the type float
-	 */
-	public static function format($amount, $currencyKey, $withSymbol = TRUE) {
-		if (is_float($amount)) {
-			return FALSE;
-		}
+        return (string) self::format($content, $conf['currency'], $withSymbol);
+    }
 
-		/**
-		 * Currency repository
-		 *
-		 * @var CurrencyRepository $currencyRepository
-		 */
-		$currencyRepository = GeneralUtility::makeInstance('CommerceTeam\Commerce\Domain\Repository\CurrencyRepository');
-		$currency = $currencyRepository->findByIso3($currencyKey);
+    /**
+     * Returns the given amount as a formatted string according to the
+     * given currency.
+     * IMPORTANT NOTE:
+     * The amount must always be the smallest unit passed as a string
+     * or int! It is a very bad idea to use float for monetary
+     * calculations if you need exact values, therefore
+     * this method won't accept float values.
+     * Examples:
+     *        format (500, 'EUR');        --> '5,00 EUR'
+     *        format (4.23, 'EUR');    --> FALSE
+     *        format ('872331', 'EUR');    --> '8.723,31 EUR'.
+     *
+     * @param int|string $amount      Amount to be formatted. Must be the smalles unit
+     * @param string     $currencyKey ISO 3 letter code of the currency
+     * @param bool       $withSymbol  If set the currency symbol will be rendered
+     *
+     * @return string|bool String representation of the amount including currency
+     *                     symbol(s) or FALSE if $amount was of the type float
+     */
+    public static function format($amount, $currencyKey, $withSymbol = true)
+    {
+        if (is_float($amount)) {
+            return false;
+        }
 
-		if (empty($currency)) {
-			return FALSE;
-		}
+        /**
+         * Currency repository.
+         *
+         * @var CurrencyRepository
+         */
+        $currencyRepository = GeneralUtility::makeInstance('CommerceTeam\Commerce\Domain\Repository\CurrencyRepository');
+        $currency = $currencyRepository->findByIso3($currencyKey);
 
-		$formattedAmount = number_format(
-			$amount / $currency['cu_sub_divisor'],
-			$currency['cu_decimal_digits'],
-			$currency['cu_decimal_point'],
-			$currency['cu_thousands_point']
-		);
+        if (empty($currency)) {
+            return false;
+        }
 
-		if ($withSymbol) {
-			$wholeString = $formattedAmount;
-			if (!empty($currency['cu_symbol_left'])) {
-				$wholeString = $currency['cu_symbol_left'] . chr(32) . $wholeString;
-			}
-			if (!empty($currency['cu_symbol_right'])) {
-				$wholeString .= chr(32) . $currency['cu_symbol_right'];
-			}
-		} else {
-			$wholeString = $formattedAmount;
-		}
+        $formattedAmount = number_format(
+            $amount / $currency['cu_sub_divisor'],
+            $currency['cu_decimal_digits'],
+            $currency['cu_decimal_point'],
+            $currency['cu_thousands_point']
+        );
 
-		return $wholeString;
-	}
+        if ($withSymbol) {
+            $wholeString = $formattedAmount;
+            if (!empty($currency['cu_symbol_left'])) {
+                $wholeString = $currency['cu_symbol_left'].chr(32).$wholeString;
+            }
+            if (!empty($currency['cu_symbol_right'])) {
+                $wholeString .= chr(32).$currency['cu_symbol_right'];
+            }
+        } else {
+            $wholeString = $formattedAmount;
+        }
+
+        return $wholeString;
+    }
 }

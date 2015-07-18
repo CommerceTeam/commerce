@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Payment;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -39,158 +41,156 @@ namespace CommerceTeam\Commerce\Payment;
  *
  * @author 2005-2008 Marco Klawonn <info@webprog.de>
  */
-class Payment extends Wirecard {
-	/**
-	 * Error
-	 *
-	 * @var array
-	 */
-	public $error;
+class Payment extends Wirecard
+{
+    /**
+     * Error.
+     *
+     * @var array
+     */
+    public $error;
 
-	/**
-	 * Status
-	 *
-	 * @var string
-	 */
-	public $status;
+    /**
+     * Status.
+     *
+     * @var string
+     */
+    public $status;
 
-	/**
-	 * Constructor
-	 *
-	 * @return self
-	 */
-	public function __construct() {
-		parent::__construct();
-		$this->setReferenzID();
-	}
+    /**
+     * Constructor.
+     *
+     * @return self
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setReferenzID();
+    }
 
-	/**
-	 * Get Payment methods
-	 * delivers a list of payment types that are provided by the parent class
-	 *
-	 * @return array
-	 */
-	public function getPaymetmethods() {
-		return array();
-	}
+    /**
+     * Get Payment methods
+     * delivers a list of payment types that are provided by the parent class.
+     *
+     * @return array
+     */
+    public function getPaymetmethods()
+    {
+        return array();
+    }
 
-	/**
-	 * Get status
-	 *
-	 * @return array
-	 */
-	public function getStatus() {
-		return $this->status;
-	}
+    /**
+     * Get status.
+     *
+     * @return array
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
 
-	/**
-	 * Get error
-	 *
-	 * @return int
-	 */
-	public function getError() {
-		return $this->error[$this->referenzID];
-	}
+    /**
+     * Get error.
+     *
+     * @return int
+     */
+    public function getError()
+    {
+        return $this->error[$this->referenzID];
+    }
 
-	/**
-	 * Set url
-	 *
-	 * @param string $url Url
-	 *
-	 * @return void
-	 */
-	public function setUrl($url) {
-		$this->url = $url;
-	}
+    /**
+     * Set url.
+     *
+     * @param string $url Url
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+    }
 
-	/**
-	 * Set data
-	 *
-	 * @param array $data Data
-	 *
-	 * @return void
-	 */
-	public function setData(array $data) {
-		// Die Benutzerdaten in einem Assoziativen Array �bergeben
-		// folgende Benutzerdaten werdem vom System allgemein beachtet:
-		// - firstname
-		// - lastname
-		// - street
-		// - zip
-		// - city
-		// - country
-		// KK Spezifisch
-		$this->userData = $data;
-	}
+    /**
+     * Set data.
+     *
+     * @param array $data Data
+     */
+    public function setData(array $data)
+    {
+        // Die Benutzerdaten in einem Assoziativen Array �bergeben
+        // folgende Benutzerdaten werdem vom System allgemein beachtet:
+        // - firstname
+        // - lastname
+        // - street
+        // - zip
+        // - city
+        // - country
+        // KK Spezifisch
+        $this->userData = $data;
+    }
 
-	/**
-	 * Set payment data for transfer
-	 *
-	 * @param array $data Data
-	 *
-	 * @return void
-	 */
-	public function setPaymentData(array $data) {
-		// Die Benutzerdaten in einem Assoziativen Array �bergeben
-		// folgende Benutzerdaten werdem vom System allgemein beachtet:
-		// Betrifft Kreditkarten
-		// - kknumber
-		// - exp_month
-		// - exp_year
-		// - holder
-		// - city
-		// - country
-		$this->paymentData = $data;
-	}
+    /**
+     * Set payment data for transfer.
+     *
+     * @param array $data Data
+     */
+    public function setPaymentData(array $data)
+    {
+        // Die Benutzerdaten in einem Assoziativen Array �bergeben
+        // folgende Benutzerdaten werdem vom System allgemein beachtet:
+        // Betrifft Kreditkarten
+        // - kknumber
+        // - exp_month
+        // - exp_year
+        // - holder
+        // - city
+        // - country
+        $this->paymentData = $data;
+    }
 
-	/**
-	 * Set the data for the transaction
-	 *
-	 * @param array $data Data
-	 *
-	 * @return void
-	 */
-	public function setTransactionData(array $data) {
-		// Die Benutzerdaten in einem Assoziativen Array �bergeben
-		// folgende Benutzerdaten werdem vom System allgemein beachtet:
-		// - amount
-		// - currency
-		$this->transactionData = $data;
-	}
+    /**
+     * Set the data for the transaction.
+     *
+     * @param array $data Data
+     */
+    public function setTransactionData(array $data)
+    {
+        // Die Benutzerdaten in einem Assoziativen Array �bergeben
+        // folgende Benutzerdaten werdem vom System allgemein beachtet:
+        // - amount
+        // - currency
+        $this->transactionData = $data;
+    }
 
-	/**
-	 * Set payment method
-	 *
-	 * @param string $method Method
-	 *
-	 * @return void
-	 */
-	public function setPaymentmethod($method) {
-		$this->paymentmethod = $method;
-	}
+    /**
+     * Set payment method.
+     *
+     * @param string $method Method
+     */
+    public function setPaymentmethod($method)
+    {
+        $this->paymentmethod = $method;
+    }
 
-	/**
-	 * Set payment type
-	 *
-	 * @param object $type Type
-	 *
-	 * @return void
-	 */
-	public function setPaymenttype($type) {
-		$this->paymenttype = $type;
-	}
+    /**
+     * Set payment type.
+     *
+     * @param object $type Type
+     */
+    public function setPaymenttype($type)
+    {
+        $this->paymenttype = $type;
+    }
 
-	/**
-	 * Set reference id
-	 *
-	 * @param string $referenceId Reference id
-	 *
-	 * @return void
-	 */
-	public function setReferenzId($referenceId = '') {
-		if ($referenceId == '') {
-			$referenceId = 'ref_' . time();
-		}
-		$this->referenzID = $referenceId;
-	}
+    /**
+     * Set reference id.
+     *
+     * @param string $referenceId Reference id
+     */
+    public function setReferenzId($referenceId = '')
+    {
+        if ($referenceId == '') {
+            $referenceId = 'ref_'.time();
+        }
+        $this->referenzID = $referenceId;
+    }
 }

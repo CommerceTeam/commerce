@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,20 +14,20 @@
  */
 
 /**
- * Statistic module navigation frame
+ * Statistic module navigation frame.
  */
 unset($MCONF);
 
-require_once('conf.php');
+require_once 'conf.php';
 define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/Classes/Module/Statistic/');
 $BACK_PATH = '../../../../../../typo3/';
 
-require_once($BACK_PATH . 'init.php');
+require_once $BACK_PATH.'init.php';
 
 /**
- * Orders navigation viewhelper
+ * Orders navigation viewhelper.
  *
- * @var \CommerceTeam\Commerce\ViewHelpers\Navigation\OrdersViewHelper $SOBE
+ * @var \CommerceTeam\Commerce\ViewHelpers\Navigation\OrdersViewHelper
  */
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\OrdersViewHelper');
 $SOBE->init();

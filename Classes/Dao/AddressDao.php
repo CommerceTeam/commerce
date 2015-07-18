@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Dao;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,18 +24,18 @@ namespace CommerceTeam\Commerce\Dao;
  *
  * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
-class AddressDao extends BasicDao {
-	/**
-	 * Initialization
-	 *
-	 * @return void
-	 */
-	protected function init() {
-		$this->parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDaoParser');
-		$this->mapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-			'CommerceTeam\\Commerce\\Dao\\AddressDaoMapper',
-			$this->parser
-		);
-		$this->object = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDaoObject');
-	}
+class AddressDao extends BasicDao
+{
+    /**
+     * Initialization.
+     */
+    protected function init()
+    {
+        $this->parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDaoParser');
+        $this->mapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            'CommerceTeam\\Commerce\\Dao\\AddressDaoMapper',
+            $this->parser
+        );
+        $this->object = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDaoObject');
+    }
 }

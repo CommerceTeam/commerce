@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Payment;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,130 +18,132 @@ use CommerceTeam\Commerce\Domain\Repository\OrderRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Debit payment implementation
+ * Debit payment implementation.
  *
  * Class \CommerceTeam\Commerce\Payment\Debit
  *
  * @author 2005-2011 Thomas Hempel <thomas@work.de>
  */
-class Debit extends PaymentAbstract {
-	/**
-	 * Payment type
-	 *
-	 * @var string
-	 */
-	protected $type = 'debit';
+class Debit extends PaymentAbstract
+{
+    /**
+     * Payment type.
+     *
+     * @var string
+     */
+    protected $type = 'debit';
 
-	/**
-	 * Locallang array, only needed if individual fields are defined
-	 *
-	 * @var array
-	 */
-	public $LOCAL_LANG = array(
-		'default' => array(
-			'payment_debit_bic' => 'Bank Identification Number',
-			'payment_debit_an' => 'Account number',
-			'payment_debit_bn' => 'Bankname',
-			'payment_debit_ah' => 'Account holder',
-			'payment_debit_company' => 'Company',
-		),
-		'de' => array(
-			'payment_debit_bic' => 'Bankleitzahl',
-			'payment_debit_an' => 'Kontonummer',
-			'payment_debit_bn' => 'Bankname',
-			'payment_debit_ah' => 'Kontoinhaber',
-			'payment_debit_company' => 'Firma',
-		),
-		'fr' => array(
-			'payment_debit_bic' => 'Code de banque',
-			'payment_debit_an' => 'Num�ro de compte',
-			'payment_debit_bn' => 'Nom bancaire',
-			'payment_debit_ah' => 'D�tenteur de compte',
-			'payment_debit_company' => 'Firme',
-		),
-	);
+    /**
+     * Locallang array, only needed if individual fields are defined.
+     *
+     * @var array
+     */
+    public $LOCAL_LANG = array(
+        'default' => array(
+            'payment_debit_bic' => 'Bank Identification Number',
+            'payment_debit_an' => 'Account number',
+            'payment_debit_bn' => 'Bankname',
+            'payment_debit_ah' => 'Account holder',
+            'payment_debit_company' => 'Company',
+        ),
+        'de' => array(
+            'payment_debit_bic' => 'Bankleitzahl',
+            'payment_debit_an' => 'Kontonummer',
+            'payment_debit_bn' => 'Bankname',
+            'payment_debit_ah' => 'Kontoinhaber',
+            'payment_debit_company' => 'Firma',
+        ),
+        'fr' => array(
+            'payment_debit_bic' => 'Code de banque',
+            'payment_debit_an' => 'Num�ro de compte',
+            'payment_debit_bn' => 'Nom bancaire',
+            'payment_debit_ah' => 'D�tenteur de compte',
+            'payment_debit_company' => 'Firme',
+        ),
+    );
 
-	/**
-	 * Get configuration of additional fields
-	 *
-	 * @return array
-	 */
-	public function getAdditionalFieldsConfig() {
-		return array(
-			'debit_bic.' => array(
-				'mandatory' => 1
-			),
-			'debit_an.' => array(
-				'mandatory' => 1
-			),
-			'debit_bn.' => array(
-				'mandatory' => 1
-			),
-			'debit_ah.' => array(
-				'mandatory' => 1
-			),
-			'debit_company.' => array(
-				'mandatory' => 0
-			)
-		);
-	}
+    /**
+     * Get configuration of additional fields.
+     *
+     * @return array
+     */
+    public function getAdditionalFieldsConfig()
+    {
+        return array(
+            'debit_bic.' => array(
+                'mandatory' => 1,
+            ),
+            'debit_an.' => array(
+                'mandatory' => 1,
+            ),
+            'debit_bn.' => array(
+                'mandatory' => 1,
+            ),
+            'debit_ah.' => array(
+                'mandatory' => 1,
+            ),
+            'debit_company.' => array(
+                'mandatory' => 0,
+            ),
+        );
+    }
 
-	/**
-	 * Check if provided data is ok
-	 *
-	 * @param array $formData Current form data
-	 *
-	 * @return bool Check if data is ok
-	 */
-	public function proofData(array $formData = array()) {
-		// If formData is empty we know that this is the very first call from
-		// \CommerceTeam\Commerce\Controller\CheckoutController->handlePayment
-		// and at this time there can't be form data.
-		if (empty($formData)) {
-			return FALSE;
-		}
+    /**
+     * Check if provided data is ok.
+     *
+     * @param array $formData Current form data
+     *
+     * @return bool Check if data is ok
+     */
+    public function proofData(array $formData = array())
+    {
+        // If formData is empty we know that this is the very first call from
+        // \CommerceTeam\Commerce\Controller\CheckoutController->handlePayment
+        // and at this time there can't be form data.
+        if (empty($formData)) {
+            return false;
+        }
 
-		$config['sourceFields.'] = $this->getAdditionalFieldsConfig();
+        $config['sourceFields.'] = $this->getAdditionalFieldsConfig();
 
-		$result = TRUE;
+        $result = true;
 
-		foreach ($formData as $name => $value) {
-			if ($config['sourceFields.'][$name . '.']['mandatory'] == 1 && strlen($value) == 0) {
-				$result = FALSE;
-			}
-		}
+        foreach ($formData as $name => $value) {
+            if ($config['sourceFields.'][$name.'.']['mandatory'] == 1 && strlen($value) == 0) {
+                $result = false;
+            }
+        }
 
-		if ($this->provider !== NULL) {
-			return $this->provider->proofData($formData, $result);
-		}
+        if ($this->provider !== null) {
+            return $this->provider->proofData($formData, $result);
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 
-	/**
-	 * Update order data after order has been finished
-	 *
-	 * @param int $orderUid Id of this order
-	 * @param array $session Session data
-	 *
-	 * @return void
-	 */
-	public function updateOrder($orderUid, array $session = array()) {
-		/**
-		 * Order repository
-		 *
-		 * @var OrderRepository $orderRepository
-		 */
-		$orderRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\OrderRepository');
-		$orderRepository->updateByUid(
-			$orderUid,
-			array(
-				'payment_debit_bic' => $session['payment']['debit_bic'],
-				'payment_debit_an' => $session['payment']['debit_an'],
-				'payment_debit_bn' => $session['payment']['debit_bn'],
-				'payment_debit_ah' => $session['payment']['debit_ah'],
-				'payment_debit_company' => $session['payment']['debit_company'],
-			)
-		);
-	}
+    /**
+     * Update order data after order has been finished.
+     *
+     * @param int   $orderUid Id of this order
+     * @param array $session  Session data
+     */
+    public function updateOrder($orderUid, array $session = array())
+    {
+        /**
+         * Order repository.
+         *
+         * @var OrderRepository
+         */
+        $orderRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\OrderRepository');
+        $orderRepository->updateByUid(
+            $orderUid,
+            array(
+                'payment_debit_bic' => $session['payment']['debit_bic'],
+                'payment_debit_an' => $session['payment']['debit_an'],
+                'payment_debit_bn' => $session['payment']['debit_bn'],
+                'payment_debit_ah' => $session['payment']['debit_ah'],
+                'payment_debit_company' => $session['payment']['debit_company'],
+            )
+        );
+    }
 }

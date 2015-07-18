@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -23,9 +24,9 @@ $MCONF['script'] = 'index.php';
 $MCONF['name'] = 'commerce_txcommerceTreeBrowser';
 $MCONF['access'] = '';
 
-require_once($BACK_PATH . 'init.php');
+require_once $BACK_PATH.'init.php';
 
-/**
+/*
  * Language service
  *
  * @var \TYPO3\CMS\Lang\LanguageService $LANG
@@ -33,9 +34,9 @@ require_once($BACK_PATH . 'init.php');
 $LANG->includeLLFile('EXT:lang/locallang_misc.xml');
 
 /**
- * Treelib browser
+ * Treelib browser.
  *
- * @var \CommerceTeam\Commerce\ViewHelpers\TreelibBrowser $SOBE
+ * @var \CommerceTeam\Commerce\ViewHelpers\TreelibBrowser
  */
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\TreelibBrowser');
 $SOBE->init();

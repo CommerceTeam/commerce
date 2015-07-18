@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\ViewHelpers;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -31,596 +33,605 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author 2003-2012 Rene Fritz <r.fritz@colorcube.de>
  */
-class TreelibTceforms {
-	/**
-	 * Count rendered tree items - just for frame height calculation
-	 *
-	 * @var int
-	 */
-	public $treeItemC = 0;
+class TreelibTceforms
+{
+    /**
+     * Count rendered tree items - just for frame height calculation.
+     *
+     * @var int
+     */
+    public $treeItemC = 0;
 
-	/**
-	 * Count rendered trees
-	 *
-	 * @var int
-	 */
-	public $treesC = 0;
+    /**
+     * Count rendered trees.
+     *
+     * @var int
+     */
+    public $treesC = 0;
 
-	/**
-	 * Rendered trees as HTML
-	 *
-	 * @var string
-	 * @access private
-	 */
-	protected $treeContent = '';
+    /**
+     * Rendered trees as HTML.
+     *
+     * @var string
+     */
+    protected $treeContent = '';
 
-	/**
-	 * ItemArray for usage in TCEforms
-	 * This holds the original values
-	 *
-	 * @var array
-	 * @access private
-	 */
-	protected $itemArray = array();
+    /**
+     * ItemArray for usage in TCEforms
+     * This holds the original values.
+     *
+     * @var array
+     */
+    protected $itemArray = array();
 
-	/**
-	 * ItemArray for usage in TCEforms
-	 * This holds the processed values with titles/labels
-	 *
-	 * @var array
-	 * @access private
-	 */
-	protected $itemArrayProcessed = array();
+    /**
+     * ItemArray for usage in TCEforms
+     * This holds the processed values with titles/labels.
+     *
+     * @var array
+     */
+    protected $itemArrayProcessed = array();
 
-	/**
-	 * Defines the prefix used for JS code to call the parent window.
-	 * This is for iframe mode.
-	 *
-	 * @var string
-	 * @access private
-	 */
-	protected $jsParent = '';
+    /**
+     * Defines the prefix used for JS code to call the parent window.
+     * This is for iframe mode.
+     *
+     * @var string
+     */
+    protected $jsParent = '';
 
-	/**
-	 * Form engine
-	 *
-	 * @var \TYPO3\CMS\Backend\Form\FormEngine
-	 */
-	public $tceforms;
+    /**
+     * Form engine.
+     *
+     * @var \TYPO3\CMS\Backend\Form\FormEngine
+     */
+    public $tceforms;
 
-	/**
-	 * Parameter
-	 *
-	 * @var array
-	 */
-	public $PA;
+    /**
+     * Parameter.
+     *
+     * @var array
+     */
+    public $PA;
 
-	/**
-	 * Table
-	 *
-	 * @var string
-	 */
-	public $table;
+    /**
+     * Table.
+     *
+     * @var string
+     */
+    public $table;
 
-	/**
-	 * Field
-	 *
-	 * @var string
-	 */
-	public $field;
+    /**
+     * Field.
+     *
+     * @var string
+     */
+    public $field;
 
-	/**
-	 * Row
-	 *
-	 * @var array
-	 */
-	public $row;
+    /**
+     * Row.
+     *
+     * @var array
+     */
+    public $row;
 
-	/**
-	 * Config
-	 *
-	 * @var array
-	 */
-	public $config;
+    /**
+     * Config.
+     *
+     * @var array
+     */
+    public $config;
 
-	/**
-	 * Tree browser script
-	 *
-	 * @var string
-	 */
-	public $treeBrowserScript;
+    /**
+     * Tree browser script.
+     *
+     * @var string
+     */
+    public $treeBrowserScript;
 
-	/* Getter / Setter */
+    /* Getter / Setter */
 
-	/**
-	 * Init
-	 *
-	 * @param array $parameter An array with additional configuration options.
-	 *
-	 * @return void
-	 */
-	public function init(array $parameter) {
-		$this->tceforms = & $parameter['pObj'];
-		$this->PA = & $parameter;
+    /**
+     * Init.
+     *
+     * @param array $parameter An array with additional configuration options.
+     */
+    public function init(array $parameter)
+    {
+        $this->tceforms = &$parameter['pObj'];
+        $this->PA = &$parameter;
 
-		$this->table = $parameter['table'];
-		$this->field = $parameter['field'];
-		$this->row = $parameter['row'];
-		$this->config = $parameter['fieldConf']['config'];
+        $this->table = $parameter['table'];
+        $this->field = $parameter['field'];
+        $this->row = $parameter['row'];
+        $this->config = $parameter['fieldConf']['config'];
 
-		// set currently selected items
-		$itemArray = GeneralUtility::trimExplode(',', $this->PA['itemFormElValue'], TRUE);
-		$this->setItemArray($itemArray);
-	}
+        // set currently selected items
+        $itemArray = GeneralUtility::trimExplode(',', $this->PA['itemFormElValue'], true);
+        $this->setItemArray($itemArray);
+    }
 
-	/**
-	 * Set the selected items
-	 *
-	 * @param array $itemArray Item array
-	 *
-	 * @return void
-	 */
-	public function setItemArray(array $itemArray) {
-		$this->itemArray = $itemArray;
-	}
+    /**
+     * Set the selected items.
+     *
+     * @param array $itemArray Item array
+     */
+    public function setItemArray(array $itemArray)
+    {
+        $this->itemArray = $itemArray;
+    }
 
-	/**
-	 * Return the processed aray of selected items
-	 *
-	 * @return array
-	 */
-	public function getItemArrayProcessed() {
-		return $this->itemArrayProcessed;
-	}
+    /**
+     * Return the processed aray of selected items.
+     *
+     * @return array
+     */
+    public function getItemArrayProcessed()
+    {
+        return $this->itemArrayProcessed;
+    }
 
-	/**
-	 * Return the count value of selectable items
-	 *
-	 * @return int
-	 */
-	public function getItemCountSelectable() {
-		return $this->treeItemC;
-	}
+    /**
+     * Return the count value of selectable items.
+     *
+     * @return int
+     */
+    public function getItemCountSelectable()
+    {
+        return $this->treeItemC;
+    }
 
-	/**
-	 * Return the count value of rendered trees
-	 *
-	 * @return int
-	 */
-	public function getItemCountTrees() {
-		return $this->treesC;
-	}
+    /**
+     * Return the count value of rendered trees.
+     *
+     * @return int
+     */
+    public function getItemCountTrees()
+    {
+        return $this->treesC;
+    }
 
-	/* Rendering */
+    /* Rendering */
 
-	/**
-	 * Renders the category tree for mounts
-	 *
-	 * @param object $browseTree Category Tree
-	 *
-	 * @return string the rendered trees (HTML)
-	 */
-	public function renderBrowsableMountTrees($browseTree) {
-		$this->treeContent = $browseTree->getBrowseableTree();
+    /**
+     * Renders the category tree for mounts.
+     *
+     * @param object $browseTree Category Tree
+     *
+     * @return string the rendered trees (HTML)
+     */
+    public function renderBrowsableMountTrees($browseTree)
+    {
+        $this->treeContent = $browseTree->getBrowseableTree();
 
-		return $this->treeContent;
-	}
+        return $this->treeContent;
+    }
 
-	/* Div-Frame specific stuff */
+    /* Div-Frame specific stuff */
 
-	/**
-	 * Returns div HTML code which includes the rendered tree(s).
-	 *
-	 * @param string $width CSS width definition
-	 * @param string $height CSS height definition
-	 *
-	 * @return string HTML content
-	 */
-	public function renderDivBox($width = NULL, $height = NULL) {
-		if ($width == NULL) {
-			list($width, $height) = $this->calcFrameSizeCss();
-		}
-		$divStyle = 'position:relative; left:0px; top:0px; height:' . $height . '; width:' . $width .
-			';border:solid 1px;overflow:auto;background:#fff;';
-		$divFrame = '<div  name="' . $this->PA['itemFormElName'] . '_selTree" style="' . htmlspecialchars($divStyle) . '">';
+    /**
+     * Returns div HTML code which includes the rendered tree(s).
+     *
+     * @param string $width  CSS width definition
+     * @param string $height CSS height definition
+     *
+     * @return string HTML content
+     */
+    public function renderDivBox($width = null, $height = null)
+    {
+        if ($width == null) {
+            list($width, $height) = $this->calcFrameSizeCss();
+        }
+        $divStyle = 'position:relative; left:0px; top:0px; height:'.$height.'; width:'.$width.
+            ';border:solid 1px;overflow:auto;background:#fff;';
+        $divFrame = '<div  name="'.$this->PA['itemFormElName'].'_selTree" style="'.htmlspecialchars($divStyle).'">';
 
-		$divFrame .= $this->treeContent;
-		$divFrame .= '</div>';
+        $divFrame .= $this->treeContent;
+        $divFrame .= '</div>';
 
-			// include function
-		$divFrame .= '<script type="text/javascript">';
-		$divFrame .= '
+            // include function
+        $divFrame .= '<script type="text/javascript">';
+        $divFrame .= '
 			function jumpTo(id, linkObj, highLightID, script) {
 				var catUid = id.substr(id.lastIndexOf("=") + 1); //We can leave out the "="
 				var text = (linkObj.firstChild) ? linkObj.firstChild.nodeValue : "Unknown";
 				//Params (field, value, caption)
-				setFormValueFromBrowseWin("' . $this->PA['itemFormElName'] . '", catUid, text);
+				setFormValueFromBrowseWin("'.$this->PA['itemFormElName'].'", catUid, text);
 			}';
-		$divFrame .= '</script>';
-		$divFrame .= '<script src="' . $this->tceforms->backPath . 'js/tree.js"></script>
+        $divFrame .= '</script>';
+        $divFrame .= '<script src="'.$this->tceforms->backPath.'js/tree.js"></script>
 			<script type="text/javascript">
 			Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct";
 			</script>
 		';
 
-		return $divFrame;
-	}
+        return $divFrame;
+    }
 
-	/* Rendering tools */
+    /* Rendering tools */
 
-	/**
-	 * Calculate size of the tree frame
-	 *
-	 * @param int $itemCountSelectable Item count selectable
-	 *
-	 * @return array
-	 * Size with array($width, $height)
-	 */
-	public function calcFrameSizeCss($itemCountSelectable = NULL) {
-		if ($itemCountSelectable === NULL) {
-			$itemCountSelectable = max(1, $this->treeItemC + $this->treesC + 1);
-		}
+    /**
+     * Calculate size of the tree frame.
+     *
+     * @param int $itemCountSelectable Item count selectable
+     *
+     * @return array
+     *               Size with array($width, $height)
+     */
+    public function calcFrameSizeCss($itemCountSelectable = null)
+    {
+        if ($itemCountSelectable === null) {
+            $itemCountSelectable = max(1, $this->treeItemC + $this->treesC + 1);
+        }
 
-		$width = '240px';
+        $width = '240px';
 
-		$this->config['autoSizeMax'] = max($this->config['autoSizeMax'], 0);
-		$height = $this->config['autoSizeMax'] ?
-			\TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange(
-				$itemCountSelectable,
-				\TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->config['size'], 1), $this->config['autoSizeMax']
-			) :
-			$this->config['size'];
+        $this->config['autoSizeMax'] = max($this->config['autoSizeMax'], 0);
+        $height = $this->config['autoSizeMax'] ?
+            \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange(
+                $itemCountSelectable,
+                \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->config['size'], 1), $this->config['autoSizeMax']
+            ) :
+            $this->config['size'];
 
-			// hardcoded: 16 is the height of the icons
-		$height = ($height * 16) . 'px';
+            // hardcoded: 16 is the height of the icons
+        $height = ($height * 16).'px';
 
-		return array(
-			$width,
-			$height
-		);
-	}
+        return array(
+            $width,
+            $height,
+        );
+    }
 
-	/* Data tools */
+    /* Data tools */
 
-	/**
-	 * In effect this function returns an array with the preselected item
-	 * (aka Mountpoints that are already assigned) to the user
-	 *    [0] => 5|Fernseher
-	 *  Meta: [0] => $key|$caption
-	 *
-	 * @param object $tree Browsetree Object
-	 * @param int $userid User UID (this is not NECESSARILY
-	 * 	the UID of the currently logged-in user
-	 *
-	 * @return array
-	 */
-	public function processItemArrayForBrowseableTree(&$tree, $userid) {
-		/**
-		 * Category mount
-		 *
-		 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
-		 */
-		$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-		$mounts->init($userid);
+    /**
+     * In effect this function returns an array with the preselected item
+     * (aka Mountpoints that are already assigned) to the user
+     *    [0] => 5|Fernseher
+     *  Meta: [0] => $key|$caption.
+     *
+     * @param object $tree   Browsetree Object
+     * @param int    $userid User UID (this is not NECESSARILY
+     *                       the UID of the currently logged-in user
+     *
+     * @return array
+     */
+    public function processItemArrayForBrowseableTree(&$tree, $userid)
+    {
+        /**
+         * Category mount.
+         *
+         * @var \CommerceTeam\Commerce\Tree\CategoryMounts
+         */
+        $mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mounts->init($userid);
 
-		$preselected = $mounts->getMountDataLabeled();
+        $preselected = $mounts->getMountDataLabeled();
 
-			// Modify the Array - separate the uid and label with a '|'
-		$l = count($preselected);
+            // Modify the Array - separate the uid and label with a '|'
+        $l = count($preselected);
 
-		for ($i = 0; $i < $l; $i++) {
-			$preselected[$i] = implode('|', $preselected[$i]);
-		}
+        for ($i = 0; $i < $l; ++$i) {
+            $preselected[$i] = implode('|', $preselected[$i]);
+        }
 
-		$this->itemArrayProcessed = $preselected;
+        $this->itemArrayProcessed = $preselected;
 
-		return $preselected;
-	}
+        return $preselected;
+    }
 
-	/**
-	 * In effect this function returns an array with the preselected item
-	 * (aka Mountpoints that are already assigned) to the Group
-	 *    [0] => 5|Fernseher
-	 *  Meta: [0] => $key|$caption
-	 *
-	 * @param object $tree Browsetree Object
-	 * @param int $groupuid User UID (this is not NECESSARILY
-	 * the UID of the currently logged-in user
-	 *
-	 * @return array
-	 */
-	public function processItemArrayForBrowseableTreeGroups(&$tree, $groupuid) {
-		/**
-		 * Category mount
-		 *
-		 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
-		 */
-		$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-		$mounts->initByGroup($groupuid);
+    /**
+     * In effect this function returns an array with the preselected item
+     * (aka Mountpoints that are already assigned) to the Group
+     *    [0] => 5|Fernseher
+     *  Meta: [0] => $key|$caption.
+     *
+     * @param object $tree     Browsetree Object
+     * @param int    $groupuid User UID (this is not NECESSARILY
+     *                         the UID of the currently logged-in user
+     *
+     * @return array
+     */
+    public function processItemArrayForBrowseableTreeGroups(&$tree, $groupuid)
+    {
+        /**
+         * Category mount.
+         *
+         * @var \CommerceTeam\Commerce\Tree\CategoryMounts
+         */
+        $mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mounts->initByGroup($groupuid);
 
-		$preselected = $mounts->getMountDataLabeled();
+        $preselected = $mounts->getMountDataLabeled();
 
-			// Modify the Array - separate the uid and label with a '|'
-		$l = count($preselected);
+            // Modify the Array - separate the uid and label with a '|'
+        $l = count($preselected);
 
-		for ($i = 0; $i < $l; $i++) {
-			$preselected[$i] = implode('|', $preselected[$i]);
-		}
+        for ($i = 0; $i < $l; ++$i) {
+            $preselected[$i] = implode('|', $preselected[$i]);
+        }
 
-		$this->itemArrayProcessed = $preselected;
+        $this->itemArrayProcessed = $preselected;
 
-		return $preselected;
-	}
+        return $preselected;
+    }
 
-	/**
-	 * In effect this function returns an array with the preselected item
-	 * (aka Parent Categories that are already assigned)
-	 *    [0] => 5|Fernseher
-	 *  Meta: [0] => $key|$caption
-	 *
-	 * @param object $tree Browsetree Object
-	 * @param int $catUid Cat UID
-	 *
-	 * @return array
-	 */
-	public function processItemArrayForBrowseableTreePCategory(&$tree, $catUid) {
-		if (!is_numeric($catUid)) {
-			return array();
-		}
+    /**
+     * In effect this function returns an array with the preselected item
+     * (aka Parent Categories that are already assigned)
+     *    [0] => 5|Fernseher
+     *  Meta: [0] => $key|$caption.
+     *
+     * @param object $tree   Browsetree Object
+     * @param int    $catUid Cat UID
+     *
+     * @return array
+     */
+    public function processItemArrayForBrowseableTreePCategory(&$tree, $catUid)
+    {
+        if (!is_numeric($catUid)) {
+            return array();
+        }
 
-		// Get the parent Categories for the cat uid
-		/**
-		 * Category
-		 *
-		 * @var \CommerceTeam\Commerce\Domain\Model\Category $cat
-		 */
-		$cat = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $catUid);
-		$cat->loadData();
-		$parent = $cat->getParentCategories();
+        // Get the parent Categories for the cat uid
+        /**
+         * Category.
+         *
+         * @var \CommerceTeam\Commerce\Domain\Model\Category
+         */
+        $cat = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $catUid);
+        $cat->loadData();
+        $parent = $cat->getParentCategories();
 
-		$this->itemArrayProcessed = array();
+        $this->itemArrayProcessed = array();
 
-		/**
-		 * Category mounts
-		 *
-		 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
-		 */
-		$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-		$mounts->init($this->getBackendUser()->user['uid']);
+        /**
+         * Category mounts.
+         *
+         * @var \CommerceTeam\Commerce\Tree\CategoryMounts
+         */
+        $mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mounts->init($this->getBackendUser()->user['uid']);
 
-		if (is_array($parent)) {
-			for ($i = 0, $l = count($parent); $i < $l; $i++) {
-				/**
-				 * Category
-				 *
-				 * @var \CommerceTeam\Commerce\Domain\Model\Category $parentObject
-				 */
-				$parentObject = & $parent[$i];
-				$parentObject->loadData();
+        if (is_array($parent)) {
+            for ($i = 0, $l = count($parent); $i < $l; ++$i) {
+                /**
+                 * Category.
+                 *
+                 * @var \CommerceTeam\Commerce\Domain\Model\Category
+                 */
+                $parentObject = &$parent[$i];
+                $parentObject->loadData();
 
-				// Separate Key and Title with a |
-				$title = ($parentObject->isPermissionSet('show') && $mounts->isInCommerceMounts($parentObject->getUid())) ?
-					$parentObject->getTitle() :
-					$this->getLanguageService()->sL(
-						'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess',
-						1
-					);
-				$this->itemArrayProcessed[] = $parentObject->getUid() . '|' . $title;
-			}
-		}
+                // Separate Key and Title with a |
+                $title = ($parentObject->isPermissionSet('show') && $mounts->isInCommerceMounts($parentObject->getUid())) ?
+                    $parentObject->getTitle() :
+                    $this->getLanguageService()->sL(
+                        'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess',
+                        1
+                    );
+                $this->itemArrayProcessed[] = $parentObject->getUid().'|'.$title;
+            }
+        }
 
-		return $this->itemArrayProcessed;
-	}
+        return $this->itemArrayProcessed;
+    }
 
-	/**
-	 * In effect this function returns an array with the preselected item
-	 * (aka Categories that are already assigned to the plugin)
-	 *    [0] => 5|Fernseher
-	 *  Meta: [0] => $key|$caption
-	 *
-	 * @param object $tree Browsetree Object
-	 * @param int $catUid Cat UID
-	 *
-	 * @return array
-	 */
-	public function processItemArrayForBrowseableTreeCategory(&$tree, $catUid) {
-		if (!is_numeric($catUid)) {
-			return array();
-		}
+    /**
+     * In effect this function returns an array with the preselected item
+     * (aka Categories that are already assigned to the plugin)
+     *    [0] => 5|Fernseher
+     *  Meta: [0] => $key|$caption.
+     *
+     * @param object $tree   Browsetree Object
+     * @param int    $catUid Cat UID
+     *
+     * @return array
+     */
+    public function processItemArrayForBrowseableTreeCategory(&$tree, $catUid)
+    {
+        if (!is_numeric($catUid)) {
+            return array();
+        }
 
-		/**
-		 * Category
-		 *
-		 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
-		 */
-		$category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $catUid);
-		$category->loadData();
+        /**
+         * Category.
+         *
+         * @var \CommerceTeam\Commerce\Domain\Model\Category
+         */
+        $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $catUid);
+        $category->loadData();
 
-		$this->itemArrayProcessed = array();
+        $this->itemArrayProcessed = array();
 
-		/**
-		 * Category mounts
-		 *
-		 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mounts
-		 */
-		$mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-		$mounts->init($this->getBackendUser()->user['uid']);
+        /**
+         * Category mounts.
+         *
+         * @var \CommerceTeam\Commerce\Tree\CategoryMounts
+         */
+        $mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mounts->init($this->getBackendUser()->user['uid']);
 
-		// Separate Key and Title with a |
-		$title = ($category->isPermissionSet('show') && $mounts->isInCommerceMounts($category->getUid())) ?
-			$category->getTitle() :
-			$this->getLanguageService()->sL(
-				'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess',
-				1
-			);
-		$this->itemArrayProcessed = array($category->getUid() . '|' . $title);
+        // Separate Key and Title with a |
+        $title = ($category->isPermissionSet('show') && $mounts->isInCommerceMounts($category->getUid())) ?
+            $category->getTitle() :
+            $this->getLanguageService()->sL(
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess',
+                1
+            );
+        $this->itemArrayProcessed = array($category->getUid().'|'.$title);
 
-		return $this->itemArrayProcessed;
-	}
+        return $this->itemArrayProcessed;
+    }
 
-	/**
-	 * In effect this function returns an array with the preselected item
-	 * (aka Parent Categories that are already assigned to the product!)
-	 *    [0] => 5|Fernseher
-	 *  Meta: [0] => $key|$caption
-	 *
-	 * @param object $tree Browsetree Object
-	 * @param int $uid Product UID
-	 *
-	 * @return array
-	 */
-	public function processItemArrayForBrowseableTreeProduct(&$tree, $uid) {
-		if (!is_numeric($uid)) {
-			return array();
-		}
+    /**
+     * In effect this function returns an array with the preselected item
+     * (aka Parent Categories that are already assigned to the product!)
+     *    [0] => 5|Fernseher
+     *  Meta: [0] => $key|$caption.
+     *
+     * @param object $tree Browsetree Object
+     * @param int    $uid  Product UID
+     *
+     * @return array
+     */
+    public function processItemArrayForBrowseableTreeProduct(&$tree, $uid)
+    {
+        if (!is_numeric($uid)) {
+            return array();
+        }
 
-		// Get the parent Categories for the cat uid
-		/**
-		 * Product
-		 *
-		 * @var \CommerceTeam\Commerce\Domain\Model\Product $prod
-		 */
-		$prod = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uid);
-		$prod->loadData();
+        // Get the parent Categories for the cat uid
+        /**
+         * Product.
+         *
+         * @var \CommerceTeam\Commerce\Domain\Model\Product
+         */
+        $prod = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uid);
+        $prod->loadData();
 
-		// read parent categories from the live product
-		if ($prod->getT3verOid() != 0) {
-			$prod->init($prod->getT3verOid());
-			$prod->loadData();
-		}
+        // read parent categories from the live product
+        if ($prod->getT3verOid() != 0) {
+            $prod->init($prod->getT3verOid());
+            $prod->loadData();
+        }
 
-		$parent = $prod->getParentCategories();
+        $parent = $prod->getParentCategories();
 
-		// Load each category and push into the array
-		$cat = NULL;
-		$itemArray = array();
+        // Load each category and push into the array
+        $cat = null;
+        $itemArray = array();
 
-		for ($i = 0, $l = count($parent); $i < $l; $i++) {
-			/**
-			 * Category
-			 *
-			 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
-			 */
-			$category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $parent[$i]);
-			$category->loadData();
+        for ($i = 0, $l = count($parent); $i < $l; ++$i) {
+            /**
+             * Category.
+             *
+             * @var \CommerceTeam\Commerce\Domain\Model\Category
+             */
+            $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $parent[$i]);
+            $category->loadData();
 
-			$title = ($category->isPermissionSet('show')) ?
-				$category->getTitle() :
-				$this->getLanguageService()->sL(
-					'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess',
-					1
-				);
-				// Separate Key and Title with a |
-			$itemArray[] = $category->getUid() . '|' . $title;
-		}
+            $title = ($category->isPermissionSet('show')) ?
+                $category->getTitle() :
+                $this->getLanguageService()->sL(
+                    'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess',
+                    1
+                );
+                // Separate Key and Title with a |
+            $itemArray[] = $category->getUid().'|'.$title;
+        }
 
-		$this->itemArrayProcessed = $itemArray;
+        $this->itemArrayProcessed = $itemArray;
 
-		return $this->itemArrayProcessed;
-	}
+        return $this->itemArrayProcessed;
+    }
 
-	/**
-	 * Extracts the ID and the Title from which every item we have
-	 *
-	 * @param string $itemFormElValue Item element (tx_commerce_article_42)
-	 *
-	 * @return array
-	 */
-	public function processItemArrayForBrowseableTreeDefault($itemFormElValue) {
-		$items = GeneralUtility::trimExplode(',', $itemFormElValue, TRUE);
+    /**
+     * Extracts the ID and the Title from which every item we have.
+     *
+     * @param string $itemFormElValue Item element (tx_commerce_article_42)
+     *
+     * @return array
+     */
+    public function processItemArrayForBrowseableTreeDefault($itemFormElValue)
+    {
+        $items = GeneralUtility::trimExplode(',', $itemFormElValue, true);
 
-		$itemArray = array();
+        $itemArray = array();
 
-		// Walk the records we have.
-		foreach ($items as $value) {
-			// Get parts.
-			$parts = GeneralUtility::trimExplode('_', $value, TRUE);
+        // Walk the records we have.
+        foreach ($items as $value) {
+            // Get parts.
+            $parts = GeneralUtility::trimExplode('_', $value, true);
 
-			$uid = array_pop($parts);
-			$table = implode('_', $parts);
+            $uid = array_pop($parts);
+            $table = implode('_', $parts);
 
-			// Product
-			if ('tx_commerce_products' == $table) {
-				/**
-				 * Product
-				 *
-				 * @var \CommerceTeam\Commerce\Domain\Model\Product $prod
-				 */
-				$prod = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uid);
-				$prod->loadData();
+            // Product
+            if ('tx_commerce_products' == $table) {
+                /**
+                 * Product.
+                 *
+                 * @var \CommerceTeam\Commerce\Domain\Model\Product
+                 */
+                $prod = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uid);
+                $prod->loadData();
 
-				$itemArray[] = $value . '|' . $prod->getTitle();
-			} elseif ('tx_commerce_articles' == $table) {
-				/**
-				 * Article
-				 *
-				 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
-				 */
-				$article = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $uid);
-				$article->loadData();
+                $itemArray[] = $value.'|'.$prod->getTitle();
+            } elseif ('tx_commerce_articles' == $table) {
+                /**
+                 * Article.
+                 *
+                 * @var \CommerceTeam\Commerce\Domain\Model\Article
+                 */
+                $article = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $uid);
+                $article->loadData();
 
-				$itemArray[] = $value . '|' . $article->getTitle();
-			} elseif ('tx_commerce_categories' == $table) {
-				/**
-				 * Category
-				 *
-				 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
-				 */
-				$category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $uid);
-				$category->loadData();
+                $itemArray[] = $value.'|'.$article->getTitle();
+            } elseif ('tx_commerce_categories' == $table) {
+                /**
+                 * Category.
+                 *
+                 * @var \CommerceTeam\Commerce\Domain\Model\Category
+                 */
+                $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $uid);
+                $category->loadData();
 
-				$itemArray[] = $value . '|' . $category->getTitle();
-			} else {
-				// Hook:
-				$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks(
-					'ViewHelpers/TreelibTceforms',
-					'processItemArrayForBrowseableTreeDefault'
-				);
-				foreach ($hooks as $hook) {
-					if (method_exists($hook, 'processDefault')) {
-						$itemArray[] = $hook->processDefault($itemFormElValue, $table, $uid);
-					}
-				}
-			}
-		}
+                $itemArray[] = $value.'|'.$category->getTitle();
+            } else {
+                // Hook:
+                $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks(
+                    'ViewHelpers/TreelibTceforms',
+                    'processItemArrayForBrowseableTreeDefault'
+                );
+                foreach ($hooks as $hook) {
+                    if (method_exists($hook, 'processDefault')) {
+                        $itemArray[] = $hook->processDefault($itemFormElValue, $table, $uid);
+                    }
+                }
+            }
+        }
 
-		return $itemArray;
-	}
+        return $itemArray;
+    }
 
-	/**
-	 * Extracts the id's from $PA['itemFormElValue'] in standard TCE format.
-	 *
-	 * @param string $itemFormElValue Item element
-	 *
-	 * @return array
-	 */
-	public function getItemFormElValueIdArr($itemFormElValue) {
-		$out = array();
-		$items = GeneralUtility::trimExplode(',', $itemFormElValue, TRUE);
-		foreach ($items as $value) {
-			$values = GeneralUtility::trimExplode('|', $value, TRUE);
-			$out[] = $values[0];
-		}
+    /**
+     * Extracts the id's from $PA['itemFormElValue'] in standard TCE format.
+     *
+     * @param string $itemFormElValue Item element
+     *
+     * @return array
+     */
+    public function getItemFormElValueIdArr($itemFormElValue)
+    {
+        $out = array();
+        $items = GeneralUtility::trimExplode(',', $itemFormElValue, true);
+        foreach ($items as $value) {
+            $values = GeneralUtility::trimExplode('|', $value, true);
+            $out[] = $values[0];
+        }
 
-		return $out;
-	}
+        return $out;
+    }
 
+    /**
+     * Get language service.
+     *
+     * @return \TYPO3\CMS\Lang\LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
+    }
 
-	/**
-	 * Get language service
-	 *
-	 * @return \TYPO3\CMS\Lang\LanguageService
-	 */
-	protected function getLanguageService() {
-		return $GLOBALS['LANG'];
-	}
-
-	/**
-	 * Get backend user
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
-	}
+    /**
+     * Get backend user.
+     *
+     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     */
+    protected function getBackendUser()
+    {
+        return $GLOBALS['BE_USER'];
+    }
 }

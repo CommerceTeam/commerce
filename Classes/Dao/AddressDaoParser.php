@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Dao;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,5 +24,6 @@ namespace CommerceTeam\Commerce\Dao;
  *
  * @author 2006-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
-class AddressDaoParser extends BasicDaoParser {
+class AddressDaoParser extends BasicDaoParser
+{
 }

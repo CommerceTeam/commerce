@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,7 +16,7 @@
 /**
  * Module 'Systemdata' for the 'commerce' extension.
  *
- * @var \CommerceTeam\Commerce\Controller\SystemdataModuleController $SOBE
+ * @var \CommerceTeam\Commerce\Controller\SystemdataModuleController
  */
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\SystemdataModuleController');
 $SOBE->init();

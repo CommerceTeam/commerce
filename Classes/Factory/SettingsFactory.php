@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Factory;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,184 +19,186 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class \CommerceTeam\Commerce\Factory\SettingsFactory
+ * Class \CommerceTeam\Commerce\Factory\SettingsFactory.
  *
  * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
-class SettingsFactory implements SingletonInterface {
-	/**
-	 * Extension key
-	 *
-	 * @var string
-	 */
-	protected $extensionKey = COMMERCE_EXTKEY;
+class SettingsFactory implements SingletonInterface
+{
+    /**
+     * Extension key.
+     *
+     * @var string
+     */
+    protected $extensionKey = COMMERCE_EXTKEY;
 
-	/**
-	 * Settings
-	 *
-	 * @var array
-	 */
-	protected $settings;
+    /**
+     * Settings.
+     *
+     * @var array
+     */
+    protected $settings;
 
-	/**
-	 * Values of path cache
-	 *
-	 * @var array
-	 */
-	protected $extConfValueCache = array();
+    /**
+     * Values of path cache.
+     *
+     * @var array
+     */
+    protected $extConfValueCache = array();
 
-	/**
-	 * Values of path cache
-	 *
-	 * @var array
-	 */
-	protected $configurationValueCache = array();
+    /**
+     * Values of path cache.
+     *
+     * @var array
+     */
+    protected $configurationValueCache = array();
 
-	/**
-	 * Values of path cache
-	 *
-	 * @var array
-	 */
-	protected $tcaValueCache = array();
+    /**
+     * Values of path cache.
+     *
+     * @var array
+     */
+    protected $tcaValueCache = array();
 
+    /**
+     * Instance.
+     *
+     * @var SettingsFactory
+     */
+    protected static $instance = null;
 
-	/**
-	 * Instance
-	 *
-	 * @var SettingsFactory
-	 */
-	protected static $instance = NULL;
+    /**
+     * Clone.
+     *
+     * Block cloning of instance
+     */
+    protected function __clone()
+    {
+    }
 
-	/**
-	 * Clone
-	 *
-	 * Block cloning of instance
-	 *
-	 * @return void
-	 */
-	protected function __clone() {
-	}
+    /**
+     * Constructor.
+     *
+     * Block external instantiation
+     */
+    protected function __construct()
+    {
+    }
 
-	/**
-	 * Constructor
-	 *
-	 * Block external instantiation
-	 */
-	protected function __construct() {
-	}
+    /**
+     * Get instance.
+     *
+     * @return SettingsFactory
+     */
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+            self::$instance->getSettings();
+        }
 
-	/**
-	 * Get instance
-	 *
-	 * @return SettingsFactory
-	 */
-	public static function getInstance() {
-		if (self::$instance === NULL) {
-			self::$instance = new self;
-			self::$instance->getSettings();
-		}
+        return self::$instance;
+    }
 
-		return self::$instance;
-	}
+    /**
+     * Get settings if they are not set fill
+     * them with values of TYPO3_CONF_VARS EXTCONF.
+     */
+    protected function getSettings()
+    {
+        if (!is_array($this->settings)) {
+            if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey])) {
+                $this->settings = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey];
+            } else {
+                $this->settings = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey]);
+            }
+        }
+    }
 
+    /**
+     * Get extension configuration.
+     *
+     * @param string $path Path to get value of
+     *
+     * @return array|string|int|bool
+     */
+    public function getExtConf($path)
+    {
+        if (!isset($this->extConfValueCache[$path])) {
+            $pathParts = GeneralUtility::trimExplode('.', $path);
 
-	/**
-	 * Get settings if they are not set fill
-	 * them with values of TYPO3_CONF_VARS EXTCONF
-	 *
-	 * @return void
-	 */
-	protected function getSettings() {
-		if (!is_array($this->settings)) {
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey])) {
-				$this->settings = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey];
-			} else {
-				$this->settings = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey]);
-			}
-		}
-	}
+            $configuration = $this->settings['extConf'];
 
-	/**
-	 * Get extension configuration
-	 *
-	 * @param string $path Path to get value of
-	 *
-	 * @return array|string|int|bool
-	 */
-	public function getExtConf($path) {
-		if (!isset($this->extConfValueCache[$path])) {
-			$pathParts = GeneralUtility::trimExplode('.', $path);
+            foreach ($pathParts as $pathPart) {
+                if (isset($configuration[$pathPart])) {
+                    $configuration = $configuration[$pathPart];
+                } else {
+                    $configuration = false;
+                    break;
+                }
+            }
 
-			$configuration = $this->settings['extConf'];
+            $this->extConfValueCache[$path] = $configuration;
+        }
 
-			foreach ($pathParts as $pathPart) {
-				if (isset($configuration[$pathPart])) {
-					$configuration = $configuration[$pathPart];
-				} else {
-					$configuration = FALSE;
-					break;
-				}
-			}
+        return $this->extConfValueCache[$path];
+    }
 
-			$this->extConfValueCache[$path] = $configuration;
-		}
+    /**
+     * Get configuration located in [COMMERCE_EXTKEY].
+     *
+     * @param string $path Path to get value of
+     *
+     * @return array|string|int|bool
+     */
+    public function getConfiguration($path)
+    {
+        if (!isset($this->configurationValueCache[$path])) {
+            $pathParts = GeneralUtility::trimExplode('.', $path);
 
-		return $this->extConfValueCache[$path];
-	}
+            $configuration = $this->settings;
 
-	/**
-	 * Get configuration located in [COMMERCE_EXTKEY]
-	 *
-	 * @param string $path Path to get value of
-	 *
-	 * @return array|string|int|bool
-	 */
-	public function getConfiguration($path) {
-		if (!isset($this->configurationValueCache[$path])) {
-			$pathParts = GeneralUtility::trimExplode('.', $path);
+            foreach ($pathParts as $pathPart) {
+                if (isset($configuration[$pathPart])) {
+                    $configuration = $configuration[$pathPart];
+                } else {
+                    $configuration = '';
+                    break;
+                }
+            }
 
-			$configuration = $this->settings;
+            $this->configurationValueCache[$path] = $configuration;
+        }
 
-			foreach ($pathParts as $pathPart) {
-				if (isset($configuration[$pathPart])) {
-					$configuration = $configuration[$pathPart];
-				} else {
-					$configuration = '';
-					break;
-				}
-			}
+        return $this->configurationValueCache[$path];
+    }
 
-			$this->configurationValueCache[$path] = $configuration;
-		}
+    /**
+     * Get TCA configuration.
+     *
+     * @param string $path Path to get value of
+     *
+     * @return array|string|int|bool
+     */
+    public function getTcaValue($path)
+    {
+        if (!isset($this->tcaValueCache[$path])) {
+            $pathParts = GeneralUtility::trimExplode('.', $path);
 
-		return $this->configurationValueCache[$path];
-	}
+            $configuration = $GLOBALS['TCA'];
 
-	/**
-	 * Get TCA configuration
-	 *
-	 * @param string $path Path to get value of
-	 *
-	 * @return array|string|int|bool
-	 */
-	public function getTcaValue($path) {
-		if (!isset($this->tcaValueCache[$path])) {
-			$pathParts = GeneralUtility::trimExplode('.', $path);
+            foreach ($pathParts as $pathPart) {
+                if (isset($configuration[$pathPart])) {
+                    $configuration = $configuration[$pathPart];
+                } else {
+                    $configuration = false;
+                    break;
+                }
+            }
 
-			$configuration = $GLOBALS['TCA'];
+            $this->tcaValueCache[$path] = $configuration;
+        }
 
-			foreach ($pathParts as $pathPart) {
-				if (isset($configuration[$pathPart])) {
-					$configuration = $configuration[$pathPart];
-				} else {
-					$configuration = FALSE;
-					break;
-				}
-			}
-
-			$this->tcaValueCache[$path] = $configuration;
-		}
-
-		return $this->tcaValueCache[$path];
-	}
+        return $this->tcaValueCache[$path];
+    }
 }

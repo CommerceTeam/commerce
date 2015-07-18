@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Dao;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -26,184 +28,184 @@ namespace CommerceTeam\Commerce\Dao;
  *
  * @author 2006-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
-class BasicDao {
-	/**
-	 * Dao object
-	 *
-	 * @var BasicDaoObject
-	 */
-	protected $object;
+class BasicDao
+{
+    /**
+     * Dao object.
+     *
+     * @var BasicDaoObject
+     */
+    protected $object;
 
-	/**
-	 * Parser
-	 *
-	 * @var BasicDaoParser
-	 */
-	protected $parser;
+    /**
+     * Parser.
+     *
+     * @var BasicDaoParser
+     */
+    protected $parser;
 
-	/**
-	 * Mapper
-	 *
-	 * @var BasicDaoMapper
-	 */
-	protected $mapper;
+    /**
+     * Mapper.
+     *
+     * @var BasicDaoMapper
+     */
+    protected $mapper;
 
-	/**
-	 * Constructor
-	 *
-	 * @param int $id Id
-	 *
-	 * @return self
-	 */
-	public function __construct($id = NULL) {
-		$this->init();
-		if (!empty($id)) {
-			$this->object->setId($id);
-			$this->load();
-		}
-	}
+    /**
+     * Constructor.
+     *
+     * @param int $id Id
+     *
+     * @return self
+     */
+    public function __construct($id = null)
+    {
+        $this->init();
+        if (!empty($id)) {
+            $this->object->setId($id);
+            $this->load();
+        }
+    }
 
-	/**
-	 * Initialization
-	 *
-	 * @return void
-	 */
-	protected function init() {
-		$this->parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\BasicDaoParser');
-		$this->mapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-			'CommerceTeam\\Commerce\\Dao\\BasicDaoMapper',
-			$this->parser
-		);
-		$this->object = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\BasicDaoObject');
-	}
+    /**
+     * Initialization.
+     */
+    protected function init()
+    {
+        $this->parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\BasicDaoParser');
+        $this->mapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            'CommerceTeam\\Commerce\\Dao\\BasicDaoMapper',
+            $this->parser
+        );
+        $this->object = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\BasicDaoObject');
+    }
 
-	/**
-	 * Getter
-	 *
-	 * @return BasicDaoObject
-	 */
-	public function getObject() {
-		return $this->object;
-	}
+    /**
+     * Getter.
+     *
+     * @return BasicDaoObject
+     */
+    public function getObject()
+    {
+        return $this->object;
+    }
 
-	/**
-	 * Setter
-	 *
-	 * @param BasicDaoObject $object Object
-	 *
-	 * @return void
-	 */
-	public function setObject(BasicDaoObject &$object) {
-		$this->object = $object;
-	}
+    /**
+     * Setter.
+     *
+     * @param BasicDaoObject $object Object
+     */
+    public function setObject(BasicDaoObject &$object)
+    {
+        $this->object = $object;
+    }
 
-	/**
-	 * Getter
-	 *
-	 * @return int
-	 */
-	public function getId() {
-		return $this->object->getId();
-	}
+    /**
+     * Getter.
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->object->getId();
+    }
 
-	/**
-	 * Setter
-	 *
-	 * @param int $value Id
-	 *
-	 * @return void
-	 */
-	public function setId($value) {
-		$this->object->setId($value);
-	}
+    /**
+     * Setter.
+     *
+     * @param int $value Id
+     */
+    public function setId($value)
+    {
+        $this->object->setId($value);
+    }
 
-	/**
-	 * Getter
-	 *
-	 * @param string $propertyName Property name
-	 *
-	 * @return mixed
-	 */
-	public function get($propertyName) {
-		$properties = get_object_vars($this->object);
-		if (method_exists($this->object, 'get' . ucfirst($propertyName))) {
-			$value = call_user_func(array($this->object, 'get' . ucfirst($propertyName)), NULL);
-		} else {
-			$value = $properties[$propertyName];
-		}
+    /**
+     * Getter.
+     *
+     * @param string $propertyName Property name
+     *
+     * @return mixed
+     */
+    public function get($propertyName)
+    {
+        $properties = get_object_vars($this->object);
+        if (method_exists($this->object, 'get'.ucfirst($propertyName))) {
+            $value = call_user_func(array($this->object, 'get'.ucfirst($propertyName)), null);
+        } else {
+            $value = $properties[$propertyName];
+        }
 
-		return $value;
-	}
+        return $value;
+    }
 
-	/**
-	 * Setter
-	 *
-	 * @param string $propertyName Property name
-	 * @param mixed $value Value
-	 *
-	 * @return void
-	 */
-	public function set($propertyName, $value) {
-		$properties = get_object_vars($this->object);
-		if (array_key_exists($propertyName, $properties)) {
-			if (method_exists($this->object, 'set' . ucfirst($propertyName))) {
-				call_user_func(array($this->object, 'set' . ucfirst($propertyName)), $value);
-			} else {
-				$this->object->$propertyName = $value;
-			}
-		}
-	}
+    /**
+     * Setter.
+     *
+     * @param string $propertyName Property name
+     * @param mixed  $value        Value
+     */
+    public function set($propertyName, $value)
+    {
+        $properties = get_object_vars($this->object);
+        if (array_key_exists($propertyName, $properties)) {
+            if (method_exists($this->object, 'set'.ucfirst($propertyName))) {
+                call_user_func(array($this->object, 'set'.ucfirst($propertyName)), $value);
+            } else {
+                $this->object->$propertyName = $value;
+            }
+        }
+    }
 
-	/**
-	 * Check if property is empty
-	 *
-	 * @param string $propertyName Property name
-	 *
-	 * @return bool
-	 */
-	public function isEmpty($propertyName) {
-		$properties = get_object_vars($this->object);
+    /**
+     * Check if property is empty.
+     *
+     * @param string $propertyName Property name
+     *
+     * @return bool
+     */
+    public function isEmpty($propertyName)
+    {
+        $properties = get_object_vars($this->object);
 
-		return empty($properties[$propertyName]);
-	}
+        return empty($properties[$propertyName]);
+    }
 
-	/**
-	 * Check if property exists
-	 *
-	 * @param string $propertyName Property name
-	 *
-	 * @return bool
-	 */
-	public function issetProperty($propertyName) {
-		$properties = get_object_vars($this->object);
+    /**
+     * Check if property exists.
+     *
+     * @param string $propertyName Property name
+     *
+     * @return bool
+     */
+    public function issetProperty($propertyName)
+    {
+        $properties = get_object_vars($this->object);
 
-		return isset($properties[$propertyName]);
-	}
+        return isset($properties[$propertyName]);
+    }
 
-	/**
-	 * Load object
-	 *
-	 * @return void
-	 */
-	public function load() {
-		$this->mapper->load($this->object);
-	}
+    /**
+     * Load object.
+     */
+    public function load()
+    {
+        $this->mapper->load($this->object);
+    }
 
-	/**
-	 * Save object
-	 *
-	 * @return void
-	 */
-	public function save() {
-		$this->mapper->save($this->object);
-	}
+    /**
+     * Save object.
+     */
+    public function save()
+    {
+        $this->mapper->save($this->object);
+    }
 
-	/**
-	 * Remove object
-	 *
-	 * @return void
-	 */
-	public function remove() {
-		$this->mapper->remove($this->object);
-	}
+    /**
+     * Remove object.
+     */
+    public function remove()
+    {
+        $this->mapper->remove($this->object);
+    }
 }

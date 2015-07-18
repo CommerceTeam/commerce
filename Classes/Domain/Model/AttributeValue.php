@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Domain\Model;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -23,151 +25,156 @@ namespace CommerceTeam\Commerce\Domain\Model;
  * Main script class for the handling of attribute Values. An attribute_value
  * desribes the technical data of an article
  * Do not acces class variables directly, allways use the get and set methods,
- * variables will be changed in php5 to private
+ * variables will be changed in php5 to private.
  *
  * Class \CommerceTeam\Commerce\Domain\Model\AttributeValue
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class AttributeValue extends AbstractEntity {
-	/**
-	 * Database class name
-	 *
-	 * @var string
-	 */
-	protected $databaseClass = 'CommerceTeam\\Commerce\\Domain\\Repository\\AttributeValueRepository';
+class AttributeValue extends AbstractEntity
+{
+    /**
+     * Database class name.
+     *
+     * @var string
+     */
+    protected $databaseClass = 'CommerceTeam\\Commerce\\Domain\\Repository\\AttributeValueRepository';
 
-	/**
-	 * Database connection
-	 *
-	 * @var \CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository
-	 */
-	public $databaseConnection;
+    /**
+     * Database connection.
+     *
+     * @var \CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository
+     */
+    public $databaseConnection;
 
-	/**
-	 * Field list
-	 *
-	 * @var array
-	 */
-	protected $fieldlist = array(
-		'title',
-		'value',
-		'showvalue',
-		'icon',
-		'l18n_parent'
-	);
+    /**
+     * Field list.
+     *
+     * @var array
+     */
+    protected $fieldlist = array(
+        'title',
+        'value',
+        'showvalue',
+        'icon',
+        'l18n_parent',
+    );
 
-	/**
-	 * Title of Attribute (private)
-	 *
-	 * @var string
-	 */
-	protected $title = '';
+    /**
+     * Title of Attribute (private).
+     *
+     * @var string
+     */
+    protected $title = '';
 
-	/**
-	 * The Value for
-	 *
-	 * @var string
-	 */
-	protected $value = '';
+    /**
+     * The Value for.
+     *
+     * @var string
+     */
+    protected $value = '';
 
-	/**
-	 * If this value should be shown in Fe output
-	 *
-	 * @var bool show value
-	 */
-	protected $showvalue = 1;
+    /**
+     * If this value should be shown in Fe output.
+     *
+     * @var bool show value
+     */
+    protected $showvalue = 1;
 
-	/**
-	 * Icon for this Value
-	 *
-	 * @var string icon
-	 */
-	protected $icon = '';
+    /**
+     * Icon for this Value.
+     *
+     * @var string icon
+     */
+    protected $icon = '';
 
-	/**
-	 * Show icon
-	 *
-	 * @var string
-	 */
-	protected $showicon;
+    /**
+     * Show icon.
+     *
+     * @var string
+     */
+    protected $showicon;
 
-	/**
-	 * Constructor, basically calls init
-	 *
-	 * @param int $uid Attribute value uid
-	 * @param int $languageUid Language uid
-	 *
-	 * @return self
-	 */
-	public function __construct($uid, $languageUid = 0) {
-		if ((int) $uid) {
-			$this->init($uid, $languageUid);
-		}
-	}
+    /**
+     * Constructor, basically calls init.
+     *
+     * @param int $uid         Attribute value uid
+     * @param int $languageUid Language uid
+     *
+     * @return self
+     */
+    public function __construct($uid, $languageUid = 0)
+    {
+        if ((int) $uid) {
+            $this->init($uid, $languageUid);
+        }
+    }
 
-	/**
-	 * Init Class
-	 *
-	 * @param int $uid Attribute
-	 * @param int $languageUid Language uid, default 0
-	 *
-	 * @return void
-	 */
-	public function init($uid, $languageUid = 0) {
-		$this->uid = (int) $uid;
-		$this->lang_uid = (int) $languageUid;
-		$this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
+    /**
+     * Init Class.
+     *
+     * @param int $uid         Attribute
+     * @param int $languageUid Language uid, default 0
+     */
+    public function init($uid, $languageUid = 0)
+    {
+        $this->uid = (int) $uid;
+        $this->lang_uid = (int) $languageUid;
+        $this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
 
-		$hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Model/AttributeValue', 'init');
-		foreach ($hooks as $hook) {
-			if (method_exists($hook, 'postinit')) {
-				$hook->postinit($this);
-			}
-		}
-	}
+        $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Model/AttributeValue', 'init');
+        foreach ($hooks as $hook) {
+            if (method_exists($hook, 'postinit')) {
+                $hook->postinit($this);
+            }
+        }
+    }
 
-	/**
-	 * Overwrite get_attributes as attribute_values can't have attributes
-	 *
-	 * @return bool FALSE
-	 */
-	public function getAttributes() {
-		return FALSE;
-	}
+    /**
+     * Overwrite get_attributes as attribute_values can't have attributes.
+     *
+     * @return bool FALSE
+     */
+    public function getAttributes()
+    {
+        return false;
+    }
 
-	/**
-	 * Gets the icon for this value
-	 *
-	 * @return string
-	 */
-	public function getIcon() {
-		return $this->icon;
-	}
+    /**
+     * Gets the icon for this value.
+     *
+     * @return string
+     */
+    public function getIcon()
+    {
+        return $this->icon;
+    }
 
-	/**
-	 * Get show value
-	 *
-	 * @return bool
-	 */
-	public function getShowvalue() {
-		return $this->showvalue;
-	}
+    /**
+     * Get show value.
+     *
+     * @return bool
+     */
+    public function getShowvalue()
+    {
+        return $this->showvalue;
+    }
 
-	/**
-	 * Gets the attribute value
-	 *
-	 * @param bool $checkvalue Check if value should be show in FE
-	 *
-	 * @return string title
-	 */
-	public function getValue($checkvalue = FALSE) {
-		if ($checkvalue && $this->showvalue) {
-			return $this->value;
-		} elseif ($checkvalue == FALSE) {
-			return $this->value;
-		}
+    /**
+     * Gets the attribute value.
+     *
+     * @param bool $checkvalue Check if value should be show in FE
+     *
+     * @return string title
+     */
+    public function getValue($checkvalue = false)
+    {
+        if ($checkvalue && $this->showvalue) {
+            return $this->value;
+        } elseif ($checkvalue == false) {
+            return $this->value;
+        }
 
-		return FALSE;
-	}
+        return false;
+    }
 }

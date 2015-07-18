@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Factory;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,132 +16,134 @@ namespace CommerceTeam\Commerce\Factory;
  */
 
 /**
- * Class \CommerceTeam\Commerce\Factory\
+ * Class \CommerceTeam\Commerce\Factory\.
  *
  * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
-class HookFactory {
-	/**
-	 * Class name map
-	 *
-	 * @todo this map needs to be extendes to all supported maps
-	 * @var array
-	 */
-	protected static $classNameMap = array(
-		'commerce/Controller/ListController' => 'commerce/Classes/Controller/ListController.php',
-		'commerce/Controller/AddressesController' => 'commerce/Classes/Controller/AddressesController.php',
-	);
+class HookFactory
+{
+    /**
+     * Class name map.
+     *
+     * @todo this map needs to be extendes to all supported maps
+     *
+     * @var array
+     */
+    protected static $classNameMap = array(
+        'commerce/Controller/ListController' => 'commerce/Classes/Controller/ListController.php',
+        'commerce/Controller/AddressesController' => 'commerce/Classes/Controller/AddressesController.php',
+    );
 
-	/**
-	 * Hook name map
-	 *
-	 * @var array
-	 */
-	protected static $hookNameMap = array(
-		'preMakeListView' => 'preRenderListView',
-	);
+    /**
+     * Hook name map.
+     *
+     * @var array
+     */
+    protected static $hookNameMap = array(
+        'preMakeListView' => 'preRenderListView',
+    );
 
-	/**
-	 * Get hook objects
-	 *
-	 * @param string $className Class name
-	 * @param string $hookName Hook name
-	 *
-	 * @return NULL|object
-	 */
-	public static function getHook($className, $hookName) {
-		$className = 'commerce/' . $className;
-		$result = NULL;
+    /**
+     * Get hook objects.
+     *
+     * @param string $className Class name
+     * @param string $hookName  Hook name
+     *
+     * @return NULL|object
+     */
+    public static function getHook($className, $hookName)
+    {
+        $className = 'commerce/'.$className;
+        $result = null;
 
-		static::mapClassName($className);
-		static::mapHookName($className, $hookName);
+        static::mapClassName($className);
+        static::mapHookName($className, $hookName);
 
-		$extConf = & $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'];
-		if (isset($extConf[$className][$hookName])) {
-			$result = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($extConf[$className][$hookName]);
-		}
+        $extConf = &$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'];
+        if (isset($extConf[$className][$hookName])) {
+            $result = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($extConf[$className][$hookName]);
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 
-	/**
-	 * Get hook objects
-	 *
-	 * @param string $className Class name
-	 * @param string $hookName Hook name
-	 *
-	 * @return array
-	 */
-	public static function getHooks($className, $hookName) {
-		$className = 'commerce/' . $className;
-		$result = array();
+    /**
+     * Get hook objects.
+     *
+     * @param string $className Class name
+     * @param string $hookName  Hook name
+     *
+     * @return array
+     */
+    public static function getHooks($className, $hookName)
+    {
+        $className = 'commerce/'.$className;
+        $result = array();
 
-		static::mapClassName($className);
-		static::mapHookName($className, $hookName);
+        static::mapClassName($className);
+        static::mapHookName($className, $hookName);
 
-		$extConf = & $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'];
-		if (is_array($extConf[$className][$hookName])) {
-			foreach ($extConf[$className][$hookName] as $classRef) {
-				$result[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
-			}
-		}
+        $extConf = &$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'];
+        if (is_array($extConf[$className][$hookName])) {
+            foreach ($extConf[$className][$hookName] as $classRef) {
+                $result[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
+            }
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 
-	/**
-	 * Map old class name hooks
-	 *
-	 * @param string $className Class name
-	 *
-	 * @return void
-	 */
-	protected static function mapClassName($className) {
-		if (isset(static::$classNameMap[$className])) {
-			$oldClassName = static::$classNameMap[$className];
+    /**
+     * Map old class name hooks.
+     *
+     * @param string $className Class name
+     */
+    protected static function mapClassName($className)
+    {
+        if (isset(static::$classNameMap[$className])) {
+            $oldClassName = static::$classNameMap[$className];
 
-			$extConf = & $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'];
-			if (isset($extConf[$oldClassName])) {
-				if (isset($extConf[$className])) {
-					$extConf[$className] = array_merge($extConf[$oldClassName], $extConf[$className]);
-				} else {
-					$extConf[$className] = $extConf[$oldClassName];
-				}
+            $extConf = &$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'];
+            if (isset($extConf[$oldClassName])) {
+                if (isset($extConf[$className])) {
+                    $extConf[$className] = array_merge($extConf[$oldClassName], $extConf[$className]);
+                } else {
+                    $extConf[$className] = $extConf[$oldClassName];
+                }
 
-				unset($extConf[$oldClassName]);
-			}
-		}
-	}
+                unset($extConf[$oldClassName]);
+            }
+        }
+    }
 
-	/**
-	 * Map old hook names
-	 *
-	 * @param string $className Class name
-	 * @param string $hookName Hook name
-	 *
-	 * @return void
-	 */
-	protected static function mapHookName($className, $hookName) {
-		if (isset(static::$hookNameMap[$hookName])) {
-			$oldHookName = static::$hookNameMap[$hookName];
+    /**
+     * Map old hook names.
+     *
+     * @param string $className Class name
+     * @param string $hookName  Hook name
+     */
+    protected static function mapHookName($className, $hookName)
+    {
+        if (isset(static::$hookNameMap[$hookName])) {
+            $oldHookName = static::$hookNameMap[$hookName];
 
-			$extConf = & $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'];
-			if (
-				isset($extConf[$className])
-				&& isset($extConf[$className][$oldHookName])
-			) {
-				if (
-					is_array($extConf[$className][$oldHookName])
-					&& isset($extConf[$className][$hookName])
-					&& !is_string(isset($extConf[$className][$hookName]))
-				) {
-					$extConf[$hookName] = array_merge($extConf[$hookName][$oldHookName], $extConf[$hookName][$hookName]);
-				} elseif (!isset($extConf[$className][$hookName])) {
-					$extConf[$className][$hookName] = $extConf[$className][$oldHookName];
-				}
+            $extConf = &$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'];
+            if (
+                isset($extConf[$className])
+                && isset($extConf[$className][$oldHookName])
+            ) {
+                if (
+                    is_array($extConf[$className][$oldHookName])
+                    && isset($extConf[$className][$hookName])
+                    && !is_string(isset($extConf[$className][$hookName]))
+                ) {
+                    $extConf[$hookName] = array_merge($extConf[$hookName][$oldHookName], $extConf[$hookName][$hookName]);
+                } elseif (!isset($extConf[$className][$hookName])) {
+                    $extConf[$className][$hookName] = $extConf[$className][$oldHookName];
+                }
 
-				unset($extConf[$className][$oldHookName]);
-			}
-		}
-	}
+                unset($extConf[$className][$oldHookName]);
+            }
+        }
+    }
 }

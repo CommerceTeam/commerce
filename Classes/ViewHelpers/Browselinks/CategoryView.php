@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\ViewHelpers\Browselinks;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,96 +16,100 @@ namespace CommerceTeam\Commerce\ViewHelpers\Browselinks;
  */
 
 /**
- * Implements the \CommerceTeam\Commerce\Tree\Leaf\View for the Category
+ * Implements the \CommerceTeam\Commerce\Tree\Leaf\View for the Category.
  *
  * Class \CommerceTeam\Commerce\ViewHelpers\Browselinks\CategoryView
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class CategoryView extends \CommerceTeam\Commerce\Tree\Leaf\View {
-	/**
-	 * DB Table
-	 *
-	 * @var string
-	 */
-	protected $table = 'tx_commerce_categories';
+class CategoryView extends \CommerceTeam\Commerce\Tree\Leaf\View
+{
+    /**
+     * DB Table.
+     *
+     * @var string
+     */
+    protected $table = 'tx_commerce_categories';
 
-	/**
-	 * Dom id prefix
-	 *
-	 * @var string
-	 */
-	protected $domIdPrefix = 'txcommerceCategory';
+    /**
+     * Dom id prefix.
+     *
+     * @var string
+     */
+    protected $domIdPrefix = 'txcommerceCategory';
 
-	/**
-	 * The linked category
-	 *
-	 * @var int
-	 */
-	protected $openCat = 0;
+    /**
+     * The linked category.
+     *
+     * @var int
+     */
+    protected $openCat = 0;
 
-	/**
-	 * Returns the link from the tree used to jump to a destination
-	 *
-	 * @param array $row Array with the ID Information
-	 *
-	 * @return string
-	 */
-	public function getJumpToParam(array $row) {
-		if (!is_array($row)) {
-			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'getJumpToParam (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
-					COMMERCE_EXTKEY,
-					3
-				);
-			}
-			return '';
-		}
+    /**
+     * Returns the link from the tree used to jump to a destination.
+     *
+     * @param array $row Array with the ID Information
+     *
+     * @return string
+     */
+    public function getJumpToParam(array $row)
+    {
+        if (!is_array($row)) {
+            if (TYPO3_DLOG) {
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+                    'getJumpToParam (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
+            }
 
-		return 'commerce:tx_commerce_categories:' . $row['uid'];
-	}
+            return '';
+        }
 
-	/**
-	 * Set open category
-	 *
-	 * @param int $uid Uid
-	 *
-	 * @return void
-	 */
-	public function setOpenCategory($uid) {
-		$this->openCat = $uid;
-	}
+        return 'commerce:tx_commerce_categories:'.$row['uid'];
+    }
 
-	/**
-	 * Wrapping title in a-tags.
-	 *
-	 * @param string $title Title
-	 * @param string $row Record
-	 * @param int $bank Pointer (which mount point number)
-	 *
-	 * @return string
-	 */
-	public function wrapTitle($title, $row, $bank = 0) {
-		if (!is_array($row) || !is_numeric($bank)) {
-			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-					'wrapTitle (CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\CategoryView) gets passed invalid parameters.',
-					COMMERCE_EXTKEY,
-					3
-				);
-			}
-			return '';
-		}
+    /**
+     * Set open category.
+     *
+     * @param int $uid Uid
+     */
+    public function setOpenCategory($uid)
+    {
+        $this->openCat = $uid;
+    }
 
-		// Max. size for Title of 30
-		$title = ('' != $title) ? \TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
+    /**
+     * Wrapping title in a-tags.
+     *
+     * @param string $title Title
+     * @param string $row   Record
+     * @param int    $bank  Pointer (which mount point number)
+     *
+     * @return string
+     */
+    public function wrapTitle($title, $row, $bank = 0)
+    {
+        if (!is_array($row) || !is_numeric($bank)) {
+            if (TYPO3_DLOG) {
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+                    'wrapTitle (CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\CategoryView) gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
+            }
 
-		$aOnClick = 'return link_commerce(\'' . $this->getJumpToParam($row) . '\');';
-		$style = ($row['uid'] == $this->openCat && 0 != $this->openCat) ? 'style="color: red; font-weight: bold"' : '';
-		$res = (($this->noRootOnclick && 0 == $row['uid']) || $this->noOnclick) ? $title : '<a href="#" onclick="' .
-			htmlspecialchars($aOnClick) . '" ' . $style . '>' . $title . '</a>';
+            return '';
+        }
 
-		return $res;
-	}
+        // Max. size for Title of 30
+        $title = ('' != $title) ? \TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
+
+        $aOnClick = 'return link_commerce(\''.$this->getJumpToParam($row).'\');';
+        $style = ($row['uid'] == $this->openCat && 0 != $this->openCat) ? 'style="color: red; font-weight: bold"' : '';
+        $res = (($this->noRootOnclick && 0 == $row['uid']) || $this->noOnclick) ? $title : '<a href="#" onclick="'.
+            htmlspecialchars($aOnClick).'" '.$style.'>'.$title.'</a>';
+
+        return $res;
+    }
 }

@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Tree\Leaf;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,17 +16,18 @@ namespace CommerceTeam\Commerce\Tree\Leaf;
  */
 
 /**
- * Implements a leaf specific for holding categories
+ * Implements a leaf specific for holding categories.
  *
  * Class \CommerceTeam\Commerce\Tree\Leaf\Category
  *
  * @author 2008 Erik Frister <typo3@marketing-factory.de>
  */
-class Category extends Master {
-	/**
-	 * Mount class
-	 *
-	 * @var string
-	 */
-	protected $mountClass = 'CommerceTeam\\Commerce\\Tree\\CategoryMounts';
+class Category extends Master
+{
+    /**
+     * Mount class.
+     *
+     * @var string
+     */
+    protected $mountClass = 'CommerceTeam\\Commerce\\Tree\\CategoryMounts';
 }

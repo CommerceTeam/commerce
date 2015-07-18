@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Dao;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -21,74 +23,76 @@ namespace CommerceTeam\Commerce\Dao;
  *
  * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
-class AddressDaoObject extends BasicDaoObject {
-	/**
-	 * Frontend user uid
-	 *
-	 * @var int
-	 */
-	public $tx_commerce_fe_user_id;
+class AddressDaoObject extends BasicDaoObject
+{
+    /**
+     * Frontend user uid.
+     *
+     * @var int
+     */
+    public $tx_commerce_fe_user_id;
 
-	/**
-	 * Address type uid
-	 *
-	 * @var int
-	 */
-	public $tx_commerce_address_type_id;
+    /**
+     * Address type uid.
+     *
+     * @var int
+     */
+    public $tx_commerce_address_type_id;
 
-	/**
-	 * Flag if address is main
-	 *
-	 * @var bool
-	 */
-	public $tx_commerce_is_main_address;
+    /**
+     * Flag if address is main.
+     *
+     * @var bool
+     */
+    public $tx_commerce_is_main_address;
 
-	/**
-	 * Name
-	 *
-	 * @var string
-	 */
-	protected $name;
+    /**
+     * Name.
+     *
+     * @var string
+     */
+    protected $name;
 
-	/**
-	 * Constructor
-	 *
-	 * @return self
-	 */
-	public function __construct() {
-		// add mapped fields to object
-		/**
-		 * Frontend address mapper
-		 *
-		 * @var FeuserAddressFieldmapper $feuserAddressMapper
-		 */
-		$feuserAddressMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-			'CommerceTeam\\Commerce\\Dao\\FeuserAddressFieldmapper'
-		);
-		$fields = $feuserAddressMapper->getAddressFields();
+    /**
+     * Constructor.
+     *
+     * @return self
+     */
+    public function __construct()
+    {
+        // add mapped fields to object
+        /**
+         * Frontend address mapper.
+         *
+         * @var FeuserAddressFieldmapper
+         */
+        $feuserAddressMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            'CommerceTeam\\Commerce\\Dao\\FeuserAddressFieldmapper'
+        );
+        $fields = $feuserAddressMapper->getAddressFields();
 
-		foreach ($fields as $field) {
-			$this->$field = '';
-		}
-	}
+        foreach ($fields as $field) {
+            $this->$field = '';
+        }
+    }
 
-	/**
-	 * Getter
-	 *
-	 * @return string
-	 */
-	public function getName() {
-		return $this->name;
-	}
+    /**
+     * Getter.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	/**
-	 * Setter
-	 *
-	 * @param string $name Name
-	 *
-	 * @return void
-	 */
-	public function setName($name) {
-		$this->name = $name;
-	}
+    /**
+     * Setter.
+     *
+     * @param string $name Name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
 }

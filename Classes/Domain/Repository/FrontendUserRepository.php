@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Domain\Repository;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,30 +16,32 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  */
 
 /**
- * Class \CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository
+ * Class \CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository.
  *
  * @author Sebastian Fischer <typo3@evoweb.de>
  */
-class FrontendUserRepository extends Repository {
-	/**
-	 * Database table concerning the data
-	 *
-	 * @var string
-	 */
-	protected $databaseTable = 'fe_users';
+class FrontendUserRepository extends Repository
+{
+    /**
+     * Database table concerning the data.
+     *
+     * @var string
+     */
+    protected $databaseTable = 'fe_users';
 
-	/**
-	 * Find frontend user by address id
-	 *
-	 * @param int $addressId Address id
-	 *
-	 * @return array
-	 */
-	public function findByAddressId($addressId) {
-		return (array) self::getDatabaseConnection()->exec_SELECTgetSingleRow(
-			'uid',
-			$this->databaseTable,
-			'tx_commerce_tt_address_id = ' . $addressId . ' AND deleted = 0'
-		);
-	}
+    /**
+     * Find frontend user by address id.
+     *
+     * @param int $addressId Address id
+     *
+     * @return array
+     */
+    public function findByAddressId($addressId)
+    {
+        return (array) self::getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'uid',
+            $this->databaseTable,
+            'tx_commerce_tt_address_id = '.$addressId.' AND deleted = 0'
+        );
+    }
 }

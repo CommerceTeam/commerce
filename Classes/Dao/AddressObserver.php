@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Dao;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -23,132 +25,135 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * The class satisfies the observer design pattern.
  * The method update() from this class is called as static by "hooksHandler"
  * classes
- * This class handles tt_address updates
+ * This class handles tt_address updates.
  *
  * Class \CommerceTeam\Commerce\Dao\AddressObserver
  *
  * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
-class AddressObserver {
-	/**
-	 * Link to observable
-	 *
-	 * @var object
-	 */
-	public $observable;
+class AddressObserver
+{
+    /**
+     * Link to observable.
+     *
+     * @var object
+     */
+    public $observable;
 
-	/**
-	 * Constructor
-	 * Link observer and observable
-	 * Not needed for typo3 hook concept.
-	 *
-	 * @param object $observable Observed object
-	 *
-	 * @return self
-	 */
-	public function __construct(&$observable) {
-		$this->observable = $observable;
-		$observable->addObserver($this);
-	}
+    /**
+     * Constructor
+     * Link observer and observable
+     * Not needed for typo3 hook concept.
+     *
+     * @param object $observable Observed object
+     *
+     * @return self
+     */
+    public function __construct(&$observable)
+    {
+        $this->observable = $observable;
+        $observable->addObserver($this);
+    }
 
-	/**
-	 * Handle update event.
-	 * Is called from observable or hook handlers upon event.
-	 * Keep this method static for efficient integration into hookHandlers.
-	 * Communicate using push principle to avoid errors.
-	 *
-	 * @param string $status Status [update,new]
-	 * @param string $id Database table id
-	 *
-	 * @return void
-	 */
-	public static function update($status, $id) {
-		// get complete address object
-		/**
-		 * Address data access object
-		 *
-		 * @var AddressDao $addressDao
-		 */
-		$addressDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDao', $id);
+    /**
+     * Handle update event.
+     * Is called from observable or hook handlers upon event.
+     * Keep this method static for efficient integration into hookHandlers.
+     * Communicate using push principle to avoid errors.
+     *
+     * @param string $status Status [update,new]
+     * @param string $id     Database table id
+     */
+    public static function update($status, $id)
+    {
+        // get complete address object
+        /**
+         * Address data access object.
+         *
+         * @var AddressDao
+         */
+        $addressDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDao', $id);
 
-		// get feuser id
-		$feuserId = $addressDao->get('tx_commerce_fe_user_id');
+        // get feuser id
+        $feuserId = $addressDao->get('tx_commerce_fe_user_id');
 
-		if (!empty($feuserId)) {
-			// get associated feuser object
-			/**
-			 * Frontend user data access object
-			 *
-			 * @var FeuserDao $feuserDao
-			 */
-			$feuserDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserDao', $feuserId);
+        if (!empty($feuserId)) {
+            // get associated feuser object
+            /**
+             * Frontend user data access object.
+             *
+             * @var FeuserDao
+             */
+            $feuserDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserDao', $feuserId);
 
-			// update feuser object
-			/**
-			 * Frontend user address field mapper
-			 *
-			 * @var FeuserAddressFieldmapper $fieldMapper
-			 */
-			$fieldMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserAddressFieldmapper');
-			$fieldMapper->mapAddressToFeuser($addressDao, $feuserDao);
+            // update feuser object
+            /**
+             * Frontend user address field mapper.
+             *
+             * @var FeuserAddressFieldmapper
+             */
+            $fieldMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserAddressFieldmapper');
+            $fieldMapper->mapAddressToFeuser($addressDao, $feuserDao);
 
-			// set main address id in feuser
-			$feuserDao->set('tx_commerce_tt_address_id', $id);
-			$feuserDao->save();
-		}
-	}
+            // set main address id in feuser
+            $feuserDao->set('tx_commerce_tt_address_id', $id);
+            $feuserDao->save();
+        }
+    }
 
-	/**
-	 * Check if address may get deleted
-	 *
-	 * @param int $uid Uid
-	 * @param AddressesController|DataHandler $parentObject Parent object
-	 *
-	 * @return bool|string
-	 */
-	public static function checkDelete($uid, $parentObject) {
-		/**
-		 * Frontend user repository
-		 *
-		 * @var FrontendUserRepository $userRepository
-		 */
-		$userRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\FrontendUserRepository');
-		$frontendUser = $userRepository->findByAddressId((int) $uid);
+    /**
+     * Check if address may get deleted.
+     *
+     * @param int                             $uid          Uid
+     * @param AddressesController|DataHandler $parentObject Parent object
+     *
+     * @return bool|string
+     */
+    public static function checkDelete($uid, $parentObject)
+    {
+        /**
+         * Frontend user repository.
+         *
+         * @var FrontendUserRepository
+         */
+        $userRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\FrontendUserRepository');
+        $frontendUser = $userRepository->findByAddressId((int) $uid);
 
-		// no errormessage
-		$msg = FALSE;
-		// check dependencies (selected rows)
-		if (!empty($frontendUser)) {
-			// errormessage
-			if ($parentObject instanceof AddressesController) {
-				$msg = $parentObject->pi_getLL('error_deleted_address_is_default');
-			}
-			if ($parentObject instanceof DataHandler) {
-				$msg = self::getLanguageService()->sl(
-					'LLL:EXT:commerce/Resources/Private/Language/locallang.xml:error_deleted_address_is_default'
-				);
-			}
-		}
+        // no errormessage
+        $msg = false;
+        // check dependencies (selected rows)
+        if (!empty($frontendUser)) {
+            // errormessage
+            if ($parentObject instanceof AddressesController) {
+                $msg = $parentObject->pi_getLL('error_deleted_address_is_default');
+            }
+            if ($parentObject instanceof DataHandler) {
+                $msg = self::getLanguageService()->sl(
+                    'LLL:EXT:commerce/Resources/Private/Language/locallang.xml:error_deleted_address_is_default'
+                );
+            }
+        }
 
-		return $msg;
-	}
+        return $msg;
+    }
 
+    /**
+     * Get database connection.
+     *
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected static function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
+    }
 
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected static function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
-
-	/**
-	 * Get language service
-	 *
-	 * @return \TYPO3\CMS\Lang\LanguageService
-	 */
-	protected static function getLanguageService() {
-		return $GLOBALS['LANG'];
-	}
+    /**
+     * Get language service.
+     *
+     * @return \TYPO3\CMS\Lang\LanguageService
+     */
+    protected static function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
+    }
 }

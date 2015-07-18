@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,13 +14,13 @@
  */
 
 /**
- * Module: Permission setting
+ * Module: Permission setting.
  */
 
 /**
- * Permission module
+ * Permission module.
  *
- * @var \CommerceTeam\Commerce\Controller\PermissionModuleController $SOBE
+ * @var \CommerceTeam\Commerce\Controller\PermissionModuleController
  */
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\PermissionModuleController');
 $SOBE->init();

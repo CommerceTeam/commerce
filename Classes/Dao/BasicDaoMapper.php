@@ -1,5 +1,7 @@
 <?php
+
 namespace CommerceTeam\Commerce\Dao;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -28,267 +30,262 @@ namespace CommerceTeam\Commerce\Dao;
  *
  * @author 2006-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
-class BasicDaoMapper {
-	/**
-	 * Table for persistence
-	 *
-	 * @var null|string
-	 */
-	protected $dbTable = '';
+class BasicDaoMapper
+{
+    /**
+     * Table for persistence.
+     *
+     * @var null|string
+     */
+    protected $dbTable = '';
 
-	/**
-	 * Database connection
-	 *
-	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected $database;
+    /**
+     * Database connection.
+     *
+     * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected $database;
 
-	/**
-	 * Parser
-	 *
-	 * @var BasicDaoParser
-	 */
-	protected $parser;
+    /**
+     * Parser.
+     *
+     * @var BasicDaoParser
+     */
+    protected $parser;
 
-	/**
-	 * Create pid
-	 *
-	 * @var int
-	 */
-	protected $createPid = 0;
+    /**
+     * Create pid.
+     *
+     * @var int
+     */
+    protected $createPid = 0;
 
-	/**
-	 * Error
-	 *
-	 * @var array
-	 */
-	protected $error = array();
+    /**
+     * Error.
+     *
+     * @var array
+     */
+    protected $error = array();
 
-	/**
-	 * Constructor
-	 *
-	 * @param BasicDaoParser $parser Parser
-	 * @param int $createPid Create pid
-	 * @param string $dbTable Table
-	 *
-	 * @return self
-	 */
-	public function __construct(BasicDaoParser $parser, $createPid = 0, $dbTable = NULL) {
-		$this->init();
-		$this->parser = $parser;
+    /**
+     * Constructor.
+     *
+     * @param BasicDaoParser $parser    Parser
+     * @param int            $createPid Create pid
+     * @param string         $dbTable   Table
+     *
+     * @return self
+     */
+    public function __construct(BasicDaoParser $parser, $createPid = 0, $dbTable = null)
+    {
+        $this->init();
+        $this->parser = $parser;
 
-		if (!empty($createPid)) {
-			$this->createPid = $createPid;
-		}
+        if (!empty($createPid)) {
+            $this->createPid = $createPid;
+        }
 
-		if (!empty($dbTable)) {
-			$this->dbTable = $dbTable;
-		}
-	}
+        if (!empty($dbTable)) {
+            $this->dbTable = $dbTable;
+        }
+    }
 
-	/**
-	 * Initialization
-	 *
-	 * @return void
-	 */
-	protected function init() {
-	}
+    /**
+     * Initialization.
+     */
+    protected function init()
+    {
+    }
 
-	/**
-	 * Load object
-	 *
-	 * @param BasicDaoObject $object Object
-	 *
-	 * @return void
-	 */
-	public function load(BasicDaoObject $object) {
-		if ($object->issetId()) {
-			$this->dbSelectById($object->getId(), $object);
-		}
-	}
+    /**
+     * Load object.
+     *
+     * @param BasicDaoObject $object Object
+     */
+    public function load(BasicDaoObject $object)
+    {
+        if ($object->issetId()) {
+            $this->dbSelectById($object->getId(), $object);
+        }
+    }
 
-	/**
-	 * Save object
-	 *
-	 * @param BasicDaoObject $object Object
-	 *
-	 * @return void
-	 */
-	public function save(BasicDaoObject $object) {
-		if ($object->issetId()) {
-			$this->dbUpdate($object->getId(), $object);
-		} else {
-			$this->dbInsert($object);
-		}
-	}
+    /**
+     * Save object.
+     *
+     * @param BasicDaoObject $object Object
+     */
+    public function save(BasicDaoObject $object)
+    {
+        if ($object->issetId()) {
+            $this->dbUpdate($object->getId(), $object);
+        } else {
+            $this->dbInsert($object);
+        }
+    }
 
-	/**
-	 * Remove object
-	 *
-	 * @param BasicDaoObject $object Object
-	 *
-	 * @return void
-	 */
-	public function remove(BasicDaoObject $object) {
-		if ($object->issetId()) {
-			$this->dbDelete($object->getId(), $object);
-		}
-	}
+    /**
+     * Remove object.
+     *
+     * @param BasicDaoObject $object Object
+     */
+    public function remove(BasicDaoObject $object)
+    {
+        if ($object->issetId()) {
+            $this->dbDelete($object->getId(), $object);
+        }
+    }
 
-	/**
-	 * Db add object
-	 *
-	 * @param BasicDaoObject $object Object
-	 *
-	 * @return void
-	 */
-	protected function dbInsert(BasicDaoObject $object) {
-		$dbModel = $this->parser->parseObjectToModel($object);
+    /**
+     * Db add object.
+     *
+     * @param BasicDaoObject $object Object
+     */
+    protected function dbInsert(BasicDaoObject $object)
+    {
+        $dbModel = $this->parser->parseObjectToModel($object);
 
-		// set pid
-		$this->parser->setPid($dbModel, $this->createPid);
+        // set pid
+        $this->parser->setPid($dbModel, $this->createPid);
 
-		// @todo extract db action into repsitory
-		$database = $this->getDatabaseConnection();
-		// execute query
-		$database->exec_INSERTquery($this->dbTable, $dbModel);
+        // @todo extract db action into repsitory
+        $database = $this->getDatabaseConnection();
+        // execute query
+        $database->exec_INSERTquery($this->dbTable, $dbModel);
 
-		// any errors
-		$error = $database->sql_error();
-		if (!empty($error)) {
-			$this->addError(array(
-				$error,
-				$database->INSERTquery($this->dbTable, $dbModel),
-				'$dbModel' => $dbModel
-			));
-		}
+        // any errors
+        $error = $database->sql_error();
+        if (!empty($error)) {
+            $this->addError(array(
+                $error,
+                $database->INSERTquery($this->dbTable, $dbModel),
+                '$dbModel' => $dbModel,
+            ));
+        }
 
-		// set object id
-		$object->setId($database->sql_insert_id());
-	}
+        // set object id
+        $object->setId($database->sql_insert_id());
+    }
 
-	/**
-	 * Db update object
-	 *
-	 * @param int $uid Uid
-	 * @param BasicDaoObject $object Object
-	 *
-	 * @return void
-	 */
-	protected function dbUpdate($uid, BasicDaoObject $object) {
-		$dbWhere = 'uid = ' . (int) $uid;
-		$dbModel = $this->parser->parseObjectToModel($object);
+    /**
+     * Db update object.
+     *
+     * @param int            $uid    Uid
+     * @param BasicDaoObject $object Object
+     */
+    protected function dbUpdate($uid, BasicDaoObject $object)
+    {
+        $dbWhere = 'uid = '.(int) $uid;
+        $dbModel = $this->parser->parseObjectToModel($object);
 
-		// @todo extract db action into repsitory
-		$database = $this->getDatabaseConnection();
+        // @todo extract db action into repsitory
+        $database = $this->getDatabaseConnection();
 
-		// execute query
-		$database->exec_UPDATEquery($this->dbTable, $dbWhere, $dbModel);
+        // execute query
+        $database->exec_UPDATEquery($this->dbTable, $dbWhere, $dbModel);
 
-		// any errors
-		$error = $database->sql_error();
-		if (!empty($error)) {
-			$this->addError(array(
-				$error,
-				$database->UPDATEquery($this->dbTable, $dbWhere, $dbModel),
-				'$dbModel' => $dbModel
-			));
-		}
-	}
+        // any errors
+        $error = $database->sql_error();
+        if (!empty($error)) {
+            $this->addError(array(
+                $error,
+                $database->UPDATEquery($this->dbTable, $dbWhere, $dbModel),
+                '$dbModel' => $dbModel,
+            ));
+        }
+    }
 
-	/**
-	 * Db delete object
-	 *
-	 * @param int $uid Uid
-	 * @param BasicDaoObject $object Object
-	 *
-	 * @return void
-	 */
-	protected function dbDelete($uid, BasicDaoObject $object) {
-		// @todo extract db action into repsitory
-		$database = $this->getDatabaseConnection();
+    /**
+     * Db delete object.
+     *
+     * @param int            $uid    Uid
+     * @param BasicDaoObject $object Object
+     */
+    protected function dbDelete($uid, BasicDaoObject $object)
+    {
+        // @todo extract db action into repsitory
+        $database = $this->getDatabaseConnection();
 
-		// execute query
-		$database->exec_DELETEquery($this->dbTable, 'uid = ' . (int) $uid);
+        // execute query
+        $database->exec_DELETEquery($this->dbTable, 'uid = '.(int) $uid);
 
-		// any errors
-		$error = $database->sql_error();
-		if (!empty($error)) {
-			$this->addError(array(
-				$error,
-				$database->DELETEquery($this->dbTable, 'uid = ' . (int) $uid)
-			));
-		}
+        // any errors
+        $error = $database->sql_error();
+        if (!empty($error)) {
+            $this->addError(array(
+                $error,
+                $database->DELETEquery($this->dbTable, 'uid = '.(int) $uid),
+            ));
+        }
 
-		// remove object itself
-		$object->destroy();
-	}
+        // remove object itself
+        $object->destroy();
+    }
 
-	/**
-	 * DB select object by id
-	 *
-	 * @param int $uid Uid
-	 * @param BasicDaoObject $object Object
-	 *
-	 * @return void
-	 */
-	protected function dbSelectById($uid, BasicDaoObject $object) {
-		// @todo extract db action into repsitory
-		$database = $this->getDatabaseConnection();
+    /**
+     * DB select object by id.
+     *
+     * @param int            $uid    Uid
+     * @param BasicDaoObject $object Object
+     */
+    protected function dbSelectById($uid, BasicDaoObject $object)
+    {
+        // @todo extract db action into repsitory
+        $database = $this->getDatabaseConnection();
 
-		// execute query
-		$res = $database->exec_SELECTquery('*', $this->dbTable, 'uid = ' . (int) $uid . 'AND deleted = 0');
+        // execute query
+        $res = $database->exec_SELECTquery('*', $this->dbTable, 'uid = '.(int) $uid.'AND deleted = 0');
 
-		// insert into object
-		$model = $database->sql_fetch_assoc($res);
-		if ($model) {
-			// parse into object
-			$this->parser->parseModelToObject($model, $object);
-		} else {
-			// no object found, empty obj and id
-			$object->clear();
-		}
+        // insert into object
+        $model = $database->sql_fetch_assoc($res);
+        if ($model) {
+            // parse into object
+            $this->parser->parseModelToObject($model, $object);
+        } else {
+            // no object found, empty obj and id
+            $object->clear();
+        }
 
-		// free results
-		$database->sql_free_result($res);
-	}
+        // free results
+        $database->sql_free_result($res);
+    }
 
-	/**
-	 * Add error message
-	 *
-	 * @param array $error Error
-	 *
-	 * @return void
-	 */
-	protected function addError(array $error) {
-		$this->error[] = $error;
-	}
+    /**
+     * Add error message.
+     *
+     * @param array $error Error
+     */
+    protected function addError(array $error)
+    {
+        $this->error[] = $error;
+    }
 
-	/**
-	 * Check if error was raised
-	 *
-	 * @return bool
-	 */
-	protected function isError() {
-		return !empty($this->error);
-	}
+    /**
+     * Check if error was raised.
+     *
+     * @return bool
+     */
+    protected function isError()
+    {
+        return !empty($this->error);
+    }
 
-	/**
-	 * Get error
-	 *
-	 * @return array|bool
-	 */
-	protected function getError() {
-		return $this->error ?: FALSE;
-	}
+    /**
+     * Get error.
+     *
+     * @return array|bool
+     */
+    protected function getError()
+    {
+        return $this->error ?: false;
+    }
 
-
-	/**
-	 * Get database connection
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected static function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
+    /**
+     * Get database connection.
+     *
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected static function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
+    }
 }
