@@ -164,6 +164,9 @@ if (TYPO3_MODE == 'BE') {
     );
 }
 
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/backend.php']['renderPreProcess']['commerce'] =
+    'CommerceTeam\\Commerce\\Hook\\BackendHooks->addJsFiles';
+
 // Add linkhandler for "commerce"
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typolinkLinkHandler']['commerce'] =
     'EXT:commerce/Classes/Hook/LinkhandlerHooks.php:&CommerceTeam\\Commerce\\Hook\\LinkhandlerHooks';
@@ -186,7 +189,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['commerce'] =
     'EXT:commerce/Classes/Hook/CommandMapHooks.php:CommerceTeam\\Commerce\\Hook\\CommandMapHooks';
 
-// Hooks for version swap procesing
+// Hooks for version swap processing
 // For processing the order sfe, when changing the pid
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processVersionSwapClass']['commerce'] =
     'EXT:commerce/Classes/Hook/VersionHooks.php:CommerceTeam\\Commerce\\Hook\\VersionHooks';

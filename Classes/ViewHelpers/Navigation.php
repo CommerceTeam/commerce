@@ -614,8 +614,8 @@ class Navigation
     {
         $i = 1;
         foreach ($conf as $k) {
-            if ($k == $i.'.') {
-                $conf[$i.'.']['itemArrayProcFunc'] = 'CommerceTeam\\Commerce\\ViewHelpers\\Navigation->clear';
+            if ($k == $i . '.') {
+                $conf[$i . '.']['itemArrayProcFunc'] = 'CommerceTeam\\Commerce\\ViewHelpers\\Navigation->clear';
                 ++$i;
             }
         }

@@ -136,22 +136,23 @@ class ArticleCreatorUtility
         }
 
         // generate the security token
-        $formSecurityToken = '&prErr=1&vC='.$this->getBackendUser()->veriCode().CoreBackendUtility::getUrlToken('tceAction');
+        $formSecurityToken = '&prErr=1&vC=' . $this->getBackendUser()->veriCode() .
+            CoreBackendUtility::getUrlToken('tceAction');
 
         $colCount = 0;
         $headRow = $this->getHeadRow($colCount, null, null, false);
-        $result = '<script>'.$this->redirectUrls().'</script>
+        $result = '<script>' . $this->redirectUrls() . '</script>
 			<input type="hidden" name="deleteaid" value="0" />
 			<table border="0">
 				';
 
         $lastUid = 0;
 
-        $result .= '<tr><td>&nbsp;</td>'.$headRow.'</td><td colspan="5">&nbsp;</td></tr>';
+        $result .= '<tr><td>&nbsp;</td>' . $headRow . '</td><td colspan="5">&nbsp;</td></tr>';
 
         $buttonUp = IconUtility::getSpriteIcon('actions-move-up');
         $buttonDown = IconUtility::getSpriteIcon('actions-move-down');
-        $clear = '<img src="'.$this->getControllerDocumentTemplate()->backPath.'clear.gif" width="11" height="10">';
+        $clear = '<span style="display: block; width: 11px; height: 10px"></span>';
         $delete = IconUtility::getSpriteIcon('actions-edit-delete');
         $edit = IconUtility::getSpriteIcon('actions-document-open');
         $hide = IconUtility::getSpriteIcon('actions-edit-hide');
@@ -162,7 +163,7 @@ class ArticleCreatorUtility
             $articleUid = (int) $article['uid'];
 
             $result .= '<tr><td style="border-top:1px black solid; border-right: 1px gray dotted"><strong>'.
-                htmlspecialchars($article['title']).'</strong><br />UID:'.$articleUid.'</td>';
+                htmlspecialchars($article['title']) . '</strong><br />UID:' . $articleUid . '</td>';
 
             if (is_array($this->attributes['ct1'])) {
                 foreach ($this->attributes['ct1'] as $attribute) {
@@ -170,7 +171,7 @@ class ArticleCreatorUtility
                     $atrRes = $database->exec_SELECTquery(
                         'uid_valuelist, default_value, value_char',
                         'tx_commerce_articles_article_attributes_mm',
-                        'uid_local = '.$articleUid.' AND uid_foreign = '.$attribute['uid_foreign']
+                        'uid_local = ' . $articleUid . ' AND uid_foreign = ' . $attribute['uid_foreign']
                     );
 
                     $cellStyle = 'border-top:1px black solid; border-right: 1px gray dotted';
@@ -178,23 +179,26 @@ class ArticleCreatorUtility
                         if ($attribute['attributeData']['has_valuelist'] == 1) {
                             if ($attributeData['uid_valuelist'] == 0) {
                                 // if the attribute has no value, create a select box with valid values
-                                $result .= '<td style="'.$cellStyle.'"><select name="updateData['.
-                                    $articleUid.']['.(int) $attribute['uid_foreign'].']" />';
+                                $result .= '<td style="' . $cellStyle . '"><select name="updateData[' .
+                                    $articleUid . '][' . (int) $attribute['uid_foreign'] . ']" />';
                                 $result .= '<option value="0" selected="selected"></option>';
                                 foreach ($attribute['valueList'] as $attrValueUid => $attrValueData) {
-                                    $result .= '<option value="'.(int) $attrValueUid.'">'.htmlspecialchars($attrValueData['value']).'</option>';
+                                    $result .= '<option value="' . (int) $attrValueUid . '">' .
+                                        htmlspecialchars($attrValueData['value']) . '</option>';
                                 }
                                 $result .= '</select></td>';
                             } else {
-                                $result .= '<td style="'.$cellStyle.'">'.
-                                    htmlspecialchars(strip_tags($attribute['valueList'][$attributeData['uid_valuelist']]['value'])).'</td>';
+                                $result .= '<td style="' . $cellStyle . '">' .
+                                    htmlspecialchars(
+                                        strip_tags($attribute['valueList'][$attributeData['uid_valuelist']]['value'])
+                                    ) . '</td>';
                             }
                         } elseif (!empty($attributeData['value_char'])) {
-                            $result .= '<td style="'.$cellStyle.'">'.
-                                htmlspecialchars(strip_tags($attributeData['value_char'])).'</td>';
+                            $result .= '<td style="' . $cellStyle . '">' .
+                                htmlspecialchars(strip_tags($attributeData['value_char'])) . '</td>';
                         } else {
-                            $result .= '<td style="'.$cellStyle.'">'.
-                                htmlspecialchars(strip_tags($attributeData['default_value'])).'</td>';
+                            $result .= '<td style="' . $cellStyle . '">' .
+                                htmlspecialchars(strip_tags($attributeData['default_value'])) . '</td>';
                         }
                     }
                 }
@@ -202,55 +206,58 @@ class ArticleCreatorUtility
 
             // the edit pencil (with jump back to this dataset)
             $result .= '<td style="border-top: 1px black solid">
-				<a href="#" onclick="document.location=\'alt_doc.php?returnUrl=alt_doc.php?edit[tx_commerce_products]['.
-                $this->uid.']=edit&amp;edit[tx_commerce_articles]['.$articleUid.']=edit\'; return false;">';
-            $result .= $edit.'</a></td>';
+				<a onclick="document.location=\'alt_doc.php?returnUrl=alt_doc.php?edit[tx_commerce_products][' .
+                $this->uid . ']=edit&amp;edit[tx_commerce_articles][' . $articleUid .
+                ']=edit\'; return false;" href="#">';
+            $result .= $edit . '</a></td>';
 
             // add the hide button
-            $params = '&data[tx_commerce_articles]['.$articleUid.'][hidden]='.(int) (!$article['hidden']).
-                '&redirect=alt_doc.php?edit[tx_commerce_products]['.$this->uid.']=edit'.$formSecurityToken;
+            $params = '&data[tx_commerce_articles][' . $articleUid . '][hidden]=' . (int) (!$article['hidden']) .
+                '&redirect=alt_doc.php?edit[tx_commerce_products][' . $this->uid . ']=edit' . $formSecurityToken;
             $result .= '<td style="border-top:1px black solid">
-				<a href="#" onclick="return jumpToUrl(\''.$this->getControllerDocumentTemplate()->issueCommand($params, -1).'\');">'.
-                ($article['hidden'] ? $unhide : $hide).'</a></td>';
+				<a href="#" onclick="return jumpToUrl(\'' .
+                $this->getControllerDocumentTemplate()->issueCommand($params, -1) . '\');">' .
+                ($article['hidden'] ? $unhide : $hide) . '</a></td>';
 
             // add the sorting buttons
             // UP
             if (isset($this->existingArticles[$i - 1])) {
                 if (isset($this->existingArticles[$i - 2])) {
-                    $moveItTo = '-'.(int) $this->existingArticles[$i - 2]['uid'];
+                    $moveItTo = '-' . (int) $this->existingArticles[$i - 2]['uid'];
                 } else {
                     $moveItTo = (int) $article['pid'];
                 }
 
-                $params = 'cmd[tx_commerce_articles]['.$articleUid.'][move]='.$moveItTo;
-                $result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?'.$params.
-                    '&redirect=alt_doc.php?edit[tx_commerce_products]['.(int) $this->uid.
-                    ']=edit\');">'.$buttonUp.'</a></td>';
-                $result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?'.$params.
-                    $formSecurityToken.'&redirect=alt_doc.php?edit[tx_commerce_products]['.(int) $this->uid.
-                    ']=edit\');">'.$buttonUp.'</a></td>';
+                $params = 'cmd[tx_commerce_articles][' . $articleUid . '][move]=' . $moveItTo;
+                $result .= '<td style="border-top: 1px black solid"><a onClick="return jumpToUrl(\'tce_db.php?' .
+                    $params . $formSecurityToken . '&redirect=alt_doc.php?edit[tx_commerce_products][' .
+                    (int) $this->uid . ']=edit\');" href="#">' . $buttonUp . '</a></td>';
+                $result .= '<td style="border-top: 1px black solid"><a onClick="return jumpToUrl(\'tce_db.php?' .
+                    $params . $formSecurityToken . '&redirect=alt_doc.php?edit[tx_commerce_products][' .
+                    (int) $this->uid . ']=edit\');" href="#">' . $buttonUp . '</a></td>';
             } else {
-                $result .= '<td>'.$clear.'</td>';
+                $result .= '<td>' . $clear . '</td>';
             }
 
             // DOWN
             if (isset($this->existingArticles[$i + 1])) {
-                $params = 'cmd[tx_commerce_articles]['.$articleUid.'][move]=-'.(int) $this->existingArticles[$i + 1]['uid'];
-                $result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?'.$params.
-                    '&redirect=alt_doc.php?edit[tx_commerce_products]['.(int) $this->uid.
-                    ']=edit\');">'.$buttonDown.'</a></td>';
-                $result .= '<td style="border-top:1px black solid"><a href="#" onClick="return jumpToUrl(\'tce_db.php?'.$params.
-                    $formSecurityToken.'&redirect=alt_doc.php?edit[tx_commerce_products]['.$this->uid.
-                    ']=edit\');">'.$buttonDown.'</a></td>';
+                $params = 'cmd[tx_commerce_articles][' . $articleUid . '][move]=-' .
+                    (int) $this->existingArticles[$i + 1]['uid'];
+                $result .= '<td style="border-top: 1px black solid"><a onClick="return jumpToUrl(\'tce_db.php?' .
+                    $params . $formSecurityToken . '&redirect=alt_doc.php?edit[tx_commerce_products][' .
+                    (int) $this->uid . ']=edit\');" href="#">' . $buttonDown . '</a></td>';
+                $result .= '<td style="border-top: 1px black solid"><a onClick="return jumpToUrl(\'tce_db.php?' .
+                    $params . $formSecurityToken . '&redirect=alt_doc.php?edit[tx_commerce_products][' .
+                    (int) $this->uid . ']=edit\');" href="#">' . $buttonDown . '</a></td>';
             } else {
-                $result .= '<td>'.$clear.'</td>';
+                $result .= '<td>' . $clear . '</td>';
             }
 
-            $onClick = 'onclick="deleteRecord(\'tx_commerce_articles\', '.$articleUid.
-                ', \'alt_doc.php?edit[tx_commerce_products]['.(int) $this->uid.']=edit\');"';
+            $onClick = 'onclick="deleteRecord(\'tx_commerce_articles\', ' . $articleUid .
+                ', \'alt_doc.php?edit[tx_commerce_products][' . (int) $this->uid . ']=edit\');"';
 
             // add the delete icon
-            $result .= '<td style="border-top:1px black solid"><a href="#" '.$onClick.'>'.$delete.'</a></td>';
+            $result .= '<td style="border-top:1px black solid"><a href="#" ' . $onClick . '>' . $delete . '</a></td>';
             $result .= '</tr>';
 
             if ($articleUid > $lastUid) {

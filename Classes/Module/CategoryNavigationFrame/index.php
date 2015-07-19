@@ -13,23 +13,6 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-/**
- * Category module navigation frame.
- */
-unset($MCONF);
-
-if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
-    require_once 'conf.php';
-    define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/Classes/Module/Category/');
-    $BACK_PATH = '../../../../../../typo3/';
-} else {
-    // In case of an AJAX Request the script including this script is ajax.php,
-    // from which the BACK PATH is ''
-    $BACK_PATH = '';
-}
-
-require_once $BACK_PATH.'init.php';
-
 // Make instance if it is not an AJAX call
 if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
     /**

@@ -239,7 +239,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
         if ($this->getBackendUser()->mayMakeShortcut()) {
             $buttons['shortcut'] = $this->doc->makeShortcutIcon(
                 'id, showThumbs, pointer, table, search_field, searchLevels, showLimit, sortField, sortRev',
-                implode(',', array_keys($this->MOD_MENU)), 'txcommerceM1_systemdata');
+                implode(',', array_keys($this->MOD_MENU)), 'commerce_systemdata');
         }
 
         return $buttons;

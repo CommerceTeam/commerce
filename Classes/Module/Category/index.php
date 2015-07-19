@@ -18,7 +18,9 @@
  *
  * @var \CommerceTeam\Commerce\Controller\CategoryModuleController
  */
-$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\CategoryModuleController');
+$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+    'CommerceTeam\\Commerce\\Controller\\CategoryModuleController'
+);
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();

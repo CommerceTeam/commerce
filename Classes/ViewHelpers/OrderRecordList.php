@@ -354,8 +354,9 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             if (!$listOnlyInSingleTableMode) {
                 $theData = array();
                 if (!$this->table && !$rowlist) {
-                    $theData[$titleCol] = '<img src="'.$this->backPath.'/clear.gif" width="'.
-                        ($this->getController()->MOD_SETTINGS['bigControlPanel'] ? '230' : '350').'" height="1" alt="" />';
+                    $theData[$titleCol] = '<span style="display: block; width: ' .
+                        ($this->getController()->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') .
+                        'px; height: 1px"></span>';
                     if (in_array('_CONTROL_', $this->fieldArray)) {
                         $theData['_CONTROL_'] = '';
                     }
@@ -1037,7 +1038,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         );
 
         // get Module TSConfig
-        $moduleConfig = BackendUtility::getModTSconfig($id, 'mod.txcommerceM1_orders');
+        $moduleConfig = BackendUtility::getModTSconfig($id, 'mod.commerce_orders');
 
         $deliveryProductUid = $moduleConfig['properties']['deliveryProductUid'] ? $moduleConfig['properties']['deliveryProductUid'] : 0;
         if ($deliveryProductUid > 0) {
@@ -1109,7 +1110,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 				<td nowrap="nowrap" class="col-icon">';
 
             if (!$h) {
-                $out .= '<img src="'.$this->backPath.'/clear.gif" width="1" height="8" alt="" />';
+                $out .= '<span style="display: block; width: 1px; height: 8px"></span>';
             } else {
                 for ($a = 0; $a < $h; ++$a) {
                     if (!$a) {

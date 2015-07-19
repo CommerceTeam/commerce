@@ -20,20 +20,22 @@ namespace CommerceTeam\Commerce\Utility;
  */
 
 use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 unset($MCONF);
 define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/Classes/Utility/');
 $BACK_PATH = '../../../../../typo3/';
 
 $MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_cce.xml';
-require_once $BACK_PATH.'init.php';
+require_once $BACK_PATH . 'init.php';
 
-/*
+/**
  * Language
  *
- * @var \TYPO3\CMS\Lang\LanguageService $LANG
+ * @var \TYPO3\CMS\Lang\LanguageService $language
  */
-$LANG->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_cce.xml');
+$language = $GLOBALS['LANG'];
+$language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_cce.xml');
 
 /**
  * Class \CommerceTeam\Commerce\Utility\DataHandlerUtility.
@@ -171,31 +173,33 @@ class DataHandlerUtility
     public function init()
     {
         // GPvars:
-        $this->id = (int) \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
-        $this->redirect = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('redirect');
-        $this->prErr = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('prErr');
-        $this->CB = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('CB');
-        $this->vC = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('vC');
-        $this->uPT = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('uPT');
-        $this->sorting = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sorting');
-        $this->locales = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('locale');
-        $this->cmd = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cmd');
+        $this->id = (int) GeneralUtility::_GP('id');
+        $this->redirect = GeneralUtility::_GP('redirect');
+        $this->prErr = GeneralUtility::_GP('prErr');
+        $this->CB = GeneralUtility::_GP('CB');
+        $this->vC = GeneralUtility::_GP('vC');
+        $this->uPT = GeneralUtility::_GP('uPT');
+        $this->sorting = GeneralUtility::_GP('sorting');
+        $this->locales = GeneralUtility::_GP('locale');
+        $this->cmd = GeneralUtility::_GP('cmd');
         $this->clipObj = null;
         $this->content = '';
 
         $cbString = (isset($this->CB['overwrite'])) ?
-            'CB[overwrite]='.rawurlencode($this->CB['overwrite']).'&CB[pad]='.$this->CB['pad'] :
-            'CB[paste]='.rawurlencode($this->CB['paste']).'&CB[pad]='.$this->CB['pad'];
+            'CB[overwrite]=' . rawurlencode($this->CB['overwrite']) . '&CB[pad]=' . $this->CB['pad'] :
+            'CB[paste]=' . rawurlencode($this->CB['paste']) . '&CB[pad]=' . $this->CB['pad'];
 
         // Initializing document template object:
-        $this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
         $this->doc->backPath = $this->getBackPath();
         $this->doc->docType = 'xhtml_trans';
         $this->doc->setModuleTemplate(PATH_TXCOMMERCE.'Resources/Private/Backend/mod_index.html');
         $this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
-        $this->doc->loadJavascriptLib($this->getBackPath().PATH_TXCOMMERCE_REL.'Resources/Public/Javascript/copyPaste.js');
-        $this->doc->form = '<form action="DataHandlerUtility.php?'.$cbString.'&vC='.$this->vC.'&uPT='.$this->uPT.
-            '&redirect='.rawurlencode($this->redirect).'&prErr='.$this->prErr.
+        $this->doc->loadJavascriptLib(
+            $this->getBackPath() . PATH_TXCOMMERCE_REL . 'Resources/Public/JavaScript/copyPaste.js'
+        );
+        $this->doc->form = '<form action="DataHandlerUtility.php?' . $cbString . '&vC=' . $this->vC . '&uPT=' .
+            $this->uPT . '&redirect=' . rawurlencode($this->redirect) . '&prErr=' . $this->prErr .
             '&cmd=commit" method="post" name="localeform" id="localeform">';
     }
 
@@ -210,7 +214,7 @@ class DataHandlerUtility
              *
              * @var \TYPO3\CMS\Backend\Clipboard\Clipboard
              */
-            $clipObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Clipboard\\Clipboard');
+            $clipObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Clipboard\\Clipboard');
             $clipObj->initializeClipboard();
             $clipObj->setCurrentPad($this->CB['pad']);
             $this->clipObj = $clipObj;
@@ -225,8 +229,8 @@ class DataHandlerUtility
         $backendUser = $this->getBackendUser();
 
         // Checking referer / executing
-        $refInfo = parse_url(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_REFERER'));
-        $httpHost = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
+        $refInfo = parse_url(GeneralUtility::getIndpEnv('HTTP_REFERER'));
+        $httpHost = GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
 
         if ($httpHost != $refInfo['host']
             && $this->vC != $backendUser->veriCode()
@@ -235,7 +239,12 @@ class DataHandlerUtility
             // writelog($type, $action, $error, $details_nr, $details,
             // $data, $tablename, $recuid, $recpid)
             $backendUser->writelog(
-                1, 2, 3, 0, 'Referer host "%s" and server host "%s" did not match and veriCode was not valid either!', array(
+                1,
+                2,
+                3,
+                0,
+                'Referer host "%s" and server host "%s" did not match and veriCode was not valid either!',
+                array(
                     $refInfo['host'],
                     $httpHost,
                 )
@@ -286,7 +295,8 @@ class DataHandlerUtility
         $str = '';
 
         $this->pageinfo = BackendUtility::readCategoryAccess(
-            $uidTarget, BackendUtility::getCategoryPermsClause(1)
+            $uidTarget,
+            BackendUtility::getCategoryPermsClause(1)
         );
 
         $str .= $this->doc->header($language->getLL('Copy'));
@@ -309,16 +319,13 @@ class DataHandlerUtility
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Product
                  */
-                $product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Product',
-                    $uidClip
-                );
+                $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uidClip);
                 $product->loadData();
                 $prods = $product->getL18nProducts();
 
                 if (!empty($prods)) {
-                    $str .= '<h1>'.$language->getLL('copy.head.l18n').'</h1>
-						<h2>'.$language->getLL('copy.product').': '.$product->getTitle().'</h2>
+                    $str .= '<h1>' . $language->getLL('copy.head.l18n') . '</h1>
+						<h2>' . $language->getLL('copy.product') . ': ' . $product->getTitle() . '</h2>
 						<ul>';
 
                     // walk the l18n and get the selector box
@@ -327,8 +334,8 @@ class DataHandlerUtility
                     for ($i = 0; $i < $l; ++$i) {
                         $tmpProd = $prods[$i];
 
-                        $flag = ($tmpProd['flag'] != '') ? '<img src="'.$this->getBackPath().'gfx/flags/'.$tmpProd['flag'].
-                            '" alt="Flag" />' : '';
+                        $flag = ($tmpProd['flag'] != '') ? '<img src="' . $this->getBackPath() . 'gfx/flags/' .
+                            $tmpProd['flag'] . '" alt="Flag" />' : '';
 
                         $str .= '<li><input type="checkbox" name="locale[]" id="loc_'.$tmpProd['uid'].'" value="'.
                             $tmpProd['sys_language'].'" /><label for="loc_'.$tmpProd['uid'].'">'.$flag.
@@ -347,7 +354,7 @@ class DataHandlerUtility
                      *
                      * @var \CommerceTeam\Commerce\Tree\Leaf\ProductData
                      */
-                    $treedb = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductData');
+                    $treedb = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductData');
                     $treedb->init();
 
                     $records = $treedb->getRecordsDbList($uidTarget);
@@ -372,25 +379,28 @@ class DataHandlerUtility
                 } elseif (0 < $l) {
                     // at least 1 item - offer choice
                     $icon = '<img'.IconUtility::skinImg(
-                            $this->getBackPath(), 'gfx/newrecord_marker_d.gif', 'width="281" height="8"'
-                        ).' alt="" title="Insert the category" />';
-                    $prodIcon = '<img'.IconUtility::skinImg(
-                            $this->getBackPath(),
-                            IconUtility::getIcon('tx_commerce_products', array('uid' => $uidTarget)),
-                            'width="18" height="16"'
-                        ).
-                        'align="top" class="c-recIcon"/>';
+                        $this->getBackPath(),
+                        'gfx/newrecord_marker_d.gif',
+                        'width="281" height="8"'
+                    ) . ' alt="" title="Insert the category" />';
+                    $prodIcon = '<img' . IconUtility::skinImg(
+                        $this->getBackPath(),
+                        IconUtility::getIcon('tx_commerce_products', array('uid' => $uidTarget)),
+                        'width="18" height="16"'
+                    ) . 'align="top" class="c-recIcon"/>';
                     $str .= '<h1>'.$language->getLL('copy.position').'</h1>';
 
                     $onClickAction = 'onclick="submitForm('.$records['pid'][$uidTarget][0]['uid'].')"';
-                    $str .= '<span class="nobr"><a href="javascript:void(0)" '.$onClickAction.'>'.$icon.'</a></span><br />';
+                    $str .= '<span class="nobr"><a href="javascript:void(0)" ' . $onClickAction . '>' . $icon .
+                        '</a></span><br />';
 
                     for ($i = 0; $i < $l; ++$i) {
                         $record = $records['pid'][$uidTarget][$i];
 
                         $onClickAction = 'onclick="submitForm(-'.$record['uid'].')"';
                         $str .= '<span class="nobr">'.$prodIcon.$record['title'].'</span><br />';
-                        $str .= '<span class="nobr"><a href="javascript:void(0)" '.$onClickAction.'>'.$icon.'</a></span><br />';
+                        $str .= '<span class="nobr"><a href="javascript:void(0)" ' . $onClickAction . '>' . $icon .
+                            '</a></span><br />';
                     }
                 } else {
                     $noActionReq = true;
@@ -404,7 +414,7 @@ class DataHandlerUtility
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Category
                  */
-                $category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                $category = GeneralUtility::makeInstance(
                     'CommerceTeam\\Commerce\\Domain\\Model\\Category',
                     $uidClip
                 );
@@ -441,7 +451,7 @@ class DataHandlerUtility
                  *
                  * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryData
                  */
-                $treedb = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryData');
+                $treedb = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryData');
                 $treedb->init();
 
                 $records = $treedb->getRecordsDbList($uidTarget);
@@ -463,25 +473,28 @@ class DataHandlerUtility
                 } elseif (0 < $l) {
                     // at least 1 item - offer choice
                     $icon = '<img'.IconUtility::skinImg(
-                            $this->getBackPath(), 'gfx/newrecord_marker_d.gif', 'width="281" height="8"'
-                        ).' alt="" title="Insert the category" />';
+                        $this->getBackPath(),
+                        'gfx/newrecord_marker_d.gif',
+                        'width="281" height="8"'
+                    ) . ' alt="" title="Insert the category" />';
                     $catIcon = '<img'.IconUtility::skinImg(
-                            $this->getBackPath(),
-                            IconUtility::getIcon('tx_commerce_categories', array('uid' => $uidTarget)),
-                            'width="18" height="16"'
-                        ).
-                        'align="top" class="c-recIcon"/>';
+                        $this->getBackPath(),
+                        IconUtility::getIcon('tx_commerce_categories', array('uid' => $uidTarget)),
+                        'width="18" height="16"'
+                    ) . 'align="top" class="c-recIcon"/>';
                     $str .= '<h1>'.$language->getLL('copy.position').'</h1>';
 
                     $onClickAction = 'onclick="submitForm('.$records['pid'][$uidTarget][0]['uid'].')"';
-                    $str .= '<span class="nobr"><a href="javascript:void(0)" '.$onClickAction.'>'.$icon.'</a></span><br />';
+                    $str .= '<span class="nobr"><a href="javascript:void(0)" ' . $onClickAction . '>' . $icon .
+                        '</a></span><br />';
 
                     for ($i = 0; $i < $l; ++$i) {
                         $record = $records['pid'][$uidTarget][$i];
 
-                        $onClickAction = 'onclick="submitForm(-'.$record['uid'].')"';
-                        $str .= '<span class="nobr">'.$catIcon.$record['title'].'</span><br />
-							<span class="nobr"><a href="javascript:void(0)" '.$onClickAction.'>'.$icon.'</a></span><br />';
+                        $onClickAction = 'onclick="submitForm(-' . $record['uid'] . ')"';
+                        $str .= '<span class="nobr">' . $catIcon . $record['title'] . '</span><br />
+							<span class="nobr"><a href="javascript:void(0)" ' . $onClickAction . '>' . $icon .
+                            '</a></span><br />';
                     }
                 } else {
                     $noActionReq = true;
@@ -516,8 +529,12 @@ class DataHandlerUtility
             'CATPATH' => '',
         );
         $markers['FUNC_MENU'] = $this->doc->funcMenu(
-            '', \TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu(
-                $this->id, 'SET[mode]', $this->MOD_SETTINGS['mode'], $this->MOD_MENU['mode']
+            '',
+            \TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu(
+                $this->id,
+                'SET[mode]',
+                $this->MOD_SETTINGS['mode'],
+                $this->MOD_MENU['mode']
             )
         );
 
@@ -588,7 +605,7 @@ class DataHandlerUtility
         if ($this->content != '') {
             echo $this->content;
         } elseif ($this->redirect) {
-            header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->redirect));
+            header('Location: '. GeneralUtility::locationHeaderUrl($this->redirect));
         }
     }
 
@@ -629,7 +646,7 @@ class DataHandlerUtility
  *
  * @var DataHandlerUtility
  */
-$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('DataHandlerUtility');
+$SOBE = GeneralUtility::makeInstance('DataHandlerUtility');
 $SOBE->init();
 $SOBE->initClipboard();
 $SOBE->main();

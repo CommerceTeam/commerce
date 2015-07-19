@@ -396,8 +396,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             if (!$listOnlyInSingleTableMode) {
                 $theData = array();
                 if (!$this->table && !$rowlist) {
-                    $theData[$titleCol] = '<img src="'.$this->backPath.'/clear.gif" width="'.
-                        ($this->getController()->MOD_SETTINGS['bigControlPanel'] ? '230' : '350').'" height="1" alt="" />';
+                    $theData[$titleCol] = '<span style="display: block; width: ' .
+                        ($this->getController()->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') .
+                        'px; height: 1px"></span>';
                     if (in_array('_CONTROL_', $this->fieldArray)) {
                         $theData['_CONTROL_'] = '';
                     }
@@ -720,7 +721,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 			<td class="col-icon">';
 
             if (!$h) {
-                $out .= '<img src="'.$this->backPath.'/clear.gif" width="1" height="8" alt="" />';
+                $out .= '<span style="display: block; width: 1px; height: 8px"></span>';
             } else {
                 for ($a = 0; $a < $h; ++$a) {
                     if (!$a) {
@@ -1148,10 +1149,10 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 }
 
                 // "Edit Perms" link:
-                if ($table == 'tx_commerce_categories' && $backendUser->check('modules', 'txcommerceM1_permission')) {
+                if ($table == 'tx_commerce_categories' && $backendUser->check('modules', 'commerce_permission')) {
                     $cells['perms'] = '<a href="'.
                         htmlspecialchars(
-                            BackendUtility::getModuleUrl('txcommerceM1_permission').'&control[tx_commerce_categories][uid]='.$row['uid'].
+                            BackendUtility::getModuleUrl('commerce_permission').'&control[tx_commerce_categories][uid]='.$row['uid'].
                             '&return_id='.$row['uid'].'&edit=1'
                         ).
                         '">'.
@@ -1164,8 +1165,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 // "New record after" link (ONLY if the records in the table are sorted
                 // by a "sortby"-row or if default values can depend on previous record):
                 if ($tableConfig['ctrl']['sortby'] || $tableConfig['ctrl']['useColumnsForDefaultValues']) {
-                    if (
-                        // For NON-tx_commerce_categories, must have permission to edit content
+                    if (// For NON-tx_commerce_categories, must have permission to edit content
                         ($table != 'tx_commerce_categories' && ($this->calcPerms & 16))
                         // For tx_commerce_categories, must have permission to create new
                         || ($table == 'tx_commerce_categories' && ($this->calcPerms & 8))

@@ -322,7 +322,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 
         $onClickAction = 'onclick="'.htmlspecialchars(
                 'jumpToUrl('.
-                GeneralUtility::quoteJSvalue(BackendUtility::getModuleUrl('txcommerceM1_permission').'&id='.$this->id).
+                GeneralUtility::quoteJSvalue(BackendUtility::getModuleUrl('commerce_permission').'&id='.$this->id).
                 '); return false;'
             ).'"';
         // Permissions checkbox matrix:
@@ -376,7 +376,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 			<input type="submit" name="submit" value="'.$language->getLL('Save', true).'" /><input type="submit" value="'.
             $language->getLL('Abort', true).'" '.$onClickAction.' />
 			<input type="hidden" name="redirect" value="'.htmlspecialchars(
-                BackendUtility::getModuleUrl('txcommerceM1_permission').'&mode='.$this->MOD_SETTINGS['mode'].'&depth='.
+                BackendUtility::getModuleUrl('commerce_permission').'&mode='.$this->MOD_SETTINGS['mode'].'&depth='.
                 $this->MOD_SETTINGS['depth'].'&id='.(int) $this->return_id.'&lastEdited='.$this->id
             ).'" />
 			'.\TYPO3\CMS\Backend\Form\FormEngine::getHiddenTokenField('tceAction');
@@ -553,7 +553,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 
             // "Edit permissions" -icon
             if ($editPermsAllowed && $pageId) {
-                $aHref = BackendUtility::getModuleUrl('txcommerceM1_permission').'&mode='.$this->MOD_SETTINGS['mode'].'&depth='.
+                $aHref = BackendUtility::getModuleUrl('commerce_permission').'&mode='.$this->MOD_SETTINGS['mode'].'&depth='.
                     $this->MOD_SETTINGS['depth'].'&control[tx_commerce_categories][uid]='.
                     ($data['row']['_ORIG_uid'] ? $data['row']['_ORIG_uid'] : $pageId).
                     '&return_id='.$this->id.'&edit=1';

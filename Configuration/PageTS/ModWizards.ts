@@ -2,10 +2,10 @@
 mod.web_list.allowedNewTables = tx_commerce_products,tx_commerce_categories
 [GLOBAL]
 
-mod.txcommerceM1_category.enableDisplayBigControlPanel = selectable
-mod.txcommerceM1_category.enableClipBoard = selectable
-mod.txcommerceM1_category.enableLocalizationView = selectable
-mod.txcommerceM1_orders.enableDisplayBigControlPanel = selectable
+mod.commerce_category.enableDisplayBigControlPanel = selectable
+mod.commerce_category.enableClipBoard = selectable
+mod.commerce_category.enableLocalizationView = selectable
+mod.commerce_category.enableDisplayBigControlPanel = selectable
 
 mod.wizards {
 	newContentElement {

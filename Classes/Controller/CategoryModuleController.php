@@ -194,7 +194,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
          */
         $dbList = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\CategoryRecordList');
         $dbList->backPath = $this->getBackPath();
-        $dbList->script = BackendUtility::getModuleUrl('txcommerceM1_category', array(), '');
+        $dbList->script = BackendUtility::getModuleUrl('commerce_category', array(), '');
 
         /**
          * Backend utility.

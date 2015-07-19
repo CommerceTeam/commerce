@@ -140,7 +140,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
          */
         $dblist = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\OrderRecordList');
         $dblist->backPath = $this->getBackPath();
-        $dblist->script = BackendUtility::getModuleUrl('txcommerceM1_orders', array(), '');
+        $dblist->script = BackendUtility::getModuleUrl('commerce_orders', array(), '');
         $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
         $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
         $dblist->returnUrl = $this->returnUrl;

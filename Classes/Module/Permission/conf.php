@@ -18,5 +18,5 @@ $MLANG['default']['tabs_images']['tab'] = '../../../Resources/Public/Icons/mod_a
 $MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_access.xml';
 
 $MCONF['access'] = 'user,group';
-$MCONF['name'] = 'txcommerceM1_permission';
+$MCONF['name'] = 'commerce_permission';
 $MCONF['navFrameScript'] = 'navigation.php';
