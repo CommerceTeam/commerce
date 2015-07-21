@@ -1,6 +1,6 @@
 <?php
 
-namespace CommerceTeam\Commerce\ViewHelpers\Navigation;
+namespace CommerceTeam\Commerce\Controller;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
-class SystemdataViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass
+class SystemdataNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 {
     /**
      * Has filter box.
@@ -49,6 +49,7 @@ class SystemdataViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass
      */
     public function initPage()
     {
+        $this->init();
         /**
          * Document template.
          *

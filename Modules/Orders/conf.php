@@ -14,9 +14,10 @@
  */
 
 $MCONF['script'] = '_DISPATCH';
-$MLANG['default']['tabs_images']['tab'] = '../../../Resources/Public/Icons/mod_access.gif';
-$MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_access.xml';
+$MLANG['default']['tabs_images']['tab'] = '../../Resources/Public/Icons/mod_orders.gif';
+$MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml';
 
 $MCONF['access'] = 'user,group';
-$MCONF['name'] = 'commerce_permission';
-$MCONF['navFrameScript'] = 'navigation.php';
+$MCONF['name'] = 'commerce_orders';
+// $MCONF['navigationComponentId'] = 'order-navframe';
+$MCONF['navFrameScript'] = '../OrdersNavigationFrame/index.php';

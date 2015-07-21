@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,5 +12,5 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-$MLANG['default']['tabs_images']['tab'] = '../../../Resources/Public/Icons/mod_main.gif';
-$MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_main.xml';
+$MCONF['script'] = '_DISPATCH';
+$MCONF['name'] = 'systemdata-navframe';

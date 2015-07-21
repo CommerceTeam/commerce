@@ -18,6 +18,8 @@ class BackendHooks
      */
     public function addJsFiles(array $configuration, &$parent)
     {
-        $parent->addJavascriptFile('../typo3conf/ext/commerce/Resources/Public/JavaScript/extjs/components/pagetree/javascript/tree.js');
+        $parent->addJavascriptFile(
+            '../typo3conf/ext/commerce/Resources/Public/JavaScript/extjs/components/pagetree/javascript/tree.js'
+        );
     }
 }

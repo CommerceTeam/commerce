@@ -1,6 +1,6 @@
 <?php
 
-namespace CommerceTeam\Commerce\ViewHelpers\Navigation;
+namespace CommerceTeam\Commerce\Controller;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -21,11 +21,11 @@ use TYPO3\CMS\Core\Http\AjaxRequestHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class \CommerceTeam\Commerce\ViewHelpers\Navigation\CategoryViewHelper.
+ * Class \CommerceTeam\Commerce\ViewHelpers\Navigation\CategoryNavigationFrameController
  *
  * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
-class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass
+class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 {
     /**
      * Category tree.
@@ -72,7 +72,9 @@ class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass
      */
     public function init($bare = false)
     {
-        $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_category.xml');
+        $this->getLanguageService()->includeLLFile(
+            'EXT:commerce/Resources/Private/Language/locallang_mod_category.xml'
+        );
 
         // Get the Category Tree
         $this->categoryTree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
@@ -88,36 +90,41 @@ class CategoryViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass
      */
     public function initPage($bare = false)
     {
+        $this->init();
+
         /**
          * Document template.
          *
          * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
          */
-        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $doc = GeneralUtility::makeInstance(
+            'TYPO3\\CMS\\Backend\\Template\\DocumentTemplate'
+        );
         $this->doc = $doc;
         $this->doc->backPath = $this->getBackPath();
         $this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');
         $this->doc->showFlashMessages = false;
 
         $this->doc->inDocStyles .= '
-		#typo3-pagetree .x-tree-root-ct ul {
-			padding-left: 19px;
-			margin: 0;
-		}
+        #typo3-pagetree .x-tree-root-ct ul {
+            padding-left: 19px;
+            margin: 0;
+        }
 
-		.x-tree-root-ct ul li.expanded ul {
-			background: url("'.$this->getBackPath().'sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
-		}
+        .x-tree-root-ct ul li.expanded ul {
+            background: url("' . $this->getBackPath() .
+                'sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
+        }
 
-		.x-tree-root-ct ul li.expanded.last ul {
-			background: none;
-		}
+        .x-tree-root-ct ul li.expanded.last ul {
+            background: none;
+        }
 
-		.x-tree-root-ct li {
-			clear: left;
-			margin-bottom: 0;
-		}
-		';
+        .x-tree-root-ct li {
+            clear: left;
+            margin-bottom: 0;
+        }
+        ';
 
         $currentSubScript = '';
         if ($this->currentSubScript) {

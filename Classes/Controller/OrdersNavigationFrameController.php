@@ -1,6 +1,6 @@
 <?php
 
-namespace CommerceTeam\Commerce\ViewHelpers\Navigation;
+namespace CommerceTeam\Commerce\Controller;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class OrdersViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass
+class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 {
     /**
      * Page tree.
@@ -120,6 +120,7 @@ class OrdersViewHelper extends \TYPO3\CMS\Backend\Module\BaseScriptClass
      */
     public function initPage()
     {
+        $this->init();
         /**
          * Document template.
          *
