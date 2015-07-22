@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Controller;
 
 /*
@@ -35,59 +34,81 @@ class SystemdataNavigationFrameController extends \TYPO3\CMS\Backend\Module\Base
     protected $hasFilterBox = false;
 
     /**
+     * Constructor
+     *
+     * @return self
+     */
+    public function __construct()
+    {
+        $GLOBALS['SOBE'] = $this;
+        $this->init();
+    }
+
+    /**
      * Initialization.
+     *
+     * @return void
      */
     public function init()
     {
-        $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
+        $this->getLanguageService()->includeLLFile(
+            'EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml'
+        );
 
-        $this->id = reset(\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Commerce', 'commerce'));
+        $this->id = reset(\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders(
+            'Commerce',
+            'commerce'
+        ));
     }
 
     /**
      * Initializes the Page.
+     *
+     * @return void
      */
     public function initPage()
     {
-        $this->init();
         /**
          * Document template.
          *
          * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
          */
-        $doc = GeneralUtility::makeInstance('\TYPO3\CMS\Backend\Template\DocumentTemplate');
+        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
         $this->doc = $doc;
         $this->doc->backPath = $this->getBackPath();
         $this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_systemdata_navigation.html');
         $this->doc->showFlashMessages = false;
 
         $this->doc->JScode = $this->doc->wrapScriptTags('
-			function jumpTo(func, linkObj) {
-				var theUrl = top.TS.PATH_typo3 + top.currentSubScript+"&SET[function]=" + func;
+            function jumpTo(func, linkObj) {
+                var theUrl = top.TS.PATH_typo3 + top.currentSubScript + "&SET[function]=" + func;
 
-				if (top.condensedMode)	{
-					top.content.document.location=theUrl;
-				} else {
-					parent.list_frame.document.location=theUrl;
-				}
+                if (top.condensedMode) {
+                    top.content.document.location = theUrl;
+                } else {
+                    parent.list_frame.document.location = theUrl;
+                }
 
-				'.(!$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) {linkObj.blur();}').'
-				return false;
-			}
-		');
+                ' . (!$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) {linkObj.blur();}') . '
+
+                return false;
+            }
+        ');
 
         $this->doc->postCode = $this->doc->wrapScriptTags('
-			script_ended = 1;
-			if (top.fsMod) {
-				top.fsMod.recentIds["web"] = '.(int) $this->id.';
-			}
-		');
+            script_ended = 1;
+            if (top.fsMod) {
+                top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
+            }
+        ');
 
-        $this->doc->bodyTagId = 'typo3-pagetree';
+        $this->doc->bodyTagId = 'systemdata-navframe';
     }
 
     /**
      * Main method.
+     *
+     * @return void
      */
     public function main()
     {
@@ -111,7 +132,9 @@ class SystemdataNavigationFrameController extends \TYPO3\CMS\Backend\Module\Base
 
         // put it all together
         $this->content = $this->doc->startPage(
-            $this->getLanguageService()->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title')
+            $this->getLanguageService()->sl(
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title'
+            )
         );
         $this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers, $subparts);
         $this->content .= $this->doc->endPage();
@@ -120,6 +143,8 @@ class SystemdataNavigationFrameController extends \TYPO3\CMS\Backend\Module\Base
 
     /**
      * Outputting the accumulated content to screen.
+     *
+     * @return void
      */
     public function printContent()
     {
@@ -140,9 +165,7 @@ class SystemdataNavigationFrameController extends \TYPO3\CMS\Backend\Module\Base
         );
 
         // Refresh
-        $buttons['refresh'] = '<a href="'.htmlspecialchars(GeneralUtility::getIndpEnv('REQUEST_URI')).'">'.
-            \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh').
-            '</a>';
+        $buttons['refresh'] = '';
 
         // CSH
         $buttons['csh'] = str_replace(
@@ -153,6 +176,7 @@ class SystemdataNavigationFrameController extends \TYPO3\CMS\Backend\Module\Base
 
         return $buttons;
     }
+
 
     /**
      * Get back path.

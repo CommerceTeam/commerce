@@ -216,11 +216,11 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 
             // CSH
         if (!strlen($this->id)) {
-            $buttons['csh'] = BackendUtility::cshItem('_MOD_web_txcommerceM1', 'list_module_noId', $this->getBackPath(), '', true);
+            $buttons['csh'] = BackendUtility::cshItem('_MOD_web_commerce', 'list_module_noId', $this->getBackPath(), '', true);
         } elseif (!$this->id) {
-            $buttons['csh'] = BackendUtility::cshItem('_MOD_web_txcommerceM1', 'list_module_root', $this->getBackPath(), '', true);
+            $buttons['csh'] = BackendUtility::cshItem('_MOD_web_commerce', 'list_module_root', $this->getBackPath(), '', true);
         } else {
-            $buttons['csh'] = BackendUtility::cshItem('_MOD_web_txcommerceM1', 'list_module', $this->getBackPath(), '', true);
+            $buttons['csh'] = BackendUtility::cshItem('_MOD_web_commerce', 'list_module', $this->getBackPath(), '', true);
         }
 
         // New

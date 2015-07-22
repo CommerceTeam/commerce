@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Controller;
 
 /*
@@ -77,8 +76,20 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
     public $doc;
 
     /**
-     * Initialiation of the class.
+     * Constructor
      *
+     * @return self
+     */
+    public function __construct()
+    {
+        $GLOBALS['SOBE'] = $this;
+        $this->init();
+    }
+
+    /**
+     * Initiation of the class.
+     *
+     * @return void
      * @todo Check with User Permissions
      */
     public function init()
@@ -117,10 +128,11 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
 
     /**
      * Initializes the Page.
+     *
+     * @return void
      */
     public function initPage()
     {
-        $this->init();
         /**
          * Document template.
          *
@@ -132,90 +144,104 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
         $this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');
         $this->doc->showFlashMessages = false;
 
-        $subScript = $this->currentSubScript ? 'top.currentSubScript=unescape("'.rawurlencode($this->currentSubScript).'");' : '';
-        $highlight = $this->doHighlight ? 'hilight_row("txcommerceM1",highLightID);' : '';
+        $subScript = $this->currentSubScript ? 'top.currentSubScript=unescape("' .
+            rawurlencode($this->currentSubScript) . '");' : '';
+        $highlight = $this->doHighlight ? 'hilight_row("commerce", highLightID);' : '';
         $formstyle = !$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) { linkObj.blur(); }';
 
         // Setting JavaScript for menu.
         $this->doc->JScode = $this->doc->wrapScriptTags(
-            $subScript.'
+            $subScript . '
 
-				// Function, loading the list frame from navigation tree:
-			function jumpTo(id, linkObj, highLightID) {
-				var theUrl = top.TS.PATH_typo3 + top.currentSubScript + "&id=" + id;
+                // Function, loading the list frame from navigation tree:
+            function jumpTo(id, linkObj, highLightID) {
+                var theUrl = top.TS.PATH_typo3 + top.currentSubScript + "&id=" + id;
 
-				if (top.condensedMode) {
-					top.content.document.location = theUrl;
-				} else {
-					parent.list_frame.document.location = theUrl;
-				}
+                if (top.condensedMode) {
+                    top.content.document.location = theUrl;
+                } else {
+                    parent.list_frame.document.location = theUrl;
+                }
 
-				'.$highlight.'
-				'.$formstyle.'
-				return false;
-			}
+                ' . $highlight . '
+                ' . $formstyle . '
+                return false;
+            }
 
-			// Call this function, refresh_nav(), from another script in the backend if you
-			// want to refresh the navigation frame (eg. after having changed a page title or moved pages etc.)
-			// See BackendUtility::getSetUpdateSignal()
-			function refresh_nav() {
-				window.setTimeout("_refresh_nav();", 0);
-			}
-			function _refresh_nav() {
-				document.location="'.$this->pagetree->thisScript.'?unique='.time().'";
-			}
+            // Call this function, refresh_nav(), from another script in the backend if you
+            // want to refresh the navigation frame (eg. after having changed a page title or moved pages etc.)
+            // See BackendUtility::getSetUpdateSignal()
+            function refresh_nav() {
+                window.setTimeout("_refresh_nav();", 0);
+            }
+            function _refresh_nav() {
+                document.location="' . $this->pagetree->thisScript . '?unique=' . $GLOBALS['EXEC_TIME'] . '";
+            }
 
-				// Highlighting rows in the page tree:
-			function hilight_row(frameSetModule, highLightID) {
-					// Remove old:
-				theObj = document.getElementById(top.fsMod.navFrameHighlightedID[frameSetModule] + "_0");
+                // Highlighting rows in the page tree:
+            function hilight_row(frameSetModule, highLightID) {
+                    // Remove old:
+                theObj = document.getElementById(top.fsMod.navFrameHighlightedID[frameSetModule] + "_0");
 
-				if (theObj) {
-					theObj.style.backgroundColor = "";
-				}
+                if (theObj) {
+                    theObj.style.backgroundColor = "";
+                }
 
-					// Set new:
-				top.fsMod.navFrameHighlightedID[frameSetModule] = highLightID;
-				theObj = document.getElementById(highLightID + "_0");
+                    // Set new:
+                top.fsMod.navFrameHighlightedID[frameSetModule] = highLightID;
+                theObj = document.getElementById(highLightID + "_0");
 
-				if (theObj) {
-					theObj.style.backgroundColor = "'.GeneralUtility::modifyHTMLColorAll($this->doc->bgColor, -20).'";
-				}
-			}
+                if (theObj) {
+                    theObj.style.backgroundColor = "' . GeneralUtility::modifyHTMLColorAll($this->doc->bgColor, -20) .
+            '";
+                }
+            }
 
-			'.($this->cMR ? "jumpTo(top.fsMod.recentIds['web'], '');" : '').';
-		');
+            ' . ($this->cMR ? "jumpTo(top.fsMod.recentIds['web'], '');" : '') . ';
+        '
+        );
 
         $this->doc->bodyTagId = 'typo3-pagetree';
     }
 
     /**
      * Main function, rendering the browsable page tree.
+     *
+     * @return void
      */
     public function main()
     {
         // Produce browse-tree:
         $tree = $this->pagetree->getBrowsableTree();
+        // Outputting page tree:
+        $this->content .= $tree;
 
         $docHeaderButtons = $this->getButtons();
 
         $markers = array(
             'IMG_RESET' => '',
             'WORKSPACEINFO' => '',
-            'CONTENT' => $tree,
+            'CONTENT' => $this->content,
         );
 
-            // Build the <body> for the module
+        // Build the <body> for the module
         $this->content = $this->doc->startPage(
-            $this->getLanguageService()->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_orders.navigation_title')
+            $this->getLanguageService()->sl(
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_orders.navigation_title'
+            )
         );
-        $this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers);
+
+        $subparts = array();
+        // Build the <body> for the module
+        $this->content .= $this->doc->moduleBody(array(), $docHeaderButtons, $markers, $subparts);
         $this->content .= $this->doc->endPage();
         $this->content = $this->doc->insertStylesAndJS($this->content);
     }
 
     /**
      * Outputting the accumulated content to screen.
+     *
+     * @return void
      */
     public function printContent()
     {
@@ -236,8 +262,8 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
         );
 
         // Refresh
-        $buttons['refresh'] = '<a href="'.htmlspecialchars(GeneralUtility::getIndpEnv('REQUEST_URI')).'">'.
-            \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh').
+        $buttons['refresh'] = '<a href="' . htmlspecialchars(GeneralUtility::getIndpEnv('REQUEST_URI')) . '">' .
+            \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh') .
             '</a>';
 
         // CSH
@@ -252,12 +278,14 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
 
     /**
      * Getting temporary DB mount.
+     *
+     * @return void
      */
     protected function initializeTemporaryDatabaseMount()
     {
         $backendUser = $this->getBackendUser();
 
-            // Set/Cancel Temporary DB Mount:
+        // Set/Cancel Temporary DB Mount:
         if (strlen($this->setTemporaryDatabaseMount)) {
             $set = max($this->setTemporaryDatabaseMount, 0);
             // Setting...:
@@ -276,7 +304,10 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
         // real mount points, then set it temporarily:
         if ($temporaryMountPoint > 0 && $backendUser->isInWebMount($temporaryMountPoint)) {
             $this->pagetree->MOUNTS = array($temporaryMountPoint);
-            $this->activeTemporaryMountPoint = BackendUtility::readPageAccess($temporaryMountPoint, $backendUser->getPagePermsClause(1));
+            $this->activeTemporaryMountPoint = BackendUtility::readPageAccess(
+                $temporaryMountPoint,
+                $backendUser->getPagePermsClause(1)
+            );
         }
     }
 
@@ -290,6 +321,7 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
         // Setting temporary mount point ID:
         $this->getBackendUser()->setAndSaveSessionData('pageTree_temporaryMountPoint_orders', (int) $pageId);
     }
+
 
     /**
      * Get backend user.

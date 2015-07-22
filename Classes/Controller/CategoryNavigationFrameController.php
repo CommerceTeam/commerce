@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Controller;
 
 /*
@@ -56,9 +55,22 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
     protected $hasFilterBox;
 
     /**
+     * Constructor
+     *
+     * @return self
+     */
+    public function __construct()
+    {
+        $GLOBALS['SOBE'] = $this;
+        $this->init();
+    }
+
+    /**
      * Setter for currentSubScript.
      *
      * @param string $currentSubScript Current sub script
+     *
+     * @return void
      */
     public function setCurrentSubScript($currentSubScript)
     {
@@ -69,6 +81,8 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
      * Initializes the Tree.
      *
      * @param bool $bare If TRUE only categories get rendered
+     *
+     * @return void
      */
     public function init($bare = false)
     {
@@ -87,19 +101,17 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
      * Initializes the Page.
      *
      * @param bool $bare If TRUE only categories get rendered
+     *
+     * @return void
      */
     public function initPage($bare = false)
     {
-        $this->init();
-
         /**
          * Document template.
          *
          * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
          */
-        $doc = GeneralUtility::makeInstance(
-            'TYPO3\\CMS\\Backend\\Template\\DocumentTemplate'
-        );
+        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
         $this->doc = $doc;
         $this->doc->backPath = $this->getBackPath();
         $this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');
@@ -128,57 +140,58 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
 
         $currentSubScript = '';
         if ($this->currentSubScript) {
-            $currentSubScript = 'top.currentSubScript = unescape("'.rawurlencode($this->currentSubScript).'");';
+            $currentSubScript = 'top.currentSubScript = unescape("' . rawurlencode($this->currentSubScript) . '");';
         }
 
         $doHighlight = '';
         if ($this->doHighlight) {
-            $doHighlight = 'hilight_row("row" + top.fsMod.recentIds["txcommerceM1"], highLightID);';
+            $doHighlight = 'hilight_row("row" + top.fsMod.recentIds["commerce"], highLightID);';
         }
 
         $formStyle = (!$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) { linkObj.blur(); }');
 
         // Setting JavaScript for menu.
         $this->doc->JScode = $this->doc->wrapScriptTags(
-            $currentSubScript.'
+            $currentSubScript . '
 
-			function jumpTo(id, linkObj, highLightID, script) {
-				var theUrl;
+            function jumpTo(id, linkObj, highLightID, script) {
+                var theUrl;
 
-				if (script) {
-					theUrl = top.TS.PATH_typo3 + script;
-				} else {
-					theUrl = top.TS.PATH_typo3 + top.currentSubScript;
-				}
+                if (script) {
+                    theUrl = top.TS.PATH_typo3 + script;
+                } else {
+                    theUrl = top.TS.PATH_typo3 + top.currentSubScript;
+                }
 
-				theUrl = theUrl + id;
+                theUrl = theUrl + id;
 
-				if (top.condensedMode) {
-					top.content.document.location = theUrl;
-				} else {
-					parent.list_frame.document.location = theUrl;
-				}
-				'.$doHighlight.'
-				'.$formStyle.'
-				return false;
-			}
+                if (top.condensedMode) {
+                    top.content.document.location = theUrl;
+                } else {
+                    parent.list_frame.document.location = theUrl;
+                }
+                ' . $doHighlight . '
+                ' . $formStyle . '
+                return false;
+            }
 
-			// Call this function, refresh_nav(), from another script in the backend
-			// if you want to refresh the navigation frame (eg. after having changed
-			// a page title or moved pages etc.)
-			// See BackendUtility::getSetUpdateSignal()
-			function refresh_nav() {
-				window.setTimeout(\'Tree.refresh();\', 0);
-			}
-		'
+            // Call this function, refresh_nav(), from another script in the backend
+            // if you want to refresh the navigation frame (eg. after having changed
+            // a page title or moved pages etc.)
+            // See BackendUtility::getSetUpdateSignal()
+            function refresh_nav() {
+                window.setTimeout(\'Tree.refresh();\', 0);
+            }
+
+            '
         );
 
         $this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
         $this->doc->loadJavascriptLib('js/tree.js');
         $this->doc->JScode .= $this->doc->wrapScriptTags('
-			Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse'.
-            ($bare ? 'WithoutProduct' : '').'";
-		');
+            Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse' .
+            ($bare ? 'WithoutProduct' : '') . '";
+        ');
 
         // Adding javascript code for AJAX (prototype), drag&drop and the
         // pagetree as well as the click menu code
@@ -189,35 +202,33 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
 
     /**
      * Main method.
+     *
+     * @return void
      */
     public function main()
     {
-        $language = $this->getLanguageService();
-
         // Check if commerce needs to be updated.
         if ($this->isUpdateNecessary()) {
-            $tree = $language->getLL('ext.update');
+            $tree = $this->getLanguageService()->getLL('ext.update');
         } else {
             // Get the browseable Tree
             $tree = $this->categoryTree->getBrowseableTree();
         }
+        // Outputting page tree:
+        $this->content .= $tree;
 
         $docHeaderButtons = $this->getButtons();
 
         $markers = array(
-            'IMG_RESET' => '',
-            'WORKSPACEINFO' => '',
-            'CONTENT' => $tree,
+            'CONTENT' => $this->content,
         );
 
         $subparts = array();
-        if (!$this->hasFilterBox) {
-            $subparts['###SECOND_ROW###'] = '';
-        }
-
         // Build the <body> for the module
         $this->content = $this->doc->startPage(
-            $language->sl('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title')
+            $this->getLanguageService()->sl(
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title'
+            )
         );
         $this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers, $subparts);
         $this->content .= $this->doc->endPage();
@@ -226,6 +237,8 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
 
     /**
      * Print content.
+     *
+     * @return void
      */
     public function printContent()
     {
@@ -246,8 +259,8 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
         );
 
         // Refresh
-        $buttons['refresh'] = '<a href="'.htmlspecialchars(GeneralUtility::getIndpEnv('REQUEST_URI')).'">'.
-            \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh').'</a>';
+        $buttons['refresh'] = '<a href="' . htmlspecialchars(GeneralUtility::getIndpEnv('REQUEST_URI')) . '">' .
+            \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh') . '</a>';
 
         // CSH
         $buttons['csh'] = str_replace(
@@ -260,28 +273,13 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
     }
 
     /**
-     * Checks if an update of the commerce extension is necessary.
-     *
-     * @return bool
-     */
-    protected function isUpdateNecessary()
-    {
-        /**
-         * Updater.
-         *
-         * @var \CommerceTeam\Commerce\Utility\UpdateUtility
-         */
-        $updater = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\UpdateUtility');
-
-        return $updater->access();
-    }
-
-    /**
      * Makes the AJAX call to expand or collapse the categorytree.
      * Called by typo3/ajax.php.
      *
      * @param array              $params  Additional parameters (not used here)
      * @param AjaxRequestHandler $ajaxObj Ajax object
+     *
+     * @return void
      */
     public function ajaxExpandCollapse(array $params, AjaxRequestHandler &$ajaxObj)
     {
@@ -300,6 +298,8 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
      *
      * @param array              $params  Additional parameters (not used here)
      * @param AjaxRequestHandler $ajaxObj Ajax object
+     *
+     * @return void
      */
     public function ajaxExpandCollapseWithoutProduct(array $params, AjaxRequestHandler &$ajaxObj)
     {
@@ -327,6 +327,24 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
 
         return explode('_', $parameter);
     }
+
+    /**
+     * Checks if an update of the commerce extension is necessary.
+     *
+     * @return bool
+     */
+    protected function isUpdateNecessary()
+    {
+        /**
+         * Updater.
+         *
+         * @var \CommerceTeam\Commerce\Utility\UpdateUtility
+         */
+        $updater = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\UpdateUtility');
+
+        return $updater->access();
+    }
+
 
     /**
      * Get back path.
