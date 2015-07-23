@@ -207,7 +207,7 @@ class Attribute extends AbstractEntity
         // values wich are not possible at all for this product
         if (is_object($product)) {
             $tAttributeValues = array();
-            $productSelectAttributeValues = $product->get_selectattribute_matrix(false, array($this->uid));
+            $productSelectAttributeValues = $product->getSelectattributeMatrix(false, array($this->uid));
             foreach ($attributeValues as $attributeKey => $attributeValue) {
                 foreach ($productSelectAttributeValues[$this->uid]['values'] as $selectAttributeValue) {
                     if ($attributeValue->getUid() == $selectAttributeValue['uid']) {
