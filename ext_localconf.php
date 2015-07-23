@@ -154,18 +154,26 @@ if (TYPO3_MODE == 'BE') {
     // CLI Script configuration
     // Add statistic task
     /* @noinspection PhpUndefinedVariableInspection */
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['CommerceTeam\\Commerce\\Task\\StatisticTask'] = array(
-        'extension' => $_EXTKEY,
-        'title' => 'LLL:EXT:' . $_EXTKEY .
-            '/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.name',
-        'description' => 'LLL:EXT:' . $_EXTKEY .
-            '/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.description',
-        'additionalFields' => 'CommerceTeam\\Commerce\\Task\\StatisticTaskAdditionalFieldProvider',
-    );
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['CommerceTeam\\Commerce\\Task\\StatisticTask'] =
+        array(
+            'extension' => $_EXTKEY,
+            'title' => 'LLL:EXT:' . $_EXTKEY .
+                '/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.name',
+            'description' => 'LLL:EXT:' . $_EXTKEY .
+                '/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.description',
+            'additionalFields' => 'CommerceTeam\\Commerce\\Task\\StatisticTaskAdditionalFieldProvider',
+        );
 }
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/backend.php']['renderPreProcess']['commerce'] =
     'CommerceTeam\\Commerce\\Hook\\BackendHooks->addJsFiles';
+ \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
+     'TYPO3.Components.SystemdataNavframe.DataProvider',
+     'CommerceTeam\\Commerce\\Tree\\Pagetree\\ExtdirectSystemdataNavigationProvider',
+     'commerce',
+     'user,group'
+ );
+
 
 // Add linkhandler for "commerce"
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typolinkLinkHandler']['commerce'] =
@@ -196,7 +204,9 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 
 // Adding some hooks for tx_commerce_article_processing
 // As basic hook for calculation the delivery_costs
-if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost'])) {
+if (empty(
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost']
+)) {
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost'] =
         'EXT:commerce/Classes/Hook/ArticleHooks.php:CommerceTeam\\Commerce\\Hook\\ArticleHooks';
 }

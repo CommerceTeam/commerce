@@ -117,11 +117,11 @@ if (TYPO3_MODE == 'BE') {
     );
 
     // Systemdata navigation frame
-    /*\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent(
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent(
         'commerce',
         'systemdata-navframe',
         'commerce'
-    );*/
+    );
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModulePath(
         'systemdata-navframe',
         PATH_TXCOMMERCE . 'Modules/SystemdataNavigationFrame/'

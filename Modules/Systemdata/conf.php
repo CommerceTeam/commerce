@@ -6,5 +6,5 @@ $MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/local
 
 $MCONF['access'] = 'user,group';
 $MCONF['name'] = 'commerce_systemdata';
-// $MCONF['navigationComponentId'] = 'systemdata-navframe';
-$MCONF['navFrameScript'] = '../SystemdataNavigationFrame/index.php';
+$MCONF['navigationComponentId'] = 'systemdata-navframe';
+//$MCONF['navFrameScript'] = '../SystemdataNavigationFrame/index.php';
