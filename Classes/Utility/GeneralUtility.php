@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Utility;
 
 /*
@@ -16,6 +15,7 @@ namespace CommerceTeam\Commerce\Utility;
  */
 
 use CommerceTeam\Commerce\Factory\SettingsFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility as CoreGeneralUtility;
 
 /**
  * Misc COMMERCE functions.
@@ -36,25 +36,28 @@ class GeneralUtility
     public static function removeXSSStripTagsArray($input)
     {
         /*
-         * In Some cases this function is called with an empty variable, therfore
-         * check the Value and the type
+         * In Some cases this function is called with an empty variable, there
+         * for check the Value and the type
          */
         if (!isset($input)) {
             return null;
         }
+
         if (is_bool($input)) {
             return $input;
         }
+
         if (is_string($input)) {
-            return (string) \TYPO3\CMS\Core\Utility\GeneralUtility::removeXSS(strip_tags($input));
+            return (string) CoreGeneralUtility::removeXSS(strip_tags($input));
         }
+
         if (is_array($input)) {
             $returnValue = array();
             foreach ($input as $key => $value) {
                 if (is_array($value)) {
                     $returnValue[$key] = self::removeXSSStripTagsArray($value);
                 } else {
-                    $returnValue[$key] = \TYPO3\CMS\Core\Utility\GeneralUtility::removeXSS(strip_tags($value));
+                    $returnValue[$key] = CoreGeneralUtility::removeXSS(strip_tags($value));
                 }
             }
 
@@ -71,32 +74,42 @@ class GeneralUtility
      */
     public static function initializeFeUserBasket()
     {
-        $feUser = self::getFrontendUser();
         $basket = self::getBasket();
 
-        $settingsFactory = SettingsFactory::getInstance();
-
         if (!is_object($basket)) {
-            $commerceBasketIdKey = 'commerceBasketId-'.self::getBasketStoragePid();
-            $basketId = $feUser->getKey('ses', $commerceBasketIdKey);
-            $useCookieAsBasketIdFallback = $settingsFactory->getExtConf('useCookieAsBasketIdFallback');
+            $feUser = self::getFrontendUser();
 
-            if (empty($basketId) && $useCookieAsBasketIdFallback && $_COOKIE[$commerceBasketIdKey]) {
+            $commerceBasketIdKey = 'commerceBasketId-' . self::getBasketStoragePid();
+
+            $basketId = $feUser->getKey('ses', $commerceBasketIdKey);
+
+            $useCookieAsBasketIdFallback = SettingsFactory::getInstance()->getExtConf('useCookieAsBasketIdFallback');
+            if (empty($basketId) && $useCookieAsBasketIdFallback && isset($_COOKIE[$commerceBasketIdKey])) {
                 $basketId = $_COOKIE[$commerceBasketIdKey];
             }
 
             if (empty($basketId)) {
-                $basketId = md5($feUser->id.':'.rand(0, PHP_INT_MAX));
+                $basketId = md5($feUser->id . ':' . rand(0, PHP_INT_MAX));
                 $feUser->setKey('ses', $commerceBasketIdKey, $basketId);
                 self::setCookie($basketId);
             }
 
-            $basket = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Basket');
+            /**
+             * Basket
+             *
+             * @var \CommerceTeam\Commerce\Domain\Model\Basket $basket
+             */
+            $basket = CoreGeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Basket');
             $basket->setSessionId($basketId);
             $basket->loadData();
             $feUser->tx_commerce_basket = $basket;
 
-            if ($useCookieAsBasketIdFallback && !$_COOKIE[$commerceBasketIdKey]) {
+            if ($useCookieAsBasketIdFallback
+                && (
+                    !isset($_COOKIE[$commerceBasketIdKey])
+                    || !$_COOKIE[$commerceBasketIdKey]
+                )
+            ) {
                 self::setCookie($basketId);
             }
         }
@@ -110,7 +123,7 @@ class GeneralUtility
     protected function setCookie($basketId)
     {
         setcookie(
-            'commerceBasketId-'.self::getBasketStoragePid(),
+            'commerceBasketId-' . self::getBasketStoragePid(),
             $basketId,
             $GLOBALS['EXEC_TIME'] + intval($GLOBALS['TYPO3_CONF_VARS']['FE']['sessionDataLifetime']),
             '/'
@@ -120,8 +133,8 @@ class GeneralUtility
     /**
      * Remove Products from list wich have no articles wich are available from Stock.
      *
-     * @param array $productUids        List of productUIDs to work onn
-     * @param int   $dontRemoveProducts Switch to show or not show articles
+     * @param array $productUids List of productUIDs to work onn
+     * @param int $dontRemoveProducts Switch to show or not show articles
      *
      * @return array Cleaned up Product array
      */
@@ -135,18 +148,18 @@ class GeneralUtility
             /**
              * Product.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Product
+             * @var \CommerceTeam\Commerce\Domain\Model\Product $product
              */
-            $productObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            $product = CoreGeneralUtility::makeInstance(
                 'CommerceTeam\\Commerce\\Domain\\Model\\Product',
                 $productUid
             );
-            $productObj->loadData();
+            $product->loadData();
 
-            if (!($productObj->hasStock())) {
+            if (!$product->hasStock()) {
                 unset($productUids[$arrayKey]);
             }
-            $productObj = null;
+            $product = null;
         }
 
         return $productUids;
@@ -156,33 +169,35 @@ class GeneralUtility
      * Remove article from product for frontendviewing, if articles
      * with no stock should not shown.
      *
-     * @param \CommerceTeam\Commerce\Domain\Model\Product $productObj         Product
-     * @param int                                         $dontRemoveArticles Switch to show or not show articles
+     * @param \CommerceTeam\Commerce\Domain\Model\Product $product Product
+     * @param int $dontRemoveArticles Switch to show or not show articles
      *
-     * @return \CommerceTeam\Commerce\Domain\Model\Product Cleaned up Productobjectt
+     * @return \CommerceTeam\Commerce\Domain\Model\Product Cleaned up product object
      */
-    public static function removeNoStockArticles(\CommerceTeam\Commerce\Domain\Model\Product $productObj, $dontRemoveArticles = 1)
-    {
+    public static function removeNoStockArticles(
+        \CommerceTeam\Commerce\Domain\Model\Product $product,
+        $dontRemoveArticles = 1
+    ) {
         if ($dontRemoveArticles == 1) {
-            return $productObj;
+            return $product;
         }
 
-        $articleUids = $productObj->getArticleUids();
-        $articles = $productObj->getArticleObjects();
+        $articleUids = $product->getArticleUids();
+        $articles = $product->getArticleObjects();
         foreach ($articleUids as $arrayKey => $articleUid) {
             /**
              * Article.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Article
+             * @var \CommerceTeam\Commerce\Domain\Model\Article $article
              */
             $article = $articles[$articleUid];
             if ($article->getStock() <= 0) {
-                $productObj->removeArticleUid($arrayKey);
-                $productObj->removeArticle($articleUid);
+                $product->removeArticleUid($arrayKey);
+                $product->removeArticle($articleUid);
             }
         }
 
-        return $productObj;
+        return $product;
     }
 
     /**
@@ -196,9 +211,9 @@ class GeneralUtility
     {
         $frontendUser = self::getFrontendUser();
         if (SettingsFactory::getInstance()->getExtConf('userSessionMd5Encrypt')) {
-            $sessionKey = md5($key.':'.$frontendUser->user['uid']);
+            $sessionKey = md5($key . ':' . $frontendUser->user['uid']);
         } else {
-            $sessionKey = $key.':'.$frontendUser->user['uid'];
+            $sessionKey = $key . ':' . $frontendUser->user['uid'];
         }
 
         $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Utility/GeneralUtility', 'generateSessionKey');
@@ -216,27 +231,27 @@ class GeneralUtility
      * Example for $mailconf.
      *
      * $mailconf = array(
-     * 	'plain' => Array (
-     * 		'content'=> ''				// plain content as string
-     * 	),
-     * 	'html' => Array (
-     * 		'content'=> '',				// html content as string
-     * 		'path' => '',
-     * 		'useHtml' => ''				// is set mail is send as multipart
-     * 	),
-     * 	'defaultCharset' => 'utf-8',	// your chartset
-     * 	'encoding' => '8-bit',			// your encoding
-     * 	'attach' => Array (),			// your attachment as array
-     * 	'alternateSubject' => '',		// is subject empty will be ste alternateSubject
-     * 	'recipient' => '', 				// comma seperate list of recipient
-     * 	'recipient_copy' => '',			// bcc
-     * 	'fromEmail' => '', 				// fromMail
-     * 	'fromName' => '',				// fromName
-     * 	'replyTo' => '', 				// replyTo
-     * 	'priority' => '3', 				// priority of your Mail
-     * 		1 = highest,
-     * 		5 = lowest,
-     * 		3 = normal
+     *     'plain' => Array (
+     *         'content'=> ''              // plain content as string
+     *     ),
+     *     'html' => Array (
+     *         'content'=> '',             // html content as string
+     *         'path' => '',
+     *         'useHtml' => ''             // is set mail is send as multipart
+     *     ),
+     *     'defaultCharset' => 'utf-8',    // your chartset
+     *     'encoding' => '8-bit',          // your encoding
+     *     'attach' => Array (),           // your attachment as array
+     *     'alternateSubject' => '',       // is subject empty will be ste alternateSubject
+     *     'recipient' => '',              // comma seperate list of recipient
+     *     'recipient_copy' => '',         // bcc
+     *     'fromEmail' => '',              // fromMail
+     *     'fromName' => '',               // fromName
+     *     'replyTo' => '',                // replyTo
+     *     'priority' => '3',              // priority of your Mail
+     *                                         1 = highest,
+     *                                         5 = lowest,
+     *                                         3 = normal
      * );
      *
      * @param array $mailconf Configuration for the mailerengine
@@ -284,7 +299,7 @@ class GeneralUtility
              *
              * @var \TYPO3\CMS\Core\Mail\MailMessage
              */
-            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Mail\\MailMessage');
+            $message = CoreGeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Mail\\MailMessage');
             $message->setCharset($mailconf['defaultCharset']);
 
             if ($mailconf['encoding'] == 'base64') {
@@ -297,13 +312,16 @@ class GeneralUtility
             $message->setTo($mailconf['recipient']);
             $message->setFrom(
                 self::validEmailList($mailconf['fromEmail']),
-                implode(' ', \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $mailconf['fromName']))
+                implode(' ', CoreGeneralUtility::trimExplode(',', $mailconf['fromName']))
             );
 
             $replyAddress = $mailconf['replyTo'] ?: $mailconf['fromEmail'];
             $replyName = implode(
                 ' ',
-                \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $mailconf['replyTo'] ? '' : $mailconf['fromName'])
+                CoreGeneralUtility::trimExplode(
+                    ',',
+                    $mailconf['replyTo'] ? '' : $mailconf['fromName']
+                )
             );
             $message->setReplyTo($replyAddress, $replyName);
 
@@ -354,11 +372,11 @@ class GeneralUtility
      */
     public static function validEmailList($list)
     {
-        $dataArray = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $list);
+        $dataArray = CoreGeneralUtility::trimExplode(',', $list);
 
         $returnArray = array();
         foreach ($dataArray as $data) {
-            if (\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail($data)) {
+            if (CoreGeneralUtility::validEmail($data)) {
                 $returnArray[] = $data;
             }
         }
@@ -402,6 +420,7 @@ class GeneralUtility
 
         return $basketStoragePid;
     }
+
 
     /**
      * Get typoscript frontend controller.

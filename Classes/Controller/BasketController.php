@@ -1108,16 +1108,6 @@ class BasketController extends BaseController
     }
 
     /**
-     * Get basket.
-     *
-     * @return \CommerceTeam\Commerce\Domain\Model\Basket
-     */
-    public function getBasket()
-    {
-        return $this->basket;
-    }
-
-    /**
      * Getter.
      *
      * @return array

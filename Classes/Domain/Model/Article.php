@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Model;
 
 /*
@@ -16,6 +15,7 @@ namespace CommerceTeam\Commerce\Domain\Model;
  */
 
 use CommerceTeam\Commerce\Factory\HookFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Main script class for the handling of articles. Normaly used
@@ -254,7 +254,7 @@ class Article extends AbstractEntity
         $return = false;
         if ($this->uid > 0) {
             $this->lang_uid = $languageUid;
-            $this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
+            $this->databaseConnection = GeneralUtility::makeInstance($this->databaseClass);
 
             $hooks = HookFactory::getHooks('Domain/Model/Article', 'init');
             foreach ($hooks as $hook) {
@@ -333,13 +333,20 @@ class Article extends AbstractEntity
          *
          * @var \TYPO3\CMS\Frontend\Page\PageRepository
          */
-        $pageSelect = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+        $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
         $whereClause = $pageSelect->enableFields('tx_commerce_attributes', '', $ignore);
 
         $database = $this->getDatabaseConnection();
 
         $setArticleAttributesResult = $database->exec_SELECT_mm_query(
-            $select, $localTable, $mmTable, $foreignTable, $whereClause, '', '', ''
+            $select,
+            $localTable,
+            $mmTable,
+            $foreignTable,
+            $whereClause,
+            '',
+            '',
+            ''
         );
 
         $attributesUidList = array();
@@ -520,7 +527,7 @@ class Article extends AbstractEntity
                      *
                      * @var \CommerceTeam\Commerce\Domain\Model\ArticlePrice
                      */
-                    $price = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                    $price = GeneralUtility::makeInstance(
                         'CommerceTeam\\Commerce\\Domain\\Model\\ArticlePrice',
                         $pricdUid
                     );
@@ -575,7 +582,7 @@ class Article extends AbstractEntity
     public function getParentProduct()
     {
         if ($this->parentProduct == null) {
-            $this->parentProduct = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            $this->parentProduct = GeneralUtility::makeInstance(
                 'CommerceTeam\\Commerce\\Domain\\Model\\Product',
                 $this->getParentProductUid()
             );
@@ -690,12 +697,14 @@ class Article extends AbstractEntity
      * Loads the data and divides comma separated images in array.
      *
      * @param bool $translationMode Translation mode
+     *
+     * @return void
      */
     public function loadData($translationMode = false)
     {
         parent::loadData($translationMode);
         $this->loadPrices($translationMode);
-        $this->images_array = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->images);
+        $this->images_array = GeneralUtility::trimExplode(',', $this->images);
         $this->calculateDeliveryCosts();
     }
 
@@ -715,7 +724,7 @@ class Article extends AbstractEntity
                 $priceData = array_shift($this->prices_uids);
                 $this->price_uid = $priceData[0];
 
-                $this->price = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                $this->price = GeneralUtility::makeInstance(
                     'CommerceTeam\\Commerce\\Domain\\Model\\ArticlePrice',
                     $this->price_uid
                 );
@@ -773,9 +782,7 @@ class Article extends AbstractEntity
         $counter = 0;
         $articlesInStock = 0;
 
-        while (is_object($serviceObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstanceService(
-            'stockHandling', $subType, $serviceChain
-        ))) {
+        while (is_object($serviceObj = GeneralUtility::makeInstanceService('stockHandling', $subType, $serviceChain))) {
             $serviceChain .= ','.$serviceObj->getServiceKey();
             if (method_exists($serviceObj, 'getStock')) {
                 $articlesInStock += (int) $serviceObj->getStock($this);
@@ -806,9 +813,7 @@ class Article extends AbstractEntity
         $available = false;
         $articlesInStock = $this->getStock($subType, $serviceChain);
 
-        while (is_object($serviceObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstanceService(
-            'stockHandling', $subType, $serviceChain
-        ))) {
+        while (is_object($serviceObj = GeneralUtility::makeInstanceService('stockHandling', $subType, $serviceChain))) {
             $serviceChain .= ','.$serviceObj->getServiceKey();
             if (method_exists($serviceObj, 'hasStock')) {
                 ++$counter;
@@ -842,9 +847,7 @@ class Article extends AbstractEntity
     {
         $counter = 0;
 
-        while (is_object($serviceObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstanceService(
-            'stockHandling', $subType, $serviceChain
-        ))) {
+        while (is_object($serviceObj = GeneralUtility::makeInstanceService('stockHandling', $subType, $serviceChain))) {
             $serviceChain .= ','.$serviceObj->getServiceKey();
             if (method_exists($serviceObj, 'reduceStock')) {
                 $serviceObj->reduceStock($wantedArticles, $this);
