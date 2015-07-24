@@ -260,7 +260,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			$this->error('init', __LINE__, 'Template File not defined in TS: ');
 		}
 
-		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
+		$this->templateCode = (string) $this->cObj->fileResource($this->conf['templateFile']);
 		if ($this->conf['useRootlineInformationToUrl']) {
 			$this->useRootlineInformationToUrl = $this->conf['useRootlineInformationToUrl'];
 		}

@@ -723,8 +723,12 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 		} else {
 			$templateMarker[] = '###' . strtoupper($this->conf['templateMarker.'][$viewKind . '_productArticleList']) . '###';
 			$templateMarker[] = '###' . strtoupper($this->conf['templateMarker.'][$viewKind . '_productArticleList2']) . '###';
-			$templateMarkerNostock[] = '###' . strtoupper($this->conf['templateMarker.'][$viewKind . '_productArticleList']) . '_NOSTOCK###';
-			$templateMarkerNostock[] = '###' . strtoupper($this->conf['templateMarker.'][$viewKind . '_productArticleList2']) . '_NOSTOCK###';
+			$templateMarkerNostock[] = '###' . strtoupper(
+				$this->conf['templateMarker.'][$viewKind . '_productArticleList']
+			) . '_NOSTOCK###';
+			$templateMarkerNostock[] = '###' . strtoupper(
+				$this->conf['templateMarker.'][$viewKind . '_productArticleList2']
+			) . '_NOSTOCK###';
 		}
 
 		$content = '';

@@ -1398,7 +1398,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 	public function getAddress($addressType) {
 		$typeLower = strtolower($addressType);
 
-		$data = $this->parseRawData($this->sessionData[$typeLower], $this->conf[$typeLower . '.']['sourceFields.']);
+		$data = $this->parseRawData((array) $this->sessionData[$typeLower], (array) $this->conf[$typeLower . '.']['sourceFields.']);
 
 		if (is_array($this->sessionData[$typeLower]) && (count($this->sessionData[$typeLower]) > 0) && is_array($data)) {
 			$addressArray = array();
@@ -2601,7 +2601,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		if ($orderData['cust_deliveryaddress']) {
 			$data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = ' . (int) $orderData['cust_deliveryaddress']);
 			if (is_array($data)) {
-				$data = $this->parseRawData($data, $this->conf['delivery.']['sourceFields.']);
+				$data = $this->parseRawData($data, (array) $this->conf['delivery.']['sourceFields.']);
 				$deliveryAdress = $this->makeAdressView($data, '###DELIVERY_ADDRESS###');
 			}
 		}
@@ -2612,7 +2612,7 @@ class Tx_Commerce_Controller_CheckoutController extends Tx_Commerce_Controller_B
 		if ($orderData['cust_invoice']) {
 			$data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = ' . (int) $orderData['cust_invoice']);
 			if (is_array($data)) {
-				$data = $this->parseRawData($data, $this->conf['billing.']['sourceFields.']);
+				$data = $this->parseRawData($data, (array) $this->conf['billing.']['sourceFields.']);
 				$billingAdress = $this->makeAdressView($data, '###BILLING_ADDRESS###');
 				$markerArray['###CUST_NAME###'] = $data['NAME'];
 			}
