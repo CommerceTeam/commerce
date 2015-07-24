@@ -878,7 +878,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 				$artId = array_shift($product->getArticlesByAttributeArray($sortedAttributeArray));
 				$attCode = '';
 				if (is_array($attributeMatrix)) {
-					$getVarList = array('catUid','showUid','pointer');
+					$getVarList = array('showUid', 'catUid', 'pointer');
 					$getVars = array();
 					foreach ($getVarList as $getVar) {
 						if (isset($this->piVars[$getVar])) {
@@ -887,8 +887,18 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 					}
 					// Makes pi1 a user int so form values are updated as one selects an attribute
 					$getVars['commerce_pi1_user_int'] = 1;
-					$attCode = '<form name="attList_' . $product->getUid() . '" id="attList_' . $product->getUid() . '" action="' .
-							$this->pi_getPageLink($GLOBALS['TSFE']->id, '_self', $getVars) . '#att"  method="post">' .
+
+					$actionUrl = $this->cObj->typoLink_URL(
+						array(
+							'parameter' => $GLOBALS['TSFE']->id,
+							'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $getVars),
+							'useCacheHash' => 1,
+							'section' => '#attList_' . $product->getUid(),
+						)
+					);
+
+					$attCode = '<form name="attList_' . $product->getUid() . '" id="attList_' . $product->getUid() .
+						'" action="' . $actionUrl . '"  method="post">' .
 						'<input type="hidden" name="' . $this->prefixId . '[changedProductUid]" value="' . $product->getUid() . '" />' .
 						'<input type="hidden" name="' . $this->prefixId . '[attList_' . $product->getUid() .
 							'_changed]" id="attList_' . $product->getUid() . '_changed" value="1" />' .
