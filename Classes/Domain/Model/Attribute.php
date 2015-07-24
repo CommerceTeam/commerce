@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Model;
 
 /*
@@ -114,7 +113,7 @@ class Attribute extends AbstractEntity
     /**
      * Constructor class, basically calls init.
      *
-     * @param int $uid         Attribute uid
+     * @param int $uid Attribute uid
      * @param int $languageUid Language uid
      *
      * @return self
@@ -129,7 +128,7 @@ class Attribute extends AbstractEntity
     /**
      * Constructor class, basically calls init.
      *
-     * @param int $uid         Uid or attribute
+     * @param int $uid Uid or attribute
      * @param int $languageUid Language uid, default 0
      *
      * @return bool
@@ -208,6 +207,11 @@ class Attribute extends AbstractEntity
         if (is_object($product)) {
             $tAttributeValues = array();
             $productSelectAttributeValues = $product->getSelectattributeMatrix(false, array($this->uid));
+            /**
+             * Attribute value.
+             *
+             * @var \CommerceTeam\Commerce\Domain\Model\AttributeValue $attributeValue
+             */
             foreach ($attributeValues as $attributeKey => $attributeValue) {
                 foreach ($productSelectAttributeValues[$this->uid]['values'] as $selectAttributeValue) {
                     if ($attributeValue->getUid() == $selectAttributeValue['uid']) {
@@ -280,7 +284,7 @@ class Attribute extends AbstractEntity
                 /**
                  * Attribute value.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\AttributeValue
+                 * @var \CommerceTeam\Commerce\Domain\Model\AttributeValue $attributeValue
                  */
                 $attributeValue = $this->attribute_values[$uid];
                 $result = $attributeValue->getValue();
@@ -333,7 +337,7 @@ class Attribute extends AbstractEntity
             /**
              * Attribute.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Attribute
+             * @var \CommerceTeam\Commerce\Domain\Model\Attribute $parent
              */
             $parent = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(get_class($this));
             $parent->init($this->parent, $this->lang_uid);

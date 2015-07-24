@@ -49,9 +49,11 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
      */
     public function __construct()
     {
+        $GLOBALS['SOBE'] = $this;
         parent::__construct();
         $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_perm.xlf');
         $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_access.xml');
+        $this->init();
     }
 
     /**
@@ -438,7 +440,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
         /**
          * Category tree.
          *
-         * @var \CommerceTeam\Commerce\Tree\CategoryTree
+         * @var \CommerceTeam\Commerce\Tree\CategoryTree $tree
          */
         $tree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
         $tree->setBare();
@@ -658,7 +660,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
         /**
          * Category tree.
          *
-         * @var \CommerceTeam\Commerce\Tree\CategoryTree
+         * @var \CommerceTeam\Commerce\Tree\CategoryTree $tree
          */
         $tree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
         $tree->setBare();

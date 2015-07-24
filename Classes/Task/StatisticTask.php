@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Task;
 
 /*
@@ -15,6 +14,7 @@ namespace CommerceTeam\Commerce\Task;
  * The TYPO3 project - inspiring people to share!
  */
 use CommerceTeam\Commerce\Factory\SettingsFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class \CommerceTeam\Commerce\Task\StatisticTask.
@@ -39,6 +39,8 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
     /**
      * Initialization.
+     *
+     * @return void
      */
     protected function init()
     {
@@ -47,7 +49,7 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             $excludeStatisticFolders = SettingsFactory::getInstance()->getExtConf('excludeStatisticFolders');
         }
 
-        $this->statistics = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\StatisticsUtility');
+        $this->statistics = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\StatisticsUtility');
         $this->statistics->init($excludeStatisticFolders);
     }
 
@@ -96,6 +98,8 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
     /**
      * Incremental aggregation.
+     *
+     * @return void
      */
     protected function incrementalAggregation()
     {
@@ -103,8 +107,7 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
         $lastAggregationTimeres = $database->sql_query('SELECT max(tstamp) FROM tx_commerce_salesfigures');
         $lastAggregationTimeValue = 0;
-        if (
-            $lastAggregationTimeres
+        if ($lastAggregationTimeres
             && ($lastAggregationTimerow = $database->sql_fetch_row($lastAggregationTimeres))
             && $lastAggregationTimerow[0] != null
         ) {
@@ -122,11 +125,12 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
             $this->log(
-                'Incremental Sales Aggregation for sales for the period from '.$starttime.' to '.$endtime.' (Timestamp)'
+                'Incremental Sales Aggregation for sales for the period from ' . $starttime . ' to ' . $endtime .
+                ' (Timestamp)'
             );
             $this->log(
-                'Incremental Sales Aggregation for sales for the period from '.strftime('%d.%m.%Y', $starttime).
-                    ' to '.strftime('%d.%m.%Y', $endtime).' (DD.MM.YYYY)'
+                'Incremental Sales Aggregation for sales for the period from ' . strftime('%d.%m.%Y', $starttime) .
+                ' to ' . strftime('%d.%m.%Y', $endtime) . ' (DD.MM.YYYY)'
             );
 
             if (!$this->statistics->doSalesAggregation($starttime, $endtime)) {
@@ -136,9 +140,10 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             $this->log('No new Orders');
         }
 
-        $changeselect = 'SELECT distinct crdate FROM tx_commerce_order_articles where tstamp > '.
-            ($lastAggregationTimeValue - ($this->statistics->getDaysBack() * 24 * 60 * 60));
-        $changeres = $database->sql_query($changeselect);
+        $changeres = $database->sql_query(
+            'SELECT distinct crdate FROM tx_commerce_order_articles where tstamp > '.
+            ($lastAggregationTimeValue - ($this->statistics->getDaysBack() * 24 * 60 * 60))
+        );
         $changeDaysArray = array();
         $changes = 0;
         $result = '';
@@ -149,12 +154,12 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             if (!in_array($starttime, $changeDaysArray)) {
                 $changeDaysArray[] = $starttime;
                 $this->log(
-                    'Incremental Sales UpdateAggregation for sales for the period from '.$starttime.' to '.$endtime.
-                        ' (Timestamp)'
+                    'Incremental Sales UpdateAggregation for sales for the period from ' . $starttime . ' to ' .
+                    $endtime . ' (Timestamp)'
                 );
                 $this->log(
-                    'Incremental Sales UpdateAggregation for sales for the period from '.strftime('%d.%m.%Y', $starttime).
-                        ' to '.strftime('%d.%m.%Y', $endtime).' (DD.MM.YYYY)'
+                    'Incremental Sales UpdateAggregation for sales for the period from ' .
+                    strftime('%d.%m.%Y', $starttime) . ' to ' . strftime('%d.%m.%Y', $endtime) . ' (DD.MM.YYYY)'
                 );
 
                 $result .= $this->statistics->doSalesUpdateAggregation($starttime, $endtime, false);
@@ -165,8 +170,7 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
         $this->log($changes.' Days changed');
 
         $lastAggregationTimeres = $database->sql_query('SELECT max(tstamp) FROM tx_commerce_newclients');
-        if (
-            $lastAggregationTimeres
+        if ($lastAggregationTimeres
             && ($lastAggregationTimerow = $database->sql_fetch_row($lastAggregationTimeres))
         ) {
             $lastAggregationTimeValue = $lastAggregationTimerow[0];
@@ -183,11 +187,11 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             $starttime = $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
 
             $this->log(
-                'Incremental Client Agregation for sales for the period from '.$starttime.' to '.$endtime
+                'Incremental Client Agregation for sales for the period from ' . $starttime . ' to ' . $endtime
             );
             $this->log(
-                'Incremental Client Agregation for sales for the period from '.strftime('%d.%m.%Y', $starttime).
-                    ' to '.strftime('%d.%m.%Y', $endtime)
+                'Incremental Client Agregation for sales for the period from ' . strftime('%d.%m.%Y', $starttime) .
+                ' to ' . strftime('%d.%m.%Y', $endtime)
             );
 
             if (!$this->statistics->doClientAggregation($starttime, $endtime)) {
@@ -200,6 +204,8 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
     /**
      * Complete aggregation.
+     *
+     * @return void
      */
     protected function completeAggregation()
     {
@@ -247,8 +253,10 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      * Log message.
      *
      * @param string $message Message
-     * @param int    $status  Status
-     * @param string $code    Code
+     * @param int $status Status
+     * @param string $code Code
+     *
+     * @return void
      */
     public function log($message, $status = 0, $code = 'commerce')
     {
@@ -261,6 +269,7 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             array()
         );
     }
+
 
     /**
      * Get database connection.

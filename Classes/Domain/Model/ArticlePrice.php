@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Model;
 
 /*
@@ -233,11 +232,11 @@ class ArticlePrice extends AbstractEntity
      */
     public function getTcaRecordTitle(array &$params)
     {
-        $language = $this->getLanguageService();
+        $languageService = $this->getLanguageService();
 
         $feGroup = '';
         if ($params['row']['fe_group']) {
-            $feGroup = $language->sL(BackendUtility::getItemLabel('tx_commerce_article_prices', 'fe_group'), 1).
+            $feGroup = $languageService->sL(BackendUtility::getItemLabel('tx_commerce_article_prices', 'fe_group'), 1) .
                 BackendUtility::getProcessedValueExtra(
                     'tx_commerce_article_prices',
                     'fe_group',
@@ -247,15 +246,28 @@ class ArticlePrice extends AbstractEntity
                 );
         }
 
-        $params['title'] = $language->sL(BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_gross'), 1).': '.
-            sprintf('%01.2f', $params['row']['price_gross'] / 100).
-            ', '.$language->sL(BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_net'), 1).': '.
-            sprintf('%01.2f', $params['row']['price_net'] / 100).
-            ' ('.$language->sL(BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_start'), 1).': '.
-            $params['row']['price_scale_amount_start'].
-            ' '.$language->sL(BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_end'), 1).': '.
-            $params['row']['price_scale_amount_end'].') '.$feGroup;
+        $params['title'] = $languageService->sL(
+            BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_gross'),
+            1
+        ) .
+        ': ' . sprintf('%01.2f', $params['row']['price_gross'] / 100).
+        ', ' . $languageService->sL(
+            BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_net'),
+            1
+        ) .
+        ': ' . sprintf('%01.2f', $params['row']['price_net'] / 100) .
+        ' (' . $languageService->sL(
+            BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_start'),
+            1
+        ) .
+        ': ' . $params['row']['price_scale_amount_start'] .
+        ' ' . $languageService->sL(
+            BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_end'),
+            1
+        ) .
+        ': ' . $params['row']['price_scale_amount_end'] . ') ' . $feGroup;
     }
+
 
     /**
      * Get language service.

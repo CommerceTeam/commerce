@@ -96,6 +96,17 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass
     protected $currentSubScript;
 
     /**
+     * Constructor
+     *
+     * @return self
+     */
+    public function __construct()
+    {
+        $GLOBALS['SOBE'] = $this;
+        $this->init();
+    }
+
+    /**
      * Constructor function for script class.
      */
     public function init()

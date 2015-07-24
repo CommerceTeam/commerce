@@ -60,7 +60,7 @@ class AttributeRepository extends Repository
         );
 
         $attributeValueList = array();
-        if ($database->sql_num_rows($result) > 0) {
+        if ($database->sql_num_rows($result)) {
             while (($data = $database->sql_fetch_assoc($result))) {
                 $attributeValueList[] = (int) $data['uid'];
             }
@@ -91,7 +91,7 @@ class AttributeRepository extends Repository
                 'sorting'
             );
 
-            if ($database->sql_num_rows($result) > 0) {
+            if ($database->sql_num_rows($result)) {
                 while (($data = $database->sql_fetch_assoc($result))) {
                     $childAttributeList[] = (int) $data['uid'];
                 }

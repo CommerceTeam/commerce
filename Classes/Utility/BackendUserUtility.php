@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Utility;
 
 /*
@@ -28,16 +27,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class BackendUserUtility implements SingletonInterface
 {
     /**
-     * Returns a combined binary representation of the current users permissions
-     * for the page-record, $row. The perms for user, group and everybody is
-     * OR'ed together (provided that the page-owner is the user
-     * and for the groups that the user is a member of the group.
-     * If the user is admin, 31 is returned	(full permissions for all five flags).
+     * Returns a combined binary representation of the current users
+     * permissions for the page-record, $row. The perms for user, group
+     * and everybody is OR'ed together (provided that the page-owner is
+     * the user and for the groups that the user is a member of the group.
+     * If the user is admin, 31 is returned.
+     * (full permissions for all five flags).
      *
      * @param array $row Input page row with all perms_* fields available.
      *
      * @return int Bitwise representation of the users permissions in
-     *             relation to input page row, $row
+     *      relation to input page row, $row
      */
     public function calcPerms(array $row)
     {
@@ -51,8 +51,7 @@ class BackendUserUtility implements SingletonInterface
             return 0;
         }
         $out = 0;
-        if (
-            isset($row['perms_userid']) && isset($row['perms_user'])
+        if (isset($row['perms_userid']) && isset($row['perms_user'])
             && isset($row['perms_groupid']) && isset($row['perms_group'])
             && isset($row['perms_everybody']) && isset($backendUser->groupList)
         ) {
@@ -69,29 +68,29 @@ class BackendUserUtility implements SingletonInterface
     }
 
     /**
-     * Checks if the page id, $id, is found within the webmounts set up for the user.
-     * This should ALWAYS be checked for any page id a user works with, whether it's
-     * about reading, writing or whatever. The point is that this will add the
-     * security that a user can NEVER touch parts outside his mounted pages in the
-     * page tree. This is otherwise possible if the raw page permissions allows for
-     * it.
-     * So this security check just makes it easier to make safe user configurations.
-     * If the user is admin OR if this feature is disabled
-     * (fx. by setting TYPO3_CONF_VARS['BE']['lockBeUserToDBmounts']=0) then it
-     * returns "1" right away. Otherwise the function will return the uid of the
-     * webmount which was first found in the rootline of the input page $id.
+     * Checks if the page id, $id, is found within the webmounts set up for
+     * the user. This should ALWAYS be checked for any page id a user works
+     * with, whether it's about reading, writing or whatever. The point is
+     * that this will add the security that a user can NEVER touch parts
+     * outside his mounted pages in the page tree. This is otherwise possible
+     * if the raw page permissions allows for it.
+     * So this security check just makes it easier to make safe user
+     * configurations.
+     * If the user is admin OR if this feature is disabled (fx. by setting
+     * TYPO3_CONF_VARS['BE']['lockBeUserToDBmounts']=0) then it returns "1"
+     * right away. Otherwise the function will return the uid of the webmount
+     * which was first found in the rootline of the input page $id.
      *
-     * @param int      $id          Page ID to check
-     * @param string   $readPerms   Content of "getPagePermsClause(1)" (read-permissions)
-     *                              If not set, they will be internally calculated (but if you have the correct
-     *                              value right away you can save that database lookup!)
-     * @param bool|int $exitOnError If set, then the function will exit with an error
-     *                              message.
+     * @param int $id Page ID to check
+     * @param string $readPerms Content of "getPagePermsClause(1)"
+     *      (read-permissions) If not set, they will be internally calculated
+     *      (but if you have the correct value right away you can save that
+     *      database lookup!)
+     * @param bool|int $exitOnError If set, then the function will exit with
+     *      an error message.
      *
      * @return int|NULL The page UID in the rootline that matched a mount point
-     *
      * @throws \RuntimeException If page is not in database mount
-     *
      * @todo Define visibility
      */
     public function isInWebMount($id, $readPerms = '', $exitOnError = 0)
@@ -102,7 +101,11 @@ class BackendUserUtility implements SingletonInterface
         $id = (int) $id;
         // Check if input id is an offline version page
         // in which case we will map id to the online version:
-        $checkRec = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('tx_commerce_categories', $id, 'uid,t3ver_oid');
+        $checkRec = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord(
+            'tx_commerce_categories',
+            $id,
+            'uid,t3ver_oid'
+        );
         if ($checkRec['uid'] == -1) {
             $id = (int) $checkRec['t3ver_oid'];
         }
@@ -111,7 +114,7 @@ class BackendUserUtility implements SingletonInterface
         }
         if ($id > 0) {
             $wM = $this->returnWebmounts();
-            $rL = $this->beGetRootLine($id, ' AND '.$readPerms);
+            $rL = $this->beGetRootLine($id, ' AND ' . $readPerms);
             foreach ($rL as $v) {
                 if ($v['uid'] && in_array($v['uid'], $wM)) {
                     return $v['uid'];
@@ -130,10 +133,10 @@ class BackendUserUtility implements SingletonInterface
      * according to input argument, $perms, is validated.
      * $perms is the "mask" used to select. Fx. if $perms is 1 then
      * you'll get all pages that a user can actually see!
-     * 2^0 = show (1)
-     * 2^1 = edit (2)
-     * 2^2 = delete (4)
-     * 2^3 = new (8)
+     *     2^0 = show (1)
+     *     2^1 = edit (2)
+     *     2^2 = delete (4)
+     *     2^3 = new (8)
      * If the user is 'admin' " 1=1" is returned (no effect)
      * If the user is not set at all (->user is not an array),
      * then " 1=0" is returned (will cause no selection results at all)
@@ -144,7 +147,6 @@ class BackendUserUtility implements SingletonInterface
      * @param int $perms Permission mask to use, see function description
      *
      * @return string Part of where clause. Prefix " AND " to this.
-     *
      * @todo Define visibility
      */
     public function getPagePermsClause($perms)
@@ -156,15 +158,15 @@ class BackendUserUtility implements SingletonInterface
             }
             $perms = (int) $perms;
             // Make sure it's int.
-            $str = ' ( (tx_commerce_categories.perms_everybody & '.$perms.' = '.$perms.
-                ') OR (tx_commerce_categories.perms_userid = '.$backenduser->user['uid'].
-                ' AND tx_commerce_categories.perms_user & '.$perms.' = '.$perms.')';
+            $str = ' ( (tx_commerce_categories.perms_everybody & ' . $perms . ' = ' . $perms .
+                ') OR (tx_commerce_categories.perms_userid = ' . $backenduser->user['uid'] .
+                ' AND tx_commerce_categories.perms_user & ' . $perms . ' = ' . $perms . ')';
 
             // User
             if ($backenduser->groupList) {
                 // Group (if any is set)
-                $str .= ' OR (tx_commerce_categories.perms_groupid in ('.$backenduser->groupList.
-                    ') AND tx_commerce_categories.perms_group & '.$perms.' = '.$perms.')';
+                $str .= ' OR (tx_commerce_categories.perms_groupid in (' . $backenduser->groupList .
+                    ') AND tx_commerce_categories.perms_group & ' . $perms . ' = ' . $perms . ')';
             }
             $str .= ')';
 
@@ -177,13 +179,12 @@ class BackendUserUtility implements SingletonInterface
     /**
      * Returns an array with the webmounts.
      * If no webmounts, and empty array is returned.
-     * NOTICE: Deleted tx_commerce_categories WILL NOT be filtered out! So
-     * if a mounted page has been deleted
-     *         it is STILL coming out as a webmount.
+     * NOTICE: Deleted tx_commerce_categories WILL NOT be filtered out!
+     * So if a mounted page has been deleted it is STILL coming out as
+     * a webmount.
      * This is not checked due to performance.
      *
      * @return array
-     *
      * @todo Define visibility
      */
     protected function returnWebmounts()
@@ -191,7 +192,7 @@ class BackendUserUtility implements SingletonInterface
         $groups = $this->getDatabaseConnection()->exec_SELECTgetRows(
             'tx_commerce_mountpoints',
             'be_groups',
-            'uid IN ('.$this->getBackendUser()->groupList.')'
+            'uid IN (' . $this->getBackendUser()->groupList . ')'
         );
 
         $mountPoints = array();
@@ -215,13 +216,13 @@ class BackendUserUtility implements SingletonInterface
      * opposite to another kind of root line known from the frontend where the
      * rootline stops when a root-template is found.
      *
-     * @param int    $uid    Page id for which to create the root line.
+     * @param int $uid Page id for which to create the root line.
      * @param string $clause Clause can be used to select other criteria. It
-     *                       would typically be where-clauses that stops the process if we meet a
-     *                       page, the user has no reading access to.
+     *     would typically be where-clauses that stops the process if we meet a
+     *     page, the user has no reading access to.
      *
      * @return array Root line array, all the way to the page tree root
-     *               (or as far as $clause allows!)
+     *     (or as far as $clause allows!)
      */
     protected function beGetRootLine($uid, $clause = '')
     {
@@ -233,9 +234,11 @@ class BackendUserUtility implements SingletonInterface
             /**
              * Category repository.
              *
-             * @var \CommerceTeam\Commerce\Domain\Repository\CategoryRepository
+             * @var \CommerceTeam\Commerce\Domain\Repository\CategoryRepository $repository
              */
-            $repository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\CategoryRepository');
+            $repository = GeneralUtility::makeInstance(
+                'CommerceTeam\\Commerce\\Domain\\Repository\\CategoryRepository'
+            );
             $output = $repository->getCategoryRootline((int) $uid, $clause);
 
             $categoryRootlineCache[$uid] = $output;
@@ -243,6 +246,7 @@ class BackendUserUtility implements SingletonInterface
 
         return $output;
     }
+
 
     /**
      * Get backend user.

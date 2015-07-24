@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Hook;
 
 /*
@@ -72,10 +71,12 @@ class DataMapHooks
      * will work with the data we maybe have modified here.
      * Calculation of missing price.
      *
-     * @param array       $incomingFieldArray Fields that where changed in BE
-     * @param string      $table              Table the data will be stored in
-     * @param int         $id                 The uid of the dataset we're working on
-     * @param DataHandler $pObj               The instance of the BE Form
+     * @param array $incomingFieldArray Fields that where changed in BE
+     * @param string $table Table the data will be stored in
+     * @param int $id The uid of the dataset we're working on
+     * @param DataHandler $pObj The instance of the BE Form
+     *
+     * @return void
      */
     public function processDatamap_preProcessFieldArray(array &$incomingFieldArray, $table, $id, DataHandler $pObj)
     {
@@ -122,9 +123,9 @@ class DataMapHooks
     /**
      * Check if preprocessing is allowed.
      *
-     * @param array      $incomingFieldArray Incoming field array
-     * @param string     $table              Table
-     * @param string|int $id                 Id
+     * @param array $incomingFieldArray Incoming field array
+     * @param string $table Table
+     * @param string|int $id Id
      *
      * @return bool
      */
@@ -159,13 +160,16 @@ class DataMapHooks
      * going to save.
      *
      * @param array $incomingFieldArray Incoming field array
-     * @param int   $id                 Id
+     * @param int $id Id
      *
      * @return array
      */
     protected function preProcessCategory(array $incomingFieldArray, $id)
     {
-        $categories = array_diff(GeneralUtility::trimExplode(',', $incomingFieldArray['parent_category'], true), array($id));
+        $categories = array_diff(
+            GeneralUtility::trimExplode(',', $incomingFieldArray['parent_category'], true),
+            array($id)
+        );
 
         $incomingFieldArray['parent_category'] = !empty($categories) ? implode(',', $categories) : null;
 
@@ -178,13 +182,15 @@ class DataMapHooks
      * Preprocess product.
      *
      * @param array $incomingFieldArray Incoming field array
-     * @param int   $id                 Id
+     * @param int $id Id
      *
      * @return array
      */
     protected function preProcessProduct(array $incomingFieldArray, $id)
     {
-        $this->catList = $this->belib->getUidListFromList(GeneralUtility::trimExplode(',', $incomingFieldArray['categories']));
+        $this->catList = $this->belib->getUidListFromList(
+            GeneralUtility::trimExplode(',', $incomingFieldArray['categories'])
+        );
 
         $articles = $this->belib->getArticlesOfProduct($id);
         if (is_array($articles)) {
@@ -209,15 +215,20 @@ class DataMapHooks
                 /**
                  * Product.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Product
+                 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
                  */
-                $productObj = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $id);
-                $productObj->loadData();
+                $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $id);
+                $product->loadData();
 
-                $parentCategory = $productObj->getMasterparentCategory();
+                $parentCategory = $product->getMasterparentCategory();
                 $GLOBALS['_POST']['popViewId_addParams'] =
-                    ($incomingFieldArray['sys_language_uid'] > 0 ? '&L='.$incomingFieldArray['sys_language_uid'] : '').
-                    '&ADMCMD_vPrev&no_cache=1&tx_commerce_pi1[showUid]='.$id.'&tx_commerce_pi1[catUid]='.$parentCategory;
+                    (
+                        $incomingFieldArray['sys_language_uid'] > 0 ?
+                        '&L=' . $incomingFieldArray['sys_language_uid'] :
+                        ''
+                    ) .
+                    '&ADMCMD_vPrev&no_cache=1&tx_commerce_pi1[showUid]=' . $id . '&tx_commerce_pi1[catUid]=' .
+                    $parentCategory;
                 $GLOBALS['_POST']['popViewId'] = $previewPageId;
             }
         }
@@ -229,14 +240,12 @@ class DataMapHooks
      * Preprocess article.
      *
      * @param array $incomingFieldArray Incoming field array
-     * @param int   $id                 Id
+     * @param int $id Id
      *
      * @return array
      */
     protected function preProcessArticle(array $incomingFieldArray, $id)
     {
-        $database = $this->getDatabaseConnection();
-
         $this->updateArticleAttributeRelations($incomingFieldArray, $id);
 
         // create a new price if the checkbox was toggled get pid of article
@@ -271,7 +280,7 @@ class DataMapHooks
                     'price_scale_amount_end' => $myScaleAmountEnd,
                 );
 
-                $database->exec_INSERTquery('tx_commerce_article_prices', $insertArr);
+                $this->getDatabaseConnection()->exec_INSERTquery('tx_commerce_article_prices', $insertArr);
 
                 // @todo update articles XML
 
@@ -286,26 +295,26 @@ class DataMapHooks
     /**
      * Preprocess article price.
      *
-     * @param array $incomingFieldArray Incoming field array
-     * @param int   $id                 Id
+     * @param array $incomingFields Incoming field array
+     * @param int $id Id
      *
      * @return array
      */
-    protected function preProcessArticlePrice(array $incomingFieldArray, $id)
+    protected function preProcessArticlePrice(array $incomingFields, $id)
     {
-        if (isset($incomingFieldArray['price_gross']) && $incomingFieldArray['price_gross']) {
-            $incomingFieldArray['price_gross'] = $this->centurionMultiplication($incomingFieldArray['price_gross']);
+        if (isset($incomingFields['price_gross']) && $incomingFields['price_gross']) {
+            $incomingFields['price_gross'] = $this->centurionMultiplication($incomingFields['price_gross']);
         }
 
-        if (isset($incomingFieldArray['price_net']) && $incomingFieldArray['price_net']) {
-            $incomingFieldArray['price_net'] = $this->centurionMultiplication($incomingFieldArray['price_net']);
+        if (isset($incomingFields['price_net']) && $incomingFields['price_net']) {
+            $incomingFields['price_net'] = $this->centurionMultiplication($incomingFields['price_net']);
         }
 
-        if (isset($incomingFieldArray['purchase_price']) && $incomingFieldArray['purchase_price']) {
-            $incomingFieldArray['purchase_price'] = $this->centurionMultiplication($incomingFieldArray['purchase_price']);
+        if (isset($incomingFields['purchase_price']) && $incomingFields['purchase_price']) {
+            $incomingFields['purchase_price'] = $this->centurionMultiplication($incomingFields['purchase_price']);
         }
 
-        return $incomingFieldArray;
+        return $incomingFields;
     }
 
     /**
@@ -317,10 +326,7 @@ class DataMapHooks
      */
     protected function centurionMultiplication($price)
     {
-        $price = floatval($price);
-        $result = intval($price * 100);
-
-        return $result;
+        return intval(floatval($price) * 100);
     }
 
     /**
@@ -328,10 +334,10 @@ class DataMapHooks
      * Change the PID from this order via the new field newpid
      * As TYPO3 don't allows changing the PId directly.
      *
-     * @param array       $incomingFieldArray Incoming field array
-     * @param string      $table              Table
-     * @param int         $id                 Id
-     * @param DataHandler $pObj               Parent object
+     * @param array $incomingFieldArray Incoming field array
+     * @param string $table Table
+     * @param int $id Id
+     * @param DataHandler $pObj Parent object
      *
      * @return array
      */
@@ -348,7 +354,11 @@ class DataMapHooks
             $incomingFieldArray['pid'] = $incomingFieldArray['newpid'];
 
             // Move Order articles
-            $orders = $database->exec_SELECTquery('order_id, pid, uid, order_sys_language_uid', $table, 'uid = '.(int) $id);
+            $orders = $database->exec_SELECTquery(
+                'order_id, pid, uid, order_sys_language_uid',
+                $table,
+                'uid = ' . (int) $id
+            );
             if (!$database->sql_error()) {
                 $order = $database->sql_fetch_assoc($orders);
 
@@ -372,25 +382,30 @@ class DataMapHooks
                     $resultOrderArticles = $database->exec_SELECTquery(
                         '*',
                         'tx_commerce_order_articles',
-                        'order_id = '.$database->fullQuoteStr($orderId, 'tx_commerce_order_articles')
+                        'order_id = ' . $database->fullQuoteStr($orderId, 'tx_commerce_order_articles')
                     );
                     if (!$database->sql_error()) {
                         // Run trough all articles from this order and move it to other storage folder
                         while (($orderArtikelRow = $database->sql_fetch_assoc($resultOrderArticles))) {
                             $orderArtikelRow['pid'] = $incomingFieldArray['newpid'];
-                            $orderArtikelRow['tstamp'] = time();
+                            $orderArtikelRow['tstamp'] = $GLOBALS['EXEC_TIME'];
+
                             $database->exec_UPDATEquery(
                                 'tx_commerce_order_articles',
-                                'uid='.$orderArtikelRow['uid'],
+                                'uid = ' . $orderArtikelRow['uid'],
                                 $orderArtikelRow
                             );
                         }
                     } else {
-                        $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table.':'.$id));
+                        $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array(
+                            $database->sql_error(),
+                            $table . ':' . $id
+                        ));
                     }
                     $order['pid'] = $incomingFieldArray['newpid'];
-                    $order['tstamp'] = time();
-                    $database->exec_UPDATEquery('tx_commerce_orders', 'uid='.$order['uid'], $order);
+                    $order['tstamp'] = $GLOBALS['EXEC_TIME'];
+
+                    $database->exec_UPDATEquery('tx_commerce_orders', 'uid = ' . $order['uid'], $order);
 
                     foreach ($hooks as $hookObj) {
                         if (method_exists($hookObj, 'moveOrders_postMoveOrder')) {
@@ -402,7 +417,10 @@ class DataMapHooks
                     }
                 }
             } else {
-                $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table.':'.$id));
+                $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array(
+                    $database->sql_error(),
+                    $table . ':' . $id
+                ));
             }
         }
 
@@ -413,20 +431,26 @@ class DataMapHooks
      * Process Data when saving ordered articles
      * Recalculate Order sum.
      *
-     * @param string      $table Table
-     * @param int         $id    Id
-     * @param DataHandler $pObj  Parent object
+     * @param string $table Table
+     * @param int $id Id
+     * @param DataHandler $pObj Parent object
+     *
+     * @return void
      */
     protected function preProcessOrderArticle($table, $id, DataHandler $pObj)
     {
         $database = $this->getDatabaseConnection();
 
-        $orderIdResult = $database->exec_SELECTquery('order_id', $table, 'uid = '.(int) $id);
+        $orderIdResult = $database->exec_SELECTquery('order_id', $table, 'uid = ' . (int) $id);
         if (!$database->sql_error()) {
             list($orderId) = $database->sql_fetch_row($orderIdResult);
             $sum = array('sum_price_gross' => 0, 'sum_price_net' => 0);
 
-            $orderArticles = $database->exec_SELECTquery('*', $table, 'order_id = '.$database->fullQuoteStr($orderId, $table));
+            $orderArticles = $database->exec_SELECTquery(
+                '*',
+                $table,
+                'order_id = ' . $database->fullQuoteStr($orderId, $table)
+            );
             if (!$database->sql_error()) {
                 while (($orderArticle = $database->sql_fetch_assoc($orderArticles))) {
                     /*
@@ -436,7 +460,10 @@ class DataMapHooks
                     $sum['sum_price_net'] += $orderArticle['amount'] * $orderArticle['price_gross'];
                 }
             } else {
-                $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table.':'.$id));
+                $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array(
+                    $database->sql_error(),
+                    $table . ':' . $id
+                ));
             }
 
             $database->exec_UPDATEquery(
@@ -445,18 +472,24 @@ class DataMapHooks
                 $sum
             );
             if ($database->sql_error()) {
-                $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table.':'.$id));
+                $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array(
+                    $database->sql_error(),
+                    $table . ':' . $id
+                ));
             }
         } else {
-            $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array($database->sql_error(), $table.':'.$id));
+            $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array(
+                $database->sql_error(),
+                $table . ':' . $id
+            ));
         }
     }
 
     /**
      * Check attributes of products and categories.
      *
-     * @param array    $incomingFieldArray Incoming field array
-     * @param bool|int $handleAttributes   Whether to handle attributes
+     * @param array $incomingFieldArray Incoming field array
+     * @param bool|int $handleAttributes Whether to handle attributes
      *
      * @return mixed
      */
@@ -468,8 +501,7 @@ class DataMapHooks
 
             $correlationTypes = array();
             // get all correlation types from flexform thats was created by dynaflex!
-            if (
-                is_array($incomingFieldArray)
+            if (is_array($incomingFieldArray)
                 && isset($incomingFieldArray['attributes'])
                 && is_array($incomingFieldArray['attributes'])
                 && isset($incomingFieldArray['attributes']['data'])
@@ -502,7 +534,10 @@ class DataMapHooks
                                 $usedAttributes[] = array('uid_foreign' => $attributeUid);
                             }
                         }
-                        $incomingFieldArray['attributes']['data']['sDEF']['lDEF'][$key]['vDEF'] = implode(',', $validAttributes);
+                        $incomingFieldArray['attributes']['data']['sDEF']['lDEF'][$key]['vDEF'] = implode(
+                            ',',
+                            $validAttributes
+                        );
                     }
                 }
             }
@@ -515,11 +550,13 @@ class DataMapHooks
      * Change FieldArray after operations have been executed and just before
      * it is passed to the db.
      *
-     * @param string      $status     Status of the Datamap
-     * @param string      $table      DB Table we are operating on
-     * @param int         $id         UID of the Item we are operating on
-     * @param array       $fieldArray Fields to be inserted into the db
-     * @param DataHandler $pObj       Reference to the BE Form Object of the caller
+     * @param string $status Status of the Datamap
+     * @param string $table DB Table we are operating on
+     * @param int $id UID of the Item we are operating on
+     * @param array $fieldArray Fields to be inserted into the db
+     * @param DataHandler $pObj Reference to the BE Form Object of the caller
+     *
+     * @return void
      */
     public function processDatamap_postProcessFieldArray($status, $table, $id, array &$fieldArray, DataHandler $pObj)
     {
@@ -546,11 +583,13 @@ class DataMapHooks
      * Will also make some checks to see if all permissions are available that are
      * needed to proceed with the datamap.
      *
-     * @param string      $status     Status
-     * @param string      $table      Table
-     * @param int|string  $id         Id
-     * @param array       $fieldArray Field array
-     * @param DataHandler $pObj       Parent object
+     * @param string $status Status
+     * @param string $table Table
+     * @param int|string $id Id
+     * @param array $fieldArray Field array
+     * @param DataHandler $pObj Parent object
+     *
+     * @return void
      */
     protected function postProcessCategory($status, $table, $id, array &$fieldArray, DataHandler $pObj)
     {
@@ -564,7 +603,7 @@ class DataMapHooks
             $l18nParent = (int) $data['l18n_parent'];
 
             $category = null;
-                // check if the user has the permission to edit this category
+            // check if the user has the permission to edit this category
             if ($status != 'new') {
                 // check if we have the right to edit and are in commerce mounts
                 $checkId = $id;
@@ -572,28 +611,31 @@ class DataMapHooks
                 /**
                  * Category.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Category
+                 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
                 $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $checkId);
                 $category->loadData();
 
-                    // Use the l18n parent as category for permission checks.
+                // Use the l18n parent as category for permission checks.
                 if ($l18nParent || $category->getField('l18n_parent') > 0) {
                     $checkId = $l18nParent ?: $category->getField('l18n_parent');
-                    $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $checkId);
+                    $category = GeneralUtility::makeInstance(
+                        'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                        $checkId
+                    );
                 }
 
                 // check if the category is in mount
                 /**
                  * Category mounts.
                  *
-                 * @var \CommerceTeam\Commerce\Tree\CategoryMounts
+                 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
                  */
-                $mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-                $mounts->init((int) $backendUser->user['uid']);
+                $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+                $mount->init((int) $backendUser->user['uid']);
 
                 // check
-                if (!$category->isPermissionSet('edit') || !$mounts->isInCommerceMounts($category->getUid())) {
+                if (!$category->isPermissionSet('edit') || !$mount->isInCommerceMounts($category->getUid())) {
                     $pObj->newlog('You dont have the permissions to edit this category.', 1);
                     $fieldArray = array();
 
@@ -648,24 +690,24 @@ class DataMapHooks
                 /**
                  * Parent category.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Category
+                 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
-                foreach ($parentCategories as $parent) {
-                    $existingParents[] = $parent->getUid();
+                foreach ($parentCategories as $category) {
+                    $existingParents[] = $category->getUid();
 
                     /**
                      * Category mounts.
                      *
-                     * @var \CommerceTeam\Commerce\Tree\CategoryMounts
+                     * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
                      */
-                    $mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-                    $mounts->init((int) $backendUser->user['uid']);
+                    $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+                    $mount->init((int) $backendUser->user['uid']);
 
                     // if the user has no right to see one of the parent categories or its not
                     // in the mounts it would miss afterwards
                     // by this its readded to the parent_category field
-                    if (!$parent->isPermissionSet('show') || !$mounts->isInCommerceMounts($parent->getUid())) {
-                        $fieldArray['parent_category'] .= ','.$parent->getUid();
+                    if (!$category->isPermissionSet('show') || !$mount->isInCommerceMounts($category->getUid())) {
+                        $fieldArray['parent_category'] .= ','. $category->getUid();
                     }
                 }
             }
@@ -678,12 +720,12 @@ class DataMapHooks
                 /**
                  * Category mounts.
                  *
-                 * @var \CommerceTeam\Commerce\Tree\CategoryMounts
+                 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
                  */
-                $mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-                $mounts->init((int) $backendUser->user['uid']);
+                $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+                $mount->init((int) $backendUser->user['uid']);
 
-                if ($mounts->isInCommerceMounts(0)) {
+                if ($mount->isInCommerceMounts(0)) {
                     // assign the root as the parent category if it is empty
                     $fieldArray['parent_category'] = 0;
                 } else {
@@ -711,23 +753,23 @@ class DataMapHooks
                 for ($i = 0; $i < $l; ++$i) {
                     $uid = (int) $newParents[$keys[$i]];
 
-                    /*
+                    /**
                      * Category
                      *
-                     * @var \CommerceTeam\Commerce\Domain\Model\Category $cat
+                     * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                      */
                     $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $uid);
 
                     /**
                      * Category mounts.
                      *
-                     * @var \CommerceTeam\Commerce\Tree\CategoryMounts
+                     * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
                      */
-                    $mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-                    $mounts->init((int) $backendUser->user['uid']);
+                    $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+                    $mount->init((int) $backendUser->user['uid']);
 
                     // abort if the parent category is not in the webmounts
-                    if (!$mounts->isInCommerceMounts($uid)) {
+                    if (!$mount->isInCommerceMounts($uid)) {
                         $fieldArray['parent_category'] = '';
                         break;
                     }
@@ -741,7 +783,10 @@ class DataMapHooks
 
                     // remove category from list if it is not permitted
                     if (!$category->isPermissionSet('new')) {
-                        $fieldArray['parent_category'] = GeneralUtility::rmFromList($uid, $fieldArray['parent_category']);
+                        $fieldArray['parent_category'] = GeneralUtility::rmFromList(
+                            $uid,
+                            $fieldArray['parent_category']
+                        );
                     } else {
                         // conversion to int is important, otherwise the binary & will not work properly
                         if ($groupRights === false) {
@@ -764,7 +809,10 @@ class DataMapHooks
             // if there is no parent_category left from the ones the user wanted to add,
             // abort and inform him.
             if ($fieldArray['parent_category'] == '' && !empty($newParents)) {
-                $pObj->newlog('You dont have the permissions to use any of the parent categories you chose as a parent.', 1);
+                $pObj->newlog(
+                    'You dont have the permissions to use any of the parent categories you chose as a parent.',
+                    1
+                );
                 $fieldArray = array();
             }
 
@@ -788,9 +836,12 @@ class DataMapHooks
                     /**
                      * Category.
                      *
-                     * @var \CommerceTeam\Commerce\Domain\Model\Category
+                     * @var \CommerceTeam\Commerce\Domain\Model\Category $catDirect
                      */
-                    $catDirect = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $catUid);
+                    $catDirect = GeneralUtility::makeInstance(
+                        'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                        $catUid
+                    );
                     $catDirect->loadData();
 
                     $tmpCats = $catDirect->getParentCategories();
@@ -800,14 +851,18 @@ class DataMapHooks
                     while (!is_null($cat = @array_pop($tmpCats))) {
                         // Prevent endless recursion
                         if ($i < 0) {
-                            $pObj->newlog('Endless recursion occured while processing your request. Notify your admin if this error persists.', 1);
+                            $pObj->newlog(
+                                'Endless recursion occured while processing your request.
+                                     Notify your admin if this error persists.',
+                                1
+                            );
                             $fieldArray = array();
                         }
 
                         if ($cat->getUid() == $id) {
                             $pObj->newlog(
-                                'You cannot select a child category or self as a parent category. Selected Category in question: '.
-                                    $catDirect->getTitle(),
+                                'You cannot select a child category or self as a parent category.
+                                    Selected Category in question: ' . $catDirect->getTitle(),
                                 1
                             );
                             $fieldArray = array();
@@ -829,11 +884,11 @@ class DataMapHooks
     /**
      * Checks if the permissions we need to process the datamap are still in place.
      *
-     * @param string      $status     Status
-     * @param string      $table      Table
-     * @param int|string  $id         Id
-     * @param array       $fieldArray Field array
-     * @param DataHandler $pObj       Parent object
+     * @param string $status Status
+     * @param string $table Table
+     * @param int|string $id Id
+     * @param array $fieldArray Field array
+     * @param DataHandler $pObj Parent object
      *
      * @return array
      */
@@ -848,7 +903,7 @@ class DataMapHooks
             /**
              * Product.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Product
+             * @var \CommerceTeam\Commerce\Domain\Model\Product $item
              */
             $item = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $id);
 
@@ -882,7 +937,10 @@ class DataMapHooks
                 $parentCategories
             );
 
-            if (!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent($newCats, array('editcontent'))) {
+            if (!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
+                $newCats,
+                array('editcontent')
+            )) {
                 $pObj->newlog('You do not have the permissions to add one or all categories you added.'.
                     GeneralUtility::uniqueList($data['categories']), 1);
                 $fieldArray = array();
@@ -899,10 +957,12 @@ class DataMapHooks
     /**
      * Checks if the permissions we need to process the datamap are still in place.
      *
-     * @param string      $status     Status
-     * @param int|string  $id         Id
-     * @param array       $fieldArray Field array
-     * @param DataHandler $pObj       Parent object
+     * @param string $status Status
+     * @param int|string $id Id
+     * @param array $fieldArray Field array
+     * @param DataHandler $pObj Parent object
+     *
+     * @return void
      */
     protected function postProcessArticle($status, $id, array &$fieldArray, DataHandler $pObj)
     {
@@ -916,7 +976,7 @@ class DataMapHooks
             /**
              * Article.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Article
+             * @var \CommerceTeam\Commerce\Domain\Model\Article $article
              */
             $article = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $id);
             $article->loadData();
@@ -925,18 +985,19 @@ class DataMapHooks
             /**
              * Product.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Product
+             * @var \CommerceTeam\Commerce\Domain\Model\Product $product
              */
-            $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $article->getParentProductUid());
+            $product = GeneralUtility::makeInstance(
+                'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                $article->getParentProductUid()
+            );
             $product->loadData();
 
             if ($product->getL18nParent()) {
-                /**
-                 * Product.
-                 *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Product
-                 */
-                $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $product->getL18nParent());
+                $product = GeneralUtility::makeInstance(
+                    'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                    $product->getL18nParent()
+                );
                 $product->loadData();
             }
 
@@ -954,23 +1015,27 @@ class DataMapHooks
     }
 
     /**
-     * When all operations in the database where made from TYPO3 side, we have to
-     * make some special entries for the shop. Because we don't use the built in
-     * routines to save relations between tables, we have to do this on our own. We
-     * make it manually because we save some additonal information in the relation
-     * tables like values, correlation types and such stuff.
+     * When all operations in the database where made from TYPO3 side, we
+     * have to make some special entries for the shop. Because we don't use
+     * the built in routines to save relations between tables, we have to
+     * do this on our own. We make it manually because we save some additonal
+     * information in the relation tables like values, correlation types and
+     * such stuff.
      * The hole save stuff is done by the "saveAllCorrelations" method.
-     * After the relations are stored in the database, we have to call the dynaflex
-     * extension to modify the TCA that it fit's the current situation of saved
-     * database entries. We call it here because the TCA is allready built and so
-     * the calls in the tca.php of commerce won't be executed between now and the
-     * point where the backendform is rendered.
+     * After the relations are stored in the database, we have to call the
+     * dynaflex extension to modify the TCA that it fit's the current
+     * situation of saved database entries. We call it here because the TCA
+     * is allready built and so the calls in the tca.php of commerce won't
+     * be executed between now and the point where the backendform is
+     * rendered.
      *
-     * @param string      $status     Status
-     * @param string      $table      Table
-     * @param int         $id         Id
-     * @param array       $fieldArray Field array
-     * @param DataHandler $pObj       Parent object
+     * @param string $status Status
+     * @param string $table Table
+     * @param int $id Id
+     * @param array $fieldArray Field array
+     * @param DataHandler $pObj Parent object
+     *
+     * @return void
      */
     public function processDatamap_afterDatabaseOperations($status, $table, $id, array $fieldArray, DataHandler $pObj)
     {
@@ -1007,7 +1072,9 @@ class DataMapHooks
      * After database category handling.
      *
      * @param array $fieldArray Field array
-     * @param int   $id         Id
+     * @param int $id Id
+     *
+     * @return void
      */
     protected function afterDatabaseCategory(array $fieldArray, $id)
     {
@@ -1042,11 +1109,13 @@ class DataMapHooks
     /**
      * After database product handling.
      *
-     * @param string      $status     Status
-     * @param string      $table      Table
-     * @param string|int  $id         Id
-     * @param array       $fieldArray Field array
-     * @param DataHandler $pObj       Parent object
+     * @param string $status Status
+     * @param string $table Table
+     * @param string|int $id Id
+     * @param array $fieldArray Field array
+     * @param DataHandler $pObj Parent object
+     *
+     * @return void
      */
     protected function afterDatabaseProduct($status, $table, $id, array $fieldArray, DataHandler $pObj)
     {
@@ -1055,7 +1124,7 @@ class DataMapHooks
             /**
              * Product.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Product
+             * @var \CommerceTeam\Commerce\Domain\Model\Product $product
              */
             $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $id);
             $product->loadData();
@@ -1088,7 +1157,7 @@ class DataMapHooks
             /**
              * Product.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Product
+             * @var \CommerceTeam\Commerce\Domain\Model\Product $product
              */
             $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $id);
 
@@ -1105,9 +1174,11 @@ class DataMapHooks
                 /**
                  * Article creator.
                  *
-                 * @var \CommerceTeam\Commerce\Utility\ArticleCreatorUtility
+                 * @var \CommerceTeam\Commerce\Utility\ArticleCreatorUtility $articleCreator
                  */
-                $articleCreator = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\ArticleCreatorUtility');
+                $articleCreator = GeneralUtility::makeInstance(
+                    'CommerceTeam\\Commerce\\Utility\\ArticleCreatorUtility'
+                );
                 $articleCreator->init($id, $this->belib->getProductFolderUid());
 
                 $datamap = $pObj->datamap[$table][$this->unsubstitutedId ? $this->unsubstitutedId : $id];
@@ -1126,14 +1197,20 @@ class DataMapHooks
      * After database price handling.
      *
      * @param array $fieldArray Field array
-     * @param int   $id         Id
+     * @param int $id Id
+     *
+     * @return void
      */
     protected function afterDatabasePrice(array $fieldArray, $id)
     {
         if (!isset($fieldArray['uid_article'])) {
             $database = $this->getDatabaseConnection();
 
-            $uidArticleRow = $database->exec_SELECTgetSingleRow('uid_article', 'tx_commerce_article_prices', 'uid = '.(int) $id);
+            $uidArticleRow = $database->exec_SELECTgetSingleRow(
+                'uid_article',
+                'tx_commerce_article_prices',
+                'uid = ' . (int) $id
+            );
             $uidArticle = $uidArticleRow['uid_article'];
         } else {
             $uidArticle = $fieldArray['uid_article'];
@@ -1147,7 +1224,9 @@ class DataMapHooks
      * After database dynaflex handling.
      *
      * @param string $table Table
-     * @param int    $id    Id
+     * @param int $id Id
+     *
+     * @return void
      */
     protected function afterDatabaseHandleDynaflex($table, $id)
     {
@@ -1170,8 +1249,7 @@ class DataMapHooks
 
         // txcommerce_copyProcess: this is so that dynaflex is not called when we copy
         // an article - otherwise we would get an error
-        if (
-            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('dynaflex')
+        if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('dynaflex')
             && (!isset($backendUser->uc['txcommerce_copyProcess']) || $backendUser->uc['txcommerce_copyProcess'])
         ) {
             $dynaFlexConf[0]['uid'] = $id;
@@ -1191,7 +1269,9 @@ class DataMapHooks
      * Update article attribute relations.
      *
      * @param array $incomingFieldArray Incoming field array
-     * @param int   $id                 Id
+     * @param int $id Id
+     *
+     * @return void
      */
     protected function updateArticleAttributeRelations(array $incomingFieldArray, $id)
     {
@@ -1211,7 +1291,7 @@ class DataMapHooks
                     // know which attribute were removed
                     $database->exec_DELETEquery(
                         'tx_commerce_articles_article_attributes_mm',
-                        'uid_local = '.$id.' AND uid_foreign = '.$attributeId
+                        'uid_local = ' . $id . ' AND uid_foreign = ' . $attributeId
                     );
 
                     $relCount = 0;
@@ -1251,7 +1331,7 @@ class DataMapHooks
                     // update article attribute relation
                     $database->exec_UPDATEquery(
                         'tx_commerce_articles_article_attributes_mm',
-                        'uid_local = '.$id.' AND uid_foreign = '.$attributeId,
+                        'uid_local = ' . $id . ' AND uid_foreign = ' . $attributeId,
                         $updateArrays[1]
                     );
                 }
@@ -1265,13 +1345,19 @@ class DataMapHooks
     /**
      * Save category relations.
      *
-     * @param int   $cUid       Categor uid
+     * @param int $cUid Categor uid
      * @param array $fieldArray Field array
-     * @param bool  $saveAnyway Save anyway
-     * @param bool  $delete     Delete
-     * @param bool  $updateXml  Update xml
+     * @param bool $saveAnyway Save anyway
+     * @param bool $delete Delete
+     * @param bool $updateXml Update xml
+     *
+     * @return void
      */
-    protected function saveCategoryRelations($cUid, array $fieldArray = array(), $saveAnyway = false, $delete = true,
+    protected function saveCategoryRelations(
+        $cUid,
+        array $fieldArray = array(),
+        $saveAnyway = false,
+        $delete = true,
         $updateXml = true
     ) {
         // now we have to save all attribute relations for this category and all their
@@ -1298,7 +1384,13 @@ class DataMapHooks
                 $ffData = array();
             }
 
-            $this->belib->mergeAttributeListFromFFData($ffData['data']['sDEF']['lDEF'], 'ct_', $correlationTypeList, $cUid, $paList);
+            $this->belib->mergeAttributeListFromFFData(
+                $ffData['data']['sDEF']['lDEF'],
+                'ct_',
+                $correlationTypeList,
+                $cUid,
+                $paList
+            );
 
             // get the list of uid_foreign and save relations for this category
             $uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true, array('uid_correlationtype'));
@@ -1306,7 +1398,13 @@ class DataMapHooks
 
             // update the XML structure if needed
             if ($updateXml) {
-                $this->belib->updateXML('attributes', 'tx_commerce_categories', $cUid, 'category', $correlationTypeList);
+                $this->belib->updateXML(
+                    'attributes',
+                    'tx_commerce_categories',
+                    $cUid,
+                    'category',
+                    $correlationTypeList
+                );
             }
 
             // save all attributes of this category into all poroducts,
@@ -1314,8 +1412,20 @@ class DataMapHooks
             $products = $this->belib->getProductsOfCategory($cUid);
             if (!empty($products)) {
                 foreach ($products as $product) {
-                    $this->belib->saveRelations($product['uid_local'], $uidList, 'tx_commerce_products_attributes_mm', false, false);
-                    $this->belib->updateXML('attributes', 'tx_commerce_products', $product['uid_local'], 'product', $correlationTypeList);
+                    $this->belib->saveRelations(
+                        $product['uid_local'],
+                        $uidList,
+                        'tx_commerce_products_attributes_mm',
+                        false,
+                        false
+                    );
+                    $this->belib->updateXML(
+                        'attributes',
+                        'tx_commerce_products',
+                        $product['uid_local'],
+                        'product',
+                        $correlationTypeList
+                    );
                 }
             }
 
@@ -1333,8 +1443,10 @@ class DataMapHooks
     /**
      * Saves all relations between products and his attributes.
      *
-     * @param int   $productId  The UID of the product
+     * @param int $productId The UID of the product
      * @param array $fieldArray Field array
+     *
+     * @return void
      */
     protected function saveProductRelations($productId, array $fieldArray = null)
     {
@@ -1351,7 +1463,10 @@ class DataMapHooks
             $res = $database->exec_SELECTquery('*', 'tx_commerce_articles', 'uid_product = '.$productId, '', '', 1);
 
             $aRes = array();
-            if ($database->sql_num_rows($res) == 0) {
+            if ($database->sql_num_rows($res)) {
+                $aRes = $database->sql_fetch_assoc($res);
+                $aUid = $aRes['uid'];
+            } else {
                 // create a new article if no one exists
                 $pRes = $database->exec_SELECTquery('title', 'tx_commerce_products', 'uid = '.$productId, '', '', 1);
                 $productData = $database->sql_fetch_assoc($pRes);
@@ -1368,16 +1483,18 @@ class DataMapHooks
                     )
                 );
                 $aUid = $database->sql_insert_id();
-            } else {
-                $aRes = $database->sql_fetch_assoc($res);
-                $aUid = $aRes['uid'];
             }
 
             // check if the article has already a price
-            $res = $database->exec_SELECTquery('*', 'tx_commerce_article_prices', 'uid_article = '.$productId, '', '', 1);
-            if ($database->sql_num_rows($res) == 0 && $aRes['sys_language_uid'] < 1) {
+            $row = $database->exec_SELECTgetSingleRow(
+                '*',
+                'tx_commerce_article_prices',
+                'uid_article = ' . $productId
+            );
+            if (empty($row) && $aRes['sys_language_uid'] < 1) {
                 // create a new price if no one exists
-                $database->exec_INSERTquery('tx_commerce_article_prices',
+                $database->exec_INSERTquery(
+                    'tx_commerce_article_prices',
                     array(
                         'pid' => $fieldArray['pid'],
                         'uid_article' => $aUid,
@@ -1391,7 +1508,11 @@ class DataMapHooks
         $delete = true;
         if (isset($fieldArray['categories'])) {
             $catList = array();
-            $res = $database->exec_SELECTquery('uid_foreign', 'tx_commerce_products_categories_mm', 'uid_local = '.$productId);
+            $res = $database->exec_SELECTquery(
+                'uid_foreign',
+                'tx_commerce_products_categories_mm',
+                'uid_local = ' . $productId
+            );
             while (($sres = $database->sql_fetch_assoc($res))) {
                 $catList[] = $sres['uid_foreign'];
             }
@@ -1412,7 +1533,13 @@ class DataMapHooks
             // extract all attributes from FlexForm
             $ffData = GeneralUtility::xml2array($fieldArray['attributes']);
             if (is_array($ffData)) {
-                $this->belib->mergeAttributeListFromFFData($ffData['data']['sDEF']['lDEF'], 'ct_', $correlationTypeList, $productId, $paList);
+                $this->belib->mergeAttributeListFromFFData(
+                    $ffData['data']['sDEF']['lDEF'],
+                    'ct_',
+                    $correlationTypeList,
+                    $productId,
+                    $paList
+                );
             }
             // get the list of uid_foreign and save relations for this category
             $uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true, array('uid_correlationtype'));
@@ -1433,7 +1560,14 @@ class DataMapHooks
              * Rebuild the XML (last param set to true)
              * Fixes that l10n of products had invalid XML attributes
              */
-            $this->belib->updateXML('attributes', 'tx_commerce_products', $productId, 'product', $correlationTypeList, true);
+            $this->belib->updateXML(
+                'attributes',
+                'tx_commerce_products',
+                $productId,
+                'product',
+                $correlationTypeList,
+                true
+            );
 
             // update the XML for this product, we remove everything that is not
             // set for current attributes
@@ -1466,7 +1600,13 @@ class DataMapHooks
             if (is_array($articles) && !empty($articles)) {
                 $uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true);
                 foreach ($articles as $article) {
-                    $this->belib->saveRelations($article['uid'], $uidList, 'tx_commerce_articles_article_attributes_mm', true, false);
+                    $this->belib->saveRelations(
+                        $article['uid'],
+                        $uidList,
+                        'tx_commerce_articles_article_attributes_mm',
+                        true,
+                        false
+                    );
                 }
             }
         }
@@ -1497,7 +1637,7 @@ class DataMapHooks
                         // bit different first we delete all existing attributes
                         $database->exec_DELETEquery(
                             'tx_commerce_products_attributes_mm',
-                            'uid_local = '.$productId.' AND uid_foreign = '.$attributeKey
+                            'uid_local = ' . $productId . ' AND uid_foreign = ' . $attributeKey
                         );
 
                         // now explode the data
@@ -1529,7 +1669,7 @@ class DataMapHooks
                         $updateArrays = $this->belib->getUpdateData($attributeData, $ffDataItem['vDEF'], $productId);
                         $database->exec_UPDATEquery(
                             'tx_commerce_products_attributes_mm',
-                            'uid_local = '.$productId.' AND uid_foreign = '.$attributeKey,
+                            'uid_local = ' . $productId . ' AND uid_foreign = ' . $attributeKey,
                             $updateArrays[0]
                         );
                     }
@@ -1542,7 +1682,7 @@ class DataMapHooks
                                 // bit different first we delete all existing attributes
                                 $database->exec_DELETEquery(
                                     'tx_commerce_articles_article_attributes_mm',
-                                    'uid_local = '.$article['uid'].' AND uid_foreign = '.$attributeKey
+                                    'uid_local = ' . $article['uid'] . ' AND uid_foreign = ' . $attributeKey
                                 );
 
                                 // now explode the data
@@ -1556,7 +1696,11 @@ class DataMapHooks
 
                                     ++$attributeCount;
 
-                                    $updateData = $this->belib->getUpdateData($attributeData, $attributeValue, $productId);
+                                    $updateData = $this->belib->getUpdateData(
+                                        $attributeData,
+                                        $attributeValue,
+                                        $productId
+                                    );
                                     $database->exec_INSERTquery(
                                         'tx_commerce_articles_article_attributes_mm',
                                         array_merge(
@@ -1596,7 +1740,7 @@ class DataMapHooks
                                     'uid_local = '.$article['uid'].' AND uid_foreign = '.$attributeKey
                                 );
 
-                                if ($database->sql_num_rows($res) > 0) {
+                                if ($database->sql_num_rows($res)) {
                                     $database->exec_UPDATEquery(
                                         'tx_commerce_articles_article_attributes_mm',
                                         'uid_local = '.$article['uid'].' AND uid_foreign = '.$attributeKey,
@@ -1641,7 +1785,11 @@ class DataMapHooks
         }
 
         // Check if we do have some localized products an call the method recursivly
-        $resLocalised = $database->exec_SELECTquery('uid', 'tx_commerce_products', 'deleted = 0 and l18n_parent = '.$productId);
+        $resLocalised = $database->exec_SELECTquery(
+            'uid',
+            'tx_commerce_products',
+            'deleted = 0 AND l18n_parent = ' . $productId
+        );
         while (($rowLocalised = $database->sql_fetch_assoc($resLocalised))) {
             $this->saveProductRelations($rowLocalised['uid'], $fieldArray);
         }
@@ -1677,6 +1825,7 @@ class DataMapHooks
 
         return $result;
     }
+
 
     /**
      * Get backend user.

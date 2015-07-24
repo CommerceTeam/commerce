@@ -103,7 +103,7 @@ class ArticleRepository extends Repository
                 '',
                 $orderField
             );
-            if ($database->sql_num_rows($result) > 0) {
+            if ($database->sql_num_rows($result)) {
                 while (($data = $database->sql_fetch_assoc($result))) {
                     $feGroups = \TYPO3\CMS\Core\Utility\GeneralUtility::intExplode(',', $data['fe_group'], true);
                     if (!empty($feGroups)) {
@@ -149,7 +149,7 @@ class ArticleRepository extends Repository
                 'tx_commerce_article_prices',
                 'uid_article = '.$uid.' AND price_scale_amount_start >= '.$count.$proofSql
             );
-            if ($database->sql_num_rows($result) > 0) {
+            if ($database->sql_num_rows($result)) {
                 while (($data = $database->sql_fetch_assoc($result))) {
                     $priceUidList[$data['price_scale_amount_start']][$data['price_scale_amount_end']] = $data['uid'];
                 }

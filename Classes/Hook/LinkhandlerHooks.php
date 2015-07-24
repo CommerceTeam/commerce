@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Hook;
 
 /*
@@ -35,16 +34,21 @@ class LinkhandlerHooks
     /**
      * Main function.
      *
-     * @param string                $linktxt            Link text
-     * @param array                 $conf               Configuration
-     * @param string                $linkHandlerKeyword Keyword
-     * @param string                $linkHandlerValue   Value
-     * @param array                 $linkParameter      Link parameter
-     * @param ContentObjectRenderer $pObj               Parent
-     
+     * @param string $linktxt Link text
+     * @param array $conf Configuration
+     * @param string $linkHandlerKeyword Keyword
+     * @param string $linkHandlerValue Value
+     * @param string $linkParameter Link parameter
+     * @param ContentObjectRenderer $pObj Parent
+
      * @return string
      */
-    public function main($linktxt, array $conf, $linkHandlerKeyword, $linkHandlerValue, array $linkParameter,
+    public function main(
+        $linktxt,
+        array $conf,
+        $linkHandlerKeyword,
+        $linkHandlerValue,
+        $linkParameter,
         ContentObjectRenderer &$pObj
     ) {
         $this->pObj = &$pObj;
@@ -56,16 +60,16 @@ class LinkhandlerHooks
             $params = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(':', $linkData);
             if (isset($params[0])) {
                 if ($params[0] == 'tx_commerce_products') {
-                    $addparams .= '&tx_commerce_pi1[showUid]='.(int) $params[1];
+                    $addparams .= '&tx_commerce_pi1[showUid]=' . (int) $params[1];
                 } elseif ($params[0] == 'tx_commerce_categories') {
-                    $addparams .= '&tx_commerce_pi1[catUid]='.(int) $params[1];
+                    $addparams .= '&tx_commerce_pi1[catUid]=' . (int) $params[1];
                 }
             }
             if (isset($params[2])) {
                 if ($params[2] == 'tx_commerce_products') {
-                    $addparams .= '&tx_commerce_pi1[showUid]='.(int) $params[3];
+                    $addparams .= '&tx_commerce_pi1[showUid]=' . (int) $params[3];
                 } elseif ($params[2] == 'tx_commerce_categories') {
-                    $addparams .= '&tx_commerce_pi1[catUid]='.(int) $params[3];
+                    $addparams .= '&tx_commerce_pi1[catUid]=' . (int) $params[3];
                 }
             }
         }
@@ -79,7 +83,9 @@ class LinkhandlerHooks
          *
          * @var ContentObjectRenderer
          */
-        $localcObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $localcObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            'TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer'
+        );
 
         $displayPageId = $this->getFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi1.']['overridePid'];
         if (empty($displayPageId)) {
@@ -93,7 +99,7 @@ class LinkhandlerHooks
         if (is_array($linkParamArray)) {
             $linkParamArray = array_splice($linkParamArray, 1);
             if (!empty($linkParamArray)) {
-                $linkParameter = $displayPageId.' '.implode(' ', $linkParamArray);
+                $linkParameter = $displayPageId . ' ' . implode(' ', $linkParamArray);
             } else {
                 $linkParameter = $displayPageId;
             }
@@ -108,6 +114,7 @@ class LinkhandlerHooks
 
         return $localcObj->typoLink($linktxt, $lconf);
     }
+
 
     /**
      * Get typoscript frontend controller.

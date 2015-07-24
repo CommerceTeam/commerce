@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\ViewHelpers;
 
 /*
@@ -135,6 +134,8 @@ class TreelibTceforms
      * Init.
      *
      * @param array $parameter An array with additional configuration options.
+     *
+     * @return void
      */
     public function init(array $parameter)
     {
@@ -155,6 +156,8 @@ class TreelibTceforms
      * Set the selected items.
      *
      * @param array $itemArray Item array
+     *
+     * @return void
      */
     public function setItemArray(array $itemArray)
     {
@@ -165,6 +168,8 @@ class TreelibTceforms
      * Return the processed aray of selected items.
      *
      * @return array
+     *
+     * @return void
      */
     public function getItemArrayProcessed()
     {
@@ -222,28 +227,26 @@ class TreelibTceforms
         if ($width == null) {
             list($width, $height) = $this->calcFrameSizeCss();
         }
-        $divStyle = 'position:relative; left:0px; top:0px; height:'.$height.'; width:'.$width.
+        $divStyle = 'position:relative; left:0px; top:0px; height:' . $height . '; width:' . $width .
             ';border:solid 1px;overflow:auto;background:#fff;';
-        $divFrame = '<div  name="'.$this->PA['itemFormElName'].'_selTree" style="'.htmlspecialchars($divStyle).'">';
-
-        $divFrame .= $this->treeContent;
-        $divFrame .= '</div>';
+        $divFrame = '<div  name="' . $this->PA['itemFormElName'] . '_selTree" style="'  .htmlspecialchars($divStyle) .
+            '">' . $this->treeContent . '</div>';
 
             // include function
-        $divFrame .= '<script type="text/javascript">';
-        $divFrame .= '
-			function jumpTo(id, linkObj, highLightID, script) {
-				var catUid = id.substr(id.lastIndexOf("=") + 1); //We can leave out the "="
-				var text = (linkObj.firstChild) ? linkObj.firstChild.nodeValue : "Unknown";
-				//Params (field, value, caption)
-				setFormValueFromBrowseWin("'.$this->PA['itemFormElName'].'", catUid, text);
-			}';
-        $divFrame .= '</script>';
-        $divFrame .= '<script src="'.$this->tceforms->backPath.'js/tree.js"></script>
-			<script type="text/javascript">
-			Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct";
-			</script>
-		';
+        $divFrame .= '<script type="text/javascript">
+            function jumpTo(id, linkObj, highLightID, script) {
+                // We can leave out the "="
+                var catUid = id.substr(id.lastIndexOf("=") + 1);
+                var text = (linkObj.firstChild) ? linkObj.firstChild.nodeValue : "Unknown";
+                // Params (field, value, caption)
+                setFormValueFromBrowseWin("' . $this->PA['itemFormElName'] . '", catUid, text);
+            }
+            </script>';
+        $divFrame .= '<script src="' . $this->tceforms->backPath . 'js/tree.js"></script>
+            <script type="text/javascript">
+            Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct";
+            </script>
+        ';
 
         return $divFrame;
     }
@@ -255,8 +258,7 @@ class TreelibTceforms
      *
      * @param int $itemCountSelectable Item count selectable
      *
-     * @return array
-     *               Size with array($width, $height)
+     * @return array Size with array($width, $height)
      */
     public function calcFrameSizeCss($itemCountSelectable = null)
     {
@@ -270,7 +272,8 @@ class TreelibTceforms
         $height = $this->config['autoSizeMax'] ?
             \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange(
                 $itemCountSelectable,
-                \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->config['size'], 1), $this->config['autoSizeMax']
+                \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->config['size'], 1),
+                $this->config['autoSizeMax']
             ) :
             $this->config['size'];
 
@@ -288,12 +291,12 @@ class TreelibTceforms
     /**
      * In effect this function returns an array with the preselected item
      * (aka Mountpoints that are already assigned) to the user
-     *    [0] => 5|Fernseher
+     *      [0] => 5|Fernseher
      *  Meta: [0] => $key|$caption.
      *
-     * @param object $tree   Browsetree Object
-     * @param int    $userid User UID (this is not NECESSARILY
-     *                       the UID of the currently logged-in user
+     * @param object $tree Browsetree Object
+     * @param int $userid User UID (this is not NECESSARILY
+     *      the UID of the currently logged-in user
      *
      * @return array
      */
@@ -302,14 +305,14 @@ class TreelibTceforms
         /**
          * Category mount.
          *
-         * @var \CommerceTeam\Commerce\Tree\CategoryMounts
+         * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
          */
-        $mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-        $mounts->init($userid);
+        $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mount->init($userid);
 
-        $preselected = $mounts->getMountDataLabeled();
+        $preselected = $mount->getMountDataLabeled();
 
-            // Modify the Array - separate the uid and label with a '|'
+        // Modify the Array - separate the uid and label with a '|'
         $l = count($preselected);
 
         for ($i = 0; $i < $l; ++$i) {
@@ -327,9 +330,9 @@ class TreelibTceforms
      *    [0] => 5|Fernseher
      *  Meta: [0] => $key|$caption.
      *
-     * @param object $tree     Browsetree Object
-     * @param int    $groupuid User UID (this is not NECESSARILY
-     *                         the UID of the currently logged-in user
+     * @param object $tree Browsetree Object
+     * @param int $groupuid User UID (this is not NECESSARILY
+     *      the UID of the currently logged-in user
      *
      * @return array
      */
@@ -338,14 +341,14 @@ class TreelibTceforms
         /**
          * Category mount.
          *
-         * @var \CommerceTeam\Commerce\Tree\CategoryMounts
+         * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
          */
-        $mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-        $mounts->initByGroup($groupuid);
+        $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mount->initByGroup($groupuid);
 
-        $preselected = $mounts->getMountDataLabeled();
+        $preselected = $mount->getMountDataLabeled();
 
-            // Modify the Array - separate the uid and label with a '|'
+        // Modify the Array - separate the uid and label with a '|'
         $l = count($preselected);
 
         for ($i = 0; $i < $l; ++$i) {
@@ -360,11 +363,11 @@ class TreelibTceforms
     /**
      * In effect this function returns an array with the preselected item
      * (aka Parent Categories that are already assigned)
-     *    [0] => 5|Fernseher
+     *      [0] => 5|Fernseher
      *  Meta: [0] => $key|$caption.
      *
-     * @param object $tree   Browsetree Object
-     * @param int    $catUid Cat UID
+     * @param object $tree Browsetree Object
+     * @param int $catUid Cat UID
      *
      * @return array
      */
@@ -378,40 +381,40 @@ class TreelibTceforms
         /**
          * Category.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\Category
+         * @var \CommerceTeam\Commerce\Domain\Model\Category $category
          */
-        $cat = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $catUid);
-        $cat->loadData();
-        $parent = $cat->getParentCategories();
+        $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $catUid);
+        $category->loadData();
+        $parent = $category->getParentCategories();
 
         $this->itemArrayProcessed = array();
 
         /**
          * Category mounts.
          *
-         * @var \CommerceTeam\Commerce\Tree\CategoryMounts
+         * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
          */
-        $mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-        $mounts->init($this->getBackendUser()->user['uid']);
+        $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mount->init($this->getBackendUser()->user['uid']);
 
         if (is_array($parent)) {
             for ($i = 0, $l = count($parent); $i < $l; ++$i) {
                 /**
                  * Category.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Category
+                 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
-                $parentObject = &$parent[$i];
-                $parentObject->loadData();
+                $category = &$parent[$i];
+                $category->loadData();
 
                 // Separate Key and Title with a |
-                $title = ($parentObject->isPermissionSet('show') && $mounts->isInCommerceMounts($parentObject->getUid())) ?
-                    $parentObject->getTitle() :
+                $title = ($category->isPermissionSet('show') && $mount->isInCommerceMounts($category->getUid())) ?
+                    $category->getTitle() :
                     $this->getLanguageService()->sL(
                         'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess',
                         1
                     );
-                $this->itemArrayProcessed[] = $parentObject->getUid().'|'.$title;
+                $this->itemArrayProcessed[] = $category->getUid().'|'.$title;
             }
         }
 
@@ -421,11 +424,11 @@ class TreelibTceforms
     /**
      * In effect this function returns an array with the preselected item
      * (aka Categories that are already assigned to the plugin)
-     *    [0] => 5|Fernseher
+     *      [0] => 5|Fernseher
      *  Meta: [0] => $key|$caption.
      *
-     * @param object $tree   Browsetree Object
-     * @param int    $catUid Cat UID
+     * @param object $tree Browsetree Object
+     * @param int $catUid Cat UID
      *
      * @return array
      */
@@ -438,7 +441,7 @@ class TreelibTceforms
         /**
          * Category.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\Category
+         * @var \CommerceTeam\Commerce\Domain\Model\Category $category
          */
         $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $catUid);
         $category->loadData();
@@ -448,13 +451,13 @@ class TreelibTceforms
         /**
          * Category mounts.
          *
-         * @var \CommerceTeam\Commerce\Tree\CategoryMounts
+         * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
          */
-        $mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-        $mounts->init($this->getBackendUser()->user['uid']);
+        $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mount->init($this->getBackendUser()->user['uid']);
 
         // Separate Key and Title with a |
-        $title = ($category->isPermissionSet('show') && $mounts->isInCommerceMounts($category->getUid())) ?
+        $title = ($category->isPermissionSet('show') && $mount->isInCommerceMounts($category->getUid())) ?
             $category->getTitle() :
             $this->getLanguageService()->sL(
                 'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess',
@@ -468,11 +471,11 @@ class TreelibTceforms
     /**
      * In effect this function returns an array with the preselected item
      * (aka Parent Categories that are already assigned to the product!)
-     *    [0] => 5|Fernseher
+     *      [0] => 5|Fernseher
      *  Meta: [0] => $key|$caption.
      *
      * @param object $tree Browsetree Object
-     * @param int    $uid  Product UID
+     * @param int $uid Product UID
      *
      * @return array
      */
@@ -486,30 +489,34 @@ class TreelibTceforms
         /**
          * Product.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\Product
+         * @var \CommerceTeam\Commerce\Domain\Model\Product $product
          */
-        $prod = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uid);
-        $prod->loadData();
+        $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uid);
+        $product->loadData();
 
         // read parent categories from the live product
-        if ($prod->getT3verOid() != 0) {
-            $prod->init($prod->getT3verOid());
-            $prod->loadData();
+        if ($product->getT3verOid() != 0) {
+            $product->init($product->getT3verOid());
+            $product->loadData();
         }
 
-        $parent = $prod->getParentCategories();
+        $parentCategories = $product->getParentCategories();
 
         // Load each category and push into the array
         $cat = null;
         $itemArray = array();
 
-        for ($i = 0, $l = count($parent); $i < $l; ++$i) {
+        $parentCategoryCount = count($parentCategories);
+        for ($i = 0, $l = $parentCategoryCount; $i < $l; ++$i) {
             /**
              * Category.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Category
+             * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
-            $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $parent[$i]);
+            $category = GeneralUtility::makeInstance(
+                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                $parentCategories[$i]
+            );
             $category->loadData();
 
             $title = ($category->isPermissionSet('show')) ?
@@ -518,7 +525,7 @@ class TreelibTceforms
                     'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess',
                     1
                 );
-                // Separate Key and Title with a |
+            // Separate Key and Title with a |
             $itemArray[] = $category->getUid().'|'.$title;
         }
 
@@ -553,32 +560,32 @@ class TreelibTceforms
                 /**
                  * Product.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Product
+                 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
                  */
-                $prod = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uid);
-                $prod->loadData();
+                $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uid);
+                $product->loadData();
 
-                $itemArray[] = $value.'|'.$prod->getTitle();
+                $itemArray[] = $value . '|' . $product->getTitle();
             } elseif ('tx_commerce_articles' == $table) {
                 /**
                  * Article.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Article
+                 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
                  */
                 $article = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $uid);
                 $article->loadData();
 
-                $itemArray[] = $value.'|'.$article->getTitle();
+                $itemArray[] = $value . '|' . $article->getTitle();
             } elseif ('tx_commerce_categories' == $table) {
                 /**
                  * Category.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Category
+                 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
                 $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $uid);
                 $category->loadData();
 
-                $itemArray[] = $value.'|'.$category->getTitle();
+                $itemArray[] = $value . '|' . $category->getTitle();
             } else {
                 // Hook:
                 $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks(

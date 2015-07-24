@@ -355,7 +355,7 @@ class CategoryRepository extends Repository
                         'uid',
                         'tx_commerce_products',
                         'l18n_parent = '.(int) $row['uid'].' AND sys_language_uid = '.$this->lang_uid.
-                            $this->enableFields('tx_commerce_products', $frontend->showHiddenRecords)
+                        $this->enableFields('tx_commerce_products', $frontend->showHiddenRecords)
                     );
                     if ($database->sql_num_rows($lresult)) {
                         $data[] = (int) $row['uid'];

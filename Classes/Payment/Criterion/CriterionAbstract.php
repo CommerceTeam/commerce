@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Payment\Criterion;
 
 /*
@@ -29,14 +28,14 @@ abstract class CriterionAbstract implements \CommerceTeam\Commerce\Payment\Crite
      *
      * @var \CommerceTeam\Commerce\Controller\BaseController
      */
-    protected $pibaseObject = null;
+    protected $pibaseObject;
 
     /**
      * Payment object.
      *
      * @var \CommerceTeam\Commerce\Payment\PaymentInterface
      */
-    protected $paymentObject = null;
+    protected $paymentObject;
 
     /**
      * Options of this criterion.
@@ -53,8 +52,10 @@ abstract class CriterionAbstract implements \CommerceTeam\Commerce\Payment\Crite
      *
      * @return self
      */
-    public function __construct(\CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject, array $options = array())
-    {
+    public function __construct(
+        \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject,
+        array $options = array()
+    ) {
         $this->paymentObject = $paymentObject;
         $this->pibaseObject = $this->paymentObject->getParentObject();
         $this->options = $options;

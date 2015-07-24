@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\ViewHelpers\Browselinks;
 
 /*
@@ -14,6 +13,8 @@ namespace CommerceTeam\Commerce\ViewHelpers\Browselinks;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Implements the \CommerceTeam\Commerce\Tree\Leaf\View for Product.
@@ -54,26 +55,29 @@ class ProductView extends \CommerceTeam\Commerce\Tree\Leaf\View
      */
     public function getJumpToParam(array &$row)
     {
+        $result = 'commerce:tx_commerce_products:' . $row['uid'] . '|tx_commerce_categories:' . $row['item_parent'];
+
         if (!is_array($row)) {
             if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+                GeneralUtility::devLog(
                     'getJumpToParam (productview) gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
             }
 
-            return '';
+            $result = '';
         }
-        $res = 'commerce:tx_commerce_products:'.$row['uid'].'|tx_commerce_categories:'.$row['item_parent'];
 
-        return $res;
+        return $result;
     }
 
     /**
      * Setter.
      *
      * @param int $uid Uid
+     *
+     * @return void
      */
     public function setOpenProduct($uid)
     {
@@ -84,8 +88,8 @@ class ProductView extends \CommerceTeam\Commerce\Tree\Leaf\View
      * Wrapping $title in a-tags.
      *
      * @param string $title Title string
-     * @param array  $row   Item record
-     * @param int    $bank  Bank pointer (which mount point number)
+     * @param array $row Item record
+     * @param int $bank Bank pointer (which mount point number)
      *
      * @return string
      */
@@ -93,8 +97,9 @@ class ProductView extends \CommerceTeam\Commerce\Tree\Leaf\View
     {
         if (!is_array($row) || !is_numeric($bank)) {
             if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'wrapTitle (CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\ProductView) gets passed invalid parameters.',
+                GeneralUtility::devLog(
+                    'wrapTitle (CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\ProductView)
+                        gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -104,13 +109,13 @@ class ProductView extends \CommerceTeam\Commerce\Tree\Leaf\View
         }
 
         // Max. size for Title of 30
-        $title = ('' != trim($title)) ? \TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
+        $title = trim($title) != '' ? GeneralUtility::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
 
-        $aOnClick = 'return link_commerce(\''.$this->getJumpToParam($row).'\');';
+        $aOnClick = 'return link_commerce(\'' . $this->getJumpToParam($row) . '\');';
 
         $style = ($row['uid'] == $this->openProd) ? 'style="color: red; font-weight: bold"' : '';
-        $res = '<a href="#" onclick="'.htmlspecialchars($aOnClick).'" '.$style.'>'.$title.'</a>';
+        $result = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '" ' . $style . '>' . $title . '</a>';
 
-        return $res;
+        return $result;
     }
 }

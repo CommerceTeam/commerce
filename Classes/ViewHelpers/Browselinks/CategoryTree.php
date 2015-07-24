@@ -14,6 +14,8 @@ namespace CommerceTeam\Commerce\ViewHelpers\Browselinks;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use CommerceTeam\Commerce\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Implements a Categorytree for the Link-Commerce Module
@@ -71,34 +73,34 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
         /**
          * Category leaf.
          *
-         * @var \CommerceTeam\Commerce\Tree\Leaf\Category
+         * @var \CommerceTeam\Commerce\Tree\Leaf\Category $categoryLeaf
          */
-        $categoryLeaf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Category');
+        $categoryLeaf = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Category');
 
         // Instantiate the categorydata, -view and set
         // the permission mask (or the string rep.)
         /**
          * Category data.
          *
-         * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryData
+         * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryData $categorydata
          */
-        $categorydata = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryData');
-        $categorydata->setPermsMask(\CommerceTeam\Commerce\Utility\BackendUtility::getPermMask($this->minCategoryPerms));
+        $categorydata = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryData');
+        $categorydata->setPermsMask(BackendUtility::getPermMask($this->minCategoryPerms));
 
         /**
          * Category view.
          *
-         * @var \CommerceTeam\Commerce\ViewHelpers\Browselinks\CategoryView
+         * @var \CommerceTeam\Commerce\ViewHelpers\Browselinks\CategoryView $categoryview
          */
-        $categoryview = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        $categoryview = GeneralUtility::makeInstance(
             'CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\CategoryView'
         );
         // disable the root onclick if the perms are set to editcontent
         // - this way we cannot select the root as a parent for any content item
         $categoryview->noRootOnclick(($this->minCategoryPerms == 'editcontent'));
 
-            // Configure the noOnclick for the leaf
-        if (\TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Category')) {
+        // Configure the noOnclick for the leaf
+        if (GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Category')) {
             $categoryview->noOnclick();
         }
 
@@ -110,30 +112,30 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
         /**
          * Product leaf.
          *
-         * @var \CommerceTeam\Commerce\Tree\Leaf\Product
+         * @var \CommerceTeam\Commerce\Tree\Leaf\Product $productleaf
          */
-        $productleaf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Product');
+        $productleaf = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Product');
 
         /**
          * Product view.
          *
-         * @var \CommerceTeam\Commerce\ViewHelpers\Browselinks\ProductView
+         * @var \CommerceTeam\Commerce\ViewHelpers\Browselinks\ProductView $productview
          */
-        $productview = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        $productview = GeneralUtility::makeInstance(
             'CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\ProductView'
         );
 
         // Configure the noOnclick for the leaf
-        if (\TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Product')) {
+        if (GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Product')) {
             $productview->noOnclick();
         }
 
         /**
          * Product data.
          *
-         * @var \CommerceTeam\Commerce\Tree\Leaf\ProductData
+         * @var \CommerceTeam\Commerce\Tree\Leaf\ProductData $productData
          */
-        $productData = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductData');
+        $productData = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductData');
 
         $productleaf->initBasic($productview, $productData);
 
@@ -178,7 +180,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
         /**
          * Product view.
          *
-         * @var \CommerceTeam\Commerce\ViewHelpers\Browselinks\ProductView
+         * @var \CommerceTeam\Commerce\ViewHelpers\Browselinks\ProductView $productView
          */
         $productView = $this->getLeaf(0)->getChildLeaf(0)->view;
         $productView->setOpenProduct($uid);
@@ -197,7 +199,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
         /**
          * Category view.
          *
-         * @var \CommerceTeam\Commerce\ViewHelpers\Browselinks\CategoryView
+         * @var \CommerceTeam\Commerce\ViewHelpers\Browselinks\CategoryView $categoryView
          */
         $categoryView = $this->getLeaf(0)->view;
         $categoryView->setOpenCategory($uid);
@@ -216,7 +218,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
         // test parameters
         if (!is_numeric($uid)) {
             if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+                GeneralUtility::devLog(
                     'getCategory (categorytree) gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
@@ -231,7 +233,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
         // check if there is a category leaf
         if (is_null($categoryLeaf)) {
             if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+                GeneralUtility::devLog(
                     'getCategory (categorytree) cannot find the category leaf.',
                     COMMERCE_EXTKEY,
                     3
@@ -261,7 +263,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
             $positions = array();
             $this->savePosition($positions);
             if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+                GeneralUtility::devLog(
                     'Resetting the Positions of the Browsetree. Were damaged.',
                     COMMERCE_EXTKEY,
                     2
@@ -269,7 +271,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
             }
         }
 
-        $plusMinus = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('PM');
+        $plusMinus = GeneralUtility::_GP('PM');
         // IE takes # as anchor
         if (($plusMinsPosition = strpos($plusMinus, '#')) !== false) {
             $plusMinus = substr($plusMinus, 0, $plusMinsPosition);
@@ -330,42 +332,42 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
             /**
              * Category mount.
              *
-             * @var \CommerceTeam\Commerce\Tree\CategoryMounts
+             * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
              */
-            $mounts = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-            $mounts->init($this->getBackendUser()->user['uid']);
+            $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+            $mount->init($this->getBackendUser()->user['uid']);
 
             // only go if the item is in the mounts
-            if ($mounts->isInCommerceMounts($this->openCategory)) {
-                $mountUids = $mounts->getMountData();
+            if ($mount->isInCommerceMounts($this->openCategory)) {
+                $mountUids = $mount->getMountData();
 
                 // get the category parents so we can open them as well
                 // load the category and go up the tree until we either reach a mount or a root
                 /**
                  * Category.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Category
+                 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
-                $cat = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                $category = GeneralUtility::makeInstance(
                     'CommerceTeam\\Commerce\\Domain\\Model\\Category',
                     $this->openCategory
                 );
-                $cat->loadData();
+                $category->loadData();
 
-                $tmpCats = $cat->getParentCategories();
+                $parentCategories = $category->getParentCategories();
                 $tmpParents = null;
                 $i = 1000;
 
                 // array with all the uids
                 $cats = array($this->openCategory);
 
-                while (!is_null($cat = @array_pop($tmpCats))) {
+                while (!is_null($category = @array_pop($parentCategories))) {
                     // Prevent endless recursion
                     if ($i < 0) {
                         if (TYPO3_DLOG) {
-                            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+                            GeneralUtility::devLog(
                                 'initializePositionSaving (link_categorytree) has aborted
-								because $i has reached its allowed recursive maximum.',
+                                because $i has reached its allowed recursive maximum.',
                                 COMMERCE_EXTKEY,
                                 3
                             );
@@ -376,12 +378,12 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
 
                     // true if we can find any parent category
                     // of this category in the commerce mounts
-                    $cats[] = $cat->getUid();
+                    $cats[] = $category->getUid();
 
-                    $tmpParents = $cat->getParentCategories();
+                    $tmpParents = $category->getParentCategories();
 
                     if (is_array($tmpParents) && !empty($tmpParents)) {
-                        $tmpCats = array_merge($tmpCats, $tmpParents);
+                        $parentCategories = array_merge($parentCategories, $tmpParents);
                     }
                     --$i;
                 }
@@ -415,7 +417,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
             /**
              * Leaf.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\Leaf
+             * @var \CommerceTeam\Commerce\Tree\Leaf\Leaf $leaf
              */
             $leaf = $this->leafs[$i];
             $leaf->setDataPositions($positions);

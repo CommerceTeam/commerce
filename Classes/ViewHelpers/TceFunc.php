@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\ViewHelpers;
 
 /*
@@ -39,8 +38,8 @@ class TceFunc
      * of (category) trees.
      * Depending on the tree it display full trees or root elements only.
      *
-     * @param array      $parameter An array with additional configuration options.
-     * @param FormEngine $fObj      TCEForms object reference
+     * @param array $parameter An array with additional configuration options.
+     * @param FormEngine $fObj TCEForms object reference
      *
      * @return string The HTML code for the TCEform field
      */
@@ -87,20 +86,20 @@ class TceFunc
         /**
          * Category tree.
          *
-         * @var \CommerceTeam\Commerce\Tree\CategoryTree
+         * @var \CommerceTeam\Commerce\Tree\CategoryTree $categoryTree
          */
-        $browseTrees = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
+        $categoryTree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
         // disabled clickmenu
-        $browseTrees->noClickmenu();
+        $categoryTree->noClickmenu();
         // set the minimum permissions
-        $browseTrees->setMinCategoryPerms($perms);
+        $categoryTree->setMinCategoryPerms($perms);
 
         if ($config['allowProducts']) {
-            $browseTrees->setBare(false);
+            $categoryTree->setBare(false);
         }
 
         if ($config['substituteRealValues']) {
-            $browseTrees->substituteRealValues();
+            $categoryTree->substituteRealValues();
         }
 
         /*
@@ -108,20 +107,20 @@ class TceFunc
          * Values is a comma-separated list of leaf names
          * (e.g. \CommerceTeam\Commerce\Tree\Leaf\Category)
          */
-        $browseTrees->disallowClick($config['disallowClick']);
+        $categoryTree->disallowClick($config['disallowClick']);
 
-        $browseTrees->init();
+        $categoryTree->init();
 
         /**
          * Browse tree.
          *
-         * @var \CommerceTeam\Commerce\ViewHelpers\TreelibTceforms
+         * @var \CommerceTeam\Commerce\ViewHelpers\TreelibTceforms $renderBrowseTrees
          */
         $renderBrowseTrees = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\TreelibTceforms');
         $renderBrowseTrees->init($parameter);
 
         // Render the tree
-        $renderBrowseTrees->renderBrowsableMountTrees($browseTrees);
+        $renderBrowseTrees->renderBrowsableMountTrees($categoryTree);
 
         $thumbnails = '';
         if (!$disabled) {
@@ -139,29 +138,46 @@ class TceFunc
             // existing Record
             switch ($table) {
                 case 'tx_commerce_categories':
-                    $itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreePCategory($browseTrees, $row['uid']);
+                    $itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreePCategory(
+                        $categoryTree,
+                        $row['uid']
+                    );
                     break;
 
                 case 'tx_commerce_products':
-                    $itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeProduct($browseTrees, $row['uid']);
+                    $itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeProduct(
+                        $categoryTree,
+                        $row['uid']
+                    );
                     break;
 
                 case 'be_users':
-                    $itemArray = $renderBrowseTrees->processItemArrayForBrowseableTree($browseTrees, $row['uid']);
+                    $itemArray = $renderBrowseTrees->processItemArrayForBrowseableTree(
+                        $categoryTree,
+                        $row['uid']
+                    );
                     break;
 
                 case 'be_groups':
-                    $itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeGroups($browseTrees, $row['uid']);
+                    $itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeGroups(
+                        $categoryTree,
+                        $row['uid']
+                    );
                     break;
 
                 case 'tt_content':
                     // Perform modification of the selected items array:
                     $itemArray = GeneralUtility::trimExplode(',', $parameter['itemFormElValue'], 1);
-                    $itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeCategory($browseTrees, $itemArray[0]);
+                    $itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeCategory(
+                        $categoryTree,
+                        $itemArray[0]
+                    );
                     break;
 
                 default:
-                    $itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeDefault($parameter['itemFormElValue']);
+                    $itemArray = $renderBrowseTrees->processItemArrayForBrowseableTreeDefault(
+                        $parameter['itemFormElValue']
+                    );
             }
         } else {
             // New record
@@ -171,7 +187,7 @@ class TceFunc
                     /**
                      * Category.
                      *
-                     * @var \CommerceTeam\Commerce\Domain\Model\Category
+                     * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                      */
                     $category = GeneralUtility::makeInstance(
                         'CommerceTeam\\Commerce\\Domain\\Model\\Category',
@@ -185,14 +201,14 @@ class TceFunc
                     /**
                      * Category.
                      *
-                     * @var \CommerceTeam\Commerce\Domain\Model\Category
+                     * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                      */
                     $category = GeneralUtility::makeInstance(
                         'CommerceTeam\\Commerce\\Domain\\Model\\Category',
                         $defVals['tx_commerce_products']['categories']
                     );
                     $category->loadData();
-                    $itemArray = array($category->getUid().'|'.$category->getTitle());
+                    $itemArray = array($category->getUid() . '|' . $category->getTitle());
                     break;
 
                 default:
@@ -225,11 +241,14 @@ class TceFunc
             $maxitems = 100000;
         }
 
-        $this->tceForms->requiredElements[$parameter['itemFormElName']] =
-            array($minitems, $maxitems, 'imgName' => $table.'_'.$row['uid'].'_'.$field);
+        $this->tceForms->requiredElements[$parameter['itemFormElName']] = array(
+            $minitems,
+            $maxitems,
+            'imgName' => $table . '_' . $row['uid'] . '_' . $field
+        );
 
-        $item = '<input type="hidden" name="'.$parameter['itemFormElName'].'_mul" value="'.($config['multiple'] ? 1 : 0).
-            '"'.$disabled.' />';
+        $item = '<input type="hidden" name="' . $parameter['itemFormElName'] . '_mul" value="' .
+            ($config['multiple'] ? 1 : 0) . '"' . $disabled . ' />';
 
         $params = array(
             'size' => $config['size'],
@@ -239,8 +258,8 @@ class TceFunc
             'maxitems' => $maxitems,
             'info' => '',
             'headers' => array(
-                'selector' => $this->tceForms->getLL('l_selected').':<br />',
-                'items' => ($disabled ? '' : $this->tceForms->getLL('l_items').':<br />'),
+                'selector' => $this->tceForms->getLL('l_selected') . ':<br />',
+                'items' => ($disabled ? '' : $this->tceForms->getLL('l_items') . ':<br />'),
             ),
             'noBrowser' => true,
             'readOnly' => $disabled,
@@ -269,7 +288,7 @@ class TceFunc
 		}
 
 		.x-tree-root-ct ul li.expanded ul {
-			background: url("'.$this->tceForms->backPath.'sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
+			background: url("' . $this->tceForms->backPath . 'sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
 		}
 
 		.x-tree-root-ct ul li.expanded.last ul {
@@ -284,16 +303,33 @@ class TceFunc
 		';
 
         $item .= $this->tceForms->dbFileIcons(
-            $parameter['itemFormElName'], $config['internal_type'], $config['allowed'], $itemArray, '', $params, $parameter['onFocus']
+            $parameter['itemFormElName'],
+            $config['internal_type'],
+            $config['allowed'],
+            $itemArray,
+            '',
+            $params,
+            $parameter['onFocus']
         );
 
-            // Wizards:
+        // Wizards:
         if (!$disabled) {
-            $specConf = $this->tceForms->getSpecConfFromString($parameter['extra'], $parameter['fieldConf']['defaultExtras']);
-            $altItem = '<input type="hidden" name="'.$parameter['itemFormElName'].'" value="'.
-                htmlspecialchars($parameter['itemFormElValue']).'" />';
-            $item = $this->tceForms->renderWizards(array($item, $altItem), $config['wizards'], $table, $row, $field, $parameter,
-                $parameter['itemFormElName'], $specConf);
+            $specConf = $this->tceForms->getSpecConfFromString(
+                $parameter['extra'],
+                $parameter['fieldConf']['defaultExtras']
+            );
+            $altItem = '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' .
+                htmlspecialchars($parameter['itemFormElValue']) . '" />';
+            $item = $this->tceForms->renderWizards(
+                array($item, $altItem),
+                $config['wizards'],
+                $table,
+                $row,
+                $field,
+                $parameter,
+                $parameter['itemFormElName'],
+                $specConf
+            );
         }
 
         return $item;

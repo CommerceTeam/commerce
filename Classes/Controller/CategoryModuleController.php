@@ -49,6 +49,18 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
     protected $body;
 
     /**
+     * Constructor
+     *
+     * @return self
+     */
+    public function __construct()
+    {
+        $GLOBALS['SOBE'] = $this;
+        parent::__construct();
+        $this->init();
+    }
+
+    /**
      * Initializing the module.
      */
     public function init()
@@ -138,7 +150,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                 /**
                  * Tree data.
                  *
-                 * @var \CommerceTeam\Commerce\Tree\Leaf\Data
+                 * @var \CommerceTeam\Commerce\Tree\Leaf\Data $treeData
                  */
                 $treeData = GeneralUtility::makeInstance($controlData['dataClass']);
                 $treeData->init();
@@ -150,10 +162,10 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             }
 
             $newRecordIcon = '
-				<!--
-					Link for creating a new record:
-				-->
-				<a href="'.htmlspecialchars($newRecordLink.'&returnUrl='.rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'))).
+                <!--
+                    Link for creating a new record:
+                -->
+                <a href="'.htmlspecialchars($newRecordLink.'&returnUrl='.rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'))).
                     '">'.IconUtility::getSpriteIcon('actions-document-new', array('title' => $language->getLL('editPage', 1))).'</a>';
         }
 
@@ -190,7 +202,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         /**
          * Category record list.
          *
-         * @var \CommerceTeam\Commerce\ViewHelpers\CategoryRecordList
+         * @var \CommerceTeam\Commerce\ViewHelpers\CategoryRecordList $dbList
          */
         $dbList = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\CategoryRecordList');
         $dbList->backPath = $this->getBackPath();
@@ -199,7 +211,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         /**
          * Backend utility.
          *
-         * @var \CommerceTeam\Commerce\Utility\BackendUserUtility
+         * @var \CommerceTeam\Commerce\Utility\BackendUserUtility $utility
          */
         $utility = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUserUtility');
         $dbList->calcPerms = $utility->calcPerms((array) BackendUtility::getRecord('tx_commerce_categories', $this->categoryUid));

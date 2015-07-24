@@ -14,6 +14,7 @@
 			<label index="mod_orders.navigation_title">Orders tree</label>
 			<label index="mod_statistic.navigation_title">Statistic tree</label>
 			<label index="mod_systemdata.navigation_title">Access tree</label>
+			<label index="mod_browselink.category_tree">Category Tree</label>
 
 			<label index="tt_content.list_type_pi1">Commerce: Product Listing</label>
 			<label index="tt_content.list_type_pi2">Commerce: Basket</label>

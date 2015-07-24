@@ -147,7 +147,7 @@ class OrderEditFunc
         /**
          * Page repository.
          *
-         * @var \CommerceTeam\Commerce\Domain\Repository\PageRepository
+         * @var \CommerceTeam\Commerce\Domain\Repository\PageRepository $pageRepository
          */
         $pageRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\PageRepository');
         $orderEditable = !empty($pageRepository->findEditFolderByUid($orderStoragePid));
@@ -372,7 +372,7 @@ class OrderEditFunc
             /**
              * Page repository.
              *
-             * @var \CommerceTeam\Commerce\Domain\Repository\PageRepository
+             * @var \CommerceTeam\Commerce\Domain\Repository\PageRepository $pageRepository
              */
             $pageRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\PageRepository');
             $page = $pageRepository->findByUid($localOrderPid);
@@ -531,7 +531,7 @@ class OrderEditFunc
         /**
          * Order record list.
          *
-         * @var \CommerceTeam\Commerce\ViewHelpers\OrderRecordlist
+         * @var \CommerceTeam\Commerce\ViewHelpers\OrderRecordlist $dblist
          */
         $dblist = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\OrderRecordlist');
         $dblist->backPath = $this->getBackPath();

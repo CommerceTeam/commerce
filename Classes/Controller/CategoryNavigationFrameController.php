@@ -109,7 +109,7 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
         /**
          * Document template.
          *
-         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
+         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
          */
         $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
         $this->doc = $doc;
@@ -276,18 +276,16 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
      * Makes the AJAX call to expand or collapse the categorytree.
      * Called by typo3/ajax.php.
      *
-     * @param array              $params  Additional parameters (not used here)
+     * @param array $params Additional parameters (not used here)
      * @param AjaxRequestHandler $ajaxObj Ajax object
      *
      * @return void
      */
     public function ajaxExpandCollapse(array $params, AjaxRequestHandler &$ajaxObj)
     {
-        $parameter = $this->getParameter();
-
         // Get the Category Tree
         $this->init();
-        $tree = $this->categoryTree->getBrowseableAjaxTree($parameter);
+        $tree = $this->categoryTree->getBrowseableAjaxTree($this->getParameter());
 
         $ajaxObj->addContent('tree', $tree);
     }
@@ -296,18 +294,16 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
      * Makes the AJAX call to expand or collapse the categorytree.
      * Called by typo3/ajax.php.
      *
-     * @param array              $params  Additional parameters (not used here)
+     * @param array $params Additional parameters (not used here)
      * @param AjaxRequestHandler $ajaxObj Ajax object
      *
      * @return void
      */
     public function ajaxExpandCollapseWithoutProduct(array $params, AjaxRequestHandler &$ajaxObj)
     {
-        $parameter = $this->getParameter();
-
         // Get the category tree without the products and the articles
         $this->init(true);
-        $tree = $this->categoryTree->getBrowseableAjaxTree($parameter);
+        $tree = $this->categoryTree->getBrowseableAjaxTree($this->getParameter());
 
         $ajaxObj->addContent('tree', $tree);
     }
@@ -338,7 +334,7 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
         /**
          * Updater.
          *
-         * @var \CommerceTeam\Commerce\Utility\UpdateUtility
+         * @var \CommerceTeam\Commerce\Utility\UpdateUtility $updater
          */
         $updater = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\UpdateUtility');
 

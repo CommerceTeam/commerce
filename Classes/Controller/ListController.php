@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Controller;
 
 /*
@@ -18,6 +17,7 @@ namespace CommerceTeam\Commerce\Controller;
 use CommerceTeam\Commerce\Domain\Model\Category;
 use CommerceTeam\Commerce\Domain\Model\Product;
 use CommerceTeam\Commerce\Factory\HookFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Product list and single view.
@@ -84,7 +84,8 @@ class ListController extends BaseController
     public $markerArray = array();
 
     /**
-     * Do not make protected to be able to handle different behaviour in a hook.
+     * Do not make protected to be able to handle
+     * different behaviour in a hook.
      *
      * @var string
      */
@@ -101,6 +102,8 @@ class ListController extends BaseController
      * Inits the main params for using in the script.
      *
      * @param array $conf Configuration
+     *
+     * @return void
      */
     public function init(array $conf = array())
     {
@@ -108,7 +111,7 @@ class ListController extends BaseController
 
         // Merge default vars, if other prefix_id
         if ($this->prefixId != 'tx_commerce_pi1') {
-            $generellRequestVars = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('tx_commerce');
+            $generellRequestVars = GeneralUtility::_GP('tx_commerce');
             if (is_array($generellRequestVars)) {
                 foreach ($generellRequestVars as $key => $value) {
                     if (empty($this->piVars[$key])) {
@@ -125,7 +128,11 @@ class ListController extends BaseController
             }
         }
 
-        $this->conf['singleProduct'] = (int) $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'product_id', 's_product');
+        $this->conf['singleProduct'] = (int) $this->pi_getFFvalue(
+            $this->cObj->data['pi_flexform'],
+            'product_id',
+            's_product'
+        );
 
         if ($this->conf['singleProduct'] > 0) {
             // product UID was set by Plugin or TS
@@ -163,11 +170,19 @@ class ListController extends BaseController
             $this->conf['listPid'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'listPid', 's_template');
         }
         if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'singlePid', 's_template')) {
-            $this->conf['singlePid'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'singlePid', 's_template');
+            $this->conf['singlePid'] = $this->pi_getFFvalue(
+                $this->cObj->data['pi_flexform'],
+                'singlePid',
+                's_template'
+            );
         }
         // @deprecated flexform value to be removed in 5.0.0
         if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'displayPID', 's_template')) {
-            $this->conf['overridePid'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'displayPID', 's_template');
+            $this->conf['overridePid'] = $this->pi_getFFvalue(
+                $this->cObj->data['pi_flexform'],
+                'displayPID',
+                's_template'
+            );
         }
         if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'numberOfTopproducts', 's_product')) {
             $this->conf['numberOfTopproducts'] = $this->pi_getFFvalue(
@@ -177,16 +192,28 @@ class ListController extends BaseController
             );
         }
         if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'showPageBrowser', 's_template')) {
-            $this->conf['showPageBrowser'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'showPageBrowser', 's_template');
+            $this->conf['showPageBrowser'] = $this->pi_getFFvalue(
+                $this->cObj->data['pi_flexform'],
+                'showPageBrowser',
+                's_template'
+            );
         }
         if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'maxRecords', 's_template')) {
-            $this->conf['maxRecords'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'maxRecords', 's_template');
+            $this->conf['maxRecords'] = $this->pi_getFFvalue(
+                $this->cObj->data['pi_flexform'],
+                'maxRecords',
+                's_template'
+            );
         }
         if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'maxPages', 's_template')) {
             $this->conf['maxPages'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'maxPages', 's_template');
         }
         if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'basketPid', 's_template')) {
-            $this->conf['basketPid'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'basketPid', 's_template');
+            $this->conf['basketPid'] = $this->pi_getFFvalue(
+                $this->cObj->data['pi_flexform'],
+                'basketPid',
+                's_template'
+            );
         }
         if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'dontLinkActivePage', 's_template')) {
             $this->conf['pageBrowser.']['dontLinkActivePage'] = $this->pi_getFFvalue(
@@ -203,7 +230,11 @@ class ListController extends BaseController
             );
         }
         if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'showRange', 's_template')) {
-            $this->conf['pageBrowser.']['showRange'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'showRange', 's_template');
+            $this->conf['pageBrowser.']['showRange'] = $this->pi_getFFvalue(
+                $this->cObj->data['pi_flexform'],
+                'showRange',
+                's_template'
+            );
         }
         if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'showItemCount', 's_template')) {
             $this->conf['pageBrowser.']['showItemCount'] = $this->pi_getFFvalue(
@@ -213,11 +244,18 @@ class ListController extends BaseController
             );
         }
         if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'hscText', 's_template')) {
-            $this->conf['pageBrowser.']['hscText'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'hscText', 's_template');
+            $this->conf['pageBrowser.']['hscText'] = $this->pi_getFFvalue(
+                $this->cObj->data['pi_flexform'],
+                'hscText',
+                's_template'
+            );
         }
-        if (
-            $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template')
-            && file_exists($this->templateFolder.$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template'))
+        if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template', 's_template')
+            && file_exists($this->templateFolder . $this->pi_getFFvalue(
+                $this->cObj->data['pi_flexform'],
+                'template',
+                's_template'
+            ))
         ) {
             $this->conf['templateFile'] = $this->templateFolder.$this->pi_getFFvalue(
                 $this->cObj->data['pi_flexform'],
@@ -238,7 +276,7 @@ class ListController extends BaseController
         $tmpCategory = null;
         if ($this->piVars['catUid']) {
             $this->cat = (int) $this->piVars['catUid'];
-            $tmpCategory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
+            $tmpCategory = GeneralUtility::makeinstance(
                 'CommerceTeam\\Commerce\\Domain\\Model\\Category',
                 $this->cat,
                 $this->getFrontendController()->sys_language_uid
@@ -249,7 +287,7 @@ class ListController extends BaseController
         // Validate given catUid, if it's given and accessible
         if (!$this->piVars['catUid'] || !$accessible) {
             $this->cat = (int) $this->master_cat;
-            $tmpCategory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
+            $tmpCategory = GeneralUtility::makeinstance(
                 'CommerceTeam\\Commerce\\Domain\\Model\\Category',
                 $this->cat,
                 $this->getFrontendController()->sys_language_uid
@@ -267,14 +305,19 @@ class ListController extends BaseController
 
         $frontend = $this->getFrontendController();
 
-        if (!$this->conf['singleProduct'] && (int) $this->piVars['showUid'] > 0 && !$this->getFrontendController()->beUserLogin) {
+        if (!$this->conf['singleProduct']
+            && (int) $this->piVars['showUid']
+            && !$this->getFrontendController()->beUserLogin
+        ) {
             if (is_array($categorySubproducts)) {
                 if (!in_array($this->piVars['showUid'], $categorySubproducts)) {
                     $categoryAllSubproducts = $this->category->getProducts();
                     if (!in_array((int) $this->piVars['showUid'], $categoryAllSubproducts)) {
                         // The requested product is not beblow the selected category
                         // So exit with page not found
-                        $frontend->pageNotFoundAndExit($this->pi_getLL('error.productNotFound', 'Product not found', 1));
+                        $frontend->pageNotFoundAndExit(
+                            $this->pi_getLL('error.productNotFound', 'Product not found', 1)
+                        );
                     }
                 }
             } else {
@@ -289,7 +332,7 @@ class ListController extends BaseController
 
         if (($this->piVars['catUid']) && ($this->conf['checkCategoryTree'] == 1)) {
             // Validate given CAT UID, if is below master_cat
-            $this->masterCategoryObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
+            $this->masterCategoryObj = GeneralUtility::makeinstance(
                 'CommerceTeam\\Commerce\\Domain\\Model\\Category',
                 $this->master_cat,
                 $this->getFrontendController()->sys_language_uid
@@ -319,7 +362,7 @@ class ListController extends BaseController
              *
              * @var Category category
              */
-            $this->category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeinstance(
+            $this->category = GeneralUtility::makeinstance(
                 'CommerceTeam\\Commerce\\Domain\\Model\\Category',
                 $this->cat,
                 $this->getFrontendController()->sys_language_uid
@@ -384,7 +427,7 @@ class ListController extends BaseController
      * Main function called by insert plugin.
      *
      * @param string $content Content
-     * @param string $conf    Configuration
+     * @param string $conf Configuration
      *
      * @return string HTML-Content
      */
@@ -411,12 +454,26 @@ class ListController extends BaseController
 
         switch ($this->handle) {
             case 'singleView':
-                $subpartName = '###'.strtoupper($this->conf['templateMarker.']['productView']).'###';
-                $subpartNameNostock = '###'.strtoupper($this->conf['templateMarker.']['productView']).'_NOSTOCK###';
-                $this->content = $this->renderSingleView($this->product, $this->category, $subpartName, $subpartNameNostock);
+                $subpartName = '###' . strtoupper($this->conf['templateMarker.']['productView']) . '###';
+                $subpartNameNostock = '###' . strtoupper($this->conf['templateMarker.']['productView']) . '_NOSTOCK###';
+                $this->content = $this->renderSingleView(
+                    $this->product,
+                    $this->category,
+                    $subpartName,
+                    $subpartNameNostock
+                );
                 $this->content = $this->cObj->substituteMarkerArray($this->content, $this->languageMarker);
-                $this->content = $this->cObj->substituteMarkerArray($this->content, $this->addFormMarker(array()), '###|###', 1);
-                $this->getFrontendUser()->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
+                $this->content = $this->cObj->substituteMarkerArray(
+                    $this->content,
+                    $this->addFormMarker(array()),
+                    '###|###',
+                    1
+                );
+                $this->getFrontendUser()->setKey(
+                    'ses',
+                    'tx_commerce_lastproducturl',
+                    $this->pi_linkTP_keepPIvars_url(array(), 1)
+                );
                 break;
 
             case 'listView':
@@ -447,12 +504,16 @@ class ListController extends BaseController
             $database = $this->getDatabaseConnection();
 
             // Get not localized product
-            $row = $database->exec_SELECTgetSingleRow('l18n_parent', 'tx_commerce_products', 'uid = '.$productId);
-            if (is_array($row) && $row['l18n_parent'] != 0) {
+            $row = (array) $database->exec_SELECTgetSingleRow(
+                'l18n_parent',
+                'tx_commerce_products',
+                'uid = ' . $productId
+            );
+            if ($row['l18n_parent'] != 0) {
                 $productId = $row['l18n_parent'];
             }
 
-            $this->product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            $this->product = GeneralUtility::makeInstance(
                 'CommerceTeam\\Commerce\\Domain\\Model\\Product',
                 $productId,
                 $this->getFrontendController()->sys_language_uid
@@ -470,14 +531,20 @@ class ListController extends BaseController
                 // or if it was rendered as a leaf from the category view
                 if ($this->conf['singleView.']['renderProductNameAsPageTitle'] == 1) {
                     $this->product->setPageTitle();
-                } elseif ($this->conf['singleView.']['renderProductNameAsPageTitle'] == 2 && $this->singleViewAsPlugin === false) {
+                } elseif ($this->conf['singleView.']['renderProductNameAsPageTitle'] == 2
+                    && $this->singleViewAsPlugin === false
+                ) {
                     $this->product->setPageTitle();
                 }
 
                 $this->master_cat = $this->product->getMasterparentCategory();
 
                 // Write the current page to the session to have a back to last product link
-                $this->getFrontendController()->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
+                $this->getFrontendController()->fe_user->setKey(
+                    'ses',
+                    'tx_commerce_lastproducturl',
+                    $this->pi_linkTP_keepPIvars_url(array(), 1)
+                );
                 $result = true;
             } else {
                 // If product ist not valid (url manipulation) go to listview
@@ -491,10 +558,10 @@ class ListController extends BaseController
     /**
      * Render the single view for the current products.
      *
-     * @param Product  $product            Product object
-     * @param Category $category           Category object
-     * @param string   $subpartName        Name of a subpart
-     * @param string   $subpartNameNostock Name of a subpart for product without stock
+     * @param Product $product Product object
+     * @param Category $category Category object
+     * @param string $subpartName Name of a subpart
+     * @param string $subpartNameNostock Name of a subpart for product without stock
      *
      * @return string The content for a single product
      */
@@ -537,7 +604,7 @@ class ListController extends BaseController
         // Render category for content
         $categorySubpart = $this->renderCategory(
             $category,
-            '###'.strtoupper($this->conf['templateMarker.']['categorySingleViewMarker']).'###',
+            '###' . strtoupper($this->conf['templateMarker.']['categorySingleViewMarker']) . '###',
             $this->conf['singleView.']['products.']['categories.'],
             'ITEM',
             $content
@@ -546,14 +613,18 @@ class ListController extends BaseController
         // Substitute the subpart
         $content = $this->cObj->substituteSubpart(
             $content,
-            '###'.strtoupper($this->conf['templateMarker.']['categorySingleViewMarker']).'###',
+            '###' . strtoupper($this->conf['templateMarker.']['categorySingleViewMarker']) . '###',
             $categorySubpart
         );
 
         // Build the link to the category
         $categoryLinkContent = $this->cObj->getSubpart($content, '###CATEGORY_ITEM_DETAILLINK###');
         if ($categoryLinkContent) {
-            $link = $this->pi_linkTP($categoryLinkContent, array('tx_commerce_pi1[catUid]' => $category->getUid()), true);
+            $link = $this->pi_linkTP(
+                $categoryLinkContent,
+                array('tx_commerce_pi1[catUid]' => $category->getUid()),
+                true
+            );
         } else {
             $link = '';
         }
@@ -563,20 +634,21 @@ class ListController extends BaseController
         $relatedProductsSubpart = '';
         $relatedProductsParentSubpart = $this->cObj->getSubpart(
             $template,
-            '###'.strtoupper($this->conf['templateMarker.']['relatedProductList']).'###'
+            '###' . strtoupper($this->conf['templateMarker.']['relatedProductList']) . '###'
         );
         $relatedProductsSubpartTemplateStock = $this->cObj->getSubpart(
             $relatedProductsParentSubpart,
-            '###'.strtoupper($this->conf['templateMarker.']['relatedProductSingle']).'###'
+            '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '###'
         );
         $relatedProductsSubpartTemplateNoStock = $this->cObj->getSubpart(
             $relatedProductsParentSubpart,
-            '###'.strtoupper($this->conf['templateMarker.']['relatedProductSingle']).'_NOSTOCK###'
+            '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '_NOSTOCK###'
         );
+
         /**
          * Product.
          *
-         * @var Product
+         * @var Product $relatedProduct
          */
         foreach ($product->getRelatedProducts() as $relatedProduct) {
             if ($this->conf['useStockHandling'] == 1 && !$relatedProduct->hasStock()) {
@@ -602,20 +674,21 @@ class ListController extends BaseController
         if ($relatedProductsSubpart != '') {
             // Set first subpart empty
             $content = $this->cObj->substituteSubpart(
-                $content, '###'.strtoupper($this->conf['templateMarker.']['relatedProductSingle']).'###',
+                $content,
+                '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '###',
                 $relatedProductsSubpart
             );
             // Fill the second with our data
             $content = $this->cObj->substituteSubpart(
                 $content,
-                '###'.strtoupper($this->conf['templateMarker.']['relatedProductSingle']).'_NOSTOCK###',
+                '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '_NOSTOCK###',
                 ''
             );
         } else {
             // When we have no related products, then overwrite the header
             $content = $this->cObj->substituteSubpart(
                 $content,
-                '###'.strtoupper($this->conf['templateMarker.']['relatedProductList']).'###',
+                '###' . strtoupper($this->conf['templateMarker.']['relatedProductList']) . '###',
                 ''
             );
         }
@@ -636,16 +709,20 @@ class ListController extends BaseController
      * Makes the rendering for all articles for a given product
      * Renders different view, based on viewKind and number of articles.
      *
-     * @param string       $viewKind            Kind of view for choosing the right template
-     * @param array        $conf                TSconfig for handling the articles
-     * @param Product      $product             The parent product
+     * @param string $viewKind Kind of view for choosing the right template
+     * @param array $conf TSconfig for handling the articles
+     * @param Product $product The parent product
      * @param array|string $templateMarkerArray Current template marker array
-     * @param string       $template            Template text
+     * @param string $template Template text
      *
      * @return string the content for a single product
      */
-    public function makeArticleView($viewKind, array $conf = array(), Product $product,
-        $templateMarkerArray = '', $template = ''
+    public function makeArticleView(
+        $viewKind,
+        array $conf,
+        Product $product,
+        $templateMarkerArray = '',
+        $template = ''
     ) {
         $hooks = HookFactory::getHooks('Controller/CheckoutController', 'makeArticleView');
 
@@ -661,17 +738,23 @@ class ListController extends BaseController
         $templateMarkerMoreThanMax = array();
         if (is_array($templateMarkerArray)) {
             foreach ($templateMarkerArray as $v) {
-                $templateMarker[] = '###'.strtoupper($v).'###';
-                $templateMarkerNostock[] = '###'.strtoupper($v).'_NOSTOCK###';
-                $templateMarkerMoreThanMax[] = '###'.strtoupper($v).'_MORETHANMAX###';
+                $templateMarker[] = '###' . strtoupper($v) . '###';
+                $templateMarkerNostock[] = '###' . strtoupper($v) . '_NOSTOCK###';
+                $templateMarkerMoreThanMax[] = '###' . strtoupper($v) . '_MORETHANMAX###';
             }
         } else {
-            $templateMarker[] = '###'.strtoupper($this->conf['templateMarker.'][$viewKind.'_productArticleList']).'###';
-            $templateMarker[] = '###'.strtoupper($this->conf['templateMarker.'][$viewKind.'_productArticleList2']).'###';
-            $templateMarkerNostock[] = '###'.strtoupper($this->conf['templateMarker.'][$viewKind.'_productArticleList']).
-                '_NOSTOCK###';
-            $templateMarkerNostock[] = '###'.strtoupper($this->conf['templateMarker.'][$viewKind.'_productArticleList2']).
-                '_NOSTOCK###';
+            $templateMarker[] = '###' . strtoupper(
+                $this->conf['templateMarker.'][$viewKind . '_productArticleList']
+            ) . '###';
+            $templateMarker[] = '###' . strtoupper(
+                $this->conf['templateMarker.'][$viewKind . '_productArticleList2']
+            ) . '###';
+            $templateMarkerNostock[] = '###' . strtoupper(
+                $this->conf['templateMarker.'][$viewKind . '_productArticleList']
+            ) . '_NOSTOCK###';
+            $templateMarkerNostock[] = '###' . strtoupper(
+                $this->conf['templateMarker.'][$viewKind . '_productArticleList2']
+            ) . '_NOSTOCK###';
         }
 
         $content = '';
@@ -680,34 +763,36 @@ class ListController extends BaseController
             // Only if the number of articles is smaller than defined
             $templateAttrSelectorDropdown = $this->cObj->getSubpart(
                 $this->templateCode,
-                '###'.strtoupper($this->conf['templateMarker.']['productAttributesSelectorDropdown']).'###'
+                '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorDropdown']) . '###'
             );
             $templateAttrSelectorDropdownItem = $this->cObj->getSubpart(
                 $templateAttrSelectorDropdown,
-                '###'.strtoupper($this->conf['templateMarker.']['productAttributesSelectorDropdown']).'_ITEM###'
+                '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorDropdown']) . '_ITEM###'
             );
             $templateAttrSelectorRadiobutton = $this->cObj->getSubpart(
                 $this->templateCode,
-                '###'.strtoupper($this->conf['templateMarker.']['productAttributesSelectorRadiobutton']).'###'
+                '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorRadiobutton']) . '###'
             );
             $templateAttrSelectorRadiobuttonItem = $this->cObj->getSubpart(
                 $templateAttrSelectorRadiobutton,
-                '###'.strtoupper($this->conf['templateMarker.']['productAttributesSelectorRadiobutton']).'_ITEM###'
+                '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorRadiobutton']) . '_ITEM###'
             );
 
             $templateCount = count($templateMarker);
 
             $templateAttr = array();
-            if (is_array($this->conf['templateMarker.'][$viewKind.'_selectAttributes.'])) {
-                foreach ($this->conf['templateMarker.'][$viewKind.'_selectAttributes.'] as $oneMarker) {
-                    $templateMarkerAttr = '###'.strtoupper($oneMarker).'###';
+            if (is_array($this->conf['templateMarker.'][$viewKind . '_selectAttributes.'])) {
+                foreach ($this->conf['templateMarker.'][$viewKind . '_selectAttributes.'] as $oneMarker) {
+                    $templateMarkerAttr = '###' . strtoupper($oneMarker) . '###';
                     $tCode = $this->cObj->getSubpart($this->templateCode, $templateMarkerAttr);
                     if ($tCode) {
                         $templateAttr[] = $tCode;
                     }
                 }
-            } elseif ($this->conf['templateMarker.'][$viewKind.'_selectAttributes']) {
-                $templateMarkerAttr = '###'.strtoupper($this->conf['templateMarker.'][$viewKind.'_selectAttributes']).'###';
+            } elseif ($this->conf['templateMarker.'][$viewKind . '_selectAttributes']) {
+                $templateMarkerAttr = '###' . strtoupper(
+                    $this->conf['templateMarker.'][$viewKind . '_selectAttributes']
+                ) . '###';
                 $templateAttr[] = $this->cObj->getSubpart($this->templateCode, $templateMarkerAttr);
             }
 
@@ -724,14 +809,16 @@ class ListController extends BaseController
             foreach ($this->piVars as $key => $val) {
                 if (strstr($key, 'attsel_') && $val) {
                     // set only if it is the selected product - for listing mode
-                    if ($this->piVars['changedProductUid'] == $product->getUid() || $this->piVars['showUid'] == $product->getUid()) {
+                    if ($this->piVars['changedProductUid'] == $product->getUid()
+                        || $this->piVars['showUid'] == $product->getUid()) {
                         $arrAttSubmit[(int) substr($key, 7)] = (int) $val;
-                        if ($this->piVars['attList_'.$product->getUid().'_changed'] == (int) substr($key, 7)) {
+                        if ($this->piVars['attList_' . $product->getUid() . '_changed'] == (int) substr($key, 7)) {
                             break;
                         }
                     }
                 }
             }
+            // @todo wtf need to be reworked how it was ment to be
             if (is_array($arrAttSubmit)) {
                 $attributeMatrix = $product->getSelectAttributeValueMatrix($arrAttSubmit);
             } else {
@@ -753,14 +840,14 @@ class ListController extends BaseController
                             /**
                              * Attribute.
                              *
-                             * @var \CommerceTeam\Commerce\Domain\Model\Attribute
+                             * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attribute
                              */
-                            $attributeObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                            $attribute = GeneralUtility::makeInstance(
                                 'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
                                 $attributeUid,
                                 $this->getFrontendController()->sys_language_uid
                             );
-                            $attributeObj->loadData();
+                            $attribute->loadData();
 
                             $markerArray['###SELECT_ATTRIBUTES_TITLE###'] = $myAttribute['title'];
 
@@ -777,7 +864,7 @@ class ListController extends BaseController
                                         $attrIcon = $this->renderValue(
                                             $v['icon'],
                                             'IMAGE',
-                                            $this->conf[$this->handle.'.']['products.']['productAttributes.']['fields.']['icon.']
+                                            $this->conf[$this->handle . '.']['products.']['productAttributes.']['fields.']['icon.']
                                         );
                                     }
                                 }
@@ -799,19 +886,25 @@ class ListController extends BaseController
 
                     foreach ($hooks as $hookObj) {
                         if (method_exists($hookObj, 'additionalMarker')) {
-                            $markerArray = (array) $hookObj->additionalMarker($markerArray, $this,
-                                $product->getArticle($product->getArticleUid($i)));
+                            $markerArray = (array) $hookObj->additionalMarker(
+                                $markerArray,
+                                $this,
+                                $product->getArticle($product->getArticleUid($i))
+                            );
                         }
                     }
                     $templateAttributes = $this->cObj->getSubpart($template, $templateMarker[($i % $templateCount)]);
                     /**
                      * Article.
                      *
-                     * @var \CommerceTeam\Commerce\Domain\Model\Article
+                     * @var \CommerceTeam\Commerce\Domain\Model\Article $article
                      */
                     $article = $product->getArticle($product->getArticleUid($i));
                     if ($this->conf['useStockHandling'] == 1 and $article->getStock() <= 0) {
-                        $tempTemplate = $this->cObj->getSubpart($template, $templateMarkerNostock[($i % $templateCount)]);
+                        $tempTemplate = $this->cObj->getSubpart(
+                            $template,
+                            $templateMarkerNostock[($i % $templateCount)]
+                        );
                         if ($tempTemplate != '') {
                             $templateAttributes = $tempTemplate;
                         }
@@ -831,7 +924,7 @@ class ListController extends BaseController
                 $artId = array_shift($product->getArticlesByAttributeArray($sortedAttributeArray));
                 $attCode = '';
                 if (is_array($attributeMatrix)) {
-                    $getVarList = array('catUid','showUid','pointer');
+                    $getVarList = array('catUid', 'showUid', 'pointer');
                     $getVars = array();
                     foreach ($getVarList as $getVar) {
                         if (isset($this->piVars[$getVar])) {
@@ -840,25 +933,36 @@ class ListController extends BaseController
                     }
                     // Makes pi1 a user int so form values are updated as one selects an attribute
                     $getVars['commerce_pi1_user_int'] = 1;
-                    $attCode = '<form name="attList_'.$product->getUid().'" id="attList_'.$product->getUid().'" action="'.
-                            $this->pi_getPageLink($this->getFrontendController()->id, '_self', $getVars).'#att"  method="post">'.
-                        '<input type="hidden" name="'.$this->prefixId.'[changedProductUid]" value="'.$product->getUid().'" />'.
-                        '<input type="hidden" name="'.$this->prefixId.'[attList_'.$product->getUid().
-                            '_changed]" id="attList_'.$product->getUid().'_changed" value="1" />'.
-                        '<input type="hidden" name="tx_commerce_pi1[catUid]" value="'.$this->piVars['catUid'].'" />';
+
+                    $actionUrl = $this->cObj->typoLink_URL(
+                        array(
+                            'parameter' => $GLOBALS['TSFE']->id,
+                            'additionalParams' => GeneralUtility::implodeArrayForUrl('', $getVars),
+                            'useCacheHash' => 1,
+                            'section' => 'attList_' . $product->getUid(),
+                        )
+                    );
+
+                    $attCode = '<form name="attList_' . $product->getUid() . '" id="attList_' . $product->getUid() .
+                        '" action="' . $actionUrl . '"  method="post">' . '<input type="hidden" name="' .
+                        $this->prefixId . '[changedProductUid]" value="' . $product->getUid() . '" />' .
+                        '<input type="hidden" name="' . $this->prefixId . '[attList_' . $product->getUid() .
+                        '_changed]" id="attList_' . $product->getUid() . '_changed" value="1" />' .
+                        '<input type="hidden" name="tx_commerce_pi1[catUid]" value="' . $this->piVars['catUid'] .
+                        '" />';
                     $markerArray = array();
                     foreach ($attributeMatrix as $attrUid => $values) {
                         /**
                          * Attribute.
                          *
-                         * @var \CommerceTeam\Commerce\Domain\Model\Attribute
+                         * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attribute
                          */
-                        $attributeObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                        $attribute = GeneralUtility::makeInstance(
                             'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
                             $attrUid,
                             $this->getFrontendController()->sys_language_uid
                         );
-                        $attributeObj->loadData();
+                        $attribute->loadData();
 
                         // disable the icon mode by default
                         $iconMode = false;
@@ -866,7 +970,7 @@ class ListController extends BaseController
                         // if the icon mode is enabled in TS check if the iconMode is also enabled
                         // for this attribute
                         if ($this->conf[$this->handle.'.']['products.']['productAttributes.']['iconMode'] == '1') {
-                            $iconMode = $attributeObj->isIconmode();
+                            $iconMode = $attribute->isIconmode();
                         }
                         if ($iconMode) {
                             $templateAttrSelector = $templateAttrSelectorRadiobutton;
@@ -876,21 +980,23 @@ class ListController extends BaseController
                             $templateAttrSelectorItem = $templateAttrSelectorDropdownItem;
                         }
 
-                        $markerArray['###SELECT_ATTRIBUTES_TITLE###'] = $attributeObj->getTitle();
-                        $markerArray['###SELECT_ATTRIBUTES_ON_CHANGE###'] = 'document.getElementById(\'attList_'.$product->getUid().
-                            '_changed\').value = '.$attrUid.';document.getElementById(\'attList_'.$product->getUid().'\').submit();';
-                        $markerArray['###SELECT_ATTRIBUTES_HTML_ELEMENT_KEY###'] = $this->prefixId.'_'.$attrUid;
-                        $markerArray['###SELECT_ATTRIBUTES_HTML_ELEMENT_NAME###'] = $this->prefixId.'[attsel_'.$attrUid.']';
+                        $markerArray['###SELECT_ATTRIBUTES_TITLE###'] = $attribute->getTitle();
+                        $markerArray['###SELECT_ATTRIBUTES_ON_CHANGE###'] = 'document.getElementById(\'attList_' .
+                            $product->getUid() . '_changed\').value = ' . $attrUid .
+                            ';document.getElementById(\'attList_' . $product->getUid() . '\').submit();';
+                        $markerArray['###SELECT_ATTRIBUTES_HTML_ELEMENT_KEY###'] = $this->prefixId . '_' . $attrUid;
+                        $markerArray['###SELECT_ATTRIBUTES_HTML_ELEMENT_NAME###'] = $this->prefixId . '[attsel_' .
+                            $attrUid . ']';
 
-                        $markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $attributeObj->getUnit();
+                        $markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $attribute->getUnit();
 
                         $itemsContent = '';
                         $i = 1;
-                        $attributeValues = $attributeObj->getAllValues(true, $product);
+                        $attributeValues = $attribute->getAllValues(true, $product);
                         /**
                          * Attribute value.
                          *
-                         * @var \CommerceTeam\Commerce\Domain\Model\AttributeValue
+                         * @var \CommerceTeam\Commerce\Domain\Model\AttributeValue $val
                          */
                         foreach ($attributeValues as $val) {
                             $markerArrayItem = $markerArray;
@@ -899,7 +1005,7 @@ class ListController extends BaseController
                             $markerArrayItem['###SELECT_ATTRIBUTES_VALUE_ICON###'] = $this->renderValue(
                                 $val->getIcon(),
                                 'IMAGE',
-                                $this->conf[$this->handle.'.']['products.']['productAttributes.']['fields.']['icon.']
+                                $this->conf[$this->handle . '.']['products.']['productAttributes.']['fields.']['icon.']
                             );
 
                             if ($values[$val->getUid()] == 'selected') {
@@ -918,10 +1024,17 @@ class ListController extends BaseController
 
                             foreach ($hooks as $hookObj) {
                                 if (method_exists($hookObj, 'additionalAttributeMarker')) {
-                                    $markerArrayItem = $hookObj->additionalAttributeMarker($markerArrayItem, $this, $val->getUid());
+                                    $markerArrayItem = $hookObj->additionalAttributeMarker(
+                                        $markerArrayItem,
+                                        $this,
+                                        $val->getUid()
+                                    );
                                 }
                             }
-                            $itemsContent .= $this->cObj->substituteMarkerArray($templateAttrSelectorItem, $markerArrayItem);
+                            $itemsContent .= $this->cObj->substituteMarkerArray(
+                                $templateAttrSelectorItem,
+                                $markerArrayItem
+                            );
                             ++$i;
                         }
                         $attributeContent = $this->cObj->substituteMarkerArray($templateAttrSelector, $markerArray);
@@ -929,13 +1042,17 @@ class ListController extends BaseController
                         if ($iconMode) {
                             $attCode .= $this->cObj->substituteSubpart(
                                 $attributeContent,
-                                '###'.strtoupper($this->conf['templateMarker.']['productAttributesSelectorRadiobutton']).'_ITEM###',
+                                '###' . strtoupper(
+                                    $this->conf['templateMarker.']['productAttributesSelectorRadiobutton']
+                                ) . '_ITEM###',
                                 $itemsContent
                             );
                         } else {
                             $attCode .= $this->cObj->substituteSubpart(
                                 $attributeContent,
-                                '###'.strtoupper($this->conf['templateMarker.']['productAttributesSelectorDropdown']).'_ITEM###',
+                                '###' . strtoupper(
+                                    $this->conf['templateMarker.']['productAttributesSelectorDropdown']
+                                ) . '_ITEM###',
                                 $itemsContent
                             );
                         }
@@ -948,7 +1065,11 @@ class ListController extends BaseController
 
                 foreach ($hooks as $hookObj) {
                     if (method_exists($hookObj, 'additionalMarker')) {
-                        $markerArray = (array) $hookObj->additionalMarker($markerArray, $this, $product->getArticle($artId));
+                        $markerArray = (array) $hookObj->additionalMarker(
+                            $markerArray,
+                            $this,
+                            $product->getArticle($artId)
+                        );
                     }
                 }
 
@@ -956,7 +1077,7 @@ class ListController extends BaseController
                 /**
                  * Article.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Article
+                 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
                  */
                 $article = $product->getArticle($artId);
                 if ($this->conf['useStockHandling'] == 1 and $article->getStock() <= 0) {
@@ -988,11 +1109,13 @@ class ListController extends BaseController
                 $typoLinkConf['parameter'] = $this->pid;
             }
             $typoLinkConf['useCacheHash'] = 1;
-            $typoLinkConf['additionalParams'] = $this->argSeparator.$this->prefixId.'[showUid]='.$product->getUid();
-            $typoLinkConf['additionalParams'] .= $this->argSeparator.$this->prefixId.'[catUid]='.$cat;
+            $typoLinkConf['additionalParams'] = $this->argSeparator . $this->prefixId . '[showUid]=' .
+                $product->getUid();
+            $typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[catUid]=' . $cat;
 
             if ($this->basketHashValue) {
-                $typoLinkConf['additionalParams'] .= $this->argSeparator.$this->prefixId.'[basketHashValue]='.$this->basketHashValue;
+                $typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[basketHashValue]=' .
+                    $this->basketHashValue;
             }
             $markerArray['LINKTOPRODUCT'] = $this->cObj->typoLink($this->pi_getLL('lang_toproduct'), $typoLinkConf);
             $content = $this->cObj->substituteMarkerArray($localContent, $markerArray, '###|###', 1);

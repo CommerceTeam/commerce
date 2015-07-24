@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Model;
 
 /*
@@ -108,9 +107,9 @@ class BasketItem
     /**
      * Constructor, basically calls init.
      *
-     * @param int $uid         Article uid
-     * @param int $quantity    Amount for this article
-     * @param int $priceid     Id of the price to use
+     * @param int $uid Article uid
+     * @param int $quantity Amount for this article
+     * @param int $priceid Id of the price to use
      * @param int $languageUid Language id
      *
      * @return self
@@ -126,10 +125,10 @@ class BasketItem
      * Initialise the object,
      * checks if given uid is valid and loads the the article an product data.
      *
-     * @param int $uid      Article uid
+     * @param int $uid Article uid
      * @param int $quantity Amount for this article
-     * @param int $priceid  Id of the price to use
-     * @param int $langUid  Language id
+     * @param int $priceid Id of the price to use
+     * @param int $langUid Language id
      *
      * @return bool
      */
@@ -159,7 +158,7 @@ class BasketItem
         /**
          * Article.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\Article
+         * @var \CommerceTeam\Commerce\Domain\Model\Article $article
          */
         $article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
             'CommerceTeam\\Commerce\\Domain\\Model\\Article',
@@ -180,7 +179,7 @@ class BasketItem
             /**
              * Price.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\ArticlePrice
+             * @var \CommerceTeam\Commerce\Domain\Model\ArticlePrice $price
              */
             $price = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                 'CommerceTeam\\Commerce\\Domain\\Model\\ArticlePrice',
@@ -282,7 +281,9 @@ class BasketItem
      * method with you own added fields.
      *
      * @param string $field Fieldname
-     * @param mixed  $value Value
+     * @param mixed $value Value
+     *
+     * @return void
      */
     public function setField($field, $value)
     {
@@ -290,10 +291,10 @@ class BasketItem
     }
 
     /**
-     * Get a given field value, only to use with custom field without own method
-     * Warning: commerce provides getMethods for all default fields. For
-     * compatibility reasons always use the built in Methods. Only use this
-     * method with you own added fields.
+     * Get a given field value, only to use with custom field without own
+     * method. Warning: commerce provides getMethods for all default fields.
+     * For compatibility reasons always use the built in Methods. Only use
+     * this method with you own added fields.
      *
      * @param string $field Fieldname
      *
@@ -374,6 +375,8 @@ class BasketItem
      * Sets pre gross price.
      *
      * @param int $value New Price Value
+     *
+     * @return void
      */
     public function setPriceGross($value)
     {
@@ -395,6 +398,8 @@ class BasketItem
      * Sets the net price.
      *
      * @param int $value New Price Value
+     *
+     * @return void
      */
     public function setPriceNet($value)
     {
@@ -514,6 +519,8 @@ class BasketItem
      * This Method Sets the Tax Calculation method (pricefromnet).
      *
      * @param bool $priceFromNet Switch if calculating from net or not
+     *
+     * @return void
      */
     public function setTaxCalculationMethod($priceFromNet)
     {
@@ -524,6 +531,8 @@ class BasketItem
      * Sets the Title.
      *
      * @param string $title Title
+     *
+     * @return void
      */
     public function setTitle($title)
     {
@@ -580,10 +589,9 @@ class BasketItem
      * Calculates the net_sum.
      *
      * @param bool $useValues Use the stored values
-     *                        instead of calculating gross or net price
+     *      instead of calculating gross or net price
      *
      * @return int net_sum
-     *
      * @todo add hook for this function
      */
     public function calculateNetSum($useValues = false)
@@ -603,10 +611,9 @@ class BasketItem
      * Calculates the gross_sum.
      *
      * @param bool $useValues Use the stored values
-     *                        instead of calculating gross or net price
+     *      instead of calculating gross or net price
      *
      * @return int gross_sum
-     *
      * @todo add hook for this function
      */
     public function calculateGrossSum($useValues = false)
@@ -626,7 +633,9 @@ class BasketItem
      * Recalculates the item sums.
      *
      * @param bool $useValues Use the stored values instead
-     *                        of calculating gross or net price
+     *      of calculating gross or net price
+     *
+     * @return void
      */
     public function recalculateItemSums($useValues = false)
     {

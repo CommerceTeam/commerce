@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Payment\Provider;
 
 /*
@@ -106,19 +105,21 @@ class Wirecard extends ProviderAbstract
      * Write any errors into $this->errorMessages!
      * To save some additional data in the database use the method updateOrder().
      *
-     * @param array                                      $config  Configuration from TYPO3_CONF_VARS
-     * @param array                                      $session Current session data
-     * @param \CommerceTeam\Commerce\Domain\Model\Basket $basket  Basket object
+     * @param array $config Configuration from TYPO3_CONF_VARS
+     * @param array $session Current session data
+     * @param \CommerceTeam\Commerce\Domain\Model\Basket $basket Basket object
      *
      * @return bool Check if everything was ok
      */
-    public function finishingFunction(array $config = array(), array $session = array(),
+    public function finishingFunction(
+        array $config = array(),
+        array $session = array(),
         \CommerceTeam\Commerce\Domain\Model\Basket $basket = null
     ) {
         /**
          * Payment library.
          *
-         * @var \CommerceTeam\Commerce\Payment\Payment
+         * @var \CommerceTeam\Commerce\Payment\Payment $paymentLib
          */
         $paymentLib = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Payment\\Payment');
 
@@ -163,8 +164,10 @@ class Wirecard extends ProviderAbstract
     /**
      * Update order data after order has been finished.
      *
-     * @param int   $orderUid Id of this order
-     * @param array $session  Session data
+     * @param int $orderUid Id of this order
+     * @param array $session Session data
+     *
+     * @return void
      */
     public function updateOrder($orderUid, array $session = array())
     {

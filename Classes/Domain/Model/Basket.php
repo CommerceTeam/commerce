@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Model;
 
 /*
@@ -83,6 +82,8 @@ class Basket extends BasicBasket
      * Set the session ID.
      *
      * @param string $sessionId Session ID
+     *
+     * @return void
      */
     public function setSessionId($sessionId)
     {
@@ -101,6 +102,8 @@ class Basket extends BasicBasket
 
     /**
      * Finish order.
+     *
+     * @return void
      */
     public function finishOrder()
     {
@@ -121,6 +124,8 @@ class Basket extends BasicBasket
 
     /**
      * Set finish date in database.
+     *
+     * @return void
      */
     protected function finishOrderInDatabase()
     {
@@ -142,6 +147,8 @@ class Basket extends BasicBasket
      * on $this->storageType
      * Only database storage is implemented until now
      * cloud be used as per session or per user /presistent).
+     *
+     * @return void
      */
     public function loadData()
     {
@@ -160,7 +167,8 @@ class Basket extends BasicBasket
 
             default:
         }
-            // Method of Parent: Load the payment articcle if availiable
+
+        // Method of Parent: Load the payment articcle if availiable
         parent::loadData();
 
         $this->setLoaded();
@@ -168,6 +176,8 @@ class Basket extends BasicBasket
 
     /**
      * Set unloaded.
+     *
+     * @return void
      */
     public function setUnloaded()
     {
@@ -176,6 +186,8 @@ class Basket extends BasicBasket
 
     /**
      * Set loaded.
+     *
+     * @return void
      */
     public function setLoaded()
     {
@@ -184,12 +196,14 @@ class Basket extends BasicBasket
 
     /**
      * Loads basket data from database.
+     *
+     * @return void
      */
     protected function loadDataFromDatabase()
     {
         $where = '';
         if ($this->getBasketStoragePid()) {
-            $where .= ' AND pid = '.$this->getBasketStoragePid();
+            $where .= ' AND pid = ' . $this->getBasketStoragePid();
         }
 
         $database = $this->getDatabaseConnection();
@@ -197,8 +211,8 @@ class Basket extends BasicBasket
         $rows = $database->exec_SELECTgetRows(
             '*',
             'tx_commerce_baskets',
-            'sid = '.$database->fullQuoteStr($this->getSessionId(), 'tx_commerce_baskets').
-                ' AND finished_time = 0'.$where,
+            'sid = ' . $database->fullQuoteStr($this->getSessionId(), 'tx_commerce_baskets') .
+            ' AND finished_time = 0' . $where,
             '',
             'pos'
         );
@@ -210,7 +224,11 @@ class Basket extends BasicBasket
             foreach ($rows as $returnData) {
                 if (($returnData['quantity'] > 0) && ($returnData['price_id'] > 0)) {
                     $this->addArticle($returnData['article_id'], $returnData['quantity'], $returnData['price_id']);
-                    $this->changePrices($returnData['article_id'], $returnData['price_gross'], $returnData['price_net']);
+                    $this->changePrices(
+                        $returnData['article_id'],
+                        $returnData['price_gross'],
+                        $returnData['price_net']
+                    );
                     $this->crdate = $returnData['crdate'];
                     if (is_array($hooks)) {
                         foreach ($hooks as $hookObj) {
@@ -236,6 +254,7 @@ class Basket extends BasicBasket
      *
      * @param string $sessionId Session id
      *
+     * @return void
      * @todo handling for special prices
      */
     protected function loadPersistentDataFromDatabase($sessionId)
@@ -245,8 +264,8 @@ class Basket extends BasicBasket
         $rows = $database->exec_SELECTgetRows(
             '*',
             'tx_commerce_baskets',
-            'sid = '.$database->fullQuoteStr($sessionId, 'tx_commerce_baskets').' AND finished_time = 0 AND pid = '.
-                $this->getBasketStoragePid(),
+            'sid = ' . $database->fullQuoteStr($sessionId, 'tx_commerce_baskets') .
+            ' AND finished_time = 0 AND pid = ' . $this->getBasketStoragePid(),
             '',
             'pos'
         );
@@ -272,6 +291,8 @@ class Basket extends BasicBasket
 
     /**
      * Restores the Basket from the persistent storage.
+     *
+     * @return void
      */
     private function restoreBasket()
     {
@@ -294,6 +315,8 @@ class Basket extends BasicBasket
      * Store basket data in session / database depending
      * on $this->storageType
      * Only database storage is implemented until now.
+     *
+     * @return void
      */
     public function storeData()
     {
@@ -310,6 +333,8 @@ class Basket extends BasicBasket
 
     /**
      * Store basket data to database.
+     *
+     * @return void
      */
     protected function storeDataToDatabase()
     {
@@ -317,7 +342,7 @@ class Basket extends BasicBasket
 
         $database->exec_DELETEquery(
             'tx_commerce_baskets',
-            'sid = '.$database->fullQuoteStr($this->getSessionId(), 'tx_commerce_baskets').' AND finished_time = 0'
+            'sid = ' . $database->fullQuoteStr($this->getSessionId(), 'tx_commerce_baskets') . ' AND finished_time = 0'
         );
         $hooks = HookFactory::getHooks('Domain/Model/Basket', 'storeDataToDatabase');
 
@@ -330,18 +355,18 @@ class Basket extends BasicBasket
         /**
          * Basket item.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
          */
-        foreach ($this->basketItems as $oneuid => $oneItem) {
+        foreach ($this->basketItems as $oneuid => $basketItem) {
             $insertData = array();
             $insertData['pid'] = $this->getBasketStoragePid();
             $insertData['pos'] = $arBasketItemsKeys[$oneuid];
             $insertData['sid'] = $this->sessionId;
-            $insertData['article_id'] = $oneItem->getArticleUid();
-            $insertData['price_id'] = $oneItem->getPriceUid();
-            $insertData['price_net'] = $oneItem->getPriceNet();
-            $insertData['price_gross'] = $oneItem->getPriceGross();
-            $insertData['quantity'] = $oneItem->getQuantity();
+            $insertData['article_id'] = $basketItem->getArticleUid();
+            $insertData['price_id'] = $basketItem->getPriceUid();
+            $insertData['price_net'] = $basketItem->getPriceNet();
+            $insertData['price_gross'] = $basketItem->getPriceGross();
+            $insertData['quantity'] = $basketItem->getQuantity();
             $insertData['readonly'] = $this->getReadOnly();
             $insertData['tstamp'] = $GLOBALS['EXEC_TIME'];
 
@@ -354,7 +379,7 @@ class Basket extends BasicBasket
             if (is_array($hooks)) {
                 foreach ($hooks as $hookObj) {
                     if (method_exists($hookObj, 'storeDataToDatabase')) {
-                        $insertData = $hookObj->storeDataToDatabase($oneItem, $insertData);
+                        $insertData = $hookObj->storeDataToDatabase($basketItem, $insertData);
                     }
                 }
             }
@@ -362,10 +387,10 @@ class Basket extends BasicBasket
             $database->exec_INSERTquery('tx_commerce_baskets', $insertData);
         }
 
-        $oneItem = $this->basketItems[$oneuid];
-        if (is_object($oneItem)) {
-            $oneItem->calculateNetSum();
-            $oneItem->calculateGrossSum();
+        $basketItem = $this->basketItems[$oneuid];
+        if (is_object($basketItem)) {
+            $basketItem->calculateNetSum();
+            $basketItem->calculateGrossSum();
         }
     }
 
@@ -382,6 +407,7 @@ class Basket extends BasicBasket
 
         return $this->basketStoragePid;
     }
+
 
     /**
      * Get database connection.

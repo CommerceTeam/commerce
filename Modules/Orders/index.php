@@ -20,9 +20,10 @@
 /**
  * Orders module.
  *
- * @var \CommerceTeam\Commerce\Controller\OrdersModuleController
+ * @var \CommerceTeam\Commerce\Controller\OrdersModuleController $ordersModuleController
  */
-$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\OrdersModuleController');
-$SOBE->init();
-$SOBE->main();
-$SOBE->printContent();
+$ordersModuleController = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+    'CommerceTeam\\Commerce\\Controller\\OrdersModuleController'
+);
+$ordersModuleController->main();
+$ordersModuleController->printContent();

@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Model;
 
 /*
@@ -14,6 +13,7 @@ namespace CommerceTeam\Commerce\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Main script class for the handling of categories. Categories contains
@@ -250,7 +250,7 @@ class Category extends AbstractEntity
     /**
      * Constructor, basically calls init.
      *
-     * @param int $uid         Category uid
+     * @param int $uid Category uid
      * @param int $languageUid Language uid
      *
      * @return self
@@ -265,7 +265,7 @@ class Category extends AbstractEntity
     /**
      * Init called by the constructor.
      *
-     * @param int $uid         Uid of category
+     * @param int $uid Uid of category
      * @param int $languageUid Language_uid , default 0
      *
      * @return bool TRUE on success, FALSE if no $uid is submitted
@@ -278,7 +278,7 @@ class Category extends AbstractEntity
         if ($uid > 0) {
             $this->uid = $uid;
             $this->lang_uid = $languageUid;
-            $this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
+            $this->databaseConnection = GeneralUtility::makeInstance($this->databaseClass);
 
             $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Model/Category', 'init');
             foreach ($hooks as $hook) {
@@ -337,9 +337,9 @@ class Category extends AbstractEntity
                 /**
                  * Child category.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Category
+                 * @var \CommerceTeam\Commerce\Domain\Model\Category $childCategory
                  */
-                $childCategory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                $childCategory = GeneralUtility::makeInstance(
                     'CommerceTeam\\Commerce\\Domain\\Model\\Category',
                     $childCategoryUid,
                     $this->lang_uid
@@ -356,6 +356,8 @@ class Category extends AbstractEntity
      * Set child categories.
      *
      * @param array $categories Child categories
+     *
+     * @return void
      */
     public function setChildCategories(array $categories)
     {
@@ -385,7 +387,7 @@ class Category extends AbstractEntity
                 /**
                  * Category.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Category
+                 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
                 foreach ($this->categories as $category) {
                     $returnList = array_merge($returnList, $category->getChildCategoriesUidlist($depth));
@@ -419,15 +421,15 @@ class Category extends AbstractEntity
                 /**
                  * Child product.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Product
+                 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
                  */
-                $childProduct = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                $product = GeneralUtility::makeInstance(
                     'CommerceTeam\\Commerce\\Domain\\Model\\Product',
                     $productUid,
                     $this->lang_uid
                 );
 
-                $this->products[$productUid] = $childProduct;
+                $this->products[$productUid] = $product;
             }
         }
 
@@ -498,12 +500,12 @@ class Category extends AbstractEntity
      * Loads the parent category in the parent-category variable.
      *
      * @return \CommerceTeam\Commerce\Domain\Model\Category|FALSE category
-     *                                                            object or FALSE if this category is already the topmost category
+     *     or FALSE if this category is already the topmost category
      */
     public function getParentCategory()
     {
         if ($this->parent_category_uid && !$this->parent_category) {
-            $this->parent_category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            $this->parent_category = GeneralUtility::makeInstance(
                 'CommerceTeam\\Commerce\\Domain\\Model\\Category',
                 $this->parent_category_uid,
                 $this->lang_uid
@@ -517,7 +519,7 @@ class Category extends AbstractEntity
      * Returns an array of category objects (unloaded)
      * that serve as category's parent.
      *
-     * @return array Array of category objects
+     * @return array of category objects
      */
     public function getParentCategories()
     {
@@ -527,9 +529,9 @@ class Category extends AbstractEntity
             /**
              * Category.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Category
+             * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
-            $category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            $category = GeneralUtility::makeInstance(
                 'CommerceTeam\\Commerce\\Domain\\Model\\Category',
                 $parent,
                 $this->lang_uid
@@ -612,7 +614,7 @@ class Category extends AbstractEntity
      *
      * @param bool|int $depth Depth maximum depth for going recursive
      *
-     * @return array Array with list of product UIDs
+     * @return array with list of product UIDs
      */
     public function getProducts($depth = false)
     {
@@ -626,9 +628,9 @@ class Category extends AbstractEntity
                 /**
                  * Category.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Category
+                 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
-                $category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                $category = GeneralUtility::makeInstance(
                     'CommerceTeam\\Commerce\\Domain\\Model\\Category',
                     $oneCategoryUid,
                     $this->lang_uid
@@ -644,7 +646,7 @@ class Category extends AbstractEntity
     /**
      * Returns the childproducts as unique UID list.
      *
-     * @return array Array of child products UIDs
+     * @return array of child products UIDs
      */
     public function getProductUids()
     {
@@ -672,7 +674,8 @@ class Category extends AbstractEntity
     }
 
     /**
-     * Returns the first image, if not availiabe, walk recursive up, to get the image.
+     * Returns the first image, if not availiabe,
+     * walk recursive up, to get the image.
      *
      * @return mixed Image/FALSE, if no image found
      */
@@ -714,9 +717,8 @@ class Category extends AbstractEntity
     /**
      * Returns the category TSconfig array based on the currect->rootLine.
      *
-     * @todo Make recursiv category TS merging
-     *
      * @return array
+     * @todo Make recursiv category TS merging
      */
     public function getTyposcriptConfig()
     {
@@ -730,7 +732,7 @@ class Category extends AbstractEntity
              *
              * @var \TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser
              */
-            $parseObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\Parser\\TypoScriptParser');
+            $parseObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\Parser\\TypoScriptParser');
             $parseObj->parse($categoryTs);
             $this->categoryTSconfig = $parseObj->setup;
         }
@@ -752,24 +754,32 @@ class Category extends AbstractEntity
      * Loads the data.
      *
      * @param bool $translationMode Translation mode of the record,
-     *                              default FALSE to use the default way of translation
+     *      default FALSE to use the default way of translation
+     *
+     * @return void
      */
     public function loadData($translationMode = false)
     {
         if ($this->data_loaded == false) {
             parent::loadData($translationMode);
-            $this->images_array = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->images, true);
-            $this->teaserImagesArray = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->teaserimages, true);
+            $this->images_array = GeneralUtility::trimExplode(',', $this->images, true);
+            $this->teaserImagesArray = GeneralUtility::trimExplode(',', $this->teaserimages, true);
 
-            $this->categories_uid = array_unique($this->databaseConnection->getChildCategories($this->uid, $this->lang_uid));
+            $this->categories_uid = array_unique(
+                $this->databaseConnection->getChildCategories($this->uid, $this->lang_uid)
+            );
             $this->parent_category_uid = $this->databaseConnection->getParentCategory($this->uid);
-            $this->products_uid = array_unique($this->databaseConnection->getChildProducts($this->uid, $this->lang_uid));
+            $this->products_uid = array_unique(
+                $this->databaseConnection->getChildProducts($this->uid, $this->lang_uid)
+            );
             $this->data_loaded = true;
         }
     }
 
     /**
      * Loads the permissions.
+     *
+     * @return void
      */
     public function loadPermissions()
     {
@@ -795,7 +805,7 @@ class Category extends AbstractEntity
     }
 
     /**
-     * Returns whether the permission is set and allowed for the current usera.
+     * Returns whether the permission is set and allowed for the current usera
      *
      * @param int $perm Permission
      *
@@ -841,7 +851,9 @@ class Category extends AbstractEntity
         $result = false;
 
         if ($this->hasProducts()) {
-            $result = !empty(\CommerceTeam\Commerce\Utility\GeneralUtility::removeNoStockProducts($this->getProducts(), 0));
+            $result = !empty(
+                \CommerceTeam\Commerce\Utility\GeneralUtility::removeNoStockProducts($this->getProducts(), 0)
+            );
         }
 
         return $result;
@@ -852,7 +864,7 @@ class Category extends AbstractEntity
      * if sub categories have active products.
      *
      * @param bool|int $depth Maximum depth for going recursive,
-     *                        if not set go for maximum
+     *      if not set go for maximum
      *
      * @return bool Returns TRUE, if category/subcategories hav active products
      */
@@ -870,9 +882,9 @@ class Category extends AbstractEntity
                 /**
                  * Category.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Category
+                 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
-                $category = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                $category = GeneralUtility::makeInstance(
                     'CommerceTeam\\Commerce\\Domain\\Model\\Category',
                     $oneCategoryUid,
                     $this->lang_uid
@@ -892,7 +904,7 @@ class Category extends AbstractEntity
      * Carries out the move of the category to the new parent
      * Permissions are NOT checked, this MUST be done beforehand.
      *
-     * @param int    $uid UID of the move target
+     * @param int $uid UID of the move target
      * @param string $op  Operation of move (can be 'after' or 'into')
      *
      * @return bool TRUE if the move was successful, FALSE if not

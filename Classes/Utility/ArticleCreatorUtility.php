@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Utility;
 
 /*
@@ -92,10 +91,13 @@ class ArticleCreatorUtility
     }
 
     /**
-     * Initializes the Article Creator if it's not called directly from the Flexforms.
+     * Initializes the Article Creator if it's not called directly
+     * from the Flexforms.
      *
      * @param int $uid Uid of the product
      * @param int $pid Page id
+     *
+     * @return void
      */
     public function init($uid, $pid)
     {
@@ -142,9 +144,9 @@ class ArticleCreatorUtility
         $colCount = 0;
         $headRow = $this->getHeadRow($colCount, null, null, false);
         $result = '<script>' . $this->redirectUrls() . '</script>
-			<input type="hidden" name="deleteaid" value="0" />
-			<table border="0">
-				';
+            <input type="hidden" name="deleteaid" value="0" />
+            <table border="0">
+                ';
 
         $lastUid = 0;
 
@@ -287,14 +289,13 @@ class ArticleCreatorUtility
             'cmd' => '',
             'popViewId' => '',
         ));
+
         $out = '
-			var T3_RETURN_URL = \''.str_replace(
-                '%20',
-                '',
-                rawurlencode(GeneralUtility::sanitizeLocalUrl(GeneralUtility::_GP('returnUrl')))
-            ).'\';
-			var T3_THIS_LOCATION = \''.str_replace('%20', '', rawurlencode($thisLocation)).'\';
-		';
+            var T3_RETURN_URL = \'' .
+            str_replace('%20', '', rawurlencode(GeneralUtility::sanitizeLocalUrl(GeneralUtility::_GP('returnUrl')))) .
+            '\';
+            var T3_THIS_LOCATION = \''.str_replace('%20', '', rawurlencode($thisLocation)).'\';
+        ';
 
         return $out;
     }
@@ -302,8 +303,8 @@ class ArticleCreatorUtility
     /**
      * Create a matrix of producible articles.
      *
-     * @param array      $parameter Parameter
-     * @param FormEngine $fObj      Form engine
+     * @param array $parameter Parameter
+     * @param FormEngine $fObj Form engine
      *
      * @return string A HTML-table with checkboxes and all needed stuff
      */
@@ -325,7 +326,9 @@ class ArticleCreatorUtility
         $rowCount = $this->calculateRowCount();
         if ($rowCount > 1000) {
             return sprintf(
-                $fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.to_many_articles'),
+                $fObj->sL(
+                    'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.to_many_articles'
+                ),
                 $rowCount
             );
         }
@@ -337,36 +340,41 @@ class ArticleCreatorUtility
 
         $valueMatrix = (array) $this->getValues();
         $counter = 0;
-        $resultRows = '';
-        $resultRows .= $fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_warning');
+        $resultRows = $fObj->sL(
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_warning'
+        );
 
         $this->getRows($valueMatrix, $resultRows, $counter, $headRow);
 
         $emptyRow = '<tr><td><input type="checkbox" name="createList[empty]" /></td>';
-        $emptyRow .= '<td colspan="'.($colCount - 1).'">'.
-            $fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.empty_article').
+        $emptyRow .= '<td colspan="' . ($colCount - 1) . '">' .
+            $fObj->sL(
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.empty_article'
+            ) .
             '</td></tr>';
 
         // create a checkbox for selecting all articles
         $selectJs = '<script language="JavaScript">
-			function updateArticleList() {
-				var sourceSB = document.getElementById("selectAllArticles");
-				for (var i = 1; i <= '.$rowCount.'; i++) {
-					document.getElementById("createRow_" + i).checked = sourceSB.checked;
-				}
-			}
-		</script>';
+            function updateArticleList() {
+                var sourceSB = document.getElementById("selectAllArticles");
+                for (var i = 1; i <= ' . $rowCount . '; i++) {
+                    document.getElementById("createRow_" + i).checked = sourceSB.checked;
+                }
+            }
+        </script>';
 
         $selectAllRow = '';
         if (!empty($valueMatrix)) {
             $onClick = 'onclick="updateArticleList()"';
-            $selectAllRow = '<tr><td><input type="checkbox" id="selectAllArticles" '.$onClick.'/></td>';
-            $selectAllRow .= '<td colspan="'.($colCount - 1).'">'.
-                $fObj->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_all_articles').
+            $selectAllRow = '<tr><td><input type="checkbox" id="selectAllArticles" ' . $onClick . '/></td>';
+            $selectAllRow .= '<td colspan="' . ($colCount - 1) . '">' .
+                $fObj->sL(
+                    'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_all_articles'
+                ).
                 '</td></tr>';
         }
 
-        $result = '<table border="0">'.$selectJs.$headRow.$emptyRow.$selectAllRow.$resultRows.'</table>';
+        $result = '<table border="0">' . $selectJs . $headRow . $emptyRow . $selectAllRow . $resultRows . '</table>';
 
         return $result;
     }
@@ -406,15 +414,23 @@ class ArticleCreatorUtility
     /**
      * Returns the html table rows for the article matrix.
      *
-     * @param array  $data         The data we should build the matrix from
-     * @param string $resultRows   The rendered resulting rows
-     * @param int    $counter      The article counter
-     * @param string $headRow      The header row for inserting after a number of articles
-     * @param array  $extraRowData Some additional data like checkbox column
-     * @param int    $index        The level inside the matrix
-     * @param array  $row          The current row data
+     * @param array $data The data we should build the matrix from
+     * @param string $resultRows The rendered resulting rows
+     * @param int $counter The article counter
+     * @param string $headRow The header row for inserting after a number of articles
+     * @param array $extraRowData Some additional data like checkbox column
+     * @param int $index The level inside the matrix
+     * @param array $row The current row data
+     *
+     * @return void
      */
-    protected function getRows(array $data, &$resultRows, &$counter, $headRow, array $extraRowData = array(), $index = 1,
+    protected function getRows(
+        array $data,
+        &$resultRows,
+        &$counter,
+        $headRow,
+        array $extraRowData = array(),
+        $index = 1,
         array $row = array()
     ) {
         if (is_array($data)) {
@@ -424,7 +440,15 @@ class ArticleCreatorUtility
                 $row[$index] = $dummyData;
 
                 if (is_array($dataItem['other'])) {
-                    $this->getRows($dataItem['other'], $resultRows, $counter, $headRow, $extraRowData, ($index + 1), $row);
+                    $this->getRows(
+                        $dataItem['other'],
+                        $resultRows,
+                        $counter,
+                        $headRow,
+                        $extraRowData,
+                        ($index + 1),
+                        $row
+                    );
                 } else {
                     // serialize data for formsaveing
                     $labelData = array();
@@ -436,7 +460,7 @@ class ArticleCreatorUtility
                     }
                     asort($hashData);
 
-                        // try to fetch an article with this special attribute values
+                    // try to fetch an article with this special attribute values
                     $hashData = serialize($hashData);
                     $hash = md5($hashData);
 
@@ -450,26 +474,26 @@ class ArticleCreatorUtility
                     if (($counter % 20) == 0) {
                         $resultRows .= $headRow;
                     }
-                    $class = ($counter % 2 == 1) ? 'background-color:silver' : 'background:none';
+                    $class = ($counter % 2 == 1) ? 'background-color: silver' : 'background: none';
 
                     // create the row
-                    $resultRows .= '<tr><td style="'.$class.'">';
-                    $resultRows .= '<input type="checkbox" name="createList['.$counter.']" id="createRow_'.$counter.'" />';
-                    $resultRows .= '<input type="hidden" name="createData['.$counter.']" value="'.
-                        htmlspecialchars($hashData).'" /></td>';
+                    $resultRows .= '<tr><td style="' . $class . '">
+                        <input type="checkbox" name="createList[' . $counter . ']" id="createRow_' . $counter . '" />
+                        <input type="hidden" name="createData[' . $counter . ']" value="' .
+                        htmlspecialchars($hashData) . '" /></td>';
 
-                    $resultRows .= '<td style="'.$class.'">'.
+                    $resultRows .= '<td style="' . $class . '">' .
                         implode(
-                            '</td><td style="'.$class.'">',
+                            '</td><td style="' . $class . '">',
                             \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($labelData)
-                        ).
+                        ) .
                         '</td>';
                     if (!empty($extraRowData)) {
-                        $resultRows .= '<td style="'.$class.'">'.
+                        $resultRows .= '<td style="' . $class . '">' .
                             implode(
-                                '</td><td style="'.$class.'">',
+                                '</td><td style="' . $class . '">',
                                 \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($extraRowData)
-                            ).
+                            ) .
                             '</td>';
                     }
                     $resultRows .= '</tr>';
@@ -487,6 +511,7 @@ class ArticleCreatorUtility
     protected function calculateRowCount()
     {
         $result = 1;
+
         if (is_array($this->attributes['ct1'])) {
             foreach ($this->attributes['ct1'] as $attribute) {
                 $valueCount = count($attribute['valueList']);
@@ -500,10 +525,10 @@ class ArticleCreatorUtility
     /**
      * Returns the HTML code for the header row.
      *
-     * @param int   $colCount The number of columns we have
+     * @param int $colCount The number of columns we have
      * @param array $acBefore The additional columns before the attribute columns
-     * @param array $acAfter  The additional columns after the attribute columns
-     * @param bool  $addTr    Add table row
+     * @param array $acAfter The additional columns after the attribute columns
+     * @param bool $addTr Add table row
      *
      * @return string The HTML header code
      */
@@ -516,24 +541,24 @@ class ArticleCreatorUtility
         }
 
         if ($acBefore != null) {
-            $result .= '<th>'.implode(
+            $result .= '<th>' . implode(
                 '</th><th>',
                 \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($acBefore)
-            ).'</th>';
+            ) . '</th>';
         }
 
         if (is_array($this->attributes['ct1'])) {
             foreach ($this->attributes['ct1'] as $attribute) {
-                $result .= '<th>'.htmlspecialchars(strip_tags($attribute['attributeData']['title'])).'</th>';
+                $result .= '<th>' . htmlspecialchars(strip_tags($attribute['attributeData']['title'])) . '</th>';
                 ++$colCount;
             }
         }
 
         if ($acAfter != null) {
-            $result .= '<th>'.implode(
+            $result .= '<th>' . implode(
                 '</th><th>',
                 \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($acAfter)
-            ).'</th>';
+            ) . '</th>';
         }
 
         if ($addTr) {
@@ -549,19 +574,21 @@ class ArticleCreatorUtility
      * Creates all articles that should be created (defined through the POST vars).
      *
      * @param array $parameter Parameter
+     *
+     * @return void
      */
     public function createArticles(array $parameter)
     {
         $database = $this->getDatabaseConnection();
 
         if (is_array(GeneralUtility::_GP('createList'))) {
-            $res = $database->exec_SELECTquery(
-                'uid,value',
+            $result = $database->exec_SELECTquery(
+                'uid, value',
                 'tx_commerce_attribute_values',
                 'deleted = 0'
             );
 
-            while (($row = $database->sql_fetch_assoc($res))) {
+            while (($row = $database->sql_fetch_assoc($result))) {
                 $this->flattedAttributes[$row['uid']] = $row['value'];
             }
 
@@ -577,6 +604,8 @@ class ArticleCreatorUtility
      * Updates all articles.
      * This adds new attributes to all existing articles that where added
      * to the parent product or categories.
+     *
+     * @return void
      */
     public function updateArticles()
     {
@@ -601,7 +630,7 @@ class ArticleCreatorUtility
 
                     $database->exec_UPDATEquery(
                         'tx_commerce_articles_article_attributes_mm',
-                        'uid_local='.$articleUid.' AND uid_foreign='.$attributeUid,
+                        'uid_local = ' . $articleUid . ' AND uid_foreign = ' . $attributeUid,
                         array('uid_valuelist' => $attributeValueUid)
                     );
                 }
@@ -615,7 +644,7 @@ class ArticleCreatorUtility
      * Creates article title out of attributes.
      *
      * @param array $parameter Parameter
-     * @param array $data      Data
+     * @param array $data Data
      *
      * @return string Returns the product title + attribute titles for article title
      */
@@ -630,7 +659,7 @@ class ArticleCreatorUtility
                 }
             }
             if (!empty($selectedValues)) {
-                $content .= ' ('.implode(', ', $selectedValues).')';
+                $content .= ' (' . implode(', ', $selectedValues) . ')';
             }
         }
 
@@ -641,8 +670,8 @@ class ArticleCreatorUtility
      * Creates an article in the database and all needed releations to attributes
      * and values. It also creates a new prices and assignes it to the new article.
      *
-     * @param array  $parameter Parameter
-     * @param string $key       The key in the POST var array
+     * @param array $parameter Parameter
+     * @param string $key The key in the POST var array
      *
      * @return int Returns the new articleUid if success
      */
@@ -664,7 +693,7 @@ class ArticleCreatorUtility
         $sorting = $database->exec_SELECTgetSingleRow(
             'uid, sorting',
             'tx_commerce_articles',
-            'uid_product = '.$this->uid,
+            'uid_product = ' . $this->uid,
             '',
             'sorting DESC',
             1
@@ -692,7 +721,10 @@ class ArticleCreatorUtility
             }
         }
 
-        $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook('Utility/ArticleCreatorUtility', 'createArticle');
+        $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook(
+            'Utility/ArticleCreatorUtility',
+            'createArticle'
+        );
         if (method_exists($hookObject, 'preinsert')) {
             $hookObject->preinsert($articleData);
         }
@@ -723,7 +755,7 @@ class ArticleCreatorUtility
         $productsAttributesRes = $database->exec_SELECTquery(
             'sorting, uid_local, uid_foreign',
             'tx_commerce_products_attributes_mm',
-            'uid_local = '.(int) $this->uid
+            'uid_local = ' . (int) $this->uid
         );
         $attributesSorting = array();
         while (($productsAttributes = $database->sql_fetch_assoc($productsAttributesRes))) {
@@ -779,23 +811,35 @@ class ArticleCreatorUtility
 
         // Now check, if the parent Product is already lokalised, so creat Article in
         // the lokalised version Select from Database different localisations
-        $resOricArticle = $database->exec_SELECTquery('*', 'tx_commerce_articles', 'uid='.(int) $articleUid.' and deleted = 0');
+        $resOricArticle = $database->exec_SELECTquery(
+            '*',
+            'tx_commerce_articles',
+            'uid = ' . (int) $articleUid . ' AND deleted = 0'
+        );
         $origArticle = $database->sql_fetch_assoc($resOricArticle);
 
-        $resLocalizedProducts = $database->exec_SELECTquery(
+        $result = $database->exec_SELECTquery(
             '*',
             'tx_commerce_products',
-            'l18n_parent = '.(int) $this->uid.' AND deleted = 0'
+            'l18n_parent = ' . (int) $this->uid . ' AND deleted = 0'
         );
 
-        if (($resLocalizedProducts) && ($database->sql_num_rows($resLocalizedProducts) > 0)) {
+        if ($database->sql_num_rows($result)) {
             // Only if there are products
-            while (($localizedProducts = $database->sql_fetch_assoc($resLocalizedProducts))) {
+            while (($localizedProducts = $database->sql_fetch_assoc($result))) {
                 // walk thru and create articles
                 $destLanguage = $localizedProducts['sys_language_uid'];
                 // get the highest sorting
-                $langIsoCode = CoreBackendUtility::getRecord('sys_language', (int) $destLanguage, 'static_lang_isocode');
-                $langIdent = CoreBackendUtility::getRecord('static_languages', (int) $langIsoCode['static_lang_isocode'], 'lg_typo3');
+                $langIsoCode = CoreBackendUtility::getRecord(
+                    'sys_language',
+                    (int) $destLanguage,
+                    'static_lang_isocode'
+                );
+                $langIdent = CoreBackendUtility::getRecord(
+                    'static_languages',
+                    (int) $langIsoCode['static_lang_isocode'],
+                    'lg_typo3'
+                );
                 $langIdent = strtoupper($langIdent['lg_typo3']);
 
                 // create article data array
@@ -810,7 +854,10 @@ class ArticleCreatorUtility
                     'article_attributes' => count($this->attributes['rest']) + count($data),
                     'attribute_hash' => $hash,
                     'article_type_uid' => 1,
-                    'attributesedit' => $this->belib->buildLocalisedAttributeValues($origArticle['attributesedit'], $langIdent),
+                    'attributesedit' => $this->belib->buildLocalisedAttributeValues(
+                        $origArticle['attributesedit'],
+                        $langIdent
+                    ),
                 );
 
                 // create the article
@@ -846,9 +893,10 @@ class ArticleCreatorUtility
      */
     public function articleUid(array $parameter)
     {
-        return '<input type="hidden" name="'.$parameter['itemFormElName'].'" value="'.
-            htmlspecialchars($parameter['itemFormElValue']).'">';
+        return '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' .
+            htmlspecialchars($parameter['itemFormElValue']) . '">';
     }
+
 
     /**
      * Get backend user.

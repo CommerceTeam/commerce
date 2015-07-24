@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Model;
 
 /*
@@ -14,6 +13,8 @@ namespace CommerceTeam\Commerce\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use CommerceTeam\Commerce\Utility\BackendUtility;
 
 /**
  * Basic class for handling products
@@ -75,18 +76,18 @@ class Product extends AbstractEntity
     /* Data Variables */
 
     /**
-     * Title.
-     *
-     * @var string
-     */
-    protected $title = '';
-
-    /**
      * Pid.
      *
      * @var int
      */
     public $pid = 0;
+
+    /**
+     * Title.
+     *
+     * @var string
+     */
+    protected $title = '';
 
     /**
      * Subtitle.
@@ -101,6 +102,20 @@ class Product extends AbstractEntity
      * @var string
      */
     protected $description = '';
+
+    /**
+     * Images.
+     *
+     * @var string
+     */
+    protected $images = '';
+
+    /**
+     * Images as array.
+     *
+     * @var array
+     */
+    protected $images_array = array();
 
     /**
      * Teaser.
@@ -124,18 +139,25 @@ class Product extends AbstractEntity
     protected $teaserImagesArray = array();
 
     /**
-     * Images.
+     * Related page
      *
-     * @var string
+     * @var int
      */
-    protected $images = '';
+    public $relatedpage;
 
     /**
-     * Images as array.
+     * Translation parent
      *
-     * @var array
+     * @var int
      */
-    protected $images_array = array();
+    public $l18n_parent;
+
+    /**
+     * Manufacturer id
+     *
+     * @var int
+     */
+    public $manufacturer_uid = 0;
 
     /**
      * Array of child articles.
@@ -164,13 +186,6 @@ class Product extends AbstractEntity
      * @var array
      */
     public $attributes_uids = array();
-
-    /**
-     * Related page.
-     *
-     * @var string
-     */
-    public $relatedpage = '';
 
     /**
      * Related products.
@@ -254,7 +269,7 @@ class Product extends AbstractEntity
     /**
      * Constructor, basically calls init.
      *
-     * @param int $uid         Product uid
+     * @param int $uid Product uid
      * @param int $languageUid Language uid
      *
      * @return self
@@ -269,7 +284,7 @@ class Product extends AbstractEntity
     /**
      * Class initialization.
      *
-     * @param int $uid     Uid of product
+     * @param int $uid Uid of product
      * @param int $langUid Language uid, default 0
      *
      * @return bool TRUE if initialization was successful
@@ -279,7 +294,7 @@ class Product extends AbstractEntity
         $uid = (int) $uid;
         $langUid = (int) $langUid;
 
-        if ($uid > 0) {
+        if ($uid) {
             $this->uid = $uid;
             $this->lang_uid = $langUid;
             $this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
@@ -365,7 +380,7 @@ class Product extends AbstractEntity
      * Get list of articles of this product filtered by given attribute UID
      * and attribute value.
      *
-     * @param int   $attributeUid   Attribute uid
+     * @param int $attributeUid Attribute uid
      * @param mixed $attributeValue Attribute value
      *
      * @return array of article uids Article uids
@@ -386,19 +401,19 @@ class Product extends AbstractEntity
      * Get list of articles of this product filtered by given attribute UID
      * and attribute value.
      *
-     * @param array    $attributes Attributes array(
-     *                             array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
-     *                             array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
-     *                             ...
-     *                             )
-     * @param bool|int $proofUid   Proof if script is running without instance
-     *                             and so without a single product
+     * @param array $attributes Attributes array(
+     *     array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
+     *     array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
+     *     ...
+     * )
+     * @param bool|int $proofUid Proof if script is running without instance
+     *     and so without a single product
      *
      * @return array of article uids
      */
     public function getArticlesByAttributeArray(array $attributes, $proofUid = 1)
     {
-        $whereUid = $proofUid ? ' and tx_commerce_articles.uid_product = '.$this->uid : '';
+        $whereUid = $proofUid ? ' AND tx_commerce_articles.uid_product = ' . $this->uid : '';
 
         $first = 1;
         if (is_array($attributes)) {
@@ -411,33 +426,44 @@ class Product extends AbstractEntity
 
                 // attribute char is not used, thats why we check for id
                 if (is_string($uidValuePair['AttributeValue'])) {
-                    $addwheretmp .= ' OR (tx_commerce_attributes.uid = '.(int) $uidValuePair['AttributeUid'].
-                        ' AND tx_commerce_articles_article_attributes_mm.value_char="'.
-                        $database->quoteStr($uidValuePair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm').'" )';
+                    $addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] .
+                        ' AND tx_commerce_articles_article_attributes_mm.value_char = "' .
+                        $database->quoteStr(
+                            $uidValuePair['AttributeValue'],
+                            'tx_commerce_articles_article_attributes_mm'
+                        ) . '" )';
                 }
 
                 // Nach dem charwert immer ueberpruefen, solange value_char noch nicht drin ist.
                 if (is_float($uidValuePair['AttributeValue']) || (int) $uidValuePair['AttributeValue']) {
-                    $addwheretmp .= ' OR (tx_commerce_attributes.uid = '.(int) $uidValuePair['AttributeUid'].
-                        ' AND tx_commerce_articles_article_attributes_mm.default_value in ("'.
-                        $database->quoteStr($uidValuePair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm').'" ) )';
+                    $addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] .
+                        ' AND tx_commerce_articles_article_attributes_mm.default_value IN ("' .
+                        $database->quoteStr(
+                            $uidValuePair['AttributeValue'],
+                            'tx_commerce_articles_article_attributes_mm'
+                        ) . '" ) )';
                 }
 
                 if (is_float($uidValuePair['AttributeValue']) || (int) $uidValuePair['AttributeValue']) {
-                    $addwheretmp .= ' OR (tx_commerce_attributes.uid = '.(int) $uidValuePair['AttributeUid'].
-                        ' AND tx_commerce_articles_article_attributes_mm.uid_valuelist in ("'.
-                        $database->quoteStr($uidValuePair['AttributeValue'], 'tx_commerce_articles_article_attributes_mm').'") )';
+                    $addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] .
+                        ' AND tx_commerce_articles_article_attributes_mm.uid_valuelist IN ("' .
+                        $database->quoteStr(
+                            $uidValuePair['AttributeValue'],
+                            'tx_commerce_articles_article_attributes_mm'
+                        ) . '") )';
                 }
 
-                $addwhere = ' AND (0 '.$addwheretmp.') ';
+                $addwhere = ' AND (0 ' . $addwheretmp . ') ';
 
                 $result = $database->exec_SELECT_mm_query(
-                    'distinct tx_commerce_articles.uid', 'tx_commerce_articles', 'tx_commerce_articles_article_attributes_mm',
+                    'DISTINCT tx_commerce_articles.uid',
+                    'tx_commerce_articles',
+                    'tx_commerce_articles_article_attributes_mm',
                     'tx_commerce_attributes',
-                    $addwhere.' AND tx_commerce_articles.hidden = 0 and tx_commerce_articles.deleted = 0'.$whereUid
+                    $addwhere . ' AND tx_commerce_articles.hidden = 0 AND tx_commerce_articles.deleted = 0' . $whereUid
                 );
 
-                if (($result) && ($database->sql_num_rows($result) > 0)) {
+                if ($database->sql_num_rows($result)) {
                     while (($data = $database->sql_fetch_assoc($result))) {
                         $next[] = $data['uid'];
                     }
@@ -467,12 +493,12 @@ class Product extends AbstractEntity
     /**
      * Returns list of articles (from this product) filtered by price.
      *
-     * @param int      $priceMin             Smallest unit (e.g. cents)
-     * @param int      $priceMax             Biggest unit (e.g. cents)
+     * @param int $priceMin Smallest unit (e.g. cents)
+     * @param int $priceMax Biggest unit (e.g. cents)
      * @param bool|int $usePriceGrossInstead Normally we check for net price,
-     *                                       switch to gross price
-     * @param bool|int $proofUid             If script is running without instance and
-     *                                       so without a single product
+     *      switch to gross price
+     * @param bool|int $proofUid If script is running without instance and
+     *      so without a single product
      *
      * @return array of article uids
      */
@@ -484,11 +510,14 @@ class Product extends AbstractEntity
         $table = 'tx_commerce_articles';
         $where = '1=1';
         if ($proofUid) {
-            $where .= ' and tx_commerce_articles.uid_product = '.$this->uid;
+            $where .= ' AND tx_commerce_articles.uid_product = ' . $this->uid;
         }
 
-        $where .= ' and article_type_uid=1';
-        $where .= $this->getFrontendController()->sys_page->enableFields($table, $this->getFrontendController()->showHiddenRecords);
+        $where .= ' AND article_type_uid = 1';
+        $where .= $this->getFrontendController()->sys_page->enableFields(
+            $table,
+            $this->getFrontendController()->showHiddenRecords
+        );
         $groupBy = '';
         $orderBy = 'sorting';
         $limit = '';
@@ -507,7 +536,7 @@ class Product extends AbstractEntity
             /**
              * Article.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Article
+             * @var \CommerceTeam\Commerce\Domain\Model\Article $article
              */
             $article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                 'CommerceTeam\\Commerce\\Domain\\Model\\Article',
@@ -527,29 +556,34 @@ class Product extends AbstractEntity
     /**
      * Get attribute matrix of products and articles
      * Both products and articles have a mm relation to the attribute table
-     * This method gets the attributes of a product or an article and compiles them
-     * to an unified array of attributes
-     * This method handles the different types of values of an attribute: character
-     * values, int values and value lists.
+     * This method gets the attributes of a product or an article and compiles
+     * them to an unified array of attributes
+     * This method handles the different types of values of an attribute:
+     * character values, int values and value lists.
      *
-     * @param mixed  $articleList                                  Array of restricted product articles
-     *                                                             (usually shall, must, ...), FALSE for all, FALSE for product attribute list
-     * @param mixed  $attributeListInclude                         Array of restricted attributes,
-     *                                                             FALSE for all
-     * @param bool   $valueListShowValueInArticleProduct           TRUE if 'showvalue' field
-     *                                                             of value list table should be cared of
-     * @param string $sortingTable                                 Name of table with sorting field of table to order
-     *                                                             records
-     * @param bool   $localizationAttributeValuesFallbackToDefault TRUE if a
-     *                                                             fallback to default value should be done if a localization of an attribute
-     *                                                             value or value char is not available in localized row
-     * @param string $parentTable                                  Name of parent table
+     * @param mixed $articleList Array of restricted product articles
+     *      (usually shall, must, ...), FALSE for all, FALSE for product
+     *      attribute list
+     * @param mixed $attributeListInclude Array of restricted attributes,
+     *      FALSE for all
+     * @param bool $valueListShowValueInArticleProduct TRUE if
+     *      'showvalue' field of value list table should be cared of
+     * @param string $sortingTable Name of table with sorting field of
+     *      table to order records
+     * @param bool $localizationAttributeValuesFallbackToDefault TRUE if a
+     *      fallback to default value should be done if a localization of an
+     *      attribute value or value char is not available in localized row
+     * @param string $parentTable Name of parent table
      *
      * @return mixed Array if attributes where found, else FALSE
      */
-    public function getAttributeMatrix($articleList = false, $attributeListInclude = false,
-        $valueListShowValueInArticleProduct = true, $sortingTable = 'tx_commerce_articles_article_attributes_mm',
-        $localizationAttributeValuesFallbackToDefault = false, $parentTable = 'tx_commerce_articles'
+    public function getAttributeMatrix(
+        $articleList = false,
+        $attributeListInclude = false,
+        $valueListShowValueInArticleProduct = true,
+        $sortingTable = 'tx_commerce_articles_article_attributes_mm',
+        $localizationAttributeValuesFallbackToDefault = false,
+        $parentTable = 'tx_commerce_articles'
     ) {
         $database = $this->getDatabaseConnection();
 
@@ -572,7 +606,7 @@ class Product extends AbstractEntity
         );
 
         // Accumulated result array
-        $targetDataArray = array();
+        $targetData = array();
 
         // Attributes uids are added to this array if there is no language overlay for
         // an attribute to prevent fetching of non-existing language overlays in
@@ -582,34 +616,33 @@ class Product extends AbstractEntity
         // Compile target data array
         while (($attributeDataRow = $database->sql_fetch_assoc($attributeDataArrayRessource))) {
             // AttributeUid affected by this reord
-            $currentAttributeUid = $attributeDataRow['attributes_uid'];
+            $currentUid = $attributeDataRow['attributes_uid'];
 
             // Don't handle this row if a prior row was already unable to fetch a language
             // overlay of the attribute
-            if (
-                $this->lang_uid > 0
-                && !empty(array_intersect(array($currentAttributeUid), $attributeLanguageOverlayBlacklist))
+            if ($this->lang_uid > 0
+                && !empty(array_intersect(array($currentUid), $attributeLanguageOverlayBlacklist))
             ) {
                 continue;
             }
 
             // Initialize array for this attribute uid and fetch attribute language overlay
             // for localization
-            if (!isset($targetDataArray[$currentAttributeUid])) {
+            if (!isset($targetData[$currentUid])) {
                 // Initialize target row and fill in attribute values
-                $targetDataArray[$currentAttributeUid]['title'] = $attributeDataRow['attributes_title'];
-                $targetDataArray[$currentAttributeUid]['unit'] = $attributeDataRow['attributes_unit'];
-                $targetDataArray[$currentAttributeUid]['values'] = array();
-                $targetDataArray[$currentAttributeUid]['valueuidlist'] = array();
-                $targetDataArray[$currentAttributeUid]['valueformat'] = $attributeDataRow['attributes_valueformat'];
-                $targetDataArray[$currentAttributeUid]['Internal_title'] = $attributeDataRow['attributes_internal_title'];
-                $targetDataArray[$currentAttributeUid]['icon'] = $attributeDataRow['attributes_icon'];
+                $targetData[$currentUid]['title'] = $attributeDataRow['attributes_title'];
+                $targetData[$currentUid]['unit'] = $attributeDataRow['attributes_unit'];
+                $targetData[$currentUid]['values'] = array();
+                $targetData[$currentUid]['valueuidlist'] = array();
+                $targetData[$currentUid]['valueformat'] = $attributeDataRow['attributes_valueformat'];
+                $targetData[$currentUid]['Internal_title'] = $attributeDataRow['attributes_internal_title'];
+                $targetData[$currentUid]['icon'] = $attributeDataRow['attributes_icon'];
 
                 // Fetch language overlay of attribute if given
                 // Overwrite title, unit and Internal_title (sic!) of attribute
                 if ($this->lang_uid > 0) {
                     $overwriteValues = array();
-                    $overwriteValues['uid'] = $currentAttributeUid;
+                    $overwriteValues['uid'] = $currentUid;
                     $overwriteValues['pid'] = $attributeDataRow['attributes_pid'];
                     $overwriteValues['sys_language_uid'] = $attributeDataRow['attritubes_sys_language_uid'];
                     $overwriteValues['title'] = $attributeDataRow['attributes_title'];
@@ -617,16 +650,19 @@ class Product extends AbstractEntity
                     $overwriteValues['internal_title'] = $attributeDataRow['attributes_internal_title'];
 
                     $languageOverlayRecord = $this->getFrontendController()->sys_page->getRecordOverlay(
-                        'tx_commerce_attributes', $overwriteValues, $this->lang_uid, $this->translationMode
+                        'tx_commerce_attributes',
+                        $overwriteValues,
+                        $this->lang_uid,
+                        $this->translationMode
                     );
                     if ($languageOverlayRecord) {
-                        $targetDataArray[$currentAttributeUid]['title'] = $languageOverlayRecord['title'];
-                        $targetDataArray[$currentAttributeUid]['unit'] = $languageOverlayRecord['unit'];
-                        $targetDataArray[$currentAttributeUid]['Internal_title'] = $languageOverlayRecord['internal_title'];
+                        $targetData[$currentUid]['title'] = $languageOverlayRecord['title'];
+                        $targetData[$currentUid]['unit'] = $languageOverlayRecord['unit'];
+                        $targetData[$currentUid]['Internal_title'] = $languageOverlayRecord['internal_title'];
                     } else {
                         // Throw away array if there is no lang overlay, add to blacklist
-                        unset($targetDataArray[$currentAttributeUid]);
-                        $attributeLanguageOverlayBlacklist[] = $currentAttributeUid;
+                        unset($targetData[$currentUid]);
+                        $attributeLanguageOverlayBlacklist[] = $currentUid;
                         continue;
                     }
                 }
@@ -651,13 +687,18 @@ class Product extends AbstractEntity
             // Handle value, default_value and value lists of attributes
             if (strlen($attributeDataRow['value_char']) || $defaultValue) {
                 // Localization of value_char
-                if ($this->lang_uid > 0) {
+                if ($this->lang_uid) {
                     // Get uid of localized article
                     // (lang_uid = selected lang and l18n_parent = current article)
                     $localizedArticleUid = $database->exec_SELECTgetRows(
-                        'uid', $parentTable,
-                        'l18n_parent = '.$attributeDataRow['parent_uid'].' AND sys_language_uid = '.$this->lang_uid.
-                        $this->getFrontendController()->sys_page->enableFields($parentTable, $this->getFrontendController()->showHiddenRecords)
+                        'uid',
+                        $parentTable,
+                        'l18n_parent = '. $attributeDataRow['parent_uid'] .
+                        ' AND sys_language_uid = ' . $this->lang_uid .
+                        $this->getFrontendController()->sys_page->enableFields(
+                            $parentTable,
+                            $this->getFrontendController()->showHiddenRecords
+                        )
                     );
 
                     // Fetch the article-attribute mm record with localized article uid
@@ -672,46 +713,55 @@ class Product extends AbstractEntity
                         }
                         // Fetch mm record with overlay values
                         $localizedArticleAttributeValues = $database->exec_SELECTgetRows(
-                            implode(', ', $selectFields), $mmTable,
-                            'uid_local='.$localizedArticleUid.' AND uid_foreign='.$currentAttributeUid
+                            implode(', ', $selectFields),
+                            $mmTable,
+                            'uid_local = ' . $localizedArticleUid . ' AND uid_foreign = ' . $currentUid
                         );
+
                         // Use value_char if set, else check for default_value, else use non
                         // localized value if enabled fallback
                         if (strlen($localizedArticleAttributeValues[0]['value_char']) > 0) {
-                            $targetDataArray[$currentAttributeUid]['values'][] = $localizedArticleAttributeValues[0]['value_char'];
+                            $targetData[$currentUid]['values'][] =
+                                $localizedArticleAttributeValues[0]['value_char'];
                         } elseif (strlen($localizedArticleAttributeValues[0]['default_value']) > 0) {
-                            $targetDataArray[$currentAttributeUid]['values'][] = $localizedArticleAttributeValues[0]['default_value'];
+                            $targetData[$currentUid]['values'][] =
+                                $localizedArticleAttributeValues[0]['default_value'];
                         } elseif ($localizationAttributeValuesFallbackToDefault) {
-                            $targetDataArray[$currentAttributeUid]['values'][] = $attributeDataRow['value_char'];
+                            $targetData[$currentUid]['values'][] = $attributeDataRow['value_char'];
                         }
                     }
                 } else {
                     // Use value_char if set, else default_value
                     if (strlen($attributeDataRow['value_char']) > 0) {
-                        $targetDataArray[$currentAttributeUid]['values'][] = $attributeDataRow['value_char'];
+                        $targetData[$currentUid]['values'][] = $attributeDataRow['value_char'];
                     } else {
-                        $targetDataArray[$currentAttributeUid]['values'][] = $attributeDataRow['default_value'];
+                        $targetData[$currentUid]['values'][] = $attributeDataRow['default_value'];
                     }
                 }
             } elseif ($attributeDataRow['uid_valuelist']) {
                 // Get value list rows
                 $valueListArrayRows = $database->exec_SELECTgetRows(
-                    '*', 'tx_commerce_attribute_values', 'uid IN ('.$attributeDataRow['uid_valuelist'].')'
+                    '*',
+                    'tx_commerce_attribute_values',
+                    'uid IN (' . $attributeDataRow['uid_valuelist'] . ')'
                 );
                 foreach ($valueListArrayRows as $valueListArrayRow) {
                     // Ignore row if this value list has already been calculated
                     // This might happen if method is called with multiple article uid's
                     if (!empty(
-                        array_intersect(array($valueListArrayRow['uid']), $targetDataArray[$currentAttributeUid]['valueuidlist'])
+                        array_intersect(array($valueListArrayRow['uid']), $targetData[$currentUid]['valueuidlist'])
                     )) {
                         continue;
                     }
 
                     // Value lists must be localized.
                     // So overwrite current row with localization record
-                    if ($this->lang_uid > 0) {
+                    if ($this->lang_uid) {
                         $valueListArrayRow = $this->getFrontendController()->sys_page->getRecordOverlay(
-                            'tx_commerce_attribute_values', $valueListArrayRow, $this->lang_uid, $this->translationMode
+                            'tx_commerce_attribute_values',
+                            $valueListArrayRow,
+                            $this->lang_uid,
+                            $this->translationMode
                         );
                     }
                     if (!$valueListArrayRow) {
@@ -720,8 +770,8 @@ class Product extends AbstractEntity
 
                     // Add value list row to target array
                     if ($valueListShowValueInArticleProduct || $valueListArrayRow['showvalue'] == 1) {
-                        $targetDataArray[$currentAttributeUid]['values'][] = $valueListArrayRow;
-                        $targetDataArray[$currentAttributeUid]['valueuidlist'][] = $valueListArrayRow['uid'];
+                        $targetData[$currentUid]['values'][] = $valueListArrayRow;
+                        $targetData[$currentUid]['valueuidlist'][] = $valueListArrayRow['uid'];
                     }
                 }
             }
@@ -732,55 +782,60 @@ class Product extends AbstractEntity
 
         // Return "I didn't found anything, so I'm not an array"
         // This hack is a re-implementation of the original matrix behaviour
-        if (empty($targetDataArray)) {
+        if (empty($targetData)) {
             return false;
         }
 
         // Sort value lists by sorting value
-        foreach ($targetDataArray as $attributeUid => $attributeValues) {
+        foreach ($targetData as $attributeUid => $attributeValues) {
             if (count($attributeValues['valueuidlist']) > 1) {
                 // compareBySorting is a special callback function to order
                 // the array by its sorting value
                 usort(
-                    $targetDataArray[$attributeUid]['values'], array(
-                        'tx_commerce_product',
+                    $targetData[$attributeUid]['values'],
+                    array(
+                        'CommerceTeam\\Commerce\\Domain\\Model\\Product',
                         'compareBySorting',
                     )
                 );
 
                 // Sort valuelist as well to get deterministic array output
                 sort($attributeValues['valueuidlist']);
-                $targetDataArray[$attributeUid]['valueuidlist'] = $attributeValues['valueuidlist'];
+                $targetData[$attributeUid]['valueuidlist'] = $attributeValues['valueuidlist'];
             }
         }
 
-        return $targetDataArray;
+        return $targetData;
     }
 
     /**
      * Create query to get all attributes of articles or products
      * This is a join over three tables:
-     *        parent table, either tx_commerce_articles or tx_commerce_producs
-     *        corresponding mm table
-     *        tx_commerce_attributes.
+     *      parent table, either tx_commerce_articles or tx_commerce_products
+     *      corresponding mm table
+     *      tx_commerce_attributes.
      *
-     * @param string $parentTable   Name of the parent table,
-     *                              either tx_commerce_articles or tx_commerce_products
-     * @param string $mmTable       Name of the mm table,
-     *                              either tx_commerce_articles_article_attributes_mm
-     *                              or tx_commerce_products_attributes_mm
-     * @param string $sortingTable  Name of table with .sorting field to order records
-     * @param mixed  $articleList   Array of some restricted articles of this product
-     *                              (shall, must, ...), FALSE for all articles of product,
-     *                              FALSE if $parentTable = tx_commerce_products
-     * @param mixed  $attributeList Array of restricted attributes,
-     *                              FALSE for all attributes
+     * @param string $parentTable Name of the parent table,
+     *      either tx_commerce_articles or tx_commerce_products
+     * @param string $mmTable Name of the mm table,
+     *      either tx_commerce_articles_article_attributes_mm
+     *      or tx_commerce_products_attributes_mm
+     * @param string $sortingTable Name of table with .sorting field to order
+     *      records
+     * @param mixed $articleList Array of some restricted articles of this
+     *      product (shall, must, ...), FALSE for all articles of product,
+     *      FALSE if $parentTable = tx_commerce_products
+     * @param mixed $attributeList Array of restricted attributes,
+     *      FALSE for all attributes
      *
      * @return string Query to be executed
      */
-    protected function getAttributeMatrixQuery($parentTable = 'tx_commerce_articles',
-        $mmTable = 'tx_commerce_articles_article_attributes_mm', $sortingTable = 'tx_commerce_articles_article_attributes_mm',
-        $articleList = false, $attributeList = false
+    protected function getAttributeMatrixQuery(
+        $parentTable = 'tx_commerce_articles',
+        $mmTable = 'tx_commerce_articles_article_attributes_mm',
+        $sortingTable = 'tx_commerce_articles_article_attributes_mm',
+        $articleList = false,
+        $attributeList = false
     ) {
         $database = $this->getDatabaseConnection();
 
@@ -795,19 +850,19 @@ class Product extends AbstractEntity
                 $articleList = $this->loadArticles();
             }
             // Get article attributes of current product only
-            $selectWhere[] = $parentTable.'.uid_product = '.$this->uid;
+            $selectWhere[] = $parentTable . '.uid_product = ' . $this->uid;
             // value_char is only available in article->attribute mm table
-            $selectFields[] = $mmTable.'.value_char';
+            $selectFields[] = $mmTable . '.value_char';
             // Restrict article list if given
             if (is_array($articleList) && !empty($articleList)) {
-                $selectWhere[] = $parentTable.'.uid IN ('.implode(',', $articleList).')';
+                $selectWhere[] = $parentTable . '.uid IN (' . implode(',', $articleList) . ')';
             }
         } else {
             // Get attributes of current product only
-            $selectWhere[] = $parentTable.'.uid = '.$this->uid;
+            $selectWhere[] = $parentTable . '.uid = ' . $this->uid;
         }
 
-        $selectFields[] = $parentTable.'.uid AS parent_uid';
+        $selectFields[] = $parentTable . '.uid AS parent_uid';
         $selectFields[] = 'tx_commerce_attributes.uid AS attributes_uid';
         $selectFields[] = 'tx_commerce_attributes.pid AS attributes_pid';
         $selectFields[] = 'tx_commerce_attributes.sys_language_uid AS attributes_sys_language_uid';
@@ -816,9 +871,9 @@ class Product extends AbstractEntity
         $selectFields[] = 'tx_commerce_attributes.valueformat AS attributes_valueformat';
         $selectFields[] = 'tx_commerce_attributes.internal_title AS attributes_internal_title';
         $selectFields[] = 'tx_commerce_attributes.icon AS attributes_icon';
-        $selectFields[] = $mmTable.'.default_value';
-        $selectFields[] = $mmTable.'.uid_valuelist';
-        $selectFields[] = $sortingTable.'.sorting';
+        $selectFields[] = $mmTable . '.default_value';
+        $selectFields[] = $mmTable . '.uid_valuelist';
+        $selectFields[] = $sortingTable . '.sorting';
 
         $selectFrom = array();
         $selectFrom[] = $parentTable;
@@ -826,20 +881,22 @@ class Product extends AbstractEntity
         $selectFrom[] = 'tx_commerce_attributes';
 
         // mm join restriction
-        $selectWhere[] = $parentTable.'.uid = '.$mmTable.'.uid_local';
-        $selectWhere[] = 'tx_commerce_attributes.uid = '.$mmTable.'.uid_foreign';
+        $selectWhere[] = $parentTable . '.uid = ' . $mmTable . '.uid_local';
+        $selectWhere[] = 'tx_commerce_attributes.uid = ' . $mmTable . '.uid_foreign';
 
         // Restrict attribute list if given
         if (is_array($attributeList) && !empty($attributeList)) {
-            $selectWhere[] = 'tx_commerce_attributes.uid IN ('.implode(',', $attributeList).')';
+            $selectWhere[] = 'tx_commerce_attributes.uid IN (' . implode(',', $attributeList) . ')';
         }
 
         // Get enabled rows only
-        $selectWhere[] = ' 1 '.$this->getFrontendController()->sys_page->enableFields(
-            'tx_commerce_attributes', $this->getFrontendController()->showHiddenRecords
+        $selectWhere[] = ' 1 ' . $this->getFrontendController()->sys_page->enableFields(
+            'tx_commerce_attributes',
+            $this->getFrontendController()->showHiddenRecords
         );
-        $selectWhere[] = ' 1 '.$this->getFrontendController()->sys_page->enableFields(
-            $parentTable, $this->getFrontendController()->showHiddenRecords
+        $selectWhere[] = ' 1 ' . $this->getFrontendController()->sys_page->enableFields(
+            $parentTable,
+            $this->getFrontendController()->showHiddenRecords
         );
 
         // Order rows by given sorting table
@@ -847,7 +904,10 @@ class Product extends AbstractEntity
 
         // Compile query
         $attributeMmQuery = $database->SELECTquery(
-            'DISTINCT '.implode(', ', $selectFields), implode(', ', $selectFrom), implode(' AND ', $selectWhere), '',
+            'DISTINCT ' . implode(', ', $selectFields),
+            implode(', ', $selectFrom),
+            implode(' AND ', $selectWhere),
+            '',
             $selectOrder
         );
 
@@ -905,13 +965,11 @@ class Product extends AbstractEntity
     /**
      * Get l18n overlays of this product.
      *
-     * @return array l18n overlay objects
+     * @return array l18n overlay uids
      */
     public function getL18nProducts()
     {
-        $languageParentUid = $this->databaseConnection->getL18nProducts($this->uid);
-
-        return $languageParentUid;
+        return $this->databaseConnection->getL18nProducts($this->uid);
     }
 
     /**
@@ -937,11 +995,7 @@ class Product extends AbstractEntity
      */
     public function getManufacturerUid()
     {
-        if (isset($this->manufacturer_uid)) {
-            return $this->manufacturer_uid;
-        }
-
-        return false;
+        return $this->manufacturer_uid;
     }
 
     /**
@@ -998,7 +1052,7 @@ class Product extends AbstractEntity
                     /**
                      * Product.
                      *
-                     * @var \CommerceTeam\Commerce\Domain\Model\Product
+                     * @var \CommerceTeam\Commerce\Domain\Model\Product $product
                      */
                     $product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         'CommerceTeam\\Commerce\\Domain\\Model\\Product',
@@ -1024,6 +1078,8 @@ class Product extends AbstractEntity
      * Sets renderMaxArticles Value in the Object.
      *
      * @param int $count New Value
+     *
+     * @return void
      */
     public function setRenderMaxArticles($count)
     {
@@ -1044,15 +1100,18 @@ class Product extends AbstractEntity
      * Generates a Matrix from these concerning articles for all attributes
      * and the values therefor.
      *
-     * @param mixed  $articleList         Uids of articles or FALSE
-     * @param mixed  $attributesToInclude Array of attribute uids to include
-     *                                    or FALSE for all attributes
-     * @param bool   $showHiddenValues    Wether or net hidden values should be shown
-     * @param string $sortingTable        Default order by of attributes
+     * @param mixed $articleList Uids of articles or FALSE
+     * @param mixed $attributesToInclude Array of attribute uids to include
+     *     or FALSE for all attributes
+     * @param bool $showHiddenValues Wether or net hidden values should be shown
+     * @param string $sortingTable Default order by of attributes
      *
      * @return bool|array
      */
-    public function getSelectAttributeMatrix($articleList = false, $attributesToInclude = false, $showHiddenValues = true,
+    public function getSelectAttributeMatrix(
+        $articleList = false,
+        $attributesToInclude = false,
+        $showHiddenValues = true,
         $sortingTable = 'tx_commerce_articles_article_attributes_mm'
     ) {
         $return = array();
@@ -1066,48 +1125,57 @@ class Product extends AbstractEntity
             $addwhere = '';
             if (is_array($attributesToInclude)) {
                 if (!is_null($attributesToInclude[0])) {
-                    $addwhere .= ' AND tx_commerce_attributes.uid in ('.implode(',', $attributesToInclude).')';
+                    $addwhere .= ' AND tx_commerce_attributes.uid in (' . implode(',', $attributesToInclude) . ')';
                 }
             }
 
             $addwhere2 = '';
             if (is_array($articleList) && !empty($articleList)) {
                 $queryArticleList = implode(',', $articleList);
-                $addwhere2 = ' AND tx_commerce_articles.uid in ('.$queryArticleList.')';
+                $addwhere2 = ' AND tx_commerce_articles.uid in (' . $queryArticleList . ')';
             }
 
             $database = $this->getDatabaseConnection();
             $result = $database->exec_SELECT_mm_query(
-                'DISTINCT tx_commerce_attributes.uid, tx_commerce_attributes.sys_language_uid, tx_commerce_articles.uid as article,
-					tx_commerce_attributes.title, tx_commerce_attributes.unit, tx_commerce_attributes.valueformat,
-					tx_commerce_attributes.internal_title, tx_commerce_attributes.icon, tx_commerce_attributes.iconmode,
-					'.$sortingTable.'.sorting', 'tx_commerce_articles', 'tx_commerce_articles_article_attributes_mm',
+                'DISTINCT tx_commerce_attributes.uid, tx_commerce_attributes.sys_language_uid,
+                    tx_commerce_articles.uid AS article,
+                    tx_commerce_attributes.title, tx_commerce_attributes.unit, tx_commerce_attributes.valueformat,
+                    tx_commerce_attributes.internal_title, tx_commerce_attributes.icon, tx_commerce_attributes.iconmode,
+                    ' . $sortingTable . '.sorting',
+                'tx_commerce_articles',
+                'tx_commerce_articles_article_attributes_mm',
                 'tx_commerce_attributes',
-                ' AND tx_commerce_articles.uid_product = '.$this->uid.' '.$addwhere.$addwhere2.' order by '.
-                    $sortingTable.'.sorting'
+                ' AND tx_commerce_articles.uid_product = ' . $this->uid . ' ' . $addwhere . $addwhere2 . ' order by '.
+                $sortingTable . '.sorting'
             );
 
             $addwhere = $addwhere2;
 
-            if (($result) && ($database->sql_num_rows($result) > 0)) {
+            if ($database->sql_num_rows($result)) {
                 while (($data = $database->sql_fetch_assoc($result))) {
                     // Language overlay
                     if ($this->lang_uid > 0) {
                         $proofSql = '';
                         if (is_object($this->getFrontendController()->sys_page)) {
                             $proofSql = $this->getFrontendController()->sys_page->enableFields(
-                                'tx_commerce_attributes', $this->getFrontendController()->showHiddenRecords
+                                'tx_commerce_attributes',
+                                $this->getFrontendController()->showHiddenRecords
                             );
                         }
                         $attributeResult = $database->exec_SELECTquery(
-                            '*', 'tx_commerce_attributes', 'uid = '.$data['uid'].' '.$proofSql
+                            '*',
+                            'tx_commerce_attributes',
+                            'uid = ' . $data['uid'] . ' ' . $proofSql
                         );
 
                         // Result should contain only one Dataset
                         if ($database->sql_num_rows($attributeResult) == 1) {
                             $attributeData = $database->sql_fetch_assoc($attributeResult);
                             $attributeData = $this->getFrontendController()->sys_page->getRecordOverlay(
-                                'tx_commerce_attributes', $attributeData, $this->lang_uid, $this->translationMode
+                                'tx_commerce_attributes',
+                                $attributeData,
+                                $this->lang_uid,
+                                $this->translationMode
                             );
 
                             if (!is_array($attributeData)) {
@@ -1132,38 +1200,45 @@ class Product extends AbstractEntity
                     $attributeUid = $data['uid'];
 
                     $attributeValueResult = $database->exec_SELECT_mm_query(
-                        'distinct tx_commerce_articles_article_attributes_mm.uid_valuelist', 'tx_commerce_articles',
-                        'tx_commerce_articles_article_attributes_mm', 'tx_commerce_attributes',
-                        ' AND tx_commerce_articles_article_attributes_mm.uid_valuelist>0 AND tx_commerce_articles.uid_product = '.
-                            $this->uid.' AND tx_commerce_attributes.uid='.$attributeUid.$addwhere
+                        'DISTINCT tx_commerce_articles_article_attributes_mm.uid_valuelist',
+                        'tx_commerce_articles',
+                        'tx_commerce_articles_article_attributes_mm',
+                        'tx_commerce_attributes',
+                        ' AND tx_commerce_articles_article_attributes_mm.uid_valuelist > 0
+                            AND tx_commerce_articles.uid_product = ' . $this->uid .
+                        ' AND tx_commerce_attributes.uid = ' . $attributeUid . $addwhere
                     );
-                    if (($valueshown == false) && ($attributeValueResult)
-                        && ($database->sql_num_rows(
-                                $attributeValueResult
-                            ) > 0)
-                    ) {
+                    if ($valueshown == false && $database->sql_num_rows($attributeValueResult)) {
                         while (($value = $database->sql_fetch_assoc($attributeValueResult))) {
                             if ($value['uid_valuelist'] > 0) {
                                 $resvalue = $database->exec_SELECTquery(
-                                    '*', 'tx_commerce_attribute_values', 'uid = '.$value['uid_valuelist']
+                                    '*',
+                                    'tx_commerce_attribute_values',
+                                    'uid = ' . $value['uid_valuelist']
                                 );
                                 $row = $database->sql_fetch_assoc($resvalue);
                                 if ($this->lang_uid > 0) {
                                     $row = $this->getFrontendController()->sys_page->getRecordOverlay(
-                                        'tx_commerce_attribute_values', $row, $this->lang_uid, $this->translationMode
+                                        'tx_commerce_attribute_values',
+                                        $row,
+                                        $this->lang_uid,
+                                        $this->translationMode
                                     );
                                     if (!is_array($row)) {
                                         continue;
                                     }
                                 }
-                                if (($showHiddenValues == true) || ($showHiddenValues == false && $row['showvalue'] == 1)) {
+                                if ($showHiddenValues == true
+                                    || ($showHiddenValues == false && $row['showvalue'] == 1)
+                                ) {
                                     $valuelist[$row['uid']] = $row;
                                     $valueshown = true;
                                 }
                             }
                         }
                         usort(
-                            $valuelist, array(
+                            $valuelist,
+                            array(
                                 'CommerceTeam\\Commerce\\Domain\\Model\\Product',
                                 'compareBySorting',
                             )
@@ -1191,9 +1266,11 @@ class Product extends AbstractEntity
     }
 
     /**
-     * Generates the matrix for attribute values for attribute select options in FE.
+     * Generates the matrix for attribute values for attribute
+     * select options in FE.
      *
-     * @param array $attributeValues Of attribute->value pairs, used as default.
+     * @param array $attributeValues Of attribute->value pairs,
+     *      used as default.
      *
      * @return array Values
      */
@@ -1210,7 +1287,7 @@ class Product extends AbstractEntity
             $addWhere = '';
             if (is_array($articleList) && !empty($articleList)) {
                 $queryArticleList = implode(',', $articleList);
-                $addWhere = 'uid_local IN ('.$queryArticleList.')';
+                $addWhere = 'uid_local IN (' . $queryArticleList . ')';
             }
 
             $articleAttributes = $database->exec_SELECTgetRows(
@@ -1260,7 +1337,7 @@ class Product extends AbstractEntity
                 $attributeValueSortQuery = $database->exec_SELECTquery(
                     'sorting, uid',
                     'tx_commerce_attribute_values',
-                    'uid IN ('.$attributeValuesList.')'
+                    'uid IN (' . $attributeValuesList . ')'
                 );
                 while (($attributeValueSort = $database->sql_fetch_assoc($attributeValueSortQuery))) {
                     $attributeValueSortIndex[$attributeValueSort['uid']] = $attributeValueSort['sorting'];
@@ -1280,7 +1357,7 @@ class Product extends AbstractEntity
                 /**
                  * Attribute.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Attribute
+                 * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attribute
                  */
                 $attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
@@ -1375,8 +1452,7 @@ class Product extends AbstractEntity
     {
         if (!is_array($this->articles)) {
             $uidToLoadFrom = $this->uid;
-            if (
-                $this->getT3verOid() > 0
+            if ($this->getT3verOid() > 0
                 && $this->getT3verOid() != $this->uid
                 && (
                     is_Object($this->getFrontendController())
@@ -1385,13 +1461,14 @@ class Product extends AbstractEntity
             ) {
                 $uidToLoadFrom = $this->getT3verOid();
             }
+
             $this->articles = array();
             if (($this->articles_uids = $this->databaseConnection->getArticles($uidToLoadFrom))) {
                 foreach ($this->articles_uids as $articleUid) {
                     /**
                      * Article.
                      *
-                     * @var \CommerceTeam\Commerce\Domain\Model\Article
+                     * @var \CommerceTeam\Commerce\Domain\Model\Article $article
                      */
                     $article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         'CommerceTeam\\Commerce\\Domain\\Model\\Article',
@@ -1416,7 +1493,7 @@ class Product extends AbstractEntity
      * inherited from parent.
      *
      * @param mixed $translationMode Translation mode of the record,
-     *                               default FALSE to use the default way of translation
+     *     default FALSE to use the default way of translation
      *
      * @return \CommerceTeam\Commerce\Domain\Model\Product
      */
@@ -1443,7 +1520,7 @@ class Product extends AbstractEntity
         /**
          * Article.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\Article
+         * @var \CommerceTeam\Commerce\Domain\Model\Article $article
          */
         foreach ($this->articles as $article) {
             if ($article->getStock()) {
@@ -1459,7 +1536,7 @@ class Product extends AbstractEntity
      * Carries out the move of the product to the new parent
      * Permissions are NOT checked, this MUST be done beforehand.
      *
-     * @param int    $uid Uid of the move target
+     * @param int $uid Uid of the move target
      * @param string $op  Operation of move (can be 'after' or 'into'
      *
      * @return bool True on success
@@ -1479,9 +1556,9 @@ class Product extends AbstractEntity
         // Update relations only, if parent_category was successfully set
         if ($set) {
             $catList = array($parentUid);
-            $catList = \CommerceTeam\Commerce\Utility\BackendUtility::getUidListFromList($catList);
-            $catList = \CommerceTeam\Commerce\Utility\BackendUtility::extractFieldArray($catList, 'uid_foreign', true);
-            \CommerceTeam\Commerce\Utility\BackendUtility::saveRelations($this->uid, $catList, 'tx_commerce_products_categories_mm', true);
+            $catList = BackendUtility::getUidListFromList($catList);
+            $catList = BackendUtility::extractFieldArray($catList, 'uid_foreign', true);
+            BackendUtility::saveRelations($this->uid, $catList, 'tx_commerce_products_categories_mm', true);
         } else {
             return false;
         }
@@ -1493,6 +1570,8 @@ class Product extends AbstractEntity
      * Remove article uid from array by index.
      *
      * @param int $index Index
+     *
+     * @return void
      */
     public function removeArticleUid($index)
     {
@@ -1504,6 +1583,8 @@ class Product extends AbstractEntity
      * Remove article object from array by uid.
      *
      * @param int $uid Uid
+     *
+     * @return void
      */
     public function removeArticle($uid)
     {
@@ -1522,6 +1603,7 @@ class Product extends AbstractEntity
     {
         return $array1['sorting'] - $array2['sorting'];
     }
+
 
     /**
      * Get database connection.

@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Controller;
 
 /*
@@ -56,7 +55,20 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
     protected $statistics;
 
     /**
+     * Constructor
+     *
+     * @return self
+     */
+    public function __construct()
+    {
+        $GLOBALS['SOBE'] = $this;
+        $this->init();
+    }
+
+    /**
      * Initialization.
+     *
+     * @return void
      */
     public function init()
     {
@@ -86,27 +98,29 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
         $this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
         $this->doc->backPath = $this->getBackPath();
         $this->doc->docType = 'xhtml_trans';
-        $this->doc->setModuleTemplate(PATH_TXCOMMERCE.'Resources/Private/Backend/mod_index.html');
+        $this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
 
         $this->doc->form = '<form action="" method="POST" name="editform">';
 
         // JavaScript
         $this->doc->JScode = $this->doc->wrapScriptTags('
-			script_ended = 0;
-			function jumpToUrl(URL) {
-				document.location = URL;
-			}
-		');
+            script_ended = 0;
+            function jumpToUrl(URL) {
+                document.location = URL;
+            }
+        ');
         $this->doc->postCode = $this->doc->wrapScriptTags('
-			script_ended = 1;
-			if (top.fsMod) {
-				top.fsMod.recentIds["web"] = '.(int) $this->id.';
-			}
-		');
+            script_ended = 1;
+            if (top.fsMod) {
+                top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
+            }
+        ');
     }
 
     /**
      * Adds items to the ->MOD_MENU array. Used for the function menu selector.
+     *
+     * @return void
      */
     public function menuConfig()
     {
@@ -133,6 +147,8 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
     /**
      * Main function of the module. Write the content to $this->content.
+     *
+     * @return void
      */
     public function main()
     {
@@ -179,6 +195,8 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
     /**
      * Prints out the module HTML.
+     *
+     * @return void
      */
     public function printContent()
     {
@@ -187,6 +205,8 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
     /**
      * Generates the module content.
+     *
+     * @return void
      */
     protected function moduleContent()
     {
@@ -240,7 +260,11 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
         // CSH
         $buttons['csh'] = \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem(
-            '_MOD_commerce_statistic', '', $this->getBackPath(), '', true
+            '_MOD_commerce_statistic',
+            '',
+            $this->getBackPath(),
+            '',
+            true
         );
 
         // Shortcut
@@ -254,13 +278,13 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
         // If access to Web>List for user, then link to that module.
         if ($backendUser->check('modules', 'web_list')) {
-            $href = $this->getBackPath().'db_list.php?id='.$this->pageinfo['uid'].'&returnUrl='.
+            $href = $this->getBackPath() . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
                 rawurlencode(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI'));
-            $buttons['record_list'] = '<a href="'.htmlspecialchars($href).'">'.
+            $buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' .
                 \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
                     'apps-filetree-folder-list',
                     array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1))
-                ).'</a>';
+                ) . '</a>';
         }
 
         return $buttons;
@@ -285,7 +309,11 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
             $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
-            $startres = $database->exec_SELECTquery('MIN(crdate)', 'tx_commerce_order_articles', 'crdate > 0 AND deleted = 0');
+            $startres = $database->exec_SELECTquery(
+                'MIN(crdate)',
+                'tx_commerce_order_articles',
+                'crdate > 0 AND deleted = 0'
+            );
             if ($startres and ($startrow = $database->sql_fetch_row($startres)) and $startrow[0] != null) {
                 $starttime = $startrow[0];
                 $database->sql_query('truncate tx_commerce_salesfigures');
@@ -312,8 +340,11 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
         } else {
             $language = $this->getLanguageService();
 
-            $result = $language->getLL('may_take_long_periode').'<br /><br />';
-            $result .= sprintf('<input type="submit" name="fullaggregation" value="%s" />', $language->getLL('complete_aggregation'));
+            $result = $language->getLL('may_take_long_periode') . '<br /><br />';
+            $result .= sprintf(
+                '<input type="submit" name="fullaggregation" value="%s" />',
+                $language->getLL('complete_aggregation')
+            );
         }
 
         return $result;
@@ -332,8 +363,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
         if (GeneralUtility::_POST('incrementalaggregation')) {
             $lastAggregationTimeres = $database->exec_SELECTquery('MAX(tstamp)', 'tx_commerce_salesfigures', '1=1');
             $lastAggregationTimeValue = 0;
-            if (
-                $lastAggregationTimeres
+            if ($lastAggregationTimeres
                 and ($lastAggregationTimerow = $database->sql_fetch_row($lastAggregationTimeres))
                 and $lastAggregationTimerow[0] != null
             ) {
@@ -350,8 +380,8 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
             if ($starttime <= $this->statistics->firstSecondOfDay($endtime2) and $endtime2 != null) {
                 $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
-                echo 'Incremental Sales Agregation for sales for the period from '.strftime('%d.%m.%Y', $starttime).' to '.
-                    strftime('%d.%m.%Y', $endtime).' (DD.MM.YYYY)<br />'.LF;
+                echo 'Incremental Sales Agregation for sales for the period from ' . strftime('%d.%m.%Y', $starttime) .
+                    ' to ' . strftime('%d.%m.%Y', $endtime) . ' (DD.MM.YYYY)<br />' . LF;
                 flush();
                 $result .= $this->statistics->doSalesAggregation($starttime, $endtime);
             } else {
@@ -369,7 +399,8 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
                 if (!in_array($starttime, $changeDaysArray)) {
                     $changeDaysArray[] = $starttime;
 
-                    echo 'Incremental Sales Udpate Agregation for sales for the day '.strftime('%d.%m.%Y', $starttime).' <br />'.LF;
+                    echo 'Incremental Sales Udpate Agregation for sales for the day ' .
+                        strftime('%d.%m.%Y', $starttime) . ' <br />' . LF;
                     flush();
                     $result .= $this->statistics->doSalesUpdateAggregation($starttime, $endtime);
                     ++$changes;
@@ -379,7 +410,9 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
             $result .= $changes.' Days changed<br />';
 
             $lastAggregationTimeres = $database->exec_SELECTquery('MAX(tstamp)', 'tx_commerce_newclients', '1=1');
-            if ($lastAggregationTimeres and ($lastAggregationTimerow = $database->sql_fetch_row($lastAggregationTimeres))) {
+            if ($lastAggregationTimeres
+                && ($lastAggregationTimerow = $database->sql_fetch_row($lastAggregationTimeres))
+            ) {
                 $lastAggregationTimeValue = $lastAggregationTimerow[0];
             }
 
@@ -394,8 +427,9 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
                 if (empty($starttime)) {
                     $starttime = $lastAggregationTimeValue;
                 }
-                echo 'Incremental Sales Udpate Agregation for sales for the period from '.strftime('%d.%m.%Y', $starttime).
-                    ' to '.strftime('%d.%m.%Y', $endtime).' (DD.MM.YYYY)<br />'.LF;
+                echo 'Incremental Sales Udpate Agregation for sales for the period from ' .
+                    strftime('%d.%m.%Y', $starttime) . ' to ' . strftime('%d.%m.%Y', $endtime) .
+                    ' (DD.MM.YYYY)<br />' . LF;
                 flush();
                 $result .= $this->statistics->doClientAggregation($starttime, $endtime);
             } else {
@@ -404,7 +438,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
         } else {
             $language = $this->getLanguageService();
 
-            $result = $language->getLL('may_take_long_periode').'<br /><br />';
+            $result = $language->getLL('may_take_long_periode') . '<br /><br />';
             $result .= sprintf(
                 '<input type="submit" name="incrementalaggregation" value="%s" />',
                 $language->getLL('incremental_aggregation')
@@ -440,15 +474,15 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
         $tables = '';
         if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('show')) {
-            $whereClause = $whereClause != '' ? $whereClause.' AND' : '';
-            $whereClause .= ' month = '.\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('month').'  AND year = '.
+            $whereClause = $whereClause != '' ? $whereClause . ' AND' : '';
+            $whereClause .= ' month = ' . \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('month') . '  AND year = ' .
                 \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('year');
 
-            $tables .= '<h2>'.\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('month').' - '.
-                \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('year').
+            $tables .= '<h2>' . \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('month') . ' - ' .
+                \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('year') .
                 '</h2><table><tr><th>Days</th><th>turnover</th><th>amount</th><th>orders</th></tr>';
             $statResult = $database->exec_SELECTquery(
-                'sum(pricegross) as turnover,sum(amount) as salesfigures ,sum(orders) as sumorders,day',
+                'SUM(pricegross) AS turnover, SUM(amount) AS salesfigures, SUM(orders) AS sumorders, day',
                 'tx_commerce_salesfigures',
                 $whereClause,
                 'day'
@@ -470,20 +504,21 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
             );
             for ($i = 1; $i <= $lastday; ++$i) {
                 if (array_key_exists($i, $daystat)) {
-                    $tablestemp = '<tr><td>'.$daystat[$i]['day'].'</a></td><td align="right">%01.2f</td><td align="right">'.
-                        $daystat[$i]['salesfigures'].'</td><td align="right">'.$daystat[$i]['sumorders'].'</td></tr>';
+                    $tablestemp = '<tr><td>' . $daystat[$i]['day'] .
+                        '</a></td><td align="right">%01.2f</td><td align="right">' . $daystat[$i]['salesfigures'] .
+                        '</td><td align="right">' . $daystat[$i]['sumorders'] . '</td></tr>';
                     $tables .= sprintf($tablestemp, ($daystat[$i]['turnover'] / 100));
                 } else {
-                    $tablestemp = '<tr><td>'.$i.
+                    $tablestemp = '<tr><td>' . $i .
                         '</a></td><td align="right">%01.2f</td><td align="right">0</td><td align="right">0</td></tr>';
-                    $tables .= sprintf($tablestemp, (0));
+                    $tables .= sprintf($tablestemp, 0);
                 }
             }
             $tables .= '</table>';
 
             $tables .= '<table><tr><th>Weekday</th><th>turnover</th><th>amount</th><th>orders</th></tr>';
             $statResult = $database->exec_SELECTquery(
-                'sum(pricegross) as turnover,sum(amount) as salesfigures ,sum(orders) as sumorders,dow',
+                'SUM(pricegross) AS turnover, SUM(amount) AS salesfigures, SUM(orders) AS sumorders, dow',
                 'tx_commerce_salesfigures',
                 $whereClause,
                 'dow'
@@ -495,11 +530,12 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
             }
             for ($i = 0; $i <= 6; ++$i) {
                 if (array_key_exists($i, $daystat)) {
-                    $tablestemp = '<tr><td>'.$weekdays[$daystat[$i]['dow']].'</a></td><td align="right">%01.2f</td><td align="right">'.
-                        $daystat[$i]['salesfigures'].'</td><td align="right">'.$daystat[$i]['sumorders'].'</td></tr>';
+                    $tablestemp = '<tr><td>' . $weekdays[$daystat[$i]['dow']] .
+                        '</a></td><td align="right">%01.2f</td><td align="right">' . $daystat[$i]['salesfigures'] .
+                        '</td><td align="right">' . $daystat[$i]['sumorders'] . '</td></tr>';
                     $tables .= sprintf($tablestemp, ($daystat[$i]['turnover'] / 100));
                 } else {
-                    $tablestemp = '<tr><td>'.$weekdays[$i].
+                    $tablestemp = '<tr><td>' . $weekdays[$i] .
                         '</a></td><td align="right">%01.2f</td><td align="right">0</td><td align="right">0</td></tr>';
                     $tables .= sprintf($tablestemp, 0);
                 }
@@ -508,7 +544,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
             $tables .= '<table><tr><th>Hour</th><th>turnover</th><th>amount</th><th>orders</th></tr>';
             $statResult = $database->exec_SELECTquery(
-                'sum(pricegross) as turnover,sum(amount) as salesfigures ,sum(orders) as sumorders,hour',
+                'SUM(pricegross) AS turnover, SUM(amount) AS salesfigures, SUM(orders) AS sumorders, hour',
                 'tx_commerce_salesfigures',
                 $whereClause,
                 'hour'
@@ -520,11 +556,12 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
             }
             for ($i = 0; $i <= 23; ++$i) {
                 if (array_key_exists($i, $daystat)) {
-                    $tablestemp = '<tr><td>'.$i.'</a></td><td align="right">%01.2f</td><td align="right">'.
-                        $daystat[$i]['salesfigures'].'</td><td align="right">'.$daystat[$i]['sumorders'].'</td></tr>';
+                    $tablestemp = '<tr><td>' . $i .
+                        '</a></td><td align="right">%01.2f</td><td align="right">' . $daystat[$i]['salesfigures'] .
+                        '</td><td align="right">' . $daystat[$i]['sumorders'] . '</td></tr>';
                     $tables .= sprintf($tablestemp, ($daystat[$i]['turnover'] / 100));
                 } else {
-                    $tablestemp = '<tr><td>'.$i.
+                    $tablestemp = '<tr><td>' . $i .
                         '</a></td><td align="right">%01.2f</td><td align="right">0</td><td align="right">0</td></tr>';
                     $tables .= sprintf($tablestemp, 0);
                 }
@@ -534,16 +571,16 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
         } else {
             $tables = '<table><tr><th>Month</th><th>turnover</th><th>amount</th><th>orders</th></tr>';
             $statResult = $database->exec_SELECTquery(
-                'sum(pricegross) as turnover,sum(amount) as salesfigures ,sum(orders) as sumorders,year,month',
+                'SUM(pricegross) AS turnover, SUM(amount) AS salesfigures, SUM(orders) AS sumorders, year, month',
                 'tx_commerce_salesfigures',
                 $whereClause,
-                'year,month'
+                'year, month'
             );
             while (($statRow = $database->sql_fetch_assoc($statResult))) {
-                $tablestemp = '<tr><td><a href="?id='.$this->id.'&amp;month='.$statRow['month'].'&amp;year='.
-                    $statRow['year'].'&amp;show=details">'.$statRow['month'].'.'.$statRow['year'].
-                    '</a></td><td align="right">%01.2f</td><td align="right">'.$statRow['salesfigures'].
-                    '</td><td align="right">'.$statRow['sumorders'].'</td></tr>';
+                $tablestemp = '<tr><td><a href="?id=' . $this->id . '&amp;month=' . $statRow['month'] . '&amp;year=' .
+                    $statRow['year'] . '&amp;show=details">' . $statRow['month'] . '.' . $statRow['year'] .
+                    '</a></td><td align="right">%01.2f</td><td align="right">' . $statRow['salesfigures'] .
+                    '</td><td align="right">' . $statRow['sumorders'] . '</td></tr>';
                 $tables .= sprintf($tablestemp, ($statRow['turnover'] / 100));
             }
             $tables .= '</table>';
@@ -551,6 +588,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
         return $tables;
     }
+
 
     /**
      * Get backend user.

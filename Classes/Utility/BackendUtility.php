@@ -567,7 +567,7 @@ class BackendUtility
         }
 
         $res = $database->exec_SELECTquery('uid', 'tx_commerce_articles', $where, '', $orderBy);
-        if ($res && $database->sql_num_rows($res) > 0) {
+        if ($database->sql_num_rows($res)) {
             $result = array();
             while (($article = $database->sql_fetch_assoc($res))) {
                 $result[] = $article['uid'];
@@ -963,11 +963,11 @@ class BackendUtility
                 'tx_commerce_articles_article_attributes_mm.*',
                 'tx_commerce_articles, tx_commerce_articles_article_attributes_mm',
                 'tx_commerce_articles.uid = tx_commerce_articles_article_attributes_mm.uid_local
-					AND tx_commerce_articles.uid = '.(int) $articleUid
+                    AND tx_commerce_articles.uid = '.(int) $articleUid
             );
         }
 
-        if ($resRelationData !== null && $database->sql_num_rows($resRelationData) > 0) {
+        if ($database->sql_num_rows($resRelationData)) {
             while (($relationRows = $database->sql_fetch_assoc($resRelationData))) {
                 $relationData[] = $relationRows;
             }
@@ -1301,15 +1301,16 @@ class BackendUtility
 
         $database = self::getDatabaseConnection();
 
-        $foreignTable = SettingsFactory::getInstance()->getTcaValue('tx_commerce_orders.columns.newpid.config.foreign_table');
+        $foreignTable = SettingsFactory::getInstance()
+            ->getTcaValue('tx_commerce_orders.columns.newpid.config.foreign_table');
         $result = $database->exec_SELECTquery(
             '*',
             $foreignTable,
-            'pid = '.$pid.\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($foreignTable),
+            'pid = ' . $pid . \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($foreignTable),
             '',
             'sorting'
         );
-        if ($database->sql_num_rows($result) > 0) {
+        if ($database->sql_num_rows($result)) {
             while (($returnData = $database->sql_fetch_assoc($result))) {
                 $returnData['title'] = $prep.$returnData['title'];
 
@@ -1541,7 +1542,7 @@ class BackendUtility
         $res = $database->exec_SELECTquery('uid', 'tx_commerce_articles', 'deleted = 0', '', 'uid DESC', '0,1');
 
         // if there are no articles at all, abort.
-        if (0 >= $database->sql_num_rows($res)) {
+        if (!$database->sql_num_rows($res)) {
             return false;
         }
 
@@ -1922,7 +1923,7 @@ class BackendUtility
                 /**
                  * Article.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Article
+                 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
                  */
                 $article = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $uidNew);
                 $productUid = $article->getParentProductUid();
@@ -2178,7 +2179,7 @@ class BackendUtility
             $res = $database->exec_SELECTquery('uid', 'tx_commerce_categories', 'deleted = 0', '', 'uid DESC', '0,1');
 
             // if there are no categories at all, abort.
-            if (0 >= $database->sql_num_rows($res)) {
+            if (!$database->sql_num_rows($res)) {
                 return false;
             }
 
@@ -2916,21 +2917,21 @@ class BackendUtility
         /**
          * Category mount.
          *
-         * @var \CommerceTeam\Commerce\Tree\CategoryMounts
+         * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
          */
-        $mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-        $mounts->init($backendUser->user['uid']);
+        $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mount->init($backendUser->user['uid']);
 
         foreach ($categoryUids as $categoryUid) {
             // check if the category is in the commerce mounts
-            if (!$mounts->isInCommerceMounts($categoryUid)) {
+            if (!$mount->isInCommerceMounts($categoryUid)) {
                 return false;
             }
 
             /**
              * Category.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Category
+             * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
             $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $categoryUid);
             // check perms

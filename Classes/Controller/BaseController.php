@@ -275,7 +275,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $this->error('init', __LINE__, 'Template File not defined in TS: ');
         }
 
-        $this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
+        $this->templateCode = (string) $this->cObj->fileResource($this->conf['templateFile']);
         if ($this->conf['useRootlineInformationToUrl']) {
             $this->useRootlineInformationToUrl = $this->conf['useRootlineInformationToUrl'];
         }
@@ -766,10 +766,10 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 
         if (!$this->conf['hideProductsInList']) {
             // Write the current page to The session to have a back to last product link
-            $this->getFrontendController()->fe_user->setKey(
+            $this->getFrontendUser()->setKey(
                 'ses',
                 'tx_commerce_lastproducturl',
-                $this->pi_linkTP_keepPIvars_url()
+                $this->pi_linkTP_keepPIvars_url(array(), 1)
             );
             $markerArray['SUBPART_CATEGORY_ITEMS_LISTVIEW'] = $this->renderProductsForList(
                 $this->category_products,
@@ -984,7 +984,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      * subpart in your template by you own.
      *
      * @param Basket $basketObj Basket
-     * @param string $subpartMarker Subpart Template Subpart
+     * @param string $subpartTemplate Subpart Template Subpart
      * @param array|bool $articletypes Articletypes
      * @param string $lineTemplate Line templates
      *
@@ -992,11 +992,11 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     public function makeBasketView(
         Basket $basketObj,
-        $subpartMarker,
+        $subpartTemplate,
         array $articletypes = array(),
         $lineTemplate = '###LISTING_ARTICLE###'
     ) {
-        $template = $this->cObj->getSubpart($this->templateCode, $subpartMarker);
+        $template = $this->cObj->getSubpart($this->templateCode, $subpartTemplate);
 
         if (!is_array($lineTemplate)) {
             $temp = $lineTemplate;

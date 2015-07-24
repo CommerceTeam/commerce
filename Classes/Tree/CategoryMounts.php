@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree;
 
 /*
@@ -59,7 +58,7 @@ class CategoryMounts extends \CommerceTeam\Commerce\Tree\Leaf\Mounts
                 /**
                  * Category.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Category
+                 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
                 $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $id);
                 $category->loadData();
@@ -119,7 +118,8 @@ class CategoryMounts extends \CommerceTeam\Commerce\Tree\Leaf\Mounts
             if ($i < 0) {
                 if (TYPO3_DLOG) {
                     GeneralUtility::devLog(
-                        'isInCommerceMounts (categorymounts) has aborted because $i has reached its allowed recursive maximum.',
+                        'isInCommerceMounts (categorymounts) has aborted because $i (' . $i .
+                        ') has reached its allowed recursive maximum.',
                         COMMERCE_EXTKEY,
                         3
                     );

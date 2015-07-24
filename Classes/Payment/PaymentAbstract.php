@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Payment;
 
 /*
@@ -16,6 +15,7 @@ namespace CommerceTeam\Commerce\Payment;
  */
 
 use CommerceTeam\Commerce\Factory\SettingsFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Abstract payment implementation.
@@ -38,7 +38,7 @@ abstract class PaymentAbstract implements PaymentInterface
      *
      * @var \CommerceTeam\Commerce\Controller\CheckoutController
      */
-    protected $parentObject = null;
+    protected $parentObject;
 
     /**
      * Payment type, for example 'creditcard'. Extending classes _must_ set this!
@@ -52,7 +52,7 @@ abstract class PaymentAbstract implements PaymentInterface
      *
      * @var \CommerceTeam\Commerce\Payment\Provider\ProviderAbstract
      */
-    protected $provider = null;
+    protected $provider;
 
     /**
      * Criterion objects that check if a payment is allowed.
@@ -67,13 +67,12 @@ abstract class PaymentAbstract implements PaymentInterface
      * @param \CommerceTeam\Commerce\Controller\BaseController $parentObject Parent
      *
      * @return self
-     *
      * @throws \Exception If type was not set or criteria are not valid
      */
     public function __construct(\CommerceTeam\Commerce\Controller\BaseController $parentObject)
     {
-        if (!strlen($this->type) > 0) {
-            throw new \Exception($this->type.' not set.', 1306266978);
+        if (!strlen($this->type)) {
+            throw new \Exception($this->type . ' not set.', 1306266978);
         }
 
         $this->parentObject = $parentObject;
@@ -112,7 +111,7 @@ abstract class PaymentAbstract implements PaymentInterface
         /**
          * Criterion.
          *
-         * @var \CommerceTeam\Commerce\Payment\Criterion\CriterionAbstract
+         * @var \CommerceTeam\Commerce\Payment\Criterion\CriterionAbstract $criterion
          */
         foreach ($this->criteria as $criterion) {
             if ($criterion->isAllowed() === false) {
@@ -136,13 +135,14 @@ abstract class PaymentAbstract implements PaymentInterface
     /**
      * Find configured criterion.
      *
+     * @return void
      * @throws \Exception If configured criterion class is not of correct interface
      */
     protected function findCriterion()
     {
         // Create criterion objects if defined
         $criteraConfigurations = SettingsFactory::getInstance()
-            ->getConfiguration('SYSPRODUCTS.PAYMENT.types.'.$this->type.'.criteria');
+            ->getConfiguration('SYSPRODUCTS.PAYMENT.types.' . $this->type . '.criteria');
 
         if (is_array($criteraConfigurations)) {
             foreach ($criteraConfigurations as $criterionConfiguration) {
@@ -153,17 +153,17 @@ abstract class PaymentAbstract implements PaymentInterface
                 /**
                  * Criterion.
                  *
-                 * @var \CommerceTeam\Commerce\Payment\Criterion\CriterionInterface
+                 * @var \CommerceTeam\Commerce\Payment\Criterion\CriterionInterface $criterion
                  */
-                $criterion = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                $criterion = GeneralUtility::makeInstance(
                     $criterionConfiguration['class'],
                     $this,
                     $criterionConfiguration['options']
                 );
                 if (!($criterion instanceof \CommerceTeam\Commerce\Payment\Criterion\CriterionInterface)) {
                     throw new \Exception(
-                        'Criterion '.$criterionConfiguration['class'].
-                            ' must implement interface \CommerceTeam\Commerce\Payment\Criterion\CriterionInterface',
+                        'Criterion ' . $criterionConfiguration['class'] .
+                        ' must implement interface \CommerceTeam\Commerce\Payment\Criterion\CriterionInterface',
                         1306267908
                     );
                 }
@@ -175,26 +175,27 @@ abstract class PaymentAbstract implements PaymentInterface
     /**
      * Find appropriate provider for this payment.
      *
+     * @return void
      * @throws \Exception If payment provider is not of corret interface
      */
     protected function findProvider()
     {
         // Check if type has criteria, create all needed objects
         $providerConfigurations = SettingsFactory::getInstance()
-                    ->getConfiguration('SYSPRODUCTS.PAYMENT.types.'.$this->type.'.provider');
+            ->getConfiguration('SYSPRODUCTS.PAYMENT.types.' . $this->type . '.provider');
 
         if (is_array($providerConfigurations)) {
             foreach ($providerConfigurations as $providerConfiguration) {
                 /**
                  * Provider.
                  *
-                 * @var \CommerceTeam\Commerce\Payment\Provider\ProviderInterface
+                 * @var \CommerceTeam\Commerce\Payment\Provider\ProviderInterface $provider
                  */
-                $provider = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($providerConfiguration['class'], $this);
+                $provider = GeneralUtility::makeInstance($providerConfiguration['class'], $this);
                 if (!($provider instanceof \CommerceTeam\Commerce\Payment\Provider\ProviderInterface)) {
                     throw new \Exception(
-                        'Provider '.$providerConfiguration['class'].
-                            ' must implement interface \CommerceTeam\Commerce\Payment\Provider\ProviderInterface',
+                        'Provider ' . $providerConfiguration['class'] .
+                        ' must implement interface \CommerceTeam\Commerce\Payment\Provider\ProviderInterface',
                         1307705798
                     );
                 }
@@ -230,7 +231,7 @@ abstract class PaymentAbstract implements PaymentInterface
     public function getAdditionalFieldsConfig()
     {
         $result = null;
-        if ($this->provider !== null) {
+        if (is_object($this->provider)) {
             $result = $this->provider->getAdditionalFieldsConfig();
         }
 
@@ -247,7 +248,7 @@ abstract class PaymentAbstract implements PaymentInterface
     public function proofData(array $formData = array())
     {
         $result = true;
-        if ($this->provider !== null) {
+        if (is_object($this->provider)) {
             $result = $this->provider->proofData($formData, $result);
         }
 
@@ -257,17 +258,19 @@ abstract class PaymentAbstract implements PaymentInterface
     /**
      * Wether or not finishing an order is allowed.
      *
-     * @param array                                      $config  Current configuration
-     * @param array                                      $session Session data
+     * @param array $config Current configuration
+     * @param array $session Session data
      * @param \CommerceTeam\Commerce\Domain\Model\Basket $basket  Basket object
      *
      * @return bool True is finishing order is allowed
      */
-    public function finishingFunction(array $config = array(), array $session = array(),
+    public function finishingFunction(
+        array $config = array(),
+        array $session = array(),
         \CommerceTeam\Commerce\Domain\Model\Basket $basket = null
     ) {
         $result = true;
-        if ($this->provider !== null) {
+        if (is_object($this->provider)) {
             $result = $this->provider->finishingFunction($config, $session, $basket);
         }
 
@@ -278,14 +281,14 @@ abstract class PaymentAbstract implements PaymentInterface
      * Method called in finishIt function.
      *
      * @param array $globalRequest Global request
-     * @param array $session       Session array
+     * @param array $session Session array
      *
      * @return bool TRUE if data is ok
      */
     public function checkExternalData(array $globalRequest = array(), array $session = array())
     {
         $result = true;
-        if ($this->provider !== null) {
+        if (is_object($this->provider)) {
             $result = $this->provider->checkExternalData($globalRequest, $session);
         }
 
@@ -295,12 +298,14 @@ abstract class PaymentAbstract implements PaymentInterface
     /**
      * Update order data after order has been finished.
      *
-     * @param int   $orderUid Id of this order
-     * @param array $session  Session data
+     * @param int $orderUid Id of this order
+     * @param array $session Session data
+     *
+     * @return void
      */
     public function updateOrder($orderUid, array $session = array())
     {
-        if ($this->provider !== null) {
+        if (is_object($this->provider)) {
             $this->provider->updateOrder($orderUid, $session);
         }
     }
@@ -314,7 +319,7 @@ abstract class PaymentAbstract implements PaymentInterface
     {
         $result = '';
 
-        if ($this->provider !== null) {
+        if (is_object($this->provider)) {
             $result = $this->provider->getLastError();
         }
 

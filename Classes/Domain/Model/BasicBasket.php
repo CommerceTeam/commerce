@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Model;
 
 /*
@@ -106,7 +105,7 @@ class BasicBasket
         /**
          * Basket item.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
          */
         foreach ($this->basketItems as $oneItem) {
             if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
@@ -131,7 +130,7 @@ class BasicBasket
         /**
          * Basket item.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
          */
         foreach ($this->basketItems as $oneItem) {
             if (in_array($oneItem->getArticle()->getArticleTypeUid(), $articleTypes)) {
@@ -158,7 +157,7 @@ class BasicBasket
     {
         $sumNet = 0;
 
-        /*
+        /**
          * Basket item
          *
          * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
@@ -200,7 +199,7 @@ class BasicBasket
     {
         $sumGross = 0;
 
-        /*
+        /**
          * Basket item
          *
          * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
@@ -231,7 +230,7 @@ class BasicBasket
      *
      * @param int $articleTypeUid Article type
      *
-     * @return array or article_ids
+     * @return array or article ids
      */
     public function getArticlesByArticleTypeUidAsUidlist($articleTypeUid)
     {
@@ -240,7 +239,7 @@ class BasicBasket
         /**
          * Basket item.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
          */
         foreach ($this->basketItems as $uid => $oneItem) {
             if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
@@ -255,14 +254,14 @@ class BasicBasket
      * Create an array of assoc arrays from the basket articles.
      *
      * Array(
-     * 		uid => array(
-     * 			'article' => result form tx_commerce_article->return_assoc_array(),
-     * 			'product' => result form tx_commerce_product->return_assoc_array(),
-     * 		),
-     * 		uid2 =>array(
-     * 			'article' => result form tx_commerce_article->return_assoc_array();
-     * 			'product' => result form tx_commerce_product->return_assoc_array();
-     * 		),
+     *     uid => array(
+     *         'article' => result form tx_commerce_article->return_assoc_array(),
+     *         'product' => result form tx_commerce_product->return_assoc_array(),
+     *     ),
+     *     uid2 =>array(
+     *         'article' => result form tx_commerce_article->return_assoc_array();
+     *         'product' => result form tx_commerce_product->return_assoc_array();
+     *     ),
      * )
      *
      * @param string $prefix Prefix for the keys
@@ -276,7 +275,7 @@ class BasicBasket
         /**
          * Basket item.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
          */
         foreach ($this->basketItems as $oneuid => $oneItem) {
             $result[$oneuid] = $oneItem->getArrayOfAssocArray($prefix);
@@ -294,8 +293,7 @@ class BasicBasket
     {
         $result = false;
 
-        if (
-            !$this->getFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi1.']['dontUseBasketHashValue']
+        if (!$this->getFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi1.']['dontUseBasketHashValue']
             && !empty($this->basketItems)
         ) {
             $result = \TYPO3\CMS\Core\Utility\GeneralUtility::shortMD5(serialize($this->basketItems));
@@ -344,7 +342,7 @@ class BasicBasket
         /**
          * Basket item.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
          */
         foreach ($this->basketItems as $oneItem) {
             if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
@@ -359,7 +357,7 @@ class BasicBasket
     }
 
     /**
-     * Returns the first Description from of all Articles concerning this type.
+     * Returns the first Description from of all Articles concerning this type
      *
      * Example:
      * $basket->getFirstArticleTypeDescription(PAYMENTARTICLETYPE)
@@ -376,7 +374,7 @@ class BasicBasket
         /**
          * Basket item.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
          */
         foreach ($this->basketItems as $oneItem) {
             if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
@@ -415,7 +413,7 @@ class BasicBasket
             /**
              * Basket item.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+             * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
              */
             $basketItem = $this->basketItems[$articleUid];
             $result = $basketItem->getItemSumGross();
@@ -437,7 +435,7 @@ class BasicBasket
             /**
              * Basket item.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+             * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
              */
             $basketItem = $this->basketItems[$articleUid];
 
@@ -460,7 +458,7 @@ class BasicBasket
             /**
              * Basket item.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+             * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
              */
             $basketItem = $this->basketItems[$articleUid];
 
@@ -472,6 +470,8 @@ class BasicBasket
 
     /**
      * Set to read only, for checkout.
+     *
+     * @return void
      */
     public function setReadOnly()
     {
@@ -502,6 +502,8 @@ class BasicBasket
      * Setter for pricefromnet.
      *
      * @param int $pricefromnet Price from net
+     *
+     * @return void
      */
     public function setPricefromnet($pricefromnet)
     {
@@ -517,7 +519,7 @@ class BasicBasket
     {
         $lokalSum = 0;
 
-        /*
+        /**
          * Basket item
          *
          * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
@@ -551,7 +553,7 @@ class BasicBasket
     {
         $lokalSum = 0;
 
-        /*
+        /**
          * Basket item
          *
          * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
@@ -604,16 +606,25 @@ class BasicBasket
         /**
          * Basket item.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
          */
         foreach ($this->basketItems as $oneItem) {
             $taxRate = $oneItem->getTax();
             $taxRate = (string) $taxRate;
 
             if ($this->pricefromnet == 1) {
-                $taxSum = ($oneItem->getItemSumNet() * (((float) $taxRate) / 100));
+                $taxSum = (
+                    $oneItem->getItemSumNet() *
+                    ((float) $taxRate / 100)
+                );
             } else {
-                $taxSum = ($oneItem->getItemSumGross() * ((((float) $taxRate) / 100) / (1 + (((float) $taxRate) / 100))));
+                $taxSum = (
+                    $oneItem->getItemSumGross() *
+                    (
+                        ((float) $taxRate / 100) /
+                        (1 + ((float) $taxRate / 100))
+                    )
+                );
             }
 
             if (!isset($taxes[$taxRate]) and $taxSum <= 0) {
@@ -635,6 +646,8 @@ class BasicBasket
 
     /**
      * Load basket data from session / database.
+     *
+     * @return void
      */
     public function loadData()
     {
@@ -647,9 +660,9 @@ class BasicBasket
     /**
      * Add an article to the basket.
      *
-     * @param int    $articleUid Article uid
-     * @param int    $quantity   Quantity of this basket item
-     * @param string $priceid    Price id
+     * @param int $articleUid Article uid
+     * @param int $quantity Quantity of this basket item
+     * @param string $priceid Price id
      *
      * @return bool TRUE on successful change
      */
@@ -664,7 +677,7 @@ class BasicBasket
                 /**
                  * Article.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Article
+                 * @var \CommerceTeam\Commerce\Domain\Model\Article $article
                  */
                 $article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'CommerceTeam\\Commerce\\Domain\\Model\\Article',
@@ -692,7 +705,7 @@ class BasicBasket
                 /**
                  * Basket item.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+                 * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
                  */
                 $basketItem = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'CommerceTeam\\Commerce\\Domain\\Model\\BasketItem',
@@ -719,21 +732,22 @@ class BasicBasket
     /**
      * Change the price_value of an article.
      *
-     * @param int $articleUid    Arcicle uid
+     * @param int $articleUid Arcicle uid
      * @param int $newPriceGross New price gross
-     * @param int $newPriceNet   New price net
+     * @param int $newPriceNet New price net
+     *
+     * @return void
      */
     public function changePrices($articleUid, $newPriceGross, $newPriceNet)
     {
         if ($this->isChangeable()) {
-            if (
-                is_object($this->basketItems[$articleUid])
+            if (is_object($this->basketItems[$articleUid])
                 && $this->basketItems[$articleUid] instanceof \CommerceTeam\Commerce\Domain\Model\BasketItem
             ) {
                 /**
                  * Basket item.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+                 * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
                  */
                 $basketItem = $this->basketItems[$articleUid];
                 $basketItem->setPriceNet($newPriceNet);
@@ -746,20 +760,21 @@ class BasicBasket
     /**
      * Change title of an article in basket.
      *
-     * @param int    $articleUid Article uid
-     * @param string $newtitle   New article title
+     * @param int $articleUid Article uid
+     * @param string $newtitle New article title
+     *
+     * @return void
      */
     public function changeTitle($articleUid, $newtitle)
     {
         if ($this->isChangeable()) {
-            if (
-                is_object($this->basketItems[$articleUid])
+            if (is_object($this->basketItems[$articleUid])
                 && $this->basketItems[$articleUid] instanceof \CommerceTeam\Commerce\Domain\Model\BasketItem
             ) {
                 /**
                  * Basket item.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+                 * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
                  */
                 $basketItem = $this->basketItems[$articleUid];
                 $basketItem->setTitle($newtitle);
@@ -774,7 +789,7 @@ class BasicBasket
      * @param int $quantity   New quantity
      *
      * @return mixed TRUE on success, FALSE if quantity can not be changed,
-     *               and int sometimes as well ...
+     *     and int sometimes as well ...
      */
     public function changeQuantity($articleUid, $quantity = 1)
     {
@@ -795,7 +810,7 @@ class BasicBasket
             /**
              * Basket item.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+             * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
              */
             $basketItem = $this->basketItems[$articleUid];
 
@@ -847,6 +862,8 @@ class BasicBasket
 
     /**
      * Recalculate price sums.
+     *
+     * @return void
      */
     public function recalculateSums()
     {
@@ -868,6 +885,8 @@ class BasicBasket
      * This Method Sets the Tax Calculation method (pricefromnet).
      *
      * @param bool $priceFromNet Switch if calculating from net or not
+     *
+     * @return void
      */
     public function setTaxCalculationMethod($priceFromNet)
     {
@@ -876,10 +895,10 @@ class BasicBasket
         /**
          * Basket item.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
          */
-        foreach ($this->basketItems as $oneItem) {
-            $oneItem->setTaxCalculationMethod($this->pricefromnet);
+        foreach ($this->basketItems as $basketItem) {
+            $basketItem->setTaxCalculationMethod($this->pricefromnet);
         }
     }
 
@@ -895,6 +914,8 @@ class BasicBasket
 
     /**
      * Set read only state to false.
+     *
+     * @return void
      */
     public function releaseReadOnly()
     {
@@ -915,7 +936,7 @@ class BasicBasket
         /**
          * Basket item.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem
+         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
          */
         foreach ($this->basketItems as $basketItem) {
             if ((int) $basketItem->getArticleTypeUid() === (int) $articleType) {
@@ -949,6 +970,8 @@ class BasicBasket
 
     /**
      * Remove current payment article from basket.
+     *
+     * @return void
      */
     public function removeCurrentPaymentArticle()
     {
@@ -960,6 +983,8 @@ class BasicBasket
 
     /**
      * Remove current delivery article from basket.
+     *
+     * @return void
      */
     public function removeCurrentDeliveryArticle()
     {
@@ -968,6 +993,7 @@ class BasicBasket
             $this->deleteArticle($deliveryBasketItem->getArticleUid());
         }
     }
+
 
     /**
      * Get typoscript frontend controller.

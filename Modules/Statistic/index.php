@@ -16,9 +16,10 @@
 /**
  * Module 'Statistics' for the 'commerce' extension.
  *
- * @var \CommerceTeam\Commerce\Controller\StatisticModuleController
+ * @var \CommerceTeam\Commerce\Controller\StatisticModuleController $statisticModuleController
  */
-$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\StatisticModuleController');
-$SOBE->init();
-$SOBE->main();
-$SOBE->printContent();
+$statisticModuleController = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+    'CommerceTeam\\Commerce\\Controller\\StatisticModuleController'
+);
+$statisticModuleController->main();
+$statisticModuleController->printContent();

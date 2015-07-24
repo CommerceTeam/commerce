@@ -43,12 +43,13 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         'dividers2tabs' => '1',
     ),
     'interface' => array(
-        'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, title,
-			subtitle, navtitle, description, images, teaser, teaserimages, manufacturer_uid',
+        'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
+            title, subtitle, navtitle, description, images, teaser, teaserimages, manufacturer_uid',
     ),
     'feInterface' => array(
         'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
-			title, subtitle, navtitle, description, images, teaser, teaserimages, categories, manufacturer_uid, attributes',
+            title, subtitle, navtitle, description, images, teaser, teaserimages, categories, manufacturer_uid,
+            attributes',
     ),
     'columns' => array(
         'sys_language_uid' => array(
@@ -277,7 +278,10 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
                 'foreign_table' => 'tx_commerce_manufacturer',
                 'foreign_table_where' => 'ORDER BY tx_commerce_manufacturer.title ASC',
                 'items' => array(
-                    array('LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.noManufacturer', 0),
+                    array(
+                        'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.noManufacturer',
+                        0
+                    ),
                 ),
             ),
         ),
@@ -296,7 +300,8 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         ),
         'relatedproducts' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.relatedproducts',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.relatedproducts',
             'config' => array(
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -461,16 +466,16 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
     'types' => array(
         '0' => array(
             'showitem' => '
-				sys_language_uid, l18n_parent, l18n_diffsource,
-				title, subtitle, navtitle, keywords,
-				images, teaserimages,
-				description;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/],
-				teaser;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/],
-				--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,
-					--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.visibility;visibility,
-					--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access,
-				--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tabs.references,
-					categories, manufacturer_uid, relatedpage, relatedproducts',
+                sys_language_uid, l18n_parent, l18n_diffsource,
+                title, subtitle, navtitle, keywords,
+                images, teaserimages,
+                description;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/],
+                teaser;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/],
+                --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,
+                    --palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.visibility;visibility,
+                    --palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access,
+                --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tabs.references,
+                    categories, manufacturer_uid, relatedpage, relatedproducts',
         ),
     ),
     'palettes' => array(

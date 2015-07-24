@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Model;
 
 /*
@@ -20,41 +19,37 @@ namespace CommerceTeam\Commerce\Domain\Model;
  * Add new contants to array in alib class
  */
 
-/*
+/**
  * Attribute correlation type selector
  *
  * @var int
  * @see sql tx_commerce_attribute_correlationtypes
  */
 define('ATTRIB_SELECTOR', 1);
-define('ATTRIB_selector', ATTRIB_SELECTOR);
 
-/*
+/**
  * Attribute correlation type shall
  *
  * @var int
  * @see sql tx_commerce_attribute_correlationtypes
  */
 define('ATTRIB_SHAL', 2);
-define('ATTRIB_shal', ATTRIB_SHAL);
 
-/*
+/**
  * Attribute correlation type can
  *
  * @var int
  * @see sql tx_commerce_attribute_correlationtypes
  */
 define('ATTRIB_CAN', 3);
-define('ATTRIB_can', ATTRIB_CAN);
 
-/*
+/**
  * Attribute correlation type product
  *
  * @var int
  * @see sql tx_commerce_attribute_correlationtypes
  */
 define('ATTRIB_PRODUCT', 4);
-define('ATTRIB_product', ATTRIB_PRODUCT);
 
 /**
  * Basic abtract Class for element
@@ -157,13 +152,6 @@ class AbstractEntity
     protected $translationMode = 'hideNonTranslated';
 
     /**
-     * Flag if record is translaed.
-     *
-     * @return bool
-     */
-    protected $recordTranslated = false;
-
-    /**
      * Localized UID
      * the uid of the localized record.
      *
@@ -188,12 +176,15 @@ class AbstractEntity
     public function getAttributes(array $attributeCorelationTypeList = array())
     {
         $result = array();
-        if (($this->attributes_uids = $this->databaseConnection->getAttributes($this->uid, $attributeCorelationTypeList))) {
+        if (($this->attributes_uids = $this->databaseConnection->getAttributes(
+            $this->uid,
+            $attributeCorelationTypeList
+        ))) {
             foreach ($this->attributes_uids as $attributeUid) {
                 /**
                  * Attribute.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Attribute
+                 * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attribute
                  */
                 $attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
@@ -217,7 +208,9 @@ class AbstractEntity
      * method with you own added fields.
      *
      * @param string $field Fieldname
-     * @param mixed  $value Value
+     * @param mixed $value Value
+     *
+     * @return void
      */
     public function setField($field, $value)
     {
@@ -262,7 +255,7 @@ class AbstractEntity
     /**
      * L18n parent uid.
      *
-     * @return int l18n_partent uid
+     * @return int
      */
     public function getL18nParent()
     {
@@ -282,7 +275,7 @@ class AbstractEntity
     /**
      * Get uid.
      *
-     * @return int Uid
+     * @return int
      */
     public function getUid()
     {
@@ -294,7 +287,7 @@ class AbstractEntity
      * via the named database class $databaseClass.
      *
      * @param bool $translationMode Translation mode of the record,
-     *                              default false to use the default way of translation
+     *      default false to use the default way of translation
      *
      * @return array
      */
@@ -309,14 +302,6 @@ class AbstractEntity
         }
 
         $this->data = $this->databaseConnection->getData($this->uid, $this->lang_uid, $translationMode);
-
-        if (!$this->data) {
-            $this->recordTranslated = false;
-
-            return false;
-        } else {
-            $this->recordTranslated = true;
-        }
 
         foreach ($this->fieldlist as $field) {
             $this->$field = $this->data[$field];
@@ -336,6 +321,8 @@ class AbstractEntity
      * and calls $this->add_fields_to_fieldlist.
      *
      * @param string $fieldname Database fieldname
+     *
+     * @return void
      */
     public function addFieldToFieldlist($fieldname)
     {
@@ -347,6 +334,8 @@ class AbstractEntity
      * used for hooks to add own fields to the output.
      *
      * @param array $fieldarray Databse filednames
+     *
+     * @return void
      */
     public function addFieldsToFieldlist(array $fieldarray)
     {
@@ -375,7 +364,7 @@ class AbstractEntity
      */
     public function isTranslated()
     {
-        return $this->recordTranslated;
+        return $this->_LOCALIZED_UID > 0;
     }
 
     /**
@@ -414,13 +403,17 @@ class AbstractEntity
      * Sets the PageTitle titile from via the TSFE.
      *
      * @param string $field Setting of page title
+     *
+     * @return void
      */
     public function setPageTitle($field = 'title')
     {
-        $this->getFrontendController()->page['title'] = $this->$field.' : '.$this->getFrontendController()->page['title'];
+        $title = $this->$field . ' : ' . $this->getFrontendController()->page['title'];
+        $this->getFrontendController()->page['title'] = $title;
         // set pagetitle for indexed search also
-        $this->getFrontendController()->indexedDocTitle = $this->$field.' : '.$this->getFrontendController()->indexedDocTitle;
+        $this->getFrontendController()->indexedDocTitle = $title;
     }
+
 
     /**
      * Get typoscript frontend controller.

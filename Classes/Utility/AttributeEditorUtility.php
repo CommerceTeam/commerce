@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Utility;
 
 /*
@@ -57,13 +56,13 @@ class AttributeEditorUtility
      * $config['label']
      * $config['config']
      *
-     * @param array $aData             The data array contains in element "row" the dataset
-     *                                 of the table we're creating
-     * @param array $config            The config array is the dynaflex fieldconfiguration.
+     * @param array $aData The data array contains in element "row" the dataset
+     *     of the table we're creating
+     * @param array $config The config array is the dynaflex fieldconfiguration.
      * @param bool  $fetchFromDatabase If true the attribute data is fetched
-     *                                 from database
-     * @param bool  $onlyDisplay       If true the field is not an input field but
-     *                                 is displayed
+     *     from database
+     * @param bool  $onlyDisplay If true the field is not an input field but
+     *     is displayed
      *
      * @return array The modified dynaflex configuration
      */
@@ -103,7 +102,7 @@ class AttributeEditorUtility
 
         // set label and name
         $config['label'] = $aData['title'];
-        $config['name'] = 'attribute_'.$aData['uid'];
+        $config['name'] = 'attribute_' . $aData['uid'];
 
         // get the value
         if ($onlyDisplay) {
@@ -126,8 +125,8 @@ class AttributeEditorUtility
             $config['config'] = array(
                 'type' => 'select',
                 'foreign_table' => 'tx_commerce_attribute_values',
-                'foreign_table_where' => 'AND attributes_uid='.(int) $aData['uid'].' and tx_commerce_attribute_values.pid='.
-                    (int) $attrPid.' ORDER BY value',
+                'foreign_table_where' => ' AND attributes_uid = ' . (int) $aData['uid'] .
+                    ' AND tx_commerce_attribute_values.pid = '. (int) $attrPid . ' ORDER BY value',
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
@@ -146,7 +145,7 @@ class AttributeEditorUtility
         } else {
             // the field should be a simple input field
             if ($aData['unit'] != '') {
-                $config['label'] .= ' ('.$aData['unit'].')';
+                $config['label'] .= ' (' . $aData['unit'] . ')';
             }
             $config['config'] = array('type' => 'input');
         }
@@ -165,7 +164,7 @@ class AttributeEditorUtility
      * Returns the editfield dynaflex config for all attributes of a product.
      *
      * @param array $funcDataArray Function data
-     * @param array $baseConfig    Base config
+     * @param array $baseConfig Base config
      *
      * @return array An array with fieldconfigs
      */
@@ -188,7 +187,10 @@ class AttributeEditorUtility
             // first get the product for this aticle
             $productUid = $this->belib->getProductOfArticle($funcData['row']['uid_local'], false);
 
-            $uidCorrelationType = $this->belib->getCtForAttributeOfProduct($funcData['row']['uid_foreign'], $productUid);
+            $uidCorrelationType = $this->belib->getCtForAttributeOfProduct(
+                $funcData['row']['uid_foreign'],
+                $productUid
+            );
             $sortedAttributes[$uidCorrelationType][] = $aData;
         }
 
@@ -227,7 +229,7 @@ class AttributeEditorUtility
         $relRes = $database->exec_SELECTquery(
             'uid_valuelist,default_value,value_char',
             'tx_commerce_articles_article_attributes_mm',
-            'uid_local='.(int) $parameter['row']['uid'].' AND uid_foreign='.(int) $aUid
+            'uid_local = ' . (int) $parameter['row']['uid'] . ' AND uid_foreign = ' . (int) $aUid
         );
 
         $attributeData = $this->belib->getAttributeData($aUid, 'has_valuelist,multiple,unit');
@@ -248,6 +250,7 @@ class AttributeEditorUtility
             $attributeData
         )));
     }
+
 
     /**
      * Get database connection.

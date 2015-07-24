@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree;
 
 /*
@@ -99,6 +98,8 @@ abstract class Browsetree
 
     /**
      * Initializes the Browsetree.
+     *
+     * @return void
      */
     public function init()
     {
@@ -111,6 +112,8 @@ abstract class Browsetree
      * Has to be set BEFORE initializing the tree with init().
      *
      * @param bool $flag Value to set
+     *
+     * @return void
      */
     public function noClickmenu($flag = true)
     {
@@ -130,8 +133,8 @@ abstract class Browsetree
      * Adds a leaf to the Tree.
      *
      * @param \CommerceTeam\Commerce\Tree\Leaf\Master $leaf Treeleaf Object which
-     *                                                      holds the \CommerceTeam\Commerce\Tree\Leaf\Data
-     *                                                      and the \CommerceTeam\Commerce\Tree\Leaf\View
+     *     holds the \CommerceTeam\Commerce\Tree\Leaf\Data
+     *     and the \CommerceTeam\Commerce\Tree\Leaf\View
      *
      * @return bool
      */
@@ -158,7 +161,11 @@ abstract class Browsetree
     {
         if (!is_numeric($index) || !isset($this->leafs[$index])) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('getLeaf (CommerceTeam\\Commerce\\Tree\\Browsetree) has an invalid parameter.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog(
+                    'getLeaf (CommerceTeam\\Commerce\\Tree\\Browsetree) has an invalid parameter.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
             }
 
             return null;
@@ -171,6 +178,8 @@ abstract class Browsetree
      * Sets the unique tree name.
      *
      * @param string $tree Name of the Tree
+     *
+     * @return void
      */
     public function setTreeName($tree = '')
     {
@@ -181,6 +190,8 @@ abstract class Browsetree
      * Sets the internal rendering method to
      * \CommerceTeam\Commerce\Tree\Leaf\Mounts
      * Call BEFORE initializing.
+     *
+     * @return void
      */
     public function readByMounts()
     {
@@ -192,8 +203,10 @@ abstract class Browsetree
      * Sets the internal rendering method to 'recursively'
      * Call BEFORE initializing.
      *
-     * @param int $uid   UID from which the masterleafs should start
+     * @param int $uid UID from which the masterleafs should start
      * @param int $depth Depth
+     *
+     * @return void
      */
     public function readRecursively($uid, $depth = 100)
     {
@@ -239,7 +252,11 @@ abstract class Browsetree
 
             default:
                 if (TYPO3_DLOG) {
-                    GeneralUtility::devLog('The Browseable Tree could not be printed. No rendering method was specified', COMMERCE_EXTKEY, 3);
+                    GeneralUtility::devLog(
+                        'The Browseable Tree could not be printed. No rendering method was specified',
+                        COMMERCE_EXTKEY,
+                        3
+                    );
                 }
         }
 
@@ -253,7 +270,6 @@ abstract class Browsetree
      * @param array $parameter Array from PM link
      *
      * @return string HTML Code for Tree
-     *
      * @todo Make it possible as well for a recursive tree
      */
     public function getBrowseableAjaxTree(array $parameter)
@@ -278,6 +294,8 @@ abstract class Browsetree
 
     /**
      * Forms the tree based on the mountpoints and the user positions.
+     *
+     * @return void
      */
     public function getTreeByMountpoints()
     {
@@ -294,17 +312,19 @@ abstract class Browsetree
             /**
              * Leaf.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\Master
+             * @var \CommerceTeam\Commerce\Tree\Leaf\Master $leafMaster
              */
-            $leaf = &$this->leafs[$i];
-            $leaf->byMounts();
+            $leafMaster = &$this->leafs[$i];
+            $leafMaster->byMounts();
             // Pass $i as the leaf's index
-            $leaf->init($i);
+            $leafMaster->init($i);
         }
     }
 
     /**
      * Forms the tree.
+     *
+     * @return void
      */
     public function getTree()
     {
@@ -317,12 +337,12 @@ abstract class Browsetree
             /**
              * Leaf.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\Master
+             * @var \CommerceTeam\Commerce\Tree\Leaf\Master $leafMaster
              */
-            $leaf = &$this->leafs[$i];
-            $leaf->setUid($uid);
-            $leaf->setDepth($depth);
-            $leaf->init($i);
+            $leafMaster = &$this->leafs[$i];
+            $leafMaster->setUid($uid);
+            $leafMaster->setDepth($depth);
+            $leafMaster->init($i);
         }
     }
 
@@ -366,23 +386,23 @@ abstract class Browsetree
         /**
          * Leaf.
          *
-         * @var \CommerceTeam\Commerce\Tree\Leaf\Master
+         * @var \CommerceTeam\Commerce\Tree\Leaf\Master $leafMaster
          */
-        $leaf = &$this->leafs[$indexFirst];
+        $leafMaster = &$this->leafs[$indexFirst];
 
         // i = 4 because if we have childleafs at all,
         // this is where they will stand in PM Array
         // l - 1 because the last entry in PM is the id
         for ($i = 4; $i < $l - 1; ++$i) {
-            $leaf = &$leaf->getChildLeaf($parameter[$i]);
+            $leafMaster = &$leafMaster->getChildLeaf($parameter[$i]);
 
             // If we didnt get a leaf, return
-            if ($leaf == null) {
+            if ($leafMaster == null) {
                 return '';
             }
         }
 
-        $out .= $leaf->printChildleafsByLoop($id, $bank, $pid);
+        $out .= $leafMaster->printChildleafsByLoop($id, $bank, $pid);
 
         return $out;
     }
@@ -392,13 +412,14 @@ abstract class Browsetree
      *
      * @param int $uid UID of the Item that will be started with
      *
+     * @return void
      * @todo Implement this function if it is ever needed.
-     * 	So far it's not. Delete this function if it is never needed.
+     *     So far it's not. Delete this function if it is never needed.
      */
     public function printTree($uid)
     {
         die('The function printTree in Browsetree.php is not yet filled.
-			Fill it if you are using it. Search for this text to find the code. '.$uid);
+            Fill it if you are using it. Search for this text to find the code. '.$uid);
     }
 
     /**
@@ -415,10 +436,10 @@ abstract class Browsetree
             /**
              * Leaf.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\Master
+             * @var \CommerceTeam\Commerce\Tree\Leaf\Master $leafMaster
              */
-            $leaf = &$this->leafs[$i];
-            $out .= $leaf->printLeafByMounts();
+            $leafMaster = &$this->leafs[$i];
+            $out .= $leafMaster->printLeafByMounts();
         }
         $out .= '</ul>';
 
@@ -453,12 +474,12 @@ abstract class Browsetree
             /**
              * Leaf.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\Master
+             * @var \CommerceTeam\Commerce\Tree\Leaf\Master $leafMaster
              */
-            $leaf = $this->leafs[$i];
-            if ($leaf->data->hasRecords()) {
-                $leaf->sort($rootUid);
-                $sortedData = array_merge($sortedData, $leaf->getSortedArray());
+            $leafMaster = $this->leafs[$i];
+            if ($leafMaster->data->hasRecords()) {
+                $leafMaster->sort($rootUid);
+                $sortedData = array_merge($sortedData, $leafMaster->getSortedArray());
             }
         }
 
@@ -469,8 +490,8 @@ abstract class Browsetree
      * Returns an array that has as key the depth
      * and as value the category ids on that depth
      * Sorts the array in the process
-     * 	[0] => '13'
-     * 	[1] => '12, 11, 39, 54'.
+     *     [0] => '13'
+     *     [1] => '12, 11, 39, 54'.
      *
      * @param int $rootUid Root uid
      *
@@ -496,12 +517,11 @@ abstract class Browsetree
             /**
              * Leaf.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\Master
+             * @var \CommerceTeam\Commerce\Tree\Leaf\Master $leafMaster
              */
-            $leaf = $this->leafs[$i];
-
-            $leaf->sort($rootUid);
-            $sorted = $leaf->getSortedArray();
+            $leafMaster = $this->leafs[$i];
+            $leafMaster->sort($rootUid);
+            $sorted = $leafMaster->getSortedArray();
             $sortedData = array_merge($sortedData, $sorted);
         }
 
@@ -525,6 +545,8 @@ abstract class Browsetree
      * Will initialize the User Position
      * Saves it in the Session and gives
      * the Position UIDs to the \CommerceTeam\Commerce\Tree\Leaf\Data.
+     *
+     * @return void
      */
     protected function initializePositionSaving()
     {
@@ -554,7 +576,7 @@ abstract class Browsetree
         // [4:,5:,.. further leafIndices], 5[+++]: Item UID
         $parameter = explode('_', $parameter);
 
-            // PM has to be at LEAST 5 Items (up to a (theoratically) unlimited count)
+        // PM has to be at LEAST 5 Items (up to a (theoratically) unlimited count)
         if (count($parameter) >= 5 && $parameter[0] == $this->treeName) {
             // Get the value - is always the last item
             // so far this is 'current UID|Parent UID'
@@ -598,10 +620,10 @@ abstract class Browsetree
             /**
              * Leaf.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\Master
+             * @var \CommerceTeam\Commerce\Tree\Leaf\Master $leafMaster
              */
-            $leaf = &$this->leafs[$i];
-            $leaf->setDataPositions($positions);
+            $leafMaster = &$this->leafs[$i];
+            $leafMaster->setDataPositions($positions);
         }
     }
 
@@ -610,12 +632,18 @@ abstract class Browsetree
      * $this->treeName will be used as key for BE_USER->uc[] to store it in.
      *
      * @param array $positions Positions array
+     *
+     * @return void
      */
     protected function savePosition(array &$positions)
     {
         if (is_null($positions) || !is_array($positions)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('The Positions were not saved because the parameter was invalid', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog(
+                    'The Positions were not saved because the parameter was invalid',
+                    COMMERCE_EXTKEY,
+                    3
+                );
             }
 
             return;
@@ -625,6 +653,7 @@ abstract class Browsetree
         $backendUser->uc['browseTrees'][$this->treeName] = serialize($positions);
         $backendUser->writeUC();
     }
+
 
     /**
      * Get backend user.

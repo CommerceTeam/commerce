@@ -47,6 +47,18 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
     protected $orderPid;
 
     /**
+     * Constructor
+     *
+     * @return self
+     */
+    public function __construct()
+    {
+        $GLOBALS['SOBE'] = $this;
+        parent::__construct();
+        $this->init();
+    }
+
+    /**
      * Initialization.
      */
     public function init()
@@ -136,7 +148,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
         /**
          * Order record list.
          *
-         * @var \CommerceTeam\Commerce\ViewHelpers\OrderRecordList
+         * @var \CommerceTeam\Commerce\ViewHelpers\OrderRecordList $dblist
          */
         $dblist = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\OrderRecordList');
         $dblist->backPath = $this->getBackPath();

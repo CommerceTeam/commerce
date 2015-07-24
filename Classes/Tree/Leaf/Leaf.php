@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree\Leaf;
 
 /*
@@ -94,9 +93,13 @@ abstract class Leaf extends Base
      *
      * @param \CommerceTeam\Commerce\Tree\Leaf\View $view LeafView of the Leaf
      * @param \CommerceTeam\Commerce\Tree\Leaf\Data $data LeafData of the Leaf
+     *
+     * @return void
      */
-    public function initBasic(\CommerceTeam\Commerce\Tree\Leaf\View &$view, \CommerceTeam\Commerce\Tree\Leaf\Data &$data)
-    {
+    public function initBasic(
+        \CommerceTeam\Commerce\Tree\Leaf\View &$view,
+        \CommerceTeam\Commerce\Tree\Leaf\Data &$data
+    ) {
         if (is_null($view) || is_null($data)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog('initBasic (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
@@ -122,6 +125,8 @@ abstract class Leaf extends Base
      * Passes to the leafview if it should enable the clickmenu.
      *
      * @param bool $flag Flag
+     *
+     * @return void
      */
     public function noClickmenu($flag = true)
     {
@@ -157,12 +162,18 @@ abstract class Leaf extends Base
      * Stores the name of the tree.
      *
      * @param string $treeName Name of the tree
+     *
+     * @return void
      */
     public function setTreeName($treeName)
     {
         if (!is_string($treeName)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('setTreeName (leaf) gets passed invalid parameters. Are set to default!', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog(
+                    'setTreeName (leaf) gets passed invalid parameters. Are set to default!',
+                    COMMERCE_EXTKEY,
+                    3
+                );
             }
             $treeName = 'unassigned';
         }
@@ -202,6 +213,8 @@ abstract class Leaf extends Base
      * Pass the Item UID Array with the Userpositions to the LeafData.
      *
      * @param array $positionIds Array with item uids that are positions
+     *
+     * @return void
      */
     public function setPositions(array &$positionIds)
     {
@@ -219,8 +232,10 @@ abstract class Leaf extends Base
      * Initializes the leaf
      * Passes the Parameters to its child leafs.
      *
-     * @param int   $index         Index of this leaf
+     * @param int $index Index of this leaf
      * @param array $parentIndices Array with parent indices
+     *
+     * @return void
      */
     public function init($index, array $parentIndices = array())
     {
@@ -232,11 +247,11 @@ abstract class Leaf extends Base
             return;
         }
 
-            // Store the index
+        // Store the index
         $this->view->setLeafIndex($index);
         $this->view->setParentIndices($parentIndices);
 
-            // Add our own index to the parentIndices Array
+        // Add our own index to the parentIndices Array
         $parentIndices[] = $index;
 
         // Call 'init' for all child leafs - notice how the childleafs
@@ -246,11 +261,11 @@ abstract class Leaf extends Base
             /**
              * Slave.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\Slave
+             * @var \CommerceTeam\Commerce\Tree\Leaf\Slave $leafSlave
              */
-            $leaf = &$this->leafs[$i];
-            $leaf->setParentLeaf($this);
-            $leaf->init($i, $parentIndices);
+            $leafSlave = &$this->leafs[$i];
+            $leafSlave->setParentLeaf($this);
+            $leafSlave->init($i, $parentIndices);
         }
     }
 
@@ -259,6 +274,8 @@ abstract class Leaf extends Base
      * its ChildLeafs ("recursively").
      *
      * @param array $positions Item uids that are positions
+     *
+     * @return void
      */
     public function setDataPositions(array &$positions)
     {
@@ -272,12 +289,12 @@ abstract class Leaf extends Base
 
         $this->data->setPositions($positions);
 
-        // "Recursive" Call
+        // Recursive Call
         for ($i = 0; $i < $this->leafcount; ++$i) {
             /**
              * Leaf.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\Leaf
+             * @var \CommerceTeam\Commerce\Tree\Leaf\Leaf $leaf
              */
             $leaf = &$this->leafs[$i];
             $leaf->setDataPositions($positions);
@@ -289,6 +306,8 @@ abstract class Leaf extends Base
      * Sorts its leafs as well.
      *
      * @param int $rootUid Item that will act as the root of the tree
+     *
+     * @return void
      */
     public function sort($rootUid)
     {
@@ -302,12 +321,12 @@ abstract class Leaf extends Base
 
         $this->data->sort($rootUid);
 
-            // Sort Leafs
+        // Sort Leafs
         for ($i = 0; $i < $this->leafcount; ++$i) {
             /**
              * Leaf.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\Leaf
+             * @var \CommerceTeam\Commerce\Tree\Leaf\Leaf $leaf
              */
             $leaf = &$this->leafs[$i];
             $leaf->sort($rootUid);
@@ -328,7 +347,7 @@ abstract class Leaf extends Base
             /**
              * Leaf.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\Leaf
+             * @var \CommerceTeam\Commerce\Tree\Leaf\Leaf $leaf
              */
             $leaf = &$this->leafs[$i];
             $sortedData = array_merge($sortedData, $leaf->getSortedArray());
@@ -374,7 +393,7 @@ abstract class Leaf extends Base
      * Returns whether or not a node is the last in the current subtree.
      *
      * @param array $row Row Item
-     * @param int   $pid Parent UID of the current Row Item
+     * @param int $pid Parent UID of the current Row Item
      *
      * @return bool
      */
@@ -414,13 +433,13 @@ abstract class Leaf extends Base
 
         $hasChildren = false;
 
-            // check if any leaf has a subitem for the current row
+        // check if any leaf has a subitem for the current row
         if ($this->leafcount > 0) {
             for ($i = 0; $i < $this->leafcount; ++$i) {
                 /**
                  * Leaf.
                  *
-                 * @var \CommerceTeam\Commerce\Tree\Leaf\Leaf
+                 * @var \CommerceTeam\Commerce\Tree\Leaf\Leaf $leaf
                  */
                 $leaf = &$this->leafs[$i];
                 $hasChildren = $leaf->hasSubitems($row);

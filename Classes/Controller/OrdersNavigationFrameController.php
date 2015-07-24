@@ -302,7 +302,7 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
 
         // If mount point ID existed and is within users
         // real mount points, then set it temporarily:
-        if ($temporaryMountPoint > 0 && $backendUser->isInWebMount($temporaryMountPoint)) {
+        if ($temporaryMountPoint && $backendUser->isInWebMount($temporaryMountPoint)) {
             $this->pagetree->MOUNTS = array($temporaryMountPoint);
             $this->activeTemporaryMountPoint = BackendUtility::readPageAccess(
                 $temporaryMountPoint,

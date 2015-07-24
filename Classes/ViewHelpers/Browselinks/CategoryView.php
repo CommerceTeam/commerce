@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\ViewHelpers\Browselinks;
 
 /*
@@ -14,6 +13,8 @@ namespace CommerceTeam\Commerce\ViewHelpers\Browselinks;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Implements the \CommerceTeam\Commerce\Tree\Leaf\View for the Category.
@@ -54,25 +55,29 @@ class CategoryView extends \CommerceTeam\Commerce\Tree\Leaf\View
      */
     public function getJumpToParam(array $row)
     {
+        $result = 'commerce:tx_commerce_categories:' . $row['uid'];
+
         if (!is_array($row)) {
             if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+                GeneralUtility::devLog(
                     'getJumpToParam (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
             }
 
-            return '';
+            $result = '';
         }
 
-        return 'commerce:tx_commerce_categories:'.$row['uid'];
+        return $result;
     }
 
     /**
      * Set open category.
      *
      * @param int $uid Uid
+     *
+     * @return void
      */
     public function setOpenCategory($uid)
     {
@@ -83,8 +88,8 @@ class CategoryView extends \CommerceTeam\Commerce\Tree\Leaf\View
      * Wrapping title in a-tags.
      *
      * @param string $title Title
-     * @param string $row   Record
-     * @param int    $bank  Pointer (which mount point number)
+     * @param string $row Record
+     * @param int $bank Pointer (which mount point number)
      *
      * @return string
      */
@@ -92,8 +97,9 @@ class CategoryView extends \CommerceTeam\Commerce\Tree\Leaf\View
     {
         if (!is_array($row) || !is_numeric($bank)) {
             if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'wrapTitle (CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\CategoryView) gets passed invalid parameters.',
+                GeneralUtility::devLog(
+                    'wrapTitle (CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\CategoryView)
+                        gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -103,13 +109,14 @@ class CategoryView extends \CommerceTeam\Commerce\Tree\Leaf\View
         }
 
         // Max. size for Title of 30
-        $title = ('' != $title) ? \TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
+        $title = trim($title) != '' ? GeneralUtility::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
 
-        $aOnClick = 'return link_commerce(\''.$this->getJumpToParam($row).'\');';
-        $style = ($row['uid'] == $this->openCat && 0 != $this->openCat) ? 'style="color: red; font-weight: bold"' : '';
-        $res = (($this->noRootOnclick && 0 == $row['uid']) || $this->noOnclick) ? $title : '<a href="#" onclick="'.
-            htmlspecialchars($aOnClick).'" '.$style.'>'.$title.'</a>';
+        $aOnClick = 'return link_commerce(\'' . $this->getJumpToParam($row) . '\');';
 
-        return $res;
+        $style = ($row['uid'] == $this->openCat && $this->openCat > 0) ? 'style="color: red; font-weight: bold"' : '';
+        $result = (($this->noRootOnclick && 0 == $row['uid']) || $this->noOnclick) ? $title : '<a href="#" onclick="' .
+            htmlspecialchars($aOnClick) . '" ' . $style . '>' . $title . '</a>';
+
+        return $result;
     }
 }

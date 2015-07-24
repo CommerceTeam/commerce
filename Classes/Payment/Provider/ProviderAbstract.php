@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Payment\Provider;
 
 /*
@@ -38,7 +37,7 @@ abstract class ProviderAbstract implements ProviderInterface
      *
      * @var \CommerceTeam\Commerce\Payment\PaymentInterface
      */
-    protected $paymentObject = null;
+    protected $paymentObject;
 
     /**
      * Provider type, eg 'wirecard'.
@@ -70,13 +69,15 @@ abstract class ProviderAbstract implements ProviderInterface
     /**
      * Load configured criteria.
      *
+     * @return void
      * @throws \Exception If criteria was not of correct interface
      */
     protected function loadCriteria()
     {
         // Get and instantiate registered criteria of this payment provider
         $criteraConfigurations = SettingsFactory::getInstance()
-            ->getConfiguration('SYSPRODUCTS.PAYMENT.types.'.$this->paymentObject->getType().'.provider.'.$this->type.'.criteria');
+            ->getConfiguration('SYSPRODUCTS.PAYMENT.types.' . $this->paymentObject->getType() . '.provider.' .
+                $this->type . '.criteria');
 
         if (is_array($criteraConfigurations)) {
             foreach ($criteraConfigurations as $criterionConfiguration) {
@@ -95,8 +96,8 @@ abstract class ProviderAbstract implements ProviderInterface
                 );
                 if (!($criterion instanceof ProviderCriterionInterface)) {
                     throw new \Exception(
-                        'Criterion '.$criterionConfiguration['class'].
-                            ' must implement interface \CommerceTeam\Commerce\Payment\Provider\ProviderCriterionInterface',
+                        'Criterion ' . $criterionConfiguration['class'] .
+                        ' must implement interface \CommerceTeam\Commerce\Payment\Provider\ProviderCriterionInterface',
                         1307720945
                     );
                 }
@@ -134,10 +135,11 @@ abstract class ProviderAbstract implements ProviderInterface
     public function isAllowed()
     {
         $result = true;
+
         /**
          * Criterion.
          *
-         * @var \CommerceTeam\Commerce\Payment\Criterion\CriterionAbstract
+         * @var \CommerceTeam\Commerce\Payment\Criterion\CriterionAbstract $criterion
          */
         foreach ($this->criteria as $criterion) {
             if ($criterion->isAllowed() === false) {
@@ -173,8 +175,8 @@ abstract class ProviderAbstract implements ProviderInterface
     /**
      * Check if provided data is ok.
      *
-     * @param array $formData     Current form data
-     * @param bool  $parentResult Already determined result of payment object
+     * @param array $formData Current form data
+     * @param bool $parentResult Already determined result of payment object
      *
      * @return bool TRUE if data is ok
      */
@@ -186,13 +188,15 @@ abstract class ProviderAbstract implements ProviderInterface
     /**
      * Wether or not finishing an order is allowed.
      *
-     * @param array                                      $config  Current configuration
-     * @param array                                      $session Session data
-     * @param \CommerceTeam\Commerce\Domain\Model\Basket $basket  Basket object
+     * @param array $config Current configuration
+     * @param array $session Session data
+     * @param \CommerceTeam\Commerce\Domain\Model\Basket $basket Basket object
      *
      * @return bool TRUE if finishing order is allowed
      */
-    public function finishingFunction(array $config = array(), array $session = array(),
+    public function finishingFunction(
+        array $config = array(),
+        array $session = array(),
         \CommerceTeam\Commerce\Domain\Model\Basket $basket = null
     ) {
         return true;
@@ -202,7 +206,7 @@ abstract class ProviderAbstract implements ProviderInterface
      * Method called in finishIt function.
      *
      * @param array $globalRequest Global request
-     * @param array $session       Session array
+     * @param array $session Session array
      *
      * @return bool TRUE if data is ok
      */
@@ -214,8 +218,10 @@ abstract class ProviderAbstract implements ProviderInterface
     /**
      * Update order data after order has been finished.
      *
-     * @param int   $orderUid Id of this order
+     * @param int $orderUid Id of this order
      * @param array $session  Session data
+     *
+     * @return void
      */
     public function updateOrder($orderUid, array $session = array())
     {

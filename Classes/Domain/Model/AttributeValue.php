@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Model;
 
 /*
@@ -98,7 +97,7 @@ class AttributeValue extends AbstractEntity
     /**
      * Constructor, basically calls init.
      *
-     * @param int $uid         Attribute value uid
+     * @param int $uid Attribute value uid
      * @param int $languageUid Language uid
      *
      * @return self
@@ -113,8 +112,10 @@ class AttributeValue extends AbstractEntity
     /**
      * Init Class.
      *
-     * @param int $uid         Attribute
+     * @param int $uid Attribute
      * @param int $languageUid Language uid, default 0
+     *
+     * @return void
      */
     public function init($uid, $languageUid = 0)
     {

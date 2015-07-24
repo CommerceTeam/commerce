@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\ViewHelpers;
 
 /*
@@ -287,7 +286,7 @@ class Navigation
      * Init Method for initialising the navigation.
      *
      * @param string $content Content passed to method
-     * @param array  $conf    Typoscript Array
+     * @param array $conf Typoscript Array
      *
      * @return array array for the menurendering of TYPO3
      */
@@ -359,52 +358,68 @@ class Navigation
          * Unique Hash for this usergroup and page to display the navigation
          */
         $hash = md5(
-            'tx_commerce_navigation:'.implode('-', $this->mConf).':'.$usergroups.':'.
-            $this->getFrontendController()->linkVars.':'.GeneralUtility::getIndpEnv('HTTP_HOST')
+            'tx_commerce_navigation:' . implode('-', $this->mConf) . ':' . $usergroups . ':' .
+            $this->getFrontendController()->linkVars . ':' . GeneralUtility::getIndpEnv('HTTP_HOST')
         );
-
-        $cachedMatrix = $this->getHash($hash);
 
         /*
          * Render Menue Array and store in cache, if possible
          */
-        if (($this->getFrontendController()->no_cache == 1)) {
+        if ($this->getFrontendController()->no_cache) {
             // Build directly and don't sore, if no_cache=1'
             $this->mTree = $this->makeArrayPostRender(
-                $this->pid, 'tx_commerce_categories', 'tx_commerce_categories_parent_category_mm', 'tx_commerce_products',
-                'tx_commerce_products_categories_mm', $this->cat, 1, 0, $this->maxLevel
+                $this->pid,
+                'tx_commerce_categories',
+                'tx_commerce_categories_parent_category_mm',
+                'tx_commerce_products',
+                'tx_commerce_products_categories_mm',
+                $this->cat,
+                1,
+                0,
+                $this->maxLevel
             );
 
             /*
              * Sorting Options, there is only one type 'alphabetiDesc' :)
              * the others must to program
              *
-             * @todo: implement sortType:alphabetiAsc,byUid, bySorting
+             * @todo: implement sortType: alphabetiAsc, byUid, bySorting
              */
             if ($this->mConf['sortAllitems.']['type'] == 'alphabetiDesc') {
                 $this->sortAllMenuArray($this->mTree, 'alphabetiDesc');
             }
-        } elseif (!empty($cachedMatrix)) {
-            // User the cached version
-            $this->mTree = $cachedMatrix;
         } else {
-            // no cache present buld data and stor it in cache
-            $this->mTree = $this->makeArrayPostRender(
-                $this->pid, 'tx_commerce_categories', 'tx_commerce_categories_parent_category_mm', 'tx_commerce_products',
-                'tx_commerce_products_categories_mm', $this->cat, 1, 0, $this->maxLevel
-            );
+            $cachedMatrix = $this->getHash($hash);
 
-            /*
-             * Sorting Options, there is only one type 'alphabetiDesc' :)
-             * the others must to program
-             *
-             * @todo: implement sortType:alphabetiAsc,byUid, bySorting
-             */
-            if ($this->mConf['sortAllitems.']['type'] == 'alphabetiDesc') {
-                $this->sortAllMenuArray($this->mTree, 'alphabetiDesc');
+            if (!empty($cachedMatrix)) {
+                // User the cached version
+                $this->mTree = $cachedMatrix;
+            } else {
+                // no cache present buld data and stor it in cache
+                $this->mTree = $this->makeArrayPostRender(
+                    $this->pid,
+                    'tx_commerce_categories',
+                    'tx_commerce_categories_parent_category_mm',
+                    'tx_commerce_products',
+                    'tx_commerce_products_categories_mm',
+                    $this->cat,
+                    1,
+                    0,
+                    $this->maxLevel
+                );
+
+                /*
+                 * Sorting Options, there is only one type 'alphabetiDesc' :)
+                 * the others must to program
+                 *
+                 * @todo: implement sortType: alphabetiAsc, byUid, bySorting
+                 */
+                if ($this->mConf['sortAllitems.']['type'] == 'alphabetiDesc') {
+                    $this->sortAllMenuArray($this->mTree, 'alphabetiDesc');
+                }
+
+                $this->storeHash($hash, $this->mTree);
             }
-
-            $this->storeHash($hash, $this->mTree);
         }
 
         /*
@@ -429,11 +444,14 @@ class Navigation
             /**
              * Product.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Product
+             * @var \CommerceTeam\Commerce\Domain\Model\Product $product
              */
-            $myProduct = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $this->gpVars['showUid']);
-            $myProduct->loadData();
-            $this->choosenCat = $myProduct->getMasterparentCategory();
+            $product = GeneralUtility::makeInstance(
+                'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                $this->gpVars['showUid']
+            );
+            $product->loadData();
+            $this->choosenCat = $product->getMasterparentCategory();
         }
 
         if ($this->gpVars['path']) {
@@ -443,17 +461,20 @@ class Navigation
             /**
              * Build the path by or own.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Category
+             * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
-            $myCat = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $this->choosenCat);
-            $myCat->loadData();
-            // MODIF DE LUC >AMEOS : Get the right path with custom method
+            $category = GeneralUtility::makeInstance(
+                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                $this->choosenCat
+            );
+            $category->loadData();
+            // Get the right path with custom method
             $aPath = $this->getRootLine($this->mTree, $this->choosenCat, $this->expandAll);
             if (!$aPath) {
                 /*
                  * If the methode getRootLine fail, we take the path direct from the DB.
                  */
-                $tmpArray = $myCat->getParentCategoriesUidlist();
+                $tmpArray = $category->getParentCategoriesUidlist();
                 $this->fixPathParents($tmpArray, $this->cat);
             } else {
                 $tmpArray = $aPath;
@@ -525,14 +546,17 @@ class Navigation
     /**
      * Fix path parents.
      *
-     * @param array $pathArray    Path by reference
-     * @param int   $chosenCatUid Choosen category uid
+     * @param array $pathArray Path by reference
+     * @param int $chosenCatUid Choosen category uid
+     *
+     * @return void
      */
     public function fixPathParents(array &$pathArray, $chosenCatUid)
     {
         if ($pathArray == null) {
             return;
         }
+
         if ($pathArray[0] != $chosenCatUid) {
             array_shift($pathArray);
             $this->fixPathParents($pathArray, $chosenCatUid);
@@ -550,7 +574,7 @@ class Navigation
             $catOptionsCount = count($this->mConf['groupOptions.']);
             $chosenCatUid = array();
             for ($i = 1; $i <= $catOptionsCount; ++$i) {
-                $chosenGroups = GeneralUtility::trimExplode(',', $this->mConf['groupOptions.'][$i.'.']['group']);
+                $chosenGroups = GeneralUtility::trimExplode(',', $this->mConf['groupOptions.'][$i . '.']['group']);
                 if ($this->getFrontendUser()->user['usergroup'] == '') {
                     return $this->mConf['category'];
                 }
@@ -558,8 +582,8 @@ class Navigation
 
                 foreach ($chosenGroups as $group) {
                     if (in_array($group, $feGroups) === true) {
-                        if (in_array($this->mConf['groupOptions.'][$i.'.']['catUid'], $chosenCatUid) === false) {
-                            array_push($chosenCatUid, $this->mConf['groupOptions.'][$i.'.']['catUid']);
+                        if (in_array($this->mConf['groupOptions.'][$i . '.']['catUid'], $chosenCatUid) === false) {
+                            array_push($chosenCatUid, $this->mConf['groupOptions.'][$i . '.']['catUid']);
                         }
                     }
                 }
@@ -580,7 +604,7 @@ class Navigation
     /**
      * Make menu error node.
      *
-     * @param int $max    Max
+     * @param int $max Max
      * @param int $mDepth Depth
      *
      * @return array
@@ -589,15 +613,17 @@ class Navigation
     {
         $treeList = array();
         for ($i = 0; $i < $max; ++$i) {
-            $nodeArray['pid'] = $this->pid;
-            $nodeArray['uid'] = $i;
-            $nodeArray['title'] = 'Error in the typoScript configuration.';
-            $nodeArray['parent_id'] = $i;
-            $nodeArray['nav_title'] = 'Error in the typoScript configuration.';
-            $nodeArray['hidden'] = 0;
-            $nodeArray['depth'] = $mDepth;
-            $nodeArray['leaf'] = 1;
-            $treeList[$i] = $nodeArray;
+            $node = array(
+                'pid' => $this->pid,
+                'uid' => $i,
+                'parent_id' => $i,
+                'depth' => $mDepth,
+                'leaf' => 1,
+                'hidden' => 0,
+                'title' => 'Error in the typoScript configuration.',
+                'nav_title' => 'Error in the typoScript configuration.',
+            );
+            $treeList[$i] = $node;
         }
 
         return $treeList;
@@ -629,21 +655,29 @@ class Navigation
     /**
      * Makes the post array,which  the typo3 render Function will be work.
      *
-     * @param int    $uidPage      Page uid
-     * @param string $mainTable    Main table
-     * @param string $tableMm      Relation table
+     * @param int $uidPage Page uid
+     * @param string $mainTable Main table
+     * @param string $tableMm Relation table
      * @param string $tableSubMain Sub table
-     * @param string $tableSubMm   Sub relation table
-     * @param int    $uidRoot      Root uid
-     * @param int    $mDepth       Depth
-     * @param int    $path         Path
-     * @param int    $maxLevel     Max level
+     * @param string $tableSubMm Sub relation table
+     * @param int $uidRoot Root uid
+     * @param int $mDepth Depth
+     * @param int $path Path
+     * @param int $maxLevel Max level
      *
      * @return array TSConfig with ItemArrayProcFunc
      */
-    public function makeArrayPostRender($uidPage, $mainTable, $tableMm, $tableSubMain, $tableSubMm, $uidRoot, $mDepth = 1,
-        $path = 0, $maxLevel = PHP_INT_MAX)
-    {
+    public function makeArrayPostRender(
+        $uidPage,
+        $mainTable,
+        $tableMm,
+        $tableSubMain,
+        $tableSubMm,
+        $uidRoot,
+        $mDepth = 1,
+        $path = 0,
+        $maxLevel = PHP_INT_MAX
+    ) {
         $database = $this->getDatabaseConnection();
 
         $treeList = array();
@@ -653,16 +687,19 @@ class Navigation
             return array();
         }
 
-        $sql = 'SELECT '.$tableMm.'.* FROM '.$tableMm.','.$mainTable.' WHERE '.$mainTable.'.deleted = 0 AND '.
-            $mainTable.'.uid = '.$tableMm.'.uid_local AND '.$tableMm.'.uid_local <> "" AND '.$tableMm.
-            '.uid_foreign = '.$uidRoot;
+        $sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable .
+            '.deleted = 0 AND '. $mainTable . '.uid = ' . $tableMm . '.uid_local AND ' . $tableMm .
+            '.uid_local <> "" AND ' . $tableMm . '.uid_foreign = ' . $uidRoot;
 
-        $sorting = ' ORDER BY '.$mainTable.'.sorting';
+        $sorting = ' ORDER BY ' . $mainTable . '.sorting';
 
         /*
          * Add some hooks for custom sorting
          */
-        $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook('ViewHelpers/Navigation', 'makeArrayPostRender');
+        $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook(
+            'ViewHelpers/Navigation',
+            'makeArrayPostRender'
+        );
         if (is_object($hookObject) && method_exists($hookObject, 'sortingOrder')) {
             $sorting = $hookObject->sortingOrder($sorting, $uidRoot, $mainTable, $tableMm, $mDepth, $path, $this);
         }
@@ -700,24 +737,32 @@ class Navigation
                 $nodeArray['hasSubChild'] = $this->hasSubChild($row['uid_local'], $tableSubMm);
                 $nodeArray['subChildTable'] = $tableSubMm;
                 $nodeArray['tableSubMain'] = $tableSubMain;
-                $nodeArray['_ADD_GETVARS'] .= $this->separator.$this->prefixId.'[catUid]='.$row['uid_local'];
+                $nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[catUid]=' . $row['uid_local'];
+
                 if ($path != 0) {
-                    $nodeArray['path'] = $dataRow['uid'].','.$path;
+                    $nodeArray['path'] = $dataRow['uid'] . ',' . $path;
                 } else {
                     $nodeArray['path'] = $dataRow['uid'];
                 }
 
                 $aCatToManu = explode(',', $this->mConf['displayManuForCat']);
                 if ($this->useRootlineInformationToUrl == 1) {
-                    $nodeArray['_ADD_GETVARS'] .= $this->separator.$this->prefixId.'[mDepth]='.$mDepth.$this->separator.
-                        $this->prefixId.'[path]='.$nodeArray['path'];
+                    $nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth .
+                        $this->separator . $this->prefixId . '[path]=' . $nodeArray['path'];
                 }
 
                 if (in_array($row['uid_local'], $aCatToManu) || strtolower(trim($aCatToManu['0'])) == 'all') {
                     $nodeArray['--subLevel--'] = array();
                     $this->arrayMerge(
-                        $nodeArray['--subLevel--'], $this->getManufacturerAsCategory(
-                            $dataRow['pid'], $uidPage, $tableMm, $tableSubMain, $tableSubMm, $row['uid_local'], $mDepth + 1,
+                        $nodeArray['--subLevel--'],
+                        $this->getManufacturerAsCategory(
+                            $dataRow['pid'],
+                            $uidPage,
+                            $tableMm,
+                            $tableSubMain,
+                            $tableSubMm,
+                            $row['uid_local'],
+                            $mDepth + 1,
                             $nodeArray['path']
                         )
                     );
@@ -729,22 +774,43 @@ class Navigation
                     }
 
                     $this->arrayMerge(
-                        $nodeArray['--subLevel--'], $this->makeArrayPostRender(
-                            $uidPage, $mainTable, $tableMm, $tableSubMain, $tableSubMm, $row['uid_local'], $mDepth + 1,
-                            $nodeArray['path'], $maxLevel
+                        $nodeArray['--subLevel--'],
+                        $this->makeArrayPostRender(
+                            $uidPage,
+                            $mainTable,
+                            $tableMm,
+                            $tableSubMain,
+                            $tableSubMm,
+                            $row['uid_local'],
+                            $mDepth + 1,
+                            $nodeArray['path'],
+                            $maxLevel
                         )
                     );
 
                     if ($nodeArray['hasSubChild'] == 1 && $this->mConf['showProducts'] == 1) {
                         $arraySubChild = $this->makeSubChildArrayPostRender(
-                            $uidPage, $tableSubMain, $tableSubMm, $row['uid_local'], $mDepth + 1, $nodeArray['path'], $maxLevel
+                            $uidPage,
+                            $tableSubMain,
+                            $tableSubMm,
+                            $row['uid_local'],
+                            $mDepth + 1,
+                            $nodeArray['path'],
+                            $maxLevel
                         );
 
                         $this->arrayMerge($nodeArray['--subLevel--'], $arraySubChild);
 
-                        if ($this->mConf['groupOptions.']['onOptions'] == 1 && $this->getFrontendUser()->user['usergroup'] != '') {
+                        if ($this->mConf['groupOptions.']['onOptions'] == 1
+                            && $this->getFrontendUser()->user['usergroup'] != ''
+                        ) {
                             $arraySubChild = $this->makeSubChildArrayPostRender(
-                                $uidPage, $tableSubMain, $tableSubMm, $row['uid_local'], $mDepth + 1, $nodeArray['path'],
+                                $uidPage,
+                                $tableSubMain,
+                                $tableSubMm,
+                                $row['uid_local'],
+                                $mDepth + 1,
+                                $nodeArray['path'],
                                 $maxLevel
                             );
                             $this->arrayMerge($nodeArray['--subLevel--'], $arraySubChild);
@@ -754,31 +820,36 @@ class Navigation
                     if (($this->expandAll > 0) || ($this->expandAll < 0 && (-$this->expandAll >= $mDepth))) {
                         $nodeArray['_SUB_MENU'] = $nodeArray['--subLevel--'];
                     }
+
                     if ($this->gpVars['basketHashValue']) {
-                        $nodeArray['_ADD_GETVARS'] .= $this->separator.$this->prefixId.'[basketHashValue]='.$this->gpVars['basketHashValue'];
+                        $nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[basketHashValue]=' .
+                            $this->gpVars['basketHashValue'];
                     }
 
                     $nodeArray['ITEM_STATE'] = 'IFSUB';
                     $nodeArray['ITEM_STATES_LIST'] = 'IFSUB,NO';
                 } else {
                     if ($nodeArray['hasSubChild'] == 2) {
-                        $nodeArray['_ADD_GETVARS'] .= $this->separator.$this->prefixId.'[showUid]='.$dataRow['uid'];
-                        $nodeArray['_ADD_GETVARS'] .= $this->separator.$this->prefixId.'[mDepth]='.$mDepth.$this->separator.
-                            $this->prefixId.'[path]='.$nodeArray['path'];
+                        $nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[showUid]=' .
+                            $dataRow['uid'];
+                        $nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth .
+                            $this->separator . $this->prefixId . '[path]=' . $nodeArray['path'];
                     }
                     if ($this->useRootlineInformationToUrl == 1) {
-                        $nodeArray['_ADD_GETVARS'] .= $this->separator.$this->prefixId.'[mDepth]='.$mDepth.$this->separator.
-                            $this->prefixId.'[path]='.$nodeArray['path'];
+                        $nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth .
+                            $this->separator . $this->prefixId . '[path]=' . $nodeArray['path'];
                     }
                     if ($this->gpVars['basketHashValue']) {
-                        $nodeArray['_ADD_GETVARS'] .= $this->separator.$this->prefixId.'[basketHashValue]='.$this->gpVars['basketHashValue'];
+                        $nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[basketHashValue]=' .
+                            $this->gpVars['basketHashValue'];
                     }
 
                     $nodeArray['ITEM_STATE'] = 'NO';
                 }
 
                 if (strpos($nodeArray['_ADD_GETVARS'], 'showUid') === false) {
-                    $nodeArray['_ADD_GETVARS'] = $this->separator.$this->prefixId.'[showUid]='.$nodeArray['_ADD_GETVARS'];
+                    $nodeArray['_ADD_GETVARS'] = $this->separator . $this->prefixId . '[showUid]=' .
+                        $nodeArray['_ADD_GETVARS'];
                 }
 
                 $nodeArray['_ADD_GETVARS'] .= $this->separator.'cHash='.
@@ -789,7 +860,15 @@ class Navigation
         }
 
         if ($treeList == null && $this->mConf['showProducts'] == 1) {
-            $treeList = $this->makeSubChildArrayPostRender($uidPage, $tableSubMain, $tableSubMm, $uidRoot, $mDepth, $path, $maxLevel);
+            $treeList = $this->makeSubChildArrayPostRender(
+                $uidPage,
+                $tableSubMain,
+                $tableSubMm,
+                $uidRoot,
+                $mDepth,
+                $path,
+                $maxLevel
+            );
         }
 
         return $treeList;
@@ -798,36 +877,45 @@ class Navigation
     /**
      * Makes a set of  ItemMenu product list  of a category.
      *
-     * @param int    $pageUid         Page uid
-     * @param string $mainTable       Main table
-     * @param string $mmTable         Relation table
-     * @param int    $categoryUid     Category Uid
-     * @param int    $mDepth          Depth
-     * @param int    $path            Path
-     * @param bool   $manufacturerUid Manufacturer uid
+     * @param int $pageUid Page uid
+     * @param string $mainTable Main table
+     * @param string $mmTable Relation table
+     * @param int $categoryUid Category Uid
+     * @param int $mDepth Depth
+     * @param int $path Path
+     * @param bool $manufacturerUid Manufacturer uid
      *
      * @return array array to be processed by HMENU
      */
-    public function makeSubChildArrayPostRender($pageUid, $mainTable, $mmTable, $categoryUid, $mDepth = 1, $path = 0,
-            $manufacturerUid = false)
-    {
+    public function makeSubChildArrayPostRender(
+        $pageUid,
+        $mainTable,
+        $mmTable,
+        $categoryUid,
+        $mDepth = 1,
+        $path = 0,
+        $manufacturerUid = false
+    ) {
         $database = $this->getDatabaseConnection();
 
         $treeList = array();
         $sqlManufacturer = '';
         if (is_numeric($manufacturerUid)) {
-            $sqlManufacturer = ' AND '.$mainTable.'.manufacturer_uid = '.(int) $manufacturerUid.' ';
+            $sqlManufacturer = ' AND ' . $mainTable . '.manufacturer_uid = ' . (int) $manufacturerUid;
         }
-        $sql = 'SELECT '.$mmTable.'.* FROM '.$mmTable.','.$mainTable.' WHERE '.$mainTable.'.deleted = 0 AND '.
-            $mainTable.'.uid = '.$mmTable.'.uid_local AND '.$mmTable.'.uid_local<>"" AND '.$mmTable.'.uid_foreign = '.
-            (int) $categoryUid.' '.$sqlManufacturer;
+        $sql = 'SELECT ' . $mmTable . '.* FROM ' . $mmTable . ',' . $mainTable . ' WHERE ' . $mainTable .
+            '.deleted = 0 AND ' . $mainTable . '.uid = ' . $mmTable . '.uid_local AND ' . $mmTable .
+            '.uid_local <> "" AND ' . $mmTable . '.uid_foreign = ' . (int) $categoryUid . $sqlManufacturer;
 
-        $sorting = ' order by '.$mainTable.'.sorting ';
+        $sorting = ' ORDER BY ' . $mainTable . '.sorting ';
 
         /*
          * Add some hooks for custom sorting
          */
-        $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook('ViewHelpers/Navigation', 'makeSubChildArrayPostRender');
+        $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook(
+            'ViewHelpers/Navigation',
+            'makeSubChildArrayPostRender'
+        );
         if (is_object($hookObject) && method_exists($hookObject, 'sortingOrder')) {
             $sorting = $hookObject->sortingOrder($sorting, $categoryUid, $mainTable, $mmTable, $mDepth, $path, $this);
         }
@@ -842,55 +930,61 @@ class Navigation
                 $nodeArray['CommerceMenu'] = true;
                 $nodeArray['pid'] = $dataRow['pid'];
                 $nodeArray['uid'] = $pageUid;
-                $nodeArray['title'] = htmlspecialchars(strip_tags($dataRow['title']));
                 $nodeArray['parent_id'] = $categoryUid;
-                $nodeArray['nav_title'] = htmlspecialchars(strip_tags($dataRow['navtitle']));
                 $nodeArray['hidden'] = $dataRow['hidden'];
+                $nodeArray['title'] = htmlspecialchars(strip_tags($dataRow['title']));
+                $nodeArray['nav_title'] = htmlspecialchars(strip_tags($dataRow['navtitle']));
+
                 // Add custom Fields to array
                 foreach ($this->nodeArrayAdditionalFields as $field) {
                     $nodeArray[$field] = htmlspecialchars(strip_tags($dataRow[$field]));
                 }
+
                 /*
                  * Add Pages Overlay to Array, if sys language uid set
                  */
                 if ($this->getFrontendController()->sys_language_uid) {
                     $nodeArray['_PAGES_OVERLAY'] = htmlspecialchars(strip_tags($dataRow['title']));
                 }
+
                 $nodeArray['depth'] = $mDepth;
                 $nodeArray['leaf'] = 1;
                 $nodeArray['table'] = $mainTable;
                 if ($path != 0) {
-                    $nodeArray['path'] = $dataRow['uid'].','.$path;
+                    $nodeArray['path'] = $dataRow['uid'] . ',' . $path;
                 } else {
                     $nodeArray['path'] = $dataRow['uid'];
                 }
+
                 // Set default
                 $nodeArray['ITEM_STATE'] = 'NO';
                 if ($nodeArray['leaf'] == 1) {
-                    $nodeArray['_ADD_GETVARS'] = $this->separator.$this->prefixId.'[catUid]='.$categoryUid;
+                    $nodeArray['_ADD_GETVARS'] = $this->separator . $this->prefixId . '[catUid]=' . $categoryUid;
                 } else {
-                    $nodeArray['_ADD_GETVARS'] = $this->separator.$this->prefixId.'[catUid]='.$row['uid_foreign'];
+                    $nodeArray['_ADD_GETVARS'] = $this->separator . $this->prefixId . '[catUid]=' . $row['uid_foreign'];
                 }
-                $nodeArray['_ADD_GETVARS'] .= $this->separator.$this->prefixId.'[showUid]='.$dataRow['uid'];
+                $nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[showUid]=' . $dataRow['uid'];
 
                 if ($this->useRootlineInformationToUrl == 1) {
-                    $nodeArray['_ADD_GETVARS'] .= $this->separator.$this->prefixId.'[mDepth]='.$mDepth.$this->separator.
-                        $this->prefixId.'[path]='.$nodeArray['path'];
+                    $nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[mDepth]=' . $mDepth .
+                        $this->separator . $this->prefixId . '[path]=' . $nodeArray['path'];
                 }
 
                 if ($this->gpVars['basketHashValue']) {
-                    $nodeArray['_ADD_GETVARS'] .= $this->separator.$this->prefixId.'[basketHashValue]='.$this->gpVars['basketHashValue'];
+                    $nodeArray['_ADD_GETVARS'] .= $this->separator . $this->prefixId . '[basketHashValue]=' .
+                        $this->gpVars['basketHashValue'];
                 }
 
-                $nodeArray['_ADD_GETVARS'] .= $this->separator.'cHash='.
-                    $this->generateChash($nodeArray['_ADD_GETVARS'].$this->getFrontendController()->linkVars);
+                $nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' .
+                    $this->generateChash($nodeArray['_ADD_GETVARS'] . $this->getFrontendController()->linkVars);
 
                 if ($this->gpVars['manufacturer']) {
-                    $nodeArray['_ADD_GETVARS'] .= '&'.$this->prefixId.'[manufacturer]='.$this->gpVars['manufacturer'];
+                    $nodeArray['_ADD_GETVARS'] .= '&' . $this->prefixId . '[manufacturer]=' .
+                        $this->gpVars['manufacturer'];
                 }
 
                 // if this product is displayed set to CUR
-                if (($mainTable == 'tx_commerce_products') && ($dataRow['uid'] == $this->showUid)) {
+                if ($mainTable == 'tx_commerce_products' && $dataRow['uid'] == $this->showUid) {
                     $nodeArray['ITEM_STATE'] = 'CUR';
                 }
 
@@ -905,10 +999,12 @@ class Navigation
      * Process the menuArray to set state for a selected item.
      *
      * @param array $treeArray Tree
-     * @param array $path      Path of the itemMen
-     * @param int   $mDepth    Depth of the itemMenu
+     * @param array $path Path of the itemMen
+     * @param int $mDepth Depth of the itemMenu
+     *
+     * @return void
      */
-    public function processArrayPostRender(array &$treeArray, array $path = array(), $mDepth)
+    public function processArrayPostRender(array &$treeArray, array $path = array(), $mDepth = 0)
     {
         if ($this->gpVars['manufacturer']) {
             foreach ($treeArray as $val) {
@@ -1023,14 +1119,14 @@ class Navigation
     /**
      * Gets the data to fill a node.
      *
-     * @param int    $uid       Uid
+     * @param int $uid Uid
      * @param string $tableName Table name
      *
      * @return array
      */
     public function getDataRow($uid, $tableName)
     {
-        if ($uid == '' || $tableName == '') {
+        if (!$uid || !$tableName) {
             return array();
         }
 
@@ -1042,7 +1138,12 @@ class Navigation
             /*
              * Get Overlay, if available
              */
-            $row = $this->getFrontendController()->sys_page->getRecordOverlay($tableName, $row, $langUid, $this->translationMode);
+            $row = $this->getFrontendController()->sys_page->getRecordOverlay(
+                $tableName,
+                $row,
+                $langUid,
+                $this->translationMode
+            );
         }
 
         if ($this->mConf['hideEmptyCategories'] == 1 && $tableName == 'tx_commerce_categories' && is_array($row)) {
@@ -1050,15 +1151,15 @@ class Navigation
             /**
              * Category.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Category
+             * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
-            $localCategory = GeneralUtility::makeinstance(
+            $category = GeneralUtility::makeinstance(
                 'CommerceTeam\\Commerce\\Domain\\Model\\Category',
                 $row['uid'],
                 $row['sys_language_uid']
             );
-            $localCategory->loadData();
-            if (!$localCategory->hasProductsInSubCategories()) {
+            $category->loadData();
+            if (!$category->hasProductsInSubCategories()) {
                 return array();
             }
         }
@@ -1073,15 +1174,15 @@ class Navigation
     /**
      * Determines if a item has no sub item.
      *
-     * @param int    $uid        Uid
-     * @param string $tableMm    Relation table
+     * @param int $uid Uid
+     * @param string $tableMm Relation table
      * @param string $subTableMm Sub relation table
      *
      * @return int : 0|1|2
      */
     public function isLeaf($uid, $tableMm, $subTableMm)
     {
-        if ($uid == '' || $tableMm == '') {
+        if (!$uid || !$tableMm) {
             return 2;
         }
 
@@ -1098,14 +1199,14 @@ class Navigation
     /**
      * Determines if an item has sub items in another table.
      *
-     * @param int    $uid     Uid
+     * @param int $uid Uid
      * @param string $tableMm Relation table
      *
      * @return int : 0|1|2
      */
     public function hasSubChild($uid, $tableMm)
     {
-        if ($uid == '' or $tableMm == '') {
+        if (!$uid || !$tableMm) {
             return 2;
         }
 
@@ -1128,7 +1229,7 @@ class Navigation
      * pages and categories.
      *
      * @param array $menuArr Array with menu item
-     * @param array $conf    TSconfig, not used
+     * @param array $conf TSconfig, not used
      *
      * @return array return the cleaned menu item
      */
@@ -1185,14 +1286,18 @@ class Navigation
      * Method for generating the rootlineMenu to use in TS.
      *
      * @param string $content Passed to method
-     * @param array  $conf    TS Array
+     * @param array $conf TS Array
      *
      * @return array for the menurendering of TYPO3
      */
     public function renderRootline($content, array $conf)
     {
         $this->mConf = $this->processConf($conf);
-        $this->pid = (int) ($this->mConf['overridePid'] ? $this->mConf['overridePid'] : $this->getFrontendController()->id);
+        $this->pid = (int) (
+            $this->mConf['overridePid'] ?
+            $this->mConf['overridePid'] :
+            $this->getFrontendController()->id
+        );
         $this->gpVars = GeneralUtility::_GPmerged($this->prefixId);
 
         \CommerceTeam\Commerce\Utility\GeneralUtility::initializeFeUserBasket();
@@ -1218,39 +1323,40 @@ class Navigation
             /**
              * Product.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Product
+             * @var \CommerceTeam\Commerce\Domain\Model\Product $product
              */
-            $productObject = GeneralUtility::makeInstance(
+            $product = GeneralUtility::makeInstance(
                 'CommerceTeam\\Commerce\\Domain\\Model\\Product',
                 $this->gpVars['showUid'],
                 $this->getFrontendController()->sys_language_uid
             );
-            $productObject->loadData();
+            $product->loadData();
 
             /**
              * Category.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Category
+             * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
-            $categoryObject = GeneralUtility::makeInstance(
+            $category = GeneralUtility::makeInstance(
                 'CommerceTeam\\Commerce\\Domain\\Model\\Category',
                 $this->gpVars['catUid'],
                 $this->getFrontendController()->sys_language_uid
             );
-            $categoryObject->loadData();
+            $category->loadData();
 
-            $addGetvars = $this->separator.$this->prefixId.'[showUid]='.$productObject->getUid(
-                ).$this->separator.$this->prefixId.'[catUid]='.$categoryObject->getUid();
+            $addGetvars = $this->separator . $this->prefixId . '[showUid]=' . $product->getUid() .
+                $this->separator . $this->prefixId . '[catUid]=' . $category->getUid();
             if (is_string($this->gpVars['basketHashValue'])) {
-                $addGetvars .= $this->separator.$this->prefixId.'[basketHashValue]='.$this->gpVars['basketHashValue'];
+                $addGetvars .= $this->separator . $this->prefixId . '[basketHashValue]=' .
+                    $this->gpVars['basketHashValue'];
             }
-            $cHash = $this->generateChash($addGetvars.$this->getFrontendController()->linkVars);
+            $cHash = $this->generateChash($addGetvars . $this->getFrontendController()->linkVars);
 
             /*
              * Currentyl no Navtitle in tx_commerce_products
              * 'nav_title' => $ProductObject->get_navtitle(),
              */
-            if ($productObject->getUid() == $this->gpVars['showUid']) {
+            if ($product->getUid() == $this->gpVars['showUid']) {
                 $itemState = 'CUR';
                 $itemStateList = 'CUR,NO';
             } else {
@@ -1259,12 +1365,12 @@ class Navigation
             }
 
             $returnArray[] = array(
-                'title' => $productObject->getTitle(),
                 'uid' => $this->pid,
-                '_ADD_GETVARS' => $addGetvars.$this->separator.'cHash='.$cHash,
+                '_ADD_GETVARS' => $addGetvars . $this->separator . 'cHash=' . $cHash,
                 'ITEM_STATE' => $itemState,
                 'ITEM_STATES_LIST' => $itemStateList,
-                '_PAGES_OVERLAY' => $productObject->getTitle(),
+                'title' => $product->getTitle(),
+                '_PAGES_OVERLAY' => $product->getTitle(),
             );
         }
 
@@ -1275,8 +1381,8 @@ class Navigation
      * Returns an array of array for the TS rootline
      * Recursive Call to build rootline.
      *
-     * @param int   $categoryUid Category uid
-     * @param array $result      Result
+     * @param int $categoryUid Category uid
+     * @param array $result Result
      *
      * @return array
      */
@@ -1286,42 +1392,43 @@ class Navigation
             /**
              * Category.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Category
+             * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
-            $categoryObject = GeneralUtility::makeInstance(
+            $category = GeneralUtility::makeInstance(
                 'CommerceTeam\\Commerce\\Domain\\Model\\Category',
                 $categoryUid,
                 $this->getFrontendController()->sys_language_uid
             );
-            $categoryObject->loadData();
+            $category->loadData();
 
-            if (is_object($parentCategory = $categoryObject->getParentCategory())) {
+            if (is_object($parentCategory = $category->getParentCategory())) {
                 if ($parentCategory->getUid() != $this->category->getUid()) {
                     $result = $this->getCategoryRootlineforTypoScript($parentCategory->getUid(), $result);
                 }
             }
 
-            $additionalParams = $this->separator.$this->prefixId.'[showUid]='.
-                $this->separator.$this->prefixId.'[catUid]='.$categoryObject->getUid();
+            $additionalParams = $this->separator . $this->prefixId . '[showUid]=' .
+                $this->separator . $this->prefixId . '[catUid]=' . $category->getUid();
 
             if (is_string($this->gpVars['basketHashValue'])) {
-                $additionalParams .= $this->separator.$this->prefixId.'[basketHashValue]='.$this->gpVars['basketHashValue'];
+                $additionalParams .= $this->separator . $this->prefixId . '[basketHashValue]=' .
+                    $this->gpVars['basketHashValue'];
             }
-            $cHash = $this->generateChash($additionalParams.$this->getFrontendController()->linkVars);
+            $cHash = $this->generateChash($additionalParams . $this->getFrontendController()->linkVars);
 
             if ($this->mConf['showProducts'] == 1 && $this->gpVars['showUid'] > 0) {
                 $itemState = 'NO';
             } else {
-                $itemState = ($categoryObject->getUid() === $categoryUid ? 'CUR' : 'NO');
+                $itemState = ($category->getUid() === $categoryUid ? 'CUR' : 'NO');
             }
 
             $result[] = array(
-                'title' => $categoryObject->getTitle(),
-                'nav_title' => $categoryObject->getNavtitle(),
                 'uid' => $this->pid,
                 '_ADD_GETVARS' => $additionalParams.$this->separator.'cHash='.$cHash,
                 'ITEM_STATE' => $itemState,
-                '_PAGES_OVERLAY' => $categoryObject->getTitle(),
+                'title' => $category->getTitle(),
+                'nav_title' => $category->getNavtitle(),
+                '_PAGES_OVERLAY' => $category->getTitle(),
             );
         }
 
@@ -1335,18 +1442,21 @@ class Navigation
      * Usage: 2.
      *
      * @param string $hash Hash string 32 bit (eg. a md5 hash of a serialized
-     *                     array identifying the data being stored)
+     *      array identifying the data being stored)
      * @param string $data The data string. If you want to store an array,
-     *                     then just serialize it first.
+     *      then just serialize it first.
+     *
+     * @return void
      */
     public function storeHash($hash, $data)
     {
         /**
          * Navigation cache frontend.
          *
-         * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend
+         * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend $navigationCache
          */
-        $navigationCache = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')->getCache('commerce_navigation');
+        $navigationCache = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')
+            ->getCache('commerce_navigation');
         $navigationCache->set($hash, $data);
     }
 
@@ -1364,9 +1474,10 @@ class Navigation
         /**
          * Navigation cache frontend.
          *
-         * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend
+         * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend $navigationCache
          */
-        $navigationCache = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')->getCache('commerce_navigation');
+        $navigationCache = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')
+            ->getCache('commerce_navigation');
 
         return $navigationCache->get($hash);
     }
@@ -1376,6 +1487,8 @@ class Navigation
      *
      * @param array $arr1 Array one
      * @param array $arr2 Array two
+     *
+     * @return void
      */
     public function arrayMerge(array &$arr1, array &$arr2)
     {
@@ -1390,9 +1503,9 @@ class Navigation
      * Generates the Rootline of a category to have the right parent elements
      * if a category has more than one parentes.
      *
-     * @param array $tree       Menuetree
-     * @param int   $choosencat The actual category
-     * @param int   $expand     If the menue has to be expanded
+     * @param array $tree Menuetree
+     * @param int $choosencat The actual category
+     * @param int $expand If the menue has to be expanded
      *
      * @return array Rootline as Array
      */
@@ -1437,19 +1550,27 @@ class Navigation
     /**
      * Adds the manufacturer to the category, as simulated category.
      *
-     * @param int    $pid          Page PID for the level
-     * @param int    $uidPage      UidPage for the level
-     * @param string $tableMm      Relation Table
+     * @param int $pid Page PID for the level
+     * @param int $uidPage UidPage for the level
+     * @param string $tableMm Relation Table
      * @param string $tableSubMain Sub table
-     * @param string $tableSubMm   Sub Table Relationship
-     * @param int    $categoryUid  Category ID
-     * @param int    $mDepth       Menu Depth
-     * @param string $path         Path for fast resolving
+     * @param string $tableSubMm Sub Table Relationship
+     * @param int $categoryUid Category ID
+     * @param int $mDepth Menu Depth
+     * @param string $path Path for fast resolving
      *
      * @return array|bool
      */
-    public function getManufacturerAsCategory($pid, $uidPage, $tableMm, $tableSubMain, $tableSubMm, $categoryUid, $mDepth, $path)
-    {
+    public function getManufacturerAsCategory(
+        $pid,
+        $uidPage,
+        $tableMm,
+        $tableSubMain,
+        $tableSubMm,
+        $categoryUid,
+        $mDepth,
+        $path
+    ) {
         /**
          * Category repository.
          *
@@ -1474,21 +1595,25 @@ class Navigation
         foreach ($products as $productRow) {
             if ($productRow['manufacturer_uid'] != '0') {
                 // @todo not a realy good solution
-                $path = $this->manufacturerIdentifier.$productRow['manufacturer_uid'].','.$firstPath;
+                $path = $this->manufacturerIdentifier . $productRow['manufacturer_uid'] . ',' . $firstPath;
 
                 /**
                  * Product.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Product
+                 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
                  */
-                $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $productRow['uid']);
+                $product = GeneralUtility::makeInstance(
+                    'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                    $productRow['uid']
+                );
                 $product->loadData();
 
                 $manufacturerTitle = htmlspecialchars(strip_tags($product->getManufacturerTitle()));
-                $addGet = $this->separator.$this->prefixId.'[catUid]='.$categoryUid.$this->separator.$this->prefixId.
-                    '[manufacturer]='.$productRow['manufacturer_uid'].'';
-                $cHash = $this->generateChash($addGet.$this->getFrontendController()->linkVars);
-                $addGet .= $this->separator.'cHash='.$cHash;
+                $addGet = $this->separator . $this->prefixId . '[catUid]=' . $categoryUid .
+                    $this->separator . $this->prefixId . '[manufacturer]=' . $productRow['manufacturer_uid'];
+                $cHash = $this->generateChash($addGet . $this->getFrontendController()->linkVars);
+                $addGet .= $this->separator . 'cHash=' . $cHash;
+
                 $aLevel = array(
                     'pid' => $pid,
                     'uid' => $uidPage,
@@ -1508,16 +1633,22 @@ class Navigation
                 );
 
                 if ($this->gpVars['manufacturer']) {
-                    $this->choosenCat = $this->manufacturerIdentifier.$this->gpVars['manufacturer'];
+                    $this->choosenCat = $this->manufacturerIdentifier . $this->gpVars['manufacturer'];
                 }
 
                 if ($aLevel['hasSubChild'] == 1 && $this->mConf['showProducts'] == 1) {
                     $aLevel['--subLevel--'] = $this->makeSubChildArrayPostRender(
-                        $uidPage, $tableSubMain, $tableSubMm, $categoryUid, $mDepth + 1, $path, $productRow['manufacturer_uid']
+                        $uidPage,
+                        $tableSubMain,
+                        $tableSubMm,
+                        $categoryUid,
+                        $mDepth + 1,
+                        $path,
+                        $productRow['manufacturer_uid']
                     );
                 }
 
-                if ($this->expandAll > 0 || ($this->expandAll < 0 && (-$this->expandAll >= $mDepth))) {
+                if ($this->expandAll > 0 || ($this->expandAll < 0 && -$this->expandAll >= $mDepth)) {
                     $aLevel['_SUB_MENU'] = $aLevel['--subLevel--'];
                 }
 
@@ -1531,8 +1662,10 @@ class Navigation
     /**
      * Sorts all items of the array menu.
      *
-     * @param array  $treeArray Tree
-     * @param string $sortType  Sort type
+     * @param array $treeArray Tree
+     * @param string $sortType Sort type
+     *
+     * @return void
      */
     public function sortAllMenuArray(array &$treeArray, $sortType = 'alphabetiDesc')
     {
@@ -1549,8 +1682,8 @@ class Navigation
     /**
      * Sorts a list of menu items.
      *
-     * @param array  $listNodes Node list
-     * @param string $sortType  Sorting type
+     * @param array $listNodes Node list
+     * @param string $sortType Sorting type
      *
      * @return bool
      * @todo: implement sortType: alphabetiAsc, byUid, bySorting
@@ -1559,7 +1692,8 @@ class Navigation
     {
         if ($sortType == 'alphabetiDesc') {
             return uasort(
-                $listNodes, function ($a, $b) {
+                $listNodes,
+                function ($a, $b) {
                     return strcmp(strtoupper($a['title']), strtoupper($b['title']));
                 }
             );
@@ -1580,7 +1714,7 @@ class Navigation
         /**
          * Cache hash calculator.
          *
-         * @var \TYPO3\CMS\Frontend\Page\CacheHashCalculator
+         * @var \TYPO3\CMS\Frontend\Page\CacheHashCalculator $cacheHashCalculator
          */
         $cacheHashCalculator = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
 
@@ -1602,6 +1736,7 @@ class Navigation
 
         return $this->repositoryStack[$repositoryName];
     }
+
 
     /**
      * Get database connection.

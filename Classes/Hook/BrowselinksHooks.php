@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Hook;
 
 /*
@@ -57,8 +56,10 @@ class BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserH
     /**
      * Initialisation (additionalParameters is an empty array).
      *
-     * @param \tx_rtehtmlarea_browse_links $parentObject         Parent object
-     * @param array                        $additionalParameters Parameter
+     * @param \tx_rtehtmlarea_browse_links $parentObject Parent object
+     * @param array $additionalParameters Parameter
+     *
+     * @return void
      */
     public function init($parentObject, $additionalParameters)
     {
@@ -70,41 +71,51 @@ class BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserH
         // add js
         // has to be added as script tags to the body since parentObject
         // is not passed by reference first we go from html path to typo3 path
-        $linkToTreeJs = '/'.TYPO3_mainDir.'js/tree.js';
+        $linkToTreeJs = '/' . TYPO3_mainDir . 'js/tree.js';
 
-        $this->script = '<script src="'.$linkToTreeJs.'" type="text/javascript"></script>';
+        $this->script = '<script src="' . $linkToTreeJs . '" type="text/javascript"></script>';
         $this->script .= GeneralUtility::wrapJS('
-			Tree.ajaxID = "CommerceTeam\\Commerce\\Hook\\BrowselinksHooks::ajaxExpandCollapse";
-		');
+            Tree.ajaxID = "CommerceTeam\\Commerce\\Hook\\BrowselinksHooks::ajaxExpandCollapse";
+        ');
 
         if ($parentObject->RTEtsConfigParams) {
             $this->script .= GeneralUtility::wrapJS('
-				/**
-				 * needed because link_folder contains the side domain lately
-				 */
-				function link_commerce(theLink) {
-					if (document.ltargetform.anchor_title) browse_links_setTitle(document.ltargetform.anchor_title.value);
-					if (document.ltargetform.anchor_class) browse_links_setClass(document.ltargetform.anchor_class.value);
-					if (document.ltargetform.ltarget) browse_links_setTarget(document.ltargetform.ltarget.value);
-					if (document.ltargetform.lrel) browse_links_setAdditionalValue("rel", document.ltargetform.lrel.value);
-					browse_links_setAdditionalValue("data-htmlarea-external", "");
-					plugin.createLink(theLink, cur_target, cur_class, cur_title, additionalValues);
-					return false;
-				}
-			');
+                /**
+                 * needed because link_folder contains the side domain lately
+                 */
+                function link_commerce(theLink) {
+                    if (document.ltargetform.anchor_title) {
+                        browse_links_setTitle(document.ltargetform.anchor_title.value);
+                    }
+                    if (document.ltargetform.anchor_class) {
+                        browse_links_setClass(document.ltargetform.anchor_class.value);
+                    }
+                    if (document.ltargetform.ltarget) {
+                        browse_links_setTarget(document.ltargetform.ltarget.value);
+                    }
+                    if (document.ltargetform.lrel) {
+                        browse_links_setAdditionalValue("rel", document.ltargetform.lrel.value);
+                    }
+                    browse_links_setAdditionalValue("data-htmlarea-external", "");
+                    plugin.createLink(theLink, cur_target, cur_class, cur_title, additionalValues);
+                    return false;
+                }
+            ');
         } else {
             $this->script .= GeneralUtility::wrapJS('
-				function link_commerce(theLink) {
-					updateValueInMainForm(theLink);
-					close();
-					return false;
-				}
-			');
+                function link_commerce(theLink) {
+                    updateValueInMainForm(theLink);
+                    close();
+                    return false;
+                }
+            ');
         }
     }
 
     /**
      * Initialize tree.
+     *
+     * @return void
      */
     protected function initTree()
     {
@@ -140,9 +151,9 @@ class BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserH
             'isActive' => $this->pObj->act == $this->tabKey,
             'label' => 'Commerce',
             'url' => '#',
-            'addParams' => 'onclick="jumpToUrl(\'?act='.$this->tabKey.'&editorNo='.$this->pObj->editorNo.
-                '&contentTypo3Language='.$this->pObj->contentTypo3Language.'&contentTypo3Charset='.
-                $this->pObj->contentTypo3Charset.'\');return false;"',
+            'addParams' => 'onclick="jumpToUrl(\'?act=' . $this->tabKey . '&editorNo=' . $this->pObj->editorNo.
+                '&contentTypo3Language=' . $this->pObj->contentTypo3Language . '&contentTypo3Charset=' .
+                $this->pObj->contentTypo3Charset . '\');return false;"',
         );
 
         return $menuDefinition;
@@ -205,22 +216,25 @@ class BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserH
             $content = $this->script;
 
             $content .= '
-			<table border="0" cellpadding="0" cellspacing="0" id="typo3-linkPages">
-				<tr>
-					<td class="c-wCell" valign="top">
-			';
+            <table border="0" cellpadding="0" cellspacing="0" id="typo3-linkPages">
+                <tr>
+                    <td class="c-wCell" valign="top">
+            ';
 
             if ($this->isRichTextEditor()) {
                 $content .= $this->pObj->addAttributesForm();
             }
 
+            $label = $this->getLanguageService()->sL(
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_browselink.category_tree'
+            );
             $content .= '
-						<h3>Category Tree:</h3>
-						'.$tree.'
-					</td>
-				</tr>
-			</table>
-			';
+                        <h3>' . $label . ':</h3>
+                        ' . $tree . '
+                    </td>
+                </tr>
+            </table>
+            ';
         }
 
         return $content;
@@ -229,9 +243,9 @@ class BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserH
     /**
      * Parse current url for commerce fragments.
      *
-     * @param string $href    Link
+     * @param string $href Link
      * @param string $siteUrl Site url
-     * @param array  $info    Information
+     * @param array $info Information
      *
      * @return array
      */
@@ -288,8 +302,10 @@ class BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserH
      * Makes the AJAX call to expand or collapse the categorytree.
      * Called by typo3/ajax.php.
      *
-     * @param array                                   $params  Additional parameters (not used here)
+     * @param array $params Additional parameters (not used here)
      * @param \TYPO3\CMS\Core\Http\AjaxRequestHandler $ajaxObj Ajax object
+     *
+     * @return void
      */
     public function ajaxExpandCollapse(array $params, \TYPO3\CMS\Core\Http\AjaxRequestHandler &$ajaxObj)
     {
@@ -305,5 +321,16 @@ class BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserH
         $tree = $this->treeObj->getBrowseableAjaxTree($parameter);
 
         $ajaxObj->addContent('tree', $tree);
+    }
+
+
+    /**
+     * Get language service
+     *
+     * @return \TYPO3\CMS\Lang\LanguageService
+     */
+    protected function getLanguageService()
+    {
+        $GLOBALS['LANG'];
     }
 }

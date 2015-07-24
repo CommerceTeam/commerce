@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Repository;
 
 /*
@@ -14,6 +13,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -78,7 +78,10 @@ class ProductRepository extends Repository
         $return = false;
         if ($uid) {
             $localOrderField = $this->orderField;
-            $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook('Domain/Repository/ProductRepository', 'getArticles');
+            $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook(
+                'Domain/Repository/ProductRepository',
+                'getArticles'
+            );
             if (is_object($hookObject) && method_exists($hookObject, 'articleOrder')) {
                 $localOrderField = $hookObject->articleOrder($this->orderField);
             }
@@ -97,18 +100,20 @@ class ProductRepository extends Repository
             $result = $database->exec_SELECTquery(
                 'uid',
                 'tx_commerce_articles',
-                $where.' '.$additionalWhere,
+                $where . ' ' . $additionalWhere,
                 '',
                 $localOrderField
             );
-            if ($database->sql_num_rows($result) > 0) {
+            if ($database->sql_num_rows($result)) {
                 while (($data = $database->sql_fetch_assoc($result))) {
                     $articleUids[] = $data['uid'];
                 }
                 $database->sql_free_result($result);
                 $return = $articleUids;
             } else {
-                $this->error('exec_SELECTquery("uid", "tx_commerce_articles", "uid_product = '.$uid.'"); returns no Result');
+                $this->error(
+                    'exec_SELECTquery("uid", "tx_commerce_articles", "uid_product = ' . $uid . '"); returns no Result'
+                );
             }
         }
 
@@ -119,7 +124,7 @@ class ProductRepository extends Repository
      * Gets all attributes form database related to this product
      * where corelation type = 4.
      *
-     * @param int       $uid              Product uid
+     * @param int $uid Product uid
      * @param array|int $correlationtypes Correlation types
      *
      * @return array of Article UID
@@ -135,12 +140,14 @@ class ProductRepository extends Repository
             $database = $this->getDatabaseConnection();
             $articleUids = array();
             $result = $database->exec_SELECTquery(
-                'distinct(uid_foreign) as uid', $this->databaseAttributeRelationTable,
-                'uid_local = '.(int) $uid.' and uid_correlationtype in ('.implode(',', $correlationtypes).')',
-                '', $this->databaseAttributeRelationTable.'.sorting'
+                'DISTINCT(uid_foreign) AS uid',
+                $this->databaseAttributeRelationTable,
+                'uid_local = ' . (int) $uid . ' AND uid_correlationtype IN (' . implode(',', $correlationtypes) . ')',
+                '',
+                $this->databaseAttributeRelationTable . '.sorting'
             );
 
-            if ($database->sql_num_rows($result) > 0) {
+            if ($database->sql_num_rows($result)) {
                 while (($data = $database->sql_fetch_assoc($result))) {
                     $articleUids[] = (int) $data['uid'];
                 }
@@ -148,8 +155,8 @@ class ProductRepository extends Repository
                 $return = $articleUids;
             } else {
                 $this->error(
-                    'exec_SELECTquery(\'distinct(uid_foreign)\', '.$this->databaseAttributeRelationTable.
-                    ', \'uid_local = '.(int) $uid.'\'); returns no Result'
+                    'exec_SELECTquery(\'DISTINCT(uid_foreign)\', ' . $this->databaseAttributeRelationTable .
+                    ', \'uid_local = ' . (int) $uid . '\'); returns no Result'
                 );
             }
         }
@@ -166,9 +173,10 @@ class ProductRepository extends Repository
      */
     public function getRelatedProductUids($uid)
     {
-        return $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'r.uid_foreign as uid', $this->databaseProductsRelatedTable.' AS r',
-            'r.uid_local = '.(int) $uid,
+        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            'r.uid_foreign as uid',
+            $this->databaseProductsRelatedTable . ' AS r',
+            'r.uid_local = ' . (int) $uid,
             '',
             'r.sorting ASC',
             '',
@@ -192,10 +200,10 @@ class ProductRepository extends Repository
 
         $this->uid = $uid;
 
-        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            't1.title, t1.uid, t2.flag, t2.uid as sys_language',
-            $this->databaseTable.' AS t1 LEFT JOIN sys_language AS t2 ON t1.sys_language_uid = t2.uid',
-            'l18n_parent = '.(int) $uid.' AND deleted = 0'
+        $rows = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            't1.title, t1.uid, t2.flag, t2.uid AS sys_language',
+            $this->databaseTable . ' AS t1 LEFT JOIN sys_language AS t2 ON t1.sys_language_uid = t2.uid',
+            'l18n_parent = ' . (int) $uid . ' AND deleted = 0'
         );
 
         return $rows;
@@ -230,10 +238,11 @@ class ProductRepository extends Repository
 
         $uids = array();
 
-            // read from sql
+        // read from sql
         $rows = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid_foreign', $this->databaseCategoryRelationTable,
-            'uid_local = '.(int) $uid,
+            'uid_foreign',
+            $this->databaseCategoryRelationTable,
+            'uid_local = ' . (int) $uid,
             '',
             'sorting ASC'
         );
@@ -243,12 +252,12 @@ class ProductRepository extends Repository
 
         // If $uids is empty, the record might be a localized product
         if (empty($uids)) {
-            $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            $row = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
                 'l18n_parent',
                 $this->databaseTable,
-                'uid = '.$uid
+                'uid = ' . $uid
             );
-            if (is_array($row) && isset($row['l18n_parent']) && (int) $row['l18n_parent'] > 0) {
+            if (!empty($row)) {
                 $uids = $this->getParentCategories($row['l18n_parent']);
             }
         }
@@ -265,13 +274,13 @@ class ProductRepository extends Repository
      */
     public function getManufacturerTitle($manufacturer)
     {
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            '*',
+        $row = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'title',
             'tx_commerce_manufacturer',
-            'uid = '.(int) $manufacturer
+            'uid = ' . (int) $manufacturer
         );
 
-        return is_array($row) && isset($row['title']) ? $row['title'] : '';
+        return isset($row['title']) ? $row['title'] : '';
     }
 
     /**
@@ -286,7 +295,7 @@ class ProductRepository extends Repository
         return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             $this->databaseCategoryRelationTable,
-            'uid_foreign = '.(int) $foreignUid
+            'uid_foreign = ' . (int) $foreignUid
         );
     }
 
@@ -306,7 +315,7 @@ class ProductRepository extends Repository
         return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             'uid, manufacturer_uid',
             $this->databaseTable,
-            'uid IN ('.implode(',', $uids).')'.$this->enableFields($this->databaseTable)
+            'uid IN (' . implode(',', $uids) . ')' . $this->enableFields($this->databaseTable)
         );
     }
 
@@ -322,7 +331,7 @@ class ProductRepository extends Repository
         return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             $this->databaseTable,
-            'uid = '.(int) $uid.$this->enableFields($this->databaseTable)
+            'uid = ' . (int) $uid . $this->enableFields($this->databaseTable)
         );
     }
 }

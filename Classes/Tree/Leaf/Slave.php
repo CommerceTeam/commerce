@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree\Leaf;
 
 /*
@@ -56,6 +55,8 @@ class Slave extends Leaf
      * Sets the parent leaf of this leaf.
      *
      * @param \CommerceTeam\Commerce\Tree\Leaf\Leaf $parentLeaf Parent of this leaf
+     *
+     * @return void
      */
     public function setParentLeaf(\CommerceTeam\Commerce\Tree\Leaf\Leaf &$parentLeaf)
     {
@@ -63,7 +64,8 @@ class Slave extends Leaf
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'setParentLeaf (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY, 3
+                    COMMERCE_EXTKEY,
+                    3
                 );
             }
 
@@ -76,8 +78,10 @@ class Slave extends Leaf
      * Initializes the leaf
      * Passes the Parameters to its child leafs.
      *
-     * @param int   $index         Index of this leaf
+     * @param int $index Index of this leaf
      * @param array $parentIndices Array with parent indices
+     *
+     * @return void
      */
     public function init($index, array $parentIndices = array())
     {
@@ -85,7 +89,8 @@ class Slave extends Leaf
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'init (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY, 3
+                    COMMERCE_EXTKEY,
+                    3
                 );
             }
 
@@ -104,8 +109,8 @@ class Slave extends Leaf
      * Since this is a slave, this can only EVER be called by AJAX.
      *
      * @param int $startUid UID in which we start
-     * @param int $bank     Bank UID
-     * @param int $pid      UID of the parent item
+     * @param int $bank Bank UID
+     * @param int $pid UID of the parent item
      *
      * @return string HTML Code
      */
@@ -116,7 +121,8 @@ class Slave extends Leaf
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'printChildleafsByLoop (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY, 3
+                    COMMERCE_EXTKEY,
+                    3
                 );
             }
 
@@ -141,8 +147,10 @@ class Slave extends Leaf
         if (null == $child) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'printChildleafsByLoop (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) cannot find the starting category by its uid.',
-                    COMMERCE_EXTKEY, 3
+                    'printChildleafsByLoop (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave)
+                        cannot find the starting category by its uid.',
+                    COMMERCE_EXTKEY,
+                    3
                 );
             }
 
@@ -160,11 +168,11 @@ class Slave extends Leaf
         $isLast = $this->isLast($child, $pid);
         $cssLast = ($isLast) ? ' last' : '';
 
-        $cssClass = $cssExpanded.' '.$cssLast;
+        $cssClass = $cssExpanded . ' ' . $cssLast;
 
         // start the element
-        $out .= '<li class="'.$cssClass.'">
-					<div>';
+        $out .= '<li class="' . $cssClass . '">
+            <div>';
 
         // a slave can never be a bank
         $isBank = false;
@@ -176,8 +184,7 @@ class Slave extends Leaf
         // icon
         $out .= $this->view->getIcon($child);
 
-        if (
-            strpos(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI'), '/navigation.php') === false
+        if (strpos(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI'), '/navigation.php') === false
             && strpos(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_REFERER'), '/navigation.php') === false
         ) {
             $this->view->substituteRealValues();
@@ -197,7 +204,7 @@ class Slave extends Leaf
                 /**
                  * Slave.
                  *
-                 * @var \CommerceTeam\Commerce\Tree\Leaf\Slave
+                 * @var \CommerceTeam\Commerce\Tree\Leaf\Slave $leaf
                  */
                 $leaf = &$this->leafs[$i];
                 $out .= $leaf->printChildleafsByParent($child['uid'], $bank);
@@ -214,7 +221,7 @@ class Slave extends Leaf
     /**
      * Prints all leafs by the parent item.
      *
-     * @param int $pid  UID of the parent item
+     * @param int $pid UID of the parent item
      * @param int $bank Bank UID
      *
      * @return string HTML Code
@@ -225,8 +232,10 @@ class Slave extends Leaf
         if (!is_numeric($pid) || !is_numeric($bank)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'printChildleafsByParent (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY, 3
+                    'printChildleafsByParent (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave)
+                        gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
                 );
             }
 
@@ -235,12 +244,12 @@ class Slave extends Leaf
 
         $out = '';
 
-            // get the children
+        // get the children
         $children = $this->data->getChildrenByPid($pid);
 
         $l = count($children);
 
-            // Process the child and children
+        // Process the child and children
         for ($i = 0; $i < $l; ++$i) {
             $child = $children[$i];
 
@@ -248,11 +257,12 @@ class Slave extends Leaf
             $out .= $this->printChildleafsByLoop($child['uid'], $bank, $pid);
         }
 
-            // DLOG
+        // DLOG
         if (TYPO3_DLOG) {
             \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                 'printChildleafsByParent (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) did '.$l.' loops!',
-                COMMERCE_EXTKEY, 1
+                COMMERCE_EXTKEY,
+                1
             );
         }
 

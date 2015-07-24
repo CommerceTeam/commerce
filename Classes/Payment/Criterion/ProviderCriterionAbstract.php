@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Payment\Criterion;
 
 /*
@@ -24,29 +23,28 @@ use CommerceTeam\Commerce\Payment\Provider\ProviderInterface;
  *
  * @author 2009-2011 Volker Graubaum <vg@e-netconsulting.de>
  */
-abstract class ProviderCriterionAbstract
-        implements \CommerceTeam\Commerce\Payment\Provider\ProviderCriterionInterface
+abstract class ProviderCriterionAbstract implements \CommerceTeam\Commerce\Payment\Provider\ProviderCriterionInterface
 {
     /**
      * Parent commerce pibase object.
      *
      * @var \CommerceTeam\Commerce\Controller\BaseController
      */
-    protected $pibaseObject = null;
+    protected $pibaseObject;
 
     /**
      * Payment object.
      *
      * @var \CommerceTeam\Commerce\Payment\PaymentInterface
      */
-    protected $paymentObject = null;
+    protected $paymentObject;
 
     /**
      * Provider object.
      *
-     * @var ProviderInterface
+     * @var \CommerceTeam\Commerce\Payment\Provider\ProviderInterface
      */
-    protected $providerObject = null;
+    protected $providerObject;
 
     /**
      * Options of this criterion.

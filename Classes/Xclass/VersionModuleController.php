@@ -82,7 +82,7 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
                 /**
                  * Product.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Product
+                 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
                  */
                 $product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'CommerceTeam\\Commerce\\Domain\\Model\\Product',

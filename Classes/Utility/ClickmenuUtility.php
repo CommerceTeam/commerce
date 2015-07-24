@@ -353,7 +353,7 @@ class ClickmenuUtility extends ClickMenu
             /**
              * Category.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Category
+             * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
             $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $clipRecord['uid']);
             $category->loadData();
@@ -362,7 +362,7 @@ class ClickmenuUtility extends ClickMenu
             /**
              * Child category.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Category
+             * @var \CommerceTeam\Commerce\Domain\Model\Category $childCategory
              */
             foreach ($childCategories as $childCategory) {
                 if ($uid == $childCategory->getUid()) {
@@ -384,19 +384,22 @@ class ClickmenuUtility extends ClickMenu
         /**
          * Category mounts.
          *
-         * @var \CommerceTeam\Commerce\Tree\CategoryMounts
+         * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
          */
-        $mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-        $mounts->init($backendUser->user['uid']);
-        $rights['DBmount'] = (in_array($uid, $mounts->getMountData()));
+        $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mount->init($backendUser->user['uid']);
+        $rights['DBmount'] = (in_array($uid, $mount->getMountData()));
 
         // if the category has no parent categories treat as root
         /**
          * Category.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\Category
+         * @var \CommerceTeam\Commerce\Domain\Model\Category $category
          */
-        $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $categoryToCheckRightsOn);
+        $category = GeneralUtility::makeInstance(
+            'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+            $categoryToCheckRightsOn
+        );
         if ($categoryToCheckRightsOn) {
             $rights['DBmount'] = !empty($category->getParentCategories()) ? $rights['DBmount'] : true;
         } else {
@@ -432,7 +435,7 @@ class ClickmenuUtility extends ClickMenu
         /**
          * Product.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\Product
+         * @var \CommerceTeam\Commerce\Domain\Model\Product $product
          */
         $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uid);
 
@@ -487,7 +490,7 @@ class ClickmenuUtility extends ClickMenu
         /**
          * Article.
          *
-         * @var \CommerceTeam\Commerce\Domain\Model\Article
+         * @var \CommerceTeam\Commerce\Domain\Model\Article $article
          */
         $article = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $uid);
 

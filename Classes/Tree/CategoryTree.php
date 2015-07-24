@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree;
 
 /*
@@ -15,6 +14,7 @@ namespace CommerceTeam\Commerce\Tree;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -71,17 +71,18 @@ class CategoryTree extends Browsetree
 
     /**
      * Initializes the Categorytree.
+     *
+     * @return void
      */
     public function init()
     {
-        // Call parent constructor
         parent::init();
 
         // Create the category leaf
         /**
          * Category leaf.
          *
-         * @var \CommerceTeam\Commerce\Tree\Leaf\Category
+         * @var \CommerceTeam\Commerce\Tree\Leaf\Category $categoryLeaf
          */
         $categoryLeaf = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Category');
 
@@ -90,15 +91,15 @@ class CategoryTree extends Browsetree
         /**
          * Category data.
          *
-         * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryData
+         * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryData $categorydata
          */
         $categorydata = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryData');
-        $categorydata->setPermsMask(\CommerceTeam\Commerce\Utility\BackendUtility::getPermMask($this->minCategoryPerms));
+        $categorydata->setPermsMask(BackendUtility::getPermMask($this->minCategoryPerms));
 
         /**
          * Category view.
          *
-         * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryView
+         * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryView $categoryview
          */
         $categoryview = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryView');
         // disable the root onclick if the perms are set to editcontent
@@ -126,29 +127,29 @@ class CategoryTree extends Browsetree
             /**
              * Product leaf.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\Product
+             * @var \CommerceTeam\Commerce\Tree\Leaf\Product $productleaf
              */
             $productleaf = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Product');
             /**
              * Article leaf.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\Article
+             * @var \CommerceTeam\Commerce\Tree\Leaf\Article $articleleaf
              */
             $articleleaf = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Article');
 
             /**
              * Product view.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\ProductView
+             * @var \CommerceTeam\Commerce\Tree\Leaf\ProductView $productview
              */
             $productview = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductView');
 
-                // Configure the noOnclick for the leaf
+            // Configure the noOnclick for the leaf
             if (GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Product')) {
                 $productview->noOnclick();
             }
 
-                // Configure real values
+            // Configure real values
             if ($this->realValues) {
                 $productview->substituteRealValues();
             }
@@ -156,11 +157,11 @@ class CategoryTree extends Browsetree
             /**
              * Article view.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\ArticleView
+             * @var \CommerceTeam\Commerce\Tree\Leaf\ArticleView $articleview
              */
             $articleview = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ArticleView');
 
-                // Configure the noOnclick for the leaf
+            // Configure the noOnclick for the leaf
             if (GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Article')) {
                 $articleview->noOnclick();
             }
@@ -173,14 +174,15 @@ class CategoryTree extends Browsetree
             /**
              * Product data.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\ProductData
+             * @var \CommerceTeam\Commerce\Tree\Leaf\ProductData $productData
              */
             $productData = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductData');
             $productleaf->initBasic($productview, $productData);
+
             /**
              * Article data.
              *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\ArticleData
+             * @var \CommerceTeam\Commerce\Tree\Leaf\ArticleData $articleData
              */
             $articleData = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ArticleData');
             $articleleaf->initBasic($articleview, $articleData);
@@ -199,7 +201,9 @@ class CategoryTree extends Browsetree
      * Must be called BEFORE calling init.
      *
      * @param string $perm String-Representation of the right.
-     *                     Can be 'show, new, delete, editcontent, cut, move, copy, edit'
+     *     Can be 'show, new, delete, editcontent, cut, move, copy, edit'
+     *
+     * @return void
      */
     public function setMinCategoryPerms($perm)
     {
@@ -213,7 +217,9 @@ class CategoryTree extends Browsetree
      * Sets the noclick list for the leafs.
      *
      * @param string $noClickList Comma-separated list
-     *                            of leafs to disallow clicks
+     *     of leafs to disallow clicks
+     *
+     * @return void
      */
     public function disallowClick($noClickList = '')
     {
@@ -224,6 +230,8 @@ class CategoryTree extends Browsetree
      * Sets the tree's Bare Mode - bare means only category leaf is added.
      *
      * @param bool $bare Flag
+     *
+     * @return void
      */
     public function setBare($bare = true)
     {
@@ -239,7 +247,9 @@ class CategoryTree extends Browsetree
     /**
      * Sets if we are running in simple mode.
      *
-     * @param int $simpleMode SimpleMode?
+     * @param int $simpleMode SimpleMode
+     *
+     * @return void
      */
     public function setSimpleMode($simpleMode = 1)
     {
@@ -248,7 +258,9 @@ class CategoryTree extends Browsetree
 
     /**
      * Will set the real values to the views
-     * for products and articles, instead of "edit".
+     * for products and articles, instead of edit.
+     *
+     * @return void
      */
     public function substituteRealValues()
     {
@@ -268,7 +280,11 @@ class CategoryTree extends Browsetree
         // test parameters
         if (!is_numeric($uid)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('getCategory (categorytree) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog(
+                    'getCategory (categorytree) gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
             }
 
             return array();
@@ -276,7 +292,7 @@ class CategoryTree extends Browsetree
 
         $categoryLeaf = $this->getLeaf(0);
 
-            // check if there is a category leaf
+        // check if there is a category leaf
         if (is_null($categoryLeaf)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog('getCategory (categorytree) cannot find the category leaf.', COMMERCE_EXTKEY, 3);
@@ -285,7 +301,7 @@ class CategoryTree extends Browsetree
             return array();
         }
 
-            // return the record
+        // return the record
         return $categoryLeaf->data->getChildByUid($uid);
     }
 }

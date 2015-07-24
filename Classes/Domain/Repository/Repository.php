@@ -112,7 +112,7 @@ class Repository
         $result = $database->exec_SELECTquery(
             '*',
             $this->databaseTable,
-            'uid = '.$uid.$proofSql
+            'uid = ' . $uid . $proofSql
         );
 
         // Result should contain only one Dataset
@@ -191,7 +191,7 @@ class Repository
         $result = $database->exec_SELECTquery(
             'uid',
             $this->databaseTable,
-            'uid = '.(int) $uid
+            'uid = ' . (int) $uid
         );
 
         return $database->sql_num_rows($result) == 1;
@@ -278,7 +278,7 @@ class Repository
         );
 
         $attributeUidList = false;
-        if (($result) && ($database->sql_num_rows($result) > 0)) {
+        if ($database->sql_num_rows($result)) {
             $attributeUidList = array();
             while (($returnData = $database->sql_fetch_assoc($result))) {
                 $attributeUidList[] = (int) $returnData['uid'];

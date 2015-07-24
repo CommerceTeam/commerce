@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Utility;
 
 /*
@@ -43,7 +42,7 @@ class UpdateUtility
         if ($this->isCategoryWithoutParentMm()) {
             $createdRelations = $this->createParentMmRecords();
             if ($createdRelations > 0) {
-                $htmlCode[] = '<li>'.$createdRelations.
+                $htmlCode[] = '<li>' . $createdRelations .
                     ' updated mm-Relations for the Category Records. <b>Please Check you Category Tree!</b></li>';
             }
         }
@@ -51,7 +50,7 @@ class UpdateUtility
         if ($this->isCategoryWithoutUserrights()) {
             $createDefaultRights = $this->createDefaultRights();
             if ($createDefaultRights > 0) {
-                $htmlCode[] = '<li>'.$createDefaultRights.
+                $htmlCode[] = '<li>' . $createDefaultRights .
                     ' updated User-rights on categories. Set to rights on the commerce products folder</li>';
             }
         }
@@ -66,17 +65,19 @@ class UpdateUtility
         if ($this->isGreytreeFolder()) {
             $updatedFolders = $this->updateFolders();
             if ($updatedFolders) {
-                $htmlCode[] = '<li>'.$updatedFolders.' updated commerce foldernames that were graytree foldernames before</li>';
+                $htmlCode[] = '<li>' . $updatedFolders .
+                    ' updated commerce foldernames that were graytree foldernames before</li>';
             }
         }
 
         $htmlCode[] = '</ul>';
 
-        return implode(chr(10), $htmlCode);
+        return implode(LF, $htmlCode);
     }
 
     /**
-     * Creates the missing MM records for categories below the root (UID=0) element.
+     * Creates the missing MM records for
+     * categories below the root (UID=0) element.
      *
      * @return int Num Records Changed
      */
@@ -89,8 +90,8 @@ class UpdateUtility
             'uid',
             'tx_commerce_categories',
             'sys_language_uid = 0 AND l18n_parent = 0 AND uid NOT IN (
-				SELECT uid_local FROM tx_commerce_categories_parent_category_mm
-			) AND tx_commerce_categories.deleted = 0'
+                SELECT uid_local FROM tx_commerce_categories_parent_category_mm
+            ) AND tx_commerce_categories.deleted = 0'
         );
         while (($row = $database->sql_fetch_assoc($result))) {
             $data = array(
@@ -109,26 +110,36 @@ class UpdateUtility
 
     /**
      * Sets the default user rights, based on the
-     * <User-Rights in the commerce-products folder.
+     * User-Rights in the commerce-products folder.
      *
      * @return int
      */
     public function createDefaultRights()
     {
         $database = $this->getDatabaseConnection();
-        $countRecords = 0;
+        $countRecords = 1;
 
         /*
          * Get data from folder
          */
-        list($modPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Commerce', 'commerce', 0, '', false);
+        list($modPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders(
+            'Commerce',
+            'commerce',
+            0,
+            '',
+            false
+        );
         list($prodPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders(
-            'Products', 'commerce', $modPid, '', false
+            'Products',
+            'commerce',
+            $modPid,
+            '',
+            false
         );
         $resrights = $database->exec_SELECTquery(
             'perms_userid, perms_groupid, perms_user, perms_group, perms_everybody',
             'pages',
-            'uid = '.$prodPid
+            'uid = ' . $prodPid
         );
         $data = $database->sql_fetch_assoc($resrights);
 
@@ -138,15 +149,16 @@ class UpdateUtility
             'perms_user = 0 OR perms_group = 0 OR perms_everybody = 0'
         );
         while (($row = $database->sql_fetch_assoc($result))) {
-            $database->exec_UPDATEquery('tx_commerce_categories', 'uid = '.$row['uid'], $data);
+            $database->exec_UPDATEquery('tx_commerce_categories', 'uid = ' . $row['uid'], $data);
             ++$countRecords;
         }
 
-        return ++$countRecords;
+        return $countRecords;
     }
 
     /**
-     * Creates the missing MM records for categories below the root (UID=0) element.
+     * Creates the missing MM records for categories
+     * below the root (UID=0) element.
      *
      * @return int
      */
@@ -156,7 +168,7 @@ class UpdateUtility
         $database = $this->getDatabaseConnection();
 
         $result = $database->exec_SELECTquery('uid', 'be_users', 'username = \'_fe_commerce\'');
-        if ($result && $database->sql_num_rows($result) == 0) {
+        if (!$database->sql_num_rows($result)) {
             $data = array(
                 'pid' => 0,
                 'username' => '_fe_commerce',
@@ -181,8 +193,8 @@ class UpdateUtility
     }
 
     /**
-     * Update pages to set empty tx_commerce_foldername with tx_graytree_foldername
-     * if tx_graytree_foldername is not empty.
+     * Update pages to set empty tx_commerce_foldername with
+     * tx_graytree_foldername if tx_graytree_foldername is not empty.
      *
      * @return int
      */
@@ -242,8 +254,8 @@ class UpdateUtility
             'COUNT(uid) AS count',
             'tx_commerce_categories',
             'uid NOT IN (
-				SELECT uid_local FROM tx_commerce_categories_parent_category_mm
-			) AND tx_commerce_categories.deleted = 0 AND sys_language_uid = 0 AND l18n_parent = 0'
+                SELECT uid_local FROM tx_commerce_categories_parent_category_mm
+            ) AND tx_commerce_categories.deleted = 0 AND sys_language_uid = 0 AND l18n_parent = 0'
         );
 
         return $row['count'] > 0;
@@ -272,7 +284,11 @@ class UpdateUtility
      */
     protected function isBackendUserSet()
     {
-        return !empty($this->getDatabaseConnection()->exec_SELECTgetSingleRow('uid', 'be_users', 'username = \'_fe_commerce\''));
+        return !empty($this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'uid',
+            'be_users',
+            'username = \'_fe_commerce\''
+        ));
     }
 
     /**
@@ -290,6 +306,7 @@ class UpdateUtility
 
         return $row['count'] > 0;
     }
+
 
     /**
      * Get database connection.

@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Payment;
 
 /*
@@ -14,6 +13,8 @@ namespace CommerceTeam\Commerce\Payment;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Credit card payment implementation.
@@ -52,15 +53,15 @@ class Creditcard extends PaymentAbstract
      */
     public function needAdditionalData()
     {
-        $basePath = PATH_TXCOMMERCE.'Resources/Private/Language/locallang_creditcard.xml';
+        $basePath = PATH_TXCOMMERCE . 'Resources/Private/Language/locallang_creditcard.xml';
 
         foreach ($this->parentObject->LOCAL_LANG as $llKey => $_) {
-            $newLl = \TYPO3\CMS\Core\Utility\GeneralUtility::readLLfile($basePath, $llKey);
+            $newLl = GeneralUtility::readLLfile($basePath, $llKey);
             $this->LOCAL_LANG[$llKey] = $newLl[$llKey];
         }
 
         if ($this->parentObject->altLLkey) {
-            $tempLocalLang = \TYPO3\CMS\Core\Utility\GeneralUtility::readLLfile($basePath, $this->parentObject->altLLkey);
+            $tempLocalLang = GeneralUtility::readLLfile($basePath, $this->parentObject->altLLkey);
             $this->LOCAL_LANG = array_merge(is_array($this->LOCAL_LANG) ? $this->LOCAL_LANG : array(), $tempLocalLang);
         }
 
@@ -83,9 +84,9 @@ class Creditcard extends PaymentAbstract
         /**
          * Credit card validation service.
          *
-         * @var \CommerceTeam\Commerce\Payment\Ccvs
+         * @var \CommerceTeam\Commerce\Payment\Ccvs $ccvs
          */
-        $ccvs = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Payment\\Ccvs');
+        $ccvs = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Payment\\Ccvs');
         $result = $ccvs->validateCreditCard($formData['cc_number'], $formData['cc_checksum']);
         $this->errorMessages[] = $ccvs->CCVSError;
 
@@ -102,7 +103,7 @@ class Creditcard extends PaymentAbstract
                 $method = explode('_', $method);
                 switch (strtolower($method[0])) {
                     case 'email':
-                        if (!\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail($value)) {
+                        if (!GeneralUtility::validEmail($value)) {
                             $this->formError[$name] = $this->parentObject->pi_getLL('error_field_email');
                             $result = false;
                         }

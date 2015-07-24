@@ -525,7 +525,7 @@ class Article extends AbstractEntity
                     /**
                      * Article price.
                      *
-                     * @var \CommerceTeam\Commerce\Domain\Model\ArticlePrice
+                     * @var \CommerceTeam\Commerce\Domain\Model\ArticlePrice $price
                      */
                     $price = GeneralUtility::makeInstance(
                         'CommerceTeam\\Commerce\\Domain\\Model\\ArticlePrice',

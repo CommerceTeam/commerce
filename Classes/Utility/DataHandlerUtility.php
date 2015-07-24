@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Utility;
 
 /*
@@ -317,7 +316,7 @@ class DataHandlerUtility
                 /**
                  * Product.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Product
+                 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
                  */
                 $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uidClip);
                 $product->loadData();
@@ -325,8 +324,8 @@ class DataHandlerUtility
 
                 if (!empty($prods)) {
                     $str .= '<h1>' . $language->getLL('copy.head.l18n') . '</h1>
-						<h2>' . $language->getLL('copy.product') . ': ' . $product->getTitle() . '</h2>
-						<ul>';
+                        <h2>' . $language->getLL('copy.product') . ': ' . $product->getTitle() . '</h2>
+                        <ul>';
 
                     // walk the l18n and get the selector box
                     $l = count($prods);
@@ -352,12 +351,12 @@ class DataHandlerUtility
                     /**
                      * Product data.
                      *
-                     * @var \CommerceTeam\Commerce\Tree\Leaf\ProductData
+                     * @var \CommerceTeam\Commerce\Tree\Leaf\ProductData $productData
                      */
-                    $treedb = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductData');
-                    $treedb->init();
+                    $productData = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductData');
+                    $productData->init();
 
-                    $records = $treedb->getRecordsDbList($uidTarget);
+                    $records = $productData->getRecordsDbList($uidTarget);
                 }
                 $l = count($records['pid'][$uidTarget]);
 
@@ -412,7 +411,7 @@ class DataHandlerUtility
                 /**
                  * Category.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Category
+                 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
                 $category = GeneralUtility::makeInstance(
                     'CommerceTeam\\Commerce\\Domain\\Model\\Category',
@@ -449,12 +448,12 @@ class DataHandlerUtility
                 /**
                  * Category data.
                  *
-                 * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryData
+                 * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryData $categoryData
                  */
-                $treedb = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryData');
-                $treedb->init();
+                $categoryData = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryData');
+                $categoryData->init();
 
-                $records = $treedb->getRecordsDbList($uidTarget);
+                $records = $categoryData->getRecordsDbList($uidTarget);
 
                 $l = count($records['pid'][$uidTarget]);
 

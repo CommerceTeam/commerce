@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Repository;
 
 /*
@@ -14,6 +13,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -28,15 +28,19 @@ class FolderRepository
     /**
      * Find the extension folders or create one.
      *
-     * @param string $title                Folder Title as named in pages table
-     * @param string $module               Extension Moduke
-     * @param int    $pid                  Parent Page id
-     * @param string $parentTitle          Parent Folder Title
-     * @param bool   $executeUpdateUtility Execute update utility
+     * @param string $title Folder Title as named in pages table
+     * @param string $module Extension Moduke
+     * @param int $pid Parent Page id
+     * @param string $parentTitle Parent Folder Title
+     * @param bool $executeUpdateUtility Execute update utility
      *
      * @return array
      */
-    public static function initFolders($title = 'Commerce', $module = 'commerce', $pid = 0, $parentTitle = '',
+    public static function initFolders(
+        $title = 'Commerce',
+        $module = 'commerce',
+        $pid = 0,
+        $parentTitle = '',
         $executeUpdateUtility = true
     ) {
         // creates a Commerce folder on the fly
@@ -59,7 +63,7 @@ class FolderRepository
             /**
              * Update utility.
              *
-             * @var \CommerceTeam\Commerce\Utility\UpdateUtility
+             * @var \CommerceTeam\Commerce\Utility\UpdateUtility $updateUtility
              */
             $updateUtility = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\UpdateUtility');
             $updateUtility->main();
@@ -72,18 +76,18 @@ class FolderRepository
      * Find the extension folders.
      *
      * @param string $module Module
-     * @param int    $pid    Page id
-     * @param string $title  Title
+     * @param int $pid Page id
+     * @param string $title Title
      *
      * @return array rows of found extension folders
      */
     public static function getFolders($module = 'commerce', $pid = 0, $title = '')
     {
         $row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid,pid,title',
+            'uid, pid, title',
             'pages',
-            'doktype = 254 AND tx_commerce_foldername = \''.strtolower($title).'\' AND pid = '.(int) $pid.' AND module=\''.
-                $module.'\' '.\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('pages')
+            'doktype = 254 AND tx_commerce_foldername = \'' . strtolower($title) . '\' AND pid = ' . (int) $pid .
+            ' AND module=\'' . $module . '\' ' . \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('pages')
         );
 
         return isset($row['uid']) ? array($row['uid'] => $row) : array();
@@ -93,13 +97,13 @@ class FolderRepository
      * Create your database table folder
      * overwrite this if wanted.
      *
-     * @param string $title  Title
+     * @param string $title Title
      * @param string $module Module
-     * @param int    $pid    Page id
+     * @param int $pid Page id
      *
      * @return int
      *
-     * @todo title aus extkey ziehen
+     * @todo get title from extkey
      * @todo sorting
      */
     protected function createFolder($title = 'Commerce', $module = 'commerce', $pid = 0)
@@ -123,6 +127,7 @@ class FolderRepository
 
         return self::getDatabaseConnection()->sql_insert_id();
     }
+
 
     /**
      * Get database connection.

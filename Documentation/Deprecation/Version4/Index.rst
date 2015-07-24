@@ -204,7 +204,6 @@ Removed methods since 4.x
 	, get_selectattribute_matrix, getSelectAttributeMatrix
 	, get_Articles_by_Attribute, getArticlesByAttribute
 	, get_Articles_by_AttributeArray, getArticlesByAttributeArray
-	, compareBySorting, "Method got removed from the api"
 	, get_l18n_products, getL18nProducts
 	, getNumberOfArticles, getArticlesCount
 	, get_teaser, getTeaser

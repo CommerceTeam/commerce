@@ -1064,10 +1064,12 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             /**
              * Utility.
              *
-             * @var \CommerceTeam\Commerce\Utility\BackendUserUtility
+             * @var \CommerceTeam\Commerce\Utility\BackendUserUtility $utility
              */
             $utility = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUserUtility');
-            $localCalcPerms = $utility->calcPerms((array) BackendUtility::getRecord('tx_commerce_categories', $this->parentUid));
+            $localCalcPerms = $utility->calcPerms(
+                (array) BackendUtility::getRecord('tx_commerce_categories', $this->parentUid)
+            );
         }
         // This expresses the edit permissions for this particular element:
         $permsEdit = $table == 'tx_commerce_categories' && $localCalcPerms & 2 ||

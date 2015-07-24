@@ -97,7 +97,13 @@ class TcehooksHandlerHooks
                 $this->notifyFeuserObserver($status, $table, $id, $fieldArray, $pObj);
             } else {
                 $emptyArray = array();
-                $this->notifyAddressObserver($status, $table, $fieldArray['tx_commerce_tt_address_id'], $emptyArray, $pObj);
+                $this->notifyAddressObserver(
+                    $status,
+                    $table,
+                    $fieldArray['tx_commerce_tt_address_id'],
+                    $emptyArray,
+                    $pObj
+                );
             }
         }
 
@@ -105,8 +111,7 @@ class TcehooksHandlerHooks
             $this->notifyAddressObserver($status, $table, $id, $fieldArray, $pObj);
         }
 
-        if (
-            $table == 'tx_commerce_articles'
+        if ($table == 'tx_commerce_articles'
             && SettingsFactory::getInstance()->getExtConf('simpleMode')
             && ($articleId = $pObj->substNEWwithIDs[$id])
         ) {
@@ -117,17 +122,17 @@ class TcehooksHandlerHooks
             $resOrigArticle = $database->exec_SELECTquery(
                 '*',
                 'tx_commerce_articles',
-                'uid = '.(int) $articleId.' and deleted = 0'
+                'uid = ' . (int) $articleId . ' AND deleted = 0'
             );
             $origArticle = $database->sql_fetch_assoc($resOrigArticle);
-            $resLocalisedProducts = $database->exec_SELECTquery(
+            $result = $database->exec_SELECTquery(
                 '*',
                 'tx_commerce_products',
-                'l18n_parent = '.(int) $origArticle['uid_product'].' and deleted = 0'
+                'l18n_parent = ' . (int) $origArticle['uid_product'] . ' AND deleted = 0'
             );
-            if ($resLocalisedProducts && $database->sql_num_rows($resLocalisedProducts) > 0) {
+            if ($database->sql_num_rows($result)) {
                 // Only if there are products
-                while (($localisedProducts = $database->sql_fetch_assoc($resLocalisedProducts))) {
+                while (($localisedProducts = $database->sql_fetch_assoc($result))) {
                     // create article data array
                     $articleData = array(
                         'pid' => (int) $fieldArray['pid'],

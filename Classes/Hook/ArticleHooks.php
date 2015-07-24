@@ -35,8 +35,10 @@ class ArticleHooks
      * Basic Method to calculate the delivereycost (net)
      * Ment as Programming tutorial. Mostly you have to change or add functionality.
      *
-     * @param int                                         $netPrice Net price
-     * @param \CommerceTeam\Commerce\Domain\Model\Article $article  Article
+     * @param int $netPrice Net price
+     * @param \CommerceTeam\Commerce\Domain\Model\Article $article Article
+     *
+     * @return void
      */
     public function calculateDeliveryCostNet(&$netPrice, \CommerceTeam\Commerce\Domain\Model\Article &$article)
     {
@@ -52,8 +54,10 @@ class ArticleHooks
      * Basic Method to calculate the delivereycost (gross)
      * Ment as Programming tutorial. Mostly you have to change or add functionality.
      *
-     * @param int                                         $grossPrice Gross price
-     * @param \CommerceTeam\Commerce\Domain\Model\Article $article    Article
+     * @param int $grossPrice Gross price
+     * @param \CommerceTeam\Commerce\Domain\Model\Article $article Article
+     *
+     * @return void
      */
     public function calculateDeliveryCostGross(&$grossPrice, \CommerceTeam\Commerce\Domain\Model\Article &$article)
     {
@@ -82,7 +86,9 @@ class ArticleHooks
          *
          * @var ArticleRepository
          */
-        $articleRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\ArticleRepository');
+        $articleRepository = GeneralUtility::makeInstance(
+            'CommerceTeam\\Commerce\\Domain\\Repository\\ArticleRepository'
+        );
         $row = $articleRepository->findByClassname($classname);
 
         $result = false;
@@ -90,7 +96,7 @@ class ArticleHooks
             /**
              * Instantiate article class.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Article
+             * @var \CommerceTeam\Commerce\Domain\Model\Article $deliveryArticle
              */
             $deliveryArticle = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                 'CommerceTeam\\Commerce\\Domain\\Model\\Article',
@@ -100,7 +106,7 @@ class ArticleHooks
 
             /*
              * Do not call loadData at this point, since loadData recalls this hook,
-             * so we have a non endingrecursion
+             * so we have a non ending recursion
              */
             if (is_object($deliveryArticle)) {
                 $deliveryArticle->loadPrices();
@@ -110,6 +116,7 @@ class ArticleHooks
 
         return $result;
     }
+
 
     /**
      * Get database connection.
