@@ -437,7 +437,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 				$this->content = $this->renderSingleView($this->product, $this->category, $subpartName, $subpartNameNostock);
 				$this->content = $this->cObj->substituteMarkerArray($this->content, $this->languageMarker);
 				$this->content = $this->cObj->substituteMarkerArray($this->content, $this->addFormMarker(array()), '###|###', 1);
-				$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
+				$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url(array(), 1));
 				break;
 
 			case 'listView':
@@ -469,7 +469,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 			$mainProductRes = $database->exec_SELECTquery('l18n_parent', 'tx_commerce_products', 'uid = ' . $productId);
 			if (
 				$database->sql_num_rows($mainProductRes) == 1
-				&& $row = $database->sql_fetch_assoc($mainProductRes)
+				&& ($row = $database->sql_fetch_assoc($mainProductRes))
 				&& $row['l18n_parent'] != 0
 			) {
 				$productId = $row['l18n_parent'];
@@ -501,7 +501,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 				$this->master_cat = $this->product->getMasterparentCategory();
 
 				// Write the current page to the session to have a back to last product link
-				$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
+				$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url(array(), 1));
 				return TRUE;
 			} else {
 				// If product ist not valid (url manipulation) go to listview
@@ -893,7 +893,7 @@ class Tx_Commerce_Controller_ListController extends Tx_Commerce_Controller_BaseC
 							'parameter' => $GLOBALS['TSFE']->id,
 							'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $getVars),
 							'useCacheHash' => 1,
-							'section' => '#attList_' . $product->getUid(),
+							'section' => 'attList_' . $product->getUid(),
 						)
 					);
 

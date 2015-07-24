@@ -704,7 +704,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 
 		if (!$this->conf['hideProductsInList']) {
 			// Write the current page to The session to have a back to last product link
-			$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
+			$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url(array(), 1));
 			$markerArray['SUBPART_CATEGORY_ITEMS_LISTVIEW'] = $this->renderProductsForList(
 				$this->category_products, $this->conf['templateMarker.']['categoryProductList.'],
 				$this->conf['templateMarker.']['categoryProductListIterations']
@@ -2328,7 +2328,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		$globalMarker = array();
 		$globalMarker = $this->addFormMarker($globalMarker);
 		$content = $this->cObj->substituteMarkerArray($content, $globalMarker, '###|###', 1);
-		$this->getFrontendController()->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url());
+		$this->getFrontendController()->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url(array(), 1));
 
 		return $content;
 	}
