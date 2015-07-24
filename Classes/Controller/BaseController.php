@@ -113,7 +113,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 
     /**
      * A handle to do something
-     * Do not make protected to be able to handle different behaviour in a hook.
+     * Do not make protected to be able to handle different behaviour in a hook
      *
      * @var string
      */
@@ -148,7 +148,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     public $currentCategory;
 
     /**
-     * Tpo products.
+     * Top products.
      *
      * @var array
      */
@@ -242,6 +242,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      * Initializing.
      *
      * @param array $conf Configuration
+     *
+     * @return void
      */
     protected function init(array $conf = array())
     {
@@ -285,7 +287,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @param string $paymentType Payment type to get
      *
-     * @return \CommerceTeam\Commerce\Payment\PaymentAbstract Current payment object
+     * @return \CommerceTeam\Commerce\Payment\PaymentAbstract Current payment
      *
      * @throws \Exception If payment object can not be created or is invalid
      */
@@ -323,6 +325,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 
     /**
      * Getting additional locallang-files through an Hook.
+     *
+     *  @return void
      */
     public function addAdditionalLocallang()
     {
@@ -335,7 +339,10 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     }
 
     /**
-     * Gets all "lang_ and label_" Marker for substition with substituteMarkerArray.
+     * Gets all "lang_ and label_" Marker for
+     * substition with substituteMarkerArray.
+     *
+     * @return void
      */
     public function generateLanguageMarker()
     {
@@ -853,15 +860,15 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      * @param bool $priceid If set true (default) the price-id will be rendered
      *     into the hiddenfields, otherwhise not
      *
-     * @return array $markerArray markers needed for the article and the basket form
+     * @return array $markerArray needed for the article and the basket form
      */
     public function getArticleMarker(Article $article, $priceid = false)
     {
         if ($this->handle
-            && is_array($this->conf[$this->handle.'.'])
-            && is_array($this->conf[$this->handle.'.']['articles.'])
+            && is_array($this->conf[$this->handle . '.'])
+            && is_array($this->conf[$this->handle . '.']['articles.'])
         ) {
-            $tsconf = $this->conf[$this->handle.'.']['articles.'];
+            $tsconf = $this->conf[$this->handle . '.']['articles.'];
         } else {
             // Set default
             $tsconf = $this->conf['singleView.']['articles.'];
@@ -922,8 +929,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[artAddUid][' .
                 $article->getUid() . '][price_id]=';
         }
-        $typoLinkConf['additionalParams'] .= $this->argSeparator.$this->prefixId.'[artAddUid]['.
-            $article->getUid().'][count]=1';
+        $typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[artAddUid][' .
+            $article->getUid() . '][count]=1';
 
         $markerArray['LINKTOPUTINBASKET'] = $this->cObj->typoLink(
             $this->pi_getLL('lang_addtobasketlink'),
@@ -931,7 +938,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         );
 
         $markerArray['QTY_INPUT_VALUE'] = $this->getArticleAmount($article->getUid(), $tsconf);
-        $markerArray['QTY_INPUT_NAME'] = $this->prefixId.'[artAddUid]['.$article->getUid().'][count]';
+        $markerArray['QTY_INPUT_NAME'] = $this->prefixId . '[artAddUid][' . $article->getUid() . '][count]';
         $markerArray['ARTICLE_NUMBER'] = $article->getOrdernumber();
         $markerArray['ARTICLE_ORDERNUMBER'] = $article->getOrdernumber();
 
@@ -954,10 +961,10 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 
     /**
      * Renders on Adress in the template
-     * This Method will not replace the Subpart, you have to replace your subpart
-     * in your template by you own.
+     * This Method will not replace the Subpart, you have to replace your
+     * subpart in your template by you own.
      *
-     * @param array $address Address Array (as result from Select DB or Session)
+     * @param array $address Address (as result from Select DB or Session)
      * @param string $subpartTemplate Subpart Template subpart
      *
      * @return string $content string HTML-Content from the given Subpart.
@@ -973,8 +980,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 
     /**
      * Renders the given Basket to the Template
-     * This Method will not replace the Subpart, you have to replace your subpart
-     * in your template by you own.
+     * This Method will not replace the Subpart, you have to replace your
+     * subpart in your template by you own.
      *
      * @param Basket $basketObj Basket
      * @param string $subpartMarker Subpart Template Subpart
@@ -1021,17 +1028,17 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             /**
              * Item.
              *
-             * @var BasketItem $itemObj
+             * @var BasketItem $basketItem
              */
-            foreach ($basketObj->getBasketItems() as $itemObj) {
+            foreach ($basketObj->getBasketItems() as $basketItem) {
                 $part = $count % $templateElements;
 
                 if (is_array($articletypes) && !empty($articletypes)) {
-                    if (in_array($itemObj->getArticleTypeUid(), $articletypes)) {
-                        $articleLines .= $this->makeLineView($itemObj, $lineTemplate[$part]);
+                    if (in_array($basketItem->getArticleTypeUid(), $articletypes)) {
+                        $articleLines .= $this->makeLineView($basketItem, $lineTemplate[$part]);
                     }
                 } else {
-                    $articleLines .= $this->makeLineView($itemObj, $lineTemplate[$part]);
+                    $articleLines .= $this->makeLineView($basketItem, $lineTemplate[$part]);
                 }
 
                 ++$count;
@@ -1064,8 +1071,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 
     /**
      * Renders from the given Basket the Sum Information to HTML-Code
-     * This Method will not replace the Subpart, you have to replace your subpart
-     * in your template by you own.
+     * This Method will not replace the Subpart, you have to replace your
+     * subpart in your template by you own.
      *
      * @param Basket $basket Basket
      * @param string $subpartTemplate Subpart Template Subpart
@@ -1165,11 +1172,11 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 
     /**
      * Renders the given Basket Ite,
-     * This Method will not replace the Subpart, you have to replace your subpart
-     * in your template by you own.
+     * This Method will not replace the Subpart, you have to replace your
+     * subpart in your template by you own.
      *
      * @param BasketItem $basketItem Basket Object
-     * @param string     $subpartTemplate Subpart Template Subpart
+     * @param string $subpartTemplate Subpart Template Subpart
      *
      * @return string $content HTML-Ccontent from the given Subpart
      * @abstract
@@ -1181,7 +1188,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      * ###PRODUCT_LINK_DETAIL###</SPAN>
      * ###LANG_PRICE_NET### ###BASKET_ITEM_PRICENET###<br/>
      * ###LANG_PRICE_GROSS### ###BASKET_ITEM_PRICEGROSS###<br/>
-     * ###LANG_TAX### ###BASKET_ITEM_TAX_VALUE### ###BASKET_ITEM_TAX_PERCENT###<br/>
+     * ###LANG_TAX### ###BASKET_ITEM_TAX_VALUE###
+     * ###BASKET_ITEM_TAX_PERCENT###<br/>
      * ###LANG_COUNT### ###BASKET_ITEM_COUNT###<br/>
      * ###LANG_PRICESUM_NET### ###BASKET_ITEM_PRICESUM_NET### <br/>
      * ###LANG_PRICESUM_GROSS### ###BASKET_ITEM_PRICESUM_GROSS### <br/>
@@ -1262,7 +1270,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      * typoLink StdWarp if typolink.setCommerceValues = 1 is set.
      *
      * @param array $typoscript Existing TypoScriptConfiguration
-     * @param array $typoLinkConf TypoLink Configuration, buld bie view Method
+     * @param array $typoLinkConf TypoLink Configuration, build by view method
      *
      * @return array Changed TypoScript Configuration
      */
@@ -1312,6 +1320,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         if (!$typoscript['fields.']) {
             $typoscript['fields.'] = $typoscript;
         }
+
         $markerArray = array();
         if (is_array($data)) {
             $dataBackup = $this->cObj->data;
@@ -1320,7 +1329,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             foreach ($data as $fieldName => $columnValue) {
                 // get TS config
                 $type = $typoscript['fields.'][$fieldName];
-                $config = (array) $typoscript['fields.'][$fieldName.'.'];
+                $config = (array) $typoscript['fields.'][$fieldName . '.'];
 
                 if (empty($type)) {
                     $type = $typoscript['defaultField'];
@@ -1330,7 +1339,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                     $config['altText'] = $data['title'];
                 }
 
-                $markerArray[strtoupper($prefix.$fieldName)] = $this->renderValue(
+                $markerArray[strtoupper($prefix . $fieldName)] = $this->renderValue(
                     $columnValue,
                     $type,
                     (array) $config,
@@ -1350,12 +1359,12 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      * Renders one Value to TS
      * Availiabe TS types are IMGTEXT, IMAGE, STDWRAP.
      *
-     * @param mixed      $value            Outputvalue
-     * @param string     $typoscriptType   TypoScript Type for this value
-     * @param array      $typoscriptConfig TypoScript Config for this value
-     * @param string     $field            Database field name
-     * @param string     $table            Database table name
-     * @param int|string $uid              Uid of record
+     * @param mixed $value Output value
+     * @param string $typoscriptType TypoScript Type for this value
+     * @param array $typoscriptConfig TypoScript Config for this value
+     * @param string $field Database field name
+     * @param string $table Database table name
+     * @param int|string $uid Uid of record
      *
      * @return string html-content
      */
@@ -1382,7 +1391,10 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                     $data = $this->pi_getRecord($typoscriptConfig['table'], $uid);
                     if ($data) {
                         $singleOutput = $this->renderTable(
-                            $data, $typoscriptConfig['dataTS.'], $typoscriptConfig['subpart'], $typoscriptConfig['table'].'_'
+                            $data,
+                            $typoscriptConfig['dataTS.'],
+                            $typoscriptConfig['subpart'],
+                            $typoscriptConfig['table'] . '_'
                         );
                         $output .= $this->cObj->stdWrap($singleOutput, $typoscriptConfig['singleStdWrap.']);
                     }
@@ -1404,7 +1416,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
                     'distinct('.$foreign.')',
                     $typoscriptConfig['tableMM'],
-                    $local.' = '.(int) $uid.'  '.$typoscriptConfig['table.']['addWhere'],
+                    $local . ' = ' . (int) $uid . '  ' . $typoscriptConfig['table.']['addWhere'],
                     '',
                     'sorting'
                 );
@@ -1412,7 +1424,10 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                     $data = $this->pi_getRecord($typoscriptConfig['table'], $row[$foreign]);
                     if ($data) {
                         $singleOutput = $this->renderTable(
-                            $data, $typoscriptConfig['dataTS.'], $typoscriptConfig['subpart'], $typoscriptConfig['table'].'_'
+                            $data,
+                            $typoscriptConfig['dataTS.'],
+                            $typoscriptConfig['subpart'],
+                            $typoscriptConfig['table'] . '_'
                         );
                         $output .= $this->cObj->stdWrap($singleOutput, $typoscriptConfig['singleStdWrap.']);
                     }
@@ -1425,8 +1440,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             case 'FILES':
                 $files = explode(',', $value);
                 foreach ($files as $v) {
-                    $file = $this->imgFolder.$v;
-                    $text = $this->cObj->stdWrap($file, $typoscriptConfig['linkStdWrap.']).$v;
+                    $file = $this->imgFolder . $v;
+                    $text = $this->cObj->stdWrap($file, $typoscriptConfig['linkStdWrap.']) . $v;
                     $output .= $this->cObj->stdWrap($text, $typoscriptConfig['stdWrap.']);
                 }
                 $output = $this->cObj->stdWrap($output, $typoscriptConfig['allStdWrap.']);
@@ -1436,9 +1451,9 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 if (is_string($value) && !empty($value)) {
                     foreach (explode(',', $value) as $oneValue) {
                         if (!is_numeric($value)) {
-                            $this->cObj->setCurrentVal($typoscriptConfig['imgPath'].$oneValue);
+                            $this->cObj->setCurrentVal($typoscriptConfig['imgPath'] . $oneValue);
                             if ($typoscriptConfig['file'] != 'GIFBUILDER') {
-                                $typoscriptConfig['file'] = $typoscriptConfig['imgPath'].$oneValue;
+                                $typoscriptConfig['file'] = $typoscriptConfig['imgPath'] . $oneValue;
                             }
                         }
                         $output .= $this->cObj->IMAGE($typoscriptConfig);
@@ -1450,7 +1465,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 
             case 'IMG_RESOURCE':
                 if (is_string($value) && !empty($value)) {
-                    $typoscriptConfig['file'] = $typoscriptConfig['imgPath'].$value;
+                    $typoscriptConfig['file'] = $typoscriptConfig['imgPath'] . $value;
                     $output = $this->cObj->IMG_RESOURCE($typoscriptConfig);
                 }
                 break;
@@ -1465,6 +1480,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                     );
                 }
                 // pass through
+
             case 'STDWRAP':
                 if (is_array($typoscriptConfig['parseFunc.'])) {
                     $output = $this->cObj->stdWrap($value, $typoscriptConfig);
@@ -1481,7 +1497,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         foreach ($hooks as $hook) {
             if (method_exists($hook, 'postRenderValue')) {
                 $output = $hook->postRenderValue(
-                    $output, array(
+                    $output,
+                    array(
                         $value,
                         $typoscriptType,
                         $typoscriptConfig,
@@ -1497,25 +1514,29 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
          * Add admin panel
          */
         if (is_string($table) && is_string($field)) {
-            $this->cObj->currentRecord = $table.':'.$uid;
+            $this->cObj->currentRecord = $table . ':' . $uid;
         }
 
         return $output;
     }
 
     /**
-     * Reders a category as output.
+     * Renders a category as output.
      *
-     * @param Category $category    Category
-     * @param string   $subpartName Template subpart name
-     * @param array    $typoscript  TypoScript array for rendering
-     * @param string   $prefix      Prefix for Marker, optional#
-     * @param string   $template    Template
+     * @param Category $category Category
+     * @param string $subpartName Template subpart name
+     * @param array $typoscript TypoScript array for rendering
+     * @param string $prefix Prefix for Marker, optional#
+     * @param string $template Template
      *
      * @return string HTML-Content
      */
-    public function renderCategory(Category $category, $subpartName, array $typoscript, $prefix = '',
-            $template = ''
+    public function renderCategory(
+        Category $category,
+        $subpartName,
+        array $typoscript,
+        $prefix = '',
+        $template = ''
     ) {
         return $this->renderElement($category, $subpartName, $typoscript, $prefix, '###CATEGORY_', $template);
     }
@@ -1523,21 +1544,28 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     /**
      * Reders an element as output.
      *
-     * @param AbstractEntity $element     Element
-     * @param string         $subpartName Template subpart name
-     * @param array          $typoscript  TypoScript array for rendering
-     * @param string         $prefix      Prefix for Marker, optional#
-     * @param string         $markerWrap  SecondPrefix for Marker, default ###
-     * @param string         $template    Template
+     * @param AbstractEntity $element Element
+     * @param string $subpartName Template subpart name
+     * @param array $typoscript TypoScript array for rendering
+     * @param string $prefix Prefix for Marker, optional#
+     * @param string $markerWrap SecondPrefix for Marker, default ###
+     * @param string $template Template
      *
      * @return string HTML-Content
      */
-    public function renderElement(AbstractEntity $element, $subpartName, array $typoscript, $prefix = '',
-            $markerWrap = '###', $template = ''
+    public function renderElement(
+        AbstractEntity $element,
+        $subpartName,
+        array $typoscript,
+        $prefix = '',
+        $markerWrap = '###',
+        $template = ''
     ) {
         if (empty($subpartName)) {
             return $this->error(
-                'renderElement', __LINE__, 'No supart defined for class.CommerceTeam\\Commerce\\Controller\\BaseController::renderElement'
+                'renderElement',
+                __LINE__,
+                'No supart defined for class.CommerceTeam\\Commerce\\Controller\\BaseController::renderElement'
             );
         }
         if (strlen($template) < 1) {
@@ -1545,15 +1573,19 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         }
         if (empty($template)) {
             return $this->error(
-                'renderElement', __LINE__, 'No Template given as parameter to method and no template loaded via TS'
+                'renderElement',
+                __LINE__,
+                'No Template given as parameter to method and no template loaded via TS'
             );
         }
 
         $output = $this->cObj->getSubpart($template, $subpartName);
         if (empty($output)) {
             return $this->error(
-                'renderElement', __LINE__,
-                'class.tx_commerce_pibase::renderElement: Subpart:'.$subpartName.' not found in HTML-Code', $template
+                'renderElement',
+                __LINE__,
+                'class.tx_commerce_pibase::renderElement: Subpart:' . $subpartName . ' not found in HTML-Code',
+                $template
             );
         }
 
@@ -1569,7 +1601,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         }
 
         if ($prefix > '') {
-            $markerWrap .= strtoupper($prefix).'_';
+            $markerWrap .= strtoupper($prefix) . '_';
         }
         $markerWrap .= '|###';
 
@@ -1587,12 +1619,12 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      * Formates the attribute value
      * concerning the sprinf formating if value is a number.
      *
-     * @param array $matrix         AttributeMatrix
-     * @param int   $myAttributeUid Uid of attribute
+     * @param array $matrix AttributeMatrix
+     * @param int $attributeUid Uid of attribute
      *
      * @return string Formated Value
      */
-    public function formatAttributeValue(array $matrix, $myAttributeUid)
+    public function formatAttributeValue(array $matrix, $attributeUid)
     {
         $return = '';
         /*
@@ -1605,22 +1637,26 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $hookObject = HookFactory::getHook('Controller/BaseController', 'formatAttributeValue');
 
         $i = 0;
-        $attributeValues = count($matrix[$myAttributeUid]['values']);
+        $attributeValues = count($matrix[$attributeUid]['values']);
 
-        foreach ((array) $matrix[$myAttributeUid]['values'] as $key => $value) {
+        foreach ((array) $matrix[$attributeUid]['values'] as $key => $value) {
             // Sometimes $value is the whole database array
             if (is_array($value) && isset($value['value']) && $value['value'] != '') {
                 $value = $value['value'];
             }
             $return2 = $value;
             if (is_numeric($value)) {
-                if ($matrix[$myAttributeUid]['valueformat']) {
-                    $return2 = sprintf($matrix[$myAttributeUid]['valueformat'], $value);
+                if ($matrix[$attributeUid]['valueformat']) {
+                    $return2 = sprintf($matrix[$attributeUid]['valueformat'], $value);
                 }
             }
             if (is_object($hookObject) && method_exists($hookObject, 'formatAttributeValue')) {
                 $return2 = $hookObject->formatAttributeValue(
-                    $key, $myAttributeUid, $matrix[$myAttributeUid]['valueuidlist'][$key], $return2, $this
+                    $key,
+                    $attributeUid,
+                    $matrix[$attributeUid]['valueuidlist'][$key],
+                    $return2,
+                    $this
                 );
             }
             if ($attributeValues > 1) {
@@ -1643,22 +1679,22 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      * Returns an string concerning the actial error
      * plus adding debug of $this->conf;.
      *
-     * @param string      $methodName       Methdo Name from where thsi error is called
-     * @param int         $line             Line of code (normally should be __LINE__)
-     * @param string      $errortext        Text for this error
-     * @param bool|string $additionaloutput Aditional code output in <pre></pre>
+     * @param string $methodName Method name from where thsi error is called
+     * @param int $line Line of code (normally should be __LINE__)
+     * @param string $errortext Text for this error
+     * @param bool|string $additionaloutput Additional output in <pre></pre>
      *
      * @return string HTML Code
      */
     public function error($methodName, $line, $errortext, $additionaloutput = false)
     {
-        $errorOutput = __FILE__.'<br />';
-        $errorOutput .= get_class($this).'<br />';
-        $errorOutput .= $methodName.'<br />';
-        $errorOutput .= 'Line '.$line.'<br />';
+        $errorOutput = __FILE__ . '<br />';
+        $errorOutput .= get_class($this) . '<br />';
+        $errorOutput .= $methodName . '<br />';
+        $errorOutput .= 'Line ' . $line . '<br />';
         $errorOutput .= $errortext;
         if ($additionaloutput) {
-            $errorOutput .= '<pre>'.$additionaloutput.'</pre>';
+            $errorOutput .= '<pre>' . $additionaloutput . '</pre>';
         }
 
         $return = '';
@@ -1674,9 +1710,11 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     /**
      * Debugging var with header and group.
      *
-     * @param mixed  $var    Var
+     * @param mixed $var Var
      * @param string $header Header
-     * @param string $group  Group
+     * @param string $group Group
+     *
+     * @return void
      */
     protected function debug($var, $header, $group)
     {
@@ -1688,7 +1726,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     /**
      * Return the amount of articles for the basket input form.
      *
-     * @param int        $articleId        ArticleId check for the amount
+     * @param int $articleId ArticleId check for the amount
      * @param array|bool $typoscriptConfig Typoscript config
      *
      * @return int
@@ -1723,22 +1761,30 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     /**
      * Render products for list view.
      *
-     * @param array  $categoryProducts Category product
-     * @param array  $templateMarker   Template marker
-     * @param int    $iterations       Iterations
+     * @param array $categoryProducts Category product
+     * @param array $templateMarker Template marker
+     * @param int $iterations Iterations
      * @param string $typoscriptMarker Marker
      *
      * @return string
      */
-    public function renderProductsForList(array $categoryProducts, array $templateMarker, $iterations, $typoscriptMarker = '')
-    {
+    public function renderProductsForList(
+        array $categoryProducts,
+        array $templateMarker,
+        $iterations,
+        $typoscriptMarker = ''
+    ) {
         $markerArray = array();
 
         $hooks = HookFactory::getHooks('Controller/BaseController', 'renderProductsForList');
         foreach ($hooks as $hook) {
             if (method_exists($hook, 'preProcessorProductsListView')) {
                 $markerArray = $hook->preProcessorProductsListView(
-                    $categoryProducts, $templateMarker, $iterations, $typoscriptMarker, $this
+                    $categoryProducts,
+                    $templateMarker,
+                    $iterations,
+                    $typoscriptMarker,
+                    $this
                 );
             }
         }
@@ -1751,32 +1797,38 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 if ($iterationCount >= $iterations) {
                     $iterationCount = 0;
                 }
-                $template = $this->cObj->getSubpart($this->templateCode, '###'.$templateMarker[$iterationCount].'###');
+                $template = $this->cObj->getSubpart(
+                    $this->templateCode,
+                    '###' . $templateMarker[$iterationCount] . '###'
+                );
 
                 /**
                  * Product.
                  *
-                 * @var Product
+                 * @var Product $product
                  */
-                $myProduct = GeneralUtility::makeInstance(
+                $product = GeneralUtility::makeInstance(
                     'CommerceTeam\\Commerce\\Domain\\Model\\Product',
                     $myProductId,
                     $this->getFrontendController()->sys_language_uid
                 );
-                $myProduct->loadData();
+                $product->loadData();
 
-                if ($this->conf['useStockHandling'] == 1 and $myProduct->hasStock() === false) {
-                    $typoScript = $this->conf['listView'.$typoscriptMarker.'.']['products.']['nostock.'];
-                    $tempTemplate = $this->cObj->getSubpart($this->templateCode, '###'.$templateMarker[$iterationCount].'_NOSTOCK###');
+                if ($this->conf['useStockHandling'] == 1 and $product->hasStock() === false) {
+                    $typoScript = $this->conf['listView' . $typoscriptMarker . '.']['products.']['nostock.'];
+                    $tempTemplate = $this->cObj->getSubpart(
+                        $this->templateCode,
+                        '###' . $templateMarker[$iterationCount] . '_NOSTOCK###'
+                    );
                     if ($tempTemplate != '') {
                         $template = $tempTemplate;
                     }
                 } else {
-                    $typoScript = $this->conf['listView'.$typoscriptMarker.'.']['products.'];
+                    $typoScript = $this->conf['listView' . $typoscriptMarker . '.']['products.'];
                 }
                 ++$iterationCount;
                 $categoryItemsListview .= $this->renderProduct(
-                    $myProduct,
+                    $product,
                     $template,
                     (array) $typoScript,
                     (array) $this->conf['templateMarker.']['basketListView.'],
@@ -1798,19 +1850,23 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     /**
      * This method renders a product to a template.
      *
-     * @param Product $product        Product
-     * @param string  $template       TYPO3 Template
-     * @param array   $typoscript     TypoScript
-     * @param array   $articleMarker  Marker for the article description
-     * @param string  $articleSubpart Subpart
+     * @param Product $product Product
+     * @param string $template TYPO3 Template
+     * @param array $typoscript TypoScript
+     * @param array $articleMarker Marker for the article description
+     * @param string $articleSubpart Subpart
      *
      * @return string rendered HTML
      */
-    public function renderProduct(Product $product, $template, array $typoscript, array $articleMarker,
-            $articleSubpart = ''
+    public function renderProduct(
+        Product $product,
+        $template,
+        array $typoscript,
+        array $articleMarker,
+        $articleSubpart = ''
     ) {
         if (!($product instanceof Product)) {
-            return false;
+            return '';
         }
         if (empty($articleMarker)) {
             return $this->error('renderProduct', __LINE__, 'No ArticleMarker defined in renderProduct ');
@@ -1832,6 +1888,9 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
          */
         $localTs = $typoscript;
 
+        $typoLinkConf = array(
+            'useCacheHash' => 1,
+        );
         /*
          * Generate TypoLink Configuration and ad to fields by addTypoLinkToTs
          */
@@ -1842,23 +1901,33 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         } else {
             $typoLinkConf['parameter'] = $this->pid;
         }
-        $typoLinkConf['useCacheHash'] = 1;
-        $typoLinkConf['additionalParams'] = $this->argSeparator.$this->prefixId.'[showUid]='.$product->getUid();
-        $typoLinkConf['additionalParams'] .= $this->argSeparator.$this->prefixId.'[catUid]='.$categoryUid;
+
+        $typoLinkConf['additionalParams'] = $this->argSeparator . $this->prefixId . '[showUid]=' . $product->getUid();
+        $typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[catUid]=' . $categoryUid;
 
         if ($this->basketHashValue) {
-            $typoLinkConf['additionalParams'] .= $this->argSeparator.$this->prefixId.'[basketHashValue]='.$this->basketHashValue;
+            $typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[basketHashValue]=' .
+                $this->basketHashValue;
         }
 
         $localTs = $this->addTypoLinkToTypoScript($localTs, $typoLinkConf);
 
-        $markerArray = $this->generateMarkerArray($data, $localTs, '', 'CommerceTeam\\Commerce\\Domain\\Model\\Products');
+        $markerArray = $this->generateMarkerArray(
+            $data,
+            $localTs,
+            '',
+            'tx_commerce_products'
+        );
         $markerArrayUp = array();
         foreach ($markerArray as $k => $v) {
             $markerArrayUp[strtoupper($k)] = $v;
         }
         $markerArray = $this->cObj->fillInMarkerArray(
-            array(), $markerArrayUp, implode(',', array_keys($markerArrayUp)), false, 'PRODUCT_'
+            array(),
+            $markerArrayUp,
+            implode(',', array_keys($markerArrayUp)),
+            false,
+            'PRODUCT_'
         );
 
         $this->can_attributes = $product->getAttributes(array(ATTRIB_CAN));
@@ -1866,13 +1935,20 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $this->shall_attributes = $product->getAttributes(array(ATTRIB_SHAL));
 
         $productAttributesSubpartArray = array();
-        $productAttributesSubpartArray[] = '###'.strtoupper($this->conf['templateMarker.']['productAttributes']).'###';
-        $productAttributesSubpartArray[] = '###'.strtoupper($this->conf['templateMarker.']['productAttributes2']).'###';
+        $productAttributesSubpartArray[] = '###' . strtoupper(
+            $this->conf['templateMarker.']['productAttributes']
+        ) . '###';
+        $productAttributesSubpartArray[] = '###' . strtoupper(
+            $this->conf['templateMarker.']['productAttributes2']
+        ) . '###';
 
         $markerArray['###SUBPART_PRODUCT_ATTRIBUTES###'] = $this->cObj->stdWrap(
             $this->renderProductAttributeList(
-                $product, $productAttributesSubpartArray, $typoscript['productAttributes.']['fields.']
-            ), $typoscript['productAttributes.']
+                $product,
+                $productAttributesSubpartArray,
+                $typoscript['productAttributes.']['fields.']
+            ),
+            $typoscript['productAttributes.']
         );
 
         $linkArray['catUid'] = (int) $categoryUid;
@@ -1892,31 +1968,36 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             }
         }
         $wrapMarkerArray['###PRODUCT_LINK_DETAIL###'] = explode(
-            '|', $this->pi_list_linkSingle('|', $product->getUid(), true, $linkArray, false, $this->conf['overridePid'])
+            '|',
+            $this->pi_list_linkSingle('|', $product->getUid(), true, $linkArray, false, $this->conf['overridePid'])
         );
-        $articleTemplate = $this->cObj->getSubpart($template, '###'.strtoupper($articleSubpart).'###');
+        $articleTemplate = $this->cObj->getSubpart($template, '###' . strtoupper($articleSubpart) . '###');
 
         if ($this->conf['useStockHandling'] == 1) {
             $product = \CommerceTeam\Commerce\Utility\GeneralUtility::removeNoStockArticles(
-                $product, $this->conf['articles.']['showWithNoStock']
+                $product,
+                $this->conf['articles.']['showWithNoStock']
             );
         }
 
         // Set RenderMaxArticles to TS value
-        if ((!empty($localTs['maxArticles'])) && ((int) $localTs['maxArticles'] > 0)) {
-            $product->setRenderMaxArticles((int) $localTs['maxArticles']);
+        if (isset($localTs['maxArticles']) && (int) $localTs['maxArticles']) {
+            $product->setRenderMaxArticles($localTs['maxArticles']);
         }
 
         $subpartArray = array();
-        if (
-            $this->conf['disableArticleViewForProductlist'] == 1
+        if ($this->conf['disableArticleViewForProductlist'] == 1
             && !$this->piVars['showUid']
             || $this->conf['disableArticleView'] == 1
         ) {
-            $subpartArray['###'.strtoupper($articleSubpart).'###'] = '';
+            $subpartArray['###' . strtoupper($articleSubpart) . '###'] = '';
         } else {
-            $subpartArray['###'.strtoupper($articleSubpart).'###'] = $this->makeArticleView(
-                'list', array(), $product, $articleMarker, $articleTemplate
+            $subpartArray['###' . strtoupper($articleSubpart) . '###'] = $this->makeArticleView(
+                'list',
+                array(),
+                $product,
+                $articleMarker,
+                $articleTemplate
             );
         }
 
@@ -1927,23 +2008,30 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         /**
          * Cheapest Article.
          *
-         * @var Article
+         * @var Article $cheapestArticle
          */
-        $cheapestArticle = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $cheapestArticleUid);
+        $cheapestArticle = GeneralUtility::makeInstance(
+            'CommerceTeam\\Commerce\\Domain\\Model\\Article',
+            $cheapestArticleUid
+        );
         $cheapestArticle->loadData();
         $cheapestArticle->loadPrices();
 
         $markerArray['###PRODUCT_CHEAPEST_PRICE_GROSS###'] = Money::format(
-            $cheapestArticle->getPriceGross(), $this->currency
+            $cheapestArticle->getPriceGross(),
+            $this->currency
         );
 
         $cheapestArticleUid = $product->getCheapestArticle(1);
         /**
          * Cheapest Article.
          *
-         * @var Article
+         * @var Article $cheapestArticle
          */
-        $cheapestArticle = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $cheapestArticleUid);
+        $cheapestArticle = GeneralUtility::makeInstance(
+            'CommerceTeam\\Commerce\\Domain\\Model\\Article',
+            $cheapestArticleUid
+        );
         $cheapestArticle->loadData();
         $cheapestArticle->loadPrices();
 
@@ -1966,7 +2054,9 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $content = $this->substituteMarkerArrayNoCached($template, $markerArray, $subpartArray, $wrapMarkerArray);
         if ($typoscript['editPanel'] == 1) {
             $content = $this->cObj->editPanel(
-                $content, $typoscript['editPanel.'], '\CommerceTeam\Commerce\Domain\Model\Products:'.$product->getUid()
+                $content,
+                $typoscript['editPanel.'],
+                'tx_commerce_products:' . $product->getUid()
             );
         }
 
@@ -1982,8 +2072,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     /**
      * Adds the global Marker for the formtags to the given marker array.
      *
-     * @param array       $markerArray Array of marker
-     * @param string|bool $wrap        If the marker should be wrapped
+     * @param array $markerArray Array of marker
+     * @param string|bool $wrap If the marker should be wrapped
      *
      * @return array Marker Array with the new marker
      */
@@ -1997,7 +2087,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         }
         if (is_object($this->category)) {
             $newMarkerArray['GENERAL_HIDDENCATUID'] = '<input type="hidden" name="'.$this->prefixId.
-                '[catUid]" value="'.$this->category->getUid().'" />';
+                '[catUid]" value="' . $this->category->getUid() . '" />';
         }
         if ($wrap) {
             foreach ($newMarkerArray as $key => $value) {
@@ -2013,26 +2103,31 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     /**
      * Make article view.
      *
-     * @param string  $kind            Kind
-     * @param array   $articles        Articles
-     * @param Product $product         Product
-     * @param string  $articleMarker   Article marker
-     * @param string  $articleTemplate Article template
+     * @param string $kind Kind
+     * @param array $articles Articles
+     * @param Product $product Product
+     * @param string $articleMarker Article marker
+     * @param string $articleTemplate Article template
      *
      * @return string
      */
-    public function makeArticleView($kind, array $articles, Product $product, $articleMarker = '', $articleTemplate = '')
-    {
+    public function makeArticleView(
+        $kind,
+        array $articles,
+        Product $product,
+        $articleMarker = '',
+        $articleTemplate = ''
+    ) {
         return '';
     }
 
     /**
      * Render record table.
      *
-     * @param array  $data       Data
-     * @param array  $typoscript TypoScript
-     * @param string $template   Template
-     * @param string $prefix     Prefix
+     * @param array $data Data
+     * @param array $typoscript TypoScript
+     * @param string $template Template
+     * @param string $prefix Prefix
      *
      * @return string
      */
@@ -2044,10 +2139,10 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     /**
      * Render single view.
      *
-     * @param Product  $product            Product
-     * @param Category $category           Category
-     * @param string   $subpartName        Subpart
-     * @param string   $subpartNameNostock Subport no stock
+     * @param Product $product Product
+     * @param Category $category Category
+     * @param string $subpartName Subpart
+     * @param string $subpartNameNostock Subport no stock
      *
      * @return string
      */
@@ -2059,18 +2154,21 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     /**
      * Multi substitution function.
      *
-     * @param string $content                    The content stream, typically HTML template content.
-     * @param array  $markContentArray           Regular marker-array where the 'keys' are
-     *                                           substituted in $content with their values
-     * @param array  $subpartContentArray        Exactly like markContentArray only is
-     *                                           whole subparts substituted and not only a single marker.
-     * @param array  $wrappedSubpartContentArray An array of arrays with 0/1 keys
-     *                                           where the subparts pointed to by the main key is wrapped with the 0/1
-     *                                           value alternating.
+     * @param string $content The content stream, typically HTML template
+     * @param array $markContentArray Regular marker-array where the 'keys'
+     *     are substituted in $content with their values
+     * @param array $subpartContentArray Exactly like markContentArray only
+     *     is whole subparts substituted and not only a single marker.
+     * @param array $wrappedSubpartContentArray An array of arrays with 0/1
+     *     keys where the subparts pointed to by the main key is wrapped
+     *     with the 0/1 value alternating.
      *
      * @return string The output content stream
      */
-    public function substituteMarkerArrayNoCached($content, array $markContentArray = array(), array $subpartContentArray = array(),
+    public function substituteMarkerArrayNoCached(
+        $content,
+        array $markContentArray = array(),
+        array $subpartContentArray = array(),
         array $wrappedSubpartContentArray = array()
     ) {
         $timeTrack = $this->getTimeTracker();
@@ -2114,7 +2212,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         foreach ($aKeys as $tK => $tV) {
             $aKeys[$tK] = preg_quote($tV, '/');
         }
-        $regex = '/'.implode('|', $aKeys).'/';
+        $regex = '/' . implode('|', $aKeys) . '/';
         // Doing regex's
         $storeArr['c'] = preg_split($regex, $content);
         preg_match_all($regex, $content, $keyList);
@@ -2144,7 +2242,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     }
 
     /**
-     * Getter.
+     * Getter for handle
      *
      * @return string
      */
@@ -2152,6 +2250,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     {
         return $this->handle;
     }
+
 
     /**
      * Get database connection.
@@ -2182,7 +2281,6 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     {
         return $GLOBALS['BE_USER'];
     }
-
 
     /**
      * Get typoscript frontend controller.
