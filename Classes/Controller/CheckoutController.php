@@ -1971,13 +1971,20 @@ class CheckoutController extends BaseController
                 );
                 asort($countries, SORT_LOCALE_STRING);
 
+                if (count($countries) > 0) {
+                    $items = array();
+                    foreach ($countries as $itemKey => $itemName) {
+                        $items[] = array('name' => $itemName, 'value' => $itemKey);
+                    }
+                }
+
                 $selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
 
                 $result = '<select id="'.$step.'-'.$fieldName.'" name="'.$this->prefixId.'['.$step.']['.
                     $fieldName.']" class="'.$fieldConfig['cssClass'].'">'.LF;
                 $options = array();
                 $result .= \SJBR\StaticInfoTables\Utility\HtmlElementUtility::optionsConstructor(
-                    $countries,
+                    $items,
                     array($selected),
                     $options
                 );
