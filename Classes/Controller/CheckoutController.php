@@ -1383,11 +1383,11 @@ class CheckoutController extends BaseController
     {
         $typeLower = strtolower($addressType);
 
-        $data = $this->parseRawData($this->sessionData[$typeLower], $this->conf[$typeLower.'.']['sourceFields.']);
+        if (is_array($this->sessionData[$typeLower]) && !empty($this->sessionData[$typeLower])) {
 
-        if (is_array($this->sessionData[$typeLower]) && !empty($this->sessionData[$typeLower]) && is_array($data)) {
+            $data = $this->parseRawData($this->sessionData[$typeLower], $this->conf[$typeLower.'.']['sourceFields.']);
+
             $addressArray = array();
-
             $addressArray['###HEADER###'] = $this->pi_getLL($addressType.'_title');
             foreach ($data as $key => $value) {
                 $addressArray['###LABEL_'.strtoupper($key).'###'] = $this->pi_getLL('general_'.$key);
@@ -1980,7 +1980,7 @@ class CheckoutController extends BaseController
 
                 $selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
 
-                $result = '<select id="'.$step.'-'.$fieldName.'" name="'.$this->prefixId.'['.$step.']['.
+                $result = '<select id="'.$step.'-'.$fieldName.'" class="form-control" name="'.$this->prefixId.'['.$step.']['.
                     $fieldName.']" class="'.$fieldConfig['cssClass'].'">'.LF;
                 $options = array();
                 $result .= \SJBR\StaticInfoTables\Utility\HtmlElementUtility::optionsConstructor(
