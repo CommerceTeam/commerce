@@ -16,7 +16,6 @@ namespace CommerceTeam\Commerce\Utility;
  */
 
 use CommerceTeam\Commerce\Factory\SettingsFactory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This metaclass provides several helper methods for handling relations in
@@ -941,7 +940,7 @@ class BackendUtility
         if ($add && is_numeric($articleUid)) {
             $result = $database->exec_SELECTquery('attributesedit', 'tx_commerce_articles', 'uid='.(int) $articleUid);
             $xmlData = $database->sql_fetch_assoc($result);
-            $xmlData = GeneralUtility::xml2array($xmlData['attributesedit']);
+            $xmlData = TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($xmlData['attributesedit']);
         }
 
         $relationData = array();
@@ -991,7 +990,7 @@ class BackendUtility
             }
         }
 
-        $xmlData = GeneralUtility::array2xml($xmlData, '', 0, 'T3FlexForms');
+        $xmlData = TYPO3\CMS\Core\Utility\GeneralUtility::array2xml($xmlData, '', 0, 'T3FlexForms');
 
         if ($articleUid) {
             $database->exec_UPDATEquery(
@@ -1027,7 +1026,7 @@ class BackendUtility
 
         $xmlDataResult = $database->exec_SELECTquery($xmlField, $table, 'uid='.(int) $uid);
         $xmlData = $database->sql_fetch_assoc($xmlDataResult);
-        $xmlData = GeneralUtility::xml2array($xmlData[$xmlField]);
+        $xmlData = TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($xmlData[$xmlField]);
         if (!is_array($xmlData)) {
             $xmlData = array();
         }
@@ -1082,7 +1081,7 @@ class BackendUtility
         // build new XML
         if (is_array($xmlData)) {
             // Dump Quickfix
-            $xmlData = GeneralUtility::array2xml($xmlData, '', 0, 'T3FlexForms');
+            $xmlData = TYPO3\CMS\Core\Utility\GeneralUtility::array2xml($xmlData, '', 0, 'T3FlexForms');
         } else {
             $xmlData = '';
         }
@@ -1237,7 +1236,7 @@ class BackendUtility
      */
     public function buildLocalisedAttributeValues($flexValue, $langIdent)
     {
-        $attributeFlexformData = GeneralUtility::xml2array($flexValue);
+        $attributeFlexformData = TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($flexValue);
 
         $result = '';
         if (is_array($attributeFlexformData)) {
@@ -1273,7 +1272,7 @@ class BackendUtility
 
                 default:
             }
-            $result = GeneralUtility::array2xml($attributeFlexformData, '', 0, 'T3FlexForms');
+            $result = TYPO3\CMS\Core\Utility\GeneralUtility::array2xml($attributeFlexformData, '', 0, 'T3FlexForms');
         }
 
         return $result;
@@ -1361,7 +1360,7 @@ class BackendUtility
             $lDef['price_scale_amount_end_'.$priceUid] = array('vDEF' => $price['price_scale_amount_end']);
         }
 
-        $xml = GeneralUtility::array2xml($data, '', 0, 'T3FlexForms');
+        $xml = TYPO3\CMS\Core\Utility\GeneralUtility::array2xml($data, '', 0, 'T3FlexForms');
 
         $res = $database->exec_UPDATEquery(
             'tx_commerce_articles',
@@ -1389,7 +1388,7 @@ class BackendUtility
         // verify params
         if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog(
+                GeneraTYPO3\CMS\Core\Utility\GeneralUtilitylUtility::devLog(
                     'swapProductAttributes (CommerceTeam\\Commerce\\Utility\\BackendUtility) gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
@@ -1455,7 +1454,7 @@ class BackendUtility
         // check params
         if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog(
+                GeneraTYPO3\CMS\Core\Utility\GeneralUtilitylUtility::devLog(
                     'swapProductArticles (CommerceTeam\\Commerce\\Utility\\BackendUtility) gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
@@ -1517,7 +1516,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uid) || !is_numeric($uidProduct)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyArticle (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneraTYPO3\CMS\Core\Utility\GeneralUtilitylUtility::devLog('copyArticle (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
             }
 
             return false;
@@ -1555,7 +1554,7 @@ class BackendUtility
          *
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler
          */
-        $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+        $tce = TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
         $tce->stripslashes_values = 0;
 
         $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -1638,7 +1637,7 @@ class BackendUtility
              *
              * @var \TYPO3\CMS\Core\DataHandling\DataHandler
              */
-            $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+            $tce = TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
             $tce->stripslashes_values = 0;
 
             $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -1749,7 +1748,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uid) || !is_numeric($categoryUid) || !is_numeric($sorting)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                TYPO3\CMS\Core\Utility\GeneralUtility::devLog('copyProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
             }
 
             return false;
@@ -1810,7 +1809,7 @@ class BackendUtility
          *
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler
          */
-        $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+        $tce = TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
         $tce->stripslashes_values = 0;
         // set workspace bypass if requested
         $tce->bypassWorkspaceRestrictions = $ignoreWs;
@@ -1879,7 +1878,7 @@ class BackendUtility
         // check params
         if (!is_string($table) || !is_numeric($uidCopied) || !is_numeric($uidNew) || !is_numeric($languageUid)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyLocale (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                TYPO3\CMS\Core\Utility\GeneralUtility::devLog('copyLocale (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
             }
 
             return false;
@@ -1908,7 +1907,7 @@ class BackendUtility
                 // Otherwise, do not copy field (unless it is the
                 // language field or pointer to the original language)
                 if (
-                    GeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
+                    TYPO3\CMS\Core\Utility\GeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
                     && $fN != $tableConfig['ctrl']['languageField']
                     && $fN != $tableConfig['ctrl']['transOrigPointerField']
                 ) {
@@ -1924,7 +1923,7 @@ class BackendUtility
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Article
                  */
-                $article = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $uidNew);
+                $article = TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $uidNew);
                 $productUid = $article->getParentProductUid();
 
                 // load uid of the localized product
@@ -1948,7 +1947,7 @@ class BackendUtility
              *
              * @var \TYPO3\CMS\Core\DataHandling\DataHandler
              */
-            $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+            $tce = TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
             $tce->stripslashes_values = 0;
             // set workspace bypass if requested
             $tce->bypassWorkspaceRestrictions = $ignoreWs;
@@ -2004,7 +2003,7 @@ class BackendUtility
         // check params
         if (!is_string($table) || !is_numeric($uidCopied) || !is_numeric($uidOverwrite) || !is_numeric($loc)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyLocale (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                TYPO3\CMS\Core\Utility\GeneralUtility::devLog('copyLocale (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
             }
 
             return false;
@@ -2038,14 +2037,14 @@ class BackendUtility
                 // Otherwise, do not copy field (unless it is the
                 // language field or pointer to the original language)
                 if (
-                    GeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
+                    TYPO3\CMS\Core\Utility\GeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
                     && $fN != $tableConfig['ctrl']['languageField']
                     && $fN != $tableConfig['ctrl']['transOrigPointerField']
                 ) {
                     unset($recFrom[0][$fN]);
                 } elseif (isset($fCfg['config']['type']) && 'flex' == $fCfg['config']['type'] && isset($recFrom[0][$fN])) {
                     if ('' != $recFrom[0][$fN]) {
-                        $recFrom[0][$fN] = GeneralUtility::xml2array($recFrom[0][$fN]);
+                        $recFrom[0][$fN] = TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($recFrom[0][$fN]);
 
                         if ('' == trim($recFrom[0][$fN])) {
                             unset($recFrom[0][$fN]);
@@ -2065,7 +2064,7 @@ class BackendUtility
              *
              * @var \TYPO3\CMS\Core\DataHandling\DataHandler
              */
-            $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+            $tce = TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
             $tce->stripslashes_values = 0;
 
             $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -2113,7 +2112,7 @@ class BackendUtility
         // check params
         if (!is_string($table) || !is_numeric($uid)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('deleteL18n (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                TYPO3\CMS\Core\Utility\GeneralUtility::devLog('deleteL18n (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
             }
 
             return false;
@@ -2150,7 +2149,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uid) || !is_numeric($parentUid) || $uid == $parentUid) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                TYPO3\CMS\Core\Utility\GeneralUtility::devLog('copyCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
             }
 
             return false;
@@ -2197,7 +2196,7 @@ class BackendUtility
          *
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler
          */
-        $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+        $tce = TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
         $tce->stripslashes_values = 0;
 
         $backendUser = self::getBackendUser();
@@ -2268,7 +2267,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uidToChmod) || !is_numeric($uidFrom)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('chmodCategoryByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                TYPO3\CMS\Core\Utility\GeneralUtility::devLog('chmodCategoryByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
             }
 
             return false;
@@ -2348,7 +2347,7 @@ class BackendUtility
         // check params
         if (!is_numeric($catUidTo) || !is_numeric($catUidFrom)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyProductsByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                TYPO3\CMS\Core\Utility\GeneralUtility::devLog('copyProductsByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
             }
 
             return false;
@@ -2392,7 +2391,7 @@ class BackendUtility
         // check params
         if (!is_numeric($catUidTo) || !is_numeric($catUidFrom) || $catUidTo == $catUidFrom) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyCategoriesByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                TYPO3\CMS\Core\Utility\GeneralUtility::devLog('copyCategoriesByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
             }
 
             return false;
@@ -2434,7 +2433,7 @@ class BackendUtility
         // check params
         if (!is_numeric($prodUidTo) || !is_numeric($prodUidFrom)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyArticlesByProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                TYPO3\CMS\Core\Utility\GeneralUtility::devLog('copyArticlesByProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
             }
 
             return false;
@@ -2577,7 +2576,7 @@ class BackendUtility
     {
         if (!is_string($perm)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('getPermMask (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getPermMask (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
             }
 
             return 0;
@@ -2632,7 +2631,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uid) || !is_string($perm)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('checkProductPerms (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                TYPO3\CMS\Core\Utility\GeneralUtility::devLog('checkProductPerms (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
             }
 
             return false;
@@ -2643,7 +2642,7 @@ class BackendUtility
 
         if (0 == $mask) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('checkProductPerms (belib) gets passed an invalid permission to check for.', COMMERCE_EXTKEY, 3);
+                TYPO3\CMS\Core\Utility\GeneralUtility::devLog('checkProductPerms (belib) gets passed an invalid permission to check for.', COMMERCE_EXTKEY, 3);
             }
 
             return false;
@@ -2759,9 +2758,9 @@ class BackendUtility
                 // name or something...
                 $output = ' [#VEP#]'.$output;
             }
-            $output = '/'.GeneralUtility::fixed_lgd_cs(strip_tags($record['title']), $titleLimit).$output;
+            $output = '/'.TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs(strip_tags($record['title']), $titleLimit).$output;
             if ($fullTitleLimit) {
-                $fullOutput = '/'.GeneralUtility::fixed_lgd_cs(strip_tags($record['title']), $fullTitleLimit).$fullOutput;
+                $fullOutput = '/'.TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs(strip_tags($record['title']), $fullTitleLimit).$fullOutput;
             }
         }
 
@@ -2918,7 +2917,7 @@ class BackendUtility
          *
          * @var \CommerceTeam\Commerce\Tree\CategoryMounts
          */
-        $mounts = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mounts = TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
         $mounts->init($backendUser->user['uid']);
 
         foreach ($categoryUids as $categoryUid) {
@@ -2932,7 +2931,7 @@ class BackendUtility
              *
              * @var \CommerceTeam\Commerce\Domain\Model\Category
              */
-            $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $categoryUid);
+            $category = TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $categoryUid);
             // check perms
             foreach ($perms as $perm) {
                 if (!$category->isPermissionSet($perm)) {
@@ -2984,7 +2983,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uidFrom) || !is_numeric($uidTo) || $uidFrom == $uidTo) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('overwriteProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                TYPO3\CMS\Core\Utility\GeneralUtility::devLog('overwriteProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
             }
 
             return false;
@@ -3044,7 +3043,7 @@ class BackendUtility
          *
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler
          */
-        $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+        $tce = TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
         $tce->stripslashes_values = 0;
 
         $backendUser = self::getBackendUser();
@@ -3138,7 +3137,7 @@ class BackendUtility
          *
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler
          */
-        $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+        $tce = TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
         $tce->stripslashes_values = 0;
 
         $backendUser = self::getBackendUser();
@@ -3161,7 +3160,7 @@ class BackendUtility
             // which is all that a copy action requires.
             $data = array();
 
-            $nonFields = array_unique(GeneralUtility::trimExplode(
+            $nonFields = array_unique(TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(
                 ',',
                 'uid,perms_userid,perms_groupid,perms_user,perms_group,perms_everybody,t3ver_oid,t3ver_wsid,t3ver_id,t3ver_label,
 					t3ver_state,t3ver_swapmode,t3ver_count,t3ver_stage,t3ver_tstamp,',
@@ -3208,7 +3207,7 @@ class BackendUtility
                             // Revert to default for some fields:
                         } elseif (
                             $tableConfig['ctrl']['setToDefaultOnCopy']
-                            && GeneralUtility::inList($tableConfig['ctrl']['setToDefaultOnCopy'], $field)
+                            && TYPO3\CMS\Core\Utility\GeneralUtility::inList($tableConfig['ctrl']['setToDefaultOnCopy'], $field)
                         ) {
                             $value = $defaultData[$field];
                         } else {
@@ -3277,7 +3276,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uidFrom) || !is_numeric($uidTo)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyArticle (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                TYPO3\CMS\Core\Utility\GeneralUtility::devLog('copyArticle (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
             }
 
             return false;
@@ -3321,7 +3320,7 @@ class BackendUtility
          *
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler
          */
-        $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+        $tce = TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
         $tce->stripslashes_values = 0;
 
         $backendUser = self::getBackendUser();
