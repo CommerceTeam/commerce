@@ -649,7 +649,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 $typoLinkConf['additionalParams'] = $this->argSeparator . $this->prefixId . '[catUid]=' .
                     $oneCategory->getUid();
 
-                $productArray = $oneCategory->getProducts();
+                $productArray = $oneCategory->getProducts((int) $this->conf['groupProductsByCategoryMaxDepth']);
                 if ($this->conf['displayProductIfOneProduct'] == 1 && count($productArray) == 1) {
                     $typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[showUid]=' .
                         $productArray[0];
@@ -677,7 +677,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 /*
                  * Build the link
                  *
-                 * @depricated
+                 * @deprecated
                  * Please use TYPOLINK instead
                  */
                 $linkContent = $this->cObj->getSubpart($tmpCategory, '###CATEGORY_ITEM_DETAILLINK###');
@@ -693,16 +693,15 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                     && !$this->conf['hideProductsInList']
                     && !$this->conf['hideProductsInSubcategories']
                 ) {
-                    $categoryProducts = $oneCategory->getProducts();
                     if ($this->conf['useStockHandling'] == 1) {
-                        $categoryProducts = \CommerceTeam\Commerce\Utility\GeneralUtility::removeNoStockProducts(
-                            $categoryProducts,
+                        $productArray = \CommerceTeam\Commerce\Utility\GeneralUtility::removeNoStockProducts(
+                            $productArray,
                             $this->conf['products.']['showWithNoStock']
                         );
                     }
-                    $categoryProducts = array_slice($categoryProducts, 0, $this->conf['numberProductsInSubCategory']);
+                    $productArray = array_slice($productArray, 0, $this->conf['numberProductsInSubCategory']);
                     $productList = $this->renderProductsForList(
-                        $categoryProducts,
+                        $productArray,
                         $this->conf['templateMarker.']['categoryProductList.'],
                         $this->conf['templateMarker.']['categoryProductListIterations']
                     );
