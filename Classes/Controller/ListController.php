@@ -871,7 +871,12 @@ class ListController extends BaseController
                                 }
                             }
                             $markerArray['###SELECT_ATTRIBUTES_ICON###'] = $attrIcon;
-                            $markerArray['###SELECT_ATTRIBUTES_VALUE###'] = $attrValue;
+                            if (isset($myAttribute['valueformat']) && $myAttribute['valueformat']) {
+                                $markerArray['###SELECT_ATTRIBUTES_VALUE###'] =
+                                    sprintf($myAttribute['valueformat'], $attrValue);
+                            } else {
+                                $markerArray['###SELECT_ATTRIBUTES_VALUE###'] = $attrValue;
+                            }
                             $markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $myAttribute['unit'];
                             $numTemplate = $ct % $countTemplateInterations;
                             $attCode .= $this->cObj->substituteMarkerArray($templateAttr[$numTemplate], $markerArray);

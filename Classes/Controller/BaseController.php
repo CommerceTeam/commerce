@@ -1406,7 +1406,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 }
 
                 $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                    'distinct('.$foreign.')',
+                    'DISTINCT(' . $foreign . ')',
                     $typoscriptConfig['tableMM'],
                     $local . ' = ' . (int) $uid . '  ' . $typoscriptConfig['table.']['addWhere'],
                     '',
