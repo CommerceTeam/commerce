@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Utility;
 
 /*
@@ -15,6 +14,7 @@ namespace CommerceTeam\Commerce\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -43,7 +43,11 @@ class BackendUtility
         $database = self::getDatabaseConnection();
 
         // get categories that are directly stored in the product dataset
-        $pCategories = $database->exec_SELECTquery('uid_foreign', 'tx_commerce_products_categories_mm', 'uid_local = '.(int) $pUid);
+        $pCategories = $database->exec_SELECTquery(
+            'uid_foreign',
+            'tx_commerce_products_categories_mm',
+            'uid_local = ' . (int) $pUid
+        );
 
         $result = array();
         while (($categoryReference = $database->sql_fetch_assoc($pCategories))) {
@@ -64,7 +68,11 @@ class BackendUtility
     {
         $database = self::getDatabaseConnection();
 
-        $pCategories = $database->exec_SELECTquery('uid_foreign', 'tx_commerce_products_categories_mm', 'uid_local = '.(int) $uid);
+        $pCategories = $database->exec_SELECTquery(
+            'uid_foreign',
+            'tx_commerce_products_categories_mm',
+            'uid_local = ' . (int) $uid
+        );
 
         $result = array();
         while (($categoryReference = $database->sql_fetch_assoc($pCategories))) {
@@ -79,20 +87,23 @@ class BackendUtility
      * product specified through pUid. It can also fetch information about the
      * attribute and a list of attribute values if the attribute has a valuelist.
      *
-     * @param int  $pUid                     Uid of the product
+     * @param int $pUid Uid of the product
      * @param bool $separateCorrelationType1 If this is true, all attributes with ct1
-     *                                       will be saved in a separated result section
-     * @param bool $addAttributeData         If true, all information about the
-     *                                       attributes will be fetched from the database (default is false)
-     * @param bool $getValueListData         If this is true and additional data is
-     *                                       fetched and an attribute has a valuelist, this gets the values for the
-     *                                       list (default is false)
+     *      will be saved in a separated result section
+     * @param bool $addAttributeData If true, all information about the
+     *      attributes will be fetched from the database (default is false)
+     * @param bool $getValueListData If this is true and additional data is
+     *      fetched and an attribute has a valuelist, this gets the values for the
+     *      list (default is false)
      *
      * @return array of attributes
      */
-    public function getAttributesForProduct($pUid, $separateCorrelationType1 = false, $addAttributeData = false,
-            $getValueListData = false)
-    {
+    public function getAttributesForProduct(
+        $pUid,
+        $separateCorrelationType1 = false,
+        $addAttributeData = false,
+        $getValueListData = false
+    ) {
         if (!$pUid) {
             return array();
         }
@@ -103,7 +114,7 @@ class BackendUtility
         $res = $database->exec_SELECTquery(
             'distinct *',
             'tx_commerce_products_attributes_mm',
-            'uid_local = '.(int) $pUid,
+            'uid_local = ' . (int) $pUid,
             '',
             'sorting, uid_foreign DESC, uid_correlationtype ASC'
         );
@@ -115,7 +126,7 @@ class BackendUtility
                 $aRes = $database->exec_SELECTquery(
                     '*',
                     'tx_commerce_attributes',
-                    'uid = '.(int) $relData['uid_foreign'].$this->enableFields('tx_commerce_attributes'),
+                    'uid = ' . (int) $relData['uid_foreign'] . $this->enableFields('tx_commerce_attributes'),
                     '',
                     'uid'
                 );
@@ -126,7 +137,7 @@ class BackendUtility
                     $vlRes = $database->exec_SELECTquery(
                         '*',
                         'tx_commerce_attribute_values',
-                        'attributes_uid = '.(int) $aData['uid'].$this->enableFields('tx_commerce_attribute_values'),
+                        'attributes_uid = ' . (int) $aData['uid'] . $this->enableFields('tx_commerce_attribute_values'),
                         '',
                         'uid'
                     );
@@ -164,14 +175,16 @@ class BackendUtility
     /**
      *  Fetch all parent categories for a given category.
      *
-     * @param int   $cUid       UID of the category that is the startingpoint
-     * @param array $cUidList   A list of category UIDs. PASSED BY REFERENCE
-     * @param int   $dontAdd    A single UID, if this is found in the parent
-     *                          results, it's not added to the list
-     * @param int   $excludeUid If the current cUid is like this UID the
-     *                          cUid is not processed at all
-     * @param bool  $recursive  If true, this method calls itself for each
-     *                          category if finds
+     * @param int $cUid UID of the category that is the startingpoint
+     * @param array $cUidList A list of category UIDs. PASSED BY REFERENCE
+     * @param int $dontAdd A single UID, if this is found in the parent
+     *      results, it's not added to the list
+     * @param int $excludeUid If the current cUid is like this UID the
+     *      cUid is not processed at all
+     * @param bool $recursive If true, this method calls itself for each
+     *      category if finds
+     *
+     * @return void
      */
     public function getParentCategories($cUid, array &$cUidList, $dontAdd = 0, $excludeUid = 0, $recursive = true)
     {
@@ -188,7 +201,7 @@ class BackendUtility
                 $res = $database->exec_SELECTquery(
                     'uid_foreign',
                     'tx_commerce_categories_parent_category_mm',
-                    'uid_local='.(int) $cUid,
+                    'uid_local=' . (int) $cUid,
                     '',
                     'uid_foreign'
                 );
@@ -210,15 +223,17 @@ class BackendUtility
     /**
      * Get all categories that have this one as parent.
      *
-     * @param int   $cUid            UID of the category that is the startingpoint
+     * @param int $cUid UID of the category that is the startingpoint
      * @param array $categoryUidList A list of category uids. PASSED BY
-     *                               REFERENCE because this way the recursion is easier
-     * @param int   $dontAdd         A single UID, if this is found in the parent
-     *                               results, it's not added to the list
-     * @param int   $excludeUid      If the current cUid is like this UID the
-     *                               cUid is not processed at all
-     * @param bool  $recursive       If true, this method calls itself for each
-     *                               category if finds
+     *      REFERENCE because this way the recursion is easier
+     * @param int $dontAdd A single UID, if this is found in the parent
+     *      results, it's not added to the list
+     * @param int $excludeUid If the current cUid is like this UID the
+     *      cUid is not processed at all
+     * @param bool $recursive If true, this method calls itself for each
+     *      category if finds
+     *
+     * @return void
      */
     public function getChildCategories($cUid, array &$categoryUidList, $dontAdd = 0, $excludeUid = 0, $recursive = true)
     {
@@ -235,7 +250,7 @@ class BackendUtility
             $res = $database->exec_SELECTquery(
                 'uid_local',
                 'tx_commerce_categories_parent_category_mm',
-                'uid_foreign = '.(int) $cUid,
+                'uid_foreign = ' . (int) $cUid,
                 '',
                 'uid_local'
             );
@@ -261,6 +276,8 @@ class BackendUtility
      * The result will be written into the argument cUidList.
      *
      * @param array $cUidList List of category UIDs PASSED BY REFERENCE
+     *
+     * @return void
      */
     public function getParentCategoriesFromList(array &$cUidList)
     {
@@ -274,8 +291,8 @@ class BackendUtility
     /**
      * Returns an array with the data for a single category.
      *
-     * @param int    $cUid    UID of the category
-     * @param string $select  WHERE part of the query
+     * @param int $cUid UID of the category
+     * @param string $select WHERE part of the query
      * @param string $groupBy GROUP BY part of the query
      * @param string $orderBy ORDER BY part of the query
      *
@@ -288,7 +305,7 @@ class BackendUtility
         $result = $database->exec_SELECTquery(
             $select,
             'tx_commerce_categories',
-            'uid = '.(int) $cUid,
+            'uid = ' . (int) $cUid,
             $groupBy,
             $orderBy
         );
@@ -299,17 +316,21 @@ class BackendUtility
     /**
      * Returns all attributes for a list of categories.
      *
-     * @param array  $catList           List of category UIDs
-     * @param int    $ct                Correlationtype (can be null)
-     * @param string $uidField          Name of the field in the excludeAttributes
-     *                                  array that holds the uid of the attributes
-     * @param array  $excludeAttributes Attributes (the method
-     *                                  expects a field called uid_foreign)
+     * @param array $catList List of category UIDs
+     * @param int $ct Correlationtype (can be null)
+     * @param string $uidField Name of the field in the excludeAttributes
+     *      array that holds the uid of the attributes
+     * @param array $excludeAttributes Attributes (the method
+     *      expects a field called uid_foreign)
      *
      * @return array of attributes
      */
-    public function getAttributesForCategoryList(array $catList, $ct = null, $uidField = 'uid', array $excludeAttributes = array())
-    {
+    public function getAttributesForCategoryList(
+        array $catList,
+        $ct = null,
+        $uidField = 'uid',
+        array $excludeAttributes = array()
+    ) {
         $result = array();
         if (!is_array($catList)) {
             return $result;
@@ -331,10 +352,10 @@ class BackendUtility
     /**
      * This fetches all attributes that are assigned to a category.
      *
-     * @param int   $categoryUid       Uid of the category
-     * @param int   $correlationtype   Correlationtype (can be null)
+     * @param int $categoryUid Uid of the category
+     * @param int $correlationtype Correlationtype (can be null)
      * @param array $excludeAttributes Attributes
-     *                                 (the method expects a field called uid_foreign)
+     *      (the method expects a field called uid_foreign)
      *
      * @return array of attributes
      */
@@ -343,11 +364,11 @@ class BackendUtility
         $database = self::getDatabaseConnection();
 
         // build the basic query
-        $where = 'uid_local='.$categoryUid;
+        $where = 'uid_local = ' . $categoryUid;
 
         // select only for a special correlation type?
         if ($correlationtype != null) {
-            $where .= ' AND uid_correlationtype='.(int) $correlationtype;
+            $where .= ' AND uid_correlationtype = ' . (int) $correlationtype;
         }
 
         // should we exclude some attributes
@@ -356,7 +377,7 @@ class BackendUtility
             foreach ($excludeAttributes as $eAttribute) {
                 $eAttributes[] = (int) $eAttribute['uid_foreign'];
             }
-            $where .= ' AND uid_foreign NOT IN ('.implode(',', $eAttributes).')';
+            $where .= ' AND uid_foreign NOT IN (' . implode(',', $eAttributes) . ')';
         }
 
         // execute the query
@@ -364,7 +385,8 @@ class BackendUtility
             '*',
             'tx_commerce_categories_attributes_mm',
             $where,
-            '', 'sorting'
+            '',
+            'sorting'
         );
 
         // build the result and return it...
@@ -395,10 +417,10 @@ class BackendUtility
     /**
      * Returns a list of Titles for a list of attributes.
      *
-     * @param array  $attributeList Attributes (complete datasets
-     *                              with at least one field that contains the UID of an attribute)
-     * @param string $uidField      Name of the array key in the attributeList
-     *                              that contains the UID
+     * @param array $attributeList Attributes (complete datasets
+     *      with at least one field that contains the UID of an attribute)
+     * @param string $uidField Name of the array key in the attributeList
+     *      that contains the UID
      *
      * @return array of attribute titles as strings
      */
@@ -418,15 +440,19 @@ class BackendUtility
      * Returns the complete dataset of an attribute. You can select which
      * fields should be fetched from the database.
      *
-     * @param int    $aUid   UID of the attribute
+     * @param int $aUid UID of the attribute
      * @param string $select Select here, which fields should be fetched
-     *                       (default is *)
+     *      (default is *)
      *
      * @return array associative array with the attributeData
      */
     public function getAttributeData($aUid, $select = '*')
     {
-        return self::getDatabaseConnection()->exec_SELECTgetSingleRow($select, 'tx_commerce_attributes', 'uid = '.(int) $aUid);
+        return self::getDatabaseConnection()->exec_SELECTgetSingleRow(
+            $select,
+            'tx_commerce_attributes',
+            'uid = ' . (int) $aUid
+        );
     }
 
     /**
@@ -437,33 +463,38 @@ class BackendUtility
      * from the databse itself, or you submit the data from the relation table
      * and the data from the attribute table if this data is already present.
      *
-     * @param int    $pUid          Product UID
-     * @param int    $aUid          Attribute UID
+     * @param int $pUid Product UID
+     * @param int $aUid Attribute UID
      * @param string $relationTable Table where the relations between
-     *                              prodcts and attributes are stored
-     * @param array  $relationData  Relation dataset between the product
-     *                              and the attribute (default NULL)
-     * @param array  $attributeData Meta data (has_valuelist, unit) for
-     *                              the attribute you want to get the value from (default NULL)
+     *      prodcts and attributes are stored
+     * @param array $relationData  Relation dataset between the product
+     *      and the attribute (default NULL)
+     * @param array $attributeData Meta data (has_valuelist, unit) for
+     *      the attribute you want to get the value from (default NULL)
      *
      * @return string The value of the attribute. It's maybe appended with the
-     *                unit of the attribute
+     *      unit of the attribute
      */
-    public function getAttributeValue($pUid, $aUid, $relationTable, array $relationData = null, array $attributeData = null)
-    {
+    public function getAttributeValue(
+        $pUid,
+        $aUid,
+        $relationTable,
+        array $relationData = null,
+        array $attributeData = null
+    ) {
         $database = self::getDatabaseConnection();
 
         if ($relationData == null || $attributeData == null) {
             // data from database if one of the arguments is NULL. This nesccessary
             // to keep the data consistant
             $relRes = $database->exec_SELECTquery(
-                'uid_valuelist,default_value,value_char',
+                'uid_valuelist, default_value, value_char',
                 $relationTable,
-                'uid_local = '.(int) $pUid.' AND uid_foreign = '.(int) $aUid
+                'uid_local = ' . (int) $pUid . ' AND uid_foreign = ' . (int) $aUid
             );
             $relationData = $database->sql_fetch_assoc($relRes);
 
-            $attributeData = $this->getAttributeData($aUid, 'has_valuelist,unit');
+            $attributeData = $this->getAttributeData($aUid, 'has_valuelist, unit');
         }
 
         if ($attributeData['has_valuelist'] == '1') {
@@ -474,23 +505,25 @@ class BackendUtility
                         $valueRes = $database->exec_SELECTquery(
                             'value',
                             'tx_commerce_attribute_values',
-                            'uid = '.(int) $relation['uid_valuelist'].$this->enableFields('tx_commerce_attribute_values')
+                            'uid = ' . (int) $relation['uid_valuelist'] .
+                            $this->enableFields('tx_commerce_attribute_values')
                         );
                         $value = $database->sql_fetch_assoc($valueRes);
                         $result[] = $value['value'];
                     }
                 }
 
-                return '<ul><li>'.implode(
+                return '<ul><li>' . implode(
                     '</li><li>',
                     \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($result)
-                ).'</li></ul>';
+                ) . '</li></ul>';
             } else {
                 // fetch data from attribute values table
                 $valueRes = $database->exec_SELECTquery(
                     'value',
                     'tx_commerce_attribute_values',
-                    'uid = '.(int) $relationData['uid_valuelist'].$this->enableFields('tx_commerce_attribute_values')
+                    'uid = ' . (int) $relationData['uid_valuelist'] .
+                    $this->enableFields('tx_commerce_attribute_values')
                 );
                 $value = $database->sql_fetch_assoc($valueRes);
 
@@ -498,10 +531,10 @@ class BackendUtility
             }
         } elseif (!empty($relationData['value_char'])) {
             // the value is in field default_value
-            return $relationData['value_char'].' '.$attributeData['unit'];
+            return $relationData['value_char'] . ' ' . $attributeData['unit'];
         }
 
-        return $relationData['default_value'].' '.$attributeData['unit'];
+        return $relationData['default_value'] . ' ' . $attributeData['unit'];
     }
 
     /**
@@ -517,7 +550,7 @@ class BackendUtility
         $uidCorrelationType = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
             'uid_correlationtype',
             'tx_commerce_products_attributes_mm',
-            'uid_local = '.(int) $pUid.' AND uid_foreign = '.(int) $aUid
+            'uid_local = ' . (int) $pUid . ' AND uid_foreign = ' . (int) $aUid
         );
 
         return $uidCorrelationType['uid_correlationtype'];
@@ -528,9 +561,9 @@ class BackendUtility
     /**
      * Return all articles that where created from a given product.
      *
-     * @param int    $pUid            UID of the product
+     * @param int $pUid UID of the product
      * @param string $additionalWhere Additional where string
-     * @param string $orderBy         Order by field
+     * @param string $orderBy Order by field
      *
      * @return array of article datasets as assoc array or false if nothing was found
      */
@@ -539,7 +572,7 @@ class BackendUtility
         $result = (array) self::getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             'tx_commerce_articles',
-            'uid_product = '.(int) $pUid.' AND deleted = 0'.($additionalWhere ? ' AND ' : '').$additionalWhere,
+            'uid_product = ' . (int) $pUid . ' AND deleted = 0' . ($additionalWhere ? ' AND ' : '') . $additionalWhere,
             '',
             $orderBy
         );
@@ -550,9 +583,9 @@ class BackendUtility
     /**
      * Return all articles that where created from a given product.
      *
-     * @param int    $pUid            UID of the product
+     * @param int $pUid UID of the product
      * @param string $additionalWhere Additional where string
-     * @param string $orderBy         Order by field
+     * @param string $orderBy Order by field
      *
      * @return array of article UIDs, ready to implode for coma separed list
      */
@@ -560,10 +593,10 @@ class BackendUtility
     {
         $database = self::getDatabaseConnection();
 
-        $where = 'uid_product = '.(int) $pUid.' AND deleted = 0';
+        $where = 'uid_product = ' . (int) $pUid . ' AND deleted = 0';
 
         if ($additionalWhere != '') {
-            $where .= ' AND '.$additionalWhere;
+            $where .= ' AND ' . $additionalWhere;
         }
 
         $res = $database->exec_SELECTquery('uid', 'tx_commerce_articles', $where, '', $orderBy);
@@ -582,24 +615,24 @@ class BackendUtility
     /**
      * Returns the product from which an article was created.
      *
-     * @param int    $aUid           Article UID
+     * @param int $aUid Article UID
      * @param string $getProductData Which fields should be returned of the
-     *                               product. This is a comma separated list (default *)
+     *      product. This is a comma separated list (default *)
      *
      * @return int the "getProductData" param is empty, this returns the
-     *             UID as int, otherwise it returns an associative array of the dataset
+     *      UID as int, otherwise it returns an associative array of the dataset
      */
     public function getProductOfArticle($aUid, $getProductData = '*')
     {
         $database = self::getDatabaseConnection();
 
-        $where = 'uid = '.(int) $aUid.' AND deleted=0';
+        $where = 'uid = ' . (int) $aUid . ' AND deleted=0';
 
         $proRes = $database->exec_SELECTquery('uid_product', 'tx_commerce_articles', $where);
         $proRes = $database->sql_fetch_assoc($proRes);
 
         if (strlen($getProductData) > 0) {
-            $where = 'uid = '.(int) $proRes['uid_product'];
+            $where = 'uid = ' . (int) $proRes['uid_product'];
             $proRes = $database->exec_SELECTquery($getProductData, 'tx_commerce_products', $where);
 
             $proRes = $database->sql_fetch_assoc($proRes);
@@ -613,17 +646,17 @@ class BackendUtility
     /**
      * Returns all attributes for an article.
      *
-     * @param int   $aUid              Article UID
-     * @param int   $ct                Correlationtype
+     * @param int $aUid Article UID
+     * @param int $ct Correlationtype
      * @param array $excludeAttributes Relation datasets where the
-     *                                 field "uid_foreign" is the UID of the attribute you don't want to get
+     *      field "uid_foreign" is the UID of the attribute you don't want to get
      *
      * @return array of attributes
      */
     public function getAttributesForArticle($aUid, $ct = null, array $excludeAttributes = array())
     {
         // build the basic query
-        $where = 'uid_local='.$aUid;
+        $where = 'uid_local = ' . $aUid;
 
         if ($ct != null) {
             $pUid = $this->getProductOfArticle($aUid, 'uid');
@@ -637,7 +670,7 @@ class BackendUtility
                     }
                 }
                 if (!empty($ctAttributes)) {
-                    $where .= ' AND uid_foreign IN ('.implode(',', $ctAttributes).')';
+                    $where .= ' AND uid_foreign IN (' . implode(',', $ctAttributes) . ')';
                 }
             }
         }
@@ -648,7 +681,7 @@ class BackendUtility
             foreach ($excludeAttributes as $eAttribute) {
                 $eAttributes[] = (int) $eAttribute['uid_foreign'];
             }
-            $where .= ' AND uid_foreign NOT IN ('.implode(',', $eAttributes).')';
+            $where .= ' AND uid_foreign NOT IN (' . implode(',', $eAttributes) . ')';
         }
 
         $database = $this->getDatabaseConnection();
@@ -666,9 +699,9 @@ class BackendUtility
     /**
      * Returns the hash value for the ct1 select attributes for an article.
      *
-     * @param int   $aUid              Uid of the article
+     * @param int $aUid Uid of the article
      * @param array $fullAttributeList List of uids for the attributes
-     *                                 that are assigned to the article
+     *      that are assigned to the article
      *
      * @return string
      */
@@ -682,7 +715,7 @@ class BackendUtility
             $res = $database->exec_SELECTquery(
                 '*',
                 'tx_commerce_articles_article_attributes_mm',
-                'uid_local = '.(int) $aUid.' AND uid_foreign IN ('.implode(',', $fullAttributeList).')'
+                'uid_local = ' . (int) $aUid . ' AND uid_foreign IN (' . implode(',', $fullAttributeList) . ')'
             );
 
             while (($attributeData = $database->sql_fetch_assoc($res))) {
@@ -700,9 +733,11 @@ class BackendUtility
      * Updates an article and recalculates the hash value for the assigned
      * attributes.
      *
-     * @param int   $aUid              Uid of the article
+     * @param int $aUid Uid of the article
      * @param array $fullAttributeList The list of uids for the attributes
-     *                                 that are assigned to the article
+     *      that are assigned to the article
+     *
+     * @return void
      */
     public function updateArticleHash($aUid, array $fullAttributeList = array())
     {
@@ -721,7 +756,7 @@ class BackendUtility
         // update the article
         self::getDatabaseConnection()->exec_UPDATEquery(
             'tx_commerce_articles',
-            'uid = '.$aUid,
+            'uid = ' . (int) $aUid,
             array('attribute_hash' => $hash)
         );
     }
@@ -734,14 +769,10 @@ class BackendUtility
      * @param string $data String to check for a number
      *
      * @return int length of wrong chars
-     *
-     * @todo change to regex
      */
     public function isNumber($data)
     {
-        $charArray = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 0, '.');
-
-        return strlen(str_replace($charArray, array(), $data));
+        return strlen(preg_replace('/[0-9.]/', '', $data));
     }
 
     /**
@@ -750,9 +781,9 @@ class BackendUtility
      * If the key doesn't contain any underscores, it returns
      * the int of the key.
      *
-     * @param string $key     Key string (e.g.: bla_fasel_12)
-     * @param array  $keyData Result from the explode method
-     *                        (PASSED BY REFERENCE)
+     * @param string $key Key string (e.g.: bla_fasel_12)
+     * @param array $keyData Result from the explode method
+     *      (PASSED BY REFERENCE)
      *
      * @return int value of the last part from the key
      */
@@ -776,8 +807,8 @@ class BackendUtility
      * Searches for a string in an array of arrays.
      *
      * @param string $needle Search value
-     * @param array  $array  Data to search in
-     * @param string $field  Fieldname of the inside arrays in the search array
+     * @param array $array Data to search in
+     * @param string $field Fieldname of the inside arrays in the search array
      *
      * @return bool if the needle was found, otherwise false
      */
@@ -799,8 +830,8 @@ class BackendUtility
     /**
      * Returns the "enable fields" for a sql query.
      *
-     * @param string $table      Table for the query
-     * @param bool   $getDeleted Flag if deleted entries schould be returned
+     * @param string $table Table for the query
+     * @param bool $getDeleted Flag if deleted entries schould be returned
      *
      * @return string A SQL-string with the enable fields
      */
@@ -841,16 +872,23 @@ class BackendUtility
      * Saves all relations between two tables. For example all relations
      * between products and articles.
      *
-     * @param int    $uidLocal      Uid_local in the mm table
-     * @param array  $relationData  Data that should be stored
-     *                              additionally in the relation table
+     * @param int $uidLocal Uid_local in the mm table
+     * @param array $relationData Data that should be stored
+     *      additionally in the relation table
      * @param string $relationTable Table where the relations are stored
-     * @param bool   $delete        Delete all old relations
-     * @param bool   $withReference If true, the field "is_reference" is
-     *                              inserted into the database
+     * @param bool $delete Delete all old relations
+     * @param bool $withReference If true, the field "is_reference" is
+     *      inserted into the database
+     *
+     * @return void
      */
-    public static function saveRelations($uidLocal, array $relationData, $relationTable, $delete = false, $withReference = true)
-    {
+    public static function saveRelations(
+        $uidLocal,
+        array $relationData,
+        $relationTable,
+        $delete = false,
+        $withReference = true
+    ) {
         $delWhere = array();
         $counter = 1;
 
@@ -858,13 +896,13 @@ class BackendUtility
 
         if (is_array($relationData)) {
             foreach ($relationData as $relation) {
-                $where = 'uid_local = '.(int) $uidLocal;
+                $where = 'uid_local = ' . (int) $uidLocal;
                 $dataArray = array('uid_local' => (int) $uidLocal);
 
                 if (is_array($relation)) {
                     foreach ($relation as $key => $data) {
                         $dataArray[$key] = $data;
-                        $where .= ' AND '.$key.'=\''.$data.'\'';
+                        $where .= ' AND ' . $key . ' = \'' . $data . '\'';
                     }
                 }
                 if ($withReference && ($counter > 1)) {
@@ -885,9 +923,9 @@ class BackendUtility
                 }
 
                 if (isset($relation['uid_foreign'])) {
-                    $delClause = 'uid_foreign='.$relation['uid_foreign'];
+                    $delClause = 'uid_foreign = ' . $relation['uid_foreign'];
                     if (isset($relation['uid_correlationtype'])) {
-                        $delClause .= ' AND uid_correlationtype='.$relation['uid_correlationtype'];
+                        $delClause .= ' AND uid_correlationtype = ' . $relation['uid_correlationtype'];
                     }
                     $delWhere[] = $delClause;
                 }
@@ -928,10 +966,10 @@ class BackendUtility
      * the articles we change.
      *
      * @param array $articleRelations Relation dataset for the article
-     * @param bool  $add              If this is true, we fetch the existing data before.
-     *                                Otherwise we overwrite it
-     * @param int   $articleUid       UID of the article
-     * @param int   $productUid       UID of the product
+     * @param bool $add If this is true, we fetch the existing data before.
+     *      Otherwise we overwrite it
+     * @param int $articleUid UID of the article
+     * @param int $productUid UID of the product
      */
     public function updateArticleXML(array $articleRelations, $add = false, $articleUid = null, $productUid = null)
     {
@@ -939,7 +977,7 @@ class BackendUtility
 
         $xmlData = array();
         if ($add && is_numeric($articleUid)) {
-            $result = $database->exec_SELECTquery('attributesedit', 'tx_commerce_articles', 'uid='.(int) $articleUid);
+            $result = $database->exec_SELECTquery('attributesedit', 'tx_commerce_articles', 'uid=' . (int) $articleUid);
             $xmlData = $database->sql_fetch_assoc($result);
             $xmlData = GeneralUtility::xml2array($xmlData['attributesedit']);
         }
@@ -954,7 +992,7 @@ class BackendUtility
                 'tx_commerce_articles_article_attributes_mm.*',
                 'tx_commerce_articles, tx_commerce_articles_article_attributes_mm',
                 'tx_commerce_articles.uid = tx_commerce_articles_article_attributes_mm.uid_local
-					AND tx_commerce_articles.uid_product = '.(int) $productUid
+                    AND tx_commerce_articles.uid_product = ' . (int) $productUid
             );
         }
 
@@ -963,7 +1001,7 @@ class BackendUtility
                 'tx_commerce_articles_article_attributes_mm.*',
                 'tx_commerce_articles, tx_commerce_articles_article_attributes_mm',
                 'tx_commerce_articles.uid = tx_commerce_articles_article_attributes_mm.uid_local
-                    AND tx_commerce_articles.uid = '.(int) $articleUid
+                    AND tx_commerce_articles.uid = ' . (int) $articleUid
             );
         }
 
@@ -987,7 +1025,8 @@ class BackendUtility
                     }
                 }
 
-                $xmlData['data']['sDEF']['lDEF']['attribute_'.$articleRelation['uid_foreign']] = array('vDEF' => $value);
+                $xmlData['data']['sDEF']['lDEF']['attribute_' . $articleRelation['uid_foreign']] =
+                    array('vDEF' => $value);
             }
         }
 
@@ -996,13 +1035,13 @@ class BackendUtility
         if ($articleUid) {
             $database->exec_UPDATEquery(
                 'tx_commerce_articles',
-                'uid='.$articleUid.' AND deleted=0',
+                'uid = ' . $articleUid . ' AND deleted = 0',
                 array('attributesedit' => $xmlData)
             );
         } elseif ($productUid) {
             $database->exec_UPDATEquery(
                 'tx_commerce_articles',
-                'uid_product='.$productUid.' AND deleted=0',
+                'uid_product = ' . $productUid . ' AND deleted = 0',
                 array('attributesedit' => $xmlData)
             );
         }
@@ -1013,11 +1052,11 @@ class BackendUtility
      * "updateArticleXML" but more general.
      *
      * @param string $xmlField Fieldname where the FlexForm values are stored
-     * @param string $table    Table in which the FlexForm values are stored
-     * @param int    $uid      UID of the entity inside the table
-     * @param string $type     Type of data we are handling (category, product)
-     * @param array  $ctList   A list of correlationtype UID we should handle
-     * @param bool   $rebuild  Wether the xmlData should be rebuild or not
+     * @param string $table Table in which the FlexForm values are stored
+     * @param int $uid UID of the entity inside the table
+     * @param string $type Type of data we are handling (category, product)
+     * @param array $ctList A list of correlationtype UID we should handle
+     * @param bool $rebuild Wether the xmlData should be rebuild or not
      *
      * @return array
      */
@@ -1025,7 +1064,7 @@ class BackendUtility
     {
         $database = self::getDatabaseConnection();
 
-        $xmlDataResult = $database->exec_SELECTquery($xmlField, $table, 'uid='.(int) $uid);
+        $xmlDataResult = $database->exec_SELECTquery($xmlField, $table, 'uid = ' . (int) $uid);
         $xmlData = $database->sql_fetch_assoc($xmlDataResult);
         $xmlData = GeneralUtility::xml2array($xmlData[$xmlField]);
         if (!is_array($xmlData)) {
@@ -1065,7 +1104,8 @@ class BackendUtility
                 }
 
                 if (!empty($value)) {
-                    $xmlData['data']['sDEF']['lDEF']['ct_'.(string) $ct['uid']] = array('vDEF' => (string) implode(',', $value));
+                    $xmlData['data']['sDEF']['lDEF']['ct_' . (string) $ct['uid']] =
+                        array('vDEF' => (string) implode(',', $value));
                 }
             }
         }
@@ -1074,7 +1114,7 @@ class BackendUtility
         if ($rebuild && !empty($cTypes) && is_array($ctList)) {
             foreach ($ctList as $ct) {
                 if (!in_array($ct['uid'], $cTypes)) {
-                    $xmlData['data']['sDEF']['lDEF']['ct_'.(string) $ct['uid']] = array('vDEF' => '');
+                    $xmlData['data']['sDEF']['lDEF']['ct_' . (string) $ct['uid']] = array('vDEF' => '');
                 }
             }
         }
@@ -1088,7 +1128,7 @@ class BackendUtility
         }
 
         // update database entry
-        $database->exec_UPDATEquery($table, 'uid = '.$uid, array($xmlField => $xmlData));
+        $database->exec_UPDATEquery($table, 'uid = ' . $uid, array($xmlField => $xmlData));
 
         return array($xmlField => $xmlData);
     }
@@ -1096,11 +1136,11 @@ class BackendUtility
     /**
      * Merges an attribute list from a flexform together into one array.
      *
-     * @param array  $ffData   FlexForm data as array
-     * @param string $prefix   Prefix that is used for the correlationtypes
-     * @param array  $ctList   List of correlations that should be processed
-     * @param int    $uidLocal Field in the relation table
-     * @param array  $paList   List of product attributes (PASSED BY REFERENCE)
+     * @param array $ffData FlexForm data as array
+     * @param string $prefix Prefix that is used for the correlationtypes
+     * @param array $ctList List of correlations that should be processed
+     * @param int $uidLocal Field in the relation table
+     * @param array $paList List of product attributes (PASSED BY REFERENCE)
      */
     public function mergeAttributeListFromFFData(array $ffData, $prefix, array $ctList, $uidLocal, array &$paList)
     {
@@ -1135,11 +1175,11 @@ class BackendUtility
     /**
      * Extracts a fieldvalue from an associative array.
      *
-     * @param array  $array       Data
-     * @param string $field       Field that should be extracted
-     * @param bool   $makeArray   If true the result is returned as an
-     *                            array of arrays
-     * @param array  $extraFields Add some extra fields to the result
+     * @param array $array Data
+     * @param string $field Field that should be extracted
+     * @param bool $makeArray If true the result is returned as an array of
+     *      arrays
+     * @param array $extraFields Add some extra fields to the result
      *
      * @return array with fieldnames
      */
@@ -1181,13 +1221,11 @@ class BackendUtility
      */
     public function getProductsOfCategory($categoryUid)
     {
-        $result = (array) self::getDatabaseConnection()->exec_SELECTgetRows(
+        return (array) self::getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             'tx_commerce_products_categories_mm',
-            'uid_foreign = '.(int) $categoryUid
+            'uid_foreign = ' . (int) $categoryUid
         );
-
-        return $result;
     }
 
     /**
@@ -1196,9 +1234,9 @@ class BackendUtility
      * different names in different tables. I know that's stupid but this is a
      * fact... :-/.
      *
-     * @param array      $attributeData Data that should be stored
-     * @param string|int $data          Value of the attribute
-     * @param int        $productUid    UID of the produt
+     * @param array $attributeData Data that should be stored
+     * @param string|int $data Value of the attribute
+     * @param int $productUid UID of the produt
      *
      * @return array with two arrays as elements
      */
@@ -1242,7 +1280,7 @@ class BackendUtility
         $result = '';
         if (is_array($attributeFlexformData)) {
             // change the language
-            $attributeFlexformData['data']['sDEF']['l'.$langIdent] = $attributeFlexformData['data']['sDEF']['lDEF'];
+            $attributeFlexformData['data']['sDEF']['l' . $langIdent] = $attributeFlexformData['data']['sDEF']['lDEF'];
 
             /*
              * Decide on what to to on lokalisation, how to act
@@ -1264,7 +1302,7 @@ class BackendUtility
                     /*
                      * Iterate over the array and prepend text
                      */
-                    $prepend = '[Translate to '.$langIdent.':] ';
+                    $prepend = '[Translate to ' . $langIdent . ':] ';
                     foreach (array_keys($attributeFlexformData['data']['sDEF']['lDEF']) as $attribKey) {
                         $attributeFlexformData['data']['sDEF']['lDEF'][$attribKey]['vDEF'] = $prepend.
                             $attributeFlexformData['data']['sDEF']['lDEF'][$attribKey]['vDEF'];
@@ -1336,8 +1374,8 @@ class BackendUtility
     /**
      * Get order folder selector.
      *
-     * @param int $pid      Page id
-     * @param int $levels   Levels
+     * @param int $pid Page id
+     * @param int $levels Levels
      * @param int $aktLevel Current level
      *
      * @return array|bool
@@ -1397,7 +1435,7 @@ class BackendUtility
         $res = $database->exec_SELECTquery(
             '*',
             'tx_commerce_article_prices',
-            'deleted=0 AND uid_article='.(int) $articleUid
+            'deleted = 0 AND uid_article = ' . (int) $articleUid
         );
 
         $data = array('data' => array('sDEF' => array('lDEF')));
@@ -1405,22 +1443,22 @@ class BackendUtility
         while (($price = $database->sql_fetch_assoc($res))) {
             $priceUid = $price['uid'];
 
-            $lDef['price_net_'.$priceUid] = array('vDEF' => sprintf('%.2f', ($price['price_net'] / 100)));
-            $lDef['price_gross_'.$priceUid] = array('vDEF' => sprintf('%.2f', ($price['price_gross'] / 100)));
-            $lDef['purchase_price_'.$priceUid] = array('vDEF' => sprintf('%.2f', ($price['purchase_price'] / 100)));
-            $lDef['hidden_'.$priceUid] = array('vDEF' => $price['hidden']);
-            $lDef['starttime_'.$priceUid] = array('vDEF' => $price['starttime']);
-            $lDef['endtime_'.$priceUid] = array('vDEF' => $price['endtime']);
-            $lDef['fe_group_'.$priceUid] = array('vDEF' => $price['fe_group']);
-            $lDef['price_scale_amount_start_'.$priceUid] = array('vDEF' => $price['price_scale_amount_start']);
-            $lDef['price_scale_amount_end_'.$priceUid] = array('vDEF' => $price['price_scale_amount_end']);
+            $lDef['price_net_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($price['price_net'] / 100)));
+            $lDef['price_gross_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($price['price_gross'] / 100)));
+            $lDef['purchase_price_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($price['purchase_price'] / 100)));
+            $lDef['hidden_' . $priceUid] = array('vDEF' => $price['hidden']);
+            $lDef['starttime_' . $priceUid] = array('vDEF' => $price['starttime']);
+            $lDef['endtime_' . $priceUid] = array('vDEF' => $price['endtime']);
+            $lDef['fe_group_' . $priceUid] = array('vDEF' => $price['fe_group']);
+            $lDef['price_scale_amount_start_' . $priceUid] = array('vDEF' => $price['price_scale_amount_start']);
+            $lDef['price_scale_amount_end_' . $priceUid] = array('vDEF' => $price['price_scale_amount_end']);
         }
 
         $xml = GeneralUtility::array2xml($data, '', 0, 'T3FlexForms');
 
         $res = $database->exec_UPDATEquery(
             'tx_commerce_articles',
-            'uid='.$articleUid,
+            'uid = ' . $articleUid,
             array('prices' => $xml)
         );
 
@@ -1432,10 +1470,10 @@ class BackendUtility
      * mm attributes, flexforms need to be handled separately
      * [@see fix_product_atributte()]).
      *
-     * @param int  $pUidFrom Product UID from which to take the Attributes
-     * @param int  $pUidTo   Product UID to which we give the Attributes
-     * @param bool $copy     If set, the Attributes will only be copied - else
-     *                       cut (aka "swapped" in its true from)
+     * @param int $pUidFrom Product UID from which to take the Attributes
+     * @param int $pUidTo Product UID to which we give the Attributes
+     * @param bool $copy If set, the Attributes will only be copied - else
+     *      cut (aka "swapped" in its true from)
      *
      * @return bool Success
      */
@@ -1445,7 +1483,8 @@ class BackendUtility
         if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'swapProductAttributes (CommerceTeam\\Commerce\\Utility\\BackendUtility) gets passed invalid parameters.',
+                    'swapProductAttributes (CommerceTeam\\Commerce\\Utility\\BackendUtility)
+                        gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -1468,7 +1507,7 @@ class BackendUtility
             // cut the attributes - or, update the mm table with the new uids of the product
             $database->exec_UPDATEquery(
                 'tx_commerce_products_attributes_mm',
-                'uid_local = '.(int) $pUidFrom,
+                'uid_local = ' . (int) $pUidFrom,
                 array('uid_local' => (int) $pUidTo)
             );
 
@@ -1479,7 +1518,7 @@ class BackendUtility
             $res = $database->exec_SELECTquery(
                 'uid_foreign, tablenames, sorting, uid_correlationtype, uid_valuelist, default_value',
                 'tx_commerce_products_attributes_mm',
-                'uid_local = '.$pUidFrom
+                'uid_local = ' . $pUidFrom
             );
 
             while (($row = $database->sql_fetch_row($res))) {
@@ -1498,10 +1537,10 @@ class BackendUtility
     /**
      * This function gives all articles of one product to another.
      *
-     * @param int  $pUidFrom Product UID from which to take the Articles
-     * @param int  $pUidTo   Product UID to which we give the Articles
-     * @param bool $copy     If set, the Articles will only be copied - else
-     *                       cut (aka "swapped" in its true from)
+     * @param int $pUidFrom Product UID from which to take the Articles
+     * @param int $pUidTo Product UID to which we give the Articles
+     * @param bool $copy If set, the Articles will only be copied - else
+     *      cut (aka "swapped" in its true from)
      *
      * @return bool Success
      */
@@ -1511,7 +1550,8 @@ class BackendUtility
         if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'swapProductArticles (CommerceTeam\\Commerce\\Utility\\BackendUtility) gets passed invalid parameters.',
+                    'swapProductArticles (CommerceTeam\\Commerce\\Utility\\BackendUtility)
+                        gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -1521,7 +1561,7 @@ class BackendUtility
         }
 
         // check perms
-        if (!self::checkProductPerms($pUidFrom, ($copy) ? 'show' : 'editcontent')) {
+        if (!self::checkProductPerms($pUidFrom, ($copy ? 'show' : 'editcontent'))) {
             return false;
         }
         if (!self::checkProductPerms($pUidTo, 'editcontent')) {
@@ -1533,13 +1573,17 @@ class BackendUtility
         if (!$copy) {
             // cut the articles - or, give all articles of the old
             // product the product_uid of the new product
-            $database->exec_UPDATEquery('tx_commerce_articles', 'uid_product = '.$pUidFrom, array('uid_product' => $pUidTo));
+            $database->exec_UPDATEquery(
+                'tx_commerce_articles',
+                'uid_product = ' . $pUidFrom,
+                array('uid_product' => $pUidTo)
+            );
 
             $success = $database->sql_error() == '';
         } else {
             // copy the articles - or, read all article uids of the
             // old product and invoke the copy command
-            $res = $database->exec_SELECTquery('uid', 'tx_commerce_articles', 'uid_product = '.$pUidFrom);
+            $res = $database->exec_SELECTquery('uid', 'tx_commerce_articles', 'uid_product = ' . $pUidFrom);
 
             $success = true;
 
@@ -1558,9 +1602,9 @@ class BackendUtility
     /**
      * Copies the specified Article to the new product.
      *
-     * @param int   $uid        Uid of existing article which is to be copied
-     * @param int   $uidProduct Uid of product that is new parent
-     * @param array $locale     Array with sys_langauges to copy along, none if null
+     * @param int $uid Uid of existing article which is to be copied
+     * @param int $uidProduct Uid of product that is new parent
+     * @param array $locale Array with sys_langauges to copy along, none if null
      *
      * @return int UID of the new article or false on error
      */
@@ -1608,7 +1652,7 @@ class BackendUtility
         /**
          * TCE main.
          *
-         * @var \TYPO3\CMS\Core\DataHandling\DataHandler
+         * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
         $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
         $tce->stripslashes_values = 0;
@@ -1673,7 +1717,7 @@ class BackendUtility
      * Copies the Prices of a Article.
      *
      * @param int $uidFrom Article uid from
-     * @param int $uidTo   Article uid to
+     * @param int $uidTo Article uid to
      *
      * @return bool
      */
@@ -1683,7 +1727,11 @@ class BackendUtility
         $database = self::getDatabaseConnection();
 
         // select all existing prices of the article
-        $res = $database->exec_SELECTquery('uid', 'tx_commerce_article_prices', 'deleted = 0 AND uid_article = '.$uidFrom, '');
+        $res = $database->exec_SELECTquery(
+            'uid',
+            'tx_commerce_article_prices',
+            'deleted = 0 AND uid_article = ' . $uidFrom
+        );
 
         $newUid = 0;
         while (($row = $database->sql_fetch_assoc($res))) {
@@ -1691,7 +1739,7 @@ class BackendUtility
             /**
              * Data handler.
              *
-             * @var \TYPO3\CMS\Core\DataHandling\DataHandler
+             * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
              */
             $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
             $tce->stripslashes_values = 0;
@@ -1726,8 +1774,8 @@ class BackendUtility
      * To copy from locale to locale, just insert the uids of the localized
      * records; note that this function deletes the existing attributes.
      *
-     * @param int $uidFrom     Uid of the article we get the attributes from
-     * @param int $uidTo       Uid of the article we want to copy the attributes to
+     * @param int $uidFrom Uid of the article we get the attributes from
+     * @param int $uidTo Uid of the article we want to copy the attributes to
      * @param int $languageUid Language uid
      *
      * @return bool Success
@@ -1745,7 +1793,7 @@ class BackendUtility
             $res = $database->exec_SELECTquery(
                 'uid, l18n_parent',
                 'tx_commerce_articles',
-                'sys_language_uid = '.$languageUid.' AND l18n_parent IN ('.$uids.')'
+                'sys_language_uid = ' . $languageUid . ' AND l18n_parent IN (' . $uids . ')'
             );
             $newFrom = $uidFrom;
             $newTo = $uidTo;
@@ -1771,11 +1819,11 @@ class BackendUtility
 
         $database->exec_DELETEquery(
             $table,
-            'uid_local='.$uidTo
+            'uid_local = ' . $uidTo
         );
 
         // copy the attributes
-        $res = $database->exec_SELECTquery('*', $table, 'uid_local='.$uidFrom.' AND uid_valuelist = 0');
+        $res = $database->exec_SELECTquery('*', $table, 'uid_local = ' . $uidFrom . ' AND uid_valuelist = 0');
 
         while (($origRelation = $database->sql_fetch_assoc($res))) {
             $origRelation['uid_local'] = $uidTo;
@@ -1788,14 +1836,14 @@ class BackendUtility
     /**
      * Copies the specified Product to the new category.
      *
-     * @param int   $uid         Uid of existing product which is to be copied
-     * @param int   $categoryUid Category uid
-     * @param bool  $ignoreWs    If versioning should be disabled
-     *                           (be warned: use this only if you are 100% sure you know what you are doing)
-     * @param array $locale      Languages that should be copied,
-     *                           or null if none are specified
-     * @param int   $sorting     Uid of the record behind which we
-     *                           insert this product, or 0 to just append
+     * @param int $uid Uid of existing product which is to be copied
+     * @param int $categoryUid Category uid
+     * @param bool $ignoreWs If versioning should be disabled
+     *      (be warned: use this only if you are 100% sure you know what you are doing)
+     * @param array $locale Languages that should be copied,
+     *      or null if none are specified
+     * @param int $sorting Uid of the record behind which we
+     *      insert this product, or 0 to just append
      *
      * @return int UID of the new product or false on error
      */
@@ -1844,7 +1892,14 @@ class BackendUtility
 
         if ($sorting == 0) {
             // get uid of the last product in the products table
-            $res = $database->exec_SELECTquery('uid', 'tx_commerce_products', 'deleted = 0 AND pid != -1', '', 'uid DESC', '0,1');
+            $res = $database->exec_SELECTquery(
+                'uid',
+                'tx_commerce_products',
+                'deleted = 0 AND pid != -1',
+                '',
+                'uid DESC',
+                '0,1'
+            );
 
             // if there are no products at all, abort.
             if (!$database->sql_num_rows($res)) {
@@ -1859,11 +1914,11 @@ class BackendUtility
             $uidLast = (0 > $sorting) ? $sorting : self::getCopyPid('tx_commerce_products', $sorting);
         }
 
-            // init tce
+        // init tce
         /**
          * Data handler.
          *
-         * @var \TYPO3\CMS\Core\DataHandling\DataHandler
+         * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
         $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
         $tce->stripslashes_values = 0;
@@ -1921,11 +1976,11 @@ class BackendUtility
     /**
      * Copies any locale of a commerce items.
      *
-     * @param string $table       Name of the table in which the locale is
-     * @param int    $uidCopied   Uid of the record that is localized
-     * @param int    $uidNew      Uid of the record that was copied and now needs a locale
-     * @param int    $languageUid Uid of the sys_language
-     * @param bool   $ignoreWs    Ignore workspace
+     * @param string $table Name of the table in which the locale is
+     * @param int $uidCopied Uid of the record that is localized
+     * @param int $uidNew Uid of the record that was copied and now needs a locale
+     * @param int $languageUid Uid of the sys_language
+     * @param bool $ignoreWs Ignore workspace
      *
      * @return bool Success
      */
@@ -1962,8 +2017,7 @@ class BackendUtility
             foreach ($tableConfig['columns'] as $fN => $fCfg) {
                 // Otherwise, do not copy field (unless it is the
                 // language field or pointer to the original language)
-                if (
-                    GeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
+                if (GeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
                     && $fN != $tableConfig['ctrl']['languageField']
                     && $fN != $tableConfig['ctrl']['transOrigPointerField']
                 ) {
@@ -1986,7 +2040,8 @@ class BackendUtility
                 $res = $database->exec_SELECTquery(
                     'uid',
                     'tx_commerce_products',
-                    'l18n_parent = '.$productUid.' AND sys_language_uid = '.$languageUid);
+                    'l18n_parent = ' . $productUid . ' AND sys_language_uid = ' . $languageUid
+                );
                 $row = $database->sql_fetch_assoc($res);
 
                 $rec[0]['uid_product'] = $row['uid'];
@@ -2001,7 +2056,7 @@ class BackendUtility
             /**
              * Data handler.
              *
-             * @var \TYPO3\CMS\Core\DataHandling\DataHandler
+             * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
              */
             $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
             $tce->stripslashes_values = 0;
@@ -2045,10 +2100,10 @@ class BackendUtility
      * Overwrites the localization of a record
      * if the record does not have the localization, it is copied to the record.
      *
-     * @param string $table        Name of the table in which we overwrite records
-     * @param int    $uidCopied    Uid of the record that is the overwriter
-     * @param int    $uidOverwrite Uid of the record that is to be overwritten
-     * @param int    $loc          Uid of the syslang that is overwritten
+     * @param string $table Name of the table in which we overwrite records
+     * @param int $uidCopied Uid of the record that is the overwriter
+     * @param int $uidOverwrite Uid of the record that is to be overwritten
+     * @param int $loc Uid of the syslang that is overwritten
      *
      * @return bool Success
      */
@@ -2092,17 +2147,19 @@ class BackendUtility
             foreach ($tableConfig['columns'] as $fN => $fCfg) {
                 // Otherwise, do not copy field (unless it is the
                 // language field or pointer to the original language)
-                if (
-                    GeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
+                if (GeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
                     && $fN != $tableConfig['ctrl']['languageField']
                     && $fN != $tableConfig['ctrl']['transOrigPointerField']
                 ) {
                     unset($recFrom[0][$fN]);
-                } elseif (isset($fCfg['config']['type']) && 'flex' == $fCfg['config']['type'] && isset($recFrom[0][$fN])) {
-                    if ('' != $recFrom[0][$fN]) {
+                } elseif (isset($fCfg['config']['type'])
+                    && 'flex' == $fCfg['config']['type']
+                    && isset($recFrom[0][$fN])
+                ) {
+                    if ($recFrom[0][$fN]) {
                         $recFrom[0][$fN] = GeneralUtility::xml2array($recFrom[0][$fN]);
 
-                        if ('' == trim($recFrom[0][$fN])) {
+                        if (trim($recFrom[0][$fN]) == '') {
                             unset($recFrom[0][$fN]);
                         }
                     } else {
@@ -2118,7 +2175,7 @@ class BackendUtility
             /**
              * Data handler.
              *
-             * @var \TYPO3\CMS\Core\DataHandling\DataHandler
+             * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
              */
             $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
             $tce->stripslashes_values = 0;
@@ -2159,7 +2216,7 @@ class BackendUtility
      * Check perms if you implement this beforehand.
      *
      * @param string $table Table name
-     * @param int    $uid   Uid of the record
+     * @param int $uid Uid of the record
      *
      * @return bool Success
      */
@@ -2177,11 +2234,11 @@ class BackendUtility
         $database = self::getDatabaseConnection();
 
         // get all locales
-        $res = $database->exec_SELECTquery('uid', $table, 'l18n_parent = '.(int) $uid);
+        $res = $database->exec_SELECTquery('uid', $table, 'l18n_parent = ' . (int) $uid);
 
         // delete them
         while (($row = $database->sql_fetch_assoc($res))) {
-            $database->exec_UPDATEquery($table, 'uid = '.$row['uid'], array('deleted' => 1));
+            $database->exec_UPDATEquery($table, 'uid = ' . $row['uid'], array('deleted' => 1));
         }
 
         return true;
@@ -2191,12 +2248,12 @@ class BackendUtility
      * Copies the specified category into the new category
      * note: you may NOT copy the same category into itself.
      *
-     * @param int   $uid       Uid of existing category which is to be copied
-     * @param int   $parentUid Uid of category that is new parent
-     * @param array $locale    Array with all uids of languages that should
-     *                         as well be copied - if null, no languages shall be copied
-     * @param int   $sorting   Uid of the record behind which we copy
-     *                         (like - 23), or 0 if none is given at it should just be appended
+     * @param int $uid Uid of existing category which is to be copied
+     * @param int $parentUid Uid of category that is new parent
+     * @param array $locale Array with all uids of languages that should
+     *      as well be copied - if null, no languages shall be copied
+     * @param int $sorting Uid of the record behind which we copy
+     *      (like - 23), or 0 if none is given at it should just be appended
      *
      * @return int UID of the new category or false on error
      */
@@ -2250,7 +2307,7 @@ class BackendUtility
         /**
          * Data handler.
          *
-         * @var \TYPO3\CMS\Core\DataHandling\DataHandler
+         * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
         $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
         $tce->stripslashes_values = 0;
@@ -2314,7 +2371,7 @@ class BackendUtility
      * of another category Note that this does ALSO change owner or group.
      *
      * @param int $uidToChmod Uid of the category to chmod
-     * @param int $uidFrom    Uid of the category from which we take the perms
+     * @param int $uidFrom Uid of the category from which we take the perms
      *
      * @return bool Success
      */
@@ -2323,7 +2380,11 @@ class BackendUtility
         // check params
         if (!is_numeric($uidToChmod) || !is_numeric($uidFrom)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('chmodCategoryByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog(
+                    'chmodCategoryByCategory (belib) gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
             }
 
             return false;
@@ -2335,7 +2396,7 @@ class BackendUtility
         $res = $database->exec_SELECTquery(
             'perms_everybody, perms_group, perms_user, perms_groupid, perms_userid',
             'tx_commerce_categories',
-            'uid = '.$uidFrom.' AND deleted = 0 AND '.self::getCategoryPermsClause(self::getPermMask('show'))
+            'uid = ' . $uidFrom . ' AND deleted = 0 AND ' . self::getCategoryPermsClause(self::getPermMask('show'))
         );
         $res2 = false;
 
@@ -2349,7 +2410,7 @@ class BackendUtility
                 'perms_groupid' => $row['perms_groupid'],
             );
 
-            $res2 = $database->exec_UPDATEquery('tx_commerce_categories', 'uid = '.$uidToChmod, $updateFields);
+            $res2 = $database->exec_UPDATEquery('tx_commerce_categories', 'uid = ' . $uidToChmod, $updateFields);
         }
 
         return ($res2 !== false && $database->sql_error() == '');
@@ -2360,8 +2421,8 @@ class BackendUtility
      * inserting a record on front of another.
      *
      * @param string $table Table from which we want to read
-     * @param int    $uid   Uid of the record that we want to move our element to
-     *                      - in front of it
+     * @param int $uid Uid of the record that we want to move our element to
+     *      - in front of it
      *
      * @return int
      */
@@ -2372,7 +2433,7 @@ class BackendUtility
         $res = $database->exec_SELECTquery(
             'uid',
             $table,
-            'sorting < (SELECT sorting FROM '.$table.' WHERE uid = '.$uid.') ORDER BY sorting DESC LIMIT 0,1'
+            'sorting < (SELECT sorting FROM ' . $table . ' WHERE uid = ' . $uid . ') ORDER BY sorting DESC LIMIT 0,1'
         );
 
         $row = $database->sql_fetch_assoc($res);
@@ -2392,9 +2453,9 @@ class BackendUtility
      * Copies all Products under a category to a new category
      * Note that Products that are copied in this indirect way are not versioned.
      *
-     * @param int   $catUidTo   Uid of category to which the products should be copied
-     * @param int   $catUidFrom Uid of category from which the products should come
-     * @param array $locale     Languages which are to be copied as well, null if none
+     * @param int $catUidTo Uid of category to which the products should be copied
+     * @param int $catUidFrom Uid of category from which the products should come
+     * @param array $locale Languages which are to be copied as well, null if none
      *
      * @return bool Success
      */
@@ -2403,7 +2464,11 @@ class BackendUtility
         // check params
         if (!is_numeric($catUidTo) || !is_numeric($catUidFrom)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyProductsByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog(
+                    'copyProductsByCategory (belib) gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
             }
 
             return false;
@@ -2416,7 +2481,7 @@ class BackendUtility
             'tx_commerce_products',
             'tx_commerce_products_categories_mm',
             '',
-            ' AND deleted = 0 AND uid_foreign = '.(int) $catUidFrom,
+            ' AND deleted = 0 AND uid_foreign = ' . (int) $catUidFrom,
             'tx_commerce_products.sorting ASC',
             '',
             ''
@@ -2436,9 +2501,9 @@ class BackendUtility
     /**
      * Copies all Categories under a category to a new category.
      *
-     * @param int   $catUidTo   Uid of category to which the categories should be copied
-     * @param int   $catUidFrom Uid of category from which the categories should come
-     * @param array $locale     Langauges that should be copied as well
+     * @param int $catUidTo Uid of category to which the categories should be copied
+     * @param int $catUidFrom Uid of category from which the categories should come
+     * @param array $locale Langauges that should be copied as well
      *
      * @return bool Success
      */
@@ -2447,7 +2512,11 @@ class BackendUtility
         // check params
         if (!is_numeric($catUidTo) || !is_numeric($catUidFrom) || $catUidTo == $catUidFrom) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyCategoriesByCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog(
+                    'copyCategoriesByCategory (belib) gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
             }
 
             return false;
@@ -2460,7 +2529,7 @@ class BackendUtility
             'tx_commerce_categories',
             'tx_commerce_categories_parent_category_mm',
             '',
-            ' AND deleted = 0 AND uid_foreign = '.$catUidFrom.' AND '.self::getCategoryPermsClause(1),
+            ' AND deleted = 0 AND uid_foreign = ' . $catUidFrom . ' AND ' . self::getCategoryPermsClause(1),
             'tx_commerce_categories.sorting ASC',
             '',
             ''
@@ -2478,9 +2547,9 @@ class BackendUtility
     /**
      * Copies all Articles from one Product to another.
      *
-     * @param int   $prodUidTo   Uid of product from which we copy the articles
-     * @param int   $prodUidFrom Uid of product to which we copy the articles
-     * @param array $locale      Languages to copy along, null if none
+     * @param int $prodUidTo Uid of product from which we copy the articles
+     * @param int $prodUidFrom Uid of product to which we copy the articles
+     * @param array $locale Languages to copy along, null if none
      *
      * @return bool Success
      */
@@ -2489,7 +2558,11 @@ class BackendUtility
         // check params
         if (!is_numeric($prodUidTo) || !is_numeric($prodUidFrom)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyArticlesByProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog(
+                    'copyArticlesByProduct (belib) gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
             }
 
             return false;
@@ -2497,29 +2570,36 @@ class BackendUtility
 
         $database = self::getDatabaseConnection();
 
-        $res = $database->exec_SELECTquery('uid', 'tx_commerce_articles', 'deleted = 0 AND uid_product = '.$prodUidFrom);
+        $rows = (array) $database->exec_SELECTgetRows(
+            'uid',
+            'tx_commerce_articles',
+            'deleted = 0 AND uid_product = ' . $prodUidFrom
+        );
         $success = true;
 
-        while (($row = $database->sql_fetch_assoc($res))) {
-            $succ = self::copyArticle($row['uid'], $prodUidTo, $locale);
-            $success = ($success) ? $succ : $success;
+        foreach ($rows as $row) {
+            $succ = self::copyArticle($row['uid'], $prodUidTo, (array) $locale);
+            $success = $success ? $succ : $success;
         }
 
         return $success;
     }
 
     /**
-     * Returns a WHERE-clause for the tx_commerce_categories-table where user permissions according to input argument,
-     * $perms, is validated. $perms is the "mask" used to select. Fx. if $perms is 1 then you'll get all categories that a user
-     * can actually see!
-     * 	 	2^0 = show (1)
-     * 		2^1 = edit (2)
-     * 		2^2 = delete (4)
-     * 		2^3 = new (8)
+     * Returns a WHERE-clause for the tx_commerce_categories-table where user
+     * permissions according to input argument, $perms, is validated. $perms
+     * is the "mask" used to select. Fx. if $perms is 1 then you'll get all
+     * categories that a user can actually see!
+     *      2^0 = show (1)
+     *      2^1 = edit (2)
+     *      2^2 = delete (4)
+     *      2^3 = new (8)
      * If the user is 'admin' " 1=1" is returned (no effect)
-     * If the user is not set at all (->user is not an array), then " 1=0" is returned (will cause no selection results at all)
-     * The 95% use of this function is "->getCategoryPermsClause(1)" which will return WHERE clauses for *selecting*
-     * categories in backend listings - in other words this will check read permissions.
+     * If the user is not set at all (->user is not an array), then " 1=0" is
+     * returned (will cause no selection results at all) The 95% use of this
+     * function is "->getCategoryPermsClause(1)" which will return WHERE
+     * clauses for *selecting* categories in backend listings - in other words
+     * this will check read permissions.
      *
      * @param int $perms Permission mask to use, see function description
      *
@@ -2536,16 +2616,16 @@ class BackendUtility
 
             // Make sure it's int.
             $perms = (int) $perms;
-            $str = ' ('.
+            $str = ' (' .
                 // Everybody
-                '(tx_commerce_categories.perms_everybody & '.$perms.' = '.$perms.')'.
+                '(tx_commerce_categories.perms_everybody & ' . $perms . ' = ' . $perms . ')' .
                 // User
-                'OR(tx_commerce_categories.perms_userid = '.$backendUser->user['uid'].
-                    ' AND tx_commerce_categories.perms_user & '.$perms.' = '.$perms.')';
+                'OR(tx_commerce_categories.perms_userid = ' . $backendUser->user['uid'] .
+                    ' AND tx_commerce_categories.perms_user & ' . $perms . ' = ' . $perms . ')';
             if ($backendUser->groupList) {
                 // Group (if any is set)
-                $str .= 'OR(tx_commerce_categories.perms_groupid in ('.$backendUser->groupList.
-                    ') AND tx_commerce_categories.perms_group & '.$perms.' = '.$perms.')';
+                $str .= 'OR(tx_commerce_categories.perms_groupid in (' . $backendUser->groupList .
+                    ') AND tx_commerce_categories.perms_group & ' . $perms . ' = ' . $perms . ')';
             }
             $str .= ')';
 
@@ -2558,9 +2638,9 @@ class BackendUtility
     /**
      * Returns whether the Permission is set and allowed for the corresponding user.
      *
-     * @param string $perm   Word rep. for the wanted right
-     *                       ('show', 'edit', 'editcontent', 'delete', 'new')
-     * @param array  $record Record data
+     * @param string $perm Word rep. for the wanted right
+     *      ('show', 'edit', 'editcontent', 'delete', 'new')
+     * @param array $record Record data
      *
      * @return bool $perm User allowed this action or not for the current category
      */
@@ -2595,8 +2675,7 @@ class BackendUtility
         }
 
         // Check if user is owner of category and the owner may do the current operation
-        if (
-            isset($record['perms_userid']) && isset($record['perms_user'])
+        if (isset($record['perms_userid']) && isset($record['perms_user'])
             && ($record['perms_userid'] == $backendUser->user['uid'])
             && (($record['perms_user'] & $mask) == $mask)
         ) {
@@ -2677,7 +2756,7 @@ class BackendUtility
      * Checks the permissions for a product
      * (by checking for the permission in all parent categories).
      *
-     * @param int    $uid  Product UId
+     * @param int $uid Product UId
      * @param string $perm String-Rep of the Permission
      *
      * @return bool Right exists or not
@@ -2696,9 +2775,13 @@ class BackendUtility
         // get mask
         $mask = self::getPermMask($perm);
 
-        if (0 == $mask) {
+        if (!$mask) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('checkProductPerms (belib) gets passed an invalid permission to check for.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog(
+                    'checkProductPerms (belib) gets passed an invalid permission to check for.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
             }
 
             return false;
@@ -2709,10 +2792,8 @@ class BackendUtility
 
         // check the permissions
         if (!empty($parents)) {
-            $l = count($parents);
-
-            for ($i = 0; $i < $l; ++$i) {
-                if (!self::readCategoryAccess($parents[$i], self::getCategoryPermsClause($mask))) {
+            foreach ($parents as $parent) {
+                if (!self::readCategoryAccess($parent, self::getCategoryPermsClause($mask))) {
                     return false;
                 }
             }
@@ -2753,7 +2834,7 @@ class BackendUtility
                     return $pageinfo;
                 }
             } else {
-                $pageinfo = self::getCategoryForRootline($id, ($permsClause ? ' AND '.$permsClause : ''), false);
+                $pageinfo = self::getCategoryForRootline($id, ($permsClause ? ' AND ' . $permsClause : ''), false);
                 \TYPO3\CMS\Backend\Utility\BackendUtility::workspaceOL('tx_commerce_categories', $pageinfo);
                 if (is_array($pageinfo)) {
                     \TYPO3\CMS\Backend\Utility\BackendUtility::fixVersioningPid('tx_commerce_categories', $pageinfo);
@@ -2777,15 +2858,14 @@ class BackendUtility
      * page/Another subpage"
      * Each part of the path will be limited to $titleLimit characters
      * Deleted pages are filtered out.
-     * Usage: 15.
      *
-     * @param int    $uid            Page uid for which to create record path
-     * @param string $clause         Is additional where clauses, eg. "
-     * @param int    $titleLimit     Title limit
-     * @param int    $fullTitleLimit Title limit of Full title (typ. set to 1000 or so)
+     * @param int $uid Page uid for which to create record path
+     * @param string $clause Is additional where clauses, eg. "
+     * @param int $titleLimit Title limit
+     * @param int $fullTitleLimit Title limit of Full title (typ. set to 1000 or so)
      *
      * @return mixed Path of record (string) OR array with
-     *               short/long title if $fullTitleLimit is set.
+     *      short/long title if $fullTitleLimit is set.
      */
     public static function getCategoryPath($uid, $clause, $titleLimit, $fullTitleLimit = 0)
     {
@@ -2797,7 +2877,7 @@ class BackendUtility
 
         $clause = trim($clause);
         if ($clause !== '' && substr($clause, 0, 3) !== 'AND') {
-            $clause = 'AND '.$clause;
+            $clause = 'AND ' . $clause;
         }
         $data = self::BEgetRootLine($uid, $clause);
 
@@ -2812,11 +2892,12 @@ class BackendUtility
                 // that THIS position was where the versionized branch got
                 // connected to the main tree. I will have to find a better
                 // name or something...
-                $output = ' [#VEP#]'.$output;
+                $output = ' [#VEP#]' . $output;
             }
-            $output = '/'.GeneralUtility::fixed_lgd_cs(strip_tags($record['title']), $titleLimit).$output;
+            $output = '/' . GeneralUtility::fixed_lgd_cs(strip_tags($record['title']), $titleLimit) . $output;
             if ($fullTitleLimit) {
-                $fullOutput = '/'.GeneralUtility::fixed_lgd_cs(strip_tags($record['title']), $fullTitleLimit).$fullOutput;
+                $fullOutput = '/' . GeneralUtility::fixed_lgd_cs(strip_tags($record['title']), $fullTitleLimit) .
+                    $fullOutput;
             }
         }
 
@@ -2835,17 +2916,17 @@ class BackendUtility
      * opposite to another kind of root line known from the frontend where the
      * rootline stops when a root-template is found.
      *
-     * @param int    $uid         Page id for which to create the root line.
-     * @param string $clause      Can be used to select other criteria. It would
-     *                            typically be where-clauses that stops the process if we meet a page,
-     *                            the user has no reading access to.
-     * @param bool   $workspaceOl If true, version overlay is applied. This must
-     *                            be requested specifically because it is usually only wanted when the
-     *                            rootline is used for visual output while for permission checking you
-     *                            want the raw thing!
+     * @param int $uid Page id for which to create the root line.
+     * @param string $clause Can be used to select other criteria. It would
+     *      typically be where-clauses that stops the process if we meet a page,
+     *      the user has no reading access to.
+     * @param bool $workspaceOl If true, version overlay is applied. This must
+     *      be requested specifically because it is usually only wanted when the
+     *      rootline is used for visual output while for permission checking you
+     *      want the raw thing!
      *
      * @return array Root line array,
-     *               all the way to the page tree root (or as far as $clause allows!)
+     *      all the way to the page tree root (or as far as $clause allows!)
      */
     public static function BEgetRootLine($uid, $clause = '', $workspaceOl = false)
     {
@@ -2853,7 +2934,7 @@ class BackendUtility
 
         $output = array();
         $pid = $uid;
-        $ident = $pid.'-'.$clause.'-'.$workspaceOl;
+        $ident = $pid . '-' . $clause . '-' . $workspaceOl;
 
         if (is_array($backendGetRootLineCache[$ident])) {
             $output = $backendGetRootLineCache[$ident];
@@ -2897,40 +2978,39 @@ class BackendUtility
     /**
      * Gets the cached page record for the rootline.
      *
-     * @param int    $uid         Page id for which to create the root line.
-     * @param string $clause      Can be used to select other criteria. It would
-     *                            typically be where-clauses that stops the process if we meet a page,
-     *                            the user has no reading access to.
-     * @param bool   $workspaceOl If true, version overlay is applied. This must
-     *                            be requested specifically because it is usually only wanted when the
-     *                            rootline is used for visual output while for permission checking you
-     *                            want the raw thing!
+     * @param int $uid Page id for which to create the root line.
+     * @param string $clause Can be used to select other criteria. It would
+     *      typically be where-clauses that stops the process if we meet a page,
+     *      the user has no reading access to.
+     * @param bool $workspaceOl If true, version overlay is applied. This must
+     *      be requested specifically because it is usually only wanted when the
+     *      rootline is used for visual output while for permission checking you
+     *      want the raw thing!
      *
      * @return array Cached page record for the rootline
-     *
-     * @see BEgetRootLine
      */
     protected static function getCategoryForRootline($uid, $clause, $workspaceOl)
     {
         $database = self::getDatabaseConnection();
 
         static $getPageForRootlineCache = array();
-        $ident = $uid.'-'.$clause.'-'.$workspaceOl;
+        $ident = $uid . '-' . $clause . '-' . $workspaceOl;
 
         if (is_array($getPageForRootlineCache[$ident])) {
             $row = $getPageForRootlineCache[$ident];
         } else {
             $res = $database->exec_SELECTquery(
-                'mm.uid_foreign AS pid, tx_commerce_categories.uid, tx_commerce_categories.hidden, tx_commerce_categories.title,
-					tx_commerce_categories.ts_config, tx_commerce_categories.t3ver_oid,
-					tx_commerce_categories.perms_userid, tx_commerce_categories.perms_groupid,
-					tx_commerce_categories.perms_user, tx_commerce_categories.perms_group, tx_commerce_categories.perms_everybody',
+                'mm.uid_foreign AS pid, tx_commerce_categories.uid, tx_commerce_categories.hidden,
+                    tx_commerce_categories.title, tx_commerce_categories.ts_config, tx_commerce_categories.t3ver_oid,
+                    tx_commerce_categories.perms_userid, tx_commerce_categories.perms_groupid,
+                    tx_commerce_categories.perms_user, tx_commerce_categories.perms_group,
+                    tx_commerce_categories.perms_everybody',
                 'tx_commerce_categories
-					INNER JOIN pages ON tx_commerce_categories.pid = pages.uid
-					INNER JOIN tx_commerce_categories_parent_category_mm AS mm ON tx_commerce_categories.uid = mm.uid_local',
-                    // whereClauseMightContainGroupOrderBy
-                'tx_commerce_categories.uid = '.(int) $uid.' '.
-                    \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('tx_commerce_categories').' '.$clause
+                    INNER JOIN pages ON tx_commerce_categories.pid = pages.uid
+                    INNER JOIN tx_commerce_categories_parent_category_mm AS mm
+                        ON tx_commerce_categories.uid = mm.uid_local',
+                'tx_commerce_categories.uid = ' . (int) $uid . ' ' .
+                \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('tx_commerce_categories') . ' ' . $clause
             );
 
             $row = $database->sql_fetch_assoc($res);
@@ -2955,7 +3035,7 @@ class BackendUtility
      * on the perms.
      *
      * @param array $categoryUids Uids of the categories
-     * @param array $perms        String for permissions to check
+     * @param array $perms String for permissions to check
      *
      * @return bool
      */
@@ -3017,8 +3097,8 @@ class BackendUtility
      */
     public static function getProductFolderUid()
     {
-        list($modPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Commerce', 'commerce');
-        list($prodPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Products', 'commerce', $modPid);
+        list($modPid) = FolderRepository::initFolders('Commerce', 'commerce');
+        list($prodPid) = FolderRepository::initFolders('Products', 'commerce', $modPid);
 
         return $prodPid;
     }
@@ -3026,9 +3106,9 @@ class BackendUtility
     /**
      * Overwrites a product record.
      *
-     * @param int   $uidFrom UID of the product we want to copy
-     * @param int   $uidTo   UID of the product we want to overwrite
-     * @param array $locale  Languages
+     * @param int $uidFrom UID of the product we want to copy
+     * @param int $uidTo UID of the product we want to overwrite
+     * @param array $locale Languages
      *
      * @return bool
      */
@@ -3085,7 +3165,8 @@ class BackendUtility
         $data = self::getOverwriteData($table, $uidFrom, $uidTo);
 
         // do not overwrite uid, parent_categories, and create_date
-        unset($data[$table][$uidTo]['uid'],
+        unset(
+            $data[$table][$uidTo]['uid'],
             $data[$table][$uidTo]['categories'],
             $data[$table][$uidTo]['crdate'],
             $data[$table][$uidTo]['cruser_id']
@@ -3097,7 +3178,7 @@ class BackendUtility
         /**
          * Data handler.
          *
-         * @var \TYPO3\CMS\Core\DataHandling\DataHandler
+         * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
         $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
         $tce->stripslashes_values = 0;
@@ -3180,9 +3261,9 @@ class BackendUtility
     /**
      * Retrieves the data object to make an overwrite.
      *
-     * @param string $table   Tablename
-     * @param int    $uidFrom Uid of the record we which to retrieve the data from
-     * @param int    $destPid Uid of the record we want to overwrite
+     * @param string $table Tablename
+     * @param int $uidFrom Uid of the record we which to retrieve the data from
+     * @param int $destPid Uid of the record we want to overwrite
      *
      * @return array
      */
@@ -3191,7 +3272,7 @@ class BackendUtility
         /**
          * Data handler.
          *
-         * @var \TYPO3\CMS\Core\DataHandling\DataHandler
+         * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
         $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
         $tce->stripslashes_values = 0;
@@ -3218,8 +3299,8 @@ class BackendUtility
 
             $nonFields = array_unique(GeneralUtility::trimExplode(
                 ',',
-                'uid,perms_userid,perms_groupid,perms_user,perms_group,perms_everybody,t3ver_oid,t3ver_wsid,t3ver_id,t3ver_label,
-					t3ver_state,t3ver_swapmode,t3ver_count,t3ver_stage,t3ver_tstamp,',
+                'uid, perms_userid, perms_groupid, perms_user, perms_group, perms_everybody, t3ver_oid, t3ver_wsid,
+                    t3ver_id, t3ver_label, t3ver_state, t3ver_swapmode, t3ver_count, t3ver_stage, t3ver_tstamp,',
                 1
             ));
 
@@ -3228,7 +3309,9 @@ class BackendUtility
             if (is_array($row)) {
                 // Initializing:
                 $theNewId = $destPid;
-                $enableField = isset($tableConfig['ctrl']['enablecolumns']) ? $tableConfig['ctrl']['enablecolumns']['disabled'] : '';
+                $enableField = isset($tableConfig['ctrl']['enablecolumns']) ?
+                    $tableConfig['ctrl']['enablecolumns']['disabled'] :
+                    '';
                 $headerField = $tableConfig['ctrl']['label'];
 
                 // Getting default data:
@@ -3261,15 +3344,13 @@ class BackendUtility
                         } elseif (isset($copyAfterFields[$field])) {
                             $value = $copyAfterFields[$field];
                             // Revert to default for some fields:
-                        } elseif (
-                            $tableConfig['ctrl']['setToDefaultOnCopy']
+                        } elseif ($tableConfig['ctrl']['setToDefaultOnCopy']
                             && GeneralUtility::inList($tableConfig['ctrl']['setToDefaultOnCopy'], $field)
                         ) {
                             $value = $defaultData[$field];
                         } else {
                             // Hide at copy may override:
-                            if (
-                                $first
+                            if ($first
                                 && $field == $enableField
                                 && $tableConfig['ctrl']['hideAtCopy']
                                 && !$tce->neverHideAtCopy
@@ -3279,8 +3360,13 @@ class BackendUtility
                             }
 
                             // Prepend label on copy:
-                            if ($first && $field == $headerField && $tableConfig['ctrl']['prependAtCopy'] && !$tE['disablePrependAtCopy']) {
-                                // @todo this can't work resolvePid and clearPrefixFromValue are not implement in any file of commerce
+                            if ($first
+                                && $field == $headerField
+                                && $tableConfig['ctrl']['prependAtCopy']
+                                && !$tE['disablePrependAtCopy']
+                            ) {
+                                // @todo this can't work resolvePid and clearPrefixFromValue are not implement
+                                // wasn't present bevor 0.11.x and was broken from the beginning
                                 $value = $tce->getCopyHeader(
                                     $table,
                                     $this->resolvePid($table, $destPid),
@@ -3291,7 +3377,16 @@ class BackendUtility
                             }
                             // Processing based on the TCA config field
                             // type (files, references, flexforms...)
-                            $value = $tce->copyRecord_procBasedOnFieldType($table, $uid, $field, $value, $row, $conf, $tscPid, $language);
+                            $value = $tce->copyRecord_procBasedOnFieldType(
+                                $table,
+                                $uid,
+                                $field,
+                                $value,
+                                $row,
+                                $conf,
+                                $tscPid,
+                                $language
+                            );
                         }
 
                         // Add value to array.
@@ -3319,9 +3414,9 @@ class BackendUtility
     /**
      * Overwrites the article.
      *
-     * @param int   $uidFrom Uid of article that provides the new data
-     * @param int   $uidTo   Uid of article that is to be overwritten
-     * @param array $locale  Uids of sys_languages to overwrite
+     * @param int $uidFrom Uid of article that provides the new data
+     * @param int $uidTo Uid of article that is to be overwritten
+     * @param array $locale Uids of sys_languages to overwrite
      *
      * @return bool Success
      */
@@ -3362,7 +3457,8 @@ class BackendUtility
 
         $data = self::getOverwriteData($table, $uidFrom, $uidTo);
 
-        unset($data[$table][$uidTo]['uid'],
+        unset(
+            $data[$table][$uidTo]['uid'],
             $data[$table][$uidTo]['cruser_id'],
             $data[$table][$uidTo]['crdate'],
             $data[$table][$uidTo]['uid_product']
@@ -3374,7 +3470,7 @@ class BackendUtility
         /**
          * Data handler.
          *
-         * @var \TYPO3\CMS\Core\DataHandling\DataHandler
+         * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
         $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
         $tce->stripslashes_values = 0;
@@ -3410,6 +3506,7 @@ class BackendUtility
 
         return true;
     }
+
 
     /**
      * Get backend user.

@@ -368,7 +368,7 @@ class CommandMapHooks
         } elseif ($command == 'copy') {
             $newProductUid = $this->pObj->copyMappingArray['tx_commerce_products'][$productUid];
 
-            $this->changeCategoryOfCopiedProduct($newProductUid);
+            // $this->changeCategoryOfCopiedProduct($newProductUid);
             $this->copyProductTanslations($productUid, $newProductUid);
             $this->belib->copyArticlesByProduct($newProductUid, $productUid);
         }
@@ -619,7 +619,7 @@ class CommandMapHooks
         $fromData = array_pop(
             GeneralUtility::trimExplode('|', key($clipboard->clipData[$clipboard->current]['el']), true)
         );
-        $toData = array_pop(GeneralUtility::trimExplode('|', $pasteData['paste'], true));
+        $toData = abs(array_pop(GeneralUtility::trimExplode('|', $pasteData['paste'], true)));
 
         if ($fromData && $toData) {
             $database = $this->getDatabaseConnection();
