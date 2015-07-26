@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Repository;
 
 /*
@@ -87,14 +86,14 @@ class CategoryRepository extends Repository
         $database = $this->getDatabaseConnection();
 
         $result = 0;
-        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) && $uid > 0) {
+        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) && $uid) {
             $this->uid = $uid;
-            $row = $database->exec_SELECTgetSingleRow(
+            $row = (array) $database->exec_SELECTgetSingleRow(
                 'uid_foreign',
                 $this->databaseParentCategoryRelationTable,
-                'uid_local = '.(int) $uid.' and is_reference = 0'
+                'uid_local = ' . $uid . ' and is_reference = 0'
             );
-            if (is_array($row) && !empty($row)) {
+            if (!empty($row)) {
                 $result = $row['uid_foreign'];
             }
         }
@@ -114,11 +113,11 @@ class CategoryRepository extends Repository
         $database = $this->getDatabaseConnection();
 
         $result = array();
-        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) && ($uid > 0)) {
-            $result = $database->exec_SELECTgetSingleRow(
+        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) && $uid) {
+            $result = (array) $database->exec_SELECTgetSingleRow(
                 'perms_everybody, perms_user, perms_group, perms_userid, perms_groupid, editlock',
                 $this->databaseTable,
-                'uid = '.$uid
+                'uid = ' . $uid
             );
         }
 
@@ -134,8 +133,8 @@ class CategoryRepository extends Repository
      */
     public function getParentCategories($uid)
     {
-        if (empty($uid) || !is_numeric($uid)) {
-            return false;
+        if (empty($uid) || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
+            return array();
         }
 
         $database = $this->getDatabaseConnection();
@@ -147,7 +146,7 @@ class CategoryRepository extends Repository
                 $frontend->showHiddenRecords
             );
         } else {
-            $additionalWhere = ' AND '.$this->databaseTable.'.deleted = 0';
+            $additionalWhere = ' AND ' . $this->databaseTable . '.deleted = 0';
         }
 
         $result = $database->exec_SELECT_mm_query(
@@ -155,21 +154,21 @@ class CategoryRepository extends Repository
             $this->databaseTable,
             $this->databaseParentCategoryRelationTable,
             $this->databaseTable,
-            ' AND '.$this->databaseParentCategoryRelationTable.'.uid_local= '.(int) $uid.' '.$additionalWhere
+            ' AND ' . $this->databaseParentCategoryRelationTable . '.uid_local = ' . $uid . ' ' . $additionalWhere
         );
 
         if ($result) {
             $data = array();
             while (($row = $database->sql_fetch_assoc($result))) {
                 // @todo access_check for data sets
-                $data[] = (int) $row['uid_foreign'];
+                $data[] = $row['uid_foreign'];
             }
             $database->sql_free_result($result);
 
             return $data;
         }
 
-        return false;
+        return array();
     }
 
     /**
@@ -182,17 +181,18 @@ class CategoryRepository extends Repository
      */
     public function getL18nCategories($uid)
     {
-        if (empty($uid) || !is_numeric($uid)) {
-            return false;
+        if (empty($uid) || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
+            return array();
         }
 
         $database = $this->getDatabaseConnection();
         $this->uid = $uid;
         $res = $database->exec_SELECTquery(
             't1.title, t1.uid, t2.flag, t2.uid as sys_language',
-            $this->databaseTable.' AS t1 LEFT JOIN sys_language AS t2 ON t1.sys_language_uid = t2.uid',
-            'l18n_parent = '.$uid.' AND deleted = 0'
+            $this->databaseTable . ' AS t1 LEFT JOIN sys_language AS t2 ON t1.sys_language_uid = t2.uid',
+            'l18n_parent = ' . $uid . ' AND deleted = 0'
         );
+
         $uids = array();
         while (($row = $database->sql_fetch_assoc($res))) {
             $uids[] = $row;
@@ -204,14 +204,14 @@ class CategoryRepository extends Repository
     /**
      * Gets the child categories from this category.
      *
-     * @param int $uid         Product UID
+     * @param int $uid Product UID
      * @param int $languageUid Language UID
      *
      * @return array Array of child categories UID
      */
     public function getChildCategories($uid, $languageUid = -1)
     {
-        if (empty($uid) || !is_numeric($uid)) {
+        if (empty($uid) || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
             return array();
         }
 
@@ -231,7 +231,10 @@ class CategoryRepository extends Repository
         // We are using $this->databaseTable.sorting
 
         $localOrderField = $this->categoryOrderField;
-        $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook('Domain/Repository/CategoryRepository', 'getChildCategories');
+        $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook(
+            'Domain/Repository/CategoryRepository',
+            'getChildCategories'
+        );
         if (is_object($hookObject) && method_exists($hookObject, 'categoryOrder')) {
             $localOrderField = $hookObject->categoryOrder($this->categoryOrderField, $this);
         }
@@ -242,12 +245,14 @@ class CategoryRepository extends Repository
 
         $result = $database->exec_SELECT_mm_query(
             'uid_local',
-            $this->databaseTable, $this->databaseParentCategoryRelationTable,
             $this->databaseTable,
-            ' AND '.$this->databaseParentCategoryRelationTable.'.uid_foreign = '.(int) $uid.' '.$additionalWhere,
+            $this->databaseParentCategoryRelationTable,
+            $this->databaseTable,
+            ' AND ' . $this->databaseParentCategoryRelationTable . '.uid_foreign = ' . $uid . ' ' . $additionalWhere,
             '',
             $localOrderField
         );
+
         $return = array();
         if ($result) {
             $data = array();
@@ -261,8 +266,8 @@ class CategoryRepository extends Repository
                     $lresult = $database->exec_SELECTquery(
                         'uid',
                         $this->databaseTable,
-                        'l18n_parent = '.(int) $row['uid_local'].' AND sys_language_uid = '.$this->lang_uid.
-                            $this->enableFields($this->databaseTable, $frontend->showHiddenRecords)
+                        'l18n_parent = ' . (int) $row['uid_local'] . ' AND sys_language_uid = ' . $this->lang_uid .
+                        $this->enableFields($this->databaseTable, $frontend->showHiddenRecords)
                     );
 
                     if ($database->sql_num_rows($lresult)) {
@@ -285,14 +290,14 @@ class CategoryRepository extends Repository
     /**
      * Gets child products from this category.
      *
-     * @param int $uid         Product uid
+     * @param int $uid Product uid
      * @param int $languageUid Language uid
      *
      * @return array Array of child products UIDs
      */
     public function getChildProducts($uid, $languageUid = -1)
     {
-        if (empty($uid) || !is_numeric($uid)) {
+        if (empty($uid) || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
             return array();
         }
 
@@ -308,14 +313,19 @@ class CategoryRepository extends Repository
 
         $localOrderField = $this->productOrderField;
 
-        $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook('Domain/Repository/CategoryRepository', 'getChildProducts');
+        $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook(
+            'Domain/Repository/CategoryRepository',
+            'getChildProducts'
+        );
         if (is_object($hookObject) && method_exists($hookObject, 'productOrder')) {
             $localOrderField = $hookObject->productOrder($localOrderField, $this);
         }
 
-        $whereClause = 'AND tx_commerce_products_categories_mm.uid_foreign = '.(int) $uid.'
-			AND tx_commerce_products.uid=tx_commerce_articles.uid_product
-			AND tx_commerce_articles.uid=tx_commerce_article_prices.uid_article ';
+        $whereClause = 'AND tx_commerce_products_categories_mm.uid_foreign = ' . $uid . '
+            AND tx_commerce_products.uid = tx_commerce_articles.uid_product
+            AND tx_commerce_articles.uid = tx_commerce_article_prices.uid_article ';
+        $whereClause .= ' AND tx_commerce_article_prices.price_gross > 0';
+
         if (is_object($frontend->sys_page)) {
             $whereClause .= $this->enableFields('tx_commerce_products', $frontend->showHiddenRecords);
             $whereClause .= $this->enableFields('tx_commerce_articles', $frontend->showHiddenRecords);
@@ -324,13 +334,14 @@ class CategoryRepository extends Repository
 
             // Versioning - no deleted or versioned records, nor live placeholders
         $whereClause .= ' AND tx_commerce_products.deleted = 0
-			AND tx_commerce_products.pid != -1
-			AND tx_commerce_products.t3ver_state != 1';
+            AND tx_commerce_products.pid != -1
+            AND tx_commerce_products.t3ver_state != 1';
         $queryArray = array(
             'SELECT' => 'tx_commerce_products.uid',
-            'FROM' => 'tx_commerce_products ,tx_commerce_products_categories_mm,tx_commerce_articles, tx_commerce_article_prices',
-            'WHERE' => 'tx_commerce_products.uid=tx_commerce_products_categories_mm.uid_local '.$whereClause,
-            'GROUPBY' => '',
+            'FROM' => 'tx_commerce_products, tx_commerce_products_categories_mm, tx_commerce_articles,
+                tx_commerce_article_prices',
+            'WHERE' => 'tx_commerce_products.uid = tx_commerce_products_categories_mm.uid_local '.$whereClause,
+            'GROUPBY' => 'tx_commerce_products.uid',
             'ORDERBY' => $localOrderField,
             'LIMIT' => '',
         );
@@ -345,7 +356,7 @@ class CategoryRepository extends Repository
         $result = $database->exec_SELECT_queryArray($queryArray);
         if ($result !== false) {
             $data = array();
-            while (($row = $database->sql_fetch_assoc($result)) !== false) {
+            while (($row = $database->sql_fetch_assoc($result))) {
                 if ($languageUid == 0) {
                     $data[] = (int) $row['uid'];
                 } else {
@@ -378,24 +389,25 @@ class CategoryRepository extends Repository
      * Returns an array of array for the TS rootline
      * Recursive Call to build rootline.
      *
-     * @param int    $categoryUid Category uid
-     * @param string $clause      Where clause
-     * @param array  $result      Result
+     * @param int $categoryUid Category uid
+     * @param string $clause Where clause
+     * @param array $result Result
      *
      * @return array
      */
     public function getCategoryRootline($categoryUid, $clause = '', array $result = array())
     {
-        if ($categoryUid) {
-            $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+        if (!empty($categoryUid) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($categoryUid)) {
+            $row = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
                 'tx_commerce_categories.uid, mm.uid_foreign AS parent',
                 'tx_commerce_categories
-					INNER JOIN tx_commerce_categories_parent_category_mm AS mm ON tx_commerce_categories.uid = mm.uid_local',
-                'tx_commerce_categories.uid = '.(int) $categoryUid.
+                    INNER JOIN tx_commerce_categories_parent_category_mm AS mm
+                        ON tx_commerce_categories.uid = mm.uid_local',
+                'tx_commerce_categories.uid = ' . $categoryUid .
                 $this->enableFields('tx_commerce_categories', $this->getFrontendController()->showHiddenRecords)
             );
 
-            if (is_array($row) && !empty($row) && $row['parent'] != $categoryUid) {
+            if (!empty($row) && $row['parent'] != $categoryUid) {
                 $result = $this->getCategoryRootline((int) $row['parent'], $clause, $result);
             }
 
@@ -419,7 +431,7 @@ class CategoryRepository extends Repository
         return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             $this->databaseParentCategoryRelationTable,
-            'uid_foreign = '.(int) $foreignUid
+            'uid_foreign = ' . (int) $foreignUid
         );
     }
 
@@ -435,7 +447,7 @@ class CategoryRepository extends Repository
         return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             $this->databaseTable,
-            'uid = '.(int) $uid.$this->enableFields($this->databaseTable)
+            'uid = ' . (int) $uid . $this->enableFields($this->databaseTable)
         );
     }
 }
