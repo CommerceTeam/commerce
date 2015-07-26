@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Payment;
 
 /*
@@ -32,6 +31,13 @@ interface PaymentInterface
      * @return self
      */
     public function __construct(\CommerceTeam\Commerce\Controller\BaseController $pObj);
+
+    /**
+         * Get form errors
+         *
+         * @return array
+         */
+    public function getFormError();
 
     /**
      * Get parent object.
@@ -93,7 +99,9 @@ interface PaymentInterface
      *
      * @return bool TRUE if finishing order is allowed
      */
-    public function finishingFunction(array $config = array(), array $session = array(),
+    public function finishingFunction(
+        array $config = array(),
+        array $session = array(),
         \CommerceTeam\Commerce\Domain\Model\Basket $basket = null
     );
 

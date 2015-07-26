@@ -904,7 +904,7 @@ class CheckoutController extends BaseController
                 }
             }
 
-            $this->formError = $paymentObj->formError;
+            $this->formError = $paymentObj->getFormError();
 
             // Show the payment form if it's needed, otherwise go to next step
             $paymentForm = '<form name="paymentForm" action="'.$formAction.'" method="post">';

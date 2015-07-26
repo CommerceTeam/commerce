@@ -40,13 +40,6 @@ class Creditcard extends PaymentAbstract
     protected $type = 'creditcard';
 
     /**
-     * Form errors.
-     *
-     * @var array
-     */
-    protected $formError = array();
-
-    /**
      * Determine if additional data is needed.
      *
      * @return bool If additional data is needed true gets returned

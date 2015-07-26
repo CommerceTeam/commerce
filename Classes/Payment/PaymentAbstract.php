@@ -34,6 +34,13 @@ abstract class PaymentAbstract implements PaymentInterface
     public $errorMessages = array();
 
     /**
+     * Form errors.
+     *
+     * @var array
+     */
+    protected $formError = array();
+
+    /**
      * Parent object.
      *
      * @var \CommerceTeam\Commerce\Controller\CheckoutController
@@ -79,6 +86,16 @@ abstract class PaymentAbstract implements PaymentInterface
 
         $this->findCriterion();
         $this->findProvider();
+    }
+
+    /**
+     * Get form errors
+     *
+     * @return array
+     */
+    public function getFormError()
+    {
+        return $this->formError;
     }
 
     /**
