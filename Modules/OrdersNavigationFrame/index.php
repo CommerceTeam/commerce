@@ -19,7 +19,7 @@ $BACK_PATH = '../../../../../typo3/';
 require_once($BACK_PATH . 'init.php');
 
 // Make instance if it is not an AJAX call
-if (!(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)) {
+if (!(defined('TYPO3_REQUESTTYPE') || defined('TYPO3_REQUESTTYPE_AJAX'))) {
     /**
      * Orders navigation frame controller.
      *
