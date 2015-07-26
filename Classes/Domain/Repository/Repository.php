@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Repository;
 
 /*
@@ -77,12 +76,11 @@ class Repository
     /**
      * Get data.
      *
-     * @param int  $uid             UID for Data
-     * @param int  $langUid         Language Uid
+     * @param int $uid UID for Data
+     * @param int $langUid Language Uid
      * @param bool $translationMode Translation Mode for recordset
      *
      * @return array assoc Array with data
-     *
      * @todo implement access_check concering category tree
      */
     public function getData($uid, $langUid = -1, $translationMode = false)
@@ -166,7 +164,10 @@ class Repository
         }
 
         // error Handling
-        $this->error('exec_SELECTquery(\'*\', '.$this->databaseTable.', "uid = '.$uid.'"); returns no or more than one Result');
+        $this->error(
+            'exec_SELECTquery(\'*\', ' . $this->databaseTable . ', "uid = ' .
+            $uid . '"); returns no or more than one Result'
+        );
 
         return false;
     }
@@ -177,7 +178,6 @@ class Repository
      * @param int $uid Uid
      *
      * @return bool true id availiabe
-     *
      * @todo implement access_check
      */
     public function isUid($uid)
@@ -204,7 +204,7 @@ class Repository
      * @param int $uid Record Uid
      *
      * @return bool TRUE if is accessible
-     *              FALSE if is not accessible
+     *      FALSE if is not accessible
      */
     public function isAccessible($uid)
     {
@@ -212,16 +212,19 @@ class Repository
 
         $return = false;
         $uid = (int) $uid;
-        if ($uid > 0) {
+        if ($uid) {
             $proofSql = '';
             if (is_object($this->getFrontendController()->sys_page)) {
-                $proofSql = $this->enableFields($this->databaseTable, $this->getFrontendController()->showHiddenRecords);
+                $proofSql = $this->enableFields(
+                    $this->databaseTable,
+                    $this->getFrontendController()->showHiddenRecords
+                );
             }
 
             $result = $database->exec_SELECTquery(
                 '*',
                 $this->databaseTable,
-                'uid = '.$uid.$proofSql
+                'uid = ' . $uid . $proofSql
             );
 
             if ($database->sql_num_rows($result) == 1) {
@@ -238,6 +241,8 @@ class Repository
      * Error Handling Funktion.
      *
      * @param string $err Errortext
+     *
+     * @return void
      */
     public function error($err)
     {
@@ -249,7 +254,7 @@ class Repository
     /**
      * Gets all attributes from this product.
      *
-     * @param int        $uid                          Product uid
+     * @param int $uid Product uid
      * @param array|NULL $attributeCorrelationTypeList Corelation types
      *
      * @return array of attribute UID
@@ -264,8 +269,8 @@ class Repository
 
         $additionalWhere = '';
         if (is_array($attributeCorrelationTypeList)) {
-            $additionalWhere = ' AND '.$this->databaseAttributeRelationTable.'.uid_correlationtype in ('.
-                implode(',', $attributeCorrelationTypeList).')';
+            $additionalWhere = ' AND ' . $this->databaseAttributeRelationTable . '.uid_correlationtype in (' .
+                implode(',', $attributeCorrelationTypeList) . ')';
         }
 
         $result = $database->exec_SELECT_mm_query(
@@ -273,8 +278,8 @@ class Repository
             $this->databaseTable,
             $this->databaseAttributeRelationTable,
             'tx_commerce_attributes',
-            'AND '.$this->databaseTable.'.uid = '.$uid.$additionalWhere.' order by '.
-                $this->databaseAttributeRelationTable.'.sorting'
+            ' AND ' . $this->databaseTable . '.uid = ' . $uid . $additionalWhere . ' order by ' .
+            $this->databaseAttributeRelationTable . '.sorting'
         );
 
         $attributeUidList = false;
@@ -292,26 +297,34 @@ class Repository
     /**
      * Update record data.
      *
-     * @param int   $uid    Uid of the item
+     * @param int $uid Uid of the item
      * @param array $fields Assoc. array with update fields
      *
      * @return bool
      */
     public function updateRecord($uid, array $fields)
     {
-        if (!is_numeric($uid) || !is_array($fields)) {
+        if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) || empty($fields)) {
             if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('updateRecord (db_alib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+                    'updateRecord (db_alib) gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
             }
 
             return false;
         }
 
         $database = $this->getDatabaseConnection();
-        $database->exec_UPDATEquery($this->databaseTable, 'uid = '.$uid, $fields);
+        $database->exec_UPDATEquery($this->databaseTable, 'uid = ' . $uid, $fields);
         if ($database->sql_error()) {
             if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('updateRecord (db_alib): invalid sql.', COMMERCE_EXTKEY, 3);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+                    'updateRecord (db_alib): invalid sql.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
             }
 
             return false;
@@ -323,7 +336,7 @@ class Repository
     /**
      * Get enableFields.
      *
-     * @param string   $tableName         Table name
+     * @param string $tableName Table name
      * @param bool|int $showHiddenRecords Show hidden records
      *
      * @return string
@@ -331,7 +344,9 @@ class Repository
     public function enableFields($tableName, $showHiddenRecords = -1)
     {
         if (TYPO3_MODE === 'FE') {
-            $showHiddenRecords = $showHiddenRecords ? $showHiddenRecords : $this->getFrontendController()->showHiddenRecords;
+            $showHiddenRecords = $showHiddenRecords ?
+                $showHiddenRecords :
+                $this->getFrontendController()->showHiddenRecords;
             $result = $this->getFrontendController()->sys_page->enableFields($tableName, $showHiddenRecords);
         } else {
             $result = \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($tableName);
@@ -339,6 +354,7 @@ class Repository
 
         return $result;
     }
+
 
     /**
      * Get database connection.

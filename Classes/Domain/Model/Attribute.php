@@ -174,27 +174,22 @@ class Attribute extends AbstractEntity
      */
     public function getAllValues($returnAsObjects = false, $product = false)
     {
-        /*
-         * Attribute value
-         *
-         * @var $attributeValue \CommerceTeam\Commerce\Domain\Model\AttributeValue
-         */
         if ($this->attributeValuesLoaded === false) {
             if (($this->attribute_value_uids = $this->databaseConnection->getAttributeValueUids($this->uid))) {
                 foreach ($this->attribute_value_uids as $valueUid) {
-                    /*
+                    /**
                      * Attribute value
                      *
-                     * @var $attributeValue \CommerceTeam\Commerce\Domain\Model\AttributeValue
+                     * @var \CommerceTeam\Commerce\Domain\Model\AttributeValue $attributeValue
                      */
-                    $attributValue = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                    $attributeValue = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         'CommerceTeam\\Commerce\\Domain\\Model\\AttributeValue',
                         $valueUid,
                         $this->lang_uid
                     );
-                    $attributValue->loadData();
+                    $attributeValue->loadData();
 
-                    $this->attribute_values[$valueUid] = $attributValue;
+                    $this->attribute_values[$valueUid] = $attributeValue;
                 }
                 $this->attributeValuesLoaded = true;
             }
