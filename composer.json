@@ -1,0 +1,32 @@
+{
+	"name": "CommerceTeam/commerce",
+	"type": "typo3-cms-extension",
+	"description": "TYPO3 commerce shopping system",
+	"homepage": "https://github.com/CommerceTeam/commerce/",
+	"license": ["GPL-2.0+"],
+	"version": "4.0.0",
+
+	"support" : {
+		"issues" : "https://forge.typo3.org/projects/extension-commerce/issues"
+	},
+	"keywords": [
+		"TYPO3 CMS",
+		"commerce",
+		"eCommerce"
+	],
+
+	"require": {
+		"typo3/cms-core": "*"
+	},
+	"autoload": {
+		"psr-4": {
+			"CommerceTeam\\Commerce\\": "Classes/"
+		}
+	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/CommerceTeam/commerce.git"
+		}
+	]
+}

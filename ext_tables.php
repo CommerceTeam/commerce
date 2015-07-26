@@ -138,12 +138,12 @@ if (TYPO3_MODE == 'BE') {
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
         'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct',
-        'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper->ajaxExpandCollapseWithoutProduct'
+        'CommerceTeam\\Commerce\\Controller\\CategoryNavigationFrameController->ajaxExpandCollapseWithoutProduct'
     );
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
         'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse',
-        'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper->ajaxExpandCollapse'
+        'CommerceTeam\\Commerce\\Controller\\CategoryNavigationFrameController->ajaxExpandCollapse'
     );
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(

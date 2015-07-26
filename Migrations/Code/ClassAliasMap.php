@@ -127,7 +127,7 @@ return array(
     'Tx_Commerce_ViewHelpers_Browselinks_CategoryTree' => 'CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\CategoryTree',
     'Tx_Commerce_ViewHelpers_Browselinks_CategoryView' => 'CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\CategoryView',
     'Tx_Commerce_ViewHelpers_Browselinks_ProductView' => 'CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\ProductView',
-    'Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper' => 'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\CategoryViewHelper',
+    'Tx_Commerce_ViewHelpers_Navigation_CategoryViewHelper' => 'CommerceTeam\\Commerce\\Controller\\CategoryNavigationFrameController',
     'Tx_Commerce_ViewHelpers_Navigation_OrdersViewHelper' => 'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\OrdersViewHelper',
     'Tx_Commerce_ViewHelpers_Navigation_SystemdataViewHelper' => 'CommerceTeam\\Commerce\\ViewHelpers\\Navigation\\SystemdataViewHelper',
     'Tx_Commerce_ViewHelpers_AttributeEditFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\AttributeEditFunc',
