@@ -577,9 +577,9 @@ class AddressesController extends BaseController
      * Returns HTML form for a single address. The fields are fetched from
      * tt_address and configured in TS.
      *
-     * @param string $action     Action that should be performed (can be "new" or "edit")
-     * @param int    $addressUid UID of the page where the addresses are stored
-     * @param array  $config     Configuration array for all fields
+     * @param string $action Action that should be performed (can be "new" or "edit")
+     * @param int $addressUid UID of the page where the addresses are stored
+     * @param array $config Configuration array for all fields
      *
      * @return string HTML code with the form for editing an address
      */
@@ -606,6 +606,19 @@ class AddressesController extends BaseController
 
         // Build query to select an address from the database if user is logged in
         $addressData = ($addressUid != null) ? $this->addresses[$addressUid] : array();
+
+        foreach ($hooks as $hookObj) {
+            if (method_exists($hookObj, 'preProcessAddress')) {
+                $addressData = $hookObj->preProcessAddress(
+                    $addressData,
+                    $action,
+                    $addressUid,
+                    $addressType,
+                    $config,
+                    $this
+                );
+            }
+        }
 
         if ($this->formErrors()) {
             $addressData = $this->piVars;

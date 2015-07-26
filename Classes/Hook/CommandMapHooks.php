@@ -605,6 +605,7 @@ class CommandMapHooks
      */
     protected function changeCategoryOfCopiedProduct($productUid)
     {
+        // @todo maybe not needed anymore. remove if testing prooves obsolence
         $pasteData = GeneralUtility::_GP('CB');
 
         /**
