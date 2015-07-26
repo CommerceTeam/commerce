@@ -1280,6 +1280,60 @@ class BackendUtility
     }
 
     /**
+     * save Price-Flexform with given Article-UID
+     *
+     * @param int $priceUid ID of Price-Dataset save as flexform
+     * @param int $articleUid ID of article which the flexform is for
+     * @param array $priceDataArray Priceinformation for the article
+     *
+     * @return boolean Status of method
+     */
+    public function savePriceFlexformWithArticle($priceUid, $articleUid, array $priceDataArray)
+    {
+        $prices = $this->getDatabaseConnection()->exec_SELECTgetRows(
+            'prices',
+            'tx_commerce_articles',
+            'uid = ' . (int) $articleUid
+        );
+
+        if (strlen($prices['prices']) > 0) {
+            $data = GeneralUtility::xml2array($prices['prices']);
+        } else {
+            $data = array('data' => array('sDEF' => array('lDEF')));
+        }
+
+        $data['data']['sDEF']['lDEF']['price_net_' . $priceUid] = array(
+            'vDEF' => sprintf('%.2f', ($priceDataArray['price_net'] /100))
+        );
+        $data['data']['sDEF']['lDEF']['price_gross_' . $priceUid] = array(
+            'vDEF' => sprintf('%.2f', ($priceDataArray['price_gross'] /100))
+        );
+        $data['data']['sDEF']['lDEF']['hidden_' . $priceUid] = array('vDEF' => $priceDataArray['hidden']);
+        $data['data']['sDEF']['lDEF']['starttime_' . $priceUid] = array('vDEF' => $priceDataArray['starttime']);
+        $data['data']['sDEF']['lDEF']['endtime_' . $priceUid] = array('vDEF' => $priceDataArray['endtime']);
+        $data['data']['sDEF']['lDEF']['fe_group_' . $priceUid] = array('vDEF' => $priceDataArray['fe_group']);
+        $data['data']['sDEF']['lDEF']['purchase_price_' . $priceUid] = array(
+            'vDEF' => sprintf('%.2f', ($priceDataArray['purchase_price'] /100))
+        );
+        $data['data']['sDEF']['lDEF']['price_scale_amount_start_' . $priceUid] = array(
+            'vDEF' => $priceDataArray['price_scale_amount_start']
+        );
+        $data['data']['sDEF']['lDEF']['price_scale_amount_end_' . $priceUid] = array(
+            'vDEF' => $priceDataArray['price_scale_amount_end']
+        );
+
+        $xml = GeneralUtility::array2xml($data, '', 0, 'T3FlexForms');
+
+        $res = $this->getDatabaseConnection()->exec_UPDATEquery(
+            'tx_commerce_articles',
+            'uid = ' . (int) $articleUid,
+            array('prices' => $xml)
+        );
+
+        return (bool)$res;
+    }
+
+    /**
      * Get order folder selector.
      *
      * @param int $pid      Page id

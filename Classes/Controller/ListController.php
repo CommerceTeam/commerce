@@ -861,10 +861,11 @@ class ListController extends BaseController
                                         $attrValue = $v['value'];
                                     }
                                     if (isset($v['icon']) && $v['icon'] != '') {
+                                        $handle = $this->handle . '.';
                                         $attrIcon = $this->renderValue(
                                             $v['icon'],
                                             'IMAGE',
-                                            $this->conf[$this->handle . '.']['products.']['productAttributes.']['fields.']['icon.']
+                                            $this->conf[$handle]['products.']['productAttributes.']['fields.']['icon.']
                                         );
                                     }
                                 }

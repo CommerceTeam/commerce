@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Controller;
 
 /*
@@ -147,6 +146,8 @@ class WizardController
 
     /**
      * Constructor function for the class.
+     *
+     * @return void
      */
     public function init()
     {
@@ -204,6 +205,8 @@ class WizardController
 
     /**
      * Main processing, creating the list of new record tables to select from.
+     *
+     * @return void
      */
     public function main()
     {
@@ -236,15 +239,14 @@ class WizardController
             );
 
                 // Set header-HTML and return_url
-            $this->code = $this->doc->getHeader('pages', $this->pageinfo, $this->pageinfo['_thePath']).'<br />
-			';
+            $this->code = $this->doc->getHeader('pages', $this->pageinfo, $this->pageinfo['_thePath']) . '<br />';
 
             $this->regularNew();
 
                 // Create go-back link.
             if ($this->returnUrl) {
                 $this->code .= '<br />
-					<a href="'.htmlspecialchars($this->returnUrl).'" class="typo3-goBack">'.
+					<a href="' . htmlspecialchars($this->returnUrl) . '" class="typo3-goBack">'.
                         \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
                             'actions-view-go-back',
                             array('title' => $language->getLL('goBack', 1))
@@ -259,6 +261,8 @@ class WizardController
 
     /**
      * Ending page output and echo'ing content to browser.
+     *
+     * @return void
      */
     public function printContent()
     {
@@ -267,6 +271,8 @@ class WizardController
 
     /**
      * Create a regular new element (pages and records).
+     *
+     * @return void
      */
     protected function regularNew()
     {
@@ -275,15 +281,14 @@ class WizardController
 
         // Slight spacer from header:
         $this->code .= '<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
-                $this->getBackPath(),
-                'gfx/ol/halfline.gif',
-                'width="18" height="8"'
-            ).' alt="" /><br />';
+            $this->getBackPath(),
+            'gfx/ol/halfline.gif',
+            'width="18" height="8"'
+        ) . ' alt="" /><br />';
 
         // New tables INSIDE this category
         foreach ($this->param as $table => $param) {
-            if (
-                $this->showNewRecLink($table)
+            if ($this->showNewRecLink($table)
                 && $this->isTableAllowedForThisPage($this->pageinfo, $table)
                 && $backendUser->check('tables_modify', $table)
                 && ($param['ctrl']['rootLevel'] xor $this->id || $param['ctrl']['rootLevel'] == -1)
@@ -293,25 +298,26 @@ class WizardController
                 switch ($cmd) {
                     case 'new':
                         // Create new link for record:
-                        $rowContent = '<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
-                                $this->getBackPath(),
-                                'gfx/ol/join.gif',
-                                'width="18" height="16"'
-                            ).' alt="" />'.
-                            $this->linkWrap(
-                                \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIconForRecord($table, array()).
-                                    $language->sL(SettingsFactory::getInstance()->getTcaValue($table.'.ctrl.title'), 1),
-                                $table,
-                                $this->id
-                            );
+                        $rowContent = '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
+                            $this->getBackPath(),
+                            'gfx/ol/join.gif',
+                            'width="18" height="16"'
+                        ) . ' alt="" />' .
+                        $this->linkWrap(
+                            \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIconForRecord($table, array()) .
+                            $language->sL(SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.title'), 1),
+                            $table,
+                            $this->id
+                        );
 
                         // Compile table row:
                         $tRows[] = '
-				<tr>
-					<td nowrap="nowrap">'.$rowContent.'</td>
-					<td>'.\TYPO3\CMS\Backend\Utility\BackendUtility::cshItem($table, '', $this->getBackPath(), '').'</td>
-				</tr>
-				';
+                <tr>
+                    <td nowrap="nowrap">' . $rowContent . '</td>
+                    <td>' . \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem($table, '', $this->getBackPath(), '') .
+                            '</td>
+                </tr>
+                ';
                         break;
 
                     default:
@@ -322,11 +328,12 @@ class WizardController
         // Compile table row:
         $tRows[] = '
 			<tr>
-				<td><img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
+				<td><img' .
+            \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
                 $this->getBackPath(),
                 'gfx/ol/stopper.gif',
                 'width="18" height="16"'
-            ).' alt="" /></td>
+            ) . ' alt="" /></td>
 				<td></td>
 			</tr>
 		';
@@ -334,7 +341,7 @@ class WizardController
         // Make table:
         $this->code .= '
 			<table border="0" cellpadding="0" cellspacing="0" id="typo3-newRecord">
-			'.implode('', $tRows).'
+			' . implode('', $tRows) . '
 			</table>
 		';
 
@@ -351,19 +358,23 @@ class WizardController
      * Links the string $code to a create-new form for a record
      * in $table created on page $pid.
      *
-     * @param string $code  Link string
+     * @param string $code Link string
      * @param string $table Table name (in which to create new record)
-     * @param int    $pid   PID value for the
-     *                      "&edit['.$table.']['.$pid.']=new" command (positive/negative)
+     * @param int $pid PID value for the
+     *      "&edit['.$table.']['.$pid.']=new" command (positive/negative)
      *
      * @return string The link.
      */
     protected function linkWrap($code, $table, $pid)
     {
-        $params = '&edit['.$table.']['.$pid.']=new'.$this->compileDefVals($table);
-        $onClick = \TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick($params, $this->getBackPath(), $this->returnUrl);
+        $params = '&edit[' . $table . '][' . $pid . ']=new' . $this->compileDefVals($table);
+        $onClick = \TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick(
+            $params,
+            $this->getBackPath(),
+            $this->returnUrl
+        );
 
-        return '<a href="#" onclick="'.htmlspecialchars($onClick).'">'.$code.'</a>';
+        return '<a href="#" onclick="' . htmlspecialchars($onClick) . '">' . $code . '</a>';
     }
 
     /**
@@ -379,7 +390,7 @@ class WizardController
         if (is_array($data[$table])) {
             $result = '';
             foreach ($data[$table] as $key => $value) {
-                $result .= '&defVals['.$table.']['.$key.']='.urlencode($value);
+                $result .= '&defVals[' . $table . '][' . $key . ']=' . urlencode($value);
             }
         } else {
             $result = '';
@@ -392,11 +403,11 @@ class WizardController
      * Returns true if the tablename $checkTable is allowed to be created
      * on the page with record $row.
      *
-     * @param array  $row        Record for parent page.
+     * @param array $row Record for parent page.
      * @param string $checkTable Table name to check
      *
      * @return bool Returns true if the tablename $checkTable is allowed
-     *              to be created on the page with record $row
+     *      to be created on the page with record $row
      */
     protected function isTableAllowedForThisPage(array $row, $checkTable)
     {
@@ -433,11 +444,11 @@ class WizardController
      * Returns true if the $table tablename is found in $allowedNewTables
      * (or if $allowedNewTables is empty).
      *
-     * @param string $table            Table name to test if in allowedTables
-     * @param array  $allowedNewTables Array of new tables that are allowed.
+     * @param string $table Table name to test if in allowedTables
+     * @param array $allowedNewTables Array of new tables that are allowed.
      *
      * @return bool Returns true if the $table tablename is found in
-     *              $allowedNewTables (or if $allowedNewTables is empty)
+     *      $allowedNewTables (or if $allowedNewTables is empty)
      */
     protected function showNewRecLink($table, array $allowedNewTables = array())
     {
@@ -445,6 +456,7 @@ class WizardController
 
         return empty($allowedNewTables) || in_array($table, $allowedNewTables);
     }
+
 
     /**
      * Get backend user.

@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Controller;
 
 /*
@@ -85,7 +84,7 @@ class InvoiceController extends BaseController
      * Main Method.
      *
      * @param string $content Content of this plugin
-     * @param array  $conf    TS configuration for this plugin
+     * @param array $conf TS configuration for this plugin
      *
      * @return string Compiled content
      */
@@ -103,7 +102,10 @@ class InvoiceController extends BaseController
 
         // Check for the logged in USER
         // It could be an FE USer, a BE User or an automated script
-        if (empty($this->getFrontendUser()->user) && !$backendUser->user['uid'] && $_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) {
+        if (empty($this->getFrontendUser()->user)
+            && !$backendUser->user['uid']
+            && $_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']
+        ) {
             return $this->pi_getLL('not_logged_in');
         } elseif ($this->getFrontendUser()->user && !$backendUser->user['uid']) {
             $this->user = $this->getFrontendUser()->user;
@@ -140,7 +142,11 @@ class InvoiceController extends BaseController
         // Grab the template
         $this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
         if (empty($this->templateCode)) {
-            return $this->error('init', __LINE__, 'Template File not loaded, maybe it doesn\'t exist: '.$this->conf['templateFile']);
+            return $this->error(
+                'init',
+                __LINE__,
+                'Template File not loaded, maybe it doesn\'t exist: ' . $this->conf['templateFile']
+            );
         }
 
         // Get subparts
@@ -169,22 +175,32 @@ class InvoiceController extends BaseController
                 (bool) $this->conf['showCurrencySign']
             );
             $markerArray['###ORDER_TOTAL###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
-                $this->order['sum_price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+                $this->order['sum_price_gross'],
+                $this->conf['currency'],
+                (bool) $this->conf['showCurrencySign']
             );
             $markerArray['###ORDER_NET_TOTAL###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
-                $this->order['sum_price_net'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+                $this->order['sum_price_net'],
+                $this->conf['currency'],
+                (bool) $this->conf['showCurrencySign']
             );
             $markerArray['###ORDER_GROSS_TOTAL###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
-                $this->order['sum_price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+                $this->order['sum_price_gross'],
+                $this->conf['currency'],
+                (bool) $this->conf['showCurrencySign']
             );
             $markerArray['###ORDER_ID###'] = $this->order['order_id'];
             $markerArray['###ORDER_DATE###'] = strftime($this->conf['orderDateFormat'], $this->order['crdate']);
 
                 // Fill some of the content from typoscript settings, to ease the
-            $markerArray['###INVOICE_HEADER###'] = $this->cObj->cObjGetSingle($this->conf['invoiceheader'], $this->conf['invoiceheader.']);
+            $markerArray['###INVOICE_HEADER###'] = $this->cObj->cObjGetSingle(
+                $this->conf['invoiceheader'],
+                $this->conf['invoiceheader.']
+            );
             $markerArray['###INVOICE_SHOP_NAME###'] = $this->cObj->TEXT($this->conf['shopname.']);
             $markerArray['###INVOICE_SHOP_ADDRESS###'] = $this->cObj->cObjGetSingle(
-                $this->conf['shopdetails'], $this->conf['shopdetails.']
+                $this->conf['shopdetails'],
+                $this->conf['shopdetails.']
             );
             $markerArray['###INVOICE_INTRO_MESSAGE###'] = $this->cObj->TEXT($this->conf['intro.']);
             $markerArray['###INVOICE_THANKYOU###'] = $this->cObj->TEXT($this->conf['thankyou.']);
@@ -199,19 +215,33 @@ class InvoiceController extends BaseController
             }
 
             $subpartArray['###LISTING_ARTICLE###'] = $this->getOrderArticles(
-                $this->order['uid'], $this->conf['OrderArticles.'], 'ARTICLE_'
+                $this->order['uid'],
+                $this->conf['OrderArticles.'],
+                'ARTICLE_'
             );
             $subpartArray['###ADDRESS_BILLING_DATA###'] = $this->getAddressData(
-                $this->order['cust_invoice'], $this->conf['addressBilling.'], 'ADDRESS_BILLING_'
+                $this->order['cust_invoice'],
+                $this->conf['addressBilling.'],
+                'ADDRESS_BILLING_'
             );
             $subpartArray['###ADDRESS_DELIVERY_DATA###'] = $this->getAddressData(
-                $this->order['cust_deliveryaddress'], $this->conf['addressDelivery.'], 'ADDRESS_DELIVERY_'
+                $this->order['cust_deliveryaddress'],
+                $this->conf['addressDelivery.'],
+                'ADDRESS_DELIVERY_'
             );
             $this->content = $this->substituteMarkerArrayNoCached($this->template['invoice'], array(), $subpartArray);
 
             // Buid content from template + array
-            $this->content = $this->cObj->substituteSubpart($this->content, '###LISTING_PAYMENT_ROW###', $this->orderPayment);
-            $this->content = $this->cObj->substituteSubpart($this->content, '###LISTING_SHIPPING_ROW###', $this->orderDelivery);
+            $this->content = $this->cObj->substituteSubpart(
+                $this->content,
+                '###LISTING_PAYMENT_ROW###',
+                $this->orderPayment
+            );
+            $this->content = $this->cObj->substituteSubpart(
+                $this->content,
+                '###LISTING_SHIPPING_ROW###',
+                $this->orderDelivery
+            );
             $this->content = $this->cObj->substituteMarkerArray($this->content, $markerArray);
             $this->content = $this->cObj->substituteMarkerArray($this->content, $this->languageMarker);
         } else {
@@ -230,6 +260,8 @@ class InvoiceController extends BaseController
      * Check Access.
      *
      * @param bool|string $enabled Optional, default FALSE
+     *
+     * @return void
      */
     protected function invoiceBackendOnly($enabled = false)
     {
@@ -252,13 +284,13 @@ class InvoiceController extends BaseController
     /**
      * Render ordered articles.
      *
-     * @param int    $orderUid   OrderUID
-     * @param array  $typoScript Optional, default is FALSE, contains TS configuration
-     * @param string $prefix     Prefix
+     * @param int $orderUid OrderUID
+     * @param array $typoScript Optional, default is FALSE, contains TS configuration
+     * @param string $prefix Prefix
      *
      * @return string HTML-Output rendered
      */
-    protected function getOrderArticles($orderUid, array $typoScript = array(), $prefix)
+    protected function getOrderArticles($orderUid, array $typoScript = array(), $prefix = '')
     {
         $database = $this->getDatabaseConnection();
 
@@ -281,22 +313,34 @@ class InvoiceController extends BaseController
         while (($row = $database->sql_fetch_assoc($res))) {
             $markerArray = $this->generateMarkerArray($row, $typoScript, $prefix, 'tx_commerce_order_articles');
             $markerArray['ARTICLE_PRICE'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
-                $row['price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+                $row['price_gross'],
+                $this->conf['currency'],
+                (bool) $this->conf['showCurrencySign']
             );
             $markerArray['ARTICLE_PRICE_GROSS'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
-                $row['price_gross'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+                $row['price_gross'],
+                $this->conf['currency'],
+                (bool) $this->conf['showCurrencySign']
             );
             $markerArray['ARTICLE_PRICE_NET'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
-                $row['price_net'], $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+                $row['price_net'],
+                $this->conf['currency'],
+                (bool) $this->conf['showCurrencySign']
             );
             $markerArray['ARTICLE_TOTAL'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
-                ($row['amount'] * $row['price_gross']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+                ($row['amount'] * $row['price_gross']),
+                $this->conf['currency'],
+                (bool) $this->conf['showCurrencySign']
             );
             $markerArray['ARTICLE_TOTAL_GROSS'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
-                ($row['amount'] * $row['price_gross']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+                ($row['amount'] * $row['price_gross']),
+                $this->conf['currency'],
+                (bool) $this->conf['showCurrencySign']
             );
             $markerArray['ARTICLE_TOTAL_NET'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
-                ($row['amount'] * $row['price_net']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+                ($row['amount'] * $row['price_net']),
+                $this->conf['currency'],
+                (bool) $this->conf['showCurrencySign']
             );
             $markerArray['ARTICLE_POSITION'] = $orderpos++;
             $out .= $this->cObj->substituteMarkerArray($this->template['item'], $markerArray, '###|###', 1);
@@ -308,13 +352,13 @@ class InvoiceController extends BaseController
     /**
      * Render address data.
      *
-     * @param int    $addressUid AddressUID
-     * @param array  $typoScript Optional, default is FALSE, contains TS configuration
-     * @param string $prefix     Prefix
+     * @param int $addressUid AddressUID
+     * @param array $typoScript Optional, default is FALSE, contains TS configuration
+     * @param string $prefix Prefix
      *
      * @return string HTML-Output rendert
      */
-    protected function getAddressData($addressUid = 0, array $typoScript = array(), $prefix)
+    protected function getAddressData($addressUid = 0, array $typoScript = array(), $prefix = '')
     {
         $database = $this->getDatabaseConnection();
 
@@ -323,16 +367,16 @@ class InvoiceController extends BaseController
         }
 
         if ($this->user) {
-            $queryString = 'tt_address.tx_commerce_fe_user_id='.(int) $this->order['cust_fe_user'];
+            $queryString = 'tt_address.tx_commerce_fe_user_id=' . (int) $this->order['cust_fe_user'];
             $queryString .= ' AND tt_address.tx_commerce_fe_user_id = fe_users.uid';
             if ($addressUid) {
-                $queryString .= ' AND tt_address.uid = '.(int) $addressUid;
+                $queryString .= ' AND tt_address.uid = ' . (int) $addressUid;
             } else {
                 $queryString .= ' AND tt_address.tx_commerce_address_type_id=1';
             }
             $res = $database->exec_SELECTquery(
                 'tt_address.* ',
-                'tt_address,fe_users',
+                'tt_address, fe_users',
                 $queryString,
                 '',
                 '',
@@ -341,7 +385,7 @@ class InvoiceController extends BaseController
         } else {
             $queryString = ' 1 = 1 ';
             if ($addressUid) {
-                $queryString .= ' AND tt_address.uid = '.$addressUid;
+                $queryString .= ' AND tt_address.uid = ' . $addressUid;
             } else {
                 $queryString .= ' AND tt_address.tx_commerce_address_type_id=1';
             }
@@ -355,7 +399,7 @@ class InvoiceController extends BaseController
             );
         }
         $markerArray = $this->generateMarkerArray($database->sql_fetch_assoc($res), $typoScript, $prefix, 'tt_address');
-        $template = $this->cObj->getSubpart($this->templateCode, '###'.$prefix.'DATA###');
+        $template = $this->cObj->getSubpart($this->templateCode, '###' . $prefix . 'DATA###');
         $content = $this->cObj->substituteMarkerArray($template, $markerArray, '###|###', 1);
         $content = $this->cObj->substituteMarkerArray($content, $this->languageMarker);
 
@@ -371,10 +415,10 @@ class InvoiceController extends BaseController
     {
         $database = $this->getDatabaseConnection();
 
-        $queryString = 'order_id="'.mysql_real_escape_string($this->order_id).'"';
-        $queryString .= $this->cObj->enableFields('tx_commerce_orders');
+        $queryString = 'order_id = ' . $database->fullQuoteStr($this->order_id, 'tx_commerce_orders') .
+            $this->cObj->enableFields('tx_commerce_orders');
         if ($this->user) {
-            $queryString .= ' AND cust_fe_user = '.(int) $this->user['uid'];
+            $queryString .= ' AND cust_fe_user = ' . (int) $this->user['uid'];
         }
         $res = $database->exec_SELECTquery(
             '*',
@@ -392,19 +436,19 @@ class InvoiceController extends BaseController
     /**
      * Render marker array for System Articles.
      *
-     * @param int    $orderUid    OrderUID
-     * @param int    $articleType Optional, articleTypeID
-     * @param string $prefix      Prefix
+     * @param int $orderUid OrderUID
+     * @param int $articleType Optional, articleTypeID
+     * @param string $prefix Prefix
      *
      * @return array System Articles
      */
-    protected function getOrderSystemArticles($orderUid, $articleType = 0, $prefix)
+    protected function getOrderSystemArticles($orderUid, $articleType = 0, $prefix = '')
     {
         $database = $this->getDatabaseConnection();
 
-        $queryString = 'order_uid='.$orderUid.' ';
+        $queryString = 'order_uid=' . $orderUid . ' ';
         if ($articleType) {
-            $queryString .= ' AND article_type_uid = '.$articleType.' ';
+            $queryString .= ' AND article_type_uid = ' . $articleType . ' ';
         }
 
         $queryString .= $this->cObj->enableFields('tx_commerce_order_articles');
@@ -415,12 +459,14 @@ class InvoiceController extends BaseController
         );
         $content = '';
         while (($row = $database->sql_fetch_assoc($res))) {
-            $subpart = $this->cObj->getSubpart($this->templateCode, '###LISTING_'.$prefix.'ROW###');
+            $subpart = $this->cObj->getSubpart($this->templateCode, '###LISTING_' . $prefix . 'ROW###');
             // @todo Use $markerArray = $this->generateMarkerArray($row, '', $prefix);
             $markerArray['###'.$prefix.'AMOUNT###'] = $row['amount'];
             $markerArray['###'.$prefix.'METHOD###'] = $row['title'];
             $markerArray['###'.$prefix.'COST###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
-                ($row['amount'] * $row['price_gross']), $this->conf['currency'], (bool) $this->conf['showCurrencySign']
+                ($row['amount'] * $row['price_gross']),
+                $this->conf['currency'],
+                (bool) $this->conf['showCurrencySign']
             );
             $content .= $this->cObj->substituteMarkerArray($subpart, $markerArray);
         }

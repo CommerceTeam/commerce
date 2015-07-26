@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Controller;
 
 /*
@@ -15,6 +14,7 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -60,6 +60,8 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
 
     /**
      * Initialization.
+     *
+     * @return void
      */
     public function init()
     {
@@ -70,7 +72,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $this->id = (int) GeneralUtility::_GP('id');
         // Find the right pid for the Ordersfolder
         $this->orderPid = current(
-            array_unique(\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'))
+            array_unique(FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'))
         );
         if ($this->id == $this->orderPid) {
             $this->id = 0;
@@ -103,19 +105,23 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
 
     /**
      * Initializes the Page.
+     *
+     * @return void
      */
     public function initPage()
     {
         $this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
         $this->doc->backPath = $this->getBackPath();
         $this->doc->docType = 'xhtml_trans';
-        $this->doc->setModuleTemplate(PATH_TXCOMMERCE.'Resources/Private/Backend/mod_index.html');
+        $this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
 
         $this->doc->form = '<form action="" method="POST">';
     }
 
     /**
      * Main function of the module. Write the content to $this->content.
+     *
+     * @return void
      */
     public function main()
     {
@@ -165,8 +171,16 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $dblist->hideTranslations = $this->modTSconfig['properties']['hideTranslations'];
         $dblist->tableTSconfigOverTCA = $this->modTSconfig['properties']['table.'];
         $dblist->alternateBgColors = $this->modTSconfig['properties']['alternateBgColors'] ? 1 : 0;
-        $dblist->allowedNewTables = GeneralUtility::trimExplode(',', $this->modTSconfig['properties']['allowedNewTables'], 1);
-        $dblist->deniedNewTables = GeneralUtility::trimExplode(',', $this->modTSconfig['properties']['deniedNewTables'], 1);
+        $dblist->allowedNewTables = GeneralUtility::trimExplode(
+            ',',
+            $this->modTSconfig['properties']['allowedNewTables'],
+            1
+        );
+        $dblist->deniedNewTables = GeneralUtility::trimExplode(
+            ',',
+            $this->modTSconfig['properties']['deniedNewTables'],
+            1
+        );
         $dblist->newWizards = $this->modTSconfig['properties']['newWizards'] ? 1 : 0;
         $dblist->pageRow = $this->pageinfo;
         ++$dblist->counter;
@@ -257,7 +271,14 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
 
             // Initialize the listing object, dblist, for rendering the list:
             $this->pointer = max(min($this->pointer, 100000), 0);
-            $dblist->start($this->id, $this->table, $this->pointer, $this->search_field, $this->search_levels, $this->showLimit);
+            $dblist->start(
+                $this->id,
+                $this->table,
+                $this->pointer,
+                $this->search_field,
+                $this->search_levels,
+                $this->showLimit
+            );
             $dblist->setDispFields();
 
             // Render versioning selector:
@@ -268,56 +289,57 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
             // Render the list of tables:
             $dblist->generateList();
             $listUrl = $dblist->listURL();
-                // Add JavaScript functions to the page:
+            // Add JavaScript functions to the page:
             $this->doc->JScode = $this->doc->wrapScriptTags('
-				function jumpExt(URL,anchor) {	//
-					var anc = anchor?anchor:"";
-					window.location.href = URL+(T3_THIS_LOCATION?"&returnUrl="+T3_THIS_LOCATION:"")+anc;
-					return false;
-				}
-				function jumpSelf(URL) {	//
-					window.location.href = URL+(T3_RETURN_URL?"&returnUrl="+T3_RETURN_URL:"");
-					return false;
-				}
+                function jumpExt(URL,anchor) {	//
+                    var anc = anchor?anchor:"";
+                    window.location.href = URL+(T3_THIS_LOCATION?"&returnUrl="+T3_THIS_LOCATION:"")+anc;
+                    return false;
+                }
+                function jumpSelf(URL) {	//
+                    window.location.href = URL+(T3_RETURN_URL?"&returnUrl="+T3_RETURN_URL:"");
+                    return false;
+                }
 
-				function setHighlight(id) {	//
-					top.fsMod.recentIds["web"]=id;
-					top.fsMod.navFrameHighlightedID["web"]="pages"+id+"_"+top.fsMod.currentBank;	// For highlighting
+                function setHighlight(id) {	//
+                    top.fsMod.recentIds["web"]=id;
+                    top.fsMod.navFrameHighlightedID["web"]="pages"+id+"_"+top.fsMod.currentBank;	// For highlighting
 
-					if (top.content && top.content.nav_frame && top.content.nav_frame.refresh_nav) {
-						top.content.nav_frame.refresh_nav();
-					}
-				}
-				'.$this->doc->redirectUrls($listUrl).'
-				'.$dblist->CBfunctions().'
-				function editRecords(table, idList, addParams, CBflag) {
-					window.location.href = "'.$this->getBackPath().'alt_doc.php?returnUrl='.
-                    rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI')).'&edit[" + table + "][" + idList + "]=edit" + addParams;
-				}
-				function editList(table,idList) {	//
-					var list="";
+                    if (top.content && top.content.nav_frame && top.content.nav_frame.refresh_nav) {
+                        top.content.nav_frame.refresh_nav();
+                    }
+                }
+                ' . $this->doc->redirectUrls($listUrl) . '
+                ' . $dblist->CBfunctions() . '
+                function editRecords(table, idList, addParams, CBflag) {
+                    window.location.href = "' . $this->getBackPath() . 'alt_doc.php?returnUrl=' .
+                    rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI')) .
+                '&edit[" + table + "][" + idList + "]=edit" + addParams;
+                }
+                function editList(table,idList) {	//
+                    var list="";
 
-						// Checking how many is checked, how many is not
-					var pointer=0;
-					var pos = idList.indexOf(",");
-					while (pos!=-1) {
-						if (cbValue(table+"|"+idList.substr(pointer,pos-pointer))) {
-							list+=idList.substr(pointer,pos-pointer)+",";
-						}
-						pointer=pos+1;
-						pos = idList.indexOf(",",pointer);
-					}
-					if (cbValue(table+"|"+idList.substr(pointer))) {
-						list+=idList.substr(pointer)+",";
-					}
+                        // Checking how many is checked, how many is not
+                    var pointer=0;
+                    var pos = idList.indexOf(",");
+                    while (pos!=-1) {
+                        if (cbValue(table+"|"+idList.substr(pointer,pos-pointer))) {
+                            list+=idList.substr(pointer,pos-pointer)+",";
+                        }
+                        pointer=pos+1;
+                        pos = idList.indexOf(",",pointer);
+                    }
+                    if (cbValue(table+"|"+idList.substr(pointer))) {
+                        list+=idList.substr(pointer)+",";
+                    }
 
-					return list ? list : idList;
-				}
+                    return list ? list : idList;
+                }
 
-				if (top.fsMod) {
-					top.fsMod.recentIds["web"] = '.$this->id.';
-				}
-			');
+                if (top.fsMod) {
+                    top.fsMod.recentIds["web"] = ' . $this->id . ';
+                }
+            ');
 
                 // Setting up the context sensitive menu:
             $this->doc->getContextMenuCode();
@@ -326,7 +348,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
         // access
         // Begin to compile the whole page, starting out with page header:
         $this->body = $this->doc->header($this->pageinfo['title']);
-        $this->body .= '<form action="'.htmlspecialchars($dblist->listURL()).'" method="post" name="dblistForm">';
+        $this->body .= '<form action="' . htmlspecialchars($dblist->listURL()) . '" method="post" name="dblistForm">';
         $this->body .= $dblist->HTMLcode;
         $this->body .= '<input type="hidden" name="cmd_table" /><input type="hidden" name="cmd" /></form>';
         // If a listing was produced, create the page footer with search form etc:
@@ -338,20 +360,28 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
             // Adding checkbox options for extended listing and clipboard display:
             $this->body .= '
 
-					<!--
-						Listing options for extended view, clipboard and localization view
-					-->
-					<div id="typo3-listOptions">
-						<form action="" method="post">';
+                    <!--
+                        Listing options for extended view, clipboard and localization view
+                    -->
+                    <div id="typo3-listOptions">
+                        <form action="" method="post">';
 
             // Add "display bigControlPanel" checkbox:
             if ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'selectable') {
                 $this->body .= BackendUtility::getFuncCheck(
-                    $this->id, 'SET[bigControlPanel]', $this->MOD_SETTINGS['bigControlPanel'], '',
-                    $this->table ? '&table='.$this->table : '', 'id="checkLargeControl"'
+                    $this->id,
+                    'SET[bigControlPanel]',
+                    $this->MOD_SETTINGS['bigControlPanel'],
+                    '',
+                    $this->table ? '&table=' . $this->table : '',
+                    'id="checkLargeControl"'
                 );
-                $this->body .= '<label for="checkLargeControl">'.
-                    BackendUtility::wrapInHelp('xMOD_csh_corebe', 'list_options', $language->getLL('largeControl', true)).
+                $this->body .= '<label for="checkLargeControl">' .
+                    BackendUtility::wrapInHelp(
+                        'xMOD_csh_corebe',
+                        'list_options',
+                        $language->getLL('largeControl', true)
+                    ) .
                     '</label><br />';
             }
 
@@ -359,11 +389,19 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
             if ($this->modTSconfig['properties']['enableClipBoard'] === 'selectable') {
                 if ($dblist->showClipboard) {
                     $this->body .= BackendUtility::getFuncCheck(
-                        $this->id, 'SET[clipBoard]', $this->MOD_SETTINGS['clipBoard'], '',
-                        $this->table ? '&table='.$this->table : '', 'id="checkShowClipBoard"'
+                        $this->id,
+                        'SET[clipBoard]',
+                        $this->MOD_SETTINGS['clipBoard'],
+                        '',
+                        $this->table ? '&table=' . $this->table : '',
+                        'id="checkShowClipBoard"'
                     );
-                    $this->body .= '<label for="checkShowClipBoard">'.
-                        BackendUtility::wrapInHelp('xMOD_csh_corebe', 'list_options', $language->getLL('showClipBoard', true)).
+                    $this->body .= '<label for="checkShowClipBoard">' .
+                        BackendUtility::wrapInHelp(
+                            'xMOD_csh_corebe',
+                            'list_options',
+                            $language->getLL('showClipBoard', true)
+                        ) .
                         '</label><br />';
                 }
             }
@@ -371,11 +409,19 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
             // Add "localization view" checkbox:
             if ($this->modTSconfig['properties']['enableLocalizationView'] === 'selectable') {
                 $this->body .= BackendUtility::getFuncCheck(
-                    $this->id, 'SET[localization]', $this->MOD_SETTINGS['localization'], '',
-                    $this->table ? '&table='.$this->table : '', 'id="checkLocalization"'
+                    $this->id,
+                    'SET[localization]',
+                    $this->MOD_SETTINGS['localization'],
+                    '',
+                    $this->table ? '&table=' . $this->table : '',
+                    'id="checkLocalization"'
                 );
-                $this->body .= '<label for="checkLocalization">'.
-                    BackendUtility::wrapInHelp('xMOD_csh_corebe', 'list_options', $language->getLL('localization', true)).
+                $this->body .= '<label for="checkLocalization">' .
+                    BackendUtility::wrapInHelp(
+                        'xMOD_csh_corebe',
+                        'list_options',
+                        $language->getLL('localization', true)
+                    ) .
                     '</label><br />';
             }
             $this->body .= '
@@ -383,17 +429,24 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
 					</div>';
         }
         // Printing clipboard if enabled
-        if ($this->MOD_SETTINGS['clipBoard'] && $dblist->showClipboard && ($dblist->HTMLcode || $dblist->clipObj->hasElements())) {
-            $this->body .= '<div class="db_list-dashboard">'.$dblist->clipObj->printClipboard().'</div>';
+        if ($this->MOD_SETTINGS['clipBoard']
+            && $dblist->showClipboard
+            && ($dblist->HTMLcode || $dblist->clipObj->hasElements())
+        ) {
+            $this->body .= '<div class="db_list-dashboard">' . $dblist->clipObj->printClipboard() . '</div>';
         }
         // Search box:
-        if (!$this->modTSconfig['properties']['disableSearchBox'] && ($dblist->HTMLcode || $dblist->searchString !== '')) {
+        if (!$this->modTSconfig['properties']['disableSearchBox']
+            && ($dblist->HTMLcode || $dblist->searchString !== '')
+        ) {
             $sectionTitle = BackendUtility::wrapInHelp(
-                'xMOD_csh_corebe', 'list_searchbox', $language->sL('LLL:EXT:lang/locallang_core.xlf:labels.search', true)
+                'xMOD_csh_corebe',
+                'list_searchbox',
+                $language->sL('LLL:EXT:lang/locallang_core.xlf:labels.search', true)
             );
-            $this->body = '<div class="db_list-searchbox">'.
-                $this->doc->section($sectionTitle, $dblist->getSearchBox(), false, true, false, true).
-                '</div>'.$this->body;
+            $this->body = '<div class="db_list-searchbox">' .
+                $this->doc->section($sectionTitle, $dblist->getSearchBox(), false, true, false, true) .
+                '</div>' . $this->body;
         }
         // Additional footer content
         $footerContentHook = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['recordlist/mod1/index.php']['drawFooterHook'];
@@ -446,17 +499,18 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
 
         // If access to Web>List for user, then link to that module.
         if ($backendUser->check('modules', 'web_list')) {
-            $href = $this->getBackPath().'db_list.php?id='.$this->pageinfo['uid'].'&returnUrl='.
+            $href = $this->getBackPath() . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
                 rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
-            $buttons['record_list'] = '<a href="'.htmlspecialchars($href).'">'.
+            $buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' .
                 \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
                     'apps-filetree-folder-list',
                     array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1))
-                ).'</a>';
+                ) . '</a>';
         }
 
         return $buttons;
     }
+
 
     /**
      * Get backend user.

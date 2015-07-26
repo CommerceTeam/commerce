@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Controller;
 
 /*
@@ -15,6 +14,8 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
@@ -29,7 +30,7 @@ use TYPO3\CMS\Perm\Controller\PermissionAjaxController;
  * Variables:
  * $this->MOD_SETTINGS['depth']: int 1-3: decides the depth of the list
  * $this->MOD_SETTINGS['mode']: 'perms' / '': decides if we view a user-overview
- * 		or the permissions.
+ *      or the permissions.
  *
  * Class \CommerceTeam\Commerce\Controller\PermissionModuleController
  *
@@ -46,6 +47,8 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 
     /**
      * Constructor.
+     *
+     * @return self
      */
     public function __construct()
     {
@@ -58,6 +61,8 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 
     /**
      * Initialization of the class.
+     *
+     * @return void
      */
     public function init()
     {
@@ -66,7 +71,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
         if (!$this->id) {
             \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
             $this->id = current(
-                array_unique(\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Products', 'Commerce', 0, 'Commerce'))
+                array_unique(FolderRepository::initFolders('Products', 'Commerce', 0, 'Commerce'))
             );
         }
 
@@ -94,34 +99,39 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 
     /**
      * Initializing document template object.
+     *
+     * @return void
      */
     public function initPage()
     {
         /**
          * Document template.
          *
-         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
+         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
          */
         $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
         $doc->backPath = $this->getBackPath();
         $doc->setModuleTemplate('EXT:perm/Resources/Private/Templates/perm.html');
-        $doc->form = '<form action="'.$this->getBackPath().'tce_db.php" method="post" name="editform">';
+        $doc->form = '<form action="' . $this->getBackPath() . 'tce_db.php" method="post" name="editform">';
         $doc->loadJavascriptLib('js/jsfunc.updateform.js');
         $doc->getPageRenderer()->loadPrototype();
-        $doc->loadJavascriptLib(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('perm').'mod1/perm.js');
+        $doc->loadJavascriptLib(ExtensionManagementUtility::extRelPath('perm') . 'mod1/perm.js');
         // Setting up the context sensitive menu:
         $doc->getContextMenuCode();
 
         // override attributes of WebPermissions found in sysext/perm/mod1/perm.js
         $doc->JScode .= $doc->wrapScriptTags('
-			WebPermissions.thisScript = TYPO3.settings.ajaxUrls["CommerceTeam_Commerce_PermissionAjaxController::dispatch"];
-		');
+            WebPermissions.thisScript =
+             TYPO3.settings.ajaxUrls["CommerceTeam_Commerce_PermissionAjaxController::dispatch"];
+        ');
 
         $this->doc = $doc;
     }
 
     /**
      * Main function, creating the content for the access editing forms/listings.
+     *
+     * @return void
      */
     public function main()
     {
@@ -132,7 +142,10 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
         // The page will show only if there is a valid page and if this page
         // may be viewed by the user
         if ($this->categoryUid) {
-            $this->pageinfo = \CommerceTeam\Commerce\Utility\BackendUtility::readCategoryAccess($this->categoryUid, $this->perms_clause);
+            $this->pageinfo = \CommerceTeam\Commerce\Utility\BackendUtility::readCategoryAccess(
+                $this->categoryUid,
+                $this->perms_clause
+            );
         } else {
             $this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
         }
@@ -144,19 +157,24 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
                 $this->pageinfo = array('title' => '[root-level]', 'uid' => 0, 'pid' => 0);
             }
             // This decides if the editform (tceAction) can and will be drawn:
-            $this->editingAllowed = ($this->pageinfo['perms_userid'] == $backendUser->user['uid'] || $backendUser->isAdmin());
+            $this->editingAllowed = (
+                $this->pageinfo['perms_userid'] == $backendUser->user['uid']
+                || $backendUser->isAdmin()
+            );
             $this->edit = $this->edit && $this->editingAllowed;
             // If $this->edit then these functions are called in the end of the page...
             if ($this->edit) {
+                $uid = $this->categoryUid;
                 $this->doc->postCode .= $this->doc->wrapScriptTags('
-					setCheck("check[perms_user]", "data[tx_commerce_categories]['.$this->categoryUid.'][perms_user]");
-					setCheck("check[perms_group]", "data[tx_commerce_categories]['.$this->categoryUid.'][perms_group]");
-					setCheck("check[perms_everybody]", "data[tx_commerce_categories]['.$this->categoryUid.'][perms_everybody]");
-				');
+                    setCheck("check[perms_user]", "data[tx_commerce_categories][' . $uid . '][perms_user]");
+                    setCheck("check[perms_group]", "data[tx_commerce_categories][' . $uid . '][perms_group]");
+                    setCheck("check[perms_everybody]", "data[tx_commerce_categories][' . $uid . '][perms_everybody]");
+                ');
             }
 
                 // Draw the HTML page header.
-            $this->content .= $this->doc->header($language->getLL('permissions').($this->edit ? ': '.$language->getLL('Edit') : ''));
+            $this->content .= $this->doc->header($language->getLL('permissions') .
+                ($this->edit ? ': ' . $language->getLL('Edit') : ''));
             $vContent = $this->doc->getVersionSelector($this->categoryUid, 1);
             if ($vContent) {
                 $this->content .= $this->doc->section('', $vContent);
@@ -207,14 +225,14 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
         // CSH
         $buttons['csh'] = BackendUtility::cshItem('_MOD_web_info', '', $this->getBackPath(), '', true);
         // View page
-        $buttons['view'] = '<a href="#" onclick="'.
+        $buttons['view'] = '<a href="#" onclick="' .
             htmlspecialchars(BackendUtility::viewonclick(
                 $this->id,
                 $this->getBackPath(),
                 BackendUtility::BEgetRootLine($this->pageinfo['uid'])
-            )).
-            '" title="'.$this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.showPage', true).
-            '">'.IconUtility::getSpriteIcon('actions-document-view').'</a>';
+            )) .
+            '" title="' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.showPage', true) .
+            '">' . IconUtility::getSpriteIcon('actions-document-view') . '</a>';
 
         // Shortcut
         if ($this->getBackendUser()->mayMakeShortcut()) {
@@ -231,8 +249,10 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
     /* Listing and Form rendering */
 
     /**
-     * Creating form for editing the permissions	($this->edit = true)
+     * Creating form for editing the permissions ($this->edit = true)
      * (Adding content to internal content variable).
+     *
+     * @return void
      */
     public function doEdit()
     {
@@ -244,7 +264,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
             /**
              * FlashMessage.
              *
-             * @var \TYPO3\CMS\Core\Messaging\FlashMessage
+             * @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage
              */
             $flashMessage = GeneralUtility::makeInstance(
                 'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
@@ -255,13 +275,13 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
             /**
              * Flash message service.
              *
-             * @var \TYPO3\CMS\Core\Messaging\FlashMessageService
+             * @var \TYPO3\CMS\Core\Messaging\FlashMessageService $flashMessageService
              */
             $flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
             /**
              * Flash message queue.
              *
-             * @var \TYPO3\CMS\Core\Messaging\FlashMessageQueue
+             * @var \TYPO3\CMS\Core\Messaging\FlashMessageQueue $defaultFlashMessageQueue
              */
             $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
             $defaultFlashMessageQueue->enqueue($flashMessage);
@@ -289,11 +309,15 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
             } else {
                 $selected = '';
             }
-            $options .= LF.'<option value="'.$uid.'"'.$selected.'>'.htmlspecialchars($row['username']).'</option>';
+            $options .= LF . '<option value="' . $uid . '"' . $selected . '>' .
+                htmlspecialchars($row['username']) .
+                '</option>';
         }
 
-        $options = '<option value="0"></option>'.$options;
-        $selector = '<select name="data[tx_commerce_categories]['.$this->categoryUid.'][perms_userid]">'.$options.'</select>';
+        $options = '<option value="0"></option>' . $options;
+        $selector = '<select name="data[tx_commerce_categories][' . $this->categoryUid . '][perms_userid]">' .
+            $options .
+            '</select>';
         $this->content .= $this->doc->section($language->getLL('Owner'), $selector, true);
 
         // Group selector:
@@ -307,97 +331,106 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
                 $selected = '';
             }
             $options .= '
-				<option value="'.$uid.'"'.$selected.'>'.htmlspecialchars($row['title']).'</option>';
+                <option value="' . $uid . '"' . $selected . '>' . htmlspecialchars($row['title']) . '</option>';
         }
             // If the group was not set AND there is a group for the page
         if (!$userset && $this->pageinfo['perms_groupid']) {
             $options = '
-				<option value="'.$this->pageinfo['perms_groupid'].'" selected="selected">'.
-                    htmlspecialchars($beGroupArrayO[$this->pageinfo['perms_groupid']]['title']).
-                '</option>'.
+                <option value="' . $this->pageinfo['perms_groupid'] . '" selected="selected">' .
+                    htmlspecialchars($beGroupArrayO[$this->pageinfo['perms_groupid']]['title']) .
+                '</option>' .
                 $options;
         }
-        $options = '<option value="0"></option>'.$options;
-        $selector = '<select name="data[tx_commerce_categories]['.$this->categoryUid.'][perms_groupid]"> '.$options.'</select>';
+        $options = '<option value="0"></option>' . $options;
+        $selector = '<select name="data[tx_commerce_categories][' . $this->categoryUid . '][perms_groupid]"> ' .
+            $options .
+            '</select>';
 
         $this->content .= $this->doc->section($language->getLL('Group'), $selector, true);
 
-        $onClickAction = 'onclick="'.htmlspecialchars(
-                'jumpToUrl('.
-                GeneralUtility::quoteJSvalue(BackendUtility::getModuleUrl('commerce_permission').'&id='.$this->id).
-                '); return false;'
-            ).'"';
+        $onClickAction = 'onclick="' . htmlspecialchars(
+            'jumpToUrl(' .
+            GeneralUtility::quoteJSvalue(BackendUtility::getModuleUrl('commerce_permission') . '&id=' . $this->id) .
+            '); return false;'
+        ) . '"';
         // Permissions checkbox matrix:
         $code = '
 			<table class="t3-table" id="typo3-permissionMatrix">
 				<thead>
 					<tr>
 						<th></th>
-						<th>'.$language->getLL('1', true).'</th>
-						<th>'.$language->getLL('16', true).'</th>
-						<th>'.$language->getLL('2', true).'</th>
-						<th>'.$language->getLL('4', true).'</th>
-						<th>'.$language->getLL('8', true).'</th>
+						<th>' . $language->getLL('1', true) . '</th>
+						<th>' . $language->getLL('16', true) . '</th>
+						<th>' . $language->getLL('2', true) . '</th>
+						<th>' . $language->getLL('4', true) . '</th>
+						<th>' . $language->getLL('8', true) . '</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td><strong>'.$language->getLL('Owner', true).'</strong></td>
-						<td>'.$this->printCheckBox('perms_user', 1).'</td>
-						<td>'.$this->printCheckBox('perms_user', 5).'</td>
-						<td>'.$this->printCheckBox('perms_user', 2).'</td>
-						<td>'.$this->printCheckBox('perms_user', 3).'</td>
-						<td>'.$this->printCheckBox('perms_user', 4).'</td>
+						<td><strong>' . $language->getLL('Owner', true) . '</strong></td>
+						<td>' . $this->printCheckBox('perms_user', 1) . '</td>
+						<td>' . $this->printCheckBox('perms_user', 5) . '</td>
+						<td>' . $this->printCheckBox('perms_user', 2) . '</td>
+						<td>' . $this->printCheckBox('perms_user', 3) . '</td>
+						<td>' . $this->printCheckBox('perms_user', 4) . '</td>
 					</tr>
 					<tr>
-						<td><strong>'.$language->getLL('Group', true).'</strong></td>
-						<td>'.$this->printCheckBox('perms_group', 1).'</td>
-						<td>'.$this->printCheckBox('perms_group', 5).'</td>
-						<td>'.$this->printCheckBox('perms_group', 2).'</td>
-						<td>'.$this->printCheckBox('perms_group', 3).'</td>
-						<td>'.$this->printCheckBox('perms_group', 4).'</td>
+						<td><strong>' . $language->getLL('Group', true). '</strong></td>
+						<td>' . $this->printCheckBox('perms_group', 1) . '</td>
+						<td>' . $this->printCheckBox('perms_group', 5) . '</td>
+						<td>' . $this->printCheckBox('perms_group', 2) . '</td>
+						<td>' . $this->printCheckBox('perms_group', 3) . '</td>
+						<td>' . $this->printCheckBox('perms_group', 4) . '</td>
 					</tr>
 					<tr>
-						<td><strong>'.$language->getLL('Everybody', true).'</strong></td>
-						<td>'.$this->printCheckBox('perms_everybody', 1).'</td>
-						<td>'.$this->printCheckBox('perms_everybody', 5).'</td>
-						<td>'.$this->printCheckBox('perms_everybody', 2).'</td>
-						<td>'.$this->printCheckBox('perms_everybody', 3).'</td>
-						<td>'.$this->printCheckBox('perms_everybody', 4).'</td>
+						<td><strong>' . $language->getLL('Everybody', true) . '</strong></td>
+						<td>' . $this->printCheckBox('perms_everybody', 1) . '</td>
+						<td>' . $this->printCheckBox('perms_everybody', 5) . '</td>
+						<td>' . $this->printCheckBox('perms_everybody', 2) . '</td>
+						<td>' . $this->printCheckBox('perms_everybody', 3) . '</td>
+						<td>' . $this->printCheckBox('perms_everybody', 4) . '</td>
 					</tr>
 				</tbody>
 			</table>
 
-			<input type="hidden" name="data[tx_commerce_categories]['.$this->categoryUid.'][perms_user]" value="'.
-            $this->pageinfo['perms_user'].'" />
-			<input type="hidden" name="data[tx_commerce_categories]['.$this->categoryUid.'][perms_group]" value="'.
-            $this->pageinfo['perms_group'].'" />
-			<input type="hidden" name="data[tx_commerce_categories]['.$this->categoryUid.'][perms_everybody]" value="'.
-            $this->pageinfo['perms_everybody'].'" />
-			'.$this->getRecursiveSelect($this->id).'
-			<input type="submit" name="submit" value="'.$language->getLL('Save', true).'" /><input type="submit" value="'.
-            $language->getLL('Abort', true).'" '.$onClickAction.' />
-			<input type="hidden" name="redirect" value="'.htmlspecialchars(
-                BackendUtility::getModuleUrl('commerce_permission').'&mode='.$this->MOD_SETTINGS['mode'].'&depth='.
-                $this->MOD_SETTINGS['depth'].'&id='.(int) $this->return_id.'&lastEdited='.$this->id
-            ).'" />
-			'.\TYPO3\CMS\Backend\Form\FormEngine::getHiddenTokenField('tceAction');
+			<input type="hidden" name="data[tx_commerce_categories][' . $this->categoryUid . '][perms_user]" value="' .
+            $this->pageinfo['perms_user'] . '" />
+			<input type="hidden" name="data[tx_commerce_categories][' . $this->categoryUid . '][perms_group]" value="' .
+            $this->pageinfo['perms_group'] . '" />
+			<input type="hidden" name="data[tx_commerce_categories][' . $this->categoryUid .
+            '][perms_everybody]" value="' .  $this->pageinfo['perms_everybody'] . '" />
+			' . $this->getRecursiveSelect($this->id) . '
+			<input type="submit" name="submit" value="' . $language->getLL('Save', true) .
+            '" /><input type="submit" value="' .  $language->getLL('Abort', true) . '" ' . $onClickAction . ' />
+			<input type="hidden" name="redirect" value="' .
+            htmlspecialchars(
+                BackendUtility::getModuleUrl('commerce_permission') . '&mode=' . $this->MOD_SETTINGS['mode'] .
+                '&depth=' . $this->MOD_SETTINGS['depth'] . '&id=' . (int) $this->return_id . '&lastEdited=' . $this->id
+            ) . '" />
+			' . \TYPO3\CMS\Backend\Form\FormEngine::getHiddenTokenField('tceAction');
 
         // Adding section with the permission setting matrix:
         $this->content .= $this->doc->section($language->getLL('permissions'), $code, true);
 
         // CSH for permissions setting
-        $this->content .= BackendUtility::cshItem('xMOD_csh_corebe', 'perm_module_setting', $this->getBackPath(), '<br /><br />');
+        $this->content .= BackendUtility::cshItem(
+            'xMOD_csh_corebe',
+            'perm_module_setting',
+            $this->getBackPath(),
+            '<br /><br />'
+        );
 
         // Adding help text:
         if (true || $backendUser->uc['helpText']) {
-            $legendText = '<p><strong>'.$language->getLL('1', true).'</strong>: '.$language->getLL('1_t', true).'<br />';
-            $legendText .= '<strong>'.$language->getLL('16', true).'</strong>: '.$language->getLL('16_t', true).'<br />';
-            $legendText .= '<strong>'.$language->getLL('2', true).'</strong>: '.$language->getLL('2_t', true).'<br />';
-            $legendText .= '<strong>'.$language->getLL('4', true).'</strong>: '.$language->getLL('4_t', true).'<br />';
-            $legendText .= '<strong>'.$language->getLL('8', true).'</strong>: '.$language->getLL('8_t', true).'</p>';
+            $legendText = '<p><strong>' . $language->getLL('1', true) . '</strong>: ' .
+                $language->getLL('1_t', true) . '<br /><strong>' . $language->getLL('16', true) . '</strong>: ' .
+                $language->getLL('16_t', true) . '<br /><strong>' . $language->getLL('2', true) . '</strong>: ' .
+                $language->getLL('2_t', true) . '<br /><strong>' . $language->getLL('4', true) . '</strong>: ' .
+                $language->getLL('4_t', true) . '<br /><strong>' . $language->getLL('8', true) . '</strong>: ' .
+                $language->getLL('8_t', true) . '</p>';
 
-            $code = $legendText.'<p>'.$language->getLL('def', true).'</p>';
+            $code = $legendText . '<p>' . $language->getLL('def', true) . '</p>';
 
             $this->content .= $this->doc->section($language->getLL('Legend', true), $code, true);
         }
@@ -406,6 +439,8 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
     /**
      * Showing the permissions in a tree ($this->edit = false)
      * (Adding content to internal content variable).
+     *
+     * @return void
      */
     public function notEdit()
     {
@@ -431,9 +466,14 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
         // Length of strings:
         $tLen = 20;
 
-            // Selector for depth:
-        $code = $language->getLL('Depth').': ';
-        $code .= BackendUtility::getFuncMenu($this->categoryUid, 'SET[depth]', $this->MOD_SETTINGS['depth'], $this->MOD_MENU['depth']);
+        // Selector for depth:
+        $code = $language->getLL('Depth') . ': ';
+        $code .= BackendUtility::getFuncMenu(
+            $this->categoryUid,
+            'SET[depth]',
+            $this->MOD_SETTINGS['depth'],
+            $this->MOD_MENU['depth']
+        );
         $this->content .= $this->doc->section('', $code);
 
         // Initialize tree object:
@@ -459,10 +499,10 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 			<thead>
 				<tr>
 					<th colspan="2">&nbsp;</th>
-					<th>'.$language->getLL('Owner', true).'</th>
-					<th align="center">'.$language->getLL('Group', true).'</th>
-					<th align="center">'.$language->getLL('Everybody', true).'</th>
-					<th align="center">'.$language->getLL('EditLock', true).'</th>
+					<th>' . $language->getLL('Owner', true) . '</th>
+					<th align="center">' . $language->getLL('Group', true) . '</th>
+					<th align="center">' . $language->getLL('Everybody', true) . '</th>
+					<th align="center">' . $language->getLL('EditLock', true) . '</th>
 				</tr>
 			</thead>
 		';
@@ -481,11 +521,16 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 
             if ($userId && !$beUserArray[$userId]) {
                 $userName = PermissionAjaxController::renderOwnername(
-                    $pageId, $userId, htmlspecialchars(GeneralUtility::fixed_lgd_cs($userName, 20)), false
+                    $pageId,
+                    $userId,
+                    htmlspecialchars(GeneralUtility::fixed_lgd_cs($userName, 20)),
+                    false
                 );
             } else {
                 $userName = PermissionAjaxController::renderOwnername(
-                    $pageId, $userId, htmlspecialchars(GeneralUtility::fixed_lgd_cs($userName, 20))
+                    $pageId,
+                    $userId,
+                    htmlspecialchars(GeneralUtility::fixed_lgd_cs($userName, 20))
                 );
             }
 
@@ -494,11 +539,16 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 
             if ($groupId && !$beGroupArray[$groupId]) {
                 $groupName = PermissionAjaxController::renderGroupname(
-                    $pageId, $groupId, htmlspecialchars(GeneralUtility::fixed_lgd_cs($groupName, 20)), false
+                    $pageId,
+                    $groupId,
+                    htmlspecialchars(GeneralUtility::fixed_lgd_cs($groupName, 20)),
+                    false
                 );
             } else {
                 $groupName = PermissionAjaxController::renderGroupname(
-                    $pageId, $groupId, htmlspecialchars(GeneralUtility::fixed_lgd_cs($groupName, 20))
+                    $pageId,
+                    $groupId,
+                    htmlspecialchars(GeneralUtility::fixed_lgd_cs($groupName, 20))
                 );
             }
 
@@ -529,7 +579,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
                     }
                 }
 
-                    // Add cross or bottom
+                // Add cross or bottom
                 $bottom = (true == $data['last']) ? 'bottom' : '';
 
                 // save that the depth of the current record has its last item - is used to
@@ -540,7 +590,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 
                 $lastDepth = $data['depth'];
 
-                $plusMinusIcon .= IconUtility::getSpriteIcon('treeline-join'.$bottom);
+                $plusMinusIcon .= IconUtility::getSpriteIcon('treeline-join' . $bottom);
             }
 
             // determine which icon to use
@@ -549,54 +599,69 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
             // @todo end of check for better solution
 
             // First column:
-            $cellAttrib = $data['row']['_CSSCLASS'] ? ' class="'.$data['row']['_CSSCLASS'].'"' : '';
-            $cells[] = '<td align="left" nowrap="nowrap"'.($cellAttrib ? $cellAttrib : $bgCol).'>'.
-                $rowIcon.htmlspecialchars(GeneralUtility::fixed_lgd_cs($data['row']['title'], $tLen)).'</td>';
+            $cellAttrib = $data['row']['_CSSCLASS'] ? ' class="' . $data['row']['_CSSCLASS'] . '"' : '';
+            $cells[] = '<td align="left" nowrap="nowrap"' . ($cellAttrib ? $cellAttrib : $bgCol) . '>' .
+                $rowIcon.htmlspecialchars(GeneralUtility::fixed_lgd_cs($data['row']['title'], $tLen)) . '</td>';
 
             // "Edit permissions" -icon
             if ($editPermsAllowed && $pageId) {
-                $aHref = BackendUtility::getModuleUrl('commerce_permission').'&mode='.$this->MOD_SETTINGS['mode'].'&depth='.
-                    $this->MOD_SETTINGS['depth'].'&control[tx_commerce_categories][uid]='.
+                $aHref = BackendUtility::getModuleUrl('commerce_permission') . '&mode=' . $this->MOD_SETTINGS['mode'] .
+                    '&depth=' . $this->MOD_SETTINGS['depth'] . '&control[tx_commerce_categories][uid]=' .
                     ($data['row']['_ORIG_uid'] ? $data['row']['_ORIG_uid'] : $pageId).
-                    '&return_id='.$this->id.'&edit=1';
-                $cells[] = '<td'.$bgCol.'><a href="'.htmlspecialchars($aHref).'" title="'.$language->getLL('ch_permissions', 1).
-                    '">'.IconUtility::getSpriteIcon('actions-document-open').'</a></td>';
+                    '&return_id=' . $this->id . '&edit=1';
+                $cells[] = '<td' . $bgCol . '><a href="' . htmlspecialchars($aHref) . '" title="' .
+                    $language->getLL('ch_permissions', 1) . '">' . IconUtility::getSpriteIcon('actions-document-open') .
+                    '</a></td>';
             } else {
-                $cells[] = LF.'<td'.$bgCol.'></td>';
+                $cells[] = LF . '<td' . $bgCol . '></td>';
             }
 
-            $userPermission = PermissionAjaxController::renderPermissions($data['row']['perms_user'], $pageId, 'user');
-            $groupPermission = PermissionAjaxController::renderPermissions($data['row']['perms_group'], $pageId, 'group');
-            $allPermission = PermissionAjaxController::renderPermissions($data['row']['perms_everybody'], $pageId, 'everybody');
+            $userPermission = PermissionAjaxController::renderPermissions(
+                $data['row']['perms_user'],
+                $pageId,
+                'user'
+            );
+            $groupPermission = PermissionAjaxController::renderPermissions(
+                $data['row']['perms_group'],
+                $pageId,
+                'group'
+            );
+            $allPermission = PermissionAjaxController::renderPermissions(
+                $data['row']['perms_everybody'],
+                $pageId,
+                'everybody'
+            );
 
-            $userPermissionLabel = $pageId ? $userPermission.' '.$userName : '';
-            $groupPermissionLabel = $pageId ? $groupPermission.' '.$groupName : '';
-            $allPermissionLabel = $pageId ? ' '.$allPermission : '';
+            $userPermissionLabel = $pageId ? $userPermission . ' ' . $userName : '';
+            $groupPermissionLabel = $pageId ? $groupPermission . ' ' . $groupName : '';
+            $allPermissionLabel = $pageId ? ' ' . $allPermission : '';
 
             if ($data['row']['editlock']) {
-                $editLockLabel = '<span id="el_'.$pageId.'" class="editlock"><a class="editlock"
-					onclick="WebPermissions.toggleEditLock(\''.$pageId.'\', \'1\');" title="'.
-                    $language->getLL('EditLock_descr', true).'">'.IconUtility::getSpriteIcon('status-warning-lock').
+                $editLockLabel = '<span id="el_' . $pageId . '" class="editlock"><a class="editlock"
+                    onclick="WebPermissions.toggleEditLock(\'' . $pageId . '\', \'1\');" title="' .
+                    $language->getLL('EditLock_descr', true) . '">' .
+                    IconUtility::getSpriteIcon('status-warning-lock') .
                     '</a></span>';
             } else {
-                $editLockLabel = $pageId === 0 ? '' : '<span id="el_'.$pageId.
-                    '" class="editlock"><a class="editlock" onclick="WebPermissions.toggleEditLock(\''.
-                    $pageId.'\', \'0\');" title="Enable the &raquo;Admin-only&laquo; edit lock for this page">[+]</a></span>';
+                $editLockLabel = $pageId === 0 ? '' : '<span id="el_' . $pageId .
+                    '" class="editlock"><a class="editlock" onclick="WebPermissions.toggleEditLock(\'' .
+                    $pageId .
+                    '\', \'0\');" title="Enable the &raquo;Admin-only&laquo; edit lock for this page">[+]</a></span>';
             }
 
             $cells[] = '
-				<td'.$bgCol.' nowrap="nowrap">'.$userPermissionLabel.'</td>
-				<td'.$bgCol.' nowrap="nowrap">'.$groupPermissionLabel.'</td>
-				<td'.$bgCol.' nowrap="nowrap">'.$allPermissionLabel.'</td>
-				<td'.$bgCol.' nowrap="nowrap">'.$editLockLabel.'</td>
-			';
+                <td' . $bgCol . ' nowrap="nowrap">' . $userPermissionLabel . '</td>
+                <td' . $bgCol . ' nowrap="nowrap">' . $groupPermissionLabel . '</td>
+                <td' . $bgCol . ' nowrap="nowrap">' . $allPermissionLabel . '</td>
+                <td' . $bgCol . ' nowrap="nowrap">' . $editLockLabel . '</td>
+            ';
 
             // Compile table row:
-            $code .= '<tr>'.implode(LF, $cells).'</tr>';
+            $code .= '<tr>' . implode(LF, $cells) . '</tr>';
         }
 
         // Wrap rows in table tags:
-        $code = '<table class="t3-table" id="typo3-permissionList">'.$code.'</table>';
+        $code = '<table class="t3-table" id="typo3-permissionList">' . $code . '</table>';
 
         // Adding the content as a section:
         $this->content .= $this->doc->section('', $code);
@@ -605,24 +670,25 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
         $this->content .= BackendUtility::cshItem('xMOD_csh_corebe', 'perm_module', $this->getBackPath(), '<br />|');
 
         // Creating legend table:
-        $legendText = '<strong>'.$language->getLL('1', true).'</strong>: '.$language->getLL('1_t', true);
-        $legendText .= '<br /><strong>'.$language->getLL('16', true).'</strong>: '.$language->getLL('16_t', true);
-        $legendText .= '<br /><strong>'.$language->getLL('2', true).'</strong>: '.$language->getLL('2_t', true);
-        $legendText .= '<br /><strong>'.$language->getLL('4', true).'</strong>: '.$language->getLL('4_t', true);
-        $legendText .= '<br /><strong>'.$language->getLL('8', true).'</strong>: '.$language->getLL('8_t', true);
+        $legendText = '<strong>' . $language->getLL('1', true). '</strong>: ' . $language->getLL('1_t', true) .
+            '<br /><strong>' . $language->getLL('16', true). '</strong>: ' . $language->getLL('16_t', true) .
+            '<br /><strong>' . $language->getLL('2', true). '</strong>: ' . $language->getLL('2_t', true) .
+            '<br /><strong>' . $language->getLL('4', true). '</strong>: ' . $language->getLL('4_t', true) .
+            '<br /><strong>' . $language->getLL('8', true). '</strong>: ' . $language->getLL('8_t', true);
 
         $code = '<div id="permission-information">
-					<img'.IconUtility::skinImg($this->getBackPath(), 'gfx/legend.gif', 'width="86" height="75"').' alt="" />
-				<div class="text">'.$legendText.'</div></div>';
+                    <img' . IconUtility::skinImg($this->getBackPath(), 'gfx/legend.gif', 'width="86" height="75"') .
+            ' alt="" />
+                <div class="text">' . $legendText . '</div></div>';
 
-        $code .= '<div id="perm-legend">'.$language->getLL('def', true);
-        $code .= '<br /><br />'.IconUtility::getSpriteIcon('status-status-permission-granted').': '.
+        $code .= '<div id="perm-legend">' . $language->getLL('def', true);
+        $code .= '<br /><br />' . IconUtility::getSpriteIcon('status-status-permission-granted') . ': ' .
             $language->getLL('A_Granted', true);
-        $code .= '<br />'.IconUtility::getSpriteIcon('status-status-permission-denied').': '.$language->getLL('A_Denied', true);
-        $code .= '</div>';
+        $code .= '<br />' . IconUtility::getSpriteIcon('status-status-permission-denied') . ': ' .
+            $language->getLL('A_Denied', true) . '</div>';
 
         // Adding section with legend code:
-        $this->content .= $this->doc->section($language->getLL('Legend').':', $code, true, true);
+        $this->content .= $this->doc->section($language->getLL('Legend') . ':', $code, true, true);
     }
 
     /* Helper functions */
@@ -631,17 +697,17 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
      * Print a checkbox for the edit-permission form.
      *
      * @param string $checkName Checkbox name key
-     * @param int    $num       Checkbox number index
+     * @param int $num Checkbox number index
      *
      * @return string HTML checkbox
      */
     public function printCheckBox($checkName, $num)
     {
-        $onclick = 'checkChange(\'check['.$checkName.']\', \'data[tx_commerce_categories]['.$this->categoryUid.']['.
-            $checkName.']\')';
+        $onclick = 'checkChange(\'check[' . $checkName . ']\', \'data[tx_commerce_categories][' . $this->categoryUid .
+            '][' . $checkName . ']\')';
 
-        return '<input type="checkbox" name="check['.$checkName.']['.$num.']" onclick="'.htmlspecialchars($onclick).
-            '" /><br />';
+        return '<input type="checkbox" name="check[' . $checkName . '][' . $num . ']" onclick="' .
+            htmlspecialchars($onclick) . '" /><br />';
     }
 
     /**
@@ -679,7 +745,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
             $labelLevels = $language->getLL('levels');
             $labelPagesAffected = $language->getLL('pages_affected');
             $theIdListArr = array();
-            $opts = '<option value=""></option>'.LF;
+            $opts = '<option value=""></option>' . LF;
             // Traverse the number of levels we want to
             // allow recursive setting of permissions for:
             for ($a = 0; $a <= $this->getLevels; ++$a) {
@@ -696,16 +762,21 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
                     }
                     $lKey = $a + 1;
                     $opts .= '
-						<option value="'.htmlspecialchars(implode(',', $theIdListArr)).'">'.
-                        htmlspecialchars($labelRecursive.' '.$lKey.' '.$labelLevels, ENT_COMPAT, 'UTF-8', false).
-                        ' ('.count($theIdListArr).' '.$labelPagesAffected.')</option>';
+                        <option value="' . htmlspecialchars(implode(',', $theIdListArr)) . '">' .
+                        htmlspecialchars(
+                            $labelRecursive . ' ' . $lKey . ' ' . $labelLevels,
+                            ENT_COMPAT,
+                            'UTF-8',
+                            false
+                        ) .
+                        ' (' . count($theIdListArr) . ' ' . $labelPagesAffected . ')</option>';
                 }
             }
 
             // Put the selector box together:
             $theRecursiveSelect = '<br />
-				<select name="mirror[tx_commerce_categories]['.$id.']">
-					'.$opts.'
+				<select name="mirror[tx_commerce_categories][' . $id . ']">
+					' . $opts . '
 				</select>
 				<br /><br />';
         } else {
@@ -715,6 +786,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
         // Return selector box element:
         return $theRecursiveSelect;
     }
+
 
     /**
      * Get backend user.
