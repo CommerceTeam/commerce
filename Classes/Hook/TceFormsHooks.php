@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Hook;
 
 /*
@@ -37,14 +36,18 @@ class TceFormsHooks
      *
      * @param string $table The name of the database table
      * @param string $field The name of the field we work on in $table
-     * @param array  $row   The values of all $fields in $table
+     * @param array $row The values of all $fields in $table
+     *
+     * @return void
      */
     public function getSingleField_preProcess($table, $field, &$row)
     {
         $settingsFactory = SettingsFactory::getInstance();
 
         if ($table == 'tx_commerce_products' && $settingsFactory->getExtConf('simpleMode') == 1) {
-            $this->lastMaxItems = $settingsFactory->getTcaValue('tx_commerce_products.columns.articles.config.maxitems');
+            $this->lastMaxItems = $settingsFactory->getTcaValue(
+                'tx_commerce_products.columns.articles.config.maxitems'
+            );
             $productColumns = &$GLOBALS['TCA']['tx_commerce_products']['columns'];
 
             if ($row['uid'] != $settingsFactory->getExtConf('paymentID')
@@ -85,14 +88,14 @@ class TceFormsHooks
      * This hook gets called after a field in tceforms gets rendered. We use this to
      * restore the old values after the hook above got called.
      *
-     * @param string $table   The name of the database table
-     * @param string $field   The name of the field we work on in $table
-     * @param array  $row     The values of all $fields in $table
-     * @param string $out     Unknown, just for calling compatibility
-     * @param string $palette Unknown, just for calling compatibility
-     * @param string $extra   Unknown, just for calling compatibility
+     * @param string $table The name of the database table
+     * @param string $field The name of the field we work on in $table
+     * @param array  $row The values of all $fields in $table
+     * @param string $out Unknown, just for calling compatibility
+     *
+     * @return void
      */
-    public function getSingleField_postProcess($table, $field, array $row, &$out, $palette, $extra)
+    public function getSingleField_postProcess($table, $field, array $row, &$out)
     {
         $settingsFactory = SettingsFactory::getInstance();
         // This value is set, if the preProcess updated the tca earlyer
@@ -101,8 +104,7 @@ class TceFormsHooks
             $this->lastMaxItems = false;
         }
 
-        if (
-            $table == 'tx_commerce_articles'
+        if ($table == 'tx_commerce_articles'
             && $field == 'prices'
             && !$row['sys_language_uid']
             && strpos($row['uid_product'], '_'.$settingsFactory->getExtConf('paymentID').'|') === false
@@ -126,33 +128,36 @@ class TceFormsHooks
     {
         return '<div class="bgColor5">price scale startamount</div>
 			<div class="bgColor4">
-				<input style="width: 77px;" class="formField1" maxlength="20" name="data[tx_commerce_articles]['.$uid.
+				<input style="width: 77px;" class="formField1" maxlength="20" name="data[tx_commerce_articles][' .
+            $uid .
             '][create_new_scale_prices_startamount]" type="text"/>
 			</div>
 		</div>
 		<div>
 			<div class="bgColor5">price scale add prices</div>
 			<div class="bgColor4">
-				<input style="width: 77px;" class="formField1" maxlength="20" name="data[tx_commerce_articles]['.$uid.
+				<input style="width: 77px;" class="formField1" maxlength="20" name="data[tx_commerce_articles][' .
+            $uid .
             '][create_new_scale_prices_count]" type="text"/>
 			</div>
 		</div>
 		<div>
 			<div class="bgColor5">price scale steps</div>
 			<div class="bgColor4">
-				<input style="width: 77px;" class="formField1" maxlength="20" name="data[tx_commerce_articles]['.$uid.
+				<input style="width: 77px;" class="formField1" maxlength="20" name="data[tx_commerce_articles][' .
+            $uid .
             '][create_new_scale_prices_steps]" type="text"/>
 			</div>
 		</div>
 		<div>
 			<div class="bgColor5">price scale access</div>
 			<div class="bgColor4">
-				<input name="data[tx_commerce_articles]['.$uid.
+				<input name="data[tx_commerce_articles][' . $uid .
             '][prices][data][sDEF][lDEF][create_new_scale_prices_fe_group][vDEF]_selIconVal" value="0" type="hidden"/>
-				<select name="data[tx_commerce_articles]['.$uid.
+				<select name="data[tx_commerce_articles][' . $uid .
             '][prices][data][sDEF][lDEF][create_new_scale_prices_fe_group][vDEF]" class="select"
-			 		onchange="if (this.options[this.selectedIndex].value == \'--div--\') { this.selectedIndex = 0; } TBE_EDITOR.fieldChanged(\'tx_commerce_articles\',\''.
-            $uid.'\',\'prices\',\'data[tx_commerce_articles]['.$uid.'][prices]\');">
+			 		onchange="TBE_EDITOR.fieldChanged(\'tx_commerce_articles\', \'' . $uid .
+            '\', \'prices\', \'data[tx_commerce_articles][' . $uid . '][prices]\');">
 					<option value="0" selected="selected"></option>
 					<option value="-1">Hide at login</option>
 					<option value="-2">Show at any login</option>

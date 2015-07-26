@@ -612,14 +612,14 @@ class Category extends AbstractEntity
     /**
      * Returns a list of all products under this category.
      *
-     * @param bool|int $depth Depth maximum depth for going recursive
+     * @param int $depth Depth maximum depth for going recursive
      *
      * @return array with list of product UIDs
      */
-    public function getProducts($depth = false)
+    public function getProducts($depth = -1)
     {
         $returnList = $this->getProductUids();
-        if ($depth === false) {
+        if ($depth === -1) {
             $depth = PHP_INT_MAX;
         }
         if ($depth > 0) {
