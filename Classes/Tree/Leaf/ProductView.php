@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree\Leaf;
 
 /*
@@ -44,8 +43,8 @@ class ProductView extends View
      * Wrapping $title in a-tags.
      *
      * @param string $title Title string
-     * @param array  $row   Item record
-     * @param int    $bank  Bank pointer (which mount point number)
+     * @param array $row Item record
+     * @param int $bank Bank pointer (which mount point number)
      *
      * @return string
      */
@@ -53,20 +52,24 @@ class ProductView extends View
     {
         if (!is_array($row) || !is_numeric($bank)) {
             if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('wrapTitle (productview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+                    'wrapTitle (productview) gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
             }
 
             return '';
         }
 
-            // Max. size for Title of 255
-        $title = ('' != trim($title)) ? GeneralUtility::fixed_lgd_cs($title, 255) : $this->getLL('leaf.noTitle');
+        // Max. size for Title of 255
+        $title = trim($title) ? GeneralUtility::fixed_lgd_cs($title, 255) : $this->getLL('leaf.noTitle');
 
-        $aOnClick = 'if(top.content.list_frame){top.content.list_frame.location.href=top.TS.PATH_typo3+\'alt_doc.php?'.
-            'returnUrl=\'+top.rawurlencode(top.content.list_frame.document.location.pathname+'.
-            'top.content.list_frame.document.location.search)+\'&'.$this->getJumpToParam($row).'\';}';
+        $aOnClick = 'if(top.content.list_frame){top.content.list_frame.location.href=top.TS.PATH_typo3+\'alt_doc.php?' .
+            'returnUrl=\'+top.rawurlencode(top.content.list_frame.document.location.pathname+' .
+            'top.content.list_frame.document.location.search)+\'&' . $this->getJumpToParam($row) . '\';}';
 
-        $res = '<a href="#" onclick="'.htmlspecialchars($aOnClick).'">'.$title.'</a>';
+        $res = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' . $title . '</a>';
 
         return $res;
     }
@@ -82,7 +85,11 @@ class ProductView extends View
     {
         if (!is_array($row)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('getJumpToParam (productview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog(
+                    'getJumpToParam (productview) gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
             }
 
             return '';
@@ -91,10 +98,10 @@ class ProductView extends View
         $value = 'edit';
 
         if ($this->realValues) {
-            $value = $this->table.'_'.$row['uid'];
+            $value = $this->table . '_' . $row['uid'];
         }
 
-        $res = 'id='.$row['pid'].'&edit['.$this->table.']['.$row['uid'].']='.$value;
+        $res = 'id=' . $row['pid'] . '&edit[' . $this->table . '][' . $row['uid'] . ']=' . $value;
 
         return $res;
     }

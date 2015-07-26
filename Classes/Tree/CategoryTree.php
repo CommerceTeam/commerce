@@ -63,11 +63,11 @@ class CategoryTree extends Browsetree
     protected $simpleMode = false;
 
     /**
-     * Real values.
+     * If tree gets rendered in navigation frame
      *
      * @var bool
      */
-    protected $realValues = false;
+    protected $isNavigationFrame = false;
 
     /**
      * Initializes the Categorytree.
@@ -107,7 +107,7 @@ class CategoryTree extends Browsetree
         $categoryview->noRootOnclick(($this->minCategoryPerms == 'editcontent'));
 
         // Configure real values
-        if ($this->realValues) {
+        if (!$this->isNavigationFrame) {
             $categoryview->substituteRealValues();
         }
 
@@ -149,11 +149,6 @@ class CategoryTree extends Browsetree
                 $productview->noOnclick();
             }
 
-            // Configure real values
-            if ($this->realValues) {
-                $productview->substituteRealValues();
-            }
-
             /**
              * Article view.
              *
@@ -166,8 +161,9 @@ class CategoryTree extends Browsetree
                 $articleview->noOnclick();
             }
 
-                // Configure real values
-            if ($this->realValues) {
+            // Configure real values
+            if (!$this->isNavigationFrame) {
+                $productview->substituteRealValues();
                 $articleview->substituteRealValues();
             }
 
@@ -257,14 +253,15 @@ class CategoryTree extends Browsetree
     }
 
     /**
-     * Will set the real values to the views
-     * for products and articles, instead of edit.
+     * Setter
+     *
+     * @param $isNavigationFrame
      *
      * @return void
      */
-    public function substituteRealValues()
+    public function setNavigationFrame($isNavigationFrame)
     {
-        $this->realValues = true;
+        $this->isNavigationFrame = $isNavigationFrame;
     }
 
     /**

@@ -184,12 +184,6 @@ class Slave extends Leaf
         // icon
         $out .= $this->view->getIcon($child);
 
-        if (strpos(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI'), '/navigation.php') === false
-            && strpos(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_REFERER'), '/navigation.php') === false
-        ) {
-            $this->view->substituteRealValues();
-        }
-
         // title
         $out .= $this->view->wrapTitle($child['title'], $child).'</div>';
 

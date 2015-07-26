@@ -109,7 +109,7 @@ class CategoryView extends \CommerceTeam\Commerce\Tree\Leaf\View
         }
 
         // Max. size for Title of 30
-        $title = trim($title) != '' ? GeneralUtility::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
+        $title = trim($title) ? GeneralUtility::fixed_lgd_cs($title, 30) : $this->getLL('leaf.noTitle');
 
         $aOnClick = 'return link_commerce(\'' . $this->getJumpToParam($row) . '\');';
 

@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\ViewHelpers\Browselinks;
 
 /*
@@ -14,6 +13,7 @@ namespace CommerceTeam\Commerce\ViewHelpers\Browselinks;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use CommerceTeam\Commerce\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 

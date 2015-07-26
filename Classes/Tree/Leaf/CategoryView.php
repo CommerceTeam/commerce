@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree\Leaf;
 
 /*
@@ -62,10 +61,10 @@ class CategoryView extends View
         // get the UID of the Products SysFolder
         $productPid = \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid();
 
-        $res = '&id='.$productPid.'&control['.$this->table.'][uid]='.$row['uid'];
+        $res = '&id=' . $productPid . '&control[' . $this->table . '][uid]=' . $row['uid'];
 
         if ($this->realValues) {
-            $res = $this->table.'_'.$row['uid'];
+            $res = $this->table . '_' . $row['uid'];
         }
 
         return $res;

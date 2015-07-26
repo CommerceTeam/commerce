@@ -94,6 +94,7 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
         $this->categoryTree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
         $this->categoryTree->setBare($bare);
         $this->categoryTree->setSimpleMode((int) SettingsFactory::getInstance()->getExtConf('simpleMode'));
+        $this->categoryTree->setNavigationFrame(true);
         $this->categoryTree->init();
     }
 

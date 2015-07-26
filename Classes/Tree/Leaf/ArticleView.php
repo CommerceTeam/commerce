@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree\Leaf;
 
 /*
@@ -14,6 +13,7 @@ namespace CommerceTeam\Commerce\Tree\Leaf;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Implements the View for Articles.
@@ -51,21 +51,25 @@ class ArticleView extends View
     {
         if (!is_array($row) || !is_numeric($bank)) {
             if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('wrapTitle (articleview) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog(
+                    'wrapTitle (articleview) gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
             }
 
             return '';
         }
 
         // Max. size for Title of 255
-        $title = trim($title) ? \TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($title, 255) : $this->getLL('leaf.noTitle');
+        $title = trim($title) ? GeneralUtility::fixed_lgd_cs($title, 255) : $this->getLL('leaf.noTitle');
 
-        $aOnClick = 'if(top.content.list_frame){top.content.list_frame.location.href=top.TS.PATH_typo3+\'alt_doc.php?'.
-            'returnUrl=\'+top.rawurlencode(top.content.list_frame.document.location.pathname+'.
-            'top.content.list_frame.document.location.search)+\'&'.$this->getJumpToParam($row).'\';}';
+        $aOnClick = 'if(top.content.list_frame){top.content.list_frame.location.href=top.TS.PATH_typo3+\'alt_doc.php?' .
+            'returnUrl=\'+top.rawurlencode(top.content.list_frame.document.location.pathname+' .
+            'top.content.list_frame.document.location.search)+\'&' . $this->getJumpToParam($row) . '\';}';
 
-        $res = ($this->noOnclick) ? $title : '<a href="#" onclick="'.htmlspecialchars($aOnClick).'">'.
-            htmlspecialchars(strip_tags($title)).'</a>';
+        $res = ($this->noOnclick) ? $title : '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' .
+            htmlspecialchars(strip_tags($title)) . '</a>';
 
         return $res;
     }
@@ -81,7 +85,11 @@ class ArticleView extends View
     {
         if (!is_array($row)) {
             if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('getJumpToParam gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog(
+                    'getJumpToParam gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
             }
 
             return '';
@@ -90,10 +98,10 @@ class ArticleView extends View
         $value = 'edit';
 
         if ($this->realValues) {
-            $value = $this->table.'_'.$row['uid'];
+            $value = $this->table . '_' . $row['uid'];
         }
 
-        $res = 'edit['.$this->table.']['.$row['uid'].']='.$value;
+        $res = 'edit[' . $this->table . '][' . $row['uid'] . ']=' . $value;
 
         return $res;
     }

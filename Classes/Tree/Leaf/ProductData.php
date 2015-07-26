@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree\Leaf;
 
 /*
@@ -29,8 +28,8 @@ class ProductData extends SlaveData
      *
      * @var string
      */
-    protected $extendedFields = 'title, navtitle, hidden, deleted, starttime, endtime, fe_group, t3ver_oid, t3ver_id, t3ver_wsid,
-		t3ver_label, t3ver_state, t3ver_stage, t3ver_count, t3ver_tstamp';
+    protected $extendedFields = 'title, navtitle, hidden, deleted, starttime, endtime, fe_group, t3ver_oid,
+        t3ver_id, t3ver_wsid, t3ver_label, t3ver_state, t3ver_stage, t3ver_count, t3ver_tstamp';
 
     /**
      * Data table.
