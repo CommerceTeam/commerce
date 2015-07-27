@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Dao;
 
 /*
@@ -14,6 +13,7 @@ namespace CommerceTeam\Commerce\Dao;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This class handles basic object persistence using the Dao design pattern.
@@ -69,15 +69,14 @@ class BasicDao
 
     /**
      * Initialization.
+     *
+     * @return void
      */
     protected function init()
     {
-        $this->parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\BasicDaoParser');
-        $this->mapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            'CommerceTeam\\Commerce\\Dao\\BasicDaoMapper',
-            $this->parser
-        );
-        $this->object = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\BasicDaoObject');
+        $this->parser = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\BasicDaoParser');
+        $this->mapper = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\BasicDaoMapper', $this->parser);
+        $this->object = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\BasicDaoObject');
     }
 
     /**
@@ -94,6 +93,8 @@ class BasicDao
      * Setter.
      *
      * @param BasicDaoObject $object Object
+     *
+     * @return void
      */
     public function setObject(BasicDaoObject &$object)
     {
@@ -130,8 +131,8 @@ class BasicDao
     public function get($propertyName)
     {
         $properties = get_object_vars($this->object);
-        if (method_exists($this->object, 'get'.ucfirst($propertyName))) {
-            $value = call_user_func(array($this->object, 'get'.ucfirst($propertyName)), null);
+        if (method_exists($this->object, 'get' . ucfirst($propertyName))) {
+            $value = call_user_func(array($this->object, 'get' . ucfirst($propertyName)), null);
         } else {
             $value = $properties[$propertyName];
         }
@@ -143,14 +144,16 @@ class BasicDao
      * Setter.
      *
      * @param string $propertyName Property name
-     * @param mixed  $value        Value
+     * @param mixed $value Value
+     *
+     * @return void
      */
     public function set($propertyName, $value)
     {
         $properties = get_object_vars($this->object);
         if (array_key_exists($propertyName, $properties)) {
-            if (method_exists($this->object, 'set'.ucfirst($propertyName))) {
-                call_user_func(array($this->object, 'set'.ucfirst($propertyName)), $value);
+            if (method_exists($this->object, 'set' . ucfirst($propertyName))) {
+                call_user_func(array($this->object, 'set' . ucfirst($propertyName)), $value);
             } else {
                 $this->object->$propertyName = $value;
             }
@@ -187,6 +190,8 @@ class BasicDao
 
     /**
      * Load object.
+     *
+     * @return void
      */
     public function load()
     {
@@ -195,6 +200,8 @@ class BasicDao
 
     /**
      * Save object.
+     *
+     * @return void
      */
     public function save()
     {
@@ -203,6 +210,8 @@ class BasicDao
 
     /**
      * Remove object.
+     *
+     * @return void
      */
     public function remove()
     {

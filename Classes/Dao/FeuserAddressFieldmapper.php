@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Dao;
 
 /*
@@ -91,8 +90,10 @@ class FeuserAddressFieldmapper
     /**
      * Map feuser to address.
      *
-     * @param FeuserDao  $feuser  Frontend user
+     * @param FeuserDao $feuser Frontend user
      * @param AddressDao $address Address
+     *
+     * @return void
      */
     public function mapFeuserToAddress(FeuserDao &$feuser, AddressDao &$address)
     {
@@ -108,7 +109,9 @@ class FeuserAddressFieldmapper
      * Map address to feuser.
      *
      * @param AddressDao $address Address
-     * @param FeuserDao  $feuser  Frontend user
+     * @param FeuserDao $feuser Frontend user
+     *
+     * @return void
      */
     public function mapAddressToFeuser(AddressDao &$address, FeuserDao &$feuser)
     {
@@ -122,6 +125,8 @@ class FeuserAddressFieldmapper
 
     /**
      * Explode mapping.
+     *
+     * @return void
      */
     protected function explodeMapping()
     {

@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Dao;
 
 /*
@@ -37,6 +36,8 @@ class AddressDaoMapper extends BasicDaoMapper
 
     /**
      * Initialization.
+     *
+     * @return void
      */
     protected function init()
     {

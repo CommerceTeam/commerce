@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Dao;
 
 /*
@@ -36,6 +35,8 @@ class FeuserDaoMapper extends BasicDaoMapper
 
     /**
      * Initialization.
+     *
+     * @return void
      */
     public function init()
     {

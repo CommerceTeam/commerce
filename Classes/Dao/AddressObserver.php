@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Dao;
 
 /*
@@ -62,7 +61,9 @@ class AddressObserver
      * Communicate using push principle to avoid errors.
      *
      * @param string $status Status [update,new]
-     * @param string $id     Database table id
+     * @param string $id Database table id
+     *
+     * @return void
      */
     public static function update($status, $id)
     {
@@ -72,7 +73,7 @@ class AddressObserver
          *
          * @var AddressDao
          */
-        $addressDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDao', $id);
+        $addressDao = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDao', $id);
 
         // get feuser id
         $feuserId = $addressDao->get('tx_commerce_fe_user_id');
@@ -84,7 +85,7 @@ class AddressObserver
              *
              * @var FeuserDao
              */
-            $feuserDao = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserDao', $feuserId);
+            $feuserDao = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserDao', $feuserId);
 
             // update feuser object
             /**
@@ -92,7 +93,7 @@ class AddressObserver
              *
              * @var FeuserAddressFieldmapper
              */
-            $fieldMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserAddressFieldmapper');
+            $fieldMapper = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserAddressFieldmapper');
             $fieldMapper->mapAddressToFeuser($addressDao, $feuserDao);
 
             // set main address id in feuser
@@ -104,7 +105,7 @@ class AddressObserver
     /**
      * Check if address may get deleted.
      *
-     * @param int                             $uid          Uid
+     * @param int $uid Uid
      * @param AddressesController|DataHandler $parentObject Parent object
      *
      * @return bool|string
@@ -116,7 +117,9 @@ class AddressObserver
          *
          * @var FrontendUserRepository
          */
-        $userRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\FrontendUserRepository');
+        $userRepository = GeneralUtility::makeInstance(
+            'CommerceTeam\\Commerce\\Domain\\Repository\\FrontendUserRepository'
+        );
         $frontendUser = $userRepository->findByAddressId((int) $uid);
 
         // no errormessage
@@ -136,6 +139,7 @@ class AddressObserver
 
         return $msg;
     }
+
 
     /**
      * Get database connection.

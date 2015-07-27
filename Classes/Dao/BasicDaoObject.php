@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Dao;
 
 /*
@@ -37,6 +36,8 @@ class BasicDaoObject
      * Setter.
      *
      * @param int $id Id
+     *
+     * @return void
      */
     public function setId($id)
     {
@@ -67,6 +68,8 @@ class BasicDaoObject
 
     /**
      * Clear values.
+     *
+     * @return void
      */
     public function clear()
     {
@@ -78,6 +81,8 @@ class BasicDaoObject
 
     /**
      * Destructor.
+     *
+     * @return void
      */
     public function destroy()
     {

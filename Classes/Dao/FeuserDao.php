@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Dao;
 
 /*
@@ -15,6 +14,8 @@ namespace CommerceTeam\Commerce\Dao;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * This class handles object persistence using the Dao design pattern.
  * It extends the basic Dao.
@@ -27,14 +28,13 @@ class FeuserDao extends BasicDao
 {
     /**
      * Initialization.
+     *
+     * @return void
      */
     protected function init()
     {
-        $this->parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserDaoParser');
-        $this->mapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            'CommerceTeam\\Commerce\\Dao\\FeuserDaoMapper',
-            $this->parser
-        );
-        $this->object = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserDaoObject');
+        $this->parser = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserDaoParser');
+        $this->mapper = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserDaoMapper', $this->parser);
+        $this->object = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserDaoObject');
     }
 }

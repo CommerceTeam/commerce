@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Dao;
 
 /*
@@ -47,12 +46,12 @@ class BasicDaoParser
     {
         $model = array();
 
-            // parse attribs
+        // parse attribs
         $propertyNames = array_keys(get_object_vars($object));
         foreach ($propertyNames as $attrib) {
             if ($attrib != 'id') {
-                if (method_exists($object, 'get'.ucfirst($attrib))) {
-                    $model[$attrib] = call_user_func(array($object, 'get'.ucfirst($attrib)), null);
+                if (method_exists($object, 'get' . ucfirst($attrib))) {
+                    $model[$attrib] = call_user_func(array($object, 'get' . ucfirst($attrib)), null);
                 } else {
                     $model[$attrib] = $object->$attrib;
                 }
@@ -67,8 +66,10 @@ class BasicDaoParser
     /**
      * Parse model to object.
      *
-     * @param array          $model  Model
+     * @param array $model Model
      * @param BasicDaoObject $object Object
+     *
+     * @return void
      */
     public function parseModelToObject(array $model, BasicDaoObject &$object)
     {
@@ -77,8 +78,8 @@ class BasicDaoParser
         foreach ($propertyNames as $attrib) {
             if ($attrib != 'id') {
                 if (array_key_exists($attrib, $model)) {
-                    if (method_exists($object, 'set'.ucfirst($attrib))) {
-                        call_user_func(array($object, 'set'.ucfirst($attrib)), $model[$attrib]);
+                    if (method_exists($object, 'set' . ucfirst($attrib))) {
+                        call_user_func(array($object, 'set' . ucfirst($attrib)), $model[$attrib]);
                     } else {
                         $object->$attrib = $model[$attrib];
                     }
@@ -91,7 +92,9 @@ class BasicDaoParser
      * Setter.
      *
      * @param array $model Model
-     * @param int   $pid   Page id
+     * @param int $pid Page id
+     *
+     * @return void
      */
     public function setPid(array &$model, $pid)
     {

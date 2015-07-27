@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Dao;
 
 /*
@@ -70,9 +69,9 @@ class BasicDaoMapper
     /**
      * Constructor.
      *
-     * @param BasicDaoParser $parser    Parser
-     * @param int            $createPid Create pid
-     * @param string         $dbTable   Table
+     * @param BasicDaoParser $parser Parser
+     * @param int $createPid Create pid
+     * @param string $dbTable Table
      *
      * @return self
      */
@@ -92,6 +91,8 @@ class BasicDaoMapper
 
     /**
      * Initialization.
+     *
+     * @return void
      */
     protected function init()
     {
@@ -101,6 +102,8 @@ class BasicDaoMapper
      * Load object.
      *
      * @param BasicDaoObject $object Object
+     *
+     * @return void
      */
     public function load(BasicDaoObject $object)
     {
@@ -113,6 +116,8 @@ class BasicDaoMapper
      * Save object.
      *
      * @param BasicDaoObject $object Object
+     *
+     * @return void
      */
     public function save(BasicDaoObject $object)
     {
@@ -127,6 +132,8 @@ class BasicDaoMapper
      * Remove object.
      *
      * @param BasicDaoObject $object Object
+     *
+     * @return void
      */
     public function remove(BasicDaoObject $object)
     {
@@ -139,6 +146,8 @@ class BasicDaoMapper
      * Db add object.
      *
      * @param BasicDaoObject $object Object
+     *
+     * @return void
      */
     protected function dbInsert(BasicDaoObject $object)
     {
@@ -147,7 +156,7 @@ class BasicDaoMapper
         // set pid
         $this->parser->setPid($dbModel, $this->createPid);
 
-        // @todo extract db action into repsitory
+        // @todo extract db action into repository
         $database = $this->getDatabaseConnection();
         // execute query
         $database->exec_INSERTquery($this->dbTable, $dbModel);
@@ -169,15 +178,17 @@ class BasicDaoMapper
     /**
      * Db update object.
      *
-     * @param int            $uid    Uid
+     * @param int $uid Uid
      * @param BasicDaoObject $object Object
+     *
+     * @return void
      */
     protected function dbUpdate($uid, BasicDaoObject $object)
     {
         $dbWhere = 'uid = '.(int) $uid;
         $dbModel = $this->parser->parseObjectToModel($object);
 
-        // @todo extract db action into repsitory
+        // @todo extract db action into repository
         $database = $this->getDatabaseConnection();
 
         // execute query
@@ -197,8 +208,10 @@ class BasicDaoMapper
     /**
      * Db delete object.
      *
-     * @param int            $uid    Uid
+     * @param int $uid Uid
      * @param BasicDaoObject $object Object
+     *
+     * @return void
      */
     protected function dbDelete($uid, BasicDaoObject $object)
     {
@@ -206,14 +219,14 @@ class BasicDaoMapper
         $database = $this->getDatabaseConnection();
 
         // execute query
-        $database->exec_DELETEquery($this->dbTable, 'uid = '.(int) $uid);
+        $database->exec_DELETEquery($this->dbTable, 'uid = ' . (int) $uid);
 
         // any errors
         $error = $database->sql_error();
         if (!empty($error)) {
             $this->addError(array(
                 $error,
-                $database->DELETEquery($this->dbTable, 'uid = '.(int) $uid),
+                $database->DELETEquery($this->dbTable, 'uid = ' . (int) $uid),
             ));
         }
 
@@ -224,16 +237,18 @@ class BasicDaoMapper
     /**
      * DB select object by id.
      *
-     * @param int            $uid    Uid
+     * @param int $uid Uid
      * @param BasicDaoObject $object Object
+     *
+     * @return void
      */
     protected function dbSelectById($uid, BasicDaoObject $object)
     {
-        // @todo extract db action into repsitory
+        // @todo extract db action into repository
         $database = $this->getDatabaseConnection();
 
         // execute query
-        $res = $database->exec_SELECTquery('*', $this->dbTable, 'uid = '.(int) $uid.'AND deleted = 0');
+        $res = $database->exec_SELECTquery('*', $this->dbTable, 'uid = ' . (int) $uid . 'AND deleted = 0');
 
         // insert into object
         $model = $database->sql_fetch_assoc($res);
@@ -253,6 +268,8 @@ class BasicDaoMapper
      * Add error message.
      *
      * @param array $error Error
+     *
+     * @return void
      */
     protected function addError(array $error)
     {
@@ -278,6 +295,7 @@ class BasicDaoMapper
     {
         return $this->error ?: false;
     }
+
 
     /**
      * Get database connection.

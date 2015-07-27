@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Dao;
 
 /*
@@ -76,6 +75,8 @@ class FeuserDaoObject extends BasicDaoObject
      * Setter.
      *
      * @param string $name Name
+     *
+     * @return void
      */
     public function setName($name)
     {
@@ -96,9 +97,11 @@ class FeuserDaoObject extends BasicDaoObject
      * Setter.
      *
      * @param int $value Value
+     *
+     * @return void
      */
     public function setTx_commerce_tt_address_id($value)
     {
-        $this->tx_commerce_tt_address_id = $value;
+        $this->tx_commerce_tt_address_id = (int) $value;
     }
 }
