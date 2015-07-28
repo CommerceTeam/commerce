@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Repository;
 
 /*
@@ -41,7 +40,7 @@ class FrontendUserRepository extends Repository
         return (array) self::getDatabaseConnection()->exec_SELECTgetSingleRow(
             'uid',
             $this->databaseTable,
-            'tx_commerce_tt_address_id = '.$addressId.' AND deleted = 0'
+            'tx_commerce_tt_address_id = ' . $addressId . ' AND deleted = 0'
         );
     }
 }

@@ -33,10 +33,10 @@ interface PaymentInterface
     public function __construct(\CommerceTeam\Commerce\Controller\BaseController $pObj);
 
     /**
-         * Get form errors
-         *
-         * @return array
-         */
+     * Get form errors
+     *
+     * @return array
+     */
     public function getFormError();
 
     /**
@@ -93,9 +93,9 @@ interface PaymentInterface
     /**
      * Wether or not finishing an order is allowed.
      *
-     * @param array                                      $config  Current configuration
-     * @param array                                      $session Session data
-     * @param \CommerceTeam\Commerce\Domain\Model\Basket $basket  Basket object
+     * @param array $config Current configuration
+     * @param array $session Session data
+     * @param \CommerceTeam\Commerce\Domain\Model\Basket $basket Basket object
      *
      * @return bool TRUE if finishing order is allowed
      */
@@ -109,7 +109,7 @@ interface PaymentInterface
      * Method called in finishIt function.
      *
      * @param array $globalRequest Global request
-     * @param array $session       Session array
+     * @param array $session Session array
      *
      * @return bool TRUE if data is ok
      */
@@ -118,8 +118,10 @@ interface PaymentInterface
     /**
      * Update order data after order has been finished.
      *
-     * @param int   $orderUid Id of this order
-     * @param array $session  Session data
+     * @param int $orderUid Id of this order
+     * @param array $session Session data
+     *
+     * @return void
      */
     public function updateOrder($orderUid, array $session = array());
 

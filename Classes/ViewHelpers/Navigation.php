@@ -852,8 +852,8 @@ class Navigation
                         $nodeArray['_ADD_GETVARS'];
                 }
 
-                $nodeArray['_ADD_GETVARS'] .= $this->separator.'cHash='.
-                    $this->generateChash($nodeArray['_ADD_GETVARS'].$this->getFrontendController()->linkVars);
+                $nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' .
+                    $this->generateChash($nodeArray['_ADD_GETVARS'] . $this->getFrontendController()->linkVars);
 
                 $treeList[$row['uid_local']] = $nodeArray;
             }
@@ -1424,7 +1424,7 @@ class Navigation
 
             $result[] = array(
                 'uid' => $this->pid,
-                '_ADD_GETVARS' => $additionalParams.$this->separator.'cHash='.$cHash,
+                '_ADD_GETVARS' => $additionalParams . $this->separator . 'cHash=' . $cHash,
                 'ITEM_STATE' => $itemState,
                 'title' => $category->getTitle(),
                 'nav_title' => $category->getNavtitle(),
@@ -1652,7 +1652,7 @@ class Navigation
                     $aLevel['_SUB_MENU'] = $aLevel['--subLevel--'];
                 }
 
-                $output[$this->manufacturerIdentifier.$productRow['manufacturer_uid']] = $aLevel;
+                $output[$this->manufacturerIdentifier . $productRow['manufacturer_uid']] = $aLevel;
             }
         }
 

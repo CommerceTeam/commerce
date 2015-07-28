@@ -192,7 +192,7 @@ class DataHandlerUtility
         $this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
         $this->doc->backPath = $this->getBackPath();
         $this->doc->docType = 'xhtml_trans';
-        $this->doc->setModuleTemplate(PATH_TXCOMMERCE.'Resources/Private/Backend/mod_index.html');
+        $this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
         $this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
         $this->doc->loadJavascriptLib(
             $this->getBackPath() . PATH_TXCOMMERCE_REL . 'Resources/Public/JavaScript/copyPaste.js'
@@ -336,9 +336,9 @@ class DataHandlerUtility
                         $flag = ($tmpProd['flag'] != '') ? '<img src="' . $this->getBackPath() . 'gfx/flags/' .
                             $tmpProd['flag'] . '" alt="Flag" />' : '';
 
-                        $str .= '<li><input type="checkbox" name="locale[]" id="loc_'.$tmpProd['uid'].'" value="'.
-                            $tmpProd['sys_language'].'" /><label for="loc_'.$tmpProd['uid'].'">'.$flag.
-                            $tmpProd['title'].'</label></li>';
+                        $str .= '<li><input type="checkbox" name="locale[]" id="loc_' . $tmpProd['uid'] . '" value="' .
+                            $tmpProd['sys_language'] . '" /><label for="loc_' . $tmpProd['uid'] . '">' . $flag .
+                            $tmpProd['title'] . '</label></li>';
                     }
 
                     $str .= '</ul>';
@@ -374,10 +374,10 @@ class DataHandlerUtility
                 if (0 >= $l && (!empty($prods) || $userIgnoreClose)) {
                     // no child object - sorting position is irrelevant - just print a submit button
                     // and notify users that there are not products in the category yet
-                    $str .= '<input type="submit" value="'.$language->getLL('copy.submit').'" />';
+                    $str .= '<input type="submit" value="' . $language->getLL('copy.submit') . '" />';
                 } elseif (0 < $l) {
                     // at least 1 item - offer choice
-                    $icon = '<img'.IconUtility::skinImg(
+                    $icon = '<img' . IconUtility::skinImg(
                         $this->getBackPath(),
                         'gfx/newrecord_marker_d.gif',
                         'width="281" height="8"'
@@ -387,17 +387,17 @@ class DataHandlerUtility
                         IconUtility::getIcon('tx_commerce_products', array('uid' => $uidTarget)),
                         'width="18" height="16"'
                     ) . 'align="top" class="c-recIcon"/>';
-                    $str .= '<h1>'.$language->getLL('copy.position').'</h1>';
+                    $str .= '<h1>' . $language->getLL('copy.position') . '</h1>';
 
-                    $onClickAction = 'onclick="submitForm('.$records['pid'][$uidTarget][0]['uid'].')"';
+                    $onClickAction = 'onclick="submitForm(' . $records['pid'][$uidTarget][0]['uid'] . ')"';
                     $str .= '<span class="nobr"><a href="javascript:void(0)" ' . $onClickAction . '>' . $icon .
                         '</a></span><br />';
 
                     for ($i = 0; $i < $l; ++$i) {
                         $record = $records['pid'][$uidTarget][$i];
 
-                        $onClickAction = 'onclick="submitForm(-'.$record['uid'].')"';
-                        $str .= '<span class="nobr">'.$prodIcon.$record['title'].'</span><br />';
+                        $onClickAction = 'onclick="submitForm(-' . $record['uid'] . ')"';
+                        $str .= '<span class="nobr">' . $prodIcon . $record['title'] . '</span><br />';
                         $str .= '<span class="nobr"><a href="javascript:void(0)" ' . $onClickAction . '>' . $icon .
                             '</a></span><br />';
                     }
@@ -413,16 +413,13 @@ class DataHandlerUtility
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
-                $category = GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Category',
-                    $uidClip
-                );
+                $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $uidClip);
                 $category->loadData();
                 $cats = $category->getL18nCategories();
 
                 if (!empty($cats)) {
-                    $str .= '<h1>'.$language->getLL('copy.head.l18n').'</h1>
-						<h2>'.$language->getLL('copy.category').': '.$category->getTitle().'</h2>
+                    $str .= '<h1>' . $language->getLL('copy.head.l18n') . '</h1>
+						<h2>' . $language->getLL('copy.category') . ': ' . $category->getTitle() . '</h2>
 						<ul>';
 
                     // walk the l18n and get the selector box
@@ -432,12 +429,12 @@ class DataHandlerUtility
                         $tmpCat = $cats[$i];
 
                         $flag = ($tmpCat['flag'] != '') ?
-                            '<img src="'.$this->getBackPath().'gfx/flags/'.$tmpCat['flag'].'" alt="Flag" />' :
+                            '<img src="' . $this->getBackPath() . 'gfx/flags/' . $tmpCat['flag'] . '" alt="Flag" />' :
                             '';
 
-                        $str .= '<li><input type="checkbox" name="locale[]" id="loc_'.$tmpCat['uid'].'" value="'.
-                            $tmpCat['sys_language'].'" /><label for="loc_'.$tmpCat['uid'].'">'.$flag.$tmpCat['title'].
-                            '</label></li>';
+                        $str .= '<li><input type="checkbox" name="locale[]" id="loc_' . $tmpCat['uid'] . '" value="' .
+                            $tmpCat['sys_language'] . '" /><label for="loc_' . $tmpCat['uid'] . '">' . $flag .
+                            $tmpCat['title'] . '</label></li>';
                     }
 
                     $str .= '</ul>';
@@ -468,22 +465,22 @@ class DataHandlerUtility
 
                 if ($l == 0 && (!empty($cats) || $userIgnoreClose)) {
                     // no child object - sorting position is irrelevant - just print a submit button
-                    $str .= '<input type="submit" value="'.$language->getLL('copy.submit').'" />';
+                    $str .= '<input type="submit" value="' . $language->getLL('copy.submit') . '" />';
                 } elseif (0 < $l) {
                     // at least 1 item - offer choice
-                    $icon = '<img'.IconUtility::skinImg(
+                    $icon = '<img' . IconUtility::skinImg(
                         $this->getBackPath(),
                         'gfx/newrecord_marker_d.gif',
                         'width="281" height="8"'
                     ) . ' alt="" title="Insert the category" />';
-                    $catIcon = '<img'.IconUtility::skinImg(
+                    $catIcon = '<img' . IconUtility::skinImg(
                         $this->getBackPath(),
                         IconUtility::getIcon('tx_commerce_categories', array('uid' => $uidTarget)),
                         'width="18" height="16"'
                     ) . 'align="top" class="c-recIcon"/>';
-                    $str .= '<h1>'.$language->getLL('copy.position').'</h1>';
+                    $str .= '<h1>' . $language->getLL('copy.position') . '</h1>';
 
-                    $onClickAction = 'onclick="submitForm('.$records['pid'][$uidTarget][0]['uid'].')"';
+                    $onClickAction = 'onclick="submitForm(' . $records['pid'][$uidTarget][0]['uid'] . ')"';
                     $str .= '<span class="nobr"><a href="javascript:void(0)" ' . $onClickAction . '>' . $icon .
                         '</a></span><br />';
 

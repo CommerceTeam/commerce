@@ -229,7 +229,7 @@ class TreelibTceforms
         }
         $divStyle = 'position:relative; left:0px; top:0px; height:' . $height . '; width:' . $width .
             ';border:solid 1px;overflow:auto;background:#fff;';
-        $divFrame = '<div  name="' . $this->PA['itemFormElName'] . '_selTree" style="'  .htmlspecialchars($divStyle) .
+        $divFrame = '<div  name="' . $this->PA['itemFormElName'] . '_selTree" style="' . htmlspecialchars($divStyle) .
             '">' . $this->treeContent . '</div>';
 
             // include function
@@ -278,7 +278,7 @@ class TreelibTceforms
             $this->config['size'];
 
             // hardcoded: 16 is the height of the icons
-        $height = ($height * 16).'px';
+        $height = ($height * 16) . 'px';
 
         return array(
             $width,
@@ -414,7 +414,7 @@ class TreelibTceforms
                         'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess',
                         1
                     );
-                $this->itemArrayProcessed[] = $category->getUid().'|'.$title;
+                $this->itemArrayProcessed[] = $category->getUid() . '|' . $title;
             }
         }
 
@@ -463,7 +463,7 @@ class TreelibTceforms
                 'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess',
                 1
             );
-        $this->itemArrayProcessed = array($category->getUid().'|'.$title);
+        $this->itemArrayProcessed = array($category->getUid() . '|' . $title);
 
         return $this->itemArrayProcessed;
     }
@@ -526,7 +526,7 @@ class TreelibTceforms
                     1
                 );
             // Separate Key and Title with a |
-            $itemArray[] = $category->getUid().'|'.$title;
+            $itemArray[] = $category->getUid() . '|' . $title;
         }
 
         $this->itemArrayProcessed = $itemArray;

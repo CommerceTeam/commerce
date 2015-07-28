@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Configuration\DCA;
 
 /*
@@ -54,12 +53,16 @@ class Categories
                     'field_config' => array(
                         1 => array(
                             'name' => 'ct_###uid###',
-                            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.ct_###title###',
+                            'label' =>
+                                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.ct_###title###',
                             'config' => array(
                                 'type' => 'select',
                                 'foreign_table' => 'tx_commerce_attributes',
                                 'foreign_label' => 'title',
-                                'foreign_table_where' => ' AND has_valuelist = 1 AND multiple = 0 AND sys_language_uid in (0, -1) ORDER BY title',
+                                'foreign_table_where' =>
+                                    ' AND has_valuelist = 1
+                                     AND multiple = 0
+                                     AND sys_language_uid in (0, -1) ORDER BY title',
                                 'size' => 5,
                                 'minitems' => 0,
                                 'maxitems' => 30,
@@ -95,7 +98,8 @@ class Categories
                     'field_config' => array(
                         1 => array(
                             'name' => 'ct_###uid###',
-                            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.ct_###title###',
+                            'label' =>
+                                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.ct_###title###',
                             'config' => array(
                                 'type' => 'select',
                                 'foreign_table' => 'tx_commerce_attributes',

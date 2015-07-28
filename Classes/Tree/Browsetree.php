@@ -419,7 +419,7 @@ abstract class Browsetree
     public function printTree($uid)
     {
         die('The function printTree in Browsetree.php is not yet filled.
-            Fill it if you are using it. Search for this text to find the code. '.$uid);
+            Fill it if you are using it. Search for this text to find the code. ' . $uid);
     }
 
     /**

@@ -34,17 +34,17 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
             'fe_group' => 'fe_group',
         ),
         'dividers2tabs' => '1',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL.'article.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'article.gif',
     ),
     'interface' => array(
-        'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, title,
-			subtitle, navtitle, description_extra, plain_text, price_gross, price_net, purchase_price, tax, article_type_uid,
-			products_uid',
+        'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
+            title, subtitle, navtitle, description_extra, plain_text, price_gross, price_net, purchase_price, tax,
+            article_type_uid, products_uid',
     ),
     'feInterface' => array(
         'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime,
-			fe_group, title, subtitle, navtitle, images, ordernumber, eancode, description_extra,plain_text,
-			price_gross, price_net, purchase_price, tax, article_type_uid, products_uid, article_attributes',
+            fe_group, title, subtitle, navtitle, images, ordernumber, eancode, description_extra,plain_text,
+            price_gross, price_net, purchase_price, tax, article_type_uid, products_uid, article_attributes',
     ),
     'columns' => array(
         'sys_language_uid' => array(
@@ -71,7 +71,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
                 ),
                 'foreign_table' => 'tx_commerce_articles',
                 'foreign_table_where' => ' AND tx_commerce_articles.pid = ###CURRENT_PID###
-					AND tx_commerce_articles.sys_language_uid IN (-1,0)',
+                    AND tx_commerce_articles.sys_language_uid IN (-1,0)',
             ),
         ),
         'l18n_diffsource' => array(
@@ -203,7 +203,8 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
         ),
         'description_extra' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.description_extra',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.description_extra',
             'config' => array(
                 'type' => 'text',
                 'cols' => '30',
@@ -271,7 +272,8 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
         ),
         'article_type_uid' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.article_type_uid',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.article_type_uid',
             'l10n_mode' => 'exclude',
             'config' => array(
                 'type' => 'select',
@@ -308,7 +310,8 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
             ),
         ),
         'attributesedit' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes',
             'l10n_display' => 'hideDiff',
             'config' => array(
                 'type' => 'flex',
@@ -338,16 +341,18 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
     'types' => array(
         '0' => array(
             'showitem' => '
-			hidden;;1, title, subtitle, ordernumber,eancode,
-			description_extra;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/], images,
-			plain_text, tax, supplier_uid, article_type_uid, relatedpage;;;;1-1-1, products_uid, article_attributes,'.
+            hidden;;1, title, subtitle, ordernumber,eancode,
+            description_extra;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/],
+            images, plain_text, tax, supplier_uid, article_type_uid, relatedpage;;;;1-1-1, products_uid,
+            article_attributes,' .
                 (
                     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'] ? '' : '
-						--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes,
-							attributesedit,
-					'
-                ).
-            '--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.prices, prices',
+            --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes,
+            attributesedit,
+                    '
+                ) .
+                '
+            --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.prices, prices',
         ),
     ),
     'palettes' => array(

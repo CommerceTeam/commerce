@@ -652,7 +652,7 @@ class CommandMapHooks
         $database = $this->getDatabaseConnection();
         $backendUser = $this->getBackendUser();
 
-        $products = $database->exec_SELECTgetRows('*', 'tx_commerce_products', 'l18n_parent = '.$oldProductUid);
+        $products = $database->exec_SELECTgetRows('*', 'tx_commerce_products', 'l18n_parent = ' . $oldProductUid);
 
         foreach ($products as $product) {
             $oldTranslationProductUid = $product['uid'];

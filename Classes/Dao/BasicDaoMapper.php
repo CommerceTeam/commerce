@@ -185,7 +185,7 @@ class BasicDaoMapper
      */
     protected function dbUpdate($uid, BasicDaoObject $object)
     {
-        $dbWhere = 'uid = '.(int) $uid;
+        $dbWhere = 'uid = ' . (int) $uid;
         $dbModel = $this->parser->parseObjectToModel($object);
 
         // @todo extract db action into repository

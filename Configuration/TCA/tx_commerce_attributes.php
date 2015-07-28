@@ -46,10 +46,10 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
         ),
         'typeicon_column' => 'has_valuelist',
         'typeicons' => array(
-            '0' => PATH_TXCOMMERCE_ICON_TABLE_REL.'attributes_free.gif',
-            '1' => PATH_TXCOMMERCE_ICON_TABLE_REL.'attributes_list.gif',
+            '0' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'attributes_free.gif',
+            '1' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'attributes_list.gif',
         ),
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL.'attributes_free.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'attributes_free.gif',
     ),
     'feInterface' => array(
         'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
@@ -295,7 +295,7 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
     'types' => array(
         '0' => array(
             'showitem' => '
-                --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.basis,
+            --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.basis,
                 sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, parent, has_valuelist, multiple,
                 valueformat, title;;;;2-2-2, internal_title, unit, icon;;;;3-3-3;,iconmode,
             --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.valuelistlist,

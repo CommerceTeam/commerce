@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Configuration\DCA;
 
 /*
@@ -75,7 +74,8 @@ class Articles
                     'method' => 'add',
                     'type' => 'append',
                     'config' => array(
-                        'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.extras',
+                        'text' =>
+                            ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.extras',
                     ),
                 ),
             ),
@@ -100,16 +100,18 @@ class Articles
      * Alter dca on load.
      *
      * @param array $resultDca Result dca
+     *
+     * @return void
      */
     public function alterDCA_onLoad(array &$resultDca = array())
     {
-        if (
-            \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('data') != null
+        if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('data') != null
             && $this->getBackendUser()->uc['txcommerce_afterDatabaseOperations'] != 1
         ) {
             $resultDca = array();
         }
     }
+
 
     /**
      * Get backend user.

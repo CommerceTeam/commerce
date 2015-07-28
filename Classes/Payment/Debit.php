@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Payment;
 
 /*
@@ -66,6 +65,8 @@ class Debit extends PaymentAbstract
      * Get configuration of additional fields.
      *
      * @return array
+     *
+     * @return void
      */
     public function getAdditionalFieldsConfig()
     {
@@ -109,7 +110,7 @@ class Debit extends PaymentAbstract
         $result = true;
 
         foreach ($formData as $name => $value) {
-            if ($config['sourceFields.'][$name.'.']['mandatory'] == 1 && strlen($value) == 0) {
+            if ($config['sourceFields.'][$name . '.']['mandatory'] == 1 && strlen($value) == 0) {
                 $result = false;
             }
         }
@@ -124,8 +125,10 @@ class Debit extends PaymentAbstract
     /**
      * Update order data after order has been finished.
      *
-     * @param int   $orderUid Id of this order
+     * @param int $orderUid Id of this order
      * @param array $session  Session data
+     *
+     * @return void
      */
     public function updateOrder($orderUid, array $session = array())
     {

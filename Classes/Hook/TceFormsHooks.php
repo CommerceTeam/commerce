@@ -107,13 +107,13 @@ class TceFormsHooks
         if ($table == 'tx_commerce_articles'
             && $field == 'prices'
             && !$row['sys_language_uid']
-            && strpos($row['uid_product'], '_'.$settingsFactory->getExtConf('paymentID').'|') === false
-            && strpos($row['uid_product'], '_'.$settingsFactory->getExtConf('deliveryID').'|') === false
+            && strpos($row['uid_product'], '_' . $settingsFactory->getExtConf('paymentID') . '|') === false
+            && strpos($row['uid_product'], '_' . $settingsFactory->getExtConf('deliveryID') . '|') === false
             && is_numeric($row['uid'])
         ) {
             $splitText = '<div class="typo3-newRecordLink">';
             $outa = explode($splitText, $out, 2);
-            $out = $outa[0].$this->getScaleAmount($row['uid']).$splitText.$outa[1];
+            $out = $outa[0] . $this->getScaleAmount($row['uid']) . $splitText . $outa[1];
         }
     }
 

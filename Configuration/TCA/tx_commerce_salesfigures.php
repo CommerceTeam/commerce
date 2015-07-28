@@ -23,7 +23,7 @@ return array(
         'default_sortby' => 'ORDER BY crdate',
         'readOnly' => '1',
         'adminOnly' => '1',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL.'salesfigures.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'salesfigures.gif',
     ),
     'feInterface' => array(
         'fe_admin_fieldList' => 'year, month, day, dow, hour, pricegross, pricenet, amount, orders',
@@ -89,7 +89,8 @@ return array(
         ),
         'pricegross' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.pricegross',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.pricegross',
             'config' => array(
                 'type' => 'input',
                 'size' => '11',
@@ -133,9 +134,6 @@ return array(
         ),
     ),
     'types' => array(
-        '0' => array('showitem' => 'year;;;;1-1-1, month, day, dow, hour, pricegross, pricenet, amount, orders'),
-    ),
-    'palettes' => array(
-        '1' => array('showitem' => ''),
+        '0' => array('showitem' => 'year, month, day, dow, hour, pricegross, pricenet, amount, orders'),
     ),
 );

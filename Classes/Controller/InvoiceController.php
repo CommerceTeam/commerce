@@ -162,7 +162,7 @@ class InvoiceController extends BaseController
             $row = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
                 'cu_iso_3',
                 'static_currencies',
-                'uid = '.(int) $this->order['cu_iso_3_uid']
+                'uid = ' . (int) $this->order['cu_iso_3_uid']
             );
             $this->conf['currency'] = !empty($row) ? $row['cu_iso_3'] : $this->conf['currency'];
 
@@ -265,7 +265,7 @@ class InvoiceController extends BaseController
      */
     protected function invoiceBackendOnly($enabled = false)
     {
-        if ($enabled && !$this->getBackendUser()->user['uid'] && ($_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR'])) {
+        if ($enabled && !$this->getBackendUser()->user['uid'] && $_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) {
             /**
              * Error message.
              *
@@ -298,7 +298,7 @@ class InvoiceController extends BaseController
             $typoScript = $this->conf['OrderArticles.'];
         }
 
-        $queryString = 'order_uid='.(int) $orderUid.' AND article_type_uid < 2 ';
+        $queryString = 'order_uid=' . (int) $orderUid . ' AND article_type_uid < 2 ';
         $queryString .= $this->cObj->enableFields('tx_commerce_order_articles');
         $res = $database->exec_SELECTquery(
             '*',
@@ -461,9 +461,9 @@ class InvoiceController extends BaseController
         while (($row = $database->sql_fetch_assoc($res))) {
             $subpart = $this->cObj->getSubpart($this->templateCode, '###LISTING_' . $prefix . 'ROW###');
             // @todo Use $markerArray = $this->generateMarkerArray($row, '', $prefix);
-            $markerArray['###'.$prefix.'AMOUNT###'] = $row['amount'];
-            $markerArray['###'.$prefix.'METHOD###'] = $row['title'];
-            $markerArray['###'.$prefix.'COST###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+            $markerArray['###' . $prefix . 'AMOUNT###'] = $row['amount'];
+            $markerArray['###' . $prefix . 'METHOD###'] = $row['title'];
+            $markerArray['###' . $prefix . 'COST###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
                 ($row['amount'] * $row['price_gross']),
                 $this->conf['currency'],
                 (bool) $this->conf['showCurrencySign']

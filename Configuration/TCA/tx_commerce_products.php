@@ -39,7 +39,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ),
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL.'products.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'products.gif',
         'dividers2tabs' => '1',
     ),
     'interface' => array(
@@ -76,7 +76,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
                 ),
                 'foreign_table' => 'tx_commerce_products',
                 'foreign_table_where' => ' AND tx_commerce_products.pid = ###CURRENT_PID###
-					AND tx_commerce_products.sys_language_uid IN (-1,0)',
+                    AND tx_commerce_products.sys_language_uid IN (-1,0)',
             ),
         ),
         'l18n_diffsource' => array(

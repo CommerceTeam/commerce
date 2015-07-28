@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Xclass;
 
 /*
@@ -29,6 +28,8 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
 {
     /**
      * Main processing, creating the list of new record tables to select from.
+     *
+     * @return void
      */
     public function main()
     {
@@ -46,7 +47,11 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
             $this->web_list_modTSconfig = BackendUtility::getModTSconfig($this->pageinfo['uid'], 'mod.web_list');
             // allow only commerce related tables
             $this->allowedNewTables = array('tx_commerce_categories', 'tx_commerce_products');
-            $this->deniedNewTables = GeneralUtility::trimExplode(',', $this->web_list_modTSconfig['properties']['deniedNewTables'], true);
+            $this->deniedNewTables = GeneralUtility::trimExplode(
+                ',',
+                $this->web_list_modTSconfig['properties']['deniedNewTables'],
+                true
+            );
             // Acquiring TSconfig for this module/parent page:
             $this->web_list_modTSconfig_pid = BackendUtility::getModTSconfig($this->pageinfo['pid'], 'mod.web_list');
             $this->allowedNewTables_pid = GeneralUtility::trimExplode(
@@ -81,9 +86,9 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
                 );
                 $title = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
             }
-            $this->code = '<span class="typo3-moduleHeader">'.
-                $this->doc->wrapClickMenuOnIcon($iconImgTag, 'pages', $this->pageinfo['uid']).
-                htmlspecialchars(GeneralUtility::fixed_lgd_cs($title, 45)).'</span><br />';
+            $this->code = '<span class="typo3-moduleHeader">' .
+                $this->doc->wrapClickMenuOnIcon($iconImgTag, 'pages', $this->pageinfo['uid']) .
+                htmlspecialchars(GeneralUtility::fixed_lgd_cs($title, 45)) . '</span><br />';
             $this->R_URI = $this->returnUrl;
             // GENERATE the HTML-output depending on mode (pagesOnly is the page wizard)
             // Regular new element:
@@ -113,18 +118,18 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
      * Links the string $code to a create-new form for a record
      * in $table created on page $pid.
      *
-     * @param string $linkText        Link text
-     * @param string $table           Table name (in which to create new record)
-     * @param int    $pid             PID value for the
-     *                                "&edit['.$table.']['.$pid.']=new" command (positive/negative)
-     * @param bool   $addContentTable If $addContentTable is set,
-     *                                then a new contentTable record is created together with pages
+     * @param string $linkText Link text
+     * @param string $table Table name (in which to create new record)
+     * @param int $pid PID value for the
+     *      "&edit['.$table.']['.$pid.']=new" command (positive/negative)
+     * @param bool $addContentTable If $addContentTable is set,
+     *      then a new contentTable record is created together with pages
      *
      * @return string The link.
      */
     public function linkWrap($linkText, $table, $pid, $addContentTable = false)
     {
-        $parameters = '&edit['.$table.']['.$pid.']=new';
+        $parameters = '&edit[' . $table . '][' . $pid . ']=new';
 
         $contentTable = $GLOBALS['TYPO3_CONF_VARS']['SYS']['contentTable'];
         $contentTableConfig = SettingsFactory::getInstance()->getTcaValue($contentTable);
@@ -132,22 +137,22 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
             && $contentTable
             && $contentTableConfig
             && $addContentTable) {
-            $parameters .= '&edit['.$contentTable.'][prev]=new&returnNewPageId=1';
+            $parameters .= '&edit[' . $contentTable . '][prev]=new&returnNewPageId=1';
         } elseif ($table == 'pages_language_overlay') {
-            $parameters .= '&overrideVals[pages_language_overlay][doktype]='.(int) $this->pageinfo['doktype'];
+            $parameters .= '&overrideVals[pages_language_overlay][doktype]=' . (int) $this->pageinfo['doktype'];
         }
 
         $parameters = $this->addCommerceParameter($parameters, $table);
         $onClick = BackendUtility::editOnClick($parameters, '', $this->returnUrl);
 
-        return '<a href="#" onclick="'.htmlspecialchars($onClick).'">'.$linkText.'</a>';
+        return '<a href="#" onclick="' . htmlspecialchars($onClick) . '">' . $linkText . '</a>';
     }
 
     /**
      * Add commerce parameters.
      *
      * @param string $parameters Parameters
-     * @param string $table      Table
+     * @param string $table Table
      *
      * @return string
      */
@@ -156,11 +161,13 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
         if (GeneralUtility::_GP('parentCategory')) {
             switch ($table) {
                 case 'tx_commerce_categories':
-                    $parameters .= '&defVals[tx_commerce_categories][parent_category]='.GeneralUtility::_GP('parentCategory');
+                    $parameters .= '&defVals[tx_commerce_categories][parent_category]=' .
+                        GeneralUtility::_GP('parentCategory');
                     break;
 
                 case 'tx_commerce_products':
-                    $parameters .= '&defVals[tx_commerce_products][categories]='.GeneralUtility::_GP('parentCategory');
+                    $parameters .= '&defVals[tx_commerce_products][categories]=' .
+                        GeneralUtility::_GP('parentCategory');
                     break;
 
                 default:
@@ -169,6 +176,7 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
 
         return $parameters;
     }
+
 
     /**
      * Get language service.

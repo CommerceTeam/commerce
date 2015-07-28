@@ -933,8 +933,8 @@ class BackendUtility
         }
 
         if ($delete && !empty($delWhere)) {
-            $where = ' AND NOT (('.implode(') OR (', $delWhere).'))';
-            $database->exec_DELETEquery($relationTable, 'uid_local = '.$uidLocal.$where);
+            $where = ' AND NOT ((' . implode(') OR (', $delWhere) . '))';
+            $database->exec_DELETEquery($relationTable, 'uid_local = ' . $uidLocal . $where);
         }
     }
 
@@ -1146,7 +1146,7 @@ class BackendUtility
     {
         if (is_array($ctList)) {
             foreach ($ctList as $ctUid) {
-                $ffaList = explode(',', $ffData[$prefix.$ctUid['uid']]['vDEF']);
+                $ffaList = explode(',', $ffData[$prefix . $ctUid['uid']]['vDEF']);
                 if (count($ffaList) == 1 && $ffaList[0] == '') {
                     continue;
                 }
@@ -1304,7 +1304,7 @@ class BackendUtility
                      */
                     $prepend = '[Translate to ' . $langIdent . ':] ';
                     foreach (array_keys($attributeFlexformData['data']['sDEF']['lDEF']) as $attribKey) {
-                        $attributeFlexformData['data']['sDEF']['lDEF'][$attribKey]['vDEF'] = $prepend.
+                        $attributeFlexformData['data']['sDEF']['lDEF'][$attribKey]['vDEF'] = $prepend .
                             $attributeFlexformData['data']['sDEF']['lDEF'][$attribKey]['vDEF'];
                     }
                     break;
@@ -1404,7 +1404,7 @@ class BackendUtility
         );
         if ($database->sql_num_rows($result)) {
             while (($returnData = $database->sql_fetch_assoc($result))) {
-                $returnData['title'] = $prep.$returnData['title'];
+                $returnData['title'] = $prep . $returnData['title'];
 
                 $returnArray[] = array($returnData['title'], $returnData['uid']);
                 $tmparray = self::getOrderFolderSelector($returnData['uid'], $levels - 1, $aktLevel + 1);
@@ -1789,7 +1789,7 @@ class BackendUtility
         if ($languageUid != 0) {
             // we want to overwrite the attributes of the locale
             // replace $uidFrom and $uidTo with their localized versions
-            $uids = $uidFrom.','.$uidTo;
+            $uids = $uidFrom . ',' . $uidTo;
             $res = $database->exec_SELECTquery(
                 'uid, l18n_parent',
                 'tx_commerce_articles',

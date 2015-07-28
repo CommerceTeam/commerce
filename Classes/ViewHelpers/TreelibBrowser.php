@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\ViewHelpers;
 
 /*
@@ -108,6 +107,8 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 
     /**
      * Constructor function for script class.
+     *
+     * @return void
      */
     public function init()
     {
@@ -122,8 +123,10 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         $seckey = GeneralUtility::_GP('seckey');
         $allowProducts = GeneralUtility::_GP('allowProducts');
 
-        if (!($seckey === GeneralUtility::shortMD5($this->table.'|'.$this->field.'|'.$this->uid.'|'.$this->itemFormElName.
-                '|'.$this->flexConfig.'|'.$allowProducts.'|'.$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']))) {
+        if ($seckey !== GeneralUtility::shortMD5(
+            $this->table . '|' . $this->field . '|' . $this->uid . '|' . $this->itemFormElName . '|' .
+            $this->flexConfig . '|' . $allowProducts . '|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']
+        )) {
             die('access denied');
         }
 
@@ -135,7 +138,7 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         /**
          * Document template.
          *
-         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
+         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
          */
         $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
         $this->doc = $doc;
@@ -149,28 +152,26 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         // in typo3/stylesheets.css css is defined with id instead of
         // a class: TABLE#typo3-tree that's why we need TABLE.typo3-browsetree
         $this->doc->inDocStylesArray['typo3-browsetree'] = '
-			/* Trees */
-			TABLE.typo3-browsetree A { text-decoration: none;  }
-			TABLE.typo3-browsetree TR TD { white-space: nowrap; vertical-align: middle; }
-			TABLE.typo3-browsetree TR TD IMG { vertical-align: middle; }
-			TABLE.typo3-browsetree TR TD IMG.c-recIcon { margin-right: 1px;}
-			TABLE.typo3-browsetree { margin-bottom: 10px; width: 95%; }
+            /* Trees */
+            TABLE.typo3-browsetree A { text-decoration: none; }
+            TABLE.typo3-browsetree TR TD { white-space: nowrap; vertical-align: middle; }
+            TABLE.typo3-browsetree TR TD IMG { vertical-align: middle; }
+            TABLE.typo3-browsetree TR TD IMG.c-recIcon { margin-right: 1px; }
+            TABLE.typo3-browsetree { margin-bottom: 10px; width: 95%; }
 
-			TABLE.typo3-browsetree TR TD.typo3-browsetree-control {
-				padding: 0px;
-			}
-			TABLE.typo3-browsetree TR TD.typo3-browsetree-control a {
-				padding: 0px 3px 0px 3px;
-				background-color: '.$buttonColor.';
-			}
-			TABLE.typo3-browsetree TR TD.typo3-browsetree-control > a:hover {
-				background-color:'.$buttonColorHover.';
-			}';
+            TABLE.typo3-browsetree TR TD.typo3-browsetree-control { padding: 0px; }
+            TABLE.typo3-browsetree TR TD.typo3-browsetree-control a {
+                padding: 0px 3px 0px 3px;
+                background-color: ' . $buttonColor . ';
+            }
+            TABLE.typo3-browsetree TR TD.typo3-browsetree-control > a:hover {
+                background-color: ' . $buttonColorHover . ';
+            }';
 
         $this->doc->inDocStylesArray['background-color'] = '
-			#ext-dam-mod-treebrowser-index-php { background-color:#fff; }
-			#ext-treelib-browser { background-color:#fff; }
-		';
+            #ext-dam-mod-treebrowser-index-php { background-color: #fff; }
+            #ext-treelib-browser { background-color: #fff; }
+        ';
 
         $this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
         $this->doc->loadJavascriptLib('js/tree.js');
@@ -178,32 +179,40 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         if ($allowProducts) {
             // Check if we need to allow browsing of products.
             $this->doc->JScode .= $this->doc->wrapScriptTags('
-				Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse";
-			');
+                Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse";
+            ');
         } else {
             // Check if we need to allow browsing of products.
             $this->doc->JScode .= $this->doc->wrapScriptTags('
-				Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct";
-			');
+                Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct";
+            ');
         }
 
         // Setting JavaScript for menu
         // in this context, the function jumpTo is different
         // it adds the Category to the mountpoints
         $this->doc->JScode .= $this->doc->wrapScriptTags(
-            ($this->currentSubScript ? 'top.currentSubScript=unescape("'.rawurlencode($this->currentSubScript).'");' : '').'
+            (
+                $this->currentSubScript ?
+                'top.currentSubScript=unescape("' . rawurlencode($this->currentSubScript) . '");' :
+                ''
+            ) . '
 
-			function jumpTo(id, linkObj, highLightID, script) {
-				var catUid = id.substr(id.lastIndexOf("=") + 1); //We can leave out the "="
-				var text   = (linkObj.firstChild) ? linkObj.firstChild.nodeValue : "Unknown";
-				//Params (field, value, caption)
-				parent.setFormValueFromBrowseWin("data['.$this->table.']['.$this->uid.']['.$this->field.']", catUid, text);
-			}
-		');
+            function jumpTo(id, linkObj, highLightID, script) {
+                var catUid = id.substr(id.lastIndexOf("=") + 1); //We can leave out the "="
+                var text   = (linkObj.firstChild) ? linkObj.firstChild.nodeValue : "Unknown";
+                //Params (field, value, caption)
+                parent.setFormValueFromBrowseWin("data[' . $this->table . '][' . $this->uid . '][' . $this->field .
+            ']", catUid, text);
+            }
+            '
+        );
     }
 
     /**
      * Main function - generating the click menu in whatever form it has.
+     *
+     * @return void
      */
     public function main()
     {
@@ -215,7 +224,7 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         /**
          * Form engine.
          *
-         * @var \TYPO3\CMS\Backend\Form\FormEngine
+         * @var \TYPO3\CMS\Backend\Form\FormEngine $form
          */
         $form = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
         $form->initDefaultBEmode();
@@ -234,8 +243,10 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         } else {
             $settingsFactory = SettingsFactory::getInstance();
             $parameter['fieldConf'] = array(
-                'label' => $form->sL($settingsFactory->getTcaValue($this->table.'.columns.'.$this->field.'.label')),
-                'config' => $settingsFactory->getTcaValue($this->table.'.columns.'.$this->field.'.config'),
+                'label' => $form->sL(
+                    $settingsFactory->getTcaValue($this->table . '.columns.' . $this->field . '.label')
+                ),
+                'config' => $settingsFactory->getTcaValue($this->table . '.columns.' . $this->field . '.config'),
             );
         }
 
@@ -249,6 +260,8 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 
     /**
      * End page and output content.
+     *
+     * @return void
      */
     public function printContent()
     {
@@ -269,7 +282,7 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         /**
          * Data preprocessor.
          *
-         * @var \TYPO3\CMS\Backend\Form\DataPreprocessor
+         * @var \TYPO3\CMS\Backend\Form\DataPreprocessor $trData
          */
         $trData = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\DataPreprocessor');
         $trData->addRawData = true;
@@ -281,6 +294,7 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 
         return $row;
     }
+
 
     /**
      * Get back path.

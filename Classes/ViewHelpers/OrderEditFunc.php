@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\ViewHelpers;
 
 /*
@@ -76,9 +75,9 @@ class OrderEditFunc
      */
     public function articleOrderId(array $parameter)
     {
-        $content = htmlspecialchars($parameter['itemFormElValue']);
-        $content .= '<input type="hidden" name="'.$parameter['itemFormElName'].'" value="'.
-            htmlspecialchars($parameter['itemFormElValue']).'">';
+        $content = htmlspecialchars($parameter['itemFormElValue']) .
+            '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' .
+            htmlspecialchars($parameter['itemFormElValue']) . '">';
 
         return $content;
     }
@@ -93,8 +92,8 @@ class OrderEditFunc
      */
     public function sumPriceGrossFormat(array $parameter)
     {
-        $content = '<input type="text" disabled name="'.$parameter['itemFormElName'].'" value="'.
-            \CommerceTeam\Commerce\ViewHelpers\Money::format($parameter['itemFormElValue'] / 100, '').'">';
+        $content = '<input type="text" disabled name="' . $parameter['itemFormElName'] . '" value="' .
+            \CommerceTeam\Commerce\ViewHelpers\Money::format($parameter['itemFormElValue'] / 100, '') . '">';
 
         return $content;
     }
@@ -109,7 +108,6 @@ class OrderEditFunc
      */
     public function orderArticles(array $parameter)
     {
-        $database = $this->getDatabaseConnection();
         $language = $this->getLanguageService();
         $settingsFactory = SettingsFactory::getInstance();
 
@@ -141,7 +139,7 @@ class OrderEditFunc
         /*
          * Taken from class.db_list_extra.php
          */
-        $titleCol = $settingsFactory->getTcaValue($orderArticleTable.'.ctrl.label');
+        $titleCol = $settingsFactory->getTcaValue($orderArticleTable . '.ctrl.label');
 
         // Check if Orders in this folder are editable
         /**
@@ -157,7 +155,9 @@ class OrderEditFunc
          *
          * @var OrderArticleRepository
          */
-        $orderArticleRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\OrderArticleRepository');
+        $orderArticleRepository = GeneralUtility::makeInstance(
+            'CommerceTeam\\Commerce\\Domain\\Repository\\OrderArticleRepository'
+        );
         $orderArticles = $orderArticleRepository->findByOrderIdInPage($orderId, $orderStoragePid);
 
         $sum = array();
@@ -166,28 +166,35 @@ class OrderEditFunc
             /*
             * Only if we have a result
             */
-            $theData[$titleCol] = '<span class="c-table">'.
-                $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:order_view.items.article_list', 1).
-                '</span> ('.count($orderArticles).')';
+            $theData[$titleCol] = '<span class="c-table">' .
+                $language->sL(
+                    'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:order_view.items.article_list',
+                    1
+                ) .
+                '</span> (' . count($orderArticles) . ')';
 
             if ($settingsFactory->getExtConf('invoicePageID')) {
-                $theData[$titleCol] .= '<a href="../index.php?id='.$settingsFactory->getExtConf('invoicePageID').
-                    '&amp;tx_commerce_pi6[order_id]='.$orderId.'&amp;type='.$settingsFactory->getExtConf('invoicePageType').
-                    '" target="_blank">'.
-                    $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:order_view.items.print_invoice', 1).' *</a>';
+                $theData[$titleCol] .= '<a href="../index.php?id=' . $settingsFactory->getExtConf('invoicePageID') .
+                    '&amp;tx_commerce_pi6[order_id]=' . $orderId . '&amp;type=' .
+                    $settingsFactory->getExtConf('invoicePageType') . '" target="_blank">' .
+                    $language->sL(
+                        'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:order_view.items.print_invoice',
+                        1
+                    ) . ' *</a>';
             }
 
             $out .= '
-				<tr>
-					<td class="c-headLineTable" style="width: 95%;" colspan="'.(count($fieldRows) + 1).'">'.$theData[$titleCol].'</td>
-				</tr>';
+                <tr>
+                    <td class="c-headLineTable" style="width: 95%;" colspan="' . (count($fieldRows) + 1) . '">' .
+                $theData[$titleCol] . '</td>
+                </tr>';
 
             /*
              * Header colum
              */
             foreach ($fieldRows as $field) {
-                $out .= '<td class="c-headLineTable"><b>'.
-                    $language->sL(BackendUtility::getItemLabel($orderArticleTable, $field)).
+                $out .= '<td class="c-headLineTable"><b>' .
+                    $language->sL(BackendUtility::getItemLabel($orderArticleTable, $field)) .
                     '</b></td>';
             }
 
@@ -214,23 +221,29 @@ class OrderEditFunc
                 $row['price_net'] = Money::format($row['price_net'] / 100, '');
                 $row['price_gross'] = Money::format($row['price_gross'] / 100, '');
 
-                $rowBgColor = ($cc % 2 ? '' : ' bgcolor="'.
-                    GeneralUtility::modifyHTMLColor($this->getControllerDocumentTemplate()->bgColor4, +10, +10, +10).'"');
+                $rowBgColor = (
+                    $cc % 2 ?
+                    '' :
+                    ' bgcolor="' .
+                    GeneralUtility::modifyHTMLColor($this->getControllerDocumentTemplate()->bgColor4, +10, +10, +10) .
+                    '"'
+                );
 
                 /*
                  * Not very nice to render html_code directly
                  * @todo change rendering html code here
                  */
-                $iOut .= '<tr '.$rowBgColor.'>';
+                $iOut .= '<tr ' . $rowBgColor . '>';
                 foreach ($fieldRows as $field) {
                     $wrap = array('', '');
                     switch ($field) {
                         case $titleCol:
                             $iOut .= '<td>';
                             if ($orderEditable) {
-                                $params = '&edit['.$orderArticleTable.']['.$row['uid'].']=edit';
+                                $params = '&edit[' . $orderArticleTable . '][' . $row['uid'] . ']=edit';
                                 $wrap = array(
-                                    '<a href="#" onclick="'.htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())).'">',
+                                    '<a href="#" onclick="' .
+                                    htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) . '">',
                                     '</a>',
                                 );
                             }
@@ -239,10 +252,14 @@ class OrderEditFunc
                         case 'amount':
                             $iOut .= '<td>';
                             if ($orderEditable) {
-                                $params = '&edit['.$orderArticleTable.']['.$row['uid'].']=edit&columnsOnly=amount';
-                                $onclickAction = 'onclick="'.htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())).'"';
+                                $params = '&edit[' . $orderArticleTable . '][' . $row['uid'] .
+                                    ']=edit&columnsOnly=amount';
+                                $onclickAction = 'onclick="' .
+                                    htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) .
+                                    '"';
                                 $wrap = array(
-                                    '<b><a href="#" '.$onclickAction.'>'.IconUtility::getSpriteIcon('actions-document-open'),
+                                    '<b><a href="#" ' . $onclickAction . '>' .
+                                    IconUtility::getSpriteIcon('actions-document-open'),
                                     '</a></b>',
                                 );
                             }
@@ -258,7 +275,10 @@ class OrderEditFunc
                             $iOut .= '<td>';
                     }
 
-                    $iOut .= implode(BackendUtility::getProcessedValue($orderArticleTable, $field, $row[$field], 100), $wrap);
+                    $iOut .= implode(
+                        BackendUtility::getProcessedValue($orderArticleTable, $field, $row[$field], 100),
+                        $wrap
+                    );
                     $iOut .= '</td>';
                 }
 
@@ -303,23 +323,28 @@ class OrderEditFunc
              * Update sum_price_net and sum_price_gross
              * To Be shure everything is ok
              */
-            $values = array('sum_price_gross' => $sum['price_gross_value'] * 100, 'sum_price_net' => $sum['price_net_value'] * 100);
+            $values = array(
+                'sum_price_gross' => $sum['price_gross_value'] * 100,
+                'sum_price_net' => $sum['price_net_value'] * 100
+            );
             /**
              * Order repository.
              *
              * @var OrderRepository
              */
-            $orderRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\OrderRepository');
+            $orderRepository = GeneralUtility::makeInstance(
+                'CommerceTeam\\Commerce\\Domain\\Repository\\OrderRepository'
+            );
             $orderRepository->updateByOrderId($orderId, $values);
         }
 
         $out = '
-			<!--
-				DB listing of elements: "'.htmlspecialchars($orderTable).'"
-			-->
-			<table border="0" cellpadding="0" cellspacing="0" class="typo3-dblist">
-				'.$out.'
-			</table>';
+            <!--
+                DB listing of elements: "' . htmlspecialchars($orderTable) . '"
+            -->
+            <table border="0" cellpadding="0" cellspacing="0" class="typo3-dblist">
+                ' . $out . '
+            </table>';
         $content .= $out;
 
         return $content;
@@ -330,6 +355,8 @@ class OrderEditFunc
      * Selects only the order folders from the pages List.
      *
      * @param array $data Data
+     *
+     * @return void
      */
     public function orderStatus(array &$data)
     {
@@ -374,7 +401,9 @@ class OrderEditFunc
              *
              * @var \CommerceTeam\Commerce\Domain\Repository\PageRepository $pageRepository
              */
-            $pageRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\PageRepository');
+            $pageRepository = GeneralUtility::makeInstance(
+                'CommerceTeam\\Commerce\\Domain\\Repository\\PageRepository'
+            );
             $page = $pageRepository->findByUid($localOrderPid);
             if (!empty($page)) {
                 $orderPid = $page['pid'];
@@ -391,8 +420,8 @@ class OrderEditFunc
      * Invoice Adresss
      * Renders the invoice adresss.
      *
-     * @param array                              $parameter Parameter
-     * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj      Form engine
+     * @param array $parameter Parameter
+     * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj Form engine
      *
      * @return string HTML-Content
      */
@@ -404,8 +433,8 @@ class OrderEditFunc
     /**
      * Renders the crdate.
      *
-     * @param array                              $parameter Parameter
-     * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj      Form engine
+     * @param array $parameter Parameter
+     * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj Form engine
      *
      * @return string HTML-Content
      */
@@ -420,8 +449,8 @@ class OrderEditFunc
      * Invoice Adresss
      * Renders the invoice adresss.
      *
-     * @param array                              $parameter Parameter
-     * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj      Form engine
+     * @param array $parameter Parameter
+     * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj Form engine
      *
      * @return string HTML-Content
      */
@@ -434,10 +463,10 @@ class OrderEditFunc
      * Address
      * Renders an address block.
      *
-     * @param array                              $parameter Parameter
-     * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj      Form engine
-     * @param string                             $table     Table
-     * @param int                                $uid       Record UID
+     * @param array $parameter Parameter
+     * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj Form engine
+     * @param string $table Table
+     * @param int $uid Record UID
      *
      * @return string HTML-Content
      */
@@ -461,7 +490,7 @@ class OrderEditFunc
         if (($data = BackendUtility::getRecord(
             $table,
             $uid,
-            'uid,'.SettingsFactory::getInstance()->getTcaValue($table.'.interface.showRecordFieldList')
+            'uid,' . SettingsFactory::getInstance()->getTcaValue($table . '.interface.showRecordFieldList')
         ))) {
             /*
              * We should get just one Result
@@ -476,18 +505,21 @@ class OrderEditFunc
             /*
              * TYPO3 Core API's Page 63
              */
-            $params = '&edit['.$table.']['.$uid.']=edit';
+            $params = '&edit[' . $table . '][' . $uid . ']=edit';
 
-            $onclickAction = 'onclick="'.htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())).'"';
+            $onclickAction = 'onclick="' .
+                htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) .
+                '"';
             $headerWrap = array(
-                '<b><a href="#" '.$onclickAction.'>',
+                '<b><a href="#" ' . $onclickAction . '>',
                 '</a></b>',
             );
             $content .= $doc->getHeader($table, $data, 'Local Lang definition is missing', 1, $headerWrap);
             $content .= $doc->spacer(10);
 
             $display = array();
-            $showRecordFieldList = SettingsFactory::getInstance()->getTcaValue($table.'.interface.showRecordFieldList');
+            $showRecordFieldList = SettingsFactory::getInstance()
+                ->getTcaValue($table . '.interface.showRecordFieldList');
             foreach ($data as $key => $value) {
                 /*
                  * Walk through rowset,
@@ -515,8 +547,8 @@ class OrderEditFunc
             $content .= $doc->table($display, $tableLayout);
         }
 
-        $content .= '<input type="hidden" name="'.$parameter['itemFormElName'].'" value="'.
-            htmlspecialchars($parameter['itemFormElValue']).'">';
+        $content .= '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' .
+            htmlspecialchars($parameter['itemFormElValue']) . '">';
 
         return $content;
     }
@@ -562,6 +594,7 @@ class OrderEditFunc
 
         return $dblist->HTMLcode;
     }
+
 
     /**
      * Get backend user.

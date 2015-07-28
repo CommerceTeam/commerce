@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree\Leaf;
 
 /*
@@ -36,8 +35,8 @@ class CategoryData extends MasterData
      *
      * @var string
      */
-    protected $extendedFields = 'parent_category, title, perms_userid, perms_groupid, perms_user, perms_group, perms_everybody,
-		editlock, hidden, starttime, endtime, fe_group';
+    protected $extendedFields = 'parent_category, title, perms_userid, perms_groupid, perms_user, perms_group,
+        perms_everybody, editlock, hidden, starttime, endtime, fe_group';
 
     /**
      * Database table.
@@ -78,6 +77,8 @@ class CategoryData extends MasterData
      * Sets the Permission Mask for reading Categories from the db.
      *
      * @param int $mask Mask for reading the permissions
+     *
+     * @return void
      */
     public function setPermsMask($mask)
     {
@@ -97,10 +98,12 @@ class CategoryData extends MasterData
     /**
      * Initializes the categorydata
      * Builds the Permission-Statement.
+     *
+     * @return void
      */
     public function init()
     {
-        $this->whereClause = ' deleted = 0 AND '.
+        $this->whereClause = ' deleted = 0 AND ' .
             \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause($this->permsMask);
         $this->order = 'tx_commerce_categories.sorting ASC';
     }
@@ -108,7 +111,7 @@ class CategoryData extends MasterData
     /**
      * Loads and returns the Array of Records (for db_list).
      *
-     * @param int $uid   UID of the starting Category
+     * @param int $uid UID of the starting Category
      * @param int $depth Recursive Depth
      *
      * @return array

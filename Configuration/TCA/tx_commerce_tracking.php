@@ -22,7 +22,7 @@ return array(
         'cruser_id' => 'cruser_id',
         'versioning' => '1',
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL.'tracking.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'tracking.gif',
     ),
     'feInterface' => array(
         'fe_admin_fieldList' => 'orders_uid, trackingcodes_uid, msg',
@@ -45,7 +45,8 @@ return array(
         ),
         'trackingcodes_uid' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_tracking.trackingcodes_uid',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_tracking.trackingcodes_uid',
             'config' => array(
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -67,9 +68,6 @@ return array(
         ),
     ),
     'types' => array(
-        '0' => array('showitem' => 'orders_uid;;;;1-1-1, trackingcodes_uid, msg'),
-    ),
-    'palettes' => array(
-        '1' => array('showitem' => ''),
+        '0' => array('showitem' => 'orders_uid, trackingcodes_uid, msg'),
     ),
 );

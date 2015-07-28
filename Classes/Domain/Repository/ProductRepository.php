@@ -86,7 +86,7 @@ class ProductRepository extends Repository
                 $localOrderField = $hookObject->articleOrder($this->orderField);
             }
 
-            $where = 'uid_product = '.$uid.$this->enableFields(
+            $where = 'uid_product = ' . $uid . $this->enableFields(
                 'tx_commerce_articles',
                 $this->getFrontendController()->showHiddenRecords
             );

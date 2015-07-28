@@ -86,12 +86,12 @@ class Creditcard extends PaymentAbstract
         $config['sourceFields.'] = $this->getAdditionalFieldsConfig();
 
         foreach ($this->parentObject->sessionData['payment'] as $name => $value) {
-            if ($config['sourceFields.'][$name.'.']['mandatory'] == 1 && strlen($value) == 0) {
+            if ($config['sourceFields.'][$name . '.']['mandatory'] == 1 && strlen($value) == 0) {
                 $this->formError[$name] = $this->parentObject->pi_getLL('error_field_mandatory');
                 $result = false;
             }
 
-            $eval = explode(',', $config['sourceFields.'][$name.'.']['eval']);
+            $eval = explode(',', $config['sourceFields.'][$name . '.']['eval']);
             foreach ($eval as $method) {
                 $method = explode('_', $method);
                 switch (strtolower($method[0])) {
@@ -160,6 +160,7 @@ class Creditcard extends PaymentAbstract
 
         return $result;
     }
+
 
     /**
      * Get typoscript frontend controller.

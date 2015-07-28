@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -167,7 +168,7 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             }
         }
 
-        $this->log($changes.' Days changed');
+        $this->log($changes . ' Days changed');
 
         $lastAggregationTimeres = $database->sql_query('SELECT max(tstamp) FROM tx_commerce_newclients');
         if ($lastAggregationTimeres
@@ -265,7 +266,7 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             0,
             $status,
             $code,
-            '[commerce]: '.$message,
+            '[commerce]: ' . $message,
             array()
         );
     }

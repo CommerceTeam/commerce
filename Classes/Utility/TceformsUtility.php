@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Utility;
 
 /*
@@ -36,16 +35,16 @@ class TceformsUtility
 
         $numArticleNumbersShow = 3;
 
-        $addWhere = ' AND tx_commerce_articles.article_type_uid='.NORMALARTICLETYPE.' ';
+        $addWhere = ' AND tx_commerce_articles.article_type_uid = ' . NORMALARTICLETYPE . ' ';
         if ($data['row']['sys_language_uid'] > 0) {
-            $addWhere .= ' and tx_commerce_products.sys_language_uid='.$data['row']['sys_language_uid'].' ';
+            $addWhere .= ' and tx_commerce_products.sys_language_uid = ' . $data['row']['sys_language_uid'] . ' ';
         }
         $addWhere .= ' and tx_commerce_products.deleted = 0 and tx_commerce_articles.deleted =0 ';
         $resProducts = $database->exec_SELECTquery(
-            'distinct tx_commerce_products.title, tx_commerce_products.uid, tx_commerce_products.sys_language_uid,
-				count(tx_commerce_articles.uid) as anzahl',
+            'DISTINCT tx_commerce_products.title, tx_commerce_products.uid, tx_commerce_products.sys_language_uid,
+                count(tx_commerce_articles.uid) as anzahl',
             'tx_commerce_products,tx_commerce_articles',
-            'tx_commerce_products.uid=tx_commerce_articles.uid_product '.$addWhere,
+            'tx_commerce_products.uid=tx_commerce_articles.uid_product ' . $addWhere,
             'tx_commerce_products.title,tx_commerce_products.uid, tx_commerce_products.sys_language_uid',
             'tx_commerce_products.title,tx_commerce_products.sys_language_uid'
         );
@@ -57,23 +56,28 @@ class TceformsUtility
             $language = '';
 
             if ($rowProducts['sys_language_uid'] > 0) {
-                $resLanguage = $database->exec_SELECTquery('title', 'sys_language', 'uid='.$rowProducts['sys_language_uid']);
+                $resLanguage = $database->exec_SELECTquery(
+                    'title',
+                    'sys_language',
+                    'uid = ' . $rowProducts['sys_language_uid']
+                );
                 if (($rowLanguage = $database->sql_fetch_assoc($resLanguage))) {
                     $language = $rowLanguage['title'];
                 }
             }
 
             if ($language) {
-                $title = $rowProducts['title'].' ['.$language.'] ';
+                $title = $rowProducts['title'] . ' [' . $language . '] ';
             } else {
                 $title = $rowProducts['title'];
             }
 
             if ($rowProducts['anzahl'] > 0) {
                 $resArticles = $database->exec_SELECTquery(
-                    'eancode,l18n_parent,ordernumber',
+                    'eancode, l18n_parent, ordernumber',
                     'tx_commerce_articles',
-                    'tx_commerce_articles.uid_product='.$rowProducts['uid'].' and tx_commerce_articles.deleted=0 '
+                    'tx_commerce_articles.uid_product = ' . $rowProducts['uid'] .
+                    ' and tx_commerce_articles.deleted = 0'
                 );
 
                 if ($resArticles) {
@@ -82,12 +86,14 @@ class TceformsUtility
                     $eancodes = array();
                     $ordernumbers = array();
 
-                    while (($rowArticles = $database->sql_fetch_assoc($resArticles)) && ($count < $numArticleNumbersShow)) {
+                    while (($rowArticles = $database->sql_fetch_assoc($resArticles))
+                        && ($count < $numArticleNumbersShow)
+                    ) {
                         if ($rowArticles['l18n_parent'] > 0) {
                             $resL18nParent = $database->exec_SELECTquery(
                                 'eancode,ordernumber',
                                 'tx_commerce_articles',
-                                'tx_commerce_articles.uid='.$rowArticles['l18n_parent']
+                                'tx_commerce_articles.uid=' . $rowArticles['l18n_parent']
                             );
 
                             if ($resL18nParent) {
@@ -126,7 +132,7 @@ class TceformsUtility
                     if ($rowCount > $count) {
                         $numbers .= ',...';
                     }
-                    $title .= ' ('.$numbers.')';
+                    $title .= ' (' . $numbers . ')';
                 }
             }
 
@@ -136,6 +142,7 @@ class TceformsUtility
 
         $data['items'] = $items;
     }
+
 
     /**
      * Get database connection.

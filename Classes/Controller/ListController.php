@@ -257,7 +257,7 @@ class ListController extends BaseController
                 's_template'
             ))
         ) {
-            $this->conf['templateFile'] = $this->templateFolder.$this->pi_getFFvalue(
+            $this->conf['templateFile'] = $this->templateFolder . $this->pi_getFFvalue(
                 $this->cObj->data['pi_flexform'],
                 'template',
                 's_template'
@@ -934,7 +934,7 @@ class ListController extends BaseController
                     $getVars = array();
                     foreach ($getVarList as $getVar) {
                         if (isset($this->piVars[$getVar])) {
-                            $getVars[$this->prefixId.'['.$getVar.']'] = $this->piVars[$getVar];
+                            $getVars[$this->prefixId . '[' . $getVar . ']'] = $this->piVars[$getVar];
                         }
                     }
                     // Makes pi1 a user int so form values are updated as one selects an attribute
@@ -975,7 +975,7 @@ class ListController extends BaseController
 
                         // if the icon mode is enabled in TS check if the iconMode is also enabled
                         // for this attribute
-                        if ($this->conf[$this->handle.'.']['products.']['productAttributes.']['iconMode'] == '1') {
+                        if ($this->conf[$this->handle . '.']['products.']['productAttributes.']['iconMode'] == '1') {
                             $iconMode = $attribute->isIconmode();
                         }
                         if ($iconMode) {

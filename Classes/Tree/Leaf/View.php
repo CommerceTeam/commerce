@@ -186,9 +186,9 @@ class View extends Base
         if ($this->getBackPath()) {
             $this->backPath = $this->getBackPath();
         } else {
-            $this->backPath = $rootPathT3.TYPO3_mainDir;
+            $this->backPath = $rootPathT3 . TYPO3_mainDir;
         }
-        $this->iconPath = $this->backPath.PATH_TXCOMMERCE_ICON_TREE_REL;
+        $this->iconPath = $this->backPath . PATH_TXCOMMERCE_ICON_TREE_REL;
     }
 
     /**
@@ -253,7 +253,8 @@ class View extends Base
         if (!is_string($name)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'setTreeName (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed wrong-cast parameters. Should be string but is not.',
+                    'setTreeName (CommerceTeam\\Commerce\\Tree\\Leaf\\View)
+                     gets passed wrong-cast parameters. Should be string but is not.',
                     COMMERCE_EXTKEY,
                     2
                 );
@@ -306,7 +307,7 @@ class View extends Base
     /**
      * Get icon for the row.
      * If $this->iconPath and $this->iconName is set,
-     * 	try to get icon based on those values.
+     * try to get icon based on those values.
      *
      * @param array $row Item row.
      *
@@ -315,11 +316,12 @@ class View extends Base
     public function getIcon(array $row)
     {
         if ($this->iconPath && $this->iconName) {
-            $icon = '<img'.IconUtility::skinImg('', $this->iconPath.$this->iconName, 'width="18" height="16"').' alt=""'.
-                ($this->showDefaultTitleAttribute ? ' title="UID: '.$row['uid'].'"' : '').' />';
+            $icon = '<img' . IconUtility::skinImg('', $this->iconPath . $this->iconName, 'width="18" height="16"') .
+                ' alt=""' .
+                ($this->showDefaultTitleAttribute ? ' title="UID: ' . $row['uid'] . '"' : '') . ' />';
         } else {
             $icon = IconUtility::getSpriteIconForRecord($this->table, $row, array(
-                'title' => ($this->showDefaultTitleAttribute ? 'UID: '.$row['uid'] : $this->getTitleAttrib($row)),
+                'title' => ($this->showDefaultTitleAttribute ? 'UID: ' . $row['uid'] : $this->getTitleAttrib($row)),
                 'class' => 'c-recIcon',
             ));
         }
@@ -349,7 +351,7 @@ class View extends Base
             return '';
         }
 
-        $icon = '<img'.IconUtility::skinImg($this->iconPath, $this->rootIconName, 'width="18" height="16"').
+        $icon = '<img' . IconUtility::skinImg($this->iconPath, $this->rootIconName, 'width="18" height="16"') .
             ' title="Root" alt="" />';
 
         return $this->wrapIcon($icon, $row);
@@ -379,15 +381,15 @@ class View extends Base
         }
 
         if ($additionalParams == '' && $row['uid']) {
-            $additionalParams = '&control['.$this->table.'][uid]='.$row['uid'];
+            $additionalParams = '&control[' . $this->table . '][uid]=' . $row['uid'];
 
             switch (get_class($this)) {
                 case 'CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryView':
-                    $additionalParams .= '&parentCategory='.$row['uid'];
+                    $additionalParams .= '&parentCategory=' . $row['uid'];
                     break;
 
                 case 'CommerceTeam\\Commerce\\Tree\\Leaf\\ProductView':
-                    $additionalParams .= '&parentCategory='.$row['item_parent'];
+                    $additionalParams .= '&parentCategory=' . $row['item_parent'];
                     break;
 
                 default:
@@ -399,7 +401,13 @@ class View extends Base
             // Wrap the Context Menu on the Icon if it is allowed
         if ($this->getDocumentTemplate() && !$this->noClickmenu) {
             $this->getDocumentTemplate()->backPath = $this->getBackPath();
-            $icon = $this->getDocumentTemplate()->wrapClickMenuOnIcon($icon, $this->table, $row['uid'], 0, $additionalParams);
+            $icon = $this->getDocumentTemplate()->wrapClickMenuOnIcon(
+                $icon,
+                $this->table,
+                $row['uid'],
+                0,
+                $additionalParams
+            );
         }
 
         return $icon;
@@ -431,13 +439,14 @@ class View extends Base
             // Max. size for Title of 255
         $title = ('' != $title) ? GeneralUtility::fixed_lgd_cs($title, 255) : $this->getLL('leaf.noTitle');
 
-        $aOnClick = 'return jumpTo(\''.$this->getJumpToParam($row).'\',this,\''.$this->domIdPrefix.
-            $row['uid'].'_'.$bank.'\',\'\');';
+        $aOnClick = 'return jumpTo(\'' . $this->getJumpToParam($row) . '\',this,\'' . $this->domIdPrefix .
+            $row['uid'] . '_' . $bank . '\',\'\');';
 
         if (($this->noRootOnclick && 0 == $row['uid']) || $this->noOnclick) {
             $res = htmlspecialchars(strip_tags($title));
         } else {
-            $res = '<a href="#" onclick="'.htmlspecialchars($aOnClick).'">'.htmlspecialchars(strip_tags($title)).'</a>';
+            $res = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' .
+                htmlspecialchars(strip_tags($title)) . '</a>';
         }
 
         return $res;
@@ -453,7 +462,7 @@ class View extends Base
      */
     public function getTitleAttrib(array $row)
     {
-        return htmlspecialchars('['.$row['uid'].'] '.$row['title']);
+        return htmlspecialchars('[' . $row['uid'] . '] ' . $row['title']);
     }
 
     /**
@@ -477,7 +486,7 @@ class View extends Base
             return '';
         }
 
-        $res = 'id='.$row['uid'];
+        $res = 'id=' . $row['uid'];
 
         return $res;
     }
@@ -513,7 +522,8 @@ class View extends Base
         $plusMinus = $hasChildren ? $plusMinus : '';
         $bottom = ($isLast) ? '-end' : '';
         $bottom = ($isBank) ? '' : $bottom;
-        $icon = '<img alt="" src="'.$this->backPath.'clear.gif" class="x-tree-ec-icon x-tree-elbow'.$bottom.$plusMinus.'">';
+        $icon = '<img alt="" src="' . $this->backPath . 'clear.gif" class="x-tree-ec-icon x-tree-elbow' . $bottom .
+            $plusMinus . '">';
 
         if ($hasChildren) {
             // Calculate the command
@@ -535,7 +545,7 @@ class View extends Base
             }
 
             // Append the row UID | Parent Item under which this row stands
-            $cmd[] = $row['uid'].'|'.$row['item_parent'];
+            $cmd[] = $row['uid'] . '|' . $row['item_parent'];
             // Overwrite the Flag for expanded
             $cmd[3] = ($isExpanded ? 0 : 1);
 
@@ -572,9 +582,9 @@ class View extends Base
         }
 
             // activate dynamic ajax-based tree
-        $js = htmlspecialchars('Tree.load('.GeneralUtility::quoteJSvalue($cmd).', '.(int) $isExpand.', this);');
+        $js = htmlspecialchars('Tree.load(' . GeneralUtility::quoteJSvalue($cmd) . ', ' . (int) $isExpand . ', this);');
 
-        return '<a class="pm" onclick="'.$js.'">'.$icon.'</a>';
+        return '<a class="pm" onclick="' . $js . '">' . $icon . '</a>';
     }
 
     /**

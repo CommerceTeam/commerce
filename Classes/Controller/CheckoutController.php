@@ -255,7 +255,7 @@ class CheckoutController extends BaseController
         }
 
         // Get the template
-        $this->templateCode = $content.$this->cObj->fileResource($this->conf['templateFile']);
+        $this->templateCode = $content . $this->cObj->fileResource($this->conf['templateFile']);
 
         $this->debug($this->currentStep, '$this->currentSteps', __FILE__ . ' ' . __LINE__);
 
@@ -501,18 +501,18 @@ class CheckoutController extends BaseController
                 $localTs['typolink.']['additionalParams'] = $this->argSeparator . $this->prefixId . '[step]=' .
                     $this->checkoutSteps[$i];
             }
-            $label = sprintf($this->pi_getLL('label_step_'.$this->checkoutSteps[$i]), $i + 1);
+            $label = sprintf($this->pi_getLL('label_step_' . $this->checkoutSteps[$i]), $i + 1);
             $lokContent = $this->cObj->stdWrap($label, $localTs);
             $activeContent .= $this->cObj->substituteMarker($activeTemplate, '###LINKTOSTEP###', $lokContent);
         }
 
-        $label = sprintf($this->pi_getLL('label_step_'.$this->checkoutSteps[$i]), $i + 1);
+        $label = sprintf($this->pi_getLL('label_step_' . $this->checkoutSteps[$i]), $i + 1);
         $lokContent = $this->cObj->stdWrap($label, $this->conf['actualStep.']);
         $actualContent = $this->cObj->substituteMarker($actualTemplate, '###STEPNAME###', $lokContent);
 
         $stepCount = count($this->checkoutSteps);
         for ($i = ($currentStepNumber + 1); $i < $stepCount; ++$i) {
-            $label = sprintf($this->pi_getLL('label_step_'.$this->checkoutSteps[$i]), $i + 1);
+            $label = sprintf($this->pi_getLL('label_step_' . $this->checkoutSteps[$i]), $i + 1);
             $lokContent = $this->cObj->stdWrap($label, $this->conf['inactiveStep.']);
             $inactiveContent .= $this->cObj->substituteMarker($inactiveTemplate, '###STEPNAME###', $lokContent);
         }
@@ -538,7 +538,7 @@ class CheckoutController extends BaseController
     {
         $frontendController = $this->getFrontendController();
 
-        $this->debug($this->sessionData, 'sessionData', __FILE__.' '.__LINE__);
+        $this->debug($this->sessionData, 'sessionData', __FILE__ . ' ' . __LINE__);
         if ($this->conf['billing.']['subpartMarker.']['containerWrap']) {
             $template = $this->cObj->getSubpart(
                 $this->templateCode,
@@ -563,7 +563,8 @@ class CheckoutController extends BaseController
         $markerArray['###ADDRESS_FORM_HIDDENFIELDS###'] = '<input type="hidden" name="' .
             $this->prefixId . '[check]" value="billing" />';
 
-        $markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="'.$this->prefixId.'[check]" value="billing" />';
+        $markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="' . $this->prefixId .
+            '[check]" value="billing" />';
 
         // If a user is logged in, get the form from the address management
         if ($frontendController->loginUser) {
@@ -688,7 +689,7 @@ class CheckoutController extends BaseController
     public function getDeliveryAddress($withTitle = 1)
     {
         $frontendController = $this->getFrontendController();
-        $this->debug($this->sessionData, 'sessionData', __FILE__.' '.__LINE__);
+        $this->debug($this->sessionData, 'sessionData', __FILE__ . ' ' . __LINE__);
 
         if (!$this->validateAddress('billing')) {
             return $this->getBillingAddress();
@@ -834,7 +835,7 @@ class CheckoutController extends BaseController
 
         $paymentType = $this->getPaymentType();
 
-        if ($this->conf[$paymentType.'.']['subpartMarker.']['listWrap']) {
+        if ($this->conf[$paymentType . '.']['subpartMarker.']['listWrap']) {
             $template = $this->cObj->getSubpart(
                 $this->templateCode,
                 strtoupper($this->conf[$paymentType . '.']['subpartMarker.']['listWrap'])
@@ -846,8 +847,8 @@ class CheckoutController extends BaseController
         // Fill standard markers
         $markerArray['###PAYMENT_TITLE###'] = $this->pi_getLL('payment_title');
         $markerArray['###PAYMENT_DESCRIPTION###'] = $this->pi_getLL('payment_description');
-        $markerArray['###PAYMENT_DISCLAIMER###'] = $this->pi_getLL('general_disclaimer').
-            '<br />'.$this->pi_getLL('payment_disclaimer');
+        $markerArray['###PAYMENT_DISCLAIMER###'] = $this->pi_getLL('general_disclaimer') .
+            '<br />' . $this->pi_getLL('payment_disclaimer');
 
         // Check if we already have a payment object
         // If we don't have one, try to create a new one from the config
@@ -907,8 +908,8 @@ class CheckoutController extends BaseController
             $this->formError = $paymentObj->getFormError();
 
             // Show the payment form if it's needed, otherwise go to next step
-            $paymentForm = '<form name="paymentForm" action="'.$formAction.'" method="post">';
-            $paymentForm .= '<input type="hidden" name="'.$this->prefixId.'[step]" value="payment" />';
+            $paymentForm = '<form name="paymentForm" action="' . $formAction . '" method="post">';
+            $paymentForm .= '<input type="hidden" name="' . $this->prefixId . '[step]" value="payment" />';
             $paymentConfig = $this->conf['payment.'];
             $paymentConfig['sourceFields.'] = $paymentObj->getAdditionalFieldsConfig();
             $paymentForm .= $this->getInputForm($paymentConfig, 'payment', true);
@@ -958,14 +959,14 @@ class CheckoutController extends BaseController
         $frontendController = $this->getFrontendController();
 
         $basket = $this->getBasket();
-        $this->debug($basket, '$basket', __FILE__.' '.__LINE__);
+        $this->debug($basket, '$basket', __FILE__ . ' ' . __LINE__);
 
         $listingForm = '<form name="listingForm" action="' .
             $this->pi_getPageLink($frontendController->id) . '" method="post">';
 
         $nextStep = $this->getStepAfter($this->currentStep);
 
-        $listingForm .= '<input type="hidden" name="'.$this->prefixId.'[step]" value="'.$nextStep.'" />';
+        $listingForm .= '<input type="hidden" name="' . $this->prefixId . '[step]" value="' . $nextStep . '" />';
 
         $markerArray['###HIDDEN_STEP###'] = '<input type="hidden" name="' . $this->prefixId .
             '[step]" value="' . $nextStep . '" />';
@@ -1016,8 +1017,8 @@ class CheckoutController extends BaseController
             $this->cObj->typoLink($this->pi_getLL('termstext_tca'), $this->conf['termsAndConditionsUrl.'])
         );
         $markerArray['###LISTING_COMMENT_LABEL###'] = $this->pi_getLL('comment');
-        $markerArray['###LISTING_TERMS_ACCEPT_FIELD###'] = '<input type="checkbox" name="'.$this->prefixId.
-            '[terms]" value="termschecked" '.$termsChecked.' />';
+        $markerArray['###LISTING_TERMS_ACCEPT_FIELD###'] = '<input type="checkbox" name="' . $this->prefixId .
+            '[terms]" value="termschecked" ' . $termsChecked . ' />';
         $markerArray['###LISTING_COMMENT_FIELD###'] = '<textarea name="' . $this->prefixId .
             '[comment]" rows="4" cols="40">' . $comment . '</textarea>';
 
@@ -1092,7 +1093,7 @@ class CheckoutController extends BaseController
 
         // Check stock amount of articles
         if (!$this->checkStock()) {
-            $content = $this->pi_getLL('not_all_articles_in_stock').
+            $content = $this->pi_getLL('not_all_articles_in_stock') .
                 $this->pi_linkToPage($this->pi_getLL('no_stock_back'), $this->conf['noStockBackPID']);
 
             return $this->cObj->stdWrap($content, $this->conf['noStockWrap.']);
@@ -1109,7 +1110,7 @@ class CheckoutController extends BaseController
             }
         }
 
-        $this->debug($basket, '$basket', __FILE__.' '.__LINE__);
+        $this->debug($basket, '$basket', __FILE__ . ' ' . __LINE__);
 
         // Merge local lang array
         if (is_array($this->LOCAL_LANG) && isset($paymentObj->LOCAL_LANG)) {
@@ -1198,7 +1199,7 @@ class CheckoutController extends BaseController
 
         $deliveryAddress = '';
         if ($orderData['cust_deliveryaddress']) {
-            $data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid='.$orderData['cust_deliveryaddress']);
+            $data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = ' . $orderData['cust_deliveryaddress']);
             if (is_array($data)) {
                 $deliveryAddress = $this->makeAdressView($data, '###DELIVERY_ADDRESS###');
             }
@@ -1208,7 +1209,7 @@ class CheckoutController extends BaseController
 
         $billingAddress = '';
         if ($orderData['cust_invoice']) {
-            $data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid='.$orderData['cust_invoice']);
+            $data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = ' . $orderData['cust_invoice']);
             if (is_array($data)) {
                 $billingAddress = $this->makeAdressView($data, '###BILLING_ADDRESS_SUB###');
                 $markerArray['###CUST_NAME###'] = $data['NAME'];
@@ -1252,11 +1253,11 @@ class CheckoutController extends BaseController
          * @var \CommerceTeam\Commerce\Domain\Model\Basket $basket
          */
         $basket = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Basket');
-        $basket->setSessionId(md5($feUser->id.':'.rand(0, PHP_INT_MAX)));
+        $basket->setSessionId(md5($feUser->id . ':' . rand(0, PHP_INT_MAX)));
         $basket->loadData();
 
         $feUser->setKey('ses', 'orderId', null);
-        $feUser->setKey('ses', 'commerceBasketId-'.$basket->getBasketStoragePid(), $basket->getSessionId());
+        $feUser->setKey('ses', 'commerceBasketId-' . $basket->getBasketStoragePid(), $basket->getSessionId());
         $feUser->tx_commerce_basket = $basket;
 
         return $content;
@@ -1350,7 +1351,7 @@ class CheckoutController extends BaseController
                      * @var \CommerceTeam\Commerce\Domain\Model\Article $article
                      */
                     $article = $basketItem->article;
-                    $this->debug($article, '$article', __FILE__.' '.__LINE__);
+                    $this->debug($article, '$article', __FILE__ . ' ' . __LINE__);
                     if (!$article->hasStock($basketItem->getQuantity())) {
                         $basket->changeQuantity($artUid, 0);
                         $result = false;
@@ -1472,16 +1473,16 @@ class CheckoutController extends BaseController
         if (is_array($this->sessionData[$typeLower]) && !empty($this->sessionData[$typeLower]) && is_array($data)) {
             $addressArray = array();
 
-            $addressArray['###HEADER###'] = $this->pi_getLL($addressType.'_title');
+            $addressArray['###HEADER###'] = $this->pi_getLL($addressType . '_title');
             foreach ($data as $key => $value) {
                 $addressArray['###LABEL_' . strtoupper($key) . '###'] = $this->pi_getLL('general_' . $key);
                 $addressArray['###' . strtoupper($key) . '###'] = $value;
             }
 
-            if ($this->conf[$addressType.'.']['subpartMarker.']['listItem']) {
+            if ($this->conf[$addressType . '.']['subpartMarker.']['listItem']) {
                 $template = $this->cObj->getSubpart(
                     $this->templateCode,
-                    strtoupper($this->conf[$addressType.'.']['subpartMarker.']['listItem'])
+                    strtoupper($this->conf[$addressType . '.']['subpartMarker.']['listItem'])
                 );
             } else {
                 $template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_LIST###');
@@ -1503,12 +1504,12 @@ class CheckoutController extends BaseController
     public function validateAddress($addressType)
     {
         $typeLower = strtolower($addressType);
-        $config = $this->conf[$typeLower.'.'];
+        $config = $this->conf[$typeLower . '.'];
         $returnVal = true;
 
         $hooks = HookFactory::getHooks('Controller/CheckoutController', 'validateAddress');
 
-        $this->debug($config, 'TS Config', __FILE__.' '.__LINE__);
+        $this->debug($config, 'TS Config', __FILE__ . ' ' . __LINE__);
 
         if ($this->piVars['check'] != $addressType) {
             return true;
@@ -1524,12 +1525,12 @@ class CheckoutController extends BaseController
 
         foreach ($this->sessionData[$typeLower] as $name => $value) {
             $value = trim($value);
-            if ($config['sourceFields.'][$name.'.']['mandatory'] == 1 && $value == '') {
+            if ($config['sourceFields.'][$name . '.']['mandatory'] == 1 && $value == '') {
                 $this->formError[$name] = $this->pi_getLL('error_field_mandatory');
                 $returnVal = false;
             }
 
-            $eval = explode(',', $config['sourceFields.'][$name.'.']['eval']);
+            $eval = explode(',', $config['sourceFields.'][$name . '.']['eval']);
 
             foreach ($eval as $method) {
                 $method = explode('_', $method);
@@ -1596,7 +1597,7 @@ class CheckoutController extends BaseController
 
                     default:
                         if (!empty($method[0])) {
-                            $actMethod = 'validationMethod_'.strtolower($method[0]);
+                            $actMethod = 'validationMethod_' . strtolower($method[0]);
                             foreach ($hooks as $hookObj) {
                                 if (method_exists($hookObj, $actMethod)) {
                                     if (!$hookObj->{$actMethod}($this, $name, $value)) {
@@ -1614,7 +1615,7 @@ class CheckoutController extends BaseController
                         'fieldName' => $name,
                         'fieldValue' => $value,
                         'addressType' => $addressType,
-                        'config' => $config['sourceFields.'][$name.'.'],
+                        'config' => $config['sourceFields.'][$name . '.'],
                     );
                     if (!$hookObj->validateField($params, $this)) {
                         $returnVal = false;
@@ -2027,7 +2028,7 @@ class CheckoutController extends BaseController
 
         if ($this->conf[$type . '.']['sourceFields.'][$field . '.']['table']) {
             $table = $this->conf[$type . '.']['sourceFields.'][$field . '.']['table'];
-            $select = $this->conf[$type . '.']['sourceFields.'][$field . '.']['value'].' = \'' . $value . '\'';
+            $select = $this->conf[$type . '.']['sourceFields.'][$field . '.']['value'] . ' = \'' . $value . '\'';
             $fields = $this->conf[$type . '.']['sourceFields.'][$field . '.']['label'];
             $res = $database->exec_SELECTquery($fields, $table, $select);
             $row = $database->sql_fetch_assoc($res);
@@ -2091,8 +2092,8 @@ class CheckoutController extends BaseController
 
                 $selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
 
-                $result = '<select id="' . $step . '-' . $fieldName.'" name="' . $this->prefixId . '[' . $step . '][' .
-                    $fieldName . ']" class="' . $fieldConfig['cssClass'] . '">' . LF;
+                $result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step .
+                    '][' . $fieldName . ']" class="' . $fieldConfig['cssClass'] . '">' . LF;
                 $options = array();
                 $result .= \SJBR\StaticInfoTables\Utility\HtmlElementUtility::optionsConstructor(
                     $countries,

@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree\Leaf;
 
 /*
@@ -52,6 +51,8 @@ class Base
      * Loads the LocalLang file
      * Extending this class if you want to change the ll file implementation
      * If you only want to use a different ll file, overwrite the variable instead!
+     *
+     * @return void
      */
     public function loadLL()
     {
@@ -69,6 +70,7 @@ class Base
     {
         return $this->getLanguageService()->getLL($field);
     }
+
 
     /**
      * Get database connection.

@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Repository;
 
 /*
@@ -43,7 +42,7 @@ class PageRepository extends Repository
         return (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             'pid ',
             $this->databaseTable,
-            'uid = '.$uid.BackendUtility::deleteClause($this->databaseTable),
+            'uid = ' . (int) $uid . BackendUtility::deleteClause($this->databaseTable),
             '',
             'sorting'
         );
@@ -61,7 +60,7 @@ class PageRepository extends Repository
         return (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             'tx_commerce_foldereditorder',
             $this->databaseTable,
-            'tx_commerce_foldereditorder = 1 AND uid = '.$uid
+            'tx_commerce_foldereditorder = 1 AND uid = ' . (int) $uid
         );
     }
 }

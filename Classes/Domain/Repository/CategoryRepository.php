@@ -86,12 +86,12 @@ class CategoryRepository extends Repository
         $database = $this->getDatabaseConnection();
 
         $result = 0;
-        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) && $uid) {
+        if ($uid && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
             $this->uid = $uid;
             $row = (array) $database->exec_SELECTgetSingleRow(
                 'uid_foreign',
                 $this->databaseParentCategoryRelationTable,
-                'uid_local = ' . $uid . ' and is_reference = 0'
+                'uid_local = ' . $uid . ' AND is_reference = 0'
             );
             if (!empty($row)) {
                 $result = $row['uid_foreign'];
@@ -106,7 +106,7 @@ class CategoryRepository extends Repository
      *
      * @param int $uid Category UID
      *
-     * @return array Array with permission information
+     * @return array with permission information
      */
     public function getPermissionsRecord($uid)
     {
@@ -340,7 +340,7 @@ class CategoryRepository extends Repository
             'SELECT' => 'tx_commerce_products.uid',
             'FROM' => 'tx_commerce_products, tx_commerce_products_categories_mm, tx_commerce_articles,
                 tx_commerce_article_prices',
-            'WHERE' => 'tx_commerce_products.uid = tx_commerce_products_categories_mm.uid_local '.$whereClause,
+            'WHERE' => 'tx_commerce_products.uid = tx_commerce_products_categories_mm.uid_local ' . $whereClause,
             'GROUPBY' => 'tx_commerce_products.uid',
             'ORDERBY' => $localOrderField,
             'LIMIT' => '',
@@ -365,7 +365,7 @@ class CategoryRepository extends Repository
                     $lresult = $database->exec_SELECTquery(
                         'uid',
                         'tx_commerce_products',
-                        'l18n_parent = '.(int) $row['uid'].' AND sys_language_uid = '.$this->lang_uid.
+                        'l18n_parent = ' . (int) $row['uid'] . ' AND sys_language_uid = ' . $this->lang_uid .
                         $this->enableFields('tx_commerce_products', $frontend->showHiddenRecords)
                     );
                     if ($database->sql_num_rows($lresult)) {

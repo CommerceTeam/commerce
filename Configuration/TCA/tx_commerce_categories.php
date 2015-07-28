@@ -32,16 +32,17 @@ return array(
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ),
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL.'categories.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'categories.gif',
         'dividers2tabs' => '1',
     ),
     'interface' => array(
-        'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, title,
-			subtitle, navtitle, description, images, keywords, teaser, teaserimages',
+        'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
+            title, subtitle, navtitle, description, images, keywords, teaser, teaserimages',
     ),
     'feInterface' => array(
-        'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, title,
-			subtitle, description, images, navtitle, keywords, attributes, parent_category, teaser, teaserimages',
+        'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
+            title, subtitle, description, images, navtitle, keywords, attributes, parent_category, teaser,
+            teaserimages',
     ),
     'columns' => array(
         'sys_language_uid' => array(
@@ -69,7 +70,7 @@ return array(
                 ),
                 'foreign_table' => 'tx_commerce_categories',
                 'foreign_table_where' => 'AND tx_commerce_categories.pid = ###CURRENT_PID###
-					AND tx_commerce_categories.sys_language_uid IN (-1,0)',
+                    AND tx_commerce_categories.sys_language_uid IN (-1,0)',
             ),
         ),
         'l18n_diffsource' => array(
@@ -145,7 +146,8 @@ return array(
         ),
         'extendToSubpages' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.extendToSubpages',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.extendToSubpages',
             'config' => array(
                 'type' => 'check',
             ),
@@ -172,7 +174,8 @@ return array(
         ),
         'description' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.description',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.description',
             'config' => array(
                 'type' => 'text',
                 'cols' => '30',
@@ -183,7 +186,7 @@ return array(
                         'notNewRecords' => 1,
                         'RTEonly' => 1,
                         'type' => 'script',
-                        'title' => 'Full screen Rich Text Editing|Formatteret redigering i hele vinduet',
+                        'title' => 'Full screen Rich Text Editing',
                         'icon' => 'wizard_rte2.gif',
                         'script' => 'wizard_rte.php',
                     ),
@@ -228,7 +231,8 @@ return array(
         'parent_category' => array(
             'exclude' => 0,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.parent_category',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.parent_category',
             'config' => array(
                 'type' => 'group',
                 'internal_type' => 'passthrough',
@@ -302,10 +306,12 @@ return array(
     'types' => array(
         '0' => array(
             'showitem' => '
-				sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;2-2-2, subtitle;;;;3-3-3,
-				description;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/], images,
-				teaser;;;;3-3-3, teaserimages, navtitle, keywords,parent_category;;;;1-1-1, relatedpage;;;;1-1-1, ts_config;;;;1-1-1,
-			--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.select_attributes, attributes',
+                sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;2-2-2, subtitle;;;;3-3-3,
+                description;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/],
+                images, teaser;;;;3-3-3, teaserimages, navtitle, keywords,parent_category;;;;1-1-1,
+                relatedpage;;;;1-1-1, ts_config;;;;1-1-1,
+        --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.select_attributes,
+                attributes',
         ),
     ),
     'palettes' => array(

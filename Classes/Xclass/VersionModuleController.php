@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Xclass;
 
 /*
@@ -52,21 +51,24 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
             $language = $this->getLanguageService();
 
             // Edit link:
-            $adminLink = '<a href="#" onclick="'.
-                htmlspecialchars(BackendUtility::editOnClick('&edit['.$table.']['.$row['uid'].']=edit', $this->getBackPath())).
-                '">'.
+            $adminLink = '<a href="#" onclick="' .
+                htmlspecialchars(
+                    BackendUtility::editOnClick('&edit[' . $table . '][' . $row['uid'] . ']=edit', $this->getBackPath())
+                ) .
+                '">' .
                 IconUtility::getSpriteIcon(
                     'actions-document-open',
                     array('title' => $language->sL('LLL:EXT:lang/locallang_core.xml:cm.edit', true))
-                ).'</a>';
+                ) . '</a>';
 
             // Delete link:
-            $adminLink .= '<a href="'.
-                htmlspecialchars($this->doc->issueCommand('&cmd['.$table.']['.$row['uid'].'][delete]=1')).'">'.
+            $adminLink .= '<a href="' .
+                htmlspecialchars($this->doc->issueCommand('&cmd[' . $table . '][' . $row['uid'] . '][delete]=1')) .
+                '">' .
                 IconUtility::getSpriteIcon(
                     'actions-edit-delete',
                     array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:cm.delete', true))
-                ).'</a>';
+                ) . '</a>';
 
             if ($row['pid'] == -1) {
                 // get page TSconfig
@@ -91,23 +93,29 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
                 );
                 $product->loadData();
 
-                $getVars = ($sysLanguageUid > 0 ? '&L='.$sysLanguageUid : '').
-                    '&ADMCMD_vPrev['.rawurlencode($table.':'.$row['t3ver_oid']).']='.$row['uid'].
-                    '&no_cache=1&tx_commerce_pi1[showUid]='.$product->getUid().
-                    '&tx_commerce_pi1[catUid]='.current($product->getMasterparentCategory());
+                $getVars = ($sysLanguageUid > 0 ? '&L=' . $sysLanguageUid : '') .
+                    '&ADMCMD_vPrev[' . rawurlencode($table . ':' . $row['t3ver_oid']) . ']=' . $row['uid'] .
+                    '&no_cache=1&tx_commerce_pi1[showUid]=' . $product->getUid() .
+                    '&tx_commerce_pi1[catUid]=' . current($product->getMasterparentCategory());
 
-                $adminLink .= '<a href="#" onclick="'.
-                    htmlspecialchars(BackendUtility::viewOnClick(
-                        $previewPageId,
-                        $this->getBackPath(),
-                        BackendUtility::BEgetRootLine($row['_REAL_PID']), '', '', $getVars)
-                    ).
-                    '">'.IconUtility::getSpriteIcon('actions-document-view').'</a>';
+                $adminLink .= '<a href="#" onclick="' .
+                    htmlspecialchars(
+                        BackendUtility::viewOnClick(
+                            $previewPageId,
+                            $this->getBackPath(),
+                            BackendUtility::BEgetRootLine($row['_REAL_PID']),
+                            '',
+                            '',
+                            $getVars
+                        )
+                    ) .
+                    '">' . IconUtility::getSpriteIcon('actions-document-view') . '</a>';
             }
 
             return $adminLink;
         }
     }
+
 
     /**
      * Get language service.

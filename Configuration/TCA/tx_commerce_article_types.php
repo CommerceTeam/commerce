@@ -31,7 +31,7 @@ return array(
         'enablecolumns' => array(
             'disabled' => 'hidden',
         ),
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL.'icon_tx_commerce_article_types.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'icon_tx_commerce_article_types.gif',
     ),
     'feInterface' => array(
         'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, title',
@@ -64,7 +64,7 @@ return array(
                 ),
                 'foreign_table' => 'tx_commerce_article_types',
                 'foreign_table_where' => ' AND tx_commerce_article_types.pid = ###CURRENT_PID###
-					AND tx_commerce_article_types.sys_language_uid IN (-1,0)',
+                    AND tx_commerce_article_types.sys_language_uid IN (-1,0)',
             ),
         ),
         'l18n_diffsource' => array(
@@ -91,7 +91,9 @@ return array(
         ),
     ),
     'types' => array(
-        '0' => array('showitem' => 'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;2-2-2'),
+        '0' => array(
+            'showitem' => 'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;2-2-2'
+        ),
     ),
     'palettes' => array(
         '1' => array('showitem' => ''),

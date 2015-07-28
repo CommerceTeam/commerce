@@ -393,7 +393,7 @@ class AbstractEntity
         $data = array();
 
         foreach ($this->fieldlist as $field) {
-            $data[$prefix.$field] = $this->$field;
+            $data[$prefix . $field] = $this->$field;
         }
 
         return $data;

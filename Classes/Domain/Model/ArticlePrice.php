@@ -250,7 +250,7 @@ class ArticlePrice extends AbstractEntity
             BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_gross'),
             1
         ) .
-        ': ' . sprintf('%01.2f', $params['row']['price_gross'] / 100).
+        ': ' . sprintf('%01.2f', $params['row']['price_gross'] / 100) .
         ', ' . $languageService->sL(
             BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_net'),
             1

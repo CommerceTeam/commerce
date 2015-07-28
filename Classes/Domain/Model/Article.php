@@ -325,7 +325,7 @@ class Article extends AbstractEntity
         $localTable = 'tx_commerce_articles';
         $mmTable = 'tx_commerce_articles_article_attributes_mm';
         $foreignTable = 'tx_commerce_attributes';
-        $select = 'DISTINCT '.$foreignTable.'.uid, '.$foreignTable.'.title';
+        $select = 'DISTINCT ' . $foreignTable . '.uid, ' . $foreignTable . '.title';
         $ignore = array('fe_group' => 1);
 
         /**
@@ -783,7 +783,7 @@ class Article extends AbstractEntity
         $articlesInStock = 0;
 
         while (is_object($serviceObj = GeneralUtility::makeInstanceService('stockHandling', $subType, $serviceChain))) {
-            $serviceChain .= ','.$serviceObj->getServiceKey();
+            $serviceChain .= ',' . $serviceObj->getServiceKey();
             if (method_exists($serviceObj, 'getStock')) {
                 $articlesInStock += (int) $serviceObj->getStock($this);
                 ++$counter;
@@ -814,7 +814,7 @@ class Article extends AbstractEntity
         $articlesInStock = $this->getStock($subType, $serviceChain);
 
         while (is_object($serviceObj = GeneralUtility::makeInstanceService('stockHandling', $subType, $serviceChain))) {
-            $serviceChain .= ','.$serviceObj->getServiceKey();
+            $serviceChain .= ',' . $serviceObj->getServiceKey();
             if (method_exists($serviceObj, 'hasStock')) {
                 ++$counter;
                 if (($available = (int) $serviceObj->hasStock($this, $wantedArticles, $articlesInStock))) {
@@ -848,7 +848,7 @@ class Article extends AbstractEntity
         $counter = 0;
 
         while (is_object($serviceObj = GeneralUtility::makeInstanceService('stockHandling', $subType, $serviceChain))) {
-            $serviceChain .= ','.$serviceObj->getServiceKey();
+            $serviceChain .= ',' . $serviceObj->getServiceKey();
             if (method_exists($serviceObj, 'reduceStock')) {
                 $serviceObj->reduceStock($wantedArticles, $this);
             }
@@ -870,7 +870,7 @@ class Article extends AbstractEntity
     public function returnAssocArray($prefix = '')
     {
         $data = parent::returnAssocArray($prefix);
-        $data[$prefix.'stock'] = $this->getStock();
+        $data[$prefix . 'stock'] = $this->getStock();
 
         return $data;
     }

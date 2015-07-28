@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree\Leaf;
 
 /*
@@ -14,6 +13,7 @@ namespace CommerceTeam\Commerce\Tree\Leaf;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use CommerceTeam\Commerce\Factory\HookFactory;
 
 /**
@@ -55,6 +55,8 @@ abstract class MasterData extends Data
 
     /**
      * To be overridden by child classes.
+     *
+     * @return void
      */
     public function init()
     {
@@ -63,8 +65,10 @@ abstract class MasterData extends Data
     /**
      * Initializes the item records.
      *
-     * @param int   $index   Index
+     * @param int $index Index
      * @param array $indices Indices
+     *
+     * @return void
      */
     public function initRecords($index, array &$indices)
     {
@@ -91,7 +95,8 @@ abstract class MasterData extends Data
         if (!$backendUser->check('tables_select', $this->table)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'initRecords (CommerceTeam\\Commerce\\Tree\\Leaf\\MasterData): Usergroup is not allowed to view the records.',
+                    'initRecords (CommerceTeam\\Commerce\\Tree\\Leaf\\MasterData)
+                     Usergroup is not allowed to view the records.',
                     COMMERCE_EXTKEY,
                     2
                 );
@@ -120,6 +125,8 @@ abstract class MasterData extends Data
      * Sets the Mount Ids.
      *
      * @param array $mountIds Array with the item uids which are mounts for the user
+     *
+     * @return void
      */
     public function setMounts(array $mountIds)
     {
@@ -143,7 +150,9 @@ abstract class MasterData extends Data
      * Sets the UID of the item which acts as the uber-parent.
      *
      * @param int $uid UID of the Uber-item
-     *                 (could be a mountpoint, but a separate function exists for those)
+     *      (could be a mountpoint, but a separate function exists for those)
+     *
+     * @return void
      */
     public function setUid($uid)
     {
@@ -176,6 +185,8 @@ abstract class MasterData extends Data
      * Sets the depth of the recursion.
      *
      * @param int $depth Depth of Recursion
+     *
+     * @return void
      */
     public function setDepth($depth)
     {
@@ -197,7 +208,7 @@ abstract class MasterData extends Data
     /**
      * Initializes the Records by the Mountpoints.
      *
-     * @param int   $index   Index of the current leaf
+     * @param int $index Index of the current leaf
      * @param array $indices Array with parent indices
      *
      * @return array Records-Array
@@ -207,7 +218,8 @@ abstract class MasterData extends Data
         if (!is_numeric($index) || !is_array($indices) || !is_array($this->mountIds) || empty($this->mountIds)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'getRecordsByMountpoints (CommerceTeam\\Commerce\\Tree\\Leaf\\MasterData) gets passed invalid parameters.',
+                    'getRecordsByMountpoints (CommerceTeam\\Commerce\\Tree\\Leaf\\MasterData)
+                     gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -224,8 +236,9 @@ abstract class MasterData extends Data
         // Add the subquery - this makes sure that we not only read all
         // categories that are currently visible, but also their ("hidden") children
         if ($this->useMMTable) {
-            $subquery = 'SELECT uid_local FROM '.$this->mmTable.' WHERE uid_foreign IN ('.
-                implode(',', array_merge($positions, $this->mountIds)).') OR uid_local IN ('.implode(',', $this->mountIds).')';
+            $subquery = 'SELECT uid_local FROM ' . $this->mmTable . ' WHERE uid_foreign IN (' .
+                implode(',', array_merge($positions, $this->mountIds)) .
+                ') OR uid_local IN (' . implode(',', $this->mountIds) . ')';
 
             // uids of the items that are used as parents
             // this gets all the children from the parent items
@@ -233,8 +246,9 @@ abstract class MasterData extends Data
             // uids of the items that are the parents - this gets the mounts
             $this->where['uid_local'] = $subquery;
         } else {
-            $subquery = 'SELECT uid FROM '.$this->itemTable.' WHERE '.$this->itemParentField.' IN ('.
-                implode(',', array_merge($positions, $this->mountIds)).') OR uid IN ('.implode(',', $this->mountIds).')';
+            $subquery = 'SELECT uid FROM ' . $this->itemTable . ' WHERE ' . $this->itemParentField . ' IN (' .
+                implode(',', array_merge($positions, $this->mountIds)) .
+                ') OR uid IN (' . implode(',', $this->mountIds) . ')';
 
             $this->where[$this->itemParentField] = $subquery;
             $this->where['uid'] = $subquery;
@@ -294,15 +308,17 @@ abstract class MasterData extends Data
     /**
      * Returns an array with all Uids that should be read.
      *
-     * @param int        $uid   UID to be added and recursed
-     * @param int        $depth Recursive Depth
+     * @param int $uid UID to be added and recursed
+     * @param int $depth Recursive Depth
      * @param array|NULL $array Result
      *
      * @return array
      */
     protected function getRecursiveUids($uid, $depth, &$array = null)
     {
-        if (!is_numeric($uid) || !is_numeric($depth)) {
+        if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)
+            || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($depth)
+        ) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'getRecursiveUids (CommerceTeam\\Commerce\\Tree\\Leaf\\MasterData) gets passed invalid parameters.',
@@ -325,9 +341,9 @@ abstract class MasterData extends Data
 
         $database = $this->getDatabaseConnection();
         if ($this->useMMTable) {
-            $res = $database->exec_SELECTquery('uid_local AS uid', $this->mmTable, 'uid_foreign = '.$uid);
+            $res = $database->exec_SELECTquery('uid_local AS uid', $this->mmTable, 'uid_foreign = ' . $uid);
         } else {
-            $res = $database->exec_SELECTquery('uid', $this->itemTable, $this->itemParentField.' = '.$uid);
+            $res = $database->exec_SELECTquery('uid', $this->itemTable, $this->itemParentField . ' = ' . $uid);
         }
 
         while (($row = $database->sql_fetch_assoc($res))) {
@@ -346,9 +362,8 @@ abstract class MasterData extends Data
     {
         $rows = parent::loadRecords();
 
-            // Add the root if it is the starting ID or in the mounts
-        if (
-            !$this->ignoreMounts
+        // Add the root if it is the starting ID or in the mounts
+        if (!$this->ignoreMounts
             && (
                 (!$this->useMountpoints && $this->uid == 0)
                 || ($this->useMountpoints && in_array(0, $this->mountIds))

@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Utility;
 
 /*

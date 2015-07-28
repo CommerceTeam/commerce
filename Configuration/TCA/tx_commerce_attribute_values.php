@@ -35,7 +35,7 @@ return array(
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ),
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL.'attribute_value.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'attribute_value.gif',
     ),
     'feInterface' => array(
         'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, value,
@@ -153,7 +153,8 @@ return array(
         ),
         'attributes_uid' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attribute_values.attributes_uid',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attribute_values.attributes_uid',
             'l10n_mode' => 'exclude',
             'config' => array(
                 'type' => 'select',

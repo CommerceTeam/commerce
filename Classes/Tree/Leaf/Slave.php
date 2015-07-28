@@ -185,7 +185,7 @@ class Slave extends Leaf
         $out .= $this->view->getIcon($child);
 
         // title
-        $out .= $this->view->wrapTitle($child['title'], $child).'</div>';
+        $out .= $this->view->wrapTitle($child['title'], $child) . '</div>';
 
         /******************
          * Done printing
@@ -254,7 +254,7 @@ class Slave extends Leaf
         // DLOG
         if (TYPO3_DLOG) {
             \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                'printChildleafsByParent (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) did '.$l.' loops!',
+                'printChildleafsByParent (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) did ' . $l . ' loops!',
                 COMMERCE_EXTKEY,
                 1
             );

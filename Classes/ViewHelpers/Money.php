@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\ViewHelpers;
 
 /*
@@ -41,7 +40,7 @@ class Money
      * }.
      *
      * @param string $content Content
-     * @param array  $conf    Config
+     * @param array $conf Config
      *
      * @return string representation of the amount including currency symbol(s)
      */
@@ -61,16 +60,16 @@ class Money
      * calculations if you need exact values, therefore
      * this method won't accept float values.
      * Examples:
-     *        format (500, 'EUR');        --> '5,00 EUR'
-     *        format (4.23, 'EUR');    --> FALSE
-     *        format ('872331', 'EUR');    --> '8.723,31 EUR'.
+     *      format (500, 'EUR');      --> '5,00 EUR'
+     *      format (4.23, 'EUR');     --> FALSE
+     *      format ('872331', 'EUR'); --> '8.723,31 EUR'.
      *
-     * @param int|string $amount      Amount to be formatted. Must be the smalles unit
-     * @param string     $currencyKey ISO 3 letter code of the currency
-     * @param bool       $withSymbol  If set the currency symbol will be rendered
+     * @param int|string $amount Amount to be formatted. Must be the smalles unit
+     * @param string $currencyKey ISO 3 letter code of the currency
+     * @param bool $withSymbol If set the currency symbol will be rendered
      *
      * @return string|bool String representation of the amount including currency
-     *                     symbol(s) or FALSE if $amount was of the type float
+     *      symbol(s) or FALSE if $amount was of the type float
      */
     public static function format($amount, $currencyKey, $withSymbol = true)
     {
@@ -83,7 +82,9 @@ class Money
          *
          * @var CurrencyRepository
          */
-        $currencyRepository = GeneralUtility::makeInstance('CommerceTeam\Commerce\Domain\Repository\CurrencyRepository');
+        $currencyRepository = GeneralUtility::makeInstance(
+            'CommerceTeam\Commerce\Domain\Repository\CurrencyRepository'
+        );
         $currency = $currencyRepository->findByIso3($currencyKey);
 
         if (empty($currency)) {
@@ -100,10 +101,10 @@ class Money
         if ($withSymbol) {
             $wholeString = $formattedAmount;
             if (!empty($currency['cu_symbol_left'])) {
-                $wholeString = $currency['cu_symbol_left'].chr(32).$wholeString;
+                $wholeString = $currency['cu_symbol_left'] . ' ' . $wholeString;
             }
             if (!empty($currency['cu_symbol_right'])) {
-                $wholeString .= chr(32).$currency['cu_symbol_right'];
+                $wholeString .= ' ' . $currency['cu_symbol_right'];
             }
         } else {
             $wholeString = $formattedAmount;

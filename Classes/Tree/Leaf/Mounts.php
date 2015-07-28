@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree\Leaf;
 
 /*
@@ -134,6 +133,8 @@ class Mounts extends Base
      * read Mountpoints from the be_users table.
      *
      * @param int $uid User UID
+     *
+     * @return void
      */
     public function init($uid)
     {
@@ -141,7 +142,8 @@ class Mounts extends Base
         if (!is_numeric($uid) || $this->field == null) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'init (CommerceTeam\\Commerce\\Tree\\Leaf\\Mounts) gets passed invalid parameters. Script is aborted.',
+                    'init (CommerceTeam\\Commerce\\Tree\\Leaf\\Mounts)
+                     gets passed invalid parameters. Script is aborted.',
                     COMMERCE_EXTKEY,
                     2
                 );
@@ -172,6 +174,8 @@ class Mounts extends Base
      * read Mountpoints from the be_groups table.
      *
      * @param int $uid Group UID
+     *
+     * @return void
      */
     public function initByGroup($uid)
     {
@@ -222,9 +226,9 @@ class Mounts extends Base
             // Read usermounts - if none are set, mounts are set to NULL
             if (!$this->byGroup) {
                 $result = $database->exec_SELECTquery(
-                    $this->field.','.$this->usergroupField,
+                    $this->field . ',' . $this->usergroupField,
                     $this->table,
-                    'uid = '.$this->user_uid,
+                    'uid = ' . $this->user_uid,
                     $this->where
                 );
 
@@ -238,11 +242,11 @@ class Mounts extends Base
             }
 
             if (trim($groups)) {
-                $result = $database->exec_SELECTquery($this->field, $this->grouptable, 'uid IN ('.$groups.')');
+                $result = $database->exec_SELECTquery($this->field, $this->grouptable, 'uid IN (' . $groups . ')');
 
                 // Walk the groups and add the mounts
                 while (($row = $database->sql_fetch_assoc($result))) {
-                    $mounts .= ','.$row[$this->field];
+                    $mounts .= ',' . $row[$this->field];
                 }
 
                 // Make nicely formated list
@@ -303,6 +307,8 @@ class Mounts extends Base
 
     /**
      * Sets the internal pointer to 0.
+     *
+     * @return void
      */
     public function resetPointer()
     {

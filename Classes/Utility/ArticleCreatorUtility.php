@@ -294,7 +294,7 @@ class ArticleCreatorUtility
             var T3_RETURN_URL = \'' .
             str_replace('%20', '', rawurlencode(GeneralUtility::sanitizeLocalUrl(GeneralUtility::_GP('returnUrl')))) .
             '\';
-            var T3_THIS_LOCATION = \''.str_replace('%20', '', rawurlencode($thisLocation)).'\';
+            var T3_THIS_LOCATION = \'' . str_replace('%20', '', rawurlencode($thisLocation)) . '\';
         ';
 
         return $out;
@@ -370,7 +370,7 @@ class ArticleCreatorUtility
             $selectAllRow .= '<td colspan="' . ($colCount - 1) . '">' .
                 $fObj->sL(
                     'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_all_articles'
-                ).
+                ) .
                 '</td></tr>';
         }
 
@@ -869,7 +869,7 @@ class ArticleCreatorUtility
                 $res = $database->exec_SELECTquery(
                     '*',
                     'tx_commerce_articles_article_attributes_mm',
-                    'uid_local = '.(int) $origArticle['uid'].' AND uid_valuelist = 0'
+                    'uid_local = ' . (int) $origArticle['uid'] . ' AND uid_valuelist = 0'
                 );
 
                 while (($origRelation = $database->sql_fetch_assoc($res))) {

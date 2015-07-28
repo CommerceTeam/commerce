@@ -2,8 +2,6 @@
 namespace CommerceTeam\Commerce\Hook;
 
 use TYPO3\CMS\Backend\Controller\BackendController;
-use TYPO3\CMS\Core\Page\PageRenderer;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class \CommerceTeam\Commerce\Hook\BackendHooks
@@ -13,6 +11,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class BackendHooks
 {
     /**
+     * Add javascript to be loaded in backend
+     *
      * @param array $configuration Configuration
      * @param BackendController $parent Parent controller
      *

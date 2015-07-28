@@ -137,7 +137,7 @@ class Basket extends BasicBasket
 
         $database->exec_UPDATEquery(
             'tx_commerce_baskets',
-            'sid = '.$database->fullQuoteStr($this->getSessionId(), 'tx_commerce_baskets').' AND finished_time = 0',
+            'sid = ' . $database->fullQuoteStr($this->getSessionId(), 'tx_commerce_baskets') . ' AND finished_time = 0',
             $updateArray
         );
     }

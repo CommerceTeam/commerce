@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Repository;
 
 /*
@@ -54,7 +53,7 @@ class AttributeRepository extends Repository
         $result = $database->exec_SELECTquery(
             'uid',
             $this->childDatabaseTable,
-            'attributes_uid = '.(int) $uid.$this->enableFields($this->childDatabaseTable),
+            'attributes_uid = ' . (int) $uid . $this->enableFields($this->childDatabaseTable),
             '',
             'sorting'
         );
@@ -86,7 +85,7 @@ class AttributeRepository extends Repository
             $result = $database->exec_SELECTquery(
                 'uid',
                 $this->databaseTable,
-                'parent = '.(int) $uid.$this->enableFields($this->databaseTable),
+                'parent = ' . (int) $uid . $this->enableFields($this->databaseTable),
                 '',
                 'sorting'
             );

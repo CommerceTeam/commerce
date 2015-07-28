@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Payment;
 
 /*
@@ -17,20 +16,20 @@ namespace CommerceTeam\Commerce\Payment;
 
 /**
  * Schnittstelle zu wirecard
- * setPaymentmethod        - ELV, Bank, KK (ggf Intern)
- * setPaymenttype        - reserve, book  (ggf Intern)
- * setData                - Speichert KK Nummer, Betrag,
- * 	Name usw. (vielleicht splitte ich das noch
+ * setPaymentmethod     - ELV, Bank, KK (ggf Intern)
+ * setPaymenttype       - reserve, book  (ggf Intern)
+ * setData              - Speichert KK Nummer, Betrag,
+ * Name usw. (vielleicht splitte ich das noch
  *                          auf z.B. setKKnumber usw)
  * prepareMethod        - bereitet die Transaktion vor
- * 	- erstellt die Parameterliste
- *                      ggf. auch prepareMethod->KK oder
- * 	->ELV Muss ich nochmal drüber nachdenken ich
- *                      denke aber das wäre kein schlechter
- * 	weg, sonst als array übergeben
- * sendTransaction        - sendet zur Schnittstelle
- * getErrorOfErrorcode    - Gibt den Fehlertext zur�ck
- * getErrortype            - Warning, schwer, unbekannt, usw.
+ *                      - erstellt die Parameterliste
+ *                        ggf. auch prepareMethod->KK oder
+ *                      - ELV Muss ich nochmal drüber nachdenken ich
+ *                        denke aber das wäre kein schlechter
+ *                        weg, sonst als array übergeben
+ * sendTransaction      - sendet zur Schnittstelle
+ * getErrorOfErrorcode  - Gibt den Fehlertext zur�ck
+ * getErrortype         - Warning, schwer, unbekannt, usw.
  *
  * Class \CommerceTeam\Commerce\Payment\Wirecard
  *
@@ -139,9 +138,8 @@ class Wirecard
 
     /*
      * Required function - checkTransactiondata
-     * kontrolliert welche Daten f�r wirecard und den gew�hlten Paymenttyp wichtig
-     * sind gibt zur�ck ob alle daten ok sind oder einen Array mit den Daten die
-     * Fehlen
+     *
+     * checks which data are required for wirecard and the choosen payment
      */
 
     /**
@@ -174,7 +172,7 @@ class Wirecard
     public function sendTransaction()
     {
         $header = array(
-            'Authorization: Basic '.base64_encode($this->merchantCode.':'.$this->password.LF),
+            'Authorization: Basic ' . base64_encode($this->merchantCode . ':' . $this->password . LF),
             'Content-Type: text/xml',
         );
 
@@ -230,9 +228,6 @@ class Wirecard
 
     /*
      * Internal functions
-     *
-     * Diese Funktionen sind private und werden nie von aussen aufgerufen
-     * K�nnen deshalb auch frei mit den anderen Klassenfunktionen reden
      */
 
     /**
@@ -240,9 +235,9 @@ class Wirecard
      *
      * @return int
      */
-    public function isError()
+    protected function isError()
     {
-        return (int) (is_array($this->error));
+        return (int) is_array($this->error);
     }
 
     /**
@@ -252,7 +247,7 @@ class Wirecard
      *
      * @return int
      */
-    public function parseResult($result)
+    protected function parseResult($result)
     {
         if (!$result) {
             $this->error['no_data']['this shouldn\'t be'] = 'No result, so nopayment possible';
@@ -289,37 +284,38 @@ class Wirecard
      *
      * @return string
      */
-    public function getwirecardXML()
+    protected function getwirecardXML()
     {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
-			<WIRECARD_BXML xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" xsi:noNamespaceSchemaLocation="wirecard.xsd">
+			<WIRECARD_BXML xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance"
+			    xsi:noNamespaceSchemaLocation="wirecard.xsd">
 				<W_REQUEST>
 					<W_JOB>
-						<JobID>'.$this->orderCode.'</JobID>
-						<BusinessCaseSignature>'.$this->businesscasesignature.'</BusinessCaseSignature>
+						<JobID>' . $this->orderCode . '</JobID>
+						<BusinessCaseSignature>' . $this->businesscasesignature . '</BusinessCaseSignature>
 						<FNC_CC_TRANSACTION>
 							<FunctionID>WireCard Test</FunctionID>
 							<CC_TRANSACTION>
 								<TransactionID>2</TransactionID>
-								<Amount>'.$this->transactionData['amount'].'</Amount>
-								<Currency>'.$this->transactionData['currency'].'</Currency>
+								<Amount>' . $this->transactionData['amount'] . '</Amount>
+								<Currency>' . $this->transactionData['currency'] . '</Currency>
 								<CountryCode>US</CountryCode>
 								<RECURRING_TRANSACTION>
 									<Type>Single</Type>
 								</RECURRING_TRANSACTION>
-								'.$this->getPaymentMask().'
+								' . $this->getPaymentMask() . '
 								<CONTACT_DATA>
 									<IPAddress>127.0.0.1</IPAddress>
 								</CONTACT_DATA>
 								<CORPTRUSTCENTER_DATA>
 									<ADDRESS>
-										<Address1>'.$this->userData['street'].'</Address1>
-										<City>'.$this->userData['city'].'</City>
-										<ZipCode>'.$this->userData['zip'].'</ZipCode>
+										<Address1>' . $this->userData['street'] . '</Address1>
+										<City>' . $this->userData['city'] . '</City>
+										<ZipCode>' . $this->userData['zip'] . '</ZipCode>
 										<State></State>
-										<Country>'.$this->userData['country'].'</Country>
-										<Phone>'.$this->userData['telephone'].'</Phone>
-										<Email>'.$this->userData['email'].'</Email>
+										<Country>' . $this->userData['country'] . '</Country>
+										<Phone>' . $this->userData['telephone'] . '</Phone>
+										<Email>' . $this->userData['email'] . '</Email>
 									</ADDRESS>
 								</CORPTRUSTCENTER_DATA>
 							</CC_TRANSACTION>
@@ -336,18 +332,18 @@ class Wirecard
      *
      * @return string
      */
-    public function getPaymentMask()
+    protected function getPaymentMask()
     {
         $xml = '';
 
         if ($this->paymenttype == 'cc') {
             $xml = '
 			<CREDIT_CARD_DATA>
-				<CreditCardNumber>'.$this->paymentData['kk_number'].'</CreditCardNumber>
-				<CVC2>'.$this->paymentData['cvc'].'</CVC2>
-				<ExpirationYear>'.$this->paymentData['exp_year'].'</ExpirationYear>
-				<ExpirationMonth>'.$this->paymentData['exp_month'].'</ExpirationMonth>
-				<CardHolderName>'.$this->paymentData['holder'].'</CardHolderName>
+				<CreditCardNumber>' . $this->paymentData['kk_number'] . '</CreditCardNumber>
+				<CVC2>' . $this->paymentData['cvc'] . '</CVC2>
+				<ExpirationYear>' . $this->paymentData['exp_year'] . '</ExpirationYear>
+				<ExpirationMonth>' . $this->paymentData['exp_month'] . '</ExpirationMonth>
+				<CardHolderName>' . $this->paymentData['holder'] . '</CardHolderName>
 			</CREDIT_CARD_DATA>';
         };
 
@@ -361,7 +357,7 @@ class Wirecard
      *
      * @return string
      */
-    public function getCountryCode($country)
+    protected function getCountryCode($country)
     {
         return 'DEU';
     }

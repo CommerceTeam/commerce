@@ -388,7 +388,10 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
                 $result .= 'No new Orders<br />';
             }
 
-            $changeWhere = 'tstamp > '.($lastAggregationTimeValue - ($this->statistics->getDaysBack() * 24 * 60 * 60));
+            $changeWhere = 'tstamp > ' . (
+                $lastAggregationTimeValue -
+                ($this->statistics->getDaysBack() * 24 * 60 * 60)
+            );
             $changeres = $database->exec_SELECTquery('DISTINCT crdate', 'tx_commerce_order_articles', $changeWhere);
             $changeDaysArray = array();
             $changes = 0;
@@ -407,7 +410,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
                 }
             }
 
-            $result .= $changes.' Days changed<br />';
+            $result .= $changes . ' Days changed<br />';
 
             $lastAggregationTimeres = $database->exec_SELECTquery('MAX(tstamp)', 'tx_commerce_newclients', '1=1');
             if ($lastAggregationTimeres
@@ -460,7 +463,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
         $whereClause = '';
         if ($this->id != $this->orderPageId) {
-            $whereClause = 'pid = '.$this->id;
+            $whereClause = 'pid = ' . $this->id;
         }
         $weekdays = array(
             $language->getLL('sunday'),

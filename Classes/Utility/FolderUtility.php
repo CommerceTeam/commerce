@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Utility;
 
 /*
@@ -17,6 +16,7 @@ namespace CommerceTeam\Commerce\Utility;
 
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This class creates the systemfolders for TX_commerce
@@ -37,6 +37,8 @@ class FolderUtility
 {
     /**
      * Initializes the folders for tx_commerce.
+     *
+     * @return void
      */
     public static function initFolders()
     {
@@ -66,7 +68,7 @@ class FolderUtility
         $res = $database->exec_SELECTquery(
             'uid',
             'tx_commerce_categories',
-            'uname = \'SYSTEM\' AND parent_category = \'\' AND deleted=0'
+            'uname = \'SYSTEM\' AND parent_category = \'\' AND deleted = 0'
         );
         $catUid = $database->sql_fetch_assoc($res);
         $catUid = $catUid['uid'];
@@ -90,15 +92,17 @@ class FolderUtility
     /**
      * Generates the System Articles.
      *
-     * @param int    $catUid   Category uid
-     * @param string $type     Type
-     * @param array  $addArray Additional Values
+     * @param int $catUid Category uid
+     * @param string $type Type
+     * @param array $addArray Additional Values
+     *
+     * @return void
      */
     public static function makeSystemCatsProductsArtcilesAndPrices($catUid, $type, array $addArray)
     {
         $productUid = self::makeProduct($catUid, $type, $addArray);
         // create some articles, depending on the PAYMENT types
-        $sysProductTypes = (array) SettingsFactory::getInstance()->getConfiguration('SYSPRODUCTS.'.$type.'.types');
+        $sysProductTypes = (array) SettingsFactory::getInstance()->getConfiguration('SYSPRODUCTS.' . $type . '.types');
         foreach ($sysProductTypes as $key => $value) {
             self::makeArticle($productUid, $key, $value, $addArray);
         }
@@ -108,9 +112,9 @@ class FolderUtility
      * Creates a product with a special uname inside of a specific category.
      * If the product already exists, the method returns the UID of it.
      *
-     * @param int    $catUid   Category uid
-     * @param string $uname    Unique name
-     * @param array  $addArray Additional values
+     * @param int $catUid Category uid
+     * @param string $uname Unique name
+     * @param array $addArray Additional values
      *
      * @return bool
      */
@@ -119,7 +123,7 @@ class FolderUtility
         // first of all, check if there is a product for this value
         // if the product already exists, exit
         $pCheck = self::checkProd($catUid, $uname);
-        if (isset($pCheck) && !($pCheck === false)) {
+        if ($pCheck) {
             // the return value of the method above is the uid of the product
             // in the category
             return $pCheck;
@@ -138,7 +142,10 @@ class FolderUtility
         $pUid = $database->sql_insert_id();
 
         // create relation between product and category
-        $database->exec_INSERTquery('tx_commerce_products_categories_mm', array('uid_local' => $pUid, 'uid_foreign' => $catUid));
+        $database->exec_INSERTquery(
+            'tx_commerce_products_categories_mm',
+            array('uid_local' => $pUid, 'uid_foreign' => $catUid)
+        );
 
         return $pUid;
     }
@@ -147,7 +154,7 @@ class FolderUtility
      * Checks if a product is inside a category. The product is identified
      * by the uname field.
      *
-     * @param int    $cUid  The uid of the category we search in
+     * @param int $cUid The uid of the category we search in
      * @param string $uname The unique name by which the product should be identified
      *
      * @return bool|int false or UID of the found product
@@ -160,7 +167,7 @@ class FolderUtility
         $res = $database->exec_SELECTquery(
             'uid_local',
             'tx_commerce_products_categories_mm',
-            'uid_foreign='.(int) $cUid
+            'uid_foreign = ' . (int) $cUid
         );
         $pList = array();
         while (($pUid = $database->sql_fetch_assoc($res))) {
@@ -172,25 +179,22 @@ class FolderUtility
         }
 
         // else search the uid of the product with the classname within the product list
-        $res = $database->exec_SELECTquery(
+        $pUid = (array) $database->exec_SELECTgetSingleRow(
             'uid',
             'tx_commerce_products',
-            'uname=\''.$uname.'\' AND uid IN ('.implode(',', $pList).') AND deleted=0 AND hidden=0',
-            '', '', 1
+            'uname = \'' . $uname . '\' AND uid IN (' . implode(',', $pList) . ') AND deleted = 0 AND hidden = 0'
         );
-        $pUid = $database->sql_fetch_assoc($res);
-        $pUid = $pUid['uid'];
 
-        return $pUid;
+        return isset($pUid['uid']) ? $pUid['uid'] : 0;
     }
 
     /**
      * Creates an article for the product. Used for sysarticles
      * (e.g. payment articles).
      *
-     * @param int   $pUid     Product Uid under wich the articles are created
-     * @param int   $key      Keyname for the sysarticle, used for classname and title
-     * @param array $value    Values for the article, only type is used
+     * @param int $pUid Product Uid under wich the articles are created
+     * @param int $key Keyname for the sysarticle, used for classname and title
+     * @param array $value Values for the article, only type is used
      * @param array $addArray Additional params for the inserts (like timestamp)
      *
      * @return int
@@ -206,8 +210,8 @@ class FolderUtility
          *
          * @var BackendUtility
          */
-        $belib = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUtility');
-        $articles = $belib->getArticlesOfProduct($pUid, 'classname=\''.$key.'\'');
+        $belib = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUtility');
+        $articles = $belib->getArticlesOfProduct($pUid, 'classname=\'' . $key . '\'');
 
         if (is_array($articles) and !empty($articles)) {
             return $articles[0]['uid'];
@@ -228,6 +232,7 @@ class FolderUtility
 
         return $aUid;
     }
+
 
     /**
      * Get database connection.

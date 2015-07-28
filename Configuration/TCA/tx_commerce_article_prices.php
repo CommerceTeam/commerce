@@ -32,17 +32,16 @@ return array(
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ),
-        'dynamicConfigFile' => PATH_TXCOMMERCE.'Configuration/TCA/ArticlePrices.php',
         'dividers2tabs' => '1',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL.'price.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'price.gif',
     ),
     'feInterface' => array(
         'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime,
-			fe_group, price_gross, price_net, price_scale_amount, purchase_price',
+            fe_group, price_gross, price_net, price_scale_amount, purchase_price',
     ),
     'interface' => array(
         'showRecordFieldList' => 'hidden, starttime, endtime, fe_group, price_gross, price_net, purchase_price,
-			price_scale_amount_start, price_scale_amount_end',
+            price_scale_amount_start, price_scale_amount_end',
     ),
     'columns' => array(
         'hidden' => array(
@@ -105,7 +104,8 @@ return array(
 
         'price_gross' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_prices.price_gross',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_prices.price_gross',
             'config' => array(
                 'type' => 'input',
                 'size' => '30',
@@ -115,7 +115,8 @@ return array(
 
         'price_net' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_prices.price_net',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_prices.price_net',
             'config' => array(
                 'type' => 'input',
                 'size' => '30',
@@ -125,7 +126,8 @@ return array(
 
         'purchase_price' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_prices.purchase_price',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_article_prices.purchase_price',
             'config' => array(
                 'type' => 'input',
                 'size' => '30',
@@ -135,7 +137,8 @@ return array(
 
         'price_scale_amount_start' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.price_scale_amount_start',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.price_scale_amount_start',
             'config' => array(
                 'type' => 'input',
                 'size' => '10',
@@ -147,7 +150,8 @@ return array(
 
         'price_scale_amount_end' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.price_scale_amount_end',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_articles.price_scale_amount_end',
             'config' => array(
                 'type' => 'input',
                 'size' => '10',
@@ -169,7 +173,8 @@ return array(
     'types' => array(
         '0' => array(
             'showitem' => '
-			hidden;;1, price_gross, price_net, price_scale_amount_start, price_scale_amount_end, purchase_price;;;;3-3-3, uid_article',
+                hidden;;1, price_gross, price_net, price_scale_amount_start,
+                price_scale_amount_end, purchase_price;;;;3-3-3, uid_article',
         ),
     ),
     'palettes' => array(

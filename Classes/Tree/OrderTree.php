@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree;
 
 /*
@@ -47,7 +46,7 @@ class OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
     public $thisScript = 'navigation.php';
 
     /**
-     * Calls init functions.
+     * Calls init function.
      *
      * @return self
      */
@@ -58,6 +57,8 @@ class OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
 
     /**
      * Initialization.
+     *
+     * @return void
      */
     public function init()
     {
@@ -69,7 +70,7 @@ class OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
      * Wrapping icon in browse tree.
      *
      * @param string $icon IMG code
-     * @param array  $row  Data row for element.
+     * @param array $row Data row for element.
      *
      * @return string Page icon
      */
@@ -79,19 +80,19 @@ class OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
 
         // If the record is locked, present a warning sign.
         if (($lockInfo = \TYPO3\CMS\Backend\Utility\BackendUtility::isRecordLocked('pages', $row['uid']))) {
-            $aOnClick = 'alert('.$language->JScharCode($lockInfo['msg']).');return false;';
-            $lockIcon = '<a href="#" onclick="'.htmlspecialchars($aOnClick).'">'.
+            $aOnClick = 'alert(' . $language->JScharCode($lockInfo['msg']) . ');return false;';
+            $lockIcon = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' .
                 \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
                     'status-warning-in-use',
                     array('title' => htmlspecialchars($lockInfo['msg']))
-                ).
+                ) .
                 '</a>';
         } else {
             $lockIcon = '';
         }
 
         // Add title attribute to input icon tag
-        $thePageIcon = $this->addTagAttributes($icon, $this->titleAttrib.'="'.$this->getTitleAttrib($row).'"');
+        $thePageIcon = $this->addTagAttributes($icon, $this->titleAttrib . '="' . $this->getTitleAttrib($row) . '"');
 
         // Wrap icon in click-menu link.
         if (!$this->ext_IconMode) {
@@ -100,21 +101,21 @@ class OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
                 'pages',
                 $row['uid'],
                 0,
-                '&bank='.$this->bank
+                '&bank=' . $this->bank
             );
         } elseif (!strcmp($this->ext_IconMode, 'titlelink')) {
-            $aOnClick = 'return jumpTo(\''.$this->getJumpToParam($row).'\',this,\''.$this->treeName.'\');';
-            $thePageIcon = '<a href="#" onclick="'.htmlspecialchars($aOnClick).'">'.$thePageIcon.'</a>';
+            $aOnClick = 'return jumpTo(\'' . $this->getJumpToParam($row) . '\',this,\'' . $this->treeName . '\');';
+            $thePageIcon = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' . $thePageIcon . '</a>';
         }
 
-            // Add Page ID:
+        // Add Page ID:
         if ($this->ext_showPageId) {
-            $pageIdStr = '['.$row['uid'].']&nbsp;';
+            $pageIdStr = '[' . $row['uid'] . ']&nbsp;';
         } else {
             $pageIdStr = '';
         }
 
-        return $thePageIcon.$lockIcon.$pageIdStr;
+        return $thePageIcon . $lockIcon . $pageIdStr;
     }
 
     /**
@@ -122,7 +123,7 @@ class OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
      * "php_tree_stop" in the $row (pages) is set.
      *
      * @param string $str Input string, like a page title for the tree
-     * @param array  $row Record row with "php_tree_stop" field
+     * @param array $row Record row with "php_tree_stop" field
      *
      * @return string Modified string
      */
@@ -130,12 +131,14 @@ class OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
     {
         if ($row['php_tree_stop']) {
             $str .= '<a href="'.
-                htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array('setTempDBmount' => $row['uid']))).
-                '" class="typo3-red">+</a> ';
+                htmlspecialchars(
+                    \TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array('setTempDBmount' => $row['uid']))
+                ) . '" class="typo3-red">+</a> ';
         }
 
         return $str;
     }
+
 
     /**
      * Get language service.

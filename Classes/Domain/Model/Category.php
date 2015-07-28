@@ -307,7 +307,7 @@ class Category extends AbstractEntity
         if ($this->parent_category_uid > 0) {
             $parent = $this->getParentCategory();
             $parent->loadData();
-            $result = $parent->getCategoryPath($separator).$separator.$this->getTitle();
+            $result = $parent->getCategoryPath($separator) . $separator . $this->getTitle();
         } else {
             $result = $this->getTitle();
         }
@@ -726,7 +726,7 @@ class Category extends AbstractEntity
         if (!is_array($this->categoryTSconfig)) {
             $tSdataArray[] = $this->tsConfig;
             $tSdataArray = \TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser::checkIncludeLines_array($tSdataArray);
-            $categoryTs = implode(chr(10).'[GLOBAL]'.chr(10), $tSdataArray);
+            $categoryTs = implode(LF . '[GLOBAL]' . LF, $tSdataArray);
 
             /**
              * Typoscript parser.

@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Hook;
 
 /*
@@ -31,10 +30,12 @@ class TcehooksHandlerHooks
      * At this place we process prices, before they are written to the database.
      * We use this for tax calculation.
      *
-     * @param array       $incomingFieldArray The values from the form, by reference
-     * @param string      $table              The table we are working on
-     * @param int         $id                 The uid we are working on
-     * @param DataHandler $pObj               The caller
+     * @param array $incomingFieldArray The values from the form, by reference
+     * @param string $table The table we are working on
+     * @param int $id The uid we are working on
+     * @param DataHandler $pObj The caller
+     *
+     * @return void
      */
     public function processDatamap_preProcessFieldArray(array &$incomingFieldArray, $table, $id, DataHandler $pObj)
     {
@@ -63,10 +64,12 @@ class TcehooksHandlerHooks
      * This function is called by the Hook in tce
      * after processing insert & update database operations.
      *
-     * @param string $status     Update or new
-     * @param string $table      Database table
-     * @param string $id         Database table
-     * @param array  $fieldArray Reference to the incoming fields
+     * @param string $status Update or new
+     * @param string $table Database table
+     * @param string $id Database table
+     * @param array $fieldArray Reference to the incoming fields
+     *
+     * @return void
      */
     public function processDatamap_postProcessFieldArray($status, $table, $id, array &$fieldArray)
     {
@@ -84,11 +87,13 @@ class TcehooksHandlerHooks
      * This function is called by the Hook in tce
      * after processing insert & update database operations.
      *
-     * @param string      $status     Update or new
-     * @param string      $table      Database table
-     * @param string      $id         Database table
-     * @param array       $fieldArray Reference to the incoming fields
-     * @param DataHandler $pObj       Data handler
+     * @param string $status Update or new
+     * @param string $table Database table
+     * @param string $id Database table
+     * @param array $fieldArray Reference to the incoming fields
+     * @param DataHandler $pObj Data handler
+     *
+     * @return void
      */
     public function processDatamap_afterDatabaseOperations($status, $table, $id, array &$fieldArray, DataHandler &$pObj)
     {
@@ -156,11 +161,13 @@ class TcehooksHandlerHooks
      * Function is called by the Hook in tce
      * before processing commands.
      *
-     * @param string      $command      Reference to: move,copy,version,delete or undelete
-     * @param string      $table        Database table
-     * @param string      $id           Database record uid
-     * @param mixed       $value        Value
+     * @param string $command Reference to: move,copy,version,delete or undelete
+     * @param string $table Database table
+     * @param string $id Database record uid
+     * @param mixed $value Value
      * @param DataHandler $parentObject Parent object
+     *
+     * @return void
      */
     public function processCmdmap_preProcess(&$command, $table, $id, $value, DataHandler $parentObject)
     {
@@ -176,14 +183,15 @@ class TcehooksHandlerHooks
      * Calculate tax.
      *
      * @param array $fieldArray Field values
-     * @param int   $tax        Tax percentage
+     * @param int $tax Tax percentage
+     *
+     * @return void
      */
     protected function calculateTax(array &$fieldArray, $tax)
     {
         $generatePrices = SettingsFactory::getInstance()->getExtConf('genprices');
         if ($generatePrices > 0) {
-            if (
-                $generatePrices == 2
+            if ($generatePrices == 2
                 || !isset($fieldArray['price_gross'])
                 || $fieldArray['price_gross'] === ''
                 || strlen($fieldArray['price_gross']) == 0
@@ -191,8 +199,7 @@ class TcehooksHandlerHooks
             ) {
                 $fieldArray['price_gross'] = round(($fieldArray['price_net'] * 100) * (100 + $tax) / 100) / 100;
             }
-            if (
-                $generatePrices == 3
+            if ($generatePrices == 3
                 || !isset($fieldArray['price_net'])
                 || $fieldArray['price_net'] === ''
                 || strlen($fieldArray['price_net']) == 0
@@ -207,11 +214,13 @@ class TcehooksHandlerHooks
      * Notify feuser observer
      * get id and notify observer.
      *
-     * @param string      $status     Status [update,new]
-     * @param string      $table      Database table
-     * @param string      $id         Id
-     * @param array       $fieldArray Reference to the incoming fields
-     * @param DataHandler $pObj       Data handler
+     * @param string $status Status [update,new]
+     * @param string $table Database table
+     * @param string $id Id
+     * @param array $fieldArray Reference to the incoming fields
+     * @param DataHandler $pObj Data handler
+     *
+     * @return void
      */
     protected function notifyFeuserObserver($status, $table, $id, array &$fieldArray, DataHandler &$pObj)
     {
@@ -228,11 +237,13 @@ class TcehooksHandlerHooks
      * Notify address observer
      * check status and notify observer.
      *
-     * @param string      $status     Status [update,new]
-     * @param string      $table      Database table
-     * @param string      $id         Id
-     * @param array       $fieldArray Reference to the incoming fields
-     * @param DataHandler $pObj       Parent object
+     * @param string $status Status [update,new]
+     * @param string $table Database table
+     * @param string $id Id
+     * @param array $fieldArray Reference to the incoming fields
+     * @param DataHandler $pObj Parent object
+     *
+     * @return void
      */
     protected function notifyAddressObserver($status, $table, $id, array &$fieldArray, DataHandler &$pObj)
     {
@@ -251,7 +262,7 @@ class TcehooksHandlerHooks
     /**
      * Check if an address is deleted.
      *
-     * @param int         $id           Id
+     * @param int $id Id
      * @param DataHandler $parentObject Parent object
      *
      * @return bool|string
@@ -260,6 +271,7 @@ class TcehooksHandlerHooks
     {
         return \CommerceTeam\Commerce\Dao\AddressObserver::checkDelete($id, $parentObject);
     }
+
 
     /**
      * Get database connection.

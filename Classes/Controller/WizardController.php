@@ -246,11 +246,11 @@ class WizardController
                 // Create go-back link.
             if ($this->returnUrl) {
                 $this->code .= '<br />
-					<a href="' . htmlspecialchars($this->returnUrl) . '" class="typo3-goBack">'.
+                    <a href="' . htmlspecialchars($this->returnUrl) . '" class="typo3-goBack">'.
                         \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
                             'actions-view-go-back',
                             array('title' => $language->getLL('goBack', 1))
-                        ).
+                        ) .
                     '</a>';
             }
                 // Add all the content to an output section
@@ -280,7 +280,7 @@ class WizardController
         $language = $this->getLanguageService();
 
         // Slight spacer from header:
-        $this->code .= '<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
+        $this->code .= '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
             $this->getBackPath(),
             'gfx/ol/halfline.gif',
             'width="18" height="8"'

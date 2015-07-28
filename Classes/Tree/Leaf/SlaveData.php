@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree\Leaf;
 
 /*
@@ -27,7 +26,7 @@ abstract class SlaveData extends Data
     /**
      * Returns an array of Positions.
      *
-     * @param int   $index   Index of this leaf
+     * @param int $index Index of this leaf
      * @param array $indices Parent Indices
      *
      * @return array
@@ -38,7 +37,8 @@ abstract class SlaveData extends Data
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'getPositionsByIndices (productdata) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY, 3
+                    COMMERCE_EXTKEY,
+                    3
                 );
             }
 
@@ -50,8 +50,10 @@ abstract class SlaveData extends Data
         if (!is_array($this->positionArray[$firstIndex])) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'getPositionsByIndices (CommerceTeam\\Commerce\\Tree\\Leaf\\SlaveData) does not find the first Index in the position array.',
-                    COMMERCE_EXTKEY, 2
+                    'getPositionsByIndices (CommerceTeam\\Commerce\\Tree\\Leaf\\SlaveData)
+                    does not find the first Index in the position array.',
+                    COMMERCE_EXTKEY,
+                    2
                 );
             }
             $this->positionUids = array();
@@ -68,9 +70,11 @@ abstract class SlaveData extends Data
      * Initializes the Records
      * All Products are read, no matter what the rights - only editing is restricted!
      *
-     * @param int                                   $index          Leaf index
-     * @param array                                 $parentIndices  Parent Indices
+     * @param int $index Leaf index
+     * @param array $parentIndices Parent Indices
      * @param \CommerceTeam\Commerce\Tree\Leaf\Data $parentLeafData Parent leafData
+     *
+     * @return void
      */
     public function initRecords($index, array $parentIndices, \CommerceTeam\Commerce\Tree\Leaf\Data &$parentLeafData)
     {
@@ -78,7 +82,8 @@ abstract class SlaveData extends Data
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'initRecords (CommerceTeam\\Commerce\\Tree\\Leaf\\SlaveData) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY, 3
+                    COMMERCE_EXTKEY,
+                    3
                 );
             }
 
@@ -90,8 +95,9 @@ abstract class SlaveData extends Data
             $this->records = null;
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'initRecords User is not allowed to view table:'.$this->table,
-                    COMMERCE_EXTKEY, 3
+                    'initRecords User is not allowed to view table: ' . $this->table,
+                    COMMERCE_EXTKEY,
+                    3
                 );
             }
 

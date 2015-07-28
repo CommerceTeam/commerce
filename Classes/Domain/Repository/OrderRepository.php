@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Repository;
 
 /*
@@ -33,7 +32,9 @@ class OrderRepository extends Repository
      * Update data.
      *
      * @param string $where Search
-     * @param array  $data  Data
+     * @param array $data Data
+     *
+     * @return void
      */
     protected function update($where, array $data)
     {
@@ -43,22 +44,29 @@ class OrderRepository extends Repository
     /**
      * Update order by uid.
      *
-     * @param int   $uid  Order uid
+     * @param int $uid Order uid
      * @param array $data Data
+     *
+     * @return void
      */
     public function updateByUid($uid, array $data)
     {
-        $this->update('uid = '.(int) $uid, $data);
+        $this->update('uid = ' . (int) $uid, $data);
     }
 
     /**
      * Update data by order id.
      *
      * @param string $orderId Order id
-     * @param array  $data    Data
+     * @param array $data Data
+     *
+     * @return void
      */
     public function updateByOrderId($orderId, array $data)
     {
-        $this->update('order_id = '.$this->getDatabaseConnection()->fullQuoteStr($orderId, $this->databaseTable), $data);
+        $this->update(
+            'order_id = ' . $this->getDatabaseConnection()->fullQuoteStr($orderId, $this->databaseTable),
+            $data
+        );
     }
 }

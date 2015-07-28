@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree\Leaf;
 
 /*
@@ -273,7 +272,11 @@ class Data extends Base
     {
         if (!is_numeric($index) || !is_array($indices)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('getPositionsByIndices (productdata) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog(
+                    'getPositionsByIndices (productdata) gets passed invalid parameters.',
+                    COMMERCE_EXTKEY,
+                    3
+                );
             }
 
             return array();
@@ -292,7 +295,8 @@ class Data extends Base
         if ($l == 0) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'getPositionsByIndices (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) cannot proceed because it did not find mounts',
+                    'getPositionsByIndices (CommerceTeam\\Commerce\\Tree\\Leaf\\Data)
+                     cannot proceed because it did not find mounts',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -404,10 +408,12 @@ class Data extends Base
      * Sorts the records to represent the linar structure of the tree
      * Stores the resulting array in an internal variable.
      *
-     * @param int  $rootUid               UID of the Item that will act as root
-     * @param int  $depth                 Depth
-     * @param bool $last                  Last
+     * @param int  $rootUid UID of the Item that will act as root
+     * @param int  $depth Depth
+     * @param bool $last Last
      * @param int  $crazyRecursionLimiter Recursion limit
+     *
+     * @return void
      */
     public function sort($rootUid, $depth = 0, $last = false, $crazyRecursionLimiter = 999)
     {
@@ -558,31 +564,41 @@ class Data extends Base
 
         // Add the extended fields to the select statement
         if (is_string($this->extendedFields) && '' != $this->extendedFields) {
-            $select = $this->defaultFields.','.$this->extendedFields;
+            $select = $this->defaultFields . ',' . $this->extendedFields;
         } else {
             $select = $this->defaultFields;
         }
 
         // add item parent
-        $select .= ','.$this->item_parent.' AS item_parent';
+        $select .= ',' . $this->item_parent . ' AS item_parent';
 
         // add the item search
         $where = '';
         if ($this->useMMTable) {
-            $where .= ('' == $this->whereClause) ? '' : ' AND '.$this->whereClause;
-            $where .= ' AND (uid_foreign IN ('.$this->where['uid_foreign'].') OR uid_local IN ('.$this->where['uid_local'].'))';
+            $where .= ('' == $this->whereClause) ? '' : ' AND ' . $this->whereClause;
+            $where .= ' AND (uid_foreign IN (' . $this->where['uid_foreign'] . ') OR uid_local IN (' .
+                $this->where['uid_local'] . '))';
         } else {
             $where = $this->whereClause;
             $where .= ('' == $this->whereClause) ? '' : ' AND ';
-            $where .= '('.$this->itemParentField.' IN ('.$this->where[$this->itemParentField].
-                ') OR uid IN('.$this->where['uid'].'))';
+            $where .= '(' . $this->itemParentField . ' IN (' . $this->where[$this->itemParentField] .
+                ') OR uid IN(' . $this->where['uid'] . '))';
         }
 
         $database = $this->getDatabaseConnection();
 
         // exec the query
         if ($this->useMMTable) {
-            $res = $database->exec_SELECT_mm_query($select, $this->itemTable, $this->mmTable, '', $where, '', $this->order, $this->limit);
+            $res = $database->exec_SELECT_mm_query(
+                $select,
+                $this->itemTable,
+                $this->mmTable,
+                '',
+                $where,
+                '',
+                $this->order,
+                $this->limit
+            );
         } else {
             $res = $database->exec_SELECTquery($select, $this->itemTable, $where, '', $this->order, $this->limit);
         }
@@ -590,7 +606,8 @@ class Data extends Base
         if ($database->sql_error()) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'loadRecords (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) could not load records. Possible sql error. Empty rows returned.',
+                    'loadRecords (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) could not load records.
+                        Possible sql error. Empty rows returned.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -648,7 +665,7 @@ class Data extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'loadRecords (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) could not load records because it doesn\'t
-						have permissions on the commerce folder. Return empty array.',
+                        have permissions on the commerce folder. Return empty array.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -671,7 +688,7 @@ class Data extends Base
                 $uidItem = $rows['uid'][$rows['pid'][$keys[$i]][$lastIndex]['uid']];
 
                 $rows['uid'][$rows['pid'][$keys[$i]][$lastIndex]['uid']]['lastNode'] =
-                    $uidItem['lastNode'] !== false ? $uidItem['lastNode'].','.$keys[$i] : $keys[$i];
+                    $uidItem['lastNode'] !== false ? $uidItem['lastNode'] . ',' . $keys[$i] : $keys[$i];
                 $rows['pid'][$keys[$i]][$lastIndex]['lastNode'] = $keys[$i];
             }
         }
@@ -687,11 +704,9 @@ class Data extends Base
      * of the user.
      *
      * @param string $table The table to check access
-     * @param string $row   The record uid of the table
+     * @param string $row The record uid of the table
      *
      * @return bool Returns true is the user has access, or false if not
-     *
-     * @see tx_recycler
      */
     public function checkAccess($table, $row)
     {
@@ -710,7 +725,10 @@ class Data extends Base
                 $hasAccess = $backendUser->calcPerms($calcPermissionRecord) & 2 ? 1 : 0;
             } else {
                 // Fetching pid-record first.
-                $hasAccess = $backendUser->calcPerms(BackendUtility::getRecord('pages', $calcPermissionRecord['pid'])) & 16 ? 1 : 0;
+                $hasAccess = $backendUser->calcPerms(BackendUtility::getRecord(
+                    'pages',
+                    $calcPermissionRecord['pid']
+                )) & 16 ? 1 : 0;
             }
         }
 

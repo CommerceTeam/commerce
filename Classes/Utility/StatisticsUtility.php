@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Utility;
 
 /*
@@ -44,6 +43,8 @@ class StatisticsUtility
      * Initialization.
      *
      * @param string $excludePids Exclude pids
+     *
+     * @return void
      */
     public function init($excludePids)
     {
@@ -65,7 +66,7 @@ class StatisticsUtility
      * $starttime to $enttime.
      *
      * @param int $starttime Timestamp of timecode to start the aggregation
-     * @param int $endtime   Timestamp of timecode to end the aggregation
+     * @param int $endtime Timestamp of timecode to end the aggregation
      *
      * @return bool result of aggregation
      */
@@ -84,18 +85,18 @@ class StatisticsUtility
         while ($oldtimeend <= $endtime) {
             $statres = $database->exec_SELECTquery(
                 'sum(toa.amount),
-					sum(toa.amount * toa.price_gross),
-					count(distinct toa.order_id),
-					toa.pid,
-					sum(toa.amount * toa.price_net)',
-                'tx_commerce_order_articles toa,
-					tx_commerce_orders tco',
+                    sum(toa.amount * toa.price_gross),
+                    count(distinct toa.order_id),
+                    toa.pid,
+                    sum(toa.amount * toa.price_net)',
+                'tx_commerce_order_articles AS toa,
+                    tx_commerce_orders AS tco',
                 'toa.article_type_uid <= 1
-					AND toa.crdate >= '.$oldtimestart.'
-					AND toa.crdate <= '.$oldtimeend.'
-					AND toa.pid not in('.$this->excludePids.')
-					AND toa.order_id = tco.order_id
-					AND tco.deleted = 0',
+                    AND toa.crdate >= ' . $oldtimestart . '
+                    AND toa.crdate <= ' . $oldtimeend . '
+                    AND toa.pid not in(' . $this->excludePids . ')
+                    AND toa.order_id = tco.order_id
+                    AND tco.deleted = 0',
                 'toa.pid'
             );
 
@@ -111,8 +112,8 @@ class StatisticsUtility
                     'amount' => $statrow[0],
                     'orders' => $statrow[2],
                     'pricenet' => $statrow[4],
-                    'crdate' => time(),
-                    'tstamp' => time(),
+                    'crdate' => $GLOBALS['EXEC_TIME'],
+                    'tstamp' => $GLOBALS['EXEC_TIME'],
                 );
 
                 $res = $database->exec_INSERTquery('tx_commerce_salesfigures', $insertStatArray);
@@ -131,9 +132,9 @@ class StatisticsUtility
      * Aggregate and Update the Salesfigures per Hour in the timespare from
      * $starttime to $enttime.
      *
-     * @param int  $starttime Timestamp of timecode to start the aggregation
-     * @param int  $endtime   Timestamp of timecode to end the aggregation
-     * @param bool $doOutput  If output should be generated while calculating
+     * @param int $starttime Timestamp of timecode to start the aggregation
+     * @param int $endtime Timestamp of timecode to end the aggregation
+     * @param bool $doOutput If output should be generated while calculating
      *
      * @return bool result of aggregation
      */
@@ -152,18 +153,18 @@ class StatisticsUtility
         while ($oldtimeend <= $endtime) {
             $statres = $database->exec_SELECTquery(
                 'sum(toa.amount),
-					sum(toa.amount * toa.price_gross),
-					count(distinct toa.order_id),
-					toa.pid,
-					sum(toa.amount * toa.price_net)',
-                'tx_commerce_order_articles toa,
-					tx_commerce_orders tco',
+                    sum(toa.amount * toa.price_gross),
+                    count(distinct toa.order_id),
+                    toa.pid,
+                    sum(toa.amount * toa.price_net)',
+                'tx_commerce_order_articles AS toa,
+                    tx_commerce_orders AS tco',
                 'toa.article_type_uid <= 1
-					AND toa.crdate >= '.$oldtimestart.'
-					AND toa.crdate <= '.$oldtimeend.'
-					AND toa.pid not in('.$this->excludePids.')
-					AND toa.order_id = tco.order_id
-					AND tco.deleted = 0',
+                    AND toa.crdate >= ' . $oldtimestart . '
+                    AND toa.crdate <= ' . $oldtimeend . '
+                    AND toa.pid not in(' . $this->excludePids . ')
+                    AND toa.order_id = tco.order_id
+                    AND tco.deleted = 0',
                 'toa.pid'
             );
             while (($statrow = $database->sql_fetch_row($statres))) {
@@ -178,11 +179,11 @@ class StatisticsUtility
                     'amount' => $statrow[0],
                     'orders' => $statrow[2],
                     'pricenet' => $statrow[4],
-                    'tstamp' => time(),
+                    'tstamp' => $GLOBALS['EXEC_TIME'],
                 );
-                $whereClause = 'year = '.date('Y', $oldtimeend).' AND month = '.date(
-                        'm', $oldtimeend
-                    ).' AND day = '.date('d', $oldtimeend).' AND hour = '.date('H', $oldtimeend);
+                $whereClause = 'year = ' . date('Y', $oldtimeend) . ' AND month = ' .
+                    date('m', $oldtimeend) . ' AND day = ' . date('d', $oldtimeend) . ' AND hour = ' .
+                    date('H', $oldtimeend);
                 $res = $database->exec_UPDATEquery('tx_commerce_salesfigures', $whereClause, $updateStatArray);
 
                 if (!$res) {
@@ -206,7 +207,7 @@ class StatisticsUtility
      * in the timespare from $starttime to $enttime.
      *
      * @param int $starttime Timestamp of timecode to start the aggregation
-     * @param int $endtime   Timestamp of timecode to end the aggregation
+     * @param int $endtime Timestamp of timecode to end the aggregation
      *
      * @return bool result of aggregation
      */
@@ -226,7 +227,7 @@ class StatisticsUtility
             $statres = $database->exec_SELECTquery(
                 'count(*), pid',
                 'fe_users',
-                'crdate >= '.$oldtimestart.' AND crdate <= '.$oldtimeend,
+                'crdate >= ' . $oldtimestart . ' AND crdate <= ' . $oldtimeend,
                 'pid'
             );
             while (($statrow = $database->sql_fetch_row($statres))) {
@@ -238,8 +239,8 @@ class StatisticsUtility
                     'dow' => date('w', $oldtimeend),
                     'hour' => date('H', $oldtimeend),
                     'registration' => $statrow[0],
-                    'crdate' => time(),
-                    'tstamp' => time(),
+                    'crdate' => $GLOBALS['EXEC_TIME'],
+                    'tstamp' => $GLOBALS['EXEC_TIME'],
                 );
 
                 $database->exec_INSERTquery('tx_commerce_newclients', $insertStatArray);
@@ -260,7 +261,14 @@ class StatisticsUtility
      */
     public function firstSecondOfDay($timestamp)
     {
-        return (int) mktime(0, 0, 0, strftime('%m', $timestamp), strftime('%d', $timestamp), strftime('%Y', $timestamp));
+        return (int) mktime(
+            0,
+            0,
+            0,
+            strftime('%m', $timestamp),
+            strftime('%d', $timestamp),
+            strftime('%Y', $timestamp)
+        );
     }
 
     /**
@@ -272,8 +280,16 @@ class StatisticsUtility
      */
     public function lastSecondOfDay($timestamp)
     {
-        return (int) mktime(23, 59, 59, strftime('%m', $timestamp), strftime('%d', $timestamp), strftime('%Y', $timestamp));
+        return (int) mktime(
+            23,
+            59,
+            59,
+            strftime('%m', $timestamp),
+            strftime('%d', $timestamp),
+            strftime('%Y', $timestamp)
+        );
     }
+
 
     /**
      * Get database connection.

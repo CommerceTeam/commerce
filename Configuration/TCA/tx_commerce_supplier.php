@@ -27,13 +27,15 @@ return array(
             'disabled' => 'hidden',
         ),
         'dividers2tabs' => '1',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL.'supplier.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'supplier.gif',
     ),
     'feInterface' => array(
-        'fe_admin_fieldList' => 'hidden, title, street, number, zip, city, country, phone, fax, email, internet, contactperson, logo',
+        'fe_admin_fieldList' => 'hidden, title, street, number, zip, city, country, phone, fax, email, internet,
+            contactperson, logo',
     ),
     'interface' => array(
-        'showRecordFieldList' => 'hidden, title, street, number, zip, city, country, phone, fax, email, internet, contactperson, logo',
+        'showRecordFieldList' => 'hidden, title, street, number, zip, city, country, phone, fax, email, internet,
+            contactperson, logo',
     ),
     'columns' => array(
         'title' => array(
@@ -139,7 +141,8 @@ return array(
         ),
         'contactperson' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier.contactperson',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier.contactperson',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -166,10 +169,7 @@ return array(
     'types' => array(
         '0' => array(
             'showitem' => '
-			hidden, title, street, number, zip, city, country, phone, fax, email, internet, contactperson,logo;;;;2-2-2',
+                hidden, title, street, number, zip, city, country, phone, fax, email, internet, contactperson, logo',
             ),
-    ),
-    'palettes' => array(
-        '1' => array('showitem' => ''),
     ),
 );

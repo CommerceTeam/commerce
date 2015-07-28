@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\ViewHelpers;
 
 /*
@@ -47,9 +46,9 @@ class AttributeEditFunc
         /**
          * Document template.
          *
-         * @var \TYPO3\CMS\Backend\Template\SmallDocumentTemplate
+         * @var \TYPO3\CMS\Backend\Template\SmallDocumentTemplate $doc
          */
-        $doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\SmallDocumentTemplate');
+        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\SmallDocumentTemplate');
         $doc->backPath = $this->getBackPath();
 
         $attributeStoragePid = $parameter['row']['pid'];
@@ -60,12 +59,12 @@ class AttributeEditFunc
 
         // @todo TS config of fields in list
         $rowFields = array('attributes_uid', 'value');
-        $titleCol = SettingsFactory::getInstance()->getTcaValue($foreignTable.'.ctrl.label');
+        $titleCol = SettingsFactory::getInstance()->getTcaValue($foreignTable . '.ctrl.label');
 
         /**
          * Attribute value repository.
          *
-         * @var AttributeValueRepository
+         * @var AttributeValueRepository $attributeValueRepository
          */
         $attributeValueRepository = GeneralUtility::makeInstance(
             'CommerceTeam\\Commerce\\Domain\\Repository\\AttributeValueRepository'
@@ -77,23 +76,28 @@ class AttributeEditFunc
             /*
              * Only if we have a result
              */
-            $theData[$titleCol] = '<span class="c-table">'.
-                $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:attributeview.valuelist', 1).
-                '</span> ('.count($attributeValues).')';
+            $theData[$titleCol] = '<span class="c-table">' .
+                $language->sL(
+                    'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:attributeview.valuelist',
+                    1
+                ) .
+                '</span> (' . count($attributeValues) . ')';
 
             $out .= '
-					<tr>
-						<td class="c-headLineTable" style="width: 95%;" colspan="'.(count($rowFields) + 1).'">'.$theData[$titleCol].'</td>
-					</tr>';
+                    <tr>
+                        <td class="c-headLineTable" style="width: 95%;" colspan="' . (count($rowFields) + 1) . '">' .
+                $theData[$titleCol] . '</td>
+                    </tr>';
             /*
              * Header colum
              */
             $out .= '<tr>';
             foreach ($rowFields as $field) {
-                $out .= '<td class="c-headLineTable"><b>'.$language->sL(BackendUtility::getItemLabel($foreignTable, $field)).'</b></td>';
+                $out .= '<td class="c-headLineTable"><b>' .
+                    $language->sL(BackendUtility::getItemLabel($foreignTable, $field)) . '</b></td>';
             }
-            $out .= '<td class="c-headLineTable"></td>';
-            $out .= '</tr>';
+            $out .= '<td class="c-headLineTable"></td>
+                </tr>';
 
             /*
              * Walk true Data
@@ -103,8 +107,8 @@ class AttributeEditFunc
             foreach ($attributeValues as $row) {
                 ++$cc;
                 $rowBackgroundColor = (
-                    ($cc % 2) ? '' : ' bgcolor="'.
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::modifyHTMLColor($this->getControllerDocumentTemplate()->bgColor4, 10, 10, 10).'"'
+                    ($cc % 2) ? '' : ' bgcolor="' .
+                    GeneralUtility::modifyHTMLColor($this->getControllerDocumentTemplate()->bgColor4, 10, 10, 10) . '"'
                 );
 
                 /*
@@ -112,35 +116,39 @@ class AttributeEditFunc
                  *
                  * @todo change rendering html code here
                  * */
-                $iOut .= '<tr '.$rowBackgroundColor.'>';
+                $iOut .= '<tr ' . $rowBackgroundColor . '>';
                 foreach ($rowFields as $field) {
                     $iOut .= '<td>';
                     $wrap = array('', '');
 
                     switch ($field) {
                         case $titleCol:
-                            $params = '&edit['.$foreignTable.']['.$row['uid'].']=edit';
+                            $params = '&edit[' . $foreignTable . '][' . $row['uid'] . ']=edit';
                             $wrap = array(
-                                '<a href="#" onclick="'.htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())).'">',
+                                '<a href="#" onclick="' .
+                                htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) . '">',
                                 '</a>',
                             );
                             break;
 
                         default:
                     }
-                    $iOut .= implode(BackendUtility::getProcessedValue($foreignTable, $field, $row[$field], 100), $wrap);
+                    $iOut .= implode(
+                        BackendUtility::getProcessedValue($foreignTable, $field, $row[$field], 100),
+                        $wrap
+                    );
                     $iOut .= '</td>';
                 }
                 /*
                  * Trash icon
                  */
-                $onClick = 'deleteRecord(\''.$foreignTable.'\', '.$row['uid'].
-                    ', \'alt_doc.php?edit[tx_commerce_attributes]['.$attributeUid.']=edit\');';
+                $onClick = 'onclick="deleteRecord(\'' . $foreignTable . '\', ' . $row['uid'] .
+                    ', \'alt_doc.php?edit[tx_commerce_attributes][' . $attributeUid . ']=edit\');"';
 
-                $iOut .= '<td>&nbsp;';
-                $iOut .= '<a href="#" onclick="'.$onClick.'">'.
-                    \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-edit-delete').'</a></td>';
-                $iOut .= '</tr>';
+                $iOut .= '<td>&nbsp;
+                    <a href="#" ' . $onClick . '>' .
+                    \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-edit-delete') . '</a></td>
+                    </tr>';
             }
 
             $out .= $iOut;
@@ -163,29 +171,32 @@ class AttributeEditFunc
         }
 
         $out = '
-			<!--
-				DB listing of elements: "'.htmlspecialchars($table).'"
-			-->
-			<table border="0" cellpadding="0" cellspacing="0" class="typo3-dblist">
-				'.$out.'
-			</table>';
+            <!--
+                DB listing of elements: "' . htmlspecialchars($table) . '"
+            -->
+            <table border="0" cellpadding="0" cellspacing="0" class="typo3-dblist">
+                ' . $out . '
+            </table>';
         $content .= $out;
 
         /*
          * New article
          */
-        $params = '&edit['.$foreignTable.']['.$attributeStoragePid.']=new&defVals['.$foreignTable.'][attributes_uid]='.
-            urlencode($attributeUid);
-        $onClickAction = 'onclick="'.htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())).'"';
+        $params = '&edit[' . $foreignTable . '][' . $attributeStoragePid . ']=new&defVals[' . $foreignTable .
+            '][attributes_uid]=' . urlencode($attributeUid);
+        $onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) .
+            '"';
 
         $content .= '<div id="typo3-newRecordLink">
-			<a href="#" '.$onClickAction.'>
-				'.$language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:attributeview.addvalue', 1).
+			<a href="#" ' . $onClickAction . '>
+				' .
+            $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:attributeview.addvalue', 1) .
                 '</a>
 			</div>';
 
         return $content;
     }
+
 
     /**
      * Get language service.

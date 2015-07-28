@@ -53,7 +53,8 @@ $tempColumns = array(
     ),
     'tx_commerce_address_type_id' => array(
         'exclude' => 1,
-        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tt_address.tx_commerce_address_type_id',
+        'label' =>
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tt_address.tx_commerce_address_type_id',
         'config' => array(
             'type' => 'select',
             'item' => array(
@@ -68,7 +69,8 @@ $tempColumns = array(
     ),
     'tx_commerce_is_main_address' => array(
         'exclude' => 1,
-        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tt_address.tx_commerce_is_main_address',
+        'label' =>
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tt_address.tx_commerce_is_main_address',
         'config' => array(
             'type' => 'check',
         ),
@@ -78,7 +80,8 @@ $tempColumns = array(
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('tt_address', $tempColumns, 1);
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
     'tt_address',
-    'tx_commerce_default_values,tx_commerce_fe_user_id, tx_commerce_address_type_id, surname,tx_commerce_is_main_address'
+    'tx_commerce_default_values, tx_commerce_fe_user_id, tx_commerce_address_type_id, surname,
+        tx_commerce_is_main_address'
 );
 
 /*
@@ -88,9 +91,9 @@ $ttaddressparts = explode('name,', $GLOBALS['TCA']['tt_address']['interface']['s
 $countto = count($ttaddressparts) - 1;
 for ($i = 0; $i < $countto; ++$i) {
     if (strlen($ttaddressparts[$i]) == 0 || substr($ttaddressparts[$i], -1, 1) == ',') {
-        $ttaddressparts[$i] = $ttaddressparts[$i].'name,surname,';
+        $ttaddressparts[$i] = $ttaddressparts[$i] . 'name,surname,';
     } else {
-        $ttaddressparts[$i] = $ttaddressparts[$i].'name,';
+        $ttaddressparts[$i] = $ttaddressparts[$i] . 'name,';
     }
 }
 $GLOBALS['TCA']['tt_address']['interface']['showRecordFieldList'] = implode('', $ttaddressparts);

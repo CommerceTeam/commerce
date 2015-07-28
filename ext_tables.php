@@ -78,7 +78,7 @@ if (TYPO3_MODE == 'BE') {
         'commerce',
         'category',
         '',
-        PATH_TXCOMMERCE.'Modules/Category/'
+        PATH_TXCOMMERCE . 'Modules/Category/'
     );
 
     // Access Module
@@ -195,7 +195,7 @@ if (TYPO3_MODE == 'BE') {
 // Add context menu for category trees in BE
 $GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = array(
     'name' => 'CommerceTeam\\Commerce\\Utility\\ClickmenuUtility',
-    'path' => PATH_TXCOMMERCE.'Classes/Utility/ClickmenuUtility.php',
+    'path' => PATH_TXCOMMERCE . 'Classes/Utility/ClickmenuUtility.php',
 );
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToInsertRecords('tx_commerce_categories');

@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Configuration\DCA;
 
 /*
@@ -69,12 +68,16 @@ class Products
                     'field_config' => array(
                         1 => array(
                             'name' => 'ct_###uid###',
-                            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.ct_###title###',
+                            'label' =>
+                                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.ct_###title###',
                             'config' => array(
                                 'type' => 'select',
                                 'foreign_table' => 'tx_commerce_attributes',
                                 'foreign_label' => 'title',
-                                'foreign_table_where' => ' AND sys_language_uid in (0,-1) AND has_valuelist = 1 AND multiple = 0 ORDER BY title',
+                                'foreign_table_where' =>
+                                    ' AND sys_language_uid in (0,-1)
+                                     AND has_valuelist = 1
+                                     AND multiple = 0 ORDER BY title',
                                 'size' => 5,
                                 'minitems' => 0,
                                 'maxitems' => 50,
@@ -110,7 +113,8 @@ class Products
                     'field_config' => array(
                         1 => array(
                             'name' => 'ct_###uid###',
-                            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.ct_###title###',
+                            'label' =>
+                                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.ct_###title###',
                             'config' => array(
                                 'type' => 'select',
                                 'foreign_table' => 'tx_commerce_attributes',
@@ -167,7 +171,8 @@ class Products
                         'orderby' => 'sorting',
                     ),
                     'field_config' => array(
-                        'singleUserFunc' => 'CommerceTeam\\Commerce\\Utility\\AttributeEditorUtility->getAttributeEditField',
+                        'singleUserFunc' =>
+                            'CommerceTeam\\Commerce\\Utility\\AttributeEditorUtility->getAttributeEditField',
                     ),
                 ),
             ),
@@ -193,8 +198,8 @@ class Products
                     'config' => array(
                         'text' => '
 							,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_attributes,
-								attributes
-						',
+                                attributes
+                        ',
                     ),
                 ),
                 // 1 - add "edit attributes" tab if minimum one attribute with correlationtype 4
@@ -220,9 +225,9 @@ class Products
                     ),
                     'config' => array(
                         'text' => '
-							,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes,
-								attributesedit
-						',
+                            ,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes,
+                                attributesedit
+                        ',
                     ),
                 ),
                 // 2 - "localise attributes" tab if minimum one attribute with correlationtype
@@ -247,9 +252,9 @@ class Products
                     ),
                     'config' => array(
                         'text' => '
-							,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.localedit_attributes,
-								attributesedit
-						',
+                            ,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.localedit_attributes,
+                                attributesedit
+                        ',
                     ),
                 ),
                 // 3 - add "create articles" tab if minimum one attribute with correlationtype 1
@@ -265,9 +270,9 @@ class Products
                     ),
                     'config' => array(
                         'text' => '
-							,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_articles,
-								articles
-						',
+                            ,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_articles,
+                                articles
+                        ',
                     ),
                 ),
                 // 4 - add "Localisze Articel" tab if we are in a localised language
@@ -284,9 +289,9 @@ class Products
                     ),
                     'config' => array(
                         'text' => '
-							,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,
-								articleslok
-						',
+                            ,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,
+                                articleslok
+                        ',
                     ),
                 ),
                 // 5 - add "Localize Articel" tab if we are in a localised language
@@ -303,9 +308,9 @@ class Products
                     ),
                     'config' => array(
                         'text' => '
-							,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,
-								articles
-						',
+                            ,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,
+                                articles
+                        ',
                     ),
                 ),
                 // 6
@@ -318,7 +323,8 @@ class Products
                         'compareTo' => 'DEF',
                     ),
                     'config' => array(
-                        'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.extras',
+                        'text' =>
+                            ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.extras',
                     ),
                 ),
                 // 7
@@ -380,11 +386,12 @@ class Products
      * Alter dca on load.
      *
      * @param array $resultDca Result DCA
+     *
+     * @return void
      */
     public function alterDCA_onLoad(array &$resultDca)
     {
-        if (
-            !(
+        if (!(
                 \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('data') == null
                 || \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('createArticles') == 'create'
             )
@@ -393,6 +400,7 @@ class Products
             $resultDca = array();
         }
     }
+
 
     /**
      * Get backend user.

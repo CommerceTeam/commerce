@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Repository;
 
 /*
@@ -44,7 +43,7 @@ class ArticleRepository extends Repository
     /**
      * Returns the parent Product uid.
      *
-     * @param int  $uid             Article uid
+     * @param int $uid Article uid
      * @param bool $translationMode Translation mode
      *
      * @return int product uid
@@ -69,8 +68,8 @@ class ArticleRepository extends Repository
     /**
      * Gets all prices form database related to this product.
      *
-     * @param int    $uid        Article uid
-     * @param int    $count      Number of Articles for price_scale_amount, default 1
+     * @param int $uid Article uid
+     * @param int $count Number of Articles for price_scale_amount, default 1
      * @param string $orderField Order field
      *
      * @return array of Price UID
@@ -81,7 +80,10 @@ class ArticleRepository extends Repository
         $count = (int) $count;
         $additionalWhere = '';
 
-        $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook('Domain/Repository/ArticleRepository', 'getPrices');
+        $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook(
+            'Domain/Repository/ArticleRepository',
+            'getPrices'
+        );
         if (is_object($hookObject) && method_exists($hookObject, 'priceOrder')) {
             $orderField = $hookObject->priceOrder($orderField);
         }
@@ -91,15 +93,18 @@ class ArticleRepository extends Repository
 
         if ($uid > 0) {
             $priceUidList = array();
-            $proofSql = $this->enableFields('tx_commerce_article_prices', $this->getFrontendController()->showHiddenRecords);
+            $proofSql = $this->enableFields(
+                'tx_commerce_article_prices',
+                $this->getFrontendController()->showHiddenRecords
+            );
 
             $database = $this->getDatabaseConnection();
 
             $result = $database->exec_SELECTquery(
                 'uid,fe_group',
                 'tx_commerce_article_prices',
-                'uid_article = '.$uid.' AND price_scale_amount_start <= '.$count.
-                    ' AND price_scale_amount_end >= '.$count.$proofSql.$additionalWhere,
+                'uid_article = ' . $uid . ' AND price_scale_amount_start <= ' . $count .
+                ' AND price_scale_amount_end >= ' . $count . $proofSql . $additionalWhere,
                 '',
                 $orderField
             );
@@ -118,7 +123,10 @@ class ArticleRepository extends Repository
 
                 return $priceUidList;
             } else {
-                $this->error('exec_SELECTquery(\'uid\', \'tx_commerce_article_prices\', \'uid_article = \' . $uid); returns no Result');
+                $this->error(
+                    'exec_SELECTquery(\'uid\', \'tx_commerce_article_prices\', \'uid_article = \' . ' . $uid .
+                    '); returns no Result'
+                );
 
                 return false;
             }
@@ -130,7 +138,7 @@ class ArticleRepository extends Repository
     /**
      * Returns an array of all scale price amounts.
      *
-     * @param int $uid   Article uid
+     * @param int $uid Article uid
      * @param int $count Count
      *
      * @return array of Price UID
@@ -141,13 +149,17 @@ class ArticleRepository extends Repository
         $count = (int) $count;
         if ($uid > 0) {
             $priceUidList = array();
-            $proofSql = $this->enableFields('tx_commerce_article_prices', $this->getFrontendController()->showHiddenRecords);
+            $proofSql = $this->enableFields(
+                'tx_commerce_article_prices',
+                $this->getFrontendController()->showHiddenRecords
+            );
 
             $database = $this->getDatabaseConnection();
 
-            $result = $database->exec_SELECTquery('uid,price_scale_amount_start, price_scale_amount_end',
+            $result = $database->exec_SELECTquery(
+                'uid,price_scale_amount_start, price_scale_amount_end',
                 'tx_commerce_article_prices',
-                'uid_article = '.$uid.' AND price_scale_amount_start >= '.$count.$proofSql
+                'uid_article = ' . $uid . ' AND price_scale_amount_start >= ' . $count . $proofSql
             );
             if ($database->sql_num_rows($result)) {
                 while (($data = $database->sql_fetch_assoc($result))) {
@@ -157,7 +169,10 @@ class ArticleRepository extends Repository
 
                 return $priceUidList;
             } else {
-                $this->error('exec_SELECTquery(\'uid\', \'tx_commerce_article_prices\', \'uid_article = \' . $uid); returns no Result');
+                $this->error(
+                    'exec_SELECTquery(\'uid\', \'tx_commerce_article_prices\', \'uid_article = \' . ' . $uid .
+                    '); returns no Result'
+                );
 
                 return false;
             }
@@ -181,10 +196,10 @@ class ArticleRepository extends Repository
     /**
      * Returns the attribute Value from the given Article attribute pair.
      *
-     * @param int  $uid            Article UID
-     * @param int  $attributeUid   Attribute UID
+     * @param int $uid Article UID
+     * @param int $attributeUid Attribute UID
      * @param bool $valueListAsUid If true, returns not the value from
-     *                             the valuelist, instead the uid
+     *      the valuelist, instead the uid
      *
      * @return string
      */
@@ -195,25 +210,28 @@ class ArticleRepository extends Repository
 
         if ($uid > 0) {
             // First select attribute, to detecxt if is valuelist
-            $proofSql = $this->enableFields('tx_commerce_attributes', $this->getFrontendController()->showHiddenRecords);
+            $proofSql = $this->enableFields(
+                'tx_commerce_attributes',
+                $this->getFrontendController()->showHiddenRecords
+            );
 
             $database = $this->getDatabaseConnection();
 
             $result = $database->exec_SELECTquery(
-                'DISTINCT uid,has_valuelist',
+                'DISTINCT uid, has_valuelist',
                 'tx_commerce_attributes',
-                'uid = '.(int) $attributeUid.$proofSql
+                'uid = ' . (int) $attributeUid . $proofSql
             );
             if ($database->sql_num_rows($result) == 1) {
                 $returnData = $database->sql_fetch_assoc($result);
                 if ($returnData['has_valuelist'] == 1) {
                     // Attribute has a valuelist, so do separate query
                     $attributeResult = $database->exec_SELECTquery(
-                        'DISTINCT distinct tx_commerce_attribute_values.value,tx_commerce_attribute_values.uid',
+                        'DISTINCT tx_commerce_attribute_values.value, tx_commerce_attribute_values.uid',
                         'tx_commerce_articles_article_attributes_mm, tx_commerce_attribute_values',
                         'tx_commerce_articles_article_attributes_mm.uid_valuelist = tx_commerce_attribute_values.uid'.
-                            ' AND uid_local = '.$uid.
-                            ' AND uid_foreign = '.$attributeUid
+                        ' AND uid_local = ' . $uid .
+                        ' AND uid_foreign = ' . $attributeUid
                     );
                     if ($database->sql_num_rows($attributeResult) == 1) {
                         $valueData = $database->sql_fetch_assoc($attributeResult);
@@ -226,9 +244,9 @@ class ArticleRepository extends Repository
                 } else {
                     // attribute has no valuelist, so do normal query
                     $attributeResult = $database->exec_SELECTquery(
-                        'DISTINCT value_char,default_value',
+                        'DISTINCT value_char, default_value',
                         'tx_commerce_articles_article_attributes_mm',
-                        'uid_local = '.$uid.' AND uid_foreign = '.$attributeUid
+                        'uid_local = ' . $uid . ' AND uid_foreign = ' . $attributeUid
                     );
                     if ($database->sql_num_rows($attributeResult) == 1) {
                         $valueData = $database->sql_fetch_assoc($attributeResult);
@@ -266,7 +284,7 @@ class ArticleRepository extends Repository
             $result = $database->exec_SELECTquery(
                 'title',
                 'tx_commerce_supplier',
-                'uid = '.(int) $supplierUid
+                'uid = ' . (int) $supplierUid
             );
             if ($database->sql_num_rows($result) == 1) {
                 $returnData = $database->sql_fetch_assoc($result);
@@ -290,7 +308,7 @@ class ArticleRepository extends Repository
         return (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             'uid',
             'tx_commerce_articles',
-            'classname = \''.$classname.'\''
+            'classname = \'' . $classname . '\''
         );
     }
 }

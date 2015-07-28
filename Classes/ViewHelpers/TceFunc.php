@@ -99,6 +99,7 @@ class TceFunc
         }
 
         if ($config['substituteRealValues']) {
+            // @todo fix me
             $categoryTree->substituteRealValues();
         }
 
@@ -194,7 +195,7 @@ class TceFunc
                         $defVals['tx_commerce_categories']['parent_category']
                     );
                     $category->loadData();
-                    $itemArray = array($category->getUid().'|'.$category->getTitle());
+                    $itemArray = array($category->getUid() . '|' . $category->getTitle());
                     break;
 
                 case 'tx_commerce_products':
@@ -219,7 +220,7 @@ class TceFunc
         // Creating the label for the "No Matching Value" entry.
         $noMatchingValueLabel = isset($parameter['fieldTSConfig']['noMatchingValue_label']) ?
             $this->tceForms->sL($parameter['fieldTSConfig']['noMatchingValue_label']) :
-            '[ '.$this->tceForms->getLL('l_noMatchingValue').' ]';
+            '[ ' . $this->tceForms->getLL('l_noMatchingValue') . ' ]';
         $noMatchingValueLabel = @sprintf($noMatchingValueLabel, $parameter['itemFormElValue']);
 
         // Possibly remove some items:

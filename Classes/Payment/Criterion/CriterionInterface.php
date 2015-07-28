@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Payment\Criterion;
 
 /*
@@ -28,11 +27,14 @@ interface CriterionInterface
      * Constructor.
      *
      * @param \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject Parent
-     * @param array                                           $options       Configuration array
+     * @param array $options Configuration array
      *
      * @return self
      */
-    public function __construct(\CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject, array $options = array());
+    public function __construct(
+        \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject,
+        array $options = array()
+    );
 
     /**
      * Return TRUE if this payment type is allowed.

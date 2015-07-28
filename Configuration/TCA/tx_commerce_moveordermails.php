@@ -30,15 +30,15 @@ return array(
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ),
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL.'moveordermails.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'moveordermails.gif',
     ),
     'feInterface' => array(
-        'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, name,
-			mailkind, mailtemplate, htmltemplate, mailcharset, sendername, senderemail, otherreceiver, BCC',
+        'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
+            name, mailkind, mailtemplate, htmltemplate, mailcharset, sendername, senderemail, otherreceiver, BCC',
     ),
     'interface' => array(
-        'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group, name,
-			mailkind, mailtemplate, htmltemplate, mailcharset, sendername, senderemail, otherreceiver, BCC',
+        'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
+            name, mailkind, mailtemplate, htmltemplate, mailcharset, sendername, senderemail, otherreceiver, BCC',
     ),
     'columns' => array(
         'sys_language_uid' => array(
@@ -65,7 +65,7 @@ return array(
                 ),
                 'foreign_table' => 'tx_commerce_moveordermails',
                 'foreign_table_where' => ' AND tx_commerce_moveordermails.pid = ###CURRENT_PID###
-					AND tx_commerce_moveordermails.sys_language_uid IN (-1,0)',
+                    AND tx_commerce_moveordermails.sys_language_uid IN (-1,0)',
             ),
         ),
         'l18n_diffsource' => array(
@@ -138,7 +138,8 @@ return array(
         ),
         'mailkind' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.mailkind',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.mailkind',
             'config' => array(
                 'type' => 'select',
                 'items' => array(
@@ -151,7 +152,8 @@ return array(
         ),
         'mailtemplate' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.mailtemplate',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.mailtemplate',
             'config' => array(
                 'type' => 'group',
                 'internal_type' => 'file',
@@ -166,7 +168,8 @@ return array(
         ),
         'htmltemplate' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.htmltemplate',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.htmltemplate',
             'config' => array(
                 'type' => 'group',
                 'internal_type' => 'file',
@@ -181,7 +184,8 @@ return array(
         ),
         'mailcharset' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.mailcharset',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.mailcharset',
             'config' => array(
                 'type' => 'input',
                 'size' => '30',
@@ -191,7 +195,8 @@ return array(
         ),
         'sendername' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.sendername',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.sendername',
             'config' => array(
                 'type' => 'input',
                 'size' => '48',
@@ -200,7 +205,8 @@ return array(
         ),
         'senderemail' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.senderemail',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.senderemail',
             'config' => array(
                 'type' => 'input',
                 'size' => '48',
@@ -209,7 +215,8 @@ return array(
         ),
         'otherreceiver' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.otherreceiver',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_moveordermails.otherreceiver',
             'config' => array(
                 'type' => 'input',
                 'size' => '48',
@@ -227,8 +234,8 @@ return array(
         ),
     ),
     'types' => array(
-        '0' => array('showitem' => 'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource,hidden;;1;;1-1-1, name, mailkind,
-			mailtemplate,htmltemplate, mailcharset, sendername, senderemail, otherreceiver, BCC'),
+        '0' => array('showitem' => 'sys_language_uid, l18n_parent, l18n_diffsource,hidden;;1;;1-1-1, name,
+            mailkind, mailtemplate,htmltemplate, mailcharset, sendername, senderemail, otherreceiver, BCC'),
     ),
     'palettes' => array(
         '1' => array('showitem' => 'starttime, endtime, fe_group'),

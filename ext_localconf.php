@@ -29,11 +29,11 @@ if (!defined('PATH_TXCOMMERCE_REL')) {
 }
 
 if (!defined('PATH_TXCOMMERCE_ICON_TABLE_REL')) {
-    define('PATH_TXCOMMERCE_ICON_TABLE_REL', PATH_TXCOMMERCE_REL.'Resources/Public/Icons/Table/');
+    define('PATH_TXCOMMERCE_ICON_TABLE_REL', PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/');
 }
 
 if (!defined('PATH_TXCOMMERCE_ICON_TREE_REL')) {
-    define('PATH_TXCOMMERCE_ICON_TREE_REL', PATH_TXCOMMERCE_REL.'Resources/Public/Icons/Table/');
+    define('PATH_TXCOMMERCE_ICON_TREE_REL', PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/');
 }
 
 // Define special article types
@@ -71,7 +71,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT'
             'class' => 'CommerceTeam\\Commerce\\Payment\\Creditcard',
             'type' => PAYMENTARTICLETYPE,
                 // Language file for external credit card check
-            'ccvs_language_files' => PATH_TXCOMMERCE.'payment/ccvs/language',
+            'ccvs_language_files' => PATH_TXCOMMERCE . 'payment/ccvs/language',
             'provider' => array(
                 'wirecard' => array(
                     // @todo: Remove this implementation if it turns out that it does not work

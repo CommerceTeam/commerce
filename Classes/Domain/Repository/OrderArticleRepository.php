@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Repository;
 
 /*
@@ -35,7 +34,7 @@ class OrderArticleRepository extends Repository
      * Find order articles by order id in page.
      *
      * @param string $orderId Order Id
-     * @param int    $pageId  Page id
+     * @param int $pageId Page id
      *
      * @return array
      */
@@ -44,8 +43,8 @@ class OrderArticleRepository extends Repository
         return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             $this->databaseTable,
-            'pid = '.$pageId.BackendUtility::deleteClause($this->databaseTable).
-                ' AND order_id = \''.$this->getDatabaseConnection()->quoteStr($orderId, $this->databaseTable).'\''
+            'pid = ' . $pageId . BackendUtility::deleteClause($this->databaseTable) .
+            ' AND order_id = ' . $this->getDatabaseConnection()->fullQuoteStr($orderId, $this->databaseTable)
         );
     }
 }

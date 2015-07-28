@@ -151,7 +151,7 @@ class BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserH
             'isActive' => $this->pObj->act == $this->tabKey,
             'label' => 'Commerce',
             'url' => '#',
-            'addParams' => 'onclick="jumpToUrl(\'?act=' . $this->tabKey . '&editorNo=' . $this->pObj->editorNo.
+            'addParams' => 'onclick="jumpToUrl(\'?act=' . $this->tabKey . '&editorNo=' . $this->pObj->editorNo .
                 '&contentTypo3Language=' . $this->pObj->contentTypo3Language . '&contentTypo3Charset=' .
                 $this->pObj->contentTypo3Charset . '\');return false;"',
         );

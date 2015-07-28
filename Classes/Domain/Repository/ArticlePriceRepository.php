@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Repository;
 
 /*
@@ -44,7 +43,6 @@ class ArticlePriceRepository extends Repository
      * @param int $uid UID for Data
      *
      * @return array assoc Array with data
-     *
      * @todo implement access_check concering category tree
      * Special Implementation for prices, as they don't have a localisation'
      */
@@ -59,7 +57,7 @@ class ArticlePriceRepository extends Repository
             $proofSql = $this->enableFields($this->databaseTable, $this->getFrontendController()->showHiddenRecords);
         }
 
-        $result = $database->exec_SELECTquery('*', $this->databaseTable, 'uid = '.$uid.$proofSql);
+        $result = $database->exec_SELECTquery('*', $this->databaseTable, 'uid = ' . $uid . $proofSql);
 
         // Result should contain only one Dataset
         if ($database->sql_num_rows($result) == 1) {
@@ -69,7 +67,10 @@ class ArticlePriceRepository extends Repository
             return $returnData;
         }
 
-        $this->error('exec_SELECTquery(\'*\','.$this->databaseTable.',\'uid = '.$uid.'\'); returns no or more than one Result');
+        $this->error(
+            'exec_SELECTquery(\'*\',' . $this->databaseTable . ',\'uid = ' . $uid .
+            '\'); returns no or more than one Result'
+        );
 
         return false;
     }

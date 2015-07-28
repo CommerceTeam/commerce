@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Payment\Provider;
 
 /*
@@ -28,7 +27,7 @@ interface ProviderCriterionInterface
      * Constructor.
      *
      * @param ProviderInterface $providerObject Parent payment
-     * @param array             $options        Configuration array
+     * @param array $options Configuration array
      *
      * @return self
      */

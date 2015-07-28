@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Utility;
 
 /*
@@ -16,6 +15,7 @@ namespace CommerceTeam\Commerce\Utility;
  */
 
 use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\BackendUtility as CommerceBackendUtility;
 use TYPO3\CMS\Backend\ClickMenu\ClickMenu;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -89,9 +89,9 @@ class ClickmenuUtility extends ClickMenu
      * Changes the clickmenu Items for the Commerce Records.
      *
      * @param ClickMenu $clickMenu Clickenu object
-     * @param array     $menuItems Current menu Items
-     * @param string    $table     Table
-     * @param int       $uid       Uid
+     * @param array $menuItems Current menu Items
+     * @param string $table Table
+     * @param int $uid Uid
      *
      * @return array Menu Items Array
      */
@@ -123,9 +123,9 @@ class ClickmenuUtility extends ClickMenu
         $this->clickMenu->backPath = $this->backPath;
 
         $this->additionalParameter = GeneralUtility::explodeUrl2Array(urldecode(GeneralUtility::_GET('addParams')));
-        $this->newWizardAddParams = '&parentCategory='.$this->additionalParameter['parentCategory'];
+        $this->newWizardAddParams = '&parentCategory=' . $this->additionalParameter['parentCategory'];
 
-        $this->rec = BackendUtility::getRecordWSOL($table, $this->additionalParameter['control['.$table.'][uid]']);
+        $this->rec = BackendUtility::getRecordWSOL($table, $this->additionalParameter['control[' . $table . '][uid]']);
 
         // Initialize the rights-variables
         $rights = array(
@@ -150,8 +150,12 @@ class ClickmenuUtility extends ClickMenu
 
         // used to hide cut,copy icons for l10n-records
         // should only be performed for overlay-records within the same table
-        if (BackendUtility::isTableLocalizable($table) && !$settingsFactory->getTcaValue($table.'.ctrl.transOrigPointerTable')) {
-            $rights['l10nOverlay'] = intval($this->rec[$settingsFactory->getTcaValue($table.'.ctrl.transOrigPointerField')]) != 0;
+        if (BackendUtility::isTableLocalizable($table)
+            && !$settingsFactory->getTcaValue($table . '.ctrl.transOrigPointerTable')
+        ) {
+            $rights['l10nOverlay'] = intval($this->rec[$settingsFactory->getTcaValue(
+                $table . '.ctrl.transOrigPointerField'
+            )]);
         }
 
         // get rights based on the table
@@ -178,14 +182,13 @@ class ClickmenuUtility extends ClickMenu
         if (is_array($this->rec)) {
             // Edit:
             if (!$rights['root'] && !$rights['editLock'] && $rights['edit']) {
-                if (
-                    !in_array('hide', $this->disabledItems)
-                    && $settingsFactory->getTcaValue($table.'.ctrl.enablecolumns.disabled')
+                if (!in_array('hide', $this->disabledItems)
+                    && $settingsFactory->getTcaValue($table . '.ctrl.enablecolumns.disabled')
                 ) {
                     $menuItems['hide'] = $this->DB_hideUnhide(
                         $table,
                         $this->rec,
-                        $settingsFactory->getTcaValue($table.'.ctrl.enablecolumns.disabled')
+                        $settingsFactory->getTcaValue($table . '.ctrl.enablecolumns.disabled')
                     );
                 }
 
@@ -209,8 +212,7 @@ class ClickmenuUtility extends ClickMenu
 
             // Cut not included
             // Copy:
-            if (
-                !in_array('copy', $this->disabledItems)
+            if (!in_array('copy', $this->disabledItems)
                 && !$rights['root']
                 && !$rights['DBmount']
                 && !$rights['l10nOverlay']
@@ -218,14 +220,13 @@ class ClickmenuUtility extends ClickMenu
             ) {
                 $clipboardUid = $uid;
                 if ($this->additionalParameter['category']) {
-                    $clipboardUid .= '|'.$this->additionalParameter['category'];
+                    $clipboardUid .= '|' . $this->additionalParameter['category'];
                 }
                 $menuItems['copy'] = $this->DB_copycut($table, $clipboardUid, 'copy');
             }
 
             // Cut:
-            if (
-                !in_array('cut', $this->disabledItems)
+            if (!in_array('cut', $this->disabledItems)
                 && !$rights['root']
                 && !$rights['DBmount']
                 && !$rights['l10nOverlay']
@@ -242,7 +243,8 @@ class ClickmenuUtility extends ClickMenu
                     GeneralUtility::fixed_lgd_cs($selItem['_RECORD_TITLE'], $backendUser->uc['titleLen']),
                     (
                         $rights['root'] ? $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] : GeneralUtility::fixed_lgd_cs(
-                            BackendUtility::getRecordTitle($table, $this->rec), $backendUser->uc['titleLen']
+                            BackendUtility::getRecordTitle($table, $this->rec),
+                            $backendUser->uc['titleLen']
                         )
                     ),
                     $this->clipObj->currentMode(),
@@ -250,7 +252,7 @@ class ClickmenuUtility extends ClickMenu
 
                 $pasteUid = $uid;
                 if ($this->additionalParameter['category']) {
-                    $pasteUid .= '|'.$this->additionalParameter['category'];
+                    $pasteUid .= '|' . $this->additionalParameter['category'];
                 }
 
                 $elFromTable = count($this->clipObj->elFromTable($table));
@@ -262,7 +264,7 @@ class ClickmenuUtility extends ClickMenu
                 if ($table == 'tx_commerce_categories') {
                     $pasteIntoUid = $this->rec['pid'];
                     if ($this->additionalParameter['category']) {
-                        $pasteIntoUid .= '|'.$this->additionalParameter['category'];
+                        $pasteIntoUid .= '|' . $this->additionalParameter['category'];
                     }
 
                     if ($elFromAllTables) {
@@ -270,8 +272,12 @@ class ClickmenuUtility extends ClickMenu
                     }
                 }
 
-                if (!$rights['root'] && !$rights['DBmount'] && $elFromTable && $settingsFactory->getTcaValue($table.'.ctrl.sortby')) {
-                    $menuItems['pasteafter'] = $this->DB_paste($table, '-'.$pasteUid, 'after', $elInfo);
+                if (!$rights['root']
+                    && !$rights['DBmount']
+                    && $elFromTable
+                    && $settingsFactory->getTcaValue($table . '.ctrl.sortby')
+                ) {
+                    $menuItems['pasteafter'] = $this->DB_paste($table, '-' . $pasteUid, 'after', $elInfo);
                 }
             }
 
@@ -281,8 +287,7 @@ class ClickmenuUtility extends ClickMenu
                 $backendUser->uc['titleLen']
             ));
 
-            if (
-                !$rights['editLock']
+            if (!$rights['editLock']
                 && !in_array('delete', $this->disabledItems)
                 && !$rights['root']
                 && !$rights['DBmount']
@@ -309,7 +314,7 @@ class ClickmenuUtility extends ClickMenu
     /**
      * Calculate category rights.
      *
-     * @param int   $uid    Uid
+     * @param int $uid Uid
      * @param array $rights Rights
      *
      * @return array
@@ -328,15 +333,15 @@ class ClickmenuUtility extends ClickMenu
         }
 
         // get the rights for this category
-        $rights['delete'] = \CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
+        $rights['delete'] = CommerceBackendUtility::checkPermissionsOnCategoryContent(
             array($categoryToCheckRightsOn),
             array('delete')
         );
-        $rights['edit'] = \CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
+        $rights['edit'] = CommerceBackendUtility::checkPermissionsOnCategoryContent(
             array($categoryToCheckRightsOn),
             array('edit')
         );
-        $rights['new'] = \CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
+        $rights['new'] = CommerceBackendUtility::checkPermissionsOnCategoryContent(
             array($categoryToCheckRightsOn),
             array('new')
         );
@@ -355,7 +360,10 @@ class ClickmenuUtility extends ClickMenu
              *
              * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
-            $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $clipRecord['uid']);
+            $category = GeneralUtility::makeInstance(
+                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                $clipRecord['uid']
+            );
             $category->loadData();
             $childCategories = $category->getChildCategories();
 
@@ -372,7 +380,7 @@ class ClickmenuUtility extends ClickMenu
             }
         } elseif (!empty($this->clickMenu->clipObj->elFromTable('tx_commerce_products'))) {
             // if product is in clipboard, check editcontent right
-            $rights['paste'] = \CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
+            $rights['paste'] = CommerceBackendUtility::checkPermissionsOnCategoryContent(
                 array($uid),
                 array('editcontent')
             );
@@ -422,7 +430,7 @@ class ClickmenuUtility extends ClickMenu
     /**
      * Calculate product rights.
      *
-     * @param int   $uid    Uid
+     * @param int $uid Uid
      * @param array $rights Rights
      *
      * @return array
@@ -442,33 +450,34 @@ class ClickmenuUtility extends ClickMenu
         $parentCategories = $product->getParentCategories();
 
             // store the rights in the flags
-        $rights['delete'] = \CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
+        $rights['delete'] = CommerceBackendUtility::checkPermissionsOnCategoryContent(
             $parentCategories,
             array('editcontent')
         );
         $rights['edit'] = $rights['delete'];
         $rights['new'] = $rights['delete'];
         $rights['copy'] = ($this->rec['t3ver_state'] == 0 && $this->rec['sys_language_uid'] == 0);
-        $rights['paste'] = $rights['overwrite'] = (($this->rec['t3ver_state'] == 0) && $rights['delete']);
+        $rights['paste'] = $rights['overwrite'] = ($this->rec['t3ver_state'] == 0 && $rights['delete']);
 
             // make sure we do not allowed to overwrite a product with itself
         if (!empty($this->clipObj->elFromTable('tx_commerce_products'))) {
             $set = 0;
-            if ($this->clipObj->clipData[$this->clipObj->current]['el']['tx_commerce_products|'.$uid.'|'.
+            if ($this->clipObj->clipData[$this->clipObj->current]['el']['tx_commerce_products|' . $uid . '|' .
                 $this->additionalParameter['category']]
             ) {
                 $set = 1;
-                $this->clipObj->clipData[$this->clipObj->current]['el']['tx_commerce_products|'.$uid] = 1;
+                $this->clipObj->clipData[$this->clipObj->current]['el']['tx_commerce_products|' . $uid] = 1;
             }
             $clipRecord = $this->clipObj->getSelectedRecord();
             $rights['overwrite'] = ($uid != $clipRecord['uid']) ? false : $rights['overwrite'];
 
             if ($set) {
-                unset($this->clipObj->clipData[$this->clipObj->current]['el']['tx_commerce_products|'.$uid]);
+                unset($this->clipObj->clipData[$this->clipObj->current]['el']['tx_commerce_products|'. $uid]);
             }
         }
 
-        $rights['version'] = ($backendUser->check('modules', 'web_txversionM1')) && ExtensionManagementUtility::isLoaded('version');
+        $rights['version'] = $backendUser->check('modules', 'web_txversionM1')
+            && ExtensionManagementUtility::isLoaded('version');
         $rights['review'] = $rights['version']
             && $this->rec['t3ver_oid'] != 0
             && ($this->rec['t3ver_stage'] == 0 || $this->rec['t3ver_stage'] == 1);
@@ -479,7 +488,7 @@ class ClickmenuUtility extends ClickMenu
     /**
      * Calculate article rights.
      *
-     * @param int   $uid    Uid
+     * @param int $uid Uid
      * @param array $rights Rights
      *
      * @return array
@@ -498,7 +507,7 @@ class ClickmenuUtility extends ClickMenu
         $parentCategories = $article->getParentProduct()->getParentCategories();
 
         // store the rights in the flags
-        $rights['edit'] = $rights['delete'] = \CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
+        $rights['edit'] = $rights['delete'] = CommerceBackendUtility::checkPermissionsOnCategoryContent(
             $parentCategories,
             array('editcontent')
         );
@@ -510,36 +519,34 @@ class ClickmenuUtility extends ClickMenu
      * Add new menu item.
      *
      * @param string $table Table
-     * @param int    $uid   Uid
+     * @param int $uid Uid
      *
      * @return array
      */
     public function DB_new($table, $uid)
     {
         $loc = 'top.content.list_frame';
-        $editOnClick = 'if ('.$loc.') {'.$loc.".location.href=top.TS.PATH_typo3+'".
-            (
-                $this->listFrame ?
-                    "alt_doc.php?returnUrl='+top.rawurlencode(".$this->frameLocation($loc.'.document').'.pathname+'.
-                        $this->frameLocation($loc.'.document').".search)+'&edit[".$table.'][-'.$uid.']=new&'.
-                        $this->newWizardAddParams."'" :
-                    'db_new.php?id='.intval($uid).$this->newWizardAddParams."'"
-            ).
-            ';} ';
+        $editOnClick = 'if (' . $loc . ') {' . $loc . ".location.href=top.TS.PATH_typo3+'" . (
+            $this->listFrame ?
+            "alt_doc.php?returnUrl='+top.rawurlencode(" . $this->frameLocation($loc . '.document') . '.pathname+' .
+            $this->frameLocation($loc . '.document') . ".search)+'&edit[" . $table . '][-' . $uid . ']=new&' .
+            $this->newWizardAddParams . "'" :
+            'db_new.php?id=' . intval($uid) . $this->newWizardAddParams . "'"
+        ) . ';} ';
 
         return $this->linkItem(
             $this->label('new'),
             $this->excludeIcon(\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-new')),
-            $editOnClick.'return hideCM();'
+            $editOnClick . 'return hideCM();'
         );
     }
 
     /**
      * Displays the overwrite option.
      *
-     * @param string $table  Table that is to be host of the overwrite
-     * @param int    $uid    Uid of the item that is to be overwritten
-     * @param array  $elInfo Info Array
+     * @param string $table Table that is to be host of the overwrite
+     * @param int $uid Uid of the item that is to be overwritten
+     * @param array $elInfo Info Array
      *
      * @return string
      */
@@ -548,29 +555,40 @@ class ClickmenuUtility extends ClickMenu
         $language = $this->getLanguageService();
         $backendUser = $this->getBackendUser();
 
-        $loc = 'top.content'.($this->clickMenu->listFrame && !$this->clickMenu->alwaysContentFrame ? '.list_frame' : '');
+        $loc = 'top.content' . (
+            $this->clickMenu->listFrame && !$this->clickMenu->alwaysContentFrame ?
+            '.list_frame' :
+            ''
+        );
 
         if ($backendUser->jsConfirmation(2)) {
-            $conf = $loc.' && confirm('.$language->JScharCode(
+            $conf = $loc . ' && confirm(' . $language->JScharCode(
                 sprintf(
-                    $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:clickmenu.overwriteConfirm'),
+                    $language->sL(
+                        'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:clickmenu.overwriteConfirm'
+                    ),
                     $elInfo[0],
                     $elInfo[1]
                 )
-            ).')';
+            ) . ')';
         } else {
             $conf = $loc;
         }
-        $editOnClick = 'if('.$conf.'){'.$loc.'.location.href=top.TS.PATH_typo3+\''.
-            $this->overwriteUrl($table, $uid, 0).'&redirect=\'+top.rawurlencode('.
-            $this->clickMenu->frameLocation($loc.'.document').'); hideCM();}';
+        $editOnClick = 'if(' . $conf . '){' . $loc . '.location.href=top.TS.PATH_typo3+\'' .
+            $this->overwriteUrl($table, $uid, 0) . '&redirect=\'+top.rawurlencode(' .
+            $this->clickMenu->frameLocation($loc . '.document') . '); hideCM();}';
 
         return $this->clickMenu->linkItem(
             $language->makeEntities(
-                $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:clickmenu.overwrite', 1)
+                $language->sL(
+                    'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:clickmenu.overwrite',
+                    1
+                )
             ),
-            $this->clickMenu->excludeIcon(\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-paste-into')),
-            $editOnClick.'return false;'
+            $this->clickMenu->excludeIcon(
+                \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-paste-into')
+            ),
+            $editOnClick . 'return false;'
         );
     }
 
@@ -578,7 +596,7 @@ class ClickmenuUtility extends ClickMenu
      * Displays the 'Send to review/public' option.
      *
      * @param string $table Table that is to be host of the sending
-     * @param int    $uid   Uid of the item that is to be send
+     * @param int $uid Uid of the item that is to be send
      *
      * @return string
      */
@@ -586,13 +604,13 @@ class ClickmenuUtility extends ClickMenu
     {
         $language = $this->getLanguageService();
 
-        $url = ExtensionManagementUtility::extRelPath('version').'cm1/index.php?id='.
-            ($table == 'pages' ? $uid : $this->rec['pid']).
-            '&table='.rawurlencode($table).'&uid='.$uid.'&sendToReview=1';
+        $url = ExtensionManagementUtility::extRelPath('version') . 'cm1/index.php?id=' .
+            ($table == 'pages' ? $uid : $this->rec['pid']) .
+            '&table=' . rawurlencode($table) . '&uid=' . $uid . '&sendToReview=1';
 
         return $this->clickMenu->linkItem(
             $language->sL('LLL:EXT:version/locallang.xml:title_review', 1),
-            $this->excludeIcon('<img src="'.$this->backPath.ExtensionManagementUtility::extRelPath('version').
+            $this->excludeIcon('<img src="' . $this->backPath . ExtensionManagementUtility::extRelPath('version') .
                 'cm1/cm_icon.gif" width="15" height="12" border="0" align="top" alt="" />'),
             $this->clickMenu->urlRefForCM($url),
             1
@@ -602,10 +620,10 @@ class ClickmenuUtility extends ClickMenu
     /**
      * Overwrite url of the element (database).
      *
-     * @param string $table    Tablename
-     * @param int    $uid      Uid of the record that should be overwritten
-     * @param int    $redirect If set, then the redirect URL will point
-     *                         back to the current script, but with CB reset.
+     * @param string $table Tablename
+     * @param int $uid Uid of the record that should be overwritten
+     * @param int $redirect If set, then the redirect URL will point
+     *      back to the current script, but with CB reset.
      *
      * @return string
      */
@@ -613,14 +631,15 @@ class ClickmenuUtility extends ClickMenu
     {
         $backendUser = $this->getBackendUser();
 
-        return $this->clickMenu->clipObj->backPath.PATH_TXCOMMERCE_REL.'Classes/Utility/DataHandlerUtility.php?'.
-            ($redirect ? 'redirect='.rawurlencode(GeneralUtility::linkThisScript(array('CB' => ''))) : '').
-            '&vC='.$backendUser->veriCode().
-            '&prErr=1&uPT=1'.
-            '&CB[overwrite]='.rawurlencode($table.'|'.$uid).
-            '&CB[pad]='.$this->clickMenu->clipObj->current.
+        return $this->clickMenu->clipObj->backPath . PATH_TXCOMMERCE_REL . 'Classes/Utility/DataHandlerUtility.php?' .
+            ($redirect ? 'redirect=' . rawurlencode(GeneralUtility::linkThisScript(array('CB' => ''))) : '') .
+            '&vC=' . $backendUser->veriCode() .
+            '&prErr=1&uPT=1' .
+            '&CB[overwrite]=' . rawurlencode($table . '|' . $uid) .
+            '&CB[pad]=' . $this->clickMenu->clipObj->current .
             BackendUtility::getUrlToken('tceAction');
     }
+
 
     /**
      * Get backend user.

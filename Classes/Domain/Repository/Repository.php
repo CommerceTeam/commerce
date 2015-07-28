@@ -247,7 +247,7 @@ class Repository
     public function error($err)
     {
         if ($this->debugMode) {
-            debug('Error: '.$err);
+            debug('Error: ' . $err);
         }
     }
 
@@ -269,7 +269,7 @@ class Repository
 
         $additionalWhere = '';
         if (is_array($attributeCorrelationTypeList)) {
-            $additionalWhere = ' AND ' . $this->databaseAttributeRelationTable . '.uid_correlationtype in (' .
+            $additionalWhere = ' AND ' . $this->databaseAttributeRelationTable . '.uid_correlationtype IN (' .
                 implode(',', $attributeCorrelationTypeList) . ')';
         }
 
@@ -278,7 +278,7 @@ class Repository
             $this->databaseTable,
             $this->databaseAttributeRelationTable,
             'tx_commerce_attributes',
-            ' AND ' . $this->databaseTable . '.uid = ' . $uid . $additionalWhere . ' order by ' .
+            ' AND ' . $this->databaseTable . '.uid = ' . (int) $uid . $additionalWhere . ' ORDER BY ' .
             $this->databaseAttributeRelationTable . '.sorting'
         );
 
@@ -317,7 +317,7 @@ class Repository
         }
 
         $database = $this->getDatabaseConnection();
-        $database->exec_UPDATEquery($this->databaseTable, 'uid = ' . $uid, $fields);
+        $database->exec_UPDATEquery($this->databaseTable, 'uid = ' . (int) $uid, $fields);
         if ($database->sql_error()) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(

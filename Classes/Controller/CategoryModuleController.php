@@ -504,7 +504,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             && $dbList->showClipboard
             && ($dbList->HTMLcode || $dbList->clipObj->hasElements())
         ) {
-            $this->body .= '<div class="db_list-dashboard">'.$dbList->clipObj->printClipboard().'</div>';
+            $this->body .= '<div class="db_list-dashboard">' . $dbList->clipObj->printClipboard() . '</div>';
         }
         // Search box:
         if (!$this->modTSconfig['properties']['disableSearchBox']
@@ -515,8 +515,8 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                 'list_searchbox',
                 $language->sL('LLL:EXT:lang/locallang_core.xlf:labels.search', true)
             );
-            $this->body .= '<div class="db_list-searchbox">'.
-                $this->doc->section($sectionTitle, $dbList->getSearchBox(), false, true, false, true).
+            $this->body .= '<div class="db_list-searchbox">' .
+                $this->doc->section($sectionTitle, $dbList->getSearchBox(), false, true, false, true) .
                 '</div>';
         }
         // Additional footer content
@@ -573,7 +573,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             // remove current page title
             $pos = strrpos($title, '/');
             if ($pos !== false) {
-                $title = substr($title, 0, $pos).'/';
+                $title = substr($title, 0, $pos) . '/';
             }
         } else {
             $title = '';
@@ -587,7 +587,8 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $cropLength = empty($backendUser->uc['titleLen']) ? 50 : $backendUser->uc['titleLen'];
         $croppedTitle = GeneralUtility::fixed_lgd_cs($title, -$cropLength);
         if ($croppedTitle !== $title) {
-            $pagePath .= '<abbr title="'.htmlspecialchars($title).'">'.htmlspecialchars($croppedTitle).'</abbr>';
+            $pagePath .= '<abbr title="' . htmlspecialchars($title) . '">' . htmlspecialchars($croppedTitle) .
+                '</abbr>';
         } else {
             $pagePath .= htmlspecialchars($title);
         }
@@ -635,7 +636,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         }
 
         // Setting icon with clickmenu + uid
-        $pageInfo = $theIcon.'<strong>'.htmlspecialchars($title).'&nbsp;['.$uid.']</strong>';
+        $pageInfo = $theIcon . '<strong>' . htmlspecialchars($title) . '&nbsp;[' . $uid . ']</strong>';
 
         return $pageInfo;
     }

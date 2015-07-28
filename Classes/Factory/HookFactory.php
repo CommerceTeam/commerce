@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Factory;
 
 /*
@@ -47,13 +46,13 @@ class HookFactory
      * Get hook objects.
      *
      * @param string $className Class name
-     * @param string $hookName  Hook name
+     * @param string $hookName Hook name
      *
      * @return NULL|object
      */
     public static function getHook($className, $hookName)
     {
-        $className = 'commerce/'.$className;
+        $className = 'commerce/' . $className;
         $result = null;
 
         static::mapClassName($className);
@@ -71,13 +70,13 @@ class HookFactory
      * Get hook objects.
      *
      * @param string $className Class name
-     * @param string $hookName  Hook name
+     * @param string $hookName Hook name
      *
      * @return array
      */
     public static function getHooks($className, $hookName)
     {
-        $className = 'commerce/'.$className;
+        $className = 'commerce/' . $className;
         $result = array();
 
         static::mapClassName($className);
@@ -97,6 +96,8 @@ class HookFactory
      * Map old class name hooks.
      *
      * @param string $className Class name
+     *
+     * @return void
      */
     protected static function mapClassName($className)
     {
@@ -120,7 +121,9 @@ class HookFactory
      * Map old hook names.
      *
      * @param string $className Class name
-     * @param string $hookName  Hook name
+     * @param string $hookName Hook name
+     *
+     * @return void
      */
     protected static function mapHookName($className, $hookName)
     {
@@ -128,16 +131,17 @@ class HookFactory
             $oldHookName = static::$hookNameMap[$hookName];
 
             $extConf = &$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'];
-            if (
-                isset($extConf[$className])
+            if (isset($extConf[$className])
                 && isset($extConf[$className][$oldHookName])
             ) {
-                if (
-                    is_array($extConf[$className][$oldHookName])
+                if (is_array($extConf[$className][$oldHookName])
                     && isset($extConf[$className][$hookName])
                     && !is_string(isset($extConf[$className][$hookName]))
                 ) {
-                    $extConf[$hookName] = array_merge($extConf[$hookName][$oldHookName], $extConf[$hookName][$hookName]);
+                    $extConf[$hookName] = array_merge(
+                        $extConf[$hookName][$oldHookName],
+                        $extConf[$hookName][$hookName]
+                    );
                 } elseif (!isset($extConf[$className][$hookName])) {
                     $extConf[$className][$hookName] = $extConf[$className][$oldHookName];
                 }

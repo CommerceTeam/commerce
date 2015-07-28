@@ -900,7 +900,7 @@ class Product extends AbstractEntity
         );
 
         // Order rows by given sorting table
-        $selectOrder = $sortingTable.'.sorting';
+        $selectOrder = $sortingTable . '.sorting';
 
         // Compile query
         $attributeMmQuery = $database->SELECTquery(

@@ -21,7 +21,7 @@ return array(
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL.'baskets.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'baskets.gif',
     ),
     'feInterface' => array(
         'fe_admin_fieldList' => 'sid, finished_time, article_id,price_id, price_gross, price_net, quantity',

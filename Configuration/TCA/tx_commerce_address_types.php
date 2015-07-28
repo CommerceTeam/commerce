@@ -25,7 +25,7 @@ return array(
         'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL.'address_types.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'address_types.gif',
     ),
     'feInterface' => array(
         'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title',
@@ -58,7 +58,7 @@ return array(
                 ),
                 'foreign_table' => 'tx_commerce_address_types',
                 'foreign_table_where' => ' AND tx_commerce_address_types.pid = ###CURRENT_PID###
-					AND tx_commerce_address_types.sys_language_uid IN (-1,0)',
+                    AND tx_commerce_address_types.sys_language_uid IN (-1,0)',
             ),
         ),
         'l18n_diffsource' => array(

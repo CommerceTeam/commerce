@@ -376,7 +376,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
 						<td>' . $this->printCheckBox('perms_user', 4) . '</td>
 					</tr>
 					<tr>
-						<td><strong>' . $language->getLL('Group', true). '</strong></td>
+						<td><strong>' . $language->getLL('Group', true) . '</strong></td>
 						<td>' . $this->printCheckBox('perms_group', 1) . '</td>
 						<td>' . $this->printCheckBox('perms_group', 5) . '</td>
 						<td>' . $this->printCheckBox('perms_group', 2) . '</td>
@@ -594,20 +594,20 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
             }
 
             // determine which icon to use
-            $rowIcon = $plusMinusIcon.
+            $rowIcon = $plusMinusIcon .
                 ($pageId ? IconUtility::getSpriteIconForRecord('tx_commerce_categories', $data['row']) : $rootIcon);
             // @todo end of check for better solution
 
             // First column:
             $cellAttrib = $data['row']['_CSSCLASS'] ? ' class="' . $data['row']['_CSSCLASS'] . '"' : '';
             $cells[] = '<td align="left" nowrap="nowrap"' . ($cellAttrib ? $cellAttrib : $bgCol) . '>' .
-                $rowIcon.htmlspecialchars(GeneralUtility::fixed_lgd_cs($data['row']['title'], $tLen)) . '</td>';
+                $rowIcon . htmlspecialchars(GeneralUtility::fixed_lgd_cs($data['row']['title'], $tLen)) . '</td>';
 
             // "Edit permissions" -icon
             if ($editPermsAllowed && $pageId) {
                 $aHref = BackendUtility::getModuleUrl('commerce_permission') . '&mode=' . $this->MOD_SETTINGS['mode'] .
                     '&depth=' . $this->MOD_SETTINGS['depth'] . '&control[tx_commerce_categories][uid]=' .
-                    ($data['row']['_ORIG_uid'] ? $data['row']['_ORIG_uid'] : $pageId).
+                    ($data['row']['_ORIG_uid'] ? $data['row']['_ORIG_uid'] : $pageId) .
                     '&return_id=' . $this->id . '&edit=1';
                 $cells[] = '<td' . $bgCol . '><a href="' . htmlspecialchars($aHref) . '" title="' .
                     $language->getLL('ch_permissions', 1) . '">' . IconUtility::getSpriteIcon('actions-document-open') .
@@ -670,11 +670,11 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
         $this->content .= BackendUtility::cshItem('xMOD_csh_corebe', 'perm_module', $this->getBackPath(), '<br />|');
 
         // Creating legend table:
-        $legendText = '<strong>' . $language->getLL('1', true). '</strong>: ' . $language->getLL('1_t', true) .
-            '<br /><strong>' . $language->getLL('16', true). '</strong>: ' . $language->getLL('16_t', true) .
-            '<br /><strong>' . $language->getLL('2', true). '</strong>: ' . $language->getLL('2_t', true) .
-            '<br /><strong>' . $language->getLL('4', true). '</strong>: ' . $language->getLL('4_t', true) .
-            '<br /><strong>' . $language->getLL('8', true). '</strong>: ' . $language->getLL('8_t', true);
+        $legendText = '<strong>' . $language->getLL('1', true) . '</strong>: ' . $language->getLL('1_t', true) .
+            '<br /><strong>' . $language->getLL('16', true) . '</strong>: ' . $language->getLL('16_t', true) .
+            '<br /><strong>' . $language->getLL('2', true) . '</strong>: ' . $language->getLL('2_t', true) .
+            '<br /><strong>' . $language->getLL('4', true) . '</strong>: ' . $language->getLL('4_t', true) .
+            '<br /><strong>' . $language->getLL('8', true) . '</strong>: ' . $language->getLL('8_t', true);
 
         $code = '<div id="permission-information">
                     <img' . IconUtility::skinImg($this->getBackPath(), 'gfx/legend.gif', 'width="86" height="75"') .

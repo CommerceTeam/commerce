@@ -468,7 +468,7 @@ class DataMapHooks
 
             $database->exec_UPDATEquery(
                 'tx_commerce_orders',
-                'order_id = '.$database->fullQuoteStr($orderId, 'tx_commerce_orders'),
+                'order_id = ' . $database->fullQuoteStr($orderId, 'tx_commerce_orders'),
                 $sum
             );
             if ($database->sql_error()) {
@@ -707,7 +707,7 @@ class DataMapHooks
                     // in the mounts it would miss afterwards
                     // by this its readded to the parent_category field
                     if (!$category->isPermissionSet('show') || !$mount->isInCommerceMounts($category->getUid())) {
-                        $fieldArray['parent_category'] .= ','. $category->getUid();
+                        $fieldArray['parent_category'] .= ',' . $category->getUid();
                     }
                 }
             }
@@ -1460,7 +1460,7 @@ class DataMapHooks
         // create an article and a new price for a new product
         if (SettingsFactory::getInstance()->getExtConf('simpleMode') && $productId != null) {
             // search for an article of this product
-            $res = $database->exec_SELECTquery('*', 'tx_commerce_articles', 'uid_product = '.$productId, '', '', 1);
+            $res = $database->exec_SELECTquery('*', 'tx_commerce_articles', 'uid_product = ' . $productId, '', '', 1);
 
             $aRes = array();
             if ($database->sql_num_rows($res)) {
@@ -1468,7 +1468,7 @@ class DataMapHooks
                 $aUid = $aRes['uid'];
             } else {
                 // create a new article if no one exists
-                $pRes = $database->exec_SELECTquery('title', 'tx_commerce_products', 'uid = '.$productId, '', '', 1);
+                $pRes = $database->exec_SELECTquery('title', 'tx_commerce_products', 'uid = ' . $productId, '', '', 1);
                 $productData = $database->sql_fetch_assoc($pRes);
 
                 $database->exec_INSERTquery(
@@ -1571,7 +1571,7 @@ class DataMapHooks
 
             // update the XML for this product, we remove everything that is not
             // set for current attributes
-            $pXml = $database->exec_SELECTquery('attributesedit', 'tx_commerce_products', 'uid = '.$productId);
+            $pXml = $database->exec_SELECTquery('attributesedit', 'tx_commerce_products', 'uid = ' . $productId);
             $pXml = $database->sql_fetch_assoc($pXml);
 
             if (!empty($pXml['attributesedit'])) {
@@ -1737,13 +1737,13 @@ class DataMapHooks
                                 $res = $database->exec_SELECTquery(
                                     'uid_local, uid_foreign',
                                     'tx_commerce_articles_article_attributes_mm',
-                                    'uid_local = '.$article['uid'].' AND uid_foreign = '.$attributeKey
+                                    'uid_local = ' . $article['uid'] . ' AND uid_foreign = ' . $attributeKey
                                 );
 
                                 if ($database->sql_num_rows($res)) {
                                     $database->exec_UPDATEquery(
                                         'tx_commerce_articles_article_attributes_mm',
-                                        'uid_local = '.$article['uid'].' AND uid_foreign = '.$attributeKey,
+                                        'uid_local = ' . $article['uid'] . ' AND uid_foreign = ' . $attributeKey,
                                         array_merge($updateArrays[1], array('sorting' => $counter))
                                     );
                                 } else {

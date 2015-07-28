@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Tree\Leaf;
 
 /*
@@ -29,7 +28,8 @@ class ArticleData extends SlaveData
      *
      * @var string
      */
-    protected $extendedFields = 'title, navtitle, hidden, deleted, starttime, endtime, fe_group, t3ver_oid, t3ver_id, t3ver_label';
+    protected $extendedFields = 'title, navtitle, hidden, deleted, starttime, endtime, fe_group, t3ver_oid, t3ver_id,
+        t3ver_label';
 
     /**
      * Table.
@@ -68,6 +68,8 @@ class ArticleData extends SlaveData
 
     /**
      * Initializes the ProductData Object.
+     *
+     * @return void
      */
     public function init()
     {
@@ -81,8 +83,8 @@ class ArticleData extends SlaveData
      * @param array $uid Uid of the current row
      *
      * @return bool
-     *
-     * @todo If we implement the positions (see above), we should also implement this and any function related to making this leaf not ultimate
+     * @todo If we implement the positions (see above), we should also
+     * implement this and any function related to making this leaf not ultimate
      */
     public function isExpanded($uid)
     {

@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Payment\Provider;
 
 /*
@@ -71,8 +70,8 @@ interface ProviderInterface
     /**
      * Check if provided data is ok.
      *
-     * @param array $formData     Current form data
-     * @param bool  $parentResult Already determined result of payment object
+     * @param array $formData Current form data
+     * @param bool $parentResult Already determined result of payment object
      *
      * @return bool TRUE if data is ok
      */
@@ -81,13 +80,15 @@ interface ProviderInterface
     /**
      * Wether or not finishing an order is allowed.
      *
-     * @param array                                      $config  Current configuration
-     * @param array                                      $session Session data
-     * @param \CommerceTeam\Commerce\Domain\Model\Basket $basket  Basket object
+     * @param array $config Current configuration
+     * @param array $session Session data
+     * @param \CommerceTeam\Commerce\Domain\Model\Basket $basket Basket object
      *
      * @return bool True is finishing order is allowed
      */
-    public function finishingFunction(array $config = array(), array $session = array(),
+    public function finishingFunction(
+        array $config = array(),
+        array $session = array(),
         \CommerceTeam\Commerce\Domain\Model\Basket $basket = null
     );
 
@@ -95,7 +96,7 @@ interface ProviderInterface
      * Method called in finishIt function.
      *
      * @param array $globalRequest Global Request
-     * @param array $session       Session array
+     * @param array $session Session array
      *
      * @return bool TRUE if data is ok
      */
@@ -104,8 +105,10 @@ interface ProviderInterface
     /**
      * Update order data after order has been finished.
      *
-     * @param int   $orderUid Id of this order
+     * @param int $orderUid Id of this order
      * @param array $session  Session data
+     *
+     * @return void
      */
     public function updateOrder($orderUid, array $session = array());
 

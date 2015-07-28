@@ -23,20 +23,22 @@ return array(
         'default_sortby' => 'ORDER BY crdate',
         'delete' => 'deleted',
         'dividers2tabs' => '1',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL.'orders.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'orders.gif',
         'searchFields' => 'order_id, comment',
     ),
     'feInterface' => array(
         'fe_admin_fieldList' => 'cust_deliveryaddress, order_type_uid, order_id, cust_fe_user, cust_invoice,
-			paymenttype, sum_price_net, sum_price_gross,pid,cu_iso_3_uid,order_sys_language_uid,pricefromnet',
+            paymenttype, sum_price_net, sum_price_gross,pid,cu_iso_3_uid,order_sys_language_uid,pricefromnet',
     ),
     'interface' => array(
-        'showRecordFieldList' => 'cust_deliveryaddress, order_type_uid, order_id, cust_fe_user, cust_invoice, paymenttype,
-			sum_price_net, sum_price_gross, crdate, pid, payment_ref_id, cu_iso_3_uid, order_sys_language_uid, pricefromnet',
+        'showRecordFieldList' => 'cust_deliveryaddress, order_type_uid, order_id, cust_fe_user, cust_invoice,
+            paymenttype, sum_price_net, sum_price_gross, crdate, pid, payment_ref_id, cu_iso_3_uid,
+            order_sys_language_uid, pricefromnet',
     ),
     'columns' => array(
         'cust_deliveryaddress' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_deliveryaddress',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_deliveryaddress',
             'config' => array(
                 'type' => 'user',
                 'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\OrderEditFunc->deliveryAddress',
@@ -133,7 +135,8 @@ return array(
             ),
         ),
         'sum_price_gross' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.sum_price_gross',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.sum_price_gross',
             'config' => array(
                 'type' => 'user',
                 'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\OrderEditFunc->sumPriceGrossFormat',
@@ -165,7 +168,8 @@ return array(
             ),
         ),
         'internalcomment' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.internalcomment',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.internalcomment',
             'config' => array(
                 'type' => 'text',
                 'cols' => '30',
@@ -199,15 +203,15 @@ return array(
     'types' => array(
         '0' => array(
             'showitem' => '
-				--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.basis,
-					order_id, crdate, order_type_uid, cu_iso_3_uid, newpid, paymenttype, payment_ref_id, comment, internalcomment,
-					order_sys_language_uid, pricefromnet,
-				--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.customer,
-					cust_fe_user, cust_invoice,
-				--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_deliveryaddress,
-					cust_deliveryaddress,
-				--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.items,
-					sum_price_net, sum_price_gross, articles',
+                --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.basis,
+                    order_id, crdate, order_type_uid, cu_iso_3_uid, newpid, paymenttype, payment_ref_id, comment,
+                    internalcomment, order_sys_language_uid, pricefromnet,
+                --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.customer,
+                    cust_fe_user, cust_invoice,
+           --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_deliveryaddress,
+                    cust_deliveryaddress,
+                --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.items,
+                    sum_price_net, sum_price_gross, articles',
         ),
     ),
     'palettes' => array(

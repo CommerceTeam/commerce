@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Task;
 
 /*
@@ -37,16 +36,18 @@ class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\Addit
      * @var array
      */
     protected $aggregation = array(
-        'completeAggregation' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.completeAggregation',
-        'incrementalAggregation' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.incrementalAggregation',
+        'completeAggregation' =>
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.completeAggregation',
+        'incrementalAggregation' =>
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.incrementalAggregation',
     );
 
     /**
      * Add a multi select box with all available cache backends.
      *
-     * @param array                     $taskInfo     Reference to the array containing the info used
-     * @param StatisticTask             $task         When editing, reference to
-     *                                                the current task object. Null when adding.
+     * @param array $taskInfo Reference to the array containing the info used
+     * @param StatisticTask $task When editing, reference to
+     *      the current task object. Null when adding.
      * @param SchedulerModuleController $parentObject Reference to the calling object
      *
      * @return array containing the information pertaining to the additional fields
@@ -72,7 +73,7 @@ class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\Addit
 
         $fieldId = 'task_commerce_statisticTask_aggregation';
         $fieldHtml = $this->renderOptions(
-            'tx_scheduler['.$uid.'][commerce_statisticTask_aggregation]',
+            'tx_scheduler[' . $uid . '][commerce_statisticTask_aggregation]',
             $fieldId,
             $this->aggregation,
             $taskInfo[$uid]['commerce_statisticTask_aggregation']
@@ -80,7 +81,8 @@ class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\Addit
 
         $additionalFields[$fieldId] = array(
             'code' => $fieldHtml,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.selectAggregation',
+            'label' =>
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.selectAggregation',
             'cshKey' => '_MOD_tools_commerce',
             'cshLabel' => $fieldId,
         );
@@ -91,18 +93,17 @@ class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\Addit
     /**
      * Checks that all selected backends exist in available backend list.
      *
-     * @param array                     $submittedData Reference to data submitted by the user
-     * @param SchedulerModuleController $parentObject  Reference to Scheduler module
+     * @param array $submittedData Reference to data submitted by the user
+     * @param SchedulerModuleController $parentObject Reference to Scheduler module
      *
      * @return bool True if validation was ok, false otherwise
      */
     public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $parentObject)
     {
         $this->submittedData = $submittedData;
-        $uid = $this->getTaskUid();
         $validData = true;
 
-        if (!in_array($submittedData[$uid]['commerce_statisticTask_aggregation'], $this->aggregation)) {
+        if (!in_array($submittedData[$this->getTaskUid()]['commerce_statisticTask_aggregation'], $this->aggregation)) {
             $validData = false;
         }
 
@@ -112,43 +113,44 @@ class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\Addit
     /**
      * Save selected backends in task object.
      *
-     * @param array                                  $submittedData Contains data submitted by the user
-     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task          Reference to current task
+     * @param array $submittedData Contains data submitted by the user
+     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task Reference to current task
+     *
+     * @return void
      */
     public function saveAdditionalFields(array $submittedData, \TYPO3\CMS\Scheduler\Task\AbstractTask $task)
     {
         $this->submittedData = $submittedData;
-        $uid = $this->getTaskUid();
 
-        /*
+        /**
          * Task
          *
          * @var StatisticTask $task
          */
-        $task->setSelectedAggregation($submittedData[$uid]['commerce_statisticTask_aggregation']);
+        $task->setSelectedAggregation($submittedData[$this->getTaskUid()]['commerce_statisticTask_aggregation']);
     }
 
     /**
      * Build select options of available backends and set currently selected backends.
      *
-     * @param string     $fieldName       Field name
-     * @param string     $fieldId         Field id
-     * @param array      $valuesAndLabels Values and labels
-     * @param string|int $selectedValue   Selected backends
+     * @param string $fieldName Field name
+     * @param string $fieldId Field id
+     * @param array $valuesAndLabels Values and labels
+     * @param string|int $selectedValue Selected backends
      *
      * @return string HTML of selectbox options
      */
     protected function renderOptions($fieldName, $fieldId, array $valuesAndLabels, $selectedValue)
     {
-        $language = $this->getLanguageService();
         $options = array();
 
         foreach ($valuesAndLabels as $value => $label) {
             $selected = $value == $selectedValue ? ' selected="selected"' : '';
-            $options[] = '<option value="'.$value.'"'.$selected.'>'.$language->sL($label).'</option>';
+            $options[] = '<option value="' . $value . '"' . $selected . '>' .
+                $this->getLanguageService()->sL($label) . '</option>';
         }
 
-        return '<select name="'.$fieldName.'" id="'.$fieldId.'">'.implode('', $options).'</select>';
+        return '<select name="' . $fieldName . '" id="' . $fieldId . '">' . implode('', $options) . '</select>';
     }
 
     /**
@@ -160,6 +162,7 @@ class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\Addit
     {
         return $this->submittedData['uid'];
     }
+
 
     /**
      * Get language service.

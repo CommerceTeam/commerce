@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Hook;
 
 /*
@@ -29,11 +28,13 @@ class VersionHooks
      * 1) copies the Attributes (flex and mm)
      * 2) copies the Articles and keeps their relations.
      *
-     * @param string $table             Tablename on which the swap happens
-     * @param int    $id                Id of the LIVE Version to swap
-     * @param int    $swapWith          Id of the Offline Version to swap with
-     * @param int    $swapIntoWorkspace If set, swaps online into workspace
-     *                                  instead of publishing out of workspace.
+     * @param string $table Tablename on which the swap happens
+     * @param int $id Id of the LIVE Version to swap
+     * @param int $swapWith Id of the Offline Version to swap with
+     * @param int $swapIntoWorkspace If set, swaps online into workspace
+     *      instead of publishing out of workspace.
+     *
+     * @return void
      */
     public function processSwap_postProcessSwap($table, $id, $swapWith, $swapIntoWorkspace)
     {

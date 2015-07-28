@@ -578,7 +578,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $this->conf['singleView.']['attributes.']['stdWrap.']
         );
 
-        return $articleAttributesString.' ';
+        return $articleAttributesString . ' ';
     }
 
     /**
@@ -777,7 +777,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             );
         }
 
-        $templateMarker = '###'.strtoupper($this->conf['templateMarker.']['categoryView']).'###';
+        $templateMarker = '###' . strtoupper($this->conf['templateMarker.']['categoryView']) . '###';
 
         $markerArrayCat = $this->generateMarkerArray(
             $this->category->returnAssocArray(),
@@ -923,7 +923,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         } else {
             $markerArray['ARTICLE_HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' .
                 $article->getUid() . '][price_id]" value="" />';
-            $markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId.'[artAddUid][' .
+            $markerArray['HIDDENFIELDS'] .= '<input type="hidden" name="' . $this->prefixId . '[artAddUid][' .
                 $article->getUid() . '][price_id]" value="" />';
             $typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[artAddUid][' .
                 $article->getUid() . '][price_id]=';
@@ -2077,7 +2077,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $newMarkerArray['GENERAL_FORM_ACTION'] = $this->cObj->typoLink('', $basketConf);
         }
         if (is_object($this->category)) {
-            $newMarkerArray['GENERAL_HIDDENCATUID'] = '<input type="hidden" name="'.$this->prefixId.
+            $newMarkerArray['GENERAL_HIDDENCATUID'] = '<input type="hidden" name="' . $this->prefixId .
                 '[catUid]" value="' . $this->category->getUid() . '" />';
         }
         if ($wrap) {

@@ -117,7 +117,7 @@ class AddressesController extends BaseController
                         '',
                         array(
                             'tx_commerce_pi3[addressType]' => (int) $this->piVars['addressType'],
-                            $this->prefixId.'[addressid]' => (int) $this->piVars['addressid'],
+                            $this->prefixId . '[addressid]' => (int) $this->piVars['addressid'],
                         )
                     )
                 )
@@ -214,8 +214,8 @@ class AddressesController extends BaseController
         }
 
         if (!is_array($this->conf['formFields.'])) {
-            if (is_array($this->conf[$addressType.'.']['formFields.'])) {
-                $this->conf['formFields.'] = $this->conf[$addressType.'.']['formFields.'];
+            if (is_array($this->conf[$addressType . '.']['formFields.'])) {
+                $this->conf['formFields.'] = $this->conf[$addressType . '.']['formFields.'];
             }
         }
 
@@ -277,27 +277,27 @@ class AddressesController extends BaseController
     ) {
         $hooks = HookFactory::getHooks('Controller/AddressesController', 'getListing');
 
-        if ($this->conf[$addressType.'.']['subpartMarker.']['listWrap']) {
+        if ($this->conf[$addressType . '.']['subpartMarker.']['listWrap']) {
             $tplBase = $this->cObj->getSubpart(
                 $this->templateCode,
-                strtoupper($this->conf[$addressType.'.']['subpartMarker.']['listWrap'])
+                strtoupper($this->conf[$addressType . '.']['subpartMarker.']['listWrap'])
             );
         } else {
             $tplBase = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_LISTING###');
         }
 
-        if ($this->conf[$addressType.'.']['subpartMarker.']['listItem']) {
+        if ($this->conf[$addressType . '.']['subpartMarker.']['listItem']) {
             $tplItem = $this->cObj->getSubpart(
                 $this->templateCode,
-                strtoupper($this->conf[$addressType.'.']['subpartMarker.']['listItem'])
+                strtoupper($this->conf[$addressType . '.']['subpartMarker.']['listItem'])
             );
         } else {
             $tplItem = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_ITEM###');
         }
 
         if (!is_array($this->conf['formFields.'])) {
-            if (is_array($this->conf[$addressType.'.']['formFields.'])) {
-                $this->conf['formFields.'] = $this->conf[$addressType.'.']['formFields.'];
+            if (is_array($this->conf[$addressType . '.']['formFields.'])) {
+                $this->conf['formFields.'] = $this->conf[$addressType . '.']['formFields.'];
             }
         }
 
@@ -357,13 +357,14 @@ class AddressesController extends BaseController
                 }
 
                 // Get value from database if the field is a select box
-                if ($this->conf['formFields.'][$key.'.']['type'] == 'select' &&
-                        strlen($this->conf['formFields.'][$key.'.']['table']) > 0) {
-                    $fieldConfig = $this->conf['formFields.'][$key.'.'];
+                if ($this->conf['formFields.'][$key . '.']['type'] == 'select' &&
+                        strlen($this->conf['formFields.'][$key . '.']['table']) > 0) {
+                    $fieldConfig = $this->conf['formFields.'][$key . '.'];
                     $table = $fieldConfig['table'];
-                    $select = $fieldConfig['value'].'=\''.$value.'\''.$this->cObj->enableFields($fieldConfig['table']);
-                    $fields = $fieldConfig['label'].' AS label,';
-                    $fields .= $fieldConfig['value'].' AS value';
+                    $select = $fieldConfig['value'] . '=\'' . $value . '\'' .
+                        $this->cObj->enableFields($fieldConfig['table']);
+                    $fields = $fieldConfig['label'] . ' AS label,';
+                    $fields .= $fieldConfig['value'] . ' AS value';
 
                     $value = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
                         $fields,
@@ -373,17 +374,17 @@ class AddressesController extends BaseController
 
                     $valueHidden = $value['value'];
                     $value = $value['label'];
-                } elseif ($this->conf['formFields.'][$key.'.']['type'] == 'select'
-                    && is_array($this->conf['formFields.'][$key.'.']['values.'])
+                } elseif ($this->conf['formFields.'][$key . '.']['type'] == 'select'
+                    && is_array($this->conf['formFields.'][$key . '.']['values.'])
                 ) {
                     $valueHidden = $value;
-                    $value = $this->conf['formFields.'][$key.'.']['values.'][$value];
-                } elseif ($this->conf['formFields.'][$key.'.']['type'] == 'select') {
-                    throw new \Exception('Neither table nor value-list defined for select field '.$key, 1304333953);
+                    $value = $this->conf['formFields.'][$key . '.']['values.'][$value];
+                } elseif ($this->conf['formFields.'][$key . '.']['type'] == 'select') {
+                    throw new \Exception('Neither table nor value-list defined for select field ' . $key, 1304333953);
                 }
 
-                if ($this->conf['formFields.'][$key.'.']['type'] == 'static_info_tables') {
-                    $fieldConfig = $this->conf['formFields.'][$key.'.'];
+                if ($this->conf['formFields.'][$key . '.']['type'] == 'static_info_tables') {
+                    $fieldConfig = $this->conf['formFields.'][$key . '.'];
                     $field = $fieldConfig['field'];
                     $valueHidden = $value;
                     $value = $this->staticInfo->getStaticInfoName($field, $value);
@@ -391,12 +392,12 @@ class AddressesController extends BaseController
 
                 $hidden = '';
                 if ($createHiddenFields) {
-                    $hidden = '<input type="hidden" name="'.$hiddenFieldPrefix.'['.$address['uid'].']['.$key.
-                        ']" value="'.($valueHidden ? $valueHidden : $value).'" />';
+                    $hidden = '<input type="hidden" name="' . $hiddenFieldPrefix . '[' . $address['uid'] . '][' . $key .
+                        ']" value="' . ($valueHidden ? $valueHidden : $value) . '" />';
                 }
 
-                $itemMarkerArray['###LABEL_'.$upperKey.'###'] = $this->pi_getLL('label_'.$key);
-                $itemMarkerArray['###'.$upperKey.'###'] = $value.$hidden;
+                $itemMarkerArray['###LABEL_' . $upperKey . '###'] = $this->pi_getLL('label_' . $key);
+                $itemMarkerArray['###' . $upperKey . '###'] = $value . $hidden;
             }
 
             // Create a pivars array for merging with link to edit page
@@ -490,11 +491,11 @@ class AddressesController extends BaseController
         // Create links and labels for every address type
         if ($addressType == 0) {
             foreach ($addressTypes as $addressType) {
-                $baseMarkerArray['###ADDRESS_ITEMS_OF_TYPE_'.$addressType.'###'] = $addressItems[$addressType];
-                $baseMarkerArray['###LABEL_ADDRESSES_OF_TYPE_'.$addressType.'###'] = $this->pi_getLL(
-                    'label_addresses_of_type_'.$addressType
+                $baseMarkerArray['###ADDRESS_ITEMS_OF_TYPE_' . $addressType . '###'] = $addressItems[$addressType];
+                $baseMarkerArray['###LABEL_ADDRESSES_OF_TYPE_' . $addressType . '###'] = $this->pi_getLL(
+                    'label_addresses_of_type_' . $addressType
                 );
-                $linkMarkerArray['###LINK_NEW_TYPE_'.$addressType.'###'] = explode(
+                $linkMarkerArray['###LINK_NEW_TYPE_' . $addressType . '###'] = explode(
                     '|',
                     $this->pi_linkTP_keepPIvars(
                         '|',
@@ -511,8 +512,8 @@ class AddressesController extends BaseController
                     )
                 );
 
-                $baseMarkerArray['###LABEL_LINK_NEW_TYPE_'.$addressType.'###'] = $this->cObj->stdWrap(
-                    $this->pi_getLL('label_link_new_type_'.$addressType),
+                $baseMarkerArray['###LABEL_LINK_NEW_TYPE_' . $addressType . '###'] = $this->cObj->stdWrap(
+                    $this->pi_getLL('label_link_new_type_' . $addressType),
                     $this->conf['newLinkWrap.']
                 );
             }
@@ -629,26 +630,26 @@ class AddressesController extends BaseController
         }
 
         // Get the templates
-        if ($this->conf[$addressType.'.']['subpartMarker.']['editWrap']) {
+        if ($this->conf[$addressType . '.']['subpartMarker.']['editWrap']) {
             $tplBase = $this->cObj->getSubpart(
                 $this->templateCode,
-                strtoupper($this->conf[$addressType.'.']['subpartMarker.']['editWrap'])
+                strtoupper($this->conf[$addressType . '.']['subpartMarker.']['editWrap'])
             );
         } else {
             $tplBase = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_EDIT###');
         }
-        if ($this->conf[$addressType.'.']['subpartMarker.']['editItem']) {
+        if ($this->conf[$addressType . '.']['subpartMarker.']['editItem']) {
             $tplForm = $this->cObj->getSubpart(
                 $this->templateCode,
-                strtoupper($this->conf[$addressType.'.']['subpartMarker.']['editItem'])
+                strtoupper($this->conf[$addressType . '.']['subpartMarker.']['editItem'])
             );
         } else {
             $tplForm = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_EDIT_FORM###');
         }
-        if ($this->conf[$addressType.'.']['subpartMarker.']['editField']) {
+        if ($this->conf[$addressType . '.']['subpartMarker.']['editField']) {
             $tplField = $this->cObj->getSubpart(
                 $this->templateCode,
-                strtoupper($this->conf[$addressType.'.']['subpartMarker.']['editField'])
+                strtoupper($this->conf[$addressType . '.']['subpartMarker.']['editField'])
             );
         } else {
             $tplField = $this->cObj->getSubpart($this->templateCode, '###SINGLE_INPUT###');
@@ -661,11 +662,11 @@ class AddressesController extends BaseController
             $lowerName = strtolower($fieldName);
 
             // Get field label
-            $fieldLabel = $this->pi_getLL('label_'.$lowerName, $fieldName);
+            $fieldLabel = $this->pi_getLL('label_' . $lowerName, $fieldName);
 
             // Check if the field is manadatory and append the mandatory sign to the label
-            if ($config['formFields.'][$fieldName.'.']['mandatory'] == '1') {
-                $fieldLabel .= ' '.$config['mandatorySign'];
+            if ($config['formFields.'][$fieldName . '.']['mandatory'] == '1') {
+                $fieldLabel .= ' ' . $config['mandatorySign'];
             }
 
             // Insert error message for this specific field
@@ -684,11 +685,11 @@ class AddressesController extends BaseController
             );
 
             // Get field item
-            $fieldsMarkerArray['###FIELD_'.strtoupper($fieldName).'###'] = $this->cObj->substituteMarkerArray(
+            $fieldsMarkerArray['###FIELD_' . strtoupper($fieldName) . '###'] = $this->cObj->substituteMarkerArray(
                 $tplField,
                 $fieldMarkerArray
             );
-            $fieldsMarkerArray['###LABEL_'.strtoupper($fieldName).'###'] = $fieldLabel;
+            $fieldsMarkerArray['###LABEL_' . strtoupper($fieldName) . '###'] = $fieldLabel;
         }
 
         foreach ($hooks as $hookObj) {
@@ -709,16 +710,16 @@ class AddressesController extends BaseController
         $formCode = $this->cObj->substituteMarkerArray($tplForm, $fieldsMarkerArray);
 
         // Create submit button and some hidden fields
-        $submitCode = '<input type="hidden" name="'.$this->prefixId.'[action]" value="'.$action.'" />';
-        $submitCode .= '<input type="hidden" name="'.$this->prefixId.'[addressid]" value="'.$addressUid.'" />';
-        $submitCode .= '<input type="hidden" name="'.$this->prefixId.'[addressType]" value="'.
-            $addressData['tx_commerce_address_type_id'].'" />';
-        $submitCode .= '<input type="submit" name="'.$this->prefixId.'[check]" value="'.
-            $this->pi_getLL('label_submit_edit').'" />';
+        $submitCode = '<input type="hidden" name="' . $this->prefixId . '[action]" value="' . $action . '" />';
+        $submitCode .= '<input type="hidden" name="' . $this->prefixId . '[addressid]" value="' . $addressUid . '" />';
+        $submitCode .= '<input type="hidden" name="' . $this->prefixId . '[addressType]" value="' .
+            $addressData['tx_commerce_address_type_id'] . '" />';
+        $submitCode .= '<input type="submit" name="' . $this->prefixId . '[check]" value="' .
+            $this->pi_getLL('label_submit_edit') . '" />';
 
         // Create a checkbox where the user can select if the address is his main
         // address / Changed to label and field
-        $isMainAddressCodeField = '<input type="checkbox" name="'.$this->prefixId.'[ismainaddress]"';
+        $isMainAddressCodeField = '<input type="checkbox" name="' . $this->prefixId . '[ismainaddress]"';
         if ($addressData['tx_commerce_is_main_address'] || $addressData['ismainaddress']) {
             $isMainAddressCodeField .= ' checked="checked"';
         }
@@ -741,10 +742,12 @@ class AddressesController extends BaseController
         $baseMarkerArray['###ADDRESS_FORM_IS_MAIN_ADDRESS_FIELD###'] = $isMainAddressCodeField;
         $baseMarkerArray['###ADDRESS_FORM_IS_MAIN_ADDRESS_LABEL###'] = $isMainAddressCodeLabel;
 
-        $baseMarkerArray['###ADDRESS_TYPE###'] = $this->pi_getLL('label_address_of_type_'.$this->piVars['addressType']);
+        $baseMarkerArray['###ADDRESS_TYPE###'] = $this->pi_getLL(
+            'label_address_of_type_' . $this->piVars['addressType']
+        );
 
         // Get action link
-        if ((int) $this->piVars['backpid'] > 0) {
+        if ((int) $this->piVars['backpid']) {
             $link = $this->pi_linkTP_keepPIvars_url();
         } else {
             $link = '';
@@ -777,8 +780,8 @@ class AddressesController extends BaseController
             }
         }
 
-        return '<form method="post" action="'.$link.'" '.$this->conf[$addressType.'.']['formParams'].'>'.
-            $this->cObj->substituteMarkerArray($tplBase, $baseMarkerArray).'</form>';
+        return '<form method="post" action="' . $link . '" ' . $this->conf[$addressType . '.']['formParams'] . '>' .
+            $this->cObj->substituteMarkerArray($tplBase, $baseMarkerArray) . '</form>';
     }
 
     /**
@@ -793,7 +796,7 @@ class AddressesController extends BaseController
 
         // Fill address data to marker
         foreach ($this->fieldList as $name) {
-            $baseMarkerArray['label_'.$name] = $this->pi_getLL('label_'.$name);
+            $baseMarkerArray['label_' . $name] = $this->pi_getLL('label_' . $name);
             $baseMarkerArray[$name] = $this->addresses[(int) $this->piVars['addressid']][$name];
         }
 
@@ -848,7 +851,7 @@ class AddressesController extends BaseController
         }
 
         $database = $this->getDatabaseConnection();
-        $database->exec_UPDATEquery('tt_address', 'uid = '.(int) $this->piVars['addressid'], array('deleted' => 1));
+        $database->exec_UPDATEquery('tt_address', 'uid = ' . (int) $this->piVars['addressid'], array('deleted' => 1));
 
         unset($this->addresses[(int) $this->piVars['addressid']]);
         unset($this->piVars['confirmed']);
@@ -860,9 +863,9 @@ class AddressesController extends BaseController
      * Returns a single input form field.
      * This is just a switch between the specific methods.
      *
-     * @param string $fieldName   Name of the field
+     * @param string $fieldName Name of the field
      * @param array  $fieldConfig Configuration for this field
-     * @param string $fieldValue  Current value of this field
+     * @param string $fieldValue Current value of this field
      *
      * @return string Result of the specific field methods (usually a html string)
      */
@@ -878,7 +881,7 @@ class AddressesController extends BaseController
                 $selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
                 $content .= $this->staticInfo->buildStaticInfoSelector(
                     $fieldConfig['field'],
-                    $this->prefixId.'['.$fieldName.']',
+                    $this->prefixId . '[' . $fieldName . ']',
                     $fieldConfig['cssClass'],
                     $selected,
                     '',
@@ -929,14 +932,14 @@ class AddressesController extends BaseController
             $value = \TYPO3\CMS\Core\Utility\GeneralUtility::removeXSS(strip_tags($fieldValue));
         }
 
-        $result = '<input type="text" name="'.$this->prefixId.'['.$fieldName.']" value="'.$value.'" ';
+        $result = '<input type="text" name="' . $this->prefixId . '[' . $fieldName . ']" value="' . $value . '" ';
 
         if ($fieldConfig['readonly'] == 1) {
             $result .= 'readonly="readonly" disabled="disabled" ';
         }
 
         if (isset($fieldConfig['class'])) {
-            $result .= 'class="'.$fieldConfig['class'].'" ';
+            $result .= 'class="' . $fieldConfig['class'] . '" ';
         }
 
         $result .= '/>';
@@ -955,7 +958,7 @@ class AddressesController extends BaseController
      */
     protected function getSelectInputField($fieldName, array $fieldConfig, $fieldValue = '')
     {
-        $result = '<select name="'.$this->prefixId.'['.$fieldName.']">';
+        $result = '<select name="' . $this->prefixId . '[' . $fieldName . ']">';
 
         if ($fieldValue != '') {
             $fieldConfig['default'] = $fieldValue;
@@ -964,16 +967,16 @@ class AddressesController extends BaseController
         // If static items are set
         if (is_array($fieldConfig['values.'])) {
             foreach ($fieldConfig['values.'] as $key => $option) {
-                $result .= '<option name="'.$key.'" value="'.$key.'"';
+                $result .= '<option name="' . $key . '" value="' . $key . '"';
                 if ($fieldValue === $key) {
                     $result .= ' selected="selected"';
                 }
-                $result .= '>'.$option.'</option>'.LF;
+                $result .= '>' . $option . '</option>' . LF;
             }
         } else {
             // Fetch data from database
-            $select = $fieldConfig['select'].$this->cObj->enableFields($fieldConfig['table']);
-            $fields = $fieldConfig['label'].' AS label,'.$fieldConfig['value'].' AS value';
+            $select = $fieldConfig['select'] . $this->cObj->enableFields($fieldConfig['table']);
+            $fields = $fieldConfig['label'] . ' AS label,' . $fieldConfig['value'] . ' AS value';
 
             $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
                 $fields,
@@ -983,11 +986,11 @@ class AddressesController extends BaseController
                 $fieldConfig['orderby']
             );
             foreach ($rows as $row) {
-                $result .= '<option name="'.$row['value'].'" value="'.$row['value'].'"';
+                $result .= '<option name="' . $row['value'] . '" value="' . $row['value'] . '"';
                 if ($row['value'] === $fieldConfig['default']) {
                     $result .= ' selected="selected"';
                 }
-                $result .= '>'.$row['label'].'</option>'.LF;
+                $result .= '>' . $row['label'] . '</option>' . LF;
             }
         }
         $result .= '</select>';
@@ -1006,8 +1009,8 @@ class AddressesController extends BaseController
      */
     protected function getCheckboxInputField($fieldName, array $fieldConfig, $fieldValue = '')
     {
-        $result = '<input type="checkbox" name="'.$this->prefixId.'['.$fieldName.']" id="'.$this->prefixId.'[]['.
-            $fieldName.']" value="1" ';
+        $result = '<input type="checkbox" name="' . $this->prefixId . '[' . $fieldName . ']" id="' . $this->prefixId .
+            '[][' . $fieldName . ']" value="1" ';
 
         if (($fieldConfig['default'] == '1' && $fieldValue != 0) || $fieldValue == 1) {
             $result .= 'checked="checked" ';
@@ -1042,7 +1045,7 @@ class AddressesController extends BaseController
         // address was set.
         foreach ($this->fieldList as $name) {
             $value = trim($this->piVars[$name]);
-            $options = $this->conf['formFields.'][$name.'.'];
+            $options = $this->conf['formFields.'][$name . '.'];
 
             if ($options['mandatory'] == 1 && $value == '') {
                 $this->setFormError($name, $this->pi_getLL('error_field_mandatory'));
@@ -1050,8 +1053,8 @@ class AddressesController extends BaseController
             }
 
             $eval = array();
-            if (isset($config[$name.'.']['eval']) && $config[$name.'.']['eval'] != '') {
-                $eval = explode(',', $config[$name.'.']['eval']);
+            if (isset($config[$name . '.']['eval']) && $config[$name . '.']['eval'] != '') {
+                $eval = explode(',', $config[$name . '.']['eval']);
             }
 
             foreach ($eval as $method) {
@@ -1101,7 +1104,7 @@ class AddressesController extends BaseController
 
                     default:
                         if (!empty($method[0])) {
-                            $currentMethod = 'validationMethod_'.strtolower($method[0]);
+                            $currentMethod = 'validationMethod_' . strtolower($method[0]);
                             foreach ($hooks as $hookObj) {
                                 if (method_exists($hookObj, $currentMethod)) {
                                     if (!$hookObj->{$currentMethod}($this, $name, $value)) {
@@ -1142,7 +1145,7 @@ class AddressesController extends BaseController
             // are assigned to this user
             $database->exec_UPDATEquery(
                 'tt_address',
-                'pid = '.$this->conf['addressPid'] . ' AND tx_commerce_fe_user_id = ' . $this->user['uid'] .
+                'pid = ' . $this->conf['addressPid'] . ' AND tx_commerce_fe_user_id = ' . $this->user['uid'] .
                 ' AND tx_commerce_address_type_id = ' . $addressType,
                 array('tx_commerce_is_main_address' => 0)
             );
@@ -1187,7 +1190,7 @@ class AddressesController extends BaseController
                 }
             }
 
-            $sWhere = 'uid = '.(int) $this->piVars['addressid'].' AND tx_commerce_fe_user_id = '.
+            $sWhere = 'uid = ' . (int) $this->piVars['addressid'] . ' AND tx_commerce_fe_user_id = '.
                 $this->getFrontendUser()->user['uid'];
 
             $database->exec_UPDATEquery('tt_address', $sWhere, $newData);
@@ -1237,16 +1240,16 @@ class AddressesController extends BaseController
             \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tt_address');
 
         if ($addressType > 0) {
-            $select .= ' AND tx_commerce_address_type_id='.(int) $addressType;
+            $select .= ' AND tx_commerce_address_type_id=' . (int) $addressType;
         } elseif (isset($this->conf['selectAddressTypes'])) {
-            $select .= ' AND tx_commerce_address_type_id IN ('.$this->conf['selectAddressTypes'].')';
+            $select .= ' AND tx_commerce_address_type_id IN (' . $this->conf['selectAddressTypes'] . ')';
         } else {
             $this->addresses = array();
 
             return array();
         }
 
-        $select .= ' AND deleted=0 AND pid='.$this->conf['addressPid'];
+        $select .= ' AND deleted=0 AND pid=' . $this->conf['addressPid'];
 
         /*
          * Hook for adding select statement

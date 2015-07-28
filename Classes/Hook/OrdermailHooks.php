@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Hook;
 
 /*
@@ -86,15 +85,15 @@ class OrdermailHooks
     {
         $this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
         $this->csConvObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
-        $this->templatePath = PATH_site.'uploads/tx_commerce/';
+        $this->templatePath = PATH_site . 'uploads/tx_commerce/';
     }
 
     /**
      * This method converts an sends mails.
      *
-     * @param array  $mailconf  Mail configuration
-     * @param array  $orderdata Order data
-     * @param string $template  Template
+     * @param array $mailconf Mail configuration
+     * @param array $orderdata Order data
+     * @param string $template Template
      *
      * @return bool of \TYPO3\CMS\Core\Mail\MailMessage
      */
@@ -130,8 +129,8 @@ class OrdermailHooks
      * Getting a template with all Templatenames in the Mailtemplaterecords
      * according to the given mailkind and pid.
      *
-     * @param int $mailkind            Move the Order in the Orderfolder
-     * @param int $pid                 The PID of the order to move
+     * @param int $mailkind Move the Order in the Orderfolder
+     * @param int $pid The PID of the order to move
      * @param int $orderSysLanguageUid Order language uid
      *
      * @return array of templatenames found in Filelist
@@ -148,8 +147,8 @@ class OrdermailHooks
         $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             $this->tablename,
-            'sys_language_uid = 0 AND pid = '.$pid.' AND mailkind = '.$mailkind.
-                \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($this->tablename)
+            'sys_language_uid = 0 AND pid = ' . $pid . ' AND mailkind = ' . $mailkind .
+            \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($this->tablename)
         );
 
         $templates = array();
@@ -164,10 +163,12 @@ class OrdermailHooks
      * This method will be used by the initial methods before and after the Order
      * will be moved to another Orderstate.
      *
-     * @param array $orderdata  Containing the orderdatea like UID and PID
+     * @param array $orderdata Containing the orderdatea like UID and PID
      * @param array $detaildata Containing the detaildata to Order like
-     *                          order_id and CustomerUIDs
-     * @param int   $mailkind   Mail kind
+     *      order_id and CustomerUIDs
+     * @param int $mailkind Mail kind
+     *
+     * @return void
      */
     protected function processOrdermails(array &$orderdata, array &$detaildata, $mailkind)
     {
@@ -175,11 +176,13 @@ class OrdermailHooks
         $templates = $this->generateTemplateArray($mailkind, $pid, $detaildata['order_sys_language_uid']);
 
         foreach ($templates as $template) {
-            $this->templateCode = GeneralUtility::getURL($this->templatePath.$template['mailtemplate']);
-            $this->templateCodeHtml = GeneralUtility::getURL($this->templatePath.$template['htmltemplate']);
+            $this->templateCode = GeneralUtility::getURL($this->templatePath . $template['mailtemplate']);
+            $this->templateCodeHtml = GeneralUtility::getURL($this->templatePath . $template['htmltemplate']);
 
             $settingsFactory = SettingsFactory::getInstance();
-            $senderemail = $template['senderemail'] == '' ? $settingsFactory->getExtConf('defEmailAddress') : $template['senderemail'];
+            $senderemail = $template['senderemail'] == '' ?
+                $settingsFactory->getExtConf('defEmailAddress') :
+                $template['senderemail'];
             if ($template['sendername'] == '') {
                 if ($senderemail == $settingsFactory->getExtConf('defEmailAddress')) {
                     $sendername = $settingsFactory->getExtConf('defEmailSendername');
@@ -227,10 +230,12 @@ class OrdermailHooks
      * Initial method for hook that will be performed after the Order
      * will be moved to another Orderstate.
      *
-     * @param array $orderdata  Containing the orderdatea like UID and
-     *                          PID after moving
+     * @param array $orderdata Containing the orderdatea like UID and
+     *      PID after moving
      * @param array $detaildata Containing the detaildata to Order like
-     *                          order_id and CustomerUIDs
+     *      order_id and CustomerUIDs
+     *
+     * @return void
      */
     public function moveOrdersPreMoveOrder(array &$orderdata, array &$detaildata)
     {
@@ -241,10 +246,12 @@ class OrdermailHooks
      * Initial method for hook that will be performed before the Order
      * will be moved to another Orderstate.
      *
-     * @param array $orderdata  Containing the orderdatea like UID and
-     *                          PID before moving
+     * @param array $orderdata Containing the orderdatea like UID and
+     *      PID before moving
      * @param array $detaildata Containing the detaildata to Order like
-     *                          order_id and CustomerUIDs
+     *      order_id and CustomerUIDs
+     *
+     * @return void
      */
     public function moveOrdersPostMoveOrder(array &$orderdata, array &$detaildata)
     {
@@ -256,9 +263,9 @@ class OrdermailHooks
      * This Method will not replace the Subpart, you have to replace your subpart
      * in your template by you own.
      *
-     * @param array  $addressArray  Address (als Resultset from Select DB or Session)
+     * @param array $addressArray Address (als Resultset from Select DB or Session)
      * @param string $subpartMarker Subpart marker
-     * @param string $template      Template
+     * @param string $template Template
      *
      * @return string $content HTML-Content from the given Subpart.
      */
@@ -275,8 +282,8 @@ class OrdermailHooks
      * as Mailtemplate. First Line in Template represents the Mailsubject.
      * The other required data can be queried from database by Parameters.
      *
-     * @param string $orderUid     The uid for the specified Order
-     * @param array  $orderData    Contaning additional data like Customer UIDs.
+     * @param string $orderUid The uid for the specified Order
+     * @param array $orderData Contaning additional data like Customer UIDs.
      * @param string $templateCode Template code
      *
      * @return string The built Mailcontent
@@ -294,7 +301,11 @@ class OrdermailHooks
         // Get The addresses
         $deliveryAdress = '';
         if ($orderData['cust_deliveryaddress']) {
-            $data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = '.(int) $orderData['cust_deliveryaddress']);
+            $data = $database->exec_SELECTgetSingleRow(
+                '*',
+                'tt_address',
+                'uid = ' . (int) $orderData['cust_deliveryaddress']
+            );
             if (is_array($data)) {
                 $deliveryAdress = $this->makeAdressView($data, '###DELIVERY_ADDRESS###', $content);
             }
@@ -303,7 +314,7 @@ class OrdermailHooks
 
         $billingAdress = '';
         if ($orderData['cust_invoice']) {
-            $data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = '.(int) $orderData['cust_invoice']);
+            $data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = ' . (int) $orderData['cust_invoice']);
             if (is_array($data)) {
                 $billingAdress = $this->makeAdressView($data, '###BILLING_ADDRESS###', $content);
                 $this->customermailadress = $data['email'];
@@ -326,6 +337,7 @@ class OrdermailHooks
         // Since The first line of the mail is the Subject, trim the template
         return ltrim($content);
     }
+
 
     /**
      * Get database connection.

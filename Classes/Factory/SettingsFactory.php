@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Factory;
 
 /*
@@ -71,6 +70,8 @@ class SettingsFactory implements SingletonInterface
      * Clone.
      *
      * Block cloning of instance
+     *
+     * @return void
      */
     protected function __clone()
     {
@@ -80,6 +81,8 @@ class SettingsFactory implements SingletonInterface
      * Constructor.
      *
      * Block external instantiation
+     *
+     * @return self
      */
     protected function __construct()
     {
@@ -103,6 +106,8 @@ class SettingsFactory implements SingletonInterface
     /**
      * Get settings if they are not set fill
      * them with values of TYPO3_CONF_VARS EXTCONF.
+     *
+     * @return void
      */
     protected function getSettings()
     {

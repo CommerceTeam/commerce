@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Hook;
 
 /*
@@ -32,7 +31,7 @@ class Pi4Hooks
      * \CommerceTeam\Commerce\Controller\AddressesController before processing
      * delete address operations return false to permit delete operation.
      *
-     * @param int                 $uid          Reference to the incoming fields
+     * @param int $uid Reference to the incoming fields
      * @param AddressesController $parentObject Parent object
      *
      * @return string error: do not delete message
@@ -47,11 +46,11 @@ class Pi4Hooks
      * \CommerceTeam\Commerce\Controller\AddressesController after processing
      * insert address operations.
      *
-     * @param int    $uid        Address uid
-     * @param array  $fieldArray Reference to the incoming fields
-     * @param object $pObj       Page Object reference
+     * @param int $uid Address uid
+     *
+     * @return void
      */
-    public function afterAddressSave($uid, array &$fieldArray, &$pObj)
+    public function afterAddressSave($uid)
     {
         // notify address observer
         \CommerceTeam\Commerce\Dao\AddressObserver::update('new', $uid);
@@ -62,11 +61,11 @@ class Pi4Hooks
      * \CommerceTeam\Commerce\Controller\AddressesController before processing
      * update address operations.
      *
-     * @param int    $uid        Uid
-     * @param array  $fieldArray Reference to the incoming fields
-     * @param object $pObj       Page Object reference
+     * @param int $uid Uid
+     *
+     * @return void
      */
-    public function afterAddressEdit($uid, array &$fieldArray, &$pObj)
+    public function afterAddressEdit($uid)
     {
         // notify address observer
         \CommerceTeam\Commerce\Dao\AddressObserver::update('update', $uid);

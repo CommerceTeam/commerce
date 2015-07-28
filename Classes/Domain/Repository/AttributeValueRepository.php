@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Domain\Repository;
 
 /*
@@ -40,7 +39,7 @@ class AttributeValueRepository extends Repository
      * Find by attribute in page.
      *
      * @param int $attributeUid Attribute uid
-     * @param int $pageId       Page id
+     * @param int $pageId Page id
      *
      * @return array
      */
@@ -49,8 +48,8 @@ class AttributeValueRepository extends Repository
         return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             $this->databaseTable,
-            'pid = '.$pageId.BackendUtility::deleteClause($this->databaseTable).
-                ' AND attributes_uid = '.$attributeUid
+            'pid = ' . $pageId . ' AND attributes_uid = ' . $attributeUid .
+            BackendUtility::deleteClause($this->databaseTable)
         );
     }
 }

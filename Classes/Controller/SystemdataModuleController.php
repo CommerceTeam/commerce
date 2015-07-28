@@ -114,7 +114,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
         $this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
         $this->doc->backPath = $this->getBackPath();
         $this->doc->docType = 'xhtml_trans';
-        $this->doc->setModuleTemplate(PATH_TXCOMMERCE.'Resources/Private/Backend/mod_index.html');
+        $this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
     }
 
     /**
@@ -161,13 +161,13 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
                     }
                     return false;
                 }
-                '.$this->doc->redirectUrls($listUrl).'
+                ' . $this->doc->redirectUrls($listUrl) . '
             ');
 
             $this->doc->postCode = $this->doc->wrapScriptTags('
                 script_ended = 1;
                 if (top.fsMod) {
-                    top.fsMod.recentIds["web"] = '.(int) $this->id.';
+                    top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
                 }
             ');
 
@@ -425,9 +425,9 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
                 $output .= '</table>';
             }
 
-            $output .= '<br />'.$language->getLL('usage');
-            $output .= ' <strong>'.$language->getLL('categories').'</strong>: '.$catCount;
-            $output .= ' <strong>'.$language->getLL('products').'</strong>: '.$proCount;
+            $output .= '<br />' . $language->getLL('usage');
+            $output .= ' <strong>' . $language->getLL('categories') . '</strong>: ' . $catCount;
+            $output .= ' <strong>' . $language->getLL('products') . '</strong>: ' . $proCount;
             $output .= '</td>';
 
             $onClickAction = 'onclick="' .
@@ -436,7 +436,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
             $output .= '<td><a href="#" ' . $onClickAction . '>' .
                 IconUtility::getSpriteIcon('actions-document-open', array('title' => $language->getLL('edit', true))) .
                 '</a>';
-            $output .= '<a href="#" onclick="'.htmlspecialchars(
+            $output .= '<a href="#" onclick="' . htmlspecialchars(
                 'if (confirm(' . $language->JScharCode(
                     $language->getLL('deleteWarningManufacturer') . ' "' . $attribute['title'] . '" ' . $refCountMsg
                 ) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
@@ -537,7 +537,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
                 'if (confirm(' . $language->JScharCode(
                     $language->getLL('deleteWarningManufacturer') . ' "' . htmlspecialchars($row['title']) . '" ' .
                     $refCountMsg
-                ).')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
+                ) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
             ) . '">' .
                 IconUtility::getSpriteIcon('actions-edit-delete', array('title' => $language->getLL('delete', true))) .
                 '</a>';
@@ -599,8 +599,8 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
                 ' ' . $language->sL('LLL:EXT:lang/locallang_core.xml:labels.referencesToRecord'),
                 $this->getReferenceCount($table, $row['uid'])
             );
-            $editParams = '&edit['.$table.']['.(int) $row['uid'].']=edit';
-            $deleteParams = '&cmd['.$table.']['.(int) $row['uid'].'][delete]=1';
+            $editParams = '&edit[' . $table . '][' . (int) $row['uid'] . ']=edit';
+            $deleteParams = '&cmd[' . $table . '][' . (int) $row['uid'] . '][delete]=1';
 
             $onClickAction = 'onclick="' . htmlspecialchars(
                 BackendUtility::editOnClick($editParams, $this->getBackPath(), -1)
@@ -615,7 +615,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
                 'if (confirm(' . $language->JScharCode(
                     $language->getLL('deleteWarningSupplier') . ' "' . htmlspecialchars($row['title']) .
                     '" ' . $refCountMsg
-                ) . ')) {jumpToUrl(\''.$this->doc->issueCommand($deleteParams, -1).'\');} return false;'
+                ) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
             ) . '">' . IconUtility::getSpriteIcon(
                 'actions-edit-delete',
                 array('title' => $language->getLL('delete', true))

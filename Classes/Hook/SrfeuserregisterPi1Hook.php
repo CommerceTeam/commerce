@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Hook;
 
 /*
@@ -33,8 +32,10 @@ class SrfeuserregisterPi1Hook
      *
      * Sr_feuser_register registration process after saving new dataset
      *
-     * @param string $theTable  Table
-     * @param array  $dataArray Complete array of feuser fields
+     * @param string $theTable Table
+     * @param array $dataArray Complete array of feuser fields
+     *
+     * @return void
      */
     public function registrationProcess_afterSaveCreate($theTable, array $dataArray)
     {
@@ -47,8 +48,10 @@ class SrfeuserregisterPi1Hook
      *
      * Sr_feuser_register registration process after saving edited dataset
      *
-     * @param string $theTable  Table
-     * @param array  $dataArray Complete array of feuser fields
+     * @param string $theTable Table
+     * @param array $dataArray Complete array of feuser fields
+     *
+     * @return void
      */
     public function registrationProcess_afterSaveEdit($theTable, array $dataArray)
     {

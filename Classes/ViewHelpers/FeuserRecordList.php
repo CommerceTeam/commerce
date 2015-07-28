@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\ViewHelpers;
 
 /*
@@ -14,6 +13,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
@@ -49,6 +49,8 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
      * Writes the top of the full listing.
      *
      * @param array $row Current page record
+     *
+     * @return void
      */
     public function writeTop(array $row)
     {
@@ -62,7 +64,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
         $iconImg = IconUtility::skinImg(
             $this->backPath,
             IconUtility::getIcon('pages', $row),
-            'class="absmiddle" title="'.htmlspecialchars($alttext).'"'
+            'class="absmiddle" title="' . htmlspecialchars($alttext) . '"'
         );
         // pseudo title column name
         $titleCol = 'test';
@@ -88,27 +90,42 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
         if ($localCalcPerms & 2) {
             // Adding "New record" icon:
             if (!$this->getController()->modTSconfig['properties']['noCreateRecordsLink']) {
-                $theCtrlPanel[] = '<a href="#" onclick="'.htmlspecialchars('return jumpExt(\'db_new.php?id='.$this->id.'\');').'">'.
-                    IconUtility::getSpriteIcon('actions-document-new', array('title' => $language->getLL('newRecordGeneral', 1))).
-                    '</a>';
+                $theCtrlPanel[] = '<a href="#" onclick="' .
+                    htmlspecialchars('return jumpExt(\'db_new.php?id=' . $this->id . '\');') . '">' .
+                    IconUtility::getSpriteIcon(
+                        'actions-document-new',
+                        array('title' => $language->getLL('newRecordGeneral', 1))
+                    ) . '</a>';
             }
 
                 // Adding "Hide/Unhide" icon:
             if ($this->id) {
                 // @todo: change the return path
                 if ($row['hidden']) {
-                    $params = '&data[pages]['.$row['uid'].'][hidden]=0';
-                    $theCtrlPanel[] = '<a href="#" onclick="'.
-                        htmlspecialchars('return jumpToUrl(\''.$this->getControllerDocumentTemplate()->issueCommand($params, -1).
-                        '\');').'">'.
-                        IconUtility::getSpriteIcon('actions-edit-unhide', array('title' => $language->getLL('unHidePage', 1))).
+                    $params = '&data[pages][' . $row['uid'] . '][hidden]=0';
+                    $theCtrlPanel[] = '<a href="#" onclick="' .
+                        htmlspecialchars(
+                            'return jumpToUrl(\'' .
+                            $this->getControllerDocumentTemplate()->issueCommand($params, -1) .
+                            '\');'
+                        ) . '">' .
+                        IconUtility::getSpriteIcon(
+                            'actions-edit-unhide',
+                            array('title' => $language->getLL('unHidePage', 1))
+                        ) .
                         '</a>';
                 } else {
-                    $params = '&data[pages]['.$row['uid'].'][hidden]=1';
-                    $theCtrlPanel[] = '<a href="#" onclick="'.
-                        htmlspecialchars('return jumpToUrl(\''.$this->getControllerDocumentTemplate()->issueCommand($params, -1).
-                        '\');').'">'.
-                        IconUtility::getSpriteIcon('actions-edit-hide', array('title' => $language->getLL('hidePage', 1))).
+                    $params = '&data[pages][' . $row['uid'] . '][hidden]=1';
+                    $theCtrlPanel[] = '<a href="#" onclick="' .
+                        htmlspecialchars(
+                            'return jumpToUrl(\'' .
+                            $this->getControllerDocumentTemplate()->issueCommand($params, -1) .
+                            '\');'
+                        ) . '">' .
+                        IconUtility::getSpriteIcon(
+                            'actions-edit-hide',
+                            array('title' => $language->getLL('hidePage', 1))
+                        ) .
                         '</a>';
                 }
             }
@@ -118,68 +135,73 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
         if (($localCalcPerms & 8) || ($localCalcPerms & 16)) {
             $elFromTable = $this->clipObj->elFromTable('');
             if (!empty($elFromTable)) {
-                $theCtrlPanel[] = '<a href="'.htmlspecialchars($this->clipObj->pasteUrl('', $this->id)).'" onclick="'.
-                    htmlspecialchars('return '.$this->clipObj->confirmMsg('pages', $this->pageRow, 'into', $elFromTable)).'">'.
+                $theCtrlPanel[] = '<a href="' . htmlspecialchars($this->clipObj->pasteUrl('', $this->id)) .
+                    '" onclick="' .
+                    htmlspecialchars(
+                        'return ' . $this->clipObj->confirmMsg('pages', $this->pageRow, 'into', $elFromTable)
+                    ) . '">' .
                     IconUtility::getSpriteIcon(
                         'actions-document-paste-into',
                         array('title' => $language->getLL('clip_paste', 1))
-                    ).'</a>';
+                    ) . '</a>';
             }
         }
 
         // Finally, compile all elements of the control panel into table cells:
         if (!empty($theCtrlPanel)) {
             $theData['up'][] = '
-
-				<!--
-					Control panel for page
-				-->
-				<table border="0" cellpadding="0" cellspacing="0" class="bgColor4" id="typo3-dblist-ctrltop">
-					<tr>
-						<td>'.implode('</td><td>', $theCtrlPanel).'</td>
-					</tr>
-				</table>';
+                <!--
+                    Control panel for page
+                -->
+                <table border="0" cellpadding="0" cellspacing="0" class="bgColor4" id="typo3-dblist-ctrltop">
+                    <tr>
+                        <td>' . implode('</td><td>', $theCtrlPanel) . '</td>
+                    </tr>
+                </table>';
         }
 
         // Add "CSV" link, if a specific table is shown:
         if ($this->table) {
-            $theData['up'][] = '<a href="'.htmlspecialchars($this->listURL().'&csv=1').'">'.
+            $theData['up'][] = '<a href="' . htmlspecialchars($this->listURL() . '&csv=1') . '">' .
                 IconUtility::getSpriteIcon(
                     'mimetypes-text-csv',
                     array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.csv', 1))
-                ).'</a>';
+                ) . '</a>';
         }
 
         // Add "Export" link, if a specific table is shown:
         if ($this->table && ExtensionManagementUtility::isLoaded('impexp')) {
-            $theData['up'][] = '<a href="'.htmlspecialchars($this->backPath.ExtensionManagementUtility::extRelPath('impexp').
-                'app/index.php?tx_impexp[action]=export&tx_impexp[list][]='.rawurlencode($this->table.':'.$this->id)).'">'.
+            $theData['up'][] = '<a href="' .
+                htmlspecialchars(
+                    $this->backPath . ExtensionManagementUtility::extRelPath('impexp') .
+                    'app/index.php?tx_impexp[action]=export&tx_impexp[list][]=' .
+                    rawurlencode($this->table . ':' . $this->id)
+                ) . '">' .
                 IconUtility::getSpriteIcon(
                     'actions-document-export-t3d',
                     array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:rm.export', 1))
-                ).'</a>';
+                ) . '</a>';
         }
 
         // Add "refresh" link:
-        $theData['up'][] = '<a href="'.htmlspecialchars($this->listURL()).'">'.
+        $theData['up'][] = '<a href="' . htmlspecialchars($this->listURL()) . '">' .
             IconUtility::getSpriteIcon(
                 'actions-system-refresh',
                 array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.reload', 1))
-            ).
-            '</a>';
+            ) . '</a>';
 
         // Add icon with clickmenu, etc:
         // If there IS a real page...:
         if ($this->id) {
             // Setting title of page + the "Go up" link:
-            $theData[$titleCol] .= '<br /><span title="'.htmlspecialchars($row['_thePathFull']).'">'.
-                htmlspecialchars(GeneralUtility::fixed_lgd_cs($row['_thePath'], -$this->fixedL)).'</span>';
-            $theData['up'][] = '<a href="'.htmlspecialchars($this->listURL($row['pid'])).'" onclick="setHighlight('.
-                $row['pid'].')">'.
+            $theData[$titleCol] .= '<br /><span title="' . htmlspecialchars($row['_thePathFull']) . '">' .
+                htmlspecialchars(GeneralUtility::fixed_lgd_cs($row['_thePath'], -$this->fixedL)) . '</span>';
+            $theData['up'][] = '<a href="' . htmlspecialchars($this->listURL($row['pid'])) .
+                '" onclick="setHighlight(' . $row['pid'] . ')">' .
                 IconUtility::getSpriteIcon(
                     'actions-view-go-up',
                     array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', 1))
-                ).'</a>';
+                ) . '</a>';
 
             // Make Icon:
             if ($this->clickMenuEnabled) {
@@ -190,8 +212,11 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
             // On root-level of page tree:
         } else {
             // Setting title of root (sitename):
-            $theData[$titleCol] .= '<br />'.
-                htmlspecialchars(GeneralUtility::fixed_lgd_cs($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'], -$this->fixedL));
+            $theData[$titleCol] .= '<br />' .
+                htmlspecialchars(GeneralUtility::fixed_lgd_cs(
+                    $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'],
+                    -$this->fixedL
+                ));
 
             // Make Icon:
             $theIcon = IconUtility::getSpriteIcon('apps-pagetree-root');
@@ -199,12 +224,15 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 
         // If there is a returnUrl given, add a back-link:
         if ($this->returnUrl) {
-            $theData['up'][] = '<a href="'.htmlspecialchars(GeneralUtility::linkThisUrl($this->returnUrl, array('id' => $this->id))).
-                '" class="typo3-goBack">'.
+            $theData['up'][] = '<a href="' .
+                htmlspecialchars(GeneralUtility::linkThisUrl(
+                    $this->returnUrl,
+                    array('id' => $this->id)
+                )) . '" class="typo3-goBack">' .
                 IconUtility::getSpriteIcon(
                     'actions-view-go-back',
                     array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.goBack', 1))
-                ).'</a>';
+                ) . '</a>';
         }
 
         // Finally, the "up" pseudo field is compiled into a table
@@ -212,7 +240,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
         $theData['up'] = '
 			<table border="0" cellpadding="0" cellspacing="0">
 				<tr>
-					<td>'.implode('</td><td>', $theData['up']).'</td>
+					<td>' . implode('</td><td>', $theData['up']) . '</td>
 				</tr>
 			</table>';
 
@@ -225,16 +253,16 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 				Page header for db_list:
 			-->
 			<table border="0" cellpadding="0" cellspacing="0" id="typo3-dblist-top">
-				'.$out.'
+				' . $out . '
 			</table>';
     }
 
     /**
      * Make query array.
      *
-     * @param string $table     Table
-     * @param int    $id        Id
-     * @param string $addWhere  Additional where
+     * @param string $table Table
+     * @param int $id Id
+     * @param string $addWhere Additional where
      * @param string $fieldList Field list
      *
      * @return array
@@ -243,7 +271,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
     {
         $id = (int) $id;
         if ($this->sortField) {
-            $orderby = $this->sortField.' ';
+            $orderby = $this->sortField . ' ';
             if ($this->sortRev == 1) {
                 $orderby .= 'DESC';
             }
@@ -251,11 +279,14 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
             $orderby = 'fe_users.crdate DESC';
         }
         $queryArray = array(
-            'SELECT' => 'fe_users.uid,fe_users.username,fe_users.name,fe_users.email,count(tx_commerce_orders.uid) as bestellungen ',
-            'FROM' => 'tx_commerce_orders,fe_users',
-            'WHERE' => 'fe_users.deleted = 0 AND tx_commerce_orders.cust_fe_user  = fe_users.uid AND tx_commerce_orders.pid='.
-                (int) $id.' '.$addWhere,
-            'GROUPBY' => 'fe_users.uid,fe_users.username,fe_users.name,fe_users.email',
+            'SELECT' => 'fe_users.uid, fe_users.username, fe_users.name, fe_users.email,
+                count(tx_commerce_orders.uid) AS bestellungen ',
+            'FROM' => 'tx_commerce_orders, fe_users',
+            'WHERE' => 'fe_users.deleted = 0
+                AND tx_commerce_orders.cust_fe_user = fe_users.uid
+                AND tx_commerce_orders.pid = ' .
+                (int) $id . ' ' . $addWhere,
+            'GROUPBY' => 'fe_users.uid, fe_users.username, fe_users.name, fe_users.email',
             'ORDERBY' => $orderby,
             'sorting' => '',
             'LIMIT' => '',
@@ -268,6 +299,8 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 
     /**
      * Generate list.
+     *
+     * @return void
      */
     public function generateList()
     {
@@ -278,17 +311,17 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
         foreach ($GLOBALS['TCA'] as $tableName) {
             // Checking if the table should be rendered:
             // Checks that we see only permitted/requested tables:
-            if (
-                (!$this->table || $tableName == $this->table)
+            if ((!$this->table || $tableName == $this->table)
                 && (!$this->tableList || GeneralUtility::inList($this->tableList, $tableName))
                 && $backendUser->check('tables_select', $tableName)
             ) {
                 // iLimit is set depending on whether we're in single- or multi-table mode
                 if ($this->table) {
-                    $maxSingleDdListItems = $settingsFactory->getTcaValue($tableName.'.interface.maxSingleDBListItems');
+                    $maxSingleDdListItems = $settingsFactory
+                        ->getTcaValue($tableName . '.interface.maxSingleDBListItems');
                     $this->iLimit = $maxSingleDdListItems ? (int) $maxSingleDdListItems : $this->itemsLimitSingleTable;
                 } else {
-                    $maxDdListItems = $settingsFactory->getTcaValue($tableName.'.interface.maxDBListItems');
+                    $maxDdListItems = $settingsFactory->getTcaValue($tableName . '.interface.maxDBListItems');
                     $this->iLimit = $maxDdListItems ? (int) $maxDdListItems : $this->itemsLimitPerTable;
                 }
                 if ($this->showLimit) {
@@ -310,7 +343,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
     /**
      * Wrapping input code in link to URL or email if $testString is either.
      *
-     * @param string $code       Code
+     * @param string $code Code
      * @param string $testString Test string
      *
      * @return string Link-Wrapped $code value, if $testString was URL or email.
@@ -320,33 +353,31 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
         // Check for URL:
         $schema = parse_url($testString);
         if ($schema['scheme'] && GeneralUtility::inList('http,https,ftp', $schema['scheme'])) {
-            return '<a href="'.htmlspecialchars($testString).'" target="_blank">'.$code.'</a>';
+            return '<a href="' . htmlspecialchars($testString) . '" target="_blank">' . $code . '</a>';
         }
 
-            // Check for email:
+        // Check for email:
         if (GeneralUtility::validEmail($testString)) {
-            return '<a href="mailto:'.htmlspecialchars($testString).'" target="_blank">'.$code.'</a>';
+            return '<a href="mailto:' . htmlspecialchars($testString) . '" target="_blank">' . $code . '</a>';
         }
 
-            // Return if nothing else...
+        // Return if nothing else...
         return $code;
     }
 
     /**
      * Rendering a single row for the list.
      *
-     * @param string $table     Table name
-     * @param array  $row       Current record
-     * @param int    $cc        Counter, counting for each time an element
-     *                          is rendered (used for alternating colors)
-     * @param string $titleCol  Table field (column) where header value is found
+     * @param string $table Table name
+     * @param array $row Current record
+     * @param int $cc Counter, counting for each time an element
+     *      is rendered (used for alternating colors)
+     * @param string $titleCol Table field (column) where header value is found
      * @param string $thumbsCol Table field (column) where (possible)
-     *                          thumbnails can be found
-     * @param int    $indent    Indent from left.
+     *      thumbnails can be found
+     * @param int $indent Indent from left.
      *
      * @return string Table row for the element
-     *
-     * @see getTable()
      */
     public function renderListRow($table, array $row, $cc, $titleCol, $thumbsCol, $indent = 0)
     {
@@ -361,21 +392,21 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 
         $rowBackgroundColor = '';
         if ($this->alternateBgColors) {
-            $rowBackgroundColor = $cc % 2 ? '' : ' bgcolor="'.GeneralUtility::modifyHTMLColor(
-                    $this->getControllerDocumentTemplate()->bgColor4,
+            $rowBackgroundColor = $cc % 2 ? '' : ' bgcolor="' . GeneralUtility::modifyHTMLColor(
+                $this->getControllerDocumentTemplate()->bgColor4,
                 10,
                 10,
                 10
-            ).'"';
+            ) . '"';
         }
 
         if ($backendUser->getModuleData('commerce_orders/index.php/userid', 'ses') == $row['uid']) {
-            $rowBackgroundColor = ' bgcolor="'.
-                GeneralUtility::modifyHTMLColor($this->getControllerDocumentTemplate()->bgColor4, 30, 30, 30).'"';
+            $rowBackgroundColor = ' bgcolor="' .
+                GeneralUtility::modifyHTMLColor($this->getControllerDocumentTemplate()->bgColor4, 30, 30, 30) . '"';
         }
 
         // Overriding with versions background color if any:
-        $rowBackgroundColor = $row['_CSSCLASS'] ? ' class="'.$row['_CSSCLASS'].'"' : $rowBackgroundColor;
+        $rowBackgroundColor = $row['_CSSCLASS'] ? ' class="' . $row['_CSSCLASS'] . '"' : $rowBackgroundColor;
 
         // Initialization
         $alttext = BackendUtility::getRecordIconAltText($row, $table);
@@ -387,10 +418,12 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
         $iconImg = IconUtility::skinImg(
             $this->backPath,
             IconUtility::getIcon($table, $row),
-            'title="'.htmlspecialchars($alttext).'"'.($indent ? ' style="margin-left: '.$indent.'px;"' : '')
+            'title="' . htmlspecialchars($alttext) . '"' . ($indent ? ' style="margin-left: ' . $indent . 'px;"' : '')
         );
         $theIcon = $this->clickMenuEnabled ? $this->getControllerDocumentTemplate()->wrapClickMenuOnIcon(
-            $iconImg, $table, $row['uid']
+            $iconImg,
+            $table,
+            $row['uid']
         ) : $iconImg;
 
         // Preparing and getting the data-array
@@ -412,7 +445,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
             } elseif ($fCol == '_LOCALIZATION_') {
                 list($lC1, $lC2) = $this->makeLocalizationPanel($table, $row);
                 $theData[$fCol] = $lC1;
-                $theData[$fCol.'b'] = $lC2;
+                $theData[$fCol . 'b'] = $lC2;
             } elseif ($fCol == '_LOCALIZATION_b') {
                 // Do nothing, has been done above.
                 $theData[$fCol] .= '';
@@ -422,11 +455,17 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
                  */
                 if (substr(TYPO3_version, 0, 3) >= '4.0') {
                     $theData[$fCol] = $this->linkUrlMail(
-                        htmlspecialchars(BackendUtility::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])), $row[$fCol]
+                        htmlspecialchars(
+                            BackendUtility::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])
+                        ),
+                        $row[$fCol]
                     );
                 } else {
                     $theData[$fCol] = $this->myLinkUrlMail(
-                        htmlspecialchars(BackendUtility::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])), $row[$fCol]
+                        htmlspecialchars(
+                            BackendUtility::getProcessedValueExtra($table, $fCol, $row[$fCol], 100, $row['uid'])
+                        ),
+                        $row[$fCol]
                     );
                 }
             }
@@ -459,7 +498,12 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 
         // Render thumbsnails if a thumbnail column exists and there is content in it:
         if ($this->thumbs && trim($row[$thumbsCol])) {
-            $iOut .= $this->addelement(4, '', array($titleCol => $this->thumbCode($row, $table, $thumbsCol)), $rowBackgroundColor);
+            $iOut .= $this->addelement(
+                4,
+                '',
+                array($titleCol => $this->thumbCode($row, $table, $thumbsCol)),
+                $rowBackgroundColor
+            );
         }
 
         // Finally, return table row element:
@@ -469,8 +513,8 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
     /**
      * Rendering the header row for a table.
      *
-     * @param string $table         Table name
-     * @param array  $currentIdList Array of the currectly displayed uids of the table
+     * @param string $table Table name
+     * @param array $currentIdList Array of the currectly displayed uids of the table
      *
      * @return string Header table row
      */
@@ -487,11 +531,12 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
             if ($this->table && is_array($currentIdList)) {
                 // If the numeric clipboard pads are selected, show duplicate sorting link:
                 if ($this->clipNumPane()) {
-                    $theData[$fCol] .= '<a href="'.htmlspecialchars($this->listURL('', -1).'&duplicateField='.$fCol).'">'.
+                    $theData[$fCol] .= '<a href="' .
+                        htmlspecialchars($this->listURL('', -1) . '&duplicateField=' . $fCol) . '">' .
                         IconUtility::getSpriteIcon(
                             'actions-document-duplicates-select',
                             array('title' => $language->getLL('clip_duplicates', 1))
-                        ).'</a>';
+                        ) . '</a>';
                 }
             }
 
@@ -501,7 +546,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
             $tables = array('fe_users');
             $temporaryData = '';
             foreach ($tables as $workTable) {
-                if (SettingsFactory::getInstance()->getTcaValue($workTable.'.columns.'.$fCol)) {
+                if (SettingsFactory::getInstance()->getTcaValue($workTable . '.columns.' . $fCol)) {
                     $temporaryData = $this->addSortLink(
                         $language->sL(BackendUtility::getItemLabel($workTable, $fCol, '<i>[|]</i>')),
                         $fCol,
@@ -529,9 +574,9 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
     /**
      * Get table.
      *
-     * @param string $table   Table
-     * @param int    $id      Id
-     * @param array  $rowlist Row list
+     * @param string $table Table
+     * @param int $id Id
+     * @param array $rowlist Row list
      *
      * @return string
      */
@@ -557,7 +602,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 
         if ($this->localizationView && $l10nEnabled) {
             $this->fieldArray[] = '_LOCALIZATION_';
-            $addWhere .= ' AND '.$tableConfig['ctrl']['languageField'].'<=0';
+            $addWhere .= ' AND ' . $tableConfig['ctrl']['languageField'] . ' <= 0';
         }
         if ($this->showClipboard) {
             $this->fieldArray[] = '_CLIPBOARD_';
@@ -609,7 +654,10 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
             $selectFields[] = $tableConfig['ctrl']['transOrigPointerField'];
         }
         if ($tableConfig['ctrl']['label_alt']) {
-            $selectFields = array_merge($selectFields, GeneralUtility::trimExplode(',', $tableConfig['ctrl']['label_alt'], 1));
+            $selectFields = array_merge(
+                $selectFields,
+                GeneralUtility::trimExplode(',', $tableConfig['ctrl']['label_alt'], 1)
+            );
         }
 
         // Unique list!
@@ -658,28 +706,36 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
                 // Header line is drawn
             $theData = array();
             if ($this->disableSingleTableView) {
-                $theData[$titleCol] = '<span class="c-table">'.
-                        $language->sL($tableConfig['ctrl']['title'], 1).
-                    '</span> ('.$this->totalItems.')';
+                $theData[$titleCol] = '<span class="c-table">' .
+                        $language->sL($tableConfig['ctrl']['title'], 1) .
+                    '</span> (' . $this->totalItems . ')';
             } else {
                 $title = $language->getLL(!$this->table ? 'expandView' : 'contractView', 1);
-                $icon = IconUtility::getSpriteIcon('actions-view-table-'.($this->table ? 'collapse' : 'expand'), array('title' => $title));
+                $icon = IconUtility::getSpriteIcon(
+                    'actions-view-table-' . ($this->table ? 'collapse' : 'expand'),
+                    array('title' => $title)
+                );
                 $theData[$titleCol] = $this->linkWrapTable(
                     $table,
-                    '<span class="c-table">'.$language->sL($tableConfig['ctrl']['title'], 1).
-                    '</span> ('.$this->totalItems.') <img'.$icon
+                    '<span class="c-table">' . $language->sL($tableConfig['ctrl']['title'], 1) .
+                    '</span> (' . $this->totalItems . ') ' . $icon
                 );
             }
 
             // CSH:
             $theData[$titleCol] .= BackendUtility::cshItem(
-                $table, '', $this->backPath, '', false, 'margin-bottom:0px; white-space: normal;'
+                $table,
+                '',
+                $this->backPath,
+                '',
+                false,
+                'margin-bottom:0px; white-space: normal;'
             );
 
             if ($listOnlyInSingleTableMode) {
                 $out .= '
 					<tr>
-						<td class="c-headLineTable" style="width: 95%;" '.$theData[$titleCol].'</td>
+						<td class="c-headLineTable" style="width: 95%;" ' . $theData[$titleCol] . '</td>
 					</tr>';
 
                 if ($this->getBackendUser()->uc['edit_showFieldHelp']) {
@@ -687,18 +743,19 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
                     if (isset($GLOBALS['TCA_DESCR'][$table]['columns'][''])) {
                         $out .= '
 					<tr>
-						<td class="c-tableDescription">'.BackendUtility::helpTextIcon($table, '', $this->backPath, true).
-                            $GLOBALS['TCA_DESCR'][$table]['columns']['']['description'].'</td>
+						<td class="c-tableDescription">' .
+                            BackendUtility::helpTextIcon($table, '', $this->backPath, true) .
+                            $GLOBALS['TCA_DESCR'][$table]['columns']['']['description'] . '</td>
 					</tr>';
                     }
                 }
             } else {
                 $theUpIcon = ($table == 'pages' && $this->id && isset($this->pageRow['pid'])) ?
-                    '<a href="'.htmlspecialchars($this->listURL($this->pageRow['pid'])).'">'.
+                    '<a href="' . htmlspecialchars($this->listURL($this->pageRow['pid'])) . '">' .
                         IconUtility::getSpriteIcon(
                             'actions-view-go-up',
                             array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', 1))
-                        ).'</a>' :
+                        ) . '</a>' :
                     '';
                 $out .= $this->addelement(1, $theUpIcon, $theData, ' class="c-headLineTable"', '');
             }
@@ -720,7 +777,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
                     if ($doSort) {
                         if ($prevUid) {
                             $this->currentTable['prev'][$row['uid']] = $prevPrevUid;
-                            $this->currentTable['next'][$prevUid] = '-'.$row['uid'];
+                            $this->currentTable['next'][$prevUid] = '-' . $row['uid'];
                             $this->currentTable['prevUid'][$row['uid']] = $prevUid;
                         }
                         $prevPrevUid = isset($this->currentTable['prev'][$row['uid']]) ? -$prevUid : $row['pid'];
@@ -748,8 +805,8 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
                     // If render item, increment counter and call function
                     if ($flag) {
                         ++$cc;
-                        $row[$titleCol] = '<a href="'.GeneralUtility::getIndpEnv('REQUEST_URI').'&userId='.$row['uid'].'">'.
-                            $row[$titleCol].'</a>';
+                        $row[$titleCol] = '<a href="' . GeneralUtility::getIndpEnv('REQUEST_URI') .
+                            '&userId=' . $row['uid'] . '">' . $row[$titleCol] . '</a>';
 
                         $iOut .= $this->renderListRow($table, $row, $cc, $titleCol, $thumbsCol);
                         // If localization view is enabled it means that the selected records are either
@@ -760,9 +817,9 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
                             $translations = $database->exec_SELECTgetRows(
                                 $selFieldList,
                                 $table,
-                                'pid='.$row['pid'].' AND '.$tableConfig['ctrl']['languageField'].' > 0 AND '.
-                                    $tableConfig['ctrl']['transOrigPointerField'].'='.(int) $row['uid'].
-                                    BackendUtility::deleteClause($table)
+                                'pid = ' . $row['pid'] . ' AND ' . $tableConfig['ctrl']['languageField'] . ' > 0 AND ' .
+                                $tableConfig['ctrl']['transOrigPointerField'] . ' = ' . (int) $row['uid'] .
+                                BackendUtility::deleteClause($table)
                             );
 
                             // For each available translation, render the record:
@@ -785,13 +842,13 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 
             // ... and it is all wrapped in a table:
             $out = '
-			<!--
-				DB listing of elements:	"'.htmlspecialchars($table).'"
-			-->
-				<table border="0" cellpadding="0" cellspacing="0" class="typo3-dblist'.
-                    ($listOnlyInSingleTableMode ? ' typo3-dblist-overview' : '').'">
-					'.$out.'
-				</table>';
+            <!--
+                DB listing of elements:	"' . htmlspecialchars($table) . '"
+            -->
+                <table border="0" cellpadding="0" cellspacing="0" class="typo3-dblist' .
+                    ($listOnlyInSingleTableMode ? ' typo3-dblist-overview' : '') . '">
+                    ' . $out . '
+                </table>';
 
             // Output csv if...
             if ($this->csvOutput) {
@@ -802,6 +859,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
         // Return content:
         return $out;
     }
+
 
     /**
      * Get backend user.

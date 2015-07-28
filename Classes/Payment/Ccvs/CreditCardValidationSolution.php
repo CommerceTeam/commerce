@@ -1,5 +1,4 @@
 <?php
-
 namespace CommerceTeam\Commerce\Payment\Ccvs;
 
 /**
@@ -224,8 +223,14 @@ class CreditCardValidationSolution
      *
      * @license    http://www.analysisandsolutions.com/software/license.htm Simple Public License
      */
-    public function validateCreditCard($Number, $CheckNumber, $Accepted = '', $RequireExp = 'N', $Month = '', $Year = '')
-    {
+    public function validateCreditCard(
+        $Number,
+        $CheckNumber,
+        $Accepted = '',
+        $RequireExp = 'N',
+        $Month = '',
+        $Year = ''
+    ) {
         $this->CCVSNumber = '';
         $this->CCVSNumberLeft = '';
         $this->CCVSNumberRight = '';
@@ -233,27 +238,27 @@ class CreditCardValidationSolution
         $this->CCVSExpiration = '';
         $this->CCVSError = '';
 
-            // Catch malformed input.
+        // Catch malformed input.
         if (empty($Number) || !is_string($Number)) {
             $this->CCVSError = $this->language->getLL('ErrNumberString');
 
             return false;
         }
 
-            // Ensure number doesn't overrun.
+        // Ensure number doesn't overrun.
         $Number = substr($Number, 0, 30);
 
-            // Remove non-numeric characters.
+        // Remove non-numeric characters.
         $this->CCVSNumber = preg_replace('/[^0-9]/', '', $Number);
 
-            // Set up variables.
+        // Set up variables.
         $this->CCVSCheckNumber = trim($CheckNumber);
         $this->CCVSNumberLeft = substr($this->CCVSNumber, 0, 4);
         $this->CCVSNumberRight = substr($this->CCVSNumber, -4);
         $NumberLength = strlen($this->CCVSNumber);
         $DoChecksum = 'Y';
 
-            // Determine the card type and appropriate length.
+        // Determine the card type and appropriate length.
         if (($this->CCVSNumberLeft >= 3000) && ($this->CCVSNumberLeft <= 3059)) {
             $this->CCVSType = 'Diners Club';
             $ShouldLength = 14;
@@ -316,7 +321,7 @@ class CreditCardValidationSolution
             return false;
         }
 
-            // Check acceptance.
+        // Check acceptance.
         if (!empty($Accepted)) {
             if (!is_array($Accepted)) {
                 $this->CCVSError = $this->language->getLL('ErrAccepted');
@@ -339,7 +344,7 @@ class CreditCardValidationSolution
 
                         return false;
                     }
-                break;
+                    break;
 
                 case 'MasterCard':
                     if (strlen($this->CCVSCheckNumber) != 3) {
@@ -347,7 +352,7 @@ class CreditCardValidationSolution
 
                         return false;
                     }
-                break;
+                    break;
 
                 case 'Visa':
                     if (strlen($this->CCVSCheckNumber) != 3) {
@@ -355,11 +360,11 @@ class CreditCardValidationSolution
 
                         return false;
                     }
-                break;
+                    break;
             }
         }
 
-            // Check length.
+        // Check length.
         if ($NumberLength != $ShouldLength) {
             $Missing = $NumberLength - $ShouldLength;
             if ($Missing < 0) {
@@ -371,7 +376,7 @@ class CreditCardValidationSolution
             return false;
         }
 
-            // Mod10 checksum process...
+        // Mod10 checksum process...
         if ($DoChecksum == 'Y') {
             $Checksum = 0;
 
@@ -404,7 +409,7 @@ class CreditCardValidationSolution
             }
         }
 
-            // Expiration date process...
+        // Expiration date process...
         if ($RequireExp == 'Y') {
             if (empty($Month) || !is_string($Month)) {
                 $this->CCVSError = $this->language->getLL('ErrMonthString');
@@ -442,11 +447,12 @@ class CreditCardValidationSolution
                 }
             }
 
-            $this->CCVSExpiration = sprintf('%02d', $Month).substr($Year, -2);
+            $this->CCVSExpiration = sprintf('%02d', $Month) . substr($Year, -2);
         }
 
         return true;
     }
+
 
     /**
      * Get backend user.
