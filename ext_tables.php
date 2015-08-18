@@ -30,18 +30,6 @@ if (TYPO3_MODE == 'BE') {
         $TBE_MODULES = $tbeModules;
     }
 
-    /*$GLOBALS['TBE_MODULES']['_configuration']['commerce'] = array(
-        'labels' => array(
-            'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_main.xlf'
-        ),
-        'configuration' => array(
-            'name' => 'commerce',
-            'access' => 'user,group',
-            'icon' => '../../../Resources/Public/Icons/mod_main.gif'
-        )
-    );*/
-
-
     if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('t3skin')) {
         $presetSkinImgs = is_array($GLOBALS['TBE_STYLES']['skinImg']) ? $GLOBALS['TBE_STYLES']['skinImg'] : array();
 
@@ -62,17 +50,6 @@ if (TYPO3_MODE == 'BE') {
         PATH_TXCOMMERCE . 'Modules/Main/'
     );
 
-    // Register category_navframe
-    /*\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent(
-        'commerce',
-        'category-navframe',
-        'commerce'
-    );*/
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModulePath(
-        'category-navframe',
-        PATH_TXCOMMERCE . 'Modules/CategoryNavigationFrame/'
-    );
-
     // add category module
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
         'commerce',
@@ -89,17 +66,6 @@ if (TYPO3_MODE == 'BE') {
         PATH_TXCOMMERCE . 'Modules/Permission/'
     );
 
-    // Orders navigation frame
-    /*\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent(
-        'commerce',
-        'order-navframe',
-        'commerce'
-    );*/
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModulePath(
-        'order-navframe',
-        PATH_TXCOMMERCE . 'Modules/OrdersNavigationFrame/'
-    );
-
     // Orders module
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
         'commerce',
@@ -114,17 +80,6 @@ if (TYPO3_MODE == 'BE') {
         'statistic',
         '',
         PATH_TXCOMMERCE . 'Modules/Statistic/'
-    );
-
-    // Systemdata navigation frame
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent(
-        'commerce',
-        'systemdata-navframe',
-        'commerce'
-    );
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModulePath(
-        'systemdata-navframe',
-        PATH_TXCOMMERCE . 'Modules/SystemdataNavigationFrame/'
     );
 
     // Systemdata module

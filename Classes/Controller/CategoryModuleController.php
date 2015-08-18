@@ -269,7 +269,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         /**
          * Clipboard.
          *
-         * @var \TYPO3\CMS\Backend\Clipboard\Clipboard
+         * @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj
          */
         $clipObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Clipboard\\Clipboard');
         $dbList->clipObj = $clipObj;
@@ -325,7 +325,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                     /**
                      * Data handler.
                      *
-                     * @var \TYPO3\CMS\Core\DataHandling\DataHandler
+                     * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
                      */
                     $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
                     $tce->stripslashes_values = 0;

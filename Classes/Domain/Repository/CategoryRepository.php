@@ -355,12 +355,11 @@ class CategoryRepository extends Repository
         $return = array();
         $result = $database->exec_SELECT_queryArray($queryArray);
         if ($result !== false) {
-            $data = array();
             while (($row = $database->sql_fetch_assoc($result))) {
                 if ($languageUid == 0) {
-                    $data[] = (int) $row['uid'];
+                    $return[] = (int) $row['uid'];
                 } else {
-                    // Check if a locallized product is availabe
+                    // Check if a localized product is available
                     // @todo Check if this is correct in multi tree sites
                     $lresult = $database->exec_SELECTquery(
                         'uid',
@@ -369,17 +368,15 @@ class CategoryRepository extends Repository
                         $this->enableFields('tx_commerce_products', $frontend->showHiddenRecords)
                     );
                     if ($database->sql_num_rows($lresult)) {
-                        $data[] = (int) $row['uid'];
+                        $return[] = (int) $row['uid'];
                     }
                 }
             }
             $database->sql_free_result($result);
 
             if (is_object($hookObject) && method_exists($hookObject, 'productQueryPostHook')) {
-                $data = $hookObject->productQueryPostHook($data, $this);
+                $return = $hookObject->productQueryPostHook($return, $this);
             }
-
-            $return = $data;
         }
 
         return $return;

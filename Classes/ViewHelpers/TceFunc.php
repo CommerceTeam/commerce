@@ -209,7 +209,9 @@ class TceFunc
                         $defVals['tx_commerce_products']['categories']
                     );
                     $category->loadData();
-                    $itemArray = array($category->getUid() . '|' . $category->getTitle());
+                    if ($category->getUid() > 0) {
+                        $itemArray = array($category->getUid() . '|' . $category->getTitle());
+                    }
                     break;
 
                 default:
