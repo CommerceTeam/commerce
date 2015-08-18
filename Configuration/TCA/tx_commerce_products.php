@@ -41,6 +41,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         ),
         'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'products.gif',
         'dividers2tabs' => '1',
+        'searchFields' => 'uid, title, subtitle, navtitle, description',
     ),
     'interface' => array(
         'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
