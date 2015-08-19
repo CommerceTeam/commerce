@@ -581,7 +581,9 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 					}
 				}
 
-				$linkArray['catUid'] = $oneCategory->getUid();
+                $linkArray = array();
+                $linkArray['catUid'] = $oneCategory->getUid();
+                $linkArray['showUid'] = '';
 				if ($this->useRootlineInformationToUrl == 1) {
 					$linkArray['path'] = $this->getPathCat($oneCategory);
 					$linkArray['mDepth'] = $this->mDepth;
@@ -610,7 +612,9 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 				$productArray = $oneCategory->getProducts();
 				if (1 == $this->conf['displayProductIfOneProduct'] && 1 == count($productArray)) {
 					$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[showUid]=' . $productArray[0];
-				}
+				} else {
+                    $typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[showUid]=';
+                }
 
 				if ($this->useRootlineInformationToUrl == 1) {
 					$typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[path]=' . $this->getPathCat($oneCategory);
@@ -703,6 +707,9 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		}
 
 		if (!$this->conf['hideProductsInList']) {
+            if (isset($this->piVars['showUid'])) {
+                $this->piVars['showUid'] = '';
+            }
 			// Write the current page to The session to have a back to last product link
 			$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_commerce_lastproducturl', $this->pi_linkTP_keepPIvars_url(array(), 1));
 			$markerArray['SUBPART_CATEGORY_ITEMS_LISTVIEW'] = $this->renderProductsForList(
@@ -1212,8 +1219,8 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 		$markerArray['###BASKET_ITEM_COUNT###'] = $basketItemObj->getQuantity();
 		$markerArray['###PRODUCT_LINK_DETAIL###'] = $this->pi_linkTP_keepPIvars(
 			$this->pi_getLL('detaillink', 'details'), array(
+                'catUid' => (int) $basketItemObj->getProductMasterparentCategorie(),
 				'showUid' => $basketItemObj->getProductUid(),
-				'catUid' => (int) $basketItemObj->getProductMasterparentCategorie()
 			), TRUE, TRUE, $this->conf['listPid']
 		);
 
@@ -1955,6 +1962,7 @@ abstract class Tx_Commerce_Controller_BaseController extends \TYPO3\CMS\Frontend
 			), $typoscript['productAttributes.']
 		);
 
+        $linkArray = array();
 		$linkArray['catUid'] = (int) $categoryUid;
 
 		if ($this->basketHashValue) {
