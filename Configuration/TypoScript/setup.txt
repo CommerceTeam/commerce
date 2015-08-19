@@ -4,7 +4,7 @@ plugin.tx_commerce_pi3.userFunc = CommerceTeam\Commerce\Controller\CheckoutContr
 plugin.tx_commerce_pi4.userFunc = CommerceTeam\Commerce\Controller\AddressesController->main
 plugin.tx_commerce_pi6.userFunc = CommerceTeam\Commerce\Controller\InvoiceController->main
 
-# gerneral TS skript definition
+# general TS script definition
 # could be overwritten by local definition in pi1 - pin
 
 includeLibs.tx_commerce_navigation = EXT:commerce/Classes/ViewHelpers/Navigation.php

@@ -74,6 +74,10 @@ class LinkhandlerHooks
             }
         }
 
+        if (strpos($addparams, 'showUid') === false) {
+            $addparams .= '&tx_commerce_pi1[showUid]=';
+        }
+
         if (strlen($addparams) <= 0) {
             return $linktxt;
         }
@@ -111,6 +115,7 @@ class LinkhandlerHooks
         unset($lconf['parameter.']);
         $lconf['parameter'] = $linkParameter;
         $lconf['additionalParams'] .= $addparams;
+        $lconf['useCacheHash'] = true;
 
         return $localcObj->typoLink($linktxt, $lconf);
     }

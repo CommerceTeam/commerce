@@ -620,7 +620,9 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                     }
                 }
 
+                $linkArray = array();
                 $linkArray['catUid'] = $oneCategory->getUid();
+                $linkArray['showUid'] = '';
                 if ($this->useRootlineInformationToUrl == 1) {
                     $linkArray['path'] = $this->getPathCat($oneCategory);
                     $linkArray['mDepth'] = $this->mDepth;
@@ -653,6 +655,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 if ($this->conf['displayProductIfOneProduct'] == 1 && count($productArray) == 1) {
                     $typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[showUid]=' .
                         $productArray[0];
+                } else {
+                    $typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[showUid]=';
                 }
 
                 if ($this->useRootlineInformationToUrl == 1) {
@@ -764,6 +768,9 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         }
 
         if (!$this->conf['hideProductsInList']) {
+            if (isset($this->piVars['showUid'])) {
+                $this->piVars['showUid'] = '';
+            }
             // Write the current page to The session to have a back to last product link
             $this->getFrontendUser()->setKey(
                 'ses',
@@ -1233,8 +1240,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $markerArray['###PRODUCT_LINK_DETAIL###'] = $this->pi_linkTP_keepPIvars(
             $this->pi_getLL('detaillink', 'details'),
             array(
-                'showUid' => $basketItem->getProductUid(),
                 'catUid' => (int) $basketItem->getProductMasterparentCategorie(),
+                'showUid' => $basketItem->getProductUid(),
             ),
             true,
             true,
@@ -1942,6 +1949,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $typoscript['productAttributes.']
         );
 
+        $linkArray = array();
         $linkArray['catUid'] = (int) $categoryUid;
 
         if ($this->basketHashValue) {
