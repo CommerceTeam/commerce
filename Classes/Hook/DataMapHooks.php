@@ -1385,7 +1385,7 @@ class DataMapHooks
             }
 
             $this->belib->mergeAttributeListFromFFData(
-                $ffData['data']['sDEF']['lDEF'],
+                (array) $ffData['data']['sDEF']['lDEF'],
                 'ct_',
                 $correlationTypeList,
                 $cUid,
