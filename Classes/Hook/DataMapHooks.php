@@ -324,8 +324,6 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 * @return array
 	 */
 	protected function preProcessOrder(array $incomingFieldArray, $table, $id, DataHandler &$pObj) {
-		$incomingFieldArray['crdate'] = NULL;
-
 		if (isset($incomingFieldArray['newpid'])) {
 			$hookObjectsArr = $this->getMoveOrderHooks();
 
