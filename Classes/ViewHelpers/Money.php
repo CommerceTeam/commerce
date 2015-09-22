@@ -65,6 +65,9 @@ class Tx_Commerce_ViewHelpers_Money {
 		if (is_float($amount)) {
 			return FALSE;
 		}
+		if ($currency == '') {
+			$currency = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['defaultCurrency'];
+		}
 
 		$database = self::getDatabaseConnection();
 

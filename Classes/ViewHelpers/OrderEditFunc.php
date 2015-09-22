@@ -84,7 +84,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 	 */
 	public function sumPriceGrossFormat(array $parameter) {
 		$content = '<input type="text" disabled name="' . $parameter['itemFormElName'] . '" value="' .
-			Tx_Commerce_ViewHelpers_Money::format($parameter['itemFormElValue'] / 100, '') . '">';
+			Tx_Commerce_ViewHelpers_Money::format(intval(round($parameter['itemFormElValue'])), '') . '">';
 		return $content;
 	}
 
@@ -201,11 +201,11 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 					$row['price_net'] = $row['price_gross'] / (1 + (((float) $row['tax']) / 100));
 				}
 
-				$sum['price_net_value'] += $row['price_net'] / 100;
-				$sum['price_gross_value'] += $row['price_gross'] / 100;
+				$sum['price_net_value'] += $row['price_net'];
+				$sum['price_gross_value'] += $row['price_gross'];
 
-				$row['price_net'] = Tx_Commerce_ViewHelpers_Money::format($row['price_net'] / 100, '');
-				$row['price_gross'] = Tx_Commerce_ViewHelpers_Money::format($row['price_gross'] / 100, '');
+				$row['price_net'] = Tx_Commerce_ViewHelpers_Money::format(intval(round($row['price_net'])), '');
+				$row['price_gross'] = Tx_Commerce_ViewHelpers_Money::format(intval(round($row['price_gross'])), '');
 
 				$rowBgColor = ($cc % 2 ? '' : ' bgcolor="' .
 					GeneralUtility::modifyHTMLColor($GLOBALS['SOBE']->doc->bgColor4, + 10, + 10, + 10) . '"');
@@ -264,11 +264,11 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 
 			$out .= $iOut;
 			/**
-			 * Cerate the summ row
+			 * Cerate the sum row
 			 */
 			$out .= '<tr>';
-			$sum['price_net'] = Tx_Commerce_ViewHelpers_Money::format($sum['price_net_value'], '');
-			$sum['price_gross'] = Tx_Commerce_ViewHelpers_Money::format($sum['price_gross_value'], '');
+			$sum['price_net'] = Tx_Commerce_ViewHelpers_Money::format(intval(round($sum['price_net_value'])), '');
+			$sum['price_gross'] = Tx_Commerce_ViewHelpers_Money::format(intval(round($sum['price_gross_value'])), '');
 
 			foreach ($fieldRows as $field) {
 				switch ($field) {
@@ -282,7 +282,7 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 						$out .= '<td class="c-headLineTable"><b>';
 				}
 
-				if ($sum[$field] > 0) {
+				if ($sum[$field] != '') {
 					$out .= BackendUtility::getProcessedValueExtra($foreignTable, $field, $sum[$field], 100);
 				}
 
@@ -290,14 +290,6 @@ class Tx_Commerce_ViewHelpers_OrderEditFunc {
 			}
 
 			$out .= '<td class="c-headLineTable"></td></tr>';
-
-			/**
-			 * Always
-			 * Update sum_price_net and sum_price_gross
-			 * To Be shure everything is ok
-			 */
-			$values = array('sum_price_gross' => $sum['price_gross_value'] * 100, 'sum_price_net' => $sum['price_net_value'] * 100);
-			$database->exec_UPDATEquery($table, 'order_id=\'' . $database->quoteStr($orderId, $foreignTable) . '\'', $values);
 		}
 
 		$out = '
