@@ -372,7 +372,7 @@ class Tx_Commerce_Controller_InvoiceController extends Tx_Commerce_Controller_Ba
 	protected function getOrderData() {
 		$database = $this->getDatabaseConnection();
 
-		$queryString = 'order_id="' . mysql_real_escape_string($this->order_id) . '"';
+		$queryString = 'order_id=' . $database->fullQuoteStr($this->order_id, 'tx_commerce_orders');
 		$queryString .= $this->cObj->enableFields('tx_commerce_orders');
 		if ($this->user) {
 			$queryString .= ' AND cust_fe_user = ' . (int) $this->user['uid'];
