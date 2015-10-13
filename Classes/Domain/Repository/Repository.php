@@ -334,22 +334,23 @@ class Repository
     }
 
     /**
-     * Get enableFields.
+     * Get enableFields
      *
-     * @param string $tableName Table name
-     * @param bool|int $showHiddenRecords Show hidden records
+     * @param string $tableName
+     * @param boolean $showHiddenRecords
+     * @param string $replace
      *
      * @return string
      */
-    public function enableFields($tableName, $showHiddenRecords = -1)
-    {
+    public function enableFields($tableName, $showHiddenRecords = -1, $replace = '') {
         if (TYPO3_MODE === 'FE') {
-            $showHiddenRecords = $showHiddenRecords ?
-                $showHiddenRecords :
-                $this->getFrontendController()->showHiddenRecords;
-            $result = $this->getFrontendController()->sys_page->enableFields($tableName, $showHiddenRecords);
+            $result = $GLOBALS['TSFE']->sys_page->enableFields($tableName, $showHiddenRecords);
         } else {
-            $result = \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($tableName);
+            $result = t3lib_BEfunc::BEenableFields($tableName);
+        }
+
+        if ($replace != '') {
+            $result = str_replace($tableName . '.', $replace . '.', $result);
         }
 
         return $result;

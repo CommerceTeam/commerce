@@ -321,29 +321,25 @@ class CategoryRepository extends Repository
             $localOrderField = $hookObject->productOrder($localOrderField, $this);
         }
 
-        $whereClause = 'AND tx_commerce_products_categories_mm.uid_foreign = ' . $uid . '
-            AND tx_commerce_products.uid = tx_commerce_articles.uid_product
-            AND tx_commerce_articles.uid = tx_commerce_article_prices.uid_article ';
-        $whereClause .= ' AND tx_commerce_article_prices.price_gross > 0';
-
-        if (is_object($frontend->sys_page)) {
-            $whereClause .= $this->enableFields('tx_commerce_products', $frontend->showHiddenRecords);
-            $whereClause .= $this->enableFields('tx_commerce_articles', $frontend->showHiddenRecords);
-            $whereClause .= $this->enableFields('tx_commerce_article_prices', $frontend->showHiddenRecords);
+        $whereClause = 'mm.uid_foreign = ' . (int) $uid;
+        if (is_object($GLOBALS['TSFE']->sys_page)) {
+            $whereClause .= $this->enableFields('tx_commerce_products', $GLOBALS['TSFE']->showHiddenRecords);
+            $whereClause .= $this->enableFields('tx_commerce_articles', $GLOBALS['TSFE']->showHiddenRecords, 'a');
+            $whereClause .= $this->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords, 'ap');
         }
 
-            // Versioning - no deleted or versioned records, nor live placeholders
-        $whereClause .= ' AND tx_commerce_products.deleted = 0
-            AND tx_commerce_products.pid != -1
-            AND tx_commerce_products.t3ver_state != 1';
+        // Versioning - no deleted or versioned records, nor live placeholders
+        $whereClause .= ' AND tx_commerce_products.deleted = 0 AND tx_commerce_products.pid != -1 AND tx_commerce_products.t3ver_state != 1';
         $queryArray = array(
-            'SELECT' => 'tx_commerce_products.uid',
-            'FROM' => 'tx_commerce_products, tx_commerce_products_categories_mm, tx_commerce_articles,
-                tx_commerce_article_prices',
-            'WHERE' => 'tx_commerce_products.uid = tx_commerce_products_categories_mm.uid_local ' . $whereClause,
-            'GROUPBY' => 'tx_commerce_products.uid',
+            'SELECT' => 'DISTINCT(tx_commerce_products.uid)',
+            'FROM' => 'tx_commerce_products
+             INNER JOIN tx_commerce_products_categories_mm AS mm ON tx_commerce_products.uid = mm.uid_local
+             INNER JOIN tx_commerce_articles AS a ON tx_commerce_products.uid = a.uid_product
+             INNER JOIN tx_commerce_article_prices AS ap ON a.uid = ap.uid_article',
+            'WHERE' => $whereClause,
+            'GROUPBY' => '',
             'ORDERBY' => $localOrderField,
-            'LIMIT' => '',
+            'LIMIT' => ''
         );
 
         if (is_object($hookObject) && method_exists($hookObject, 'productQueryPreHook')) {
