@@ -1298,6 +1298,7 @@ class Navigation
             $this->mConf['overridePid'] :
             $this->getFrontendController()->id
         );
+        $this->entryLevel = (int) $this->mConf['entryLevel'];
         $this->gpVars = GeneralUtility::_GPmerged($this->prefixId);
 
         \CommerceTeam\Commerce\Utility\GeneralUtility::initializeFeUserBasket();
@@ -1313,7 +1314,7 @@ class Navigation
         }
 
         $returnArray = array();
-        $returnArray = $this->getCategoryRootlineforTypoScript($this->gpVars['catUid'], $returnArray);
+        $returnArray = $this->getCategoryRootlineforTypoScript((int)$this->gpVars['catUid'], $returnArray);
 
         /*
          * Add product to rootline, if a product is displayed and showProducts
@@ -1353,7 +1354,7 @@ class Navigation
             $cHash = $this->generateChash($addGetvars . $this->getFrontendController()->linkVars);
 
             /*
-             * Currentyl no Navtitle in tx_commerce_products
+             * Currently no Navtitle in tx_commerce_products
              * 'nav_title' => $ProductObject->get_navtitle(),
              */
             if ($product->getUid() == $this->gpVars['showUid']) {
@@ -1372,6 +1373,12 @@ class Navigation
                 'title' => $product->getTitle(),
                 '_PAGES_OVERLAY' => $product->getTitle(),
             );
+        }
+
+        if ($this->entryLevel) {
+            for ($i = 0; $i < $this->entryLevel; $i++) {
+                array_shift($returnArray);
+            }
         }
 
         return $returnArray;
@@ -1453,11 +1460,11 @@ class Navigation
         /**
          * Navigation cache frontend.
          *
-         * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend $navigationCache
+         * @var \TYPO3\CMS\Core\Cache\CacheManager $navigationCache
          */
-        $navigationCache = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')
-            ->getCache('commerce_navigation');
-        $navigationCache->set($hash, $data);
+        $navigationCache = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager');
+        $cacheFrontend = $navigationCache->getCache('commerce_navigation');
+        $cacheFrontend->set($hash, $data);
     }
 
     /**
@@ -1474,12 +1481,12 @@ class Navigation
         /**
          * Navigation cache frontend.
          *
-         * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend $navigationCache
+         * @var \TYPO3\CMS\Core\Cache\CacheManager $navigationCache
          */
-        $navigationCache = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')
-            ->getCache('commerce_navigation');
+        $navigationCache = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager');
+        $cacheFrontend = $navigationCache->getCache('commerce_navigation');
 
-        return $navigationCache->get($hash);
+        return $cacheFrontend->get($hash);
     }
 
     /**
