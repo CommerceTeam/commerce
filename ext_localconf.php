@@ -138,8 +138,6 @@ $boot = function ($packageKey) {
             'className' => 'CommerceTeam\\Commerce\\Xclass\\NewRecordController',
         );
 
-        require_once PATH_TXCOMMERCE . 'Classes/Utility/TyposcriptConfig.php';
-
         // CLI Script configuration
         // Add statistic task
         /* @noinspection PhpUndefinedVariableInspection */

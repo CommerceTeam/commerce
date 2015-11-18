@@ -1,7 +1,7 @@
 [CommerceTeam\Commerce\Utility\TyposcriptConfig]
 mod.web_list.allowedNewTables = tx_commerce_products,tx_commerce_categories
 [else]
-mod.web_list.deniedNewTables = tx_commerce_products,tx_commerce_categories
+mod.web_list.deniedNewTables = tx_commerce_address_types, tx_commerce_article_prices, tx_commerce_article_types, tx_commerce_articles, tx_commerce_attribute_values, tx_commerce_attributes, tx_commerce_baskets, tx_commerce_categories, tx_commerce_manufacturer, tx_commerce_moveordermails, tx_commerce_newclients, tx_commerce_order_articles, tx_commerce_order_types, tx_commerce_orders, tx_commerce_products, tx_commerce_salesfigures, tx_commerce_supplier, tx_commerce_tracking, tx_commerce_trackingcodes, tx_commerce_user_states
 [GLOBAL]
 
 mod.commerce_category.enableDisplayBigControlPanel = selectable
