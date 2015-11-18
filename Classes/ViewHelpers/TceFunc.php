@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Backend\Form\FormEngine;
+use TYPO3\CMS\Backend\Form\Element\UserElement;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -29,9 +29,9 @@ class TceFunc
     /**
      * Form engine.
      *
-     * @var FormEngine
+     * @var UserElement
      */
-    protected $tceForms;
+    protected $userElement;
 
     /**
      * This will render a selector box element for selecting elements
@@ -39,13 +39,14 @@ class TceFunc
      * Depending on the tree it display full trees or root elements only.
      *
      * @param array $parameter An array with additional configuration options.
-     * @param FormEngine $fObj TCEForms object reference
+     * @param UserElement $userElement TCEForms object reference
      *
      * @return string The HTML code for the TCEform field
      */
-    public function getSingleField_selectCategories(array $parameter, FormEngine &$fObj)
+    public function getSingleFieldSelectCategories(array $parameter, UserElement $userElement)
     {
-        $this->tceForms = &$parameter['pObj'];
+        $this->userElement = $userElement;
+        $languageService = $this->getLanguageService();
 
         $table = $parameter['table'];
         $field = $parameter['field'];
@@ -53,35 +54,11 @@ class TceFunc
         $config = $parameter['fieldConf']['config'];
 
         $disabled = '';
-        if ($this->tceForms->renderReadonly || $config['readOnly']) {
+        if ($config['readOnly']) {
             $disabled = ' disabled="disabled"';
         }
 
-        // @todo it seems TCE has a bug and do not work correctly with '1'
-        $config['maxitems'] = ($config['maxitems'] == 2) ? 1 : $config['maxitems'];
-
-        // read the permissions we are restricting the tree to, depending on the table
-        $perms = 'show';
-
-        switch ($table) {
-            case 'tx_commerce_categories':
-                $perms = 'new';
-                break;
-
-            case 'tx_commerce_products':
-                $perms = 'editcontent';
-                break;
-
-            case 'tt_content':
-                // fall through
-            case 'be_groups':
-                // fall through
-            case 'be_users':
-                $perms = 'show';
-                break;
-
-            default:
-        }
+        $permissions = $this->getPermissions($table);
 
         /**
          * Category tree.
@@ -92,7 +69,7 @@ class TceFunc
         // disabled clickmenu
         $categoryTree->noClickmenu();
         // set the minimum permissions
-        $categoryTree->setMinCategoryPerms($perms);
+        $categoryTree->setMinCategoryPerms($permissions);
 
         if ($config['allowProducts']) {
             $categoryTree->setBare(false);
@@ -129,10 +106,177 @@ class TceFunc
             $thumbnails = $renderBrowseTrees->renderDivBox();
         }
 
-        // get selected processed items - depending on the table we want to insert
-        // into (tx_commerce_products, tx_commerce_categories, be_users)
-        // if row['uid'] is defined and is an int we do display an existing record
-        // otherwise it's a new record, so get default values
+        $itemArray = $this->getSelectedProcessedItems($table, $row, $parameter, $renderBrowseTrees);
+
+        // process selected values
+        // Creating the label for the "No Matching Value" entry.
+        $noMatchingValueLabel = isset($parameter['fieldTSConfig']['noMatchingValue_label']) ?
+            $languageService->sL($parameter['fieldTSConfig']['noMatchingValue_label']) :
+            '[ ' . $languageService->getLL('l_noMatchingValue') . ' ]';
+        $noMatchingValueLabel = @sprintf($noMatchingValueLabel, $parameter['itemFormElValue']);
+
+        // Possibly remove some items:
+        $removeItems = GeneralUtility::trimExplode(',', $parameter['fieldTSConfig']['removeItems'], true);
+        foreach ($itemArray as $tk => $tv) {
+            $tvP = explode('|', $tv, 2);
+            if (in_array($tvP[0], $removeItems) && !$parameter['fieldTSConfig']['disableNoMatchingValueElement']) {
+                $tvP[1] = rawurlencode($noMatchingValueLabel);
+            } elseif (isset($parameter['fieldTSConfig']['altLabels.'][$tvP[0]])) {
+                $tvP[1] = rawurlencode($languageService->sL($parameter['fieldTSConfig']['altLabels.'][$tvP[0]]));
+            }
+            $itemArray[$tk] = implode('|', $tvP);
+        }
+
+        // Rendering and output
+        $minitems = max($config['minitems'], 0);
+        $maxitems = max($config['maxitems'], 0);
+        if (!$maxitems) {
+            $maxitems = 100000;
+        }
+
+        $this->userElement->requiredElements[$parameter['itemFormElName']] = array(
+            $minitems,
+            $maxitems,
+            'imgName' => $table . '_' . $row['uid'] . '_' . $field
+        );
+
+        $item = '<input type="hidden" name="' . $parameter['itemFormElName'] . '_mul" value="' .
+            ($config['multiple'] ? 1 : 0) . '"' . $disabled . ' />';
+
+        $params = array(
+            'size' => $config['size'],
+            'autoSizeMax' => \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($config['autoSizeMax'], 0),
+            'style' => ' style="width:200px;"',
+            'dontShowMoveIcons' => ($maxitems <= 1),
+            'maxitems' => $maxitems,
+            'info' => '',
+            'headers' => array(
+                'selector' => $languageService->getLL('l_selected') . ':<br />',
+                'items' => ($disabled ? '' : $languageService->getLL('l_items') . ':<br />'),
+            ),
+            'noBrowser' => true,
+            'readOnly' => $disabled,
+            'thumbnails' => $thumbnails,
+        );
+
+        $item .= '
+		<style type="text/css">
+		.x-tree-root-ct ul {
+			padding: 0 0 0 19px;
+			margin: 0;
+		}
+
+		.x-tree-root-ct {
+			padding-left: 0;
+		}
+
+		tr:hover .x-tree-root-ct a {
+			text-decoration: none;
+		}
+
+		.x-tree-root-ct li {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		.x-tree-root-ct ul li.expanded ul {
+			background: url("' . $this->userElement->backPath . 'sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
+		}
+
+		.x-tree-root-ct ul li.expanded.last ul {
+			background: none;
+		}
+
+		.x-tree-root-ct li {
+			clear: left;
+			margin-bottom: 0;
+		}
+		</style>
+		';
+
+        $item .= $this->userElement->dbFileIcons(
+            $parameter['itemFormElName'],
+            $config['internal_type'],
+            $config['allowed'],
+            $itemArray,
+            '',
+            $params,
+            $parameter['onFocus']
+        );
+
+        // Wizards:
+        if (!$disabled) {
+            $specConf = \TYPO3\CMS\Backend\Utility\BackendUtility::getSpecConfParts(
+                $parameter['extra'],
+                $parameter['fieldConf']['defaultExtras']
+            );
+
+            $altItem = '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' .
+                htmlspecialchars($parameter['itemFormElValue']) . '" />';
+            $item = $this->userElement->renderWizards(
+                array($item, $altItem),
+                $config['wizards'],
+                $table,
+                $row,
+                $field,
+                $parameter,
+                $parameter['itemFormElName'],
+                $specConf
+            );
+        }
+
+        return $item;
+    }
+
+    /**
+     * @param string $table
+     *
+     * @return string
+     */
+    protected function getPermissions($table)
+    {
+        // read the permissions we are restricting the tree to, depending on the table
+        $permissions = 'show';
+
+        switch ($table) {
+            case 'tx_commerce_categories':
+                $permissions = 'new';
+                break;
+
+            case 'tx_commerce_products':
+                $permissions = 'editcontent';
+                break;
+
+            case 'tt_content':
+                // fall through
+            case 'be_groups':
+                // fall through
+            case 'be_users':
+                $permissions = 'show';
+                break;
+
+            default:
+        }
+
+        return $permissions;
+    }
+
+    /**
+     * get selected processed items - depending on the table we want to insert
+     * into (tx_commerce_products, tx_commerce_categories, be_users)
+     * if row['uid'] is defined and is an int we do display an existing record
+     * otherwise it's a new record, so get default values
+     *
+     * @param string $table
+     * @param array $row
+     * @param array $parameter
+     * @param \CommerceTeam\Commerce\ViewHelpers\TreelibTceforms $renderBrowseTrees
+     *
+     * @return array
+     */
+    protected function getSelectedProcessedItems($table, $row, $parameter, $renderBrowseTrees)
+    {
         $itemArray = array();
 
         if ((int) $row['uid']) {
@@ -182,7 +326,7 @@ class TceFunc
             }
         } else {
             // New record
-            $defVals = GeneralUtility::_GP('defVals');
+            $defaultValues = GeneralUtility::_GP('defVals');
             switch ($table) {
                 case 'tx_commerce_categories':
                     /**
@@ -192,10 +336,12 @@ class TceFunc
                      */
                     $category = GeneralUtility::makeInstance(
                         'CommerceTeam\\Commerce\\Domain\\Model\\Category',
-                        $defVals['tx_commerce_categories']['parent_category']
+                        $defaultValues['tx_commerce_categories']['parent_category']
                     );
                     $category->loadData();
-                    $itemArray = array($category->getUid() . '|' . $category->getTitle());
+                    if ($category->getUid() > 0) {
+                        $itemArray = array($category->getUid() . '|' . $category->getTitle());
+                    }
                     break;
 
                 case 'tx_commerce_products':
@@ -206,7 +352,7 @@ class TceFunc
                      */
                     $category = GeneralUtility::makeInstance(
                         'CommerceTeam\\Commerce\\Domain\\Model\\Category',
-                        $defVals['tx_commerce_products']['categories']
+                        $defaultValues['tx_commerce_products']['categories']
                     );
                     $category->loadData();
                     if ($category->getUid() > 0) {
@@ -218,123 +364,14 @@ class TceFunc
             }
         }
 
-        // process selected values
-        // Creating the label for the "No Matching Value" entry.
-        $noMatchingValueLabel = isset($parameter['fieldTSConfig']['noMatchingValue_label']) ?
-            $this->tceForms->sL($parameter['fieldTSConfig']['noMatchingValue_label']) :
-            '[ ' . $this->tceForms->getLL('l_noMatchingValue') . ' ]';
-        $noMatchingValueLabel = @sprintf($noMatchingValueLabel, $parameter['itemFormElValue']);
+        return $itemArray;
+    }
 
-        // Possibly remove some items:
-        $removeItems = GeneralUtility::trimExplode(',', $parameter['fieldTSConfig']['removeItems'], true);
-        foreach ($itemArray as $tk => $tv) {
-            $tvP = explode('|', $tv, 2);
-            if (in_array($tvP[0], $removeItems) && !$parameter['fieldTSConfig']['disableNoMatchingValueElement']) {
-                $tvP[1] = rawurlencode($noMatchingValueLabel);
-            } elseif (isset($parameter['fieldTSConfig']['altLabels.'][$tvP[0]])) {
-                $tvP[1] = rawurlencode($this->tceForms->sL($parameter['fieldTSConfig']['altLabels.'][$tvP[0]]));
-            }
-            $itemArray[$tk] = implode('|', $tvP);
-        }
-
-        // Rendering and output
-        $minitems = max($config['minitems'], 0);
-        $maxitems = max($config['maxitems'], 0);
-        if (!$maxitems) {
-            $maxitems = 100000;
-        }
-
-        $this->tceForms->requiredElements[$parameter['itemFormElName']] = array(
-            $minitems,
-            $maxitems,
-            'imgName' => $table . '_' . $row['uid'] . '_' . $field
-        );
-
-        $item = '<input type="hidden" name="' . $parameter['itemFormElName'] . '_mul" value="' .
-            ($config['multiple'] ? 1 : 0) . '"' . $disabled . ' />';
-
-        $params = array(
-            'size' => $config['size'],
-            'autoSizeMax' => \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($config['autoSizeMax'], 0),
-            'style' => ' style="width:200px;"',
-            'dontShowMoveIcons' => ($maxitems <= 1),
-            'maxitems' => $maxitems,
-            'info' => '',
-            'headers' => array(
-                'selector' => $this->tceForms->getLL('l_selected') . ':<br />',
-                'items' => ($disabled ? '' : $this->tceForms->getLL('l_items') . ':<br />'),
-            ),
-            'noBrowser' => true,
-            'readOnly' => $disabled,
-            'thumbnails' => $thumbnails,
-        );
-
-        $item .= '
-		<style type="text/css">
-		.x-tree-root-ct ul {
-			padding: 0 0 0 19px;
-			margin: 0;
-		}
-
-		.x-tree-root-ct {
-			padding-left: 0;
-		}
-
-		tr:hover .x-tree-root-ct a {
-			text-decoration: none;
-		}
-
-		.x-tree-root-ct li {
-			list-style: none;
-			margin: 0;
-			padding: 0;
-		}
-
-		.x-tree-root-ct ul li.expanded ul {
-			background: url("' . $this->tceForms->backPath . 'sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
-		}
-
-		.x-tree-root-ct ul li.expanded.last ul {
-			background: none;
-		}
-
-		.x-tree-root-ct li {
-			clear: left;
-			margin-bottom: 0;
-		}
-		</style>
-		';
-
-        $item .= $this->tceForms->dbFileIcons(
-            $parameter['itemFormElName'],
-            $config['internal_type'],
-            $config['allowed'],
-            $itemArray,
-            '',
-            $params,
-            $parameter['onFocus']
-        );
-
-        // Wizards:
-        if (!$disabled) {
-            $specConf = $this->tceForms->getSpecConfFromString(
-                $parameter['extra'],
-                $parameter['fieldConf']['defaultExtras']
-            );
-            $altItem = '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' .
-                htmlspecialchars($parameter['itemFormElValue']) . '" />';
-            $item = $this->tceForms->renderWizards(
-                array($item, $altItem),
-                $config['wizards'],
-                $table,
-                $row,
-                $field,
-                $parameter,
-                $parameter['itemFormElName'],
-                $specConf
-            );
-        }
-
-        return $item;
+    /**
+     * @return \TYPO3\CMS\Lang\LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
     }
 }

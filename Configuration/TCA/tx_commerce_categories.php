@@ -13,9 +13,11 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+$languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:';
+
 return array(
     'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories',
+        'title' => $languageFile . 'tx_commerce_categories',
         'label' => 'title',
         'sortby' => 'sorting',
         'tstamp' => 'tstamp',
@@ -147,15 +149,14 @@ return array(
         ),
         'extendToSubpages' => array(
             'exclude' => 1,
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.extendToSubpages',
+            'label' => $languageFile . 'tx_commerce_categories.extendToSubpages',
             'config' => array(
                 'type' => 'check',
             ),
         ),
         'title' => array(
             'exclude' => 0,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.title',
+            'label' => $languageFile . 'tx_commerce_categories.title',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -165,7 +166,7 @@ return array(
         ),
         'subtitle' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.subtitle',
+            'label' => $languageFile . 'tx_commerce_categories.subtitle',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -175,8 +176,7 @@ return array(
         ),
         'description' => array(
             'exclude' => 1,
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.description',
+            'label' => $languageFile . 'tx_commerce_categories.description',
             'config' => array(
                 'type' => 'text',
                 'cols' => '30',
@@ -189,14 +189,16 @@ return array(
                         'type' => 'script',
                         'title' => 'Full screen Rich Text Editing',
                         'icon' => 'wizard_rte2.gif',
-                        'script' => 'wizard_rte.php',
+                        'module' => array(
+                            'name' => 'commerce_wizard_rte'
+                        ),
                     ),
                 ),
             ),
         ),
         'images' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.images',
+            'label' => $languageFile . 'tx_commerce_categories.images',
             'l10n_mode' => 'mergeIfNotBlank',
             'config' => array(
                 'type' => 'group',
@@ -212,7 +214,7 @@ return array(
         ),
         'navtitle' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.navtitle',
+            'label' => $languageFile . 'tx_commerce_categories.navtitle',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -222,7 +224,7 @@ return array(
         ),
         'keywords' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.keywords',
+            'label' => $languageFile . 'tx_commerce_categories.keywords',
             'config' => array(
                 'type' => 'text',
                 'cols' => '30',
@@ -232,26 +234,27 @@ return array(
         'parent_category' => array(
             'exclude' => 0,
             'l10n_mode' => 'exclude',
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.parent_category',
+            'label' => $languageFile . 'tx_commerce_categories.parent_category',
             'config' => array(
-                'type' => 'group',
-                'internal_type' => 'passthrough',
-                'allowed' => 'tx_commerce_categories',
-                'form_type' => 'user',
-                'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\TceFunc->getSingleField_selectCategories',
-                'treeView' => 1,
-                'treeClass' => 'CommerceTeam\\Commerce\\ViewHelpers\\TceFunc\\CategoryTree',
-                'size' => 7,
-                'autoSizeMax' => 10,
+                'type' => 'select',
+                'foreign_table' => 'tx_commerce_categories',
+                'size' => 10,
                 'minitems' => 1,
                 'maxitems' => 20,
+                'renderMode' => 'tree',
+                'treeConfig' => array(
+                    'expandAll' => true,
+                    'parentField' => 'parent_category',
+                    'appearance' => array(
+                        'showHeader' => true,
+                    ),
+                ),
             ),
         ),
         'ts_config' => array(
             'exclude' => 1,
             'l10n_mode' => 'mergeIfNotBlank',
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.ts_config',
+            'label' => $languageFile . 'tx_commerce_categories.ts_config',
             'config' => array(
                 'type' => 'text',
                 'cols' => '30',
@@ -261,7 +264,7 @@ return array(
         'attributes' => array(
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.attributes',
+            'label' => $languageFile . 'tx_commerce_products.attributes',
             'config' => array(
                 'type' => 'flex',
                 'ds' => array(
@@ -280,7 +283,7 @@ return array(
         ),
         'teaser' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.teaser',
+            'label' => $languageFile . 'tx_commerce_products.teaser',
             'config' => array(
                 'type' => 'text',
                 'cols' => '30',
@@ -289,7 +292,7 @@ return array(
         ),
         'teaserimages' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.teaserimages',
+            'label' => $languageFile . 'tx_commerce_products.teaserimages',
             'l10n_mode' => 'mergeIfNotBlank',
             'config' => array(
                 'type' => 'group',
@@ -311,7 +314,7 @@ return array(
                 description;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/],
                 images, teaser;;;;3-3-3, teaserimages, navtitle, keywords,parent_category;;;;1-1-1,
                 relatedpage;;;;1-1-1, ts_config;;;;1-1-1,
-        --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.select_attributes,
+            --div--;' . $languageFile . 'tx_commerce_categories.select_attributes,
                 attributes',
         ),
     ),

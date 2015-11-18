@@ -15,8 +15,6 @@
 require_once('conf.php');
 define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/Modules/OrdersNavigationFrame/');
 $BACK_PATH = '../../../../../typo3/';
-/** @noinspection PhpIncludeInspection */
-require_once($BACK_PATH . 'init.php');
 
 // Make instance if it is not an AJAX call
 if (!(defined('TYPO3_REQUESTTYPE') && defined('TYPO3_REQUESTTYPE_AJAX')) ||

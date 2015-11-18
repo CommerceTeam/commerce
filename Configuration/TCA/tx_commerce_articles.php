@@ -346,7 +346,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
             images, plain_text, tax, supplier_uid, article_type_uid, relatedpage;;;;1-1-1, products_uid,
             article_attributes,' .
                 (
-                    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'] ? '' : '
+                    $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][COMMERCE_EXTKEY]['simpleMode'] ? '' : '
             --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes,
             attributesedit,
                     '

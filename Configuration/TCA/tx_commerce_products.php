@@ -492,7 +492,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
     ),
 );
 
-if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode']) {
+if ($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][COMMERCE_EXTKEY]['simpleMode']) {
     $GLOBALS['TCA']['tx_commerce_products']['columns']['articles'] = array(
         'exclude' => 1,
         'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.articles',
