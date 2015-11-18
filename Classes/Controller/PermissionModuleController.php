@@ -60,6 +60,16 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
     }
 
     /**
+     * @return void
+     */
+    public static function render()
+    {
+        $instance = GeneralUtility::makeInstance(self::class);
+        $instance->main();
+        $instance->printContent();
+    }
+
+    /**
      * Initialization of the class.
      *
      * @return void

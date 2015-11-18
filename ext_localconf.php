@@ -1,18 +1,6 @@
 <?php
 defined('TYPO3_MODE') or die();
 
-/*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
 $boot = function ($packageKey) {
     $typo3ConfVars = $GLOBALS['TYPO3_CONF_VARS'];
     $scOptions = $typo3ConfVars['SC_OPTIONS'];
@@ -167,6 +155,7 @@ $boot = function ($packageKey) {
 
     $scOptions['typo3/backend.php']['renderPreProcess']['commerce'] =
         'CommerceTeam\\Commerce\\Hook\\BackendHooks->addJsFiles';
+
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
         'TYPO3.Components.SystemdataNavframe.DataProvider',
         'CommerceTeam\\Commerce\\Tree\\Pagetree\\ExtdirectSystemdataNavigationProvider',
@@ -184,7 +173,7 @@ $boot = function ($packageKey) {
 
     // Add ajax listener for tree in linkcommerce
     $typo3ConfVars['BE']['AJAX']['CommerceTeam\\Commerce\\Hook\\BrowselinksHooks::ajaxExpandCollapse'] =
-        'EXT:commerce/Classes/Hook/BrowselinksHooks.php:CommerceTeam\\Commerce\\Hook\\BrowselinksHooks->ajaxExpandCollapse';
+    'EXT:commerce/Classes/Hook/BrowselinksHooks.php:CommerceTeam\\Commerce\\Hook\\BrowselinksHooks->ajaxExpandCollapse';
 
     // Hooks for datamap procesing
     // For processing the order sfe, when changing the pid
@@ -242,5 +231,5 @@ $boot = function ($packageKey) {
         'EXT:commerce/Configuration/DCA/Articles.php:CommerceTeam\\Commerce\\Configuration\\Dca\\Articles';
 };
 
-$boot($_EXTKEY);
+$boot('commerce');
 unset($boot);

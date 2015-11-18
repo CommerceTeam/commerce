@@ -101,8 +101,6 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $this->cmd = GeneralUtility::_GP('cmd');
         $this->cmd_table = GeneralUtility::_GP('cmd_table');
 
-        // Module name;
-        $this->MCONF = $GLOBALS['MCONF'];
         // Page select clause:
         $this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);
 
