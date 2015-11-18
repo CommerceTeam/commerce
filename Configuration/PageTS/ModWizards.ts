@@ -1,5 +1,7 @@
-[userFunc = user_isCommercePage()]
+[CommerceTeam\Commerce\Utility\TyposcriptConfig]
 mod.web_list.allowedNewTables = tx_commerce_products,tx_commerce_categories
+[else]
+mod.web_list.deniedNewTables = tx_commerce_products,tx_commerce_categories
 [GLOBAL]
 
 mod.commerce_category.enableDisplayBigControlPanel = selectable

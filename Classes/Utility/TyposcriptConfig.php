@@ -21,30 +21,20 @@ namespace CommerceTeam\Commerce\Utility;
  *
  * @author 2014 Sebastian Fischer <typo3@marketing-factory.de>
  */
-class TyposcriptConfig
+class TyposcriptConfig extends \TYPO3\CMS\Core\Configuration\TypoScript\ConditionMatching\AbstractCondition
 {
     /**
      * Is commerce page check.
      *
+     * @param array $conditionParameters
      * @return bool
      */
-    public static function isCommercePage()
+    public function matchCondition(array $conditionParameters)
     {
-        $table = 'pages';
         $pageId = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
 
-        $record = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL($table, $pageId);
+        $record = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL('pages', $pageId);
 
         return is_array($record) && isset($record['module']) && $record['module'] == 'commerce';
     }
-}
-
-/**
- * Check if a commerce plugin is on the page.
- *
- * @return bool
- */
-function user_isCommercePage()
-{
-    return \CommerceTeam\Commerce\Utility\TyposcriptConfig::isCommercePage();
 }
