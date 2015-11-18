@@ -66,6 +66,16 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
     }
 
     /**
+     * @return void
+     */
+    public static function render()
+    {
+        $instance = GeneralUtility::makeInstance(self::class);
+        $instance->main();
+        $instance->printContent();
+    }
+
+    /**
      * Initialization.
      *
      * @return void

@@ -47,7 +47,18 @@ if (TYPO3_MODE == 'BE') {
         'commerce',
         '',
         'after:file',
-        PATH_TXCOMMERCE . 'Modules/Main/'
+        PATH_TXCOMMERCE . 'Modules/Main/',
+        [
+            'script' => '_DISPATCH',
+            'name' => 'commerce',
+            'workspaces' => 'online',
+            'labels' => array(
+                'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_main.xml',
+                'tabs_images' => [
+                    'tab' => 'EXT:commerce/Resources/Public/Icons/mod_main.gif'
+                ],
+            ),
+        ]
     );
 
     // add category module
@@ -55,7 +66,23 @@ if (TYPO3_MODE == 'BE') {
         'commerce',
         'category',
         '',
-        PATH_TXCOMMERCE . 'Modules/Category/'
+        PATH_TXCOMMERCE . 'Modules/Category/',
+        [
+            'script' => '_DISPATCH',
+            'name' => 'commerce_category',
+            'access' => 'user,group',
+            // for links generated in the module and the navFrame
+            'route' => 'CommerceTeam_commerce_Category',
+            'workspaces' => 'online',
+            'labels' => array(
+                'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_category.xml',
+                'tabs_images' => [
+                    'tab' => 'EXT:commerce/Resources/Public/Icons/mod_category.gif'
+                ],
+            ),
+            'navigationFrameModule' => 'CommerceTeam_commerce_CategoryNavigation',
+            'navigationFrameModuleParameters' => array('currentModule' => 'commerce_category'),
+        ]
     );
 
     // Access Module
@@ -63,15 +90,47 @@ if (TYPO3_MODE == 'BE') {
         'commerce',
         'permission',
         '',
-        PATH_TXCOMMERCE . 'Modules/Permission/'
+        PATH_TXCOMMERCE . 'Modules/Permission/',
+        [
+            'script' => '_DISPATCH',
+            'name' => 'commerce_permission',
+            'access' => 'user,group',
+            // for links generated in the module and the navFrame
+            'route' => 'CommerceTeam_commerce_Permission',
+            'workspaces' => 'online',
+            'labels' => array(
+                'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_access.xml',
+                'tabs_images' => [
+                    'tab' => 'EXT:commerce/Resources/Public/Icons/mod_access.gif'
+                ],
+            ),
+            'navigationFrameModule' => 'CommerceTeam_commerce_CategoryNavigation',
+            'navigationFrameModuleParameters' => array('currentModule' => 'commerce_permission'),
+        ]
     );
 
     // Orders module
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
         'commerce',
-        'orders',
+        'order',
         '',
-        PATH_TXCOMMERCE . 'Modules/Orders/'
+        PATH_TXCOMMERCE . 'Modules/Order/',
+        [
+            'script' => '_DISPATCH',
+            'name' => 'commerce_order',
+            'access' => 'user,group',
+            // for links generated in the module and the navFrame
+            'route' => 'CommerceTeam_commerce_Order',
+            'workspaces' => 'online',
+            'labels' => array(
+                'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml',
+                'tabs_images' => [
+                    'tab' => 'EXT:commerce/Resources/Public/Icons/mod_orders.gif'
+                ],
+            ),
+            'navigationFrameModule' => 'CommerceTeam_commerce_OrderNavigation',
+            'navigationFrameModuleParameters' => array('currentModule' => 'commerce_order'),
+        ]
     );
 
     // Statistic Module
@@ -79,7 +138,23 @@ if (TYPO3_MODE == 'BE') {
         'commerce',
         'statistic',
         '',
-        PATH_TXCOMMERCE . 'Modules/Statistic/'
+        PATH_TXCOMMERCE . 'Modules/Statistic/',
+        [
+            'script' => '_DISPATCH',
+            'name' => 'commerce_statistic',
+            'access' => 'user,group',
+            // for links generated in the module and the navFrame
+            'route' => 'CommerceTeam_commerce_Statistic',
+            'workspaces' => 'online',
+            'labels' => array(
+                'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml',
+                'tabs_images' => [
+                    'tab' => 'EXT:commerce/Resources/Public/Icons/mod_statistic.gif'
+                ],
+            ),
+            'navigationFrameModule' => 'CommerceTeam_commerce_OrderNavigation',
+            'navigationFrameModuleParameters' => array('currentModule' => 'commerce_statistic'),
+        ]
     );
 
     // Systemdata module
@@ -87,7 +162,23 @@ if (TYPO3_MODE == 'BE') {
         'commerce',
         'systemdata',
         '',
-        PATH_TXCOMMERCE . 'Modules/Systemdata/'
+        PATH_TXCOMMERCE . 'Modules/Systemdata/',
+        [
+            'script' => '_DISPATCH',
+            'name' => 'commerce_systemdata',
+            'access' => 'user,group',
+            // for links generated in the module and the navFrame
+            'route' => 'CommerceTeam_commerce_Systemdata',
+            'workspaces' => 'online',
+            'labels' => array(
+                'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml',
+                'tabs_images' => [
+                    'tab' => 'EXT:commerce/Resources/Public/Icons/mod_systemdata.gif'
+                ],
+            ),
+            'navigationFrameModule' => 'CommerceTeam_commerce_SystemdataNavigation',
+            'navigationFrameModuleParameters' => array('currentModule' => 'commerce_systemdata'),
+        ]
     );
 
 

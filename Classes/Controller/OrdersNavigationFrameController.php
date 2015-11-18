@@ -87,6 +87,16 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
     }
 
     /**
+     * @return void
+     */
+    public static function render()
+    {
+        $instance = GeneralUtility::makeInstance(self::class);
+        $instance->main();
+        $instance->printContent();
+    }
+
+    /**
      * Initiation of the class.
      *
      * @return void
@@ -124,6 +134,8 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
 
         // Setting highlight mode:
         $this->doHighlight = !$backendUser->getTSConfigVal('options.pageTree.disableTitleHighlight');
+
+        $this->initPage();
     }
 
     /**

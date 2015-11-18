@@ -37,7 +37,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
      *
      * @var string
      */
-    protected $body;
+    public $body;
 
     /**
      * Order pid.
@@ -56,6 +56,16 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $GLOBALS['SOBE'] = $this;
         parent::__construct();
         $this->init();
+    }
+
+    /**
+     * @return void
+     */
+    public static function render()
+    {
+        $instance = GeneralUtility::makeInstance(self::class);
+        $instance->main();
+        $instance->printContent();
     }
 
     /**

@@ -60,6 +60,16 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
     }
 
     /**
+     * @return void
+     */
+    public static function render()
+    {
+        $instance = GeneralUtility::makeInstance(self::class);
+        $instance->main();
+        $instance->printContent();
+    }
+
+    /**
      * Initializing the module.
      *
      * @return void

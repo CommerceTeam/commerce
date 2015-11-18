@@ -45,6 +45,16 @@ class SystemdataNavigationFrameController extends \TYPO3\CMS\Backend\Module\Base
     }
 
     /**
+     * @return void
+     */
+    public static function render()
+    {
+        $instance = GeneralUtility::makeInstance(self::class);
+        $instance->main();
+        $instance->printContent();
+    }
+
+    /**
      * Initialization.
      *
      * @return void
@@ -59,6 +69,8 @@ class SystemdataNavigationFrameController extends \TYPO3\CMS\Backend\Module\Base
             'Commerce',
             'commerce'
         ));
+
+        $this->initPage();
     }
 
     /**
