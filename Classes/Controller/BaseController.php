@@ -899,10 +899,10 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
          * and ARTICLE_FORMNAME, ARTICLE_HIDDENCATUID
          */
         $markerArray['STARTFRM'] = '<form name="basket_' . $article->getUid() . '" action="' .
-            $this->pi_getPageLink($this->conf['basketPid']) . '" method="post">';
+            $this->pi_getPageLink((int) $this->conf['basketPid']) . '" method="post">';
         $markerArray['HIDDENFIELDS'] = '<input type="hidden" name="' . $this->prefixId . '[catUid]" value="' .
             $this->category->getUid() . '" />';
-        $markerArray['ARTICLE_FORMACTION'] = $this->pi_getPageLink($this->conf['basketPid']);
+        $markerArray['ARTICLE_FORMACTION'] = $this->pi_getPageLink((int) $this->conf['basketPid']);
         $markerArray['ARTICLE_FORMNAME'] = 'basket_' . $article->getUid();
         $markerArray['ARTICLE_HIDDENCATUID'] = '<input type="hidden" name="' . $this->prefixId . '[catUid]" value="' .
             $this->category->getUid() . '" />';
@@ -2078,7 +2078,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     public function addFormMarker(array $markerArray, $wrap = false)
     {
-        $newMarkerArray['GENERAL_FORM_ACTION'] = $this->pi_getPageLink($this->conf['basketPid']);
+        $newMarkerArray['GENERAL_FORM_ACTION'] = $this->pi_getPageLink((int) $this->conf['basketPid']);
         if (!empty($this->conf['basketPid.'])) {
             $basketConf = $this->conf['basketPid.'];
             $basketConf['returnLast'] = 'url';

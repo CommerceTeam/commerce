@@ -32,12 +32,12 @@ class SrfeuserregisterPi1Hook
      *
      * Sr_feuser_register registration process after saving new dataset
      *
-     * @param string $theTable Table
+     * @param string $_ Table
      * @param array $dataArray Complete array of feuser fields
      *
      * @return void
      */
-    public function registrationProcess_afterSaveCreate($theTable, array $dataArray)
+    public function registrationProcess_afterSaveCreate($_, array $dataArray)
     {
         // notify observer
         \CommerceTeam\Commerce\Dao\FeuserObserver::update('new', $dataArray['uid']);
@@ -48,12 +48,12 @@ class SrfeuserregisterPi1Hook
      *
      * Sr_feuser_register registration process after saving edited dataset
      *
-     * @param string $theTable Table
+     * @param string $_ Table
      * @param array $dataArray Complete array of feuser fields
      *
      * @return void
      */
-    public function registrationProcess_afterSaveEdit($theTable, array $dataArray)
+    public function registrationProcess_afterSaveEdit($_, array $dataArray)
     {
         // notify observer
         \CommerceTeam\Commerce\Dao\FeuserObserver::update('update', $dataArray['uid']);

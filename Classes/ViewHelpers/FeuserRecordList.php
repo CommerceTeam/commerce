@@ -723,14 +723,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
             }
 
             // CSH:
-            $theData[$titleCol] .= BackendUtility::cshItem(
-                $table,
-                '',
-                $this->backPath,
-                '',
-                false,
-                'margin-bottom:0px; white-space: normal;'
-            );
+            $theData[$titleCol] .= BackendUtility::cshItem($table, '');
 
             if ($listOnlyInSingleTableMode) {
                 $out .= '

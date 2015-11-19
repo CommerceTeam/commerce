@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This class extends the commerce module in the TYPO3 Backend to provide
@@ -24,17 +25,17 @@ namespace CommerceTeam\Commerce\Controller;
  *
  * @author 2007-2008 mehrwert <typo3@mehrwert.de>
  */
-class PermissionAjaxController extends \TYPO3\CMS\Perm\Controller\PermissionAjaxController
+class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAjaxController
 {
     /**
      * The main dispatcher function. Collect data and prepare HTML output.
      *
-     * @param array $params  Parameters from the AJAX interface
+     * @param array $_ Parameters from the AJAX interface
      * @param \TYPO3\CMS\Core\Http\AjaxRequestHandler $ajaxObj Ajax object
      *
      * @return void
      */
-    public function dispatch(array $params = array(), \TYPO3\CMS\Core\Http\AjaxRequestHandler &$ajaxObj = null)
+    public function dispatch(array $_ = array(), \TYPO3\CMS\Core\Http\AjaxRequestHandler &$ajaxObj = null)
     {
         $content = '';
 
@@ -46,7 +47,7 @@ class PermissionAjaxController extends \TYPO3\CMS\Perm\Controller\PermissionAjax
              *
              * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
              */
-            $tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+            $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
             $tce->stripslashes_values = 1;
 
             // Determine the scripts to execute
@@ -54,8 +55,8 @@ class PermissionAjaxController extends \TYPO3\CMS\Perm\Controller\PermissionAjax
                 case 'show_change_owner_selector':
                     // Return the select to change the owner (BE user) of the page
                     $content = $this->renderUserSelector(
-                        $this->conf['page'],
-                        $this->conf['ownerUid'],
+                        (int) $this->conf['page'],
+                        (int) $this->conf['ownerUid'],
                         $this->conf['username']
                     );
                     break;
@@ -72,8 +73,8 @@ class PermissionAjaxController extends \TYPO3\CMS\Perm\Controller\PermissionAjax
                         $tce->start($data, array());
                         $tce->process_datamap();
                         $content = $this->renderOwnername(
-                            $this->conf['page'],
-                            $this->conf['new_owner_uid'],
+                            (int) $this->conf['page'],
+                            (int) $this->conf['new_owner_uid'],
                             $this->conf['new_owner_username']
                         );
                     } else {
@@ -84,8 +85,8 @@ class PermissionAjaxController extends \TYPO3\CMS\Perm\Controller\PermissionAjax
                 case 'show_change_group_selector':
                     // Return the select to change the group (BE group) of the page
                     $content = $this->renderGroupSelector(
-                        $this->conf['page'],
-                        $this->conf['groupUid'],
+                        (int) $this->conf['page'],
+                        (int) $this->conf['groupUid'],
                         $this->conf['groupname']
                     );
                     break;
@@ -103,8 +104,8 @@ class PermissionAjaxController extends \TYPO3\CMS\Perm\Controller\PermissionAjax
                         $tce->process_datamap();
 
                         $content = $this->renderGroupname(
-                            $this->conf['page'],
-                            $this->conf['new_group_uid'],
+                            (int) $this->conf['page'],
+                            (int) $this->conf['new_group_uid'],
                             $this->conf['new_group_username']
                         );
                     } else {
@@ -123,7 +124,7 @@ class PermissionAjaxController extends \TYPO3\CMS\Perm\Controller\PermissionAjax
                     $tce->process_datamap();
 
                     $content = $this->renderToggleEditLock(
-                        $this->conf['page'],
+                        (int) $this->conf['page'],
                         $data['tx_commerce_categories'][$this->conf['page']]['editlock']
                     );
                     break;
@@ -146,7 +147,7 @@ class PermissionAjaxController extends \TYPO3\CMS\Perm\Controller\PermissionAjax
                     $tce->process_datamap();
 
                     $content = $this->renderPermissions(
-                        $this->conf['permissions'],
+                        (int) $this->conf['permissions'],
                         $this->conf['page'],
                         $this->conf['who']
                     );

@@ -24,7 +24,10 @@ $MCONF['script'] = 'index.php';
 $MCONF['name'] = 'commerce_txcommerceTreeBrowser';
 $MCONF['access'] = '';
 
-require_once $BACK_PATH . 'init.php';
+// @todo remove by using routing
+define('TYPO3_MODE', 'BE');
+require $BACK_PATH . '/sysext/core/Classes/Core/Bootstrap.php';
+\TYPO3\CMS\Core\Core\Bootstrap::getInstance()->run('typo3/');
 
 /**
  * Language

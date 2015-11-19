@@ -153,7 +153,7 @@ class CommandMapHooks
              * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
              */
             $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-            $mount->init($this->getBackendUser()->user['uid']);
+            $mount->init((int) $this->getBackendUser()->user['uid']);
 
             if (!$category->isPermissionSet($command) || !$mount->isInCommerceMounts($category->getUid())) {
                 // Log the error

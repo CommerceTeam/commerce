@@ -494,7 +494,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $language = $this->getLanguageService();
 
         // CSH
-        $buttons['csh'] = BackendUtility::cshItem('_MOD_commerce_orders', '', $this->getBackPath(), '', true);
+        $buttons['csh'] = BackendUtility::cshItem('_MOD_commerce_orders', '');
 
         // Shortcut
         if ($backendUser->mayMakeShortcut()) {

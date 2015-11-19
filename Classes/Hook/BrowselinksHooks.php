@@ -28,7 +28,7 @@ class BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserH
     /**
      * Local content object cObj parent.
      *
-     * @var \tx_rtehtmlarea_browse_links
+     * @var \TYPO3\CMS\Rtehtmlarea\Controller\BrowseLinksController
      */
     protected $pObj;
 
@@ -56,12 +56,11 @@ class BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserH
     /**
      * Initialisation (additionalParameters is an empty array).
      *
-     * @param \tx_rtehtmlarea_browse_links $parentObject Parent object
-     * @param array $additionalParameters Parameter
+     * @param \TYPO3\CMS\Rtehtmlarea\Controller\BrowseLinksController $parentObject Parent object
      *
      * @return void
      */
-    public function init($parentObject, $additionalParameters)
+    public function init($parentObject)
     {
         $this->pObj = $parentObject;
 

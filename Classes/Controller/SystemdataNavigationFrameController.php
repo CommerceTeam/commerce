@@ -14,8 +14,13 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Backend\Module\BaseScriptClass;
+use TYPO3\CMS\Backend\Template\Components\ButtonBar;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Main script class for the systemData navigation frame.
@@ -24,7 +29,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
-class SystemdataNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
+class SystemdataNavigationFrameController extends BaseScriptClass
 {
     /**
      * Has filter box.
@@ -32,6 +37,25 @@ class SystemdataNavigationFrameController extends \TYPO3\CMS\Backend\Module\Base
      * @var bool
      */
     protected $hasFilterBox = false;
+
+    /**
+     * The name of the module
+     *
+     * @var string
+     */
+    protected $moduleName = 'xMOD_csh_commercebe';
+
+    /**
+     * ModuleTemplate Container
+     *
+     * @var ModuleTemplate
+     */
+    protected $moduleTemplate;
+
+    /**
+     * @var StandaloneView
+     */
+    protected $view;
 
     /**
      * Constructor
@@ -70,30 +94,14 @@ class SystemdataNavigationFrameController extends \TYPO3\CMS\Backend\Module\Base
             'commerce'
         ));
 
-        $this->initPage();
-    }
+        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
 
-    /**
-     * Initializes the Page.
-     *
-     * @return void
-     */
-    public function initPage()
-    {
-        /**
-         * Document template.
-         *
-         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
-         */
-        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-        $this->doc = $doc;
-        $this->doc->backPath = $this->getBackPath();
-        $this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_systemdata_navigation.html');
-        $this->doc->showFlashMessages = false;
+        $this->view = GeneralUtility::makeInstance(StandaloneView::class);
+        $this->view->getRequest()->setControllerExtensionName('commerce');
 
-        $this->doc->JScode = $this->doc->wrapScriptTags('
-            function jumpTo(func, linkObj) {
-                var theUrl = top.TS.PATH_typo3 + top.currentSubScript + "&SET[function]=" + func;
+        $this->moduleTemplate->addJavaScriptCode('jumpToUrl', '
+            function jumpTo(url, linkObj) {
+                var theUrl = url;
 
                 if (top.condensedMode) {
                     top.content.document.location = theUrl;
@@ -101,20 +109,17 @@ class SystemdataNavigationFrameController extends \TYPO3\CMS\Backend\Module\Base
                     parent.list_frame.document.location = theUrl;
                 }
 
-                ' . (!$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) {linkObj.blur();}') . '
-
                 return false;
             }
         ');
 
-        $this->doc->postCode = $this->doc->wrapScriptTags('
-            script_ended = 1;
+        $this->moduleTemplate->addJavaScriptCode('mainJsFunctions', '
             if (top.fsMod) {
-                top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
+                top.fsMod.recentIds["web"] = ' . (int)$this->id . ';
+                top.fsMod.navFrameHighlightedID["web"] = "pages' . (int)$this->id .
+            '_"+top.fsMod.currentBank; ' . (int)$this->id . ';
             }
         ');
-
-        $this->doc->bodyTagId = 'systemdata-navframe';
     }
 
     /**
@@ -124,33 +129,22 @@ class SystemdataNavigationFrameController extends \TYPO3\CMS\Backend\Module\Base
      */
     public function main()
     {
-        $docHeaderButtons = $this->getButtons();
+        $this->makeButtons();
 
-        $markers = array(
-            'ATTRIBUTES_TITLE' => $this->getLanguageService()->getLL('title_attributes'),
-            'ATTRIBUTES_DESCRIPTION' => $this->getLanguageService()->getLL('desc_attributes'),
-
-            'MANUFACTURER_TITLE' => $this->getLanguageService()->getLL('title_manufacturer'),
-            'MANUFACTURER_DESCRIPTION' => $this->getLanguageService()->getLL('desc_manufacturer'),
-
-            'SUPPLIER_TITLE' => $this->getLanguageService()->getLL('title_supplier'),
-            'SUPPLIER_DESCRIPTION' => $this->getLanguageService()->getLL('desc_supplier'),
+        $templatePathAndFilename = GeneralUtility::getFileAbsFileName(
+            'EXT:commerce/Resources/Private/Backend/mod_systemdata_navigation.html'
         );
+        $this->view->setTemplatePathAndFilename($templatePathAndFilename);
 
-        $subparts = array();
-        if (!$this->hasFilterBox) {
-            $subparts['###SECOND_ROW###'] = '';
-        }
+        $attributeUrl = BackendUtility::getModuleUrl('commerce_systemdata', array('SET' => array('function' => 1)));
+        $manufacturerUrl = BackendUtility::getModuleUrl('commerce_systemdata', array('SET' => array('function' => 2)));
+        $supplierUrl = BackendUtility::getModuleUrl('commerce_systemdata', array('SET' => array('function' => 3)));
+        $this->view->assign('attributeUrl', $attributeUrl);
+        $this->view->assign('manufacturerUrl', $manufacturerUrl);
+        $this->view->assign('supplierUrl', $supplierUrl);
 
-        // put it all together
-        $this->content = $this->doc->startPage(
-            $this->getLanguageService()->sl(
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title'
-            )
-        );
-        $this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers, $subparts);
-        $this->content .= $this->doc->endPage();
-        $this->content = $this->doc->insertStylesAndJS($this->content);
+        // Set content
+        $this->moduleTemplate->setContent($this->view->render());
     }
 
     /**
@@ -160,7 +154,7 @@ class SystemdataNavigationFrameController extends \TYPO3\CMS\Backend\Module\Base
      */
     public function printContent()
     {
-        echo $this->content;
+        echo $this->moduleTemplate->renderContent();
     }
 
     /**
@@ -169,24 +163,23 @@ class SystemdataNavigationFrameController extends \TYPO3\CMS\Backend\Module\Base
      *
      * @return array all available buttons as an assoc. array
      */
-    protected function getButtons()
+    protected function makeButtons()
     {
-        $buttons = array(
-            'csh' => '',
-            'refresh' => '',
-        );
-
-        // Refresh
-        $buttons['refresh'] = '';
+        $buttonBar = $this->moduleTemplate->getDocHeaderComponent()->getButtonBar();
 
         // CSH
-        $buttons['csh'] = str_replace(
-            'typo3-csh-inline',
-            'typo3-csh-inline show-right',
-            BackendUtility::cshItem('xMOD_csh_commercebe', 'systemdata', $this->getBackPath())
-        );
+        $contextSensitiveHelpButton = $buttonBar->makeHelpButton()
+            ->setModuleName($this->moduleName)
+            ->setFieldName('systemdata');
+        $buttonBar->addButton($contextSensitiveHelpButton);
 
-        return $buttons;
+        // Refresh
+        $refreshButton = $buttonBar->makeLinkButton()
+            ->setHref(GeneralUtility::getIndpEnv('REQUEST_URI'))
+            ->setTitle(
+                $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.reload', true)
+            )->setIcon($this->moduleTemplate->getIconFactory()->getIcon('actions-refresh', Icon::SIZE_SMALL));
+        $buttonBar->addButton($refreshButton, ButtonBar::BUTTON_POSITION_RIGHT);
     }
 
 

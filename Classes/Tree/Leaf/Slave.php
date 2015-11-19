@@ -161,7 +161,7 @@ class Slave extends Leaf
          * Printing the Item
          *******************/
         // Give class 'expanded' if it is
-        $exp = $this->data->isExpanded($child['uid']);
+        $exp = $this->data->isExpanded((int) $child['uid']);
         $cssExpanded = ($exp) ? 'expanded' : '';
 
         // Add class 'last' if it is
@@ -201,7 +201,7 @@ class Slave extends Leaf
                  * @var \CommerceTeam\Commerce\Tree\Leaf\Slave $leaf
                  */
                 $leaf = &$this->leafs[$i];
-                $out .= $leaf->printChildleafsByParent($child['uid'], $bank);
+                $out .= $leaf->printChildleafsByParent((int) $child['uid'], $bank);
             }
             $out .= '</ul>';
         }

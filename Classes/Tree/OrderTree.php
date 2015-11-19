@@ -52,6 +52,7 @@ class OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
      */
     public function __construct()
     {
+        parent::__construct();
         $this->init();
     }
 

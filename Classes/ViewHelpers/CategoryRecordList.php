@@ -364,7 +364,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
          * @request Malte Jansen <mail@maltejansen.de>
          */
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'] as $classData) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'] as
+                     $classData) {
                 $hookObject = GeneralUtility::getUserObj($classData);
 
                 if (!($hookObject instanceof \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface)) {
@@ -454,21 +455,22 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 if ($this->table) {
                     $icon = $this->iconFactory->getIcon(
                         'actions-view-table-collapse',
-                        Icon::SIZE_SMALL,
-                        array('title' => $language->getLL('contractView', true))
+                        Icon::SIZE_SMALL
                     );
+                    $titleKey = 'contractView';
                 } else {
                     $icon = $this->iconFactory->getIcon(
                         'actions-view-table-expand',
-                        Icon::SIZE_SMALL,
-                        array('title' => $language->getLL('expandView', true))
+                        Icon::SIZE_SMALL
                     );
+                    $titleKey = 'expandView';
                 }
 
                 $theData[$titleCol] = $this->linkWrapTable(
                     $table,
                     '<span class="c-table">' . $language->sL($tableConfig['ctrl']['title'], true) .
-                    '</span> (' . $this->totalItems . ') ' . $icon
+                    '</span> (' . $this->totalItems . ') ' . '<span title="' . $language->getLL($titleKey, true) .
+                    '">' . $icon . '</span>'
                 );
             }
 
@@ -483,24 +485,20 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 $collapseIcon = '';
                 if (!$this->table) {
                     if ($tableCollapsed) {
-                        $options = array(
-                            'class' => 'collapseIcon',
-                            'title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.expandTable', true),
-                        );
+                        $type = 'expand';
                     } else {
-                        $options = array(
-                            'class' => 'collapseIcon',
-                            'title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.collapseTable', true),
-                        );
+                        $type = 'collapse';
                     }
                     $value = $tableCollapsed ? '0' : '1';
 
                     $collapseIcon = '<a href="' .
-                        htmlspecialchars($this->listURL() . '&collapse[' . $table . ']=' . $value) . '">' .
+                        htmlspecialchars($this->listURL() . '&collapse[' . $table . ']=' . $value) . '"
+                        class="' . $type . 'Icon"
+                        title="' .
+                        $language->sL('LLL:EXT:lang/locallang_core.php:labels.' . $type . 'Table', true) . '">' .
                         $this->iconFactory->getIcon(
-                            'actions-view-list-' . ($tableCollapsed ? 'expand' : 'collapse'),
-                            Icon::SIZE_SMALL,
-                            $options
+                            'actions-view-list-' . $type,
+                            Icon::SIZE_SMALL
                         ) . '</a>';
                 }
                 $out .= $this->addElement(1, $collapseIcon, $theData, ' class="t3-row-header"', '');
@@ -684,7 +682,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
         $hookObjectsArr = array();
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'] as $classRef) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'] as
+                     $classRef) {
                 $hookObjectsArr[] = GeneralUtility::getUserObj($classRef);
             }
         }
@@ -1147,7 +1146,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
          * like mark and copy all listed records to clipboard, etc.
          */
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as $classData) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as
+                     $classData) {
                 $hookObject = GeneralUtility::getUserObj($classData);
                 if (!($hookObject instanceof \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface)) {
                     throw new \UnexpectedValueException(
@@ -1237,10 +1237,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
         // "Move" wizard link for tx_commerce_categories/tx_commerce_products elements:
         if (($table == 'tx_commerce_products' && $permsEdit) || ($table == 'tx_commerce_categories')) {
-            $options = array(
-                'title' => $language->getLL('move_' . ($table == 'tx_commerce_products' ? 'record' : 'page'), true)
-            );
-            $cells['move'] = '<a href="#" onclick="' .
+            $cells['move'] = '<a href="#" title="' .
+                $language->getLL('move_' . ($table == 'tx_commerce_products' ? 'record' : 'page'), true) .
+                '" onclick="' .
                 htmlspecialchars(
                     'return jumpExt(\'' . $this->backPath . 'move_el.php?table=' . $table . '&uid=' . $row['uid'] .
                     '\');'
@@ -1248,8 +1247,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 '">' .
                 $this->iconFactory->getIcon(
                     $table == 'tx_commerce_products' ? 'actions-document-move' : 'actions-page-move',
-                    Icon::SIZE_SMALL,
-                    $options
+                    Icon::SIZE_SMALL
                 ) . '</a>';
         } elseif (!$this->table) {
             $cells['move'] = $this->spaceIcon;
@@ -1316,11 +1314,10 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                             '&control[tx_commerce_categories][uid]=' . $row['uid'] .
                             '&return_id=' . $row['uid'] . '&edit=1'
                         ) .
-                        '">' .
+                        '" title="' . $language->getLL('permissions', true) . '">' .
                         $this->iconFactory->getIcon(
                             'status-status-locked',
-                            Icon::SIZE_SMALL,
-                            array('titel' => $language->getLL('permissions', true))
+                            Icon::SIZE_SMALL
                         ) . '</a>';
                 } elseif (!$this->table && $backendUser->check('modules', 'web_perm')) {
                     $cells['perms'] = $this->spaceIcon;
@@ -1458,11 +1455,10 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                             ) . ')) {jumpToUrl(\'' .
                             $this->getControllerDocumentTemplate()->issueCommand($params, -1) . '\');} return false;'
                         ) .
-                        '">' .
+                        '" title="' . $language->getLL('delete', true) . '">' .
                         $this->iconFactory->getIcon(
                             'actions-edit-delete',
-                            Icon::SIZE_SMALL,
-                            array('title' => $language->getLL('delete', true))
+                            Icon::SIZE_SMALL
                         ) . '</a>';
                 } elseif (!$this->table) {
                     $cells['delete'] = $this->spaceIcon;
@@ -1543,7 +1539,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
          * 	icons is dependend on the order of those array entries.
          */
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as $classData) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as
+                     $classData) {
                 $hookObject = GeneralUtility::getUserObj($classData);
                 if (!($hookObject instanceof \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface)) {
                     throw new \UnexpectedValueException(
@@ -1684,7 +1681,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
          * 	array entries.
          */
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as $classData) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as
+                     $classData) {
                 $hookObject = GeneralUtility::getUserObj($classData);
                 if (!($hookObject instanceof \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface)) {
                     throw new \UnexpectedValueException(

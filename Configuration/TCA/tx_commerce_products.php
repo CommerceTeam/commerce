@@ -192,7 +192,9 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
                         'type' => 'script',
                         'title' => 'Full screen Rich Text Editing|Formatteret redigering i hele vinduet',
                         'icon' => 'wizard_rte2.gif',
-                        'script' => 'wizard_rte.php',
+                        'module' => array(
+                            'name' => 'wizard_rte'
+                        )
                     ),
                 ),
             ),
@@ -229,7 +231,9 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
                         'type' => 'script',
                         'title' => 'Full screen Rich Text Editing|Formatteret redigering i hele vinduet',
                         'icon' => 'wizard_rte2.gif',
-                        'script' => 'wizard_rte.php',
+                        'module' => array(
+                            'name' => 'wizard_rte'
+                        )
                     ),
                 ),
             ),
@@ -257,7 +261,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
             'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.categories',
             'config' => array(
                 'type' => 'group',
-                'internal_type' => 'passthrough',
+                'internal_type' => 'db',
                 'allowed' => 'tx_commerce_categories',
                 'form_type' => 'user',
                 'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\TceFunc->getSingleField_selectCategories',
@@ -492,7 +496,8 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
     ),
 );
 
-if ($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][COMMERCE_EXTKEY]['simpleMode']) {
+if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][COMMERCE_EXTKEY]['simpleMode'])
+    && $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][COMMERCE_EXTKEY]['simpleMode']) {
     $GLOBALS['TCA']['tx_commerce_products']['columns']['articles'] = array(
         'exclude' => 1,
         'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.articles',

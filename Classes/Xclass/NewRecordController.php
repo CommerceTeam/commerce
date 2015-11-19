@@ -44,7 +44,7 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
         // (admins has access to the root) we proceed:
         if ($this->pageinfo['uid'] || $this->getBackendUserAuthentication()->isAdmin()) {
             // Acquiring TSconfig for this module/current page:
-            $this->web_list_modTSconfig = BackendUtility::getModTSconfig($this->pageinfo['uid'], 'mod.web_list');
+            $this->web_list_modTSconfig = BackendUtility::getModTSconfig((int) $this->pageinfo['uid'], 'mod.web_list');
             // allow only commerce related tables
             $this->allowedNewTables = array('tx_commerce_categories', 'tx_commerce_products');
             $this->deniedNewTables = GeneralUtility::trimExplode(
@@ -53,7 +53,10 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
                 true
             );
             // Acquiring TSconfig for this module/parent page:
-            $this->web_list_modTSconfig_pid = BackendUtility::getModTSconfig($this->pageinfo['pid'], 'mod.web_list');
+            $this->web_list_modTSconfig_pid = BackendUtility::getModTSconfig(
+                (int) $this->pageinfo['pid'],
+                'mod.web_list'
+            );
             $this->allowedNewTables_pid = GeneralUtility::trimExplode(
                 ',',
                 $this->web_list_modTSconfig_pid['properties']['allowedNewTables'],

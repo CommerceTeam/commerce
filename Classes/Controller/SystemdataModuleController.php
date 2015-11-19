@@ -16,9 +16,12 @@ namespace CommerceTeam\Commerce\Controller;
 
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
+use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Backend\Module\BaseScriptClass;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 /**
  * Module 'Systemdata' for the 'commerce' extension.
@@ -27,14 +30,26 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author 2005-2013 Ingo Schmitt <is@marketing-factory.de>
  */
-class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
+class SystemdataModuleController extends BaseScriptClass
 {
+    /**
+     * PopView id - for opening a window with the page
+     *
+     * @var bool
+     */
+    public $popView;
+
+    /**
+     * @var int
+     */
+    public $page_id = 0;
+
     /**
      * Page record.
      *
      * @var array
      */
-    public $pageRow;
+    public $pageinfo;
 
     /**
      * Containing the Root-Folder-Pid of Commerce.
@@ -72,11 +87,39 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
     public $doc;
 
     /**
+     * Pages-select clause
+     *
+     * @var string
+     */
+    public $perms_clause;
+
+    /**
      * Reference count.
      *
      * @var array
      */
     protected $referenceCount = array();
+
+    /**
+     * Content for module accumulated here.
+     *
+     * @var string
+     */
+    public $content;
+
+    /**
+     * The name of the module
+     *
+     * @var string
+     */
+    protected $moduleName = 'commerce_systemdata';
+
+    /**
+     * ModuleTemplate Container
+     *
+     * @var ModuleTemplate
+     */
+    protected $moduleTemplate;
 
     /**
      * Constructor
@@ -85,6 +128,9 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
      */
     public function __construct()
     {
+        $this->getLanguageService()->includeLLFile(
+            'EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml'
+        );
         $GLOBALS['SOBE'] = $this;
         $this->init();
     }
@@ -106,25 +152,16 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
      */
     public function init()
     {
-        parent::init();
-
-        $language = $this->getLanguageService();
-        $language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml');
-
-        $this->id = $this->modPid = (int) reset(FolderRepository::initFolders('Commerce', 'commerce'));
-        $this->attributePid = (int) reset(
-            FolderRepository::initFolders('Attributes', 'commerce', $this->modPid)
-        );
-
-        $this->MCONF = $GLOBALS['MCONF'];
+        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
+        $this->MCONF['name'] = $this->moduleName;
+        $this->page_id = $this->modPid = (int) reset(FolderRepository::initFolders('Commerce', 'commerce'));
+        $this->attributePid = (int) reset(FolderRepository::initFolders('Attributes', 'commerce', $this->modPid));
+        $this->popView = GeneralUtility::_GP('popView');
 
         $this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);
-        $this->pageRow = BackendUtility::readPageAccess($this->id, $this->perms_clause);
+        $this->pageinfo = BackendUtility::readPageAccess($this->page_id, $this->perms_clause);
 
-        $this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-        $this->doc->backPath = $this->getBackPath();
-        $this->doc->docType = 'xhtml_trans';
-        $this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
+        $this->menuConfig();
     }
 
     /**
@@ -151,127 +188,141 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
      */
     public function main()
     {
-        $listUrl = GeneralUtility::getIndpEnv('REQUEST_URI');
-
         // Access check!
         // The page will show only if there is a valid page and if user may access it
-        if ($this->id && (is_array($this->pageRow) ? 1 : 0)) {
+        $access = is_array($this->pageinfo) ? 1 : 0;
+
+        $content = '';
+        if ($this->page_id && $access) {
             // JavaScript
-            $this->doc->JScode = $this->doc->wrapScriptTags('
-                script_ended = 0;
-                function jumpToUrl(URL) {
-                    document.location = URL;
+            $this->moduleTemplate->addJavaScriptCode('jumpToUrl', '
+                function jumpToUrl(URL,formEl) {
+                    if (document.editform && TBE_EDITOR.isFormChanged)  {
+                        // Check if the function exists... (works in all browsers?)
+                        if (!TBE_EDITOR.isFormChanged()) {
+                            window.location.href = URL;
+                        } else if (formEl) {
+                            if (formEl.type == "checkbox") formEl.checked = formEl.checked ? 0 : 1;
+                        }
+                    } else {
+                        window.location.href = URL;
+                    }
                 }
-                function deleteRecord(table, id, url, warning) {
-                    if (
-                        confirm(eval(warning))
-                    ) {
-                        window.location.href = "' . $this->getBackPath() .
-                'tce_db.php?cmd["+table+"]["+id+"][delete]=1&redirect="+escape(url);
+            ');
+
+            $this->moduleTemplate->addJavaScriptCode('mainJsFunctions', '
+                if (top.fsMod) {
+                    top.fsMod.recentIds["web"] = ' . (int)$this->page_id . ';
+                    top.fsMod.navFrameHighlightedID["web"] = "pages' . (int)$this->page_id .
+                        '_"+top.fsMod.currentBank; ' . (int)$this->page_id . ';
+                }
+                ' . (
+                    $this->popView ?
+                    BackendUtility::viewOnClick($this->page_id, '', BackendUtility::BEgetRootLine($this->page_id)) :
+                    ''
+                ) . '
+                function deleteRecord(table,id,url) {   //
+                    if (confirm(' . GeneralUtility::quoteJSvalue($this->getLanguageService()->getLL('deleteWarning')) .
+                        ')) {
+                        window.location.href = ' .
+                GeneralUtility::quoteJSvalue(BackendUtility::getModuleUrl('tce_db') . '&cmd[') .
+                ' + table + "][ " + id + "][delete]=1&redirect=" + escape(url) + "&vC=' .
+                $this->getBackendUser()->veriCode() . '&prErr=1&uPT=1";
                     }
                     return false;
                 }
-                ' . $this->doc->redirectUrls($listUrl) . '
             ');
 
-            $this->doc->postCode = $this->doc->wrapScriptTags('
-                script_ended = 1;
-                if (top.fsMod) {
-                    top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
-                }
-            ');
+            // Render content:
+            $content .= $this->moduleContent();
 
-            $this->doc->inDocStylesArray['mod_systemdata'] = '';
-
-                // Render content:
-            $this->moduleContent();
+            $this->makeButtons();
         } else {
-            $this->content = 'Access denied or commerce pages not created yet!';
+            $this->moduleTemplate->addJavaScriptCode(
+                'mainJsFunctions',
+                'if (top.fsMod) top.fsMod.recentIds["web"] = ' . (int)$this->page_id . ';'
+            );
+
+            $content .= '<h1>' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] . '</h1>';
+            $content .= 'Access denied or commerce pages not created yet!';
         }
 
-        $docHeaderButtons = $this->getHeaderButtons();
-
-        $markers = array(
-            'CSH' => $docHeaderButtons['csh'],
-            'CONTENT' => $this->content,
-        );
-        $markers['FUNC_MENU'] = $this->doc->funcMenu(
-            '',
-            BackendUtility::getFuncMenu(
-                $this->id,
-                'SET[function]',
-                $this->MOD_SETTINGS['function'],
-                $this->MOD_MENU['function']
-            )
-        );
-
-        // put it all together
-        $this->content = $this->doc->startPage($this->getLanguageService()->getLL('title'));
-        $this->content .= $this->doc->moduleBody($this->pageRow, $docHeaderButtons, $markers);
-        $this->content .= $this->doc->endPage();
-        $this->content = $this->doc->insertStylesAndJS($this->content);
+        // Set content
+        $this->moduleTemplate->setContent($content);
     }
 
     /**
      * Create the panel of buttons for submitting the form or other operations.
      *
-     * @return array all available buttons as an assoc. array
+     * @return void
      */
-    public function getHeaderButtons()
+    public function makeButtons()
     {
-        $buttons = array(
-            'csh' => '',
-                // group left 1
-            'level_up' => '',
-            'back' => '',
-                // group left 2
-            'new_record' => '',
-            'paste' => '',
-                // group left 3
-            'view' => '',
-            'edit' => '',
-            'move' => '',
-            'hide_unhide' => '',
-                // group left 4
-            'csv' => '',
-            'export' => '',
-                // group right 1
-            'cache' => '',
-            'reload' => '',
-            'shortcut' => '',
-        );
+        $buttonBar = $this->moduleTemplate->getDocHeaderComponent()->getButtonBar();
 
-            // CSH
-        if (!strlen($this->id)) {
+        // Shortcut
+        if ($this->getBackendUser()->mayMakeShortcut()) {
+            $shortcutButton = $buttonBar->makeShortcutButton()
+                ->setModuleName($this->moduleName)
+                ->setGetVariables(
+                    [
+                        'id',
+                        'M',
+                        'imagemode',
+                        'pointer',
+                        'table',
+                        'search_field',
+                        'search_levels',
+                        'showLimit',
+                        'sortField',
+                        'sortRev',
+                    ]
+                )->setSetVariables(array_keys($this->MOD_MENU));
+            $buttonBar->addButton($shortcutButton);
+        }
+
+        // Add CSH (Context Sensitive Help) icon to tool bar
+        if (!strlen($this->page_id)) {
             $cshKey = 'list_module_noId';
-        } elseif (!$this->id) {
+        } elseif (!$this->page_id) {
             $cshKey = 'list_module_root';
         } else {
             $cshKey = 'list_module';
         }
-        $buttons['csh'] = BackendUtility::cshItem('_MOD_commerce', $cshKey, $this->getBackPath(), '', true);
+        $contextSensitiveHelpButton = $buttonBar->makeHelpButton()
+            ->setModuleName($this->moduleName)
+            ->setFieldName($cshKey);
+        $buttonBar->addButton($contextSensitiveHelpButton);
 
         // New
-        $newParams = '&edit[tx_commerce_' . $this->tableForNewLink . '][' . (int) $this->modPid . ']=new';
-        $buttons['new_record'] = '<a href="#" onclick="' .
-            htmlspecialchars(BackendUtility::editOnClick($newParams, $this->getBackPath(), -1)) .
-            '" title="' . $this->getLanguageService()->getLL('create_' . $this->tableForNewLink) . '">' .
-            IconUtility::getSpriteIcon('actions-document-new') . '</a>';
+        $onClick = 'return jumpExt(' . GeneralUtility::quoteJSvalue(
+            BackendUtility::getModuleUrl('db_new', [
+                'id' => $this->page_id,
+                'edit' => array(
+                    'tx_commerce_' . $this->tableForNewLink => array(
+                        $this->modPid => 'new'
+                    )
+                )
+            ])
+        ) . ');';
+        $newRecordButton = $buttonBar->makeLinkButton()
+            ->setHref('#')
+            ->setOnClick($onClick)
+            ->setTitle(
+                $this->getLanguageService()->sL(
+                    'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newRecordGeneral',
+                    true
+                )
+            )->setIcon($this->moduleTemplate->getIconFactory()->getIcon('actions-document-new', Icon::SIZE_SMALL));
+        $buttonBar->addButton($newRecordButton, ButtonBar::BUTTON_POSITION_LEFT, 10);
 
-        // Reload
-        $buttons['reload'] = '<a href="' . htmlspecialchars(GeneralUtility::linkThisScript()) . '">' .
-            IconUtility::getSpriteIcon('actions-system-refresh') . '</a>';
-
-        // Shortcut
-        if ($this->getBackendUser()->mayMakeShortcut()) {
-            $buttons['shortcut'] = $this->doc->makeShortcutIcon(
-                'id, showThumbs, pointer, table, search_field, searchLevels, showLimit, sortField, sortRev',
-                implode(',', array_keys($this->MOD_MENU)),
-                'commerce_systemdata'
-            );
-        }
-
-        return $buttons;
+        // Refresh
+        $refreshButton = $buttonBar->makeLinkButton()
+            ->setHref(GeneralUtility::getIndpEnv('REQUEST_URI'))
+            ->setTitle(
+                $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.reload', true)
+            )->setIcon($this->moduleTemplate->getIconFactory()->getIcon('actions-refresh', Icon::SIZE_SMALL));
+        $buttonBar->addButton($refreshButton, ButtonBar::BUTTON_POSITION_RIGHT);
     }
 
     /**
@@ -281,13 +332,13 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
      */
     public function printContent()
     {
-        echo $this->content;
+        echo $this->moduleTemplate->renderContent();
     }
 
     /**
      * Generates the module content.
      *
-     * @return void
+     * @return string
      */
     protected function moduleContent()
     {
@@ -306,7 +357,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
                 $content = $this->getAttributeListing();
         }
 
-        $this->content .= $this->doc->section('', $content, 0, 1);
+        return $content;
     }
 
     /**
@@ -444,14 +495,23 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
                 htmlspecialchars(BackendUtility::editOnClick($editParams, $this->getBackPath(), -1)) . '"';
 
             $output .= '<td><a href="#" ' . $onClickAction . '>' .
-                IconUtility::getSpriteIcon('actions-document-open', array('title' => $language->getLL('edit', true))) .
+                $this->moduleTemplate->getIconFactory()->getIcon(
+                    'actions-document-open',
+                    Icon::SIZE_SMALL,
+                    array('title' => $language->getLL('edit', true))
+                ) .
                 '</a>';
             $output .= '<a href="#" onclick="' . htmlspecialchars(
-                'if (confirm(' . $language->JScharCode(
+                'if (confirm(' . GeneralUtility::quoteJSvalue(
                     $language->getLL('deleteWarningManufacturer') . ' "' . $attribute['title'] . '" ' . $refCountMsg
-                ) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
+                ) . ')) {jumpToUrl(\'' . BackendUtility::getLinkToDataHandlerAction($deleteParams, -1) .
+                '\');} return false;'
             ) . '">' .
-                IconUtility::getSpriteIcon('actions-edit-delete', array('title' => $language->getLL('delete', true))) .
+                $this->moduleTemplate->getIconFactory()->getIcon(
+                    'actions-edit-delete',
+                    Icon::SIZE_SMALL,
+                    array('title' => $language->getLL('delete', true))
+                ) .
                 '</a>';
 
             $output .= '</td><td>';
@@ -539,17 +599,25 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
                 $this->getBackPath(),
                 -1
             )) . '"';
-
-            $output .= '<tr><td><a href="#" ' . $onClickAction . '>' .
-                IconUtility::getSpriteIcon('actions-document-open', array('title' => $language->getLL('edit', true))) .
+            $output .= '<tr><td><a href="#" ' . $onClickAction . ' title="' . $language->getLL('edit', true) . '">' .
+                $this->moduleTemplate->getIconFactory()->getIcon(
+                    'actions-document-open',
+                    Icon::SIZE_SMALL
+                ) .
                 '</a>';
-            $output .= '<a href="#" onclick="' . htmlspecialchars(
-                'if (confirm(' . $language->JScharCode(
+
+            $onClickAction = 'onclick="' . htmlspecialchars(
+                'if (confirm(' . GeneralUtility::quoteJSvalue(
                     $language->getLL('deleteWarningManufacturer') . ' "' . htmlspecialchars($row['title']) . '" ' .
                     $refCountMsg
-                ) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
-            ) . '">' .
-                IconUtility::getSpriteIcon('actions-edit-delete', array('title' => $language->getLL('delete', true))) .
+                ) . ')) {jumpToUrl(\'' . BackendUtility::getLinkToDataHandlerAction($deleteParams, -1) .
+                '\');} return false;'
+            ) . '"';
+            $output .= '<a href="#" ' . $onClickAction . ' title="' . $language->getLL('delete', true) . '">' .
+                $this->moduleTemplate->getIconFactory()->getIcon(
+                    'actions-edit-delete',
+                    Icon::SIZE_SMALL
+                ) .
                 '</a>';
             $output .= '</td>';
 
@@ -615,21 +683,24 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
             $onClickAction = 'onclick="' . htmlspecialchars(
                 BackendUtility::editOnClick($editParams, $this->getBackPath(), -1)
             ) . '"';
-
-            $output .= '<tr><td><a href="#" ' . $onClickAction . '>' .
-                IconUtility::getSpriteIcon(
+            $output .= '<tr><td><a href="#" ' . $onClickAction . ' title="' . $language->getLL('edit', true) . '">' .
+                $this->moduleTemplate->getIconFactory()->getIcon(
                     'actions-document-open',
-                    array('title' => $language->getLL('edit', true))
+                    Icon::SIZE_SMALL
                 ) . '</a>';
-            $output .= '<a href="#" onclick="' . htmlspecialchars(
-                'if (confirm(' . $language->JScharCode(
+
+            $onClickAction = 'onclick="' . htmlspecialchars(
+                'if (confirm(' . GeneralUtility::quoteJSvalue(
                     $language->getLL('deleteWarningSupplier') . ' "' . htmlspecialchars($row['title']) .
                     '" ' . $refCountMsg
-                ) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
-            ) . '">' . IconUtility::getSpriteIcon(
-                'actions-edit-delete',
-                array('title' => $language->getLL('delete', true))
-            ) . '</a>';
+                ) . ')) {jumpToUrl(\'' . BackendUtility::getLinkToDataHandlerAction($deleteParams, -1) .
+                '\');} return false;'
+            ) . '"';
+            $output .= '<a href="#" ' . $onClickAction . ' title="' . $language->getLL('delete', true) . '">' .
+                $this->moduleTemplate->getIconFactory()->getIcon(
+                    'actions-edit-delete',
+                    Icon::SIZE_SMALL
+                ) . '</a>';
             $output .= '</td>';
 
             foreach ($fields as $field) {

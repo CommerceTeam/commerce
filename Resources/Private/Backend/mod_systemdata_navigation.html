@@ -1,59 +1,25 @@
-<!-- ###FULLDOC### begin -->
-<div class="typo3-fullDoc">
-	<div id="typo3-docheader">
-		<div class="typo3-docheader-functions">
-		</div>
-		<div class="typo3-docheader-buttons">
-			<div class="left">###BUTTONLIST_LEFT###</div>
-			<div class="right">###BUTTONLIST_RIGHT###</div>
-		</div>
+<table border="0" id="typo3-tree">
+	<tr>
+		<td rowspan="2" valign="top"><f:image src="EXT:commerce/Resources/Public/Icons/Table/attributes.gif"/></td>
+		<td><a href="#" onclick="return jumpTo('{attributeUrl}', this);">
+			<strong><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml:title_attributes"/></strong>
+		</a></td>
+	</tr>
+	<tr><td><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml:desc_attributes"/><br /><br /></td></tr>
 
-		<!-- ###SECOND_ROW### -->
-		<div id="treeFilterBox">
-			<div id="searchBubble">
-				<input type="text" value="" name="treeFilter" id="treeFilter" />
-				###IMG_RESET###
-			</div>
-		</div>
-		<!-- ###SECOND_ROW### -->
-	</div>
+	<tr>
+		<td rowspan="2" valign="top"><f:image src="EXT:commerce/Resources/Public/Icons/Table/manufacturer.gif"/></td>
+		<td><a href="#" onclick="return jumpTo('{manufacturerUrl}', this);">
+			<strong><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml:title_manufacturer"/></strong>
+		</a></td>
+	</tr>
+	<tr><td><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml:desc_manufacturer"/><br /><br /></td></tr>
 
-	<div id="typo3-docbody">
-		<div id="typo3-inner-docbody">
-			<table border="0" id="typo3-tree">
-				<tr>
-					<td rowspan="2"><img src="../../Resources/Public/Icons/Table/attributes.gif" /></td>
-					<td><a href="#" onclick="return jumpTo(1, this);">###ATTRIBUTES_TITLE###</a></td>
-				</tr>
-				<tr><td>###ATTRIBUTES_DESCRIPTION###<br /><br /></td></tr>
-
-				<tr>
-					<td rowspan="2"><img src="../../Resources/Public/Icons/Table/manufacturer.gif" /></td>
-					<td><a href="#" onclick="return jumpTo(2, this);">###MANUFACTURER_TITLE###</a></td>
-				</tr>
-				<tr><td>###MANUFACTURER_DESCRIPTION###<br /><br /></td></tr>
-
-				<tr>
-					<td rowspan="2"><img src="../../Resources/Public/Icons/Table/supplier.gif" /></td>
-					<td><a href="#" onclick="return jumpTo(3, this);">###SUPPLIER_TITLE###</a></td>
-				</tr>
-				<tr><td>###SUPPLIER_DESCRIPTION###<br /><br /></td></tr>
-			</table>
-		</div>
-	</div>
-</div>
-<!-- ###FULLDOC### end -->
-
-<!-- Grouping the icons on top -->
-
-<!-- ###BUTTON_GROUP_WRAP### -->
-	<div class="buttongroup">###BUTTONS###</div>
-<!-- ###BUTTON_GROUP_WRAP### -->
-
-<!-- ###BUTTON_GROUPS_LEFT### -->
-<!-- ###BUTTON_GROUP4### --> <!-- ###BUTTON_GROUP4### -->
-<!-- ###BUTTON_GROUPS_LEFT### -->
-
-<!-- ###BUTTON_GROUPS_RIGHT### -->
-<!-- ###BUTTON_GROUP1### -->###REFRESH######CSH###<!-- ###BUTTON_GROUP1### -->
-<!-- ###BUTTON_GROUPS_RIGHT### -->
+	<tr>
+		<td rowspan="2" valign="top"><f:image src="EXT:commerce/Resources/Public/Icons/Table/supplier.gif"/></td>
+		<td><a href="#" onclick="return jumpTo('{supplierUrl}', this);">
+			<strong><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml:title_supplier"/></strong>
+		</a></td>
+	</tr>
+	<tr><td><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml:desc_supplier"/><br /><br /></td></tr>
+</table>

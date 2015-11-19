@@ -221,14 +221,12 @@ class DataMapHooks
                 $product->loadData();
 
                 $parentCategory = $product->getMasterparentCategory();
-                $GLOBALS['_POST']['popViewId_addParams'] =
-                    (
+                $GLOBALS['_POST']['popViewId_addParams'] = (
                         $incomingFieldArray['sys_language_uid'] > 0 ?
                         '&L=' . $incomingFieldArray['sys_language_uid'] :
                         ''
-                    ) .
-                    '&ADMCMD_vPrev&no_cache=1&tx_commerce_pi1[showUid]=' . $id . '&tx_commerce_pi1[catUid]=' .
-                    $parentCategory;
+                    ) . '&ADMCMD_vPrev&no_cache=1&tx_commerce_pi1[showUid]=' . $id . '&tx_commerce_pi1[catUid]='
+                    . $parentCategory;
                 $GLOBALS['_POST']['popViewId'] = $previewPageId;
             }
         }
@@ -1217,7 +1215,7 @@ class DataMapHooks
         }
 
         // @todo what to do with this? it was empty before refactoring
-        $this->belib->savePriceFlexformWithArticle($id, $uidArticle, $fieldArray);
+        $this->belib->savePriceFlexformWithArticle($id, (int) $uidArticle, $fieldArray);
     }
 
     /**

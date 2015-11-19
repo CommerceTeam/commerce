@@ -3054,7 +3054,7 @@ class BackendUtility
          * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
          */
         $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-        $mount->init($backendUser->user['uid']);
+        $mount->init((int) $backendUser->user['uid']);
 
         foreach ($categoryUids as $categoryUid) {
             // check if the category is in the commerce mounts
@@ -3180,7 +3180,7 @@ class BackendUtility
          *
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
-        $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+        $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
         $tce->stripslashes_values = 0;
 
         $backendUser = self::getBackendUser();

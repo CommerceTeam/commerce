@@ -190,8 +190,8 @@ return array(
                         'title' => 'Full screen Rich Text Editing',
                         'icon' => 'wizard_rte2.gif',
                         'module' => array(
-                            'name' => 'commerce_wizard_rte'
-                        ),
+                            'name' => 'wizard_rte'
+                        )
                     ),
                 ),
             ),
@@ -309,6 +309,12 @@ return array(
     ),
     'types' => array(
         '0' => array(
+            'showitem' => '
+                sys_language_uid, l18n_parent, l18n_diffsource, hidden;;1, title, subtitle,
+                images, teaser, teaserimages, navtitle, keywords, parent_category,
+                relatedpage, ts_config',
+        ),
+        '1' => array(
             'showitem' => '
                 sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;2-2-2, subtitle;;;;3-3-3,
                 description;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/],

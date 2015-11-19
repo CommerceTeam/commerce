@@ -175,7 +175,7 @@ class CheckoutController extends BaseController
         $this->staticInfo = $staticInfo;
 
         $basket = $this->getBasket();
-        $basket->setTaxCalculationMethod($this->conf['priceFromNet']);
+        $basket->setTaxCalculationMethod((int) $this->conf['priceFromNet']);
 
         if ($this->conf['currency'] != '') {
             $this->currency = $this->conf['currency'];
@@ -396,11 +396,11 @@ class CheckoutController extends BaseController
             // because we need to be sure to have at least one correct mail address
             // This way email is not necessarily mandatory for billing/delivery address
             if (!$this->conf['randomUser']
-                && !GeneralUtility::validEmail($this->piVars[$this->piVars['address_uid']]['email'])
+                && !GeneralUtility::validEmail($this->piVars[(int) $this->piVars['address_uid']]['email'])
             ) {
-                $this->piVars[$this->piVars['address_uid']]['email'] = $feUser->user['email'];
+                $this->piVars[(int) $this->piVars['address_uid']]['email'] = $feUser->user['email'];
             }
-            $this->piVars[$this->piVars['address_uid']]['uid'] = (int) $this->piVars['address_uid'];
+            $this->piVars[(int) $this->piVars['address_uid']]['uid'] = (int) $this->piVars['address_uid'];
             $feUser->setKey(
                 'ses',
                 \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey($this->piVars['check']),
@@ -582,7 +582,7 @@ class CheckoutController extends BaseController
             $addressMgm->templateCode = $this->templateCode;
             $addressMgm->init($addressManagerConf, false);
             $addressMgm->addresses = $addressMgm->getAddresses(
-                $this->getFrontendUser()->user['uid'],
+                (int) $this->getFrontendUser()->user['uid'],
                 $this->conf['billing.']['addressType']
             );
             $addressMgm->piVars['backpid'] = $frontendController->id;
@@ -751,7 +751,7 @@ class CheckoutController extends BaseController
             $addressMgm->templateCode = $this->templateCode;
             $addressMgm->init($addressManagerConf, false);
             $addressMgm->addresses = $addressMgm->getAddresses(
-                $this->getFrontendUser()->user['uid'],
+                (int) $this->getFrontendUser()->user['uid'],
                 $this->conf['delivery.']['addressType']
             );
             $addressMgm->piVars['backpid'] = $frontendController->id;
@@ -1094,7 +1094,7 @@ class CheckoutController extends BaseController
         // Check stock amount of articles
         if (!$this->checkStock()) {
             $content = $this->pi_getLL('not_all_articles_in_stock') .
-                $this->pi_linkToPage($this->pi_getLL('no_stock_back'), $this->conf['noStockBackPID']);
+                $this->pi_linkToPage($this->pi_getLL('no_stock_back'), (int) $this->conf['noStockBackPID']);
 
             return $this->cObj->stdWrap($content, $this->conf['noStockWrap.']);
         }
@@ -1199,7 +1199,11 @@ class CheckoutController extends BaseController
 
         $deliveryAddress = '';
         if ($orderData['cust_deliveryaddress']) {
-            $data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = ' . $orderData['cust_deliveryaddress']);
+            $data = $database->exec_SELECTgetSingleRow(
+                '*',
+                'tt_address',
+                'uid = ' . $orderData['cust_deliveryaddress']
+            );
             if (is_array($data)) {
                 $deliveryAddress = $this->makeAdressView($data, '###DELIVERY_ADDRESS###');
             }
@@ -1728,7 +1732,7 @@ class CheckoutController extends BaseController
                     ) . $this->cObj->enableFields('tx_commerce_articles')
                 );
                 if (!empty($articleRow)) {
-                    $basket->addArticle($articleRow['uid']);
+                    $basket->addArticle((int) $articleRow['uid']);
                     $basket->storeData();
                 } else {
                     throw new \Exception('Unknow payment type given for adding to basket', 1395653485);

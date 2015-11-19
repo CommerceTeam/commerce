@@ -272,7 +272,7 @@ class TreelibTceforms
         $height = $this->config['autoSizeMax'] ?
             \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange(
                 $itemCountSelectable,
-                \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->config['size'], 1),
+                \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->config['size'], 1),
                 $this->config['autoSizeMax']
             ) :
             $this->config['size'];
@@ -395,7 +395,7 @@ class TreelibTceforms
          * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
          */
         $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-        $mount->init($this->getBackendUser()->user['uid']);
+        $mount->init((int) $this->getBackendUser()->user['uid']);
 
         if (is_array($parent)) {
             for ($i = 0, $l = count($parent); $i < $l; ++$i) {
@@ -454,7 +454,7 @@ class TreelibTceforms
          * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
          */
         $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-        $mount->init($this->getBackendUser()->user['uid']);
+        $mount->init((int) $this->getBackendUser()->user['uid']);
 
         // Separate Key and Title with a |
         $title = ($category->isPermissionSet('show') && $mount->isInCommerceMounts($category->getUid())) ?

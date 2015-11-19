@@ -158,7 +158,7 @@ class BasketController extends BaseController
     public function initBasket()
     {
         $this->basket = $this->getBasket();
-        $this->basket->setTaxCalculationMethod($this->conf['priceFromNet']);
+        $this->basket->setTaxCalculationMethod((int) $this->conf['priceFromNet']);
         $this->basket->loadData();
     }
 
@@ -897,7 +897,7 @@ class BasketController extends BaseController
      */
     public function makeCheckOutLink()
     {
-        return $this->pi_linkToPage($this->pi_getLL('checkoutlink'), $this->conf['checkoutPid']);
+        return $this->pi_linkToPage($this->pi_getLL('checkoutlink'), (int) $this->conf['checkoutPid']);
     }
 
     /**
@@ -965,7 +965,7 @@ class BasketController extends BaseController
         $markerArray['###ARTICLE_SELECT_ATTRIBUTES###'] = $attCode;
         $markerArray['###ARTICLE_UID###'] = $article->getUid();
         $markerArray['###STARTFRM###'] = '<form name="basket_' . $article->getUid() . '" action="' .
-            $this->pi_getPageLink($this->conf['basketPid']) . '" method="post">';
+            $this->pi_getPageLink((int) $this->conf['basketPid']) . '" method="post">';
         $markerArray['###HIDDENFIELDS###'] = '<input type="hidden" name="' . $this->prefixId .
             '[catUid]" value="' . (int) $this->piVars['catUid'] . '" />';
         $markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId .

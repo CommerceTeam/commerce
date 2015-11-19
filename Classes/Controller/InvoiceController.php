@@ -166,8 +166,8 @@ class InvoiceController extends BaseController
             );
             $this->conf['currency'] = !empty($row) ? $row['cu_iso_3'] : $this->conf['currency'];
 
-            $this->orderPayment = $this->getOrderSystemArticles($this->order['uid'], '2', 'PAYMENT_');
-            $this->orderDelivery = $this->getOrderSystemArticles($this->order['uid'], '3', 'SHIPPING_');
+            $this->orderPayment = $this->getOrderSystemArticles((int) $this->order['uid'], '2', 'PAYMENT_');
+            $this->orderDelivery = $this->getOrderSystemArticles((int) $this->order['uid'], '3', 'SHIPPING_');
 
             $markerArray['###ORDER_TAX###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
                 $this->order['sum_price_gross'] - $this->order['sum_price_net'],
@@ -215,7 +215,7 @@ class InvoiceController extends BaseController
             }
 
             $subpartArray['###LISTING_ARTICLE###'] = $this->getOrderArticles(
-                $this->order['uid'],
+                (int) $this->order['uid'],
                 $this->conf['OrderArticles.'],
                 'ARTICLE_'
             );

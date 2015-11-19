@@ -161,15 +161,15 @@ class ClickmenuUtility extends ClickMenu
         // get rights based on the table
         switch ($table) {
             case 'tx_commerce_categories':
-                $rights = $this->calculateCategoryRights($this->rec['uid'], $rights);
+                $rights = $this->calculateCategoryRights((int) $this->rec['uid'], $rights);
                 break;
 
             case 'tx_commerce_products':
-                $rights = $this->calculateProductRights($this->rec['uid'], $rights);
+                $rights = $this->calculateProductRights((int) $this->rec['uid'], $rights);
                 break;
 
             case 'tx_commerce_articles':
-                $rights = $this->calculateArticleRights($this->rec['uid'], $rights);
+                $rights = $this->calculateArticleRights((int) $this->rec['uid'], $rights);
                 break;
 
             default:
@@ -240,11 +240,11 @@ class ClickmenuUtility extends ClickMenu
             if (!in_array('paste', $this->disabledItems) && $elFromAllTables && $rights['paste']) {
                 $selItem = $this->clipObj->getSelectedRecord();
                 $elInfo = array(
-                    GeneralUtility::fixed_lgd_cs($selItem['_RECORD_TITLE'], $backendUser->uc['titleLen']),
+                    GeneralUtility::fixed_lgd_cs($selItem['_RECORD_TITLE'], (int) $backendUser->uc['titleLen']),
                     (
                         $rights['root'] ? $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] : GeneralUtility::fixed_lgd_cs(
                             BackendUtility::getRecordTitle($table, $this->rec),
-                            $backendUser->uc['titleLen']
+                            (int) $backendUser->uc['titleLen']
                         )
                     ),
                     $this->clipObj->currentMode(),
@@ -284,7 +284,7 @@ class ClickmenuUtility extends ClickMenu
             // Delete:
             $elInfo = array(GeneralUtility::fixed_lgd_cs(
                 BackendUtility::getRecordTitle($table, $this->rec),
-                $backendUser->uc['titleLen']
+                (int) $backendUser->uc['titleLen']
             ));
 
             if (!$rights['editLock']
@@ -395,7 +395,7 @@ class ClickmenuUtility extends ClickMenu
          * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
          */
         $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-        $mount->init($backendUser->user['uid']);
+        $mount->init((int) $backendUser->user['uid']);
         $rights['DBmount'] = (in_array($uid, $mount->getMountData()));
 
         // if the category has no parent categories treat as root

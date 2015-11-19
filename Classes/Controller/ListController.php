@@ -377,7 +377,7 @@ class ListController extends BaseController
         $long = 1;
         switch ($this->handle) {
             case 'singleView':
-                if ($this->initSingleView($this->piVars['showUid'])) {
+                if ($this->initSingleView((int) $this->piVars['showUid'])) {
                     $long = 0;
                 }
                 break;

@@ -269,13 +269,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
         );
 
         // CSH
-        $buttons['csh'] = \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem(
-            '_MOD_commerce_statistic',
-            '',
-            $this->getBackPath(),
-            '',
-            true
-        );
+        $buttons['csh'] = \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem('_MOD_commerce_statistic', '');
 
         // Shortcut
         if ($backendUser->mayMakeShortcut()) {

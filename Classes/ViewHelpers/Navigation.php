@@ -1313,7 +1313,7 @@ class Navigation
         }
 
         $returnArray = array();
-        $returnArray = $this->getCategoryRootlineforTypoScript($this->gpVars['catUid'], $returnArray);
+        $returnArray = $this->getCategoryRootlineforTypoScript((int) $this->gpVars['catUid'], $returnArray);
 
         /*
          * Add product to rootline, if a product is displayed and showProducts

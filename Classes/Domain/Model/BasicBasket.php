@@ -653,7 +653,7 @@ class BasicBasket
     {
         // Check if payment article is available and set default if not
         if (empty($this->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE))) {
-            $this->addArticle($this->conf['defaultPaymentArticleId']);
+            $this->addArticle((int) $this->conf['defaultPaymentArticleId']);
         }
     }
 

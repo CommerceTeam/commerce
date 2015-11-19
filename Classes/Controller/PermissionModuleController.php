@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
-use TYPO3\CMS\Perm\Controller\PermissionAjaxController;
+use TYPO3\CMS\Beuser\Controller\PermissionAjaxController;
 
 /**
  * Module: Permission setting.
@@ -36,7 +36,7 @@ use TYPO3\CMS\Perm\Controller\PermissionAjaxController;
  *
  * @author 2008-2012 Erik Frister <typo3@marketing-factory.de>
  */
-class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionModuleController
+class PermissionModuleController extends \TYPO3\CMS\Beuser\Controller\PermissionController
 {
     /**
      * Categorory uid.
@@ -64,6 +64,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
      */
     public static function render()
     {
+        /** @var self $instance */
         $instance = GeneralUtility::makeInstance(self::class);
         $instance->main();
         $instance->printContent();
@@ -124,8 +125,9 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
         $doc->setModuleTemplate('EXT:perm/Resources/Private/Templates/perm.html');
         $doc->form = '<form action="' . $this->getBackPath() . 'tce_db.php" method="post" name="editform">';
         $doc->loadJavascriptLib('js/jsfunc.updateform.js');
-        $doc->getPageRenderer()->loadPrototype();
-        $doc->loadJavascriptLib(ExtensionManagementUtility::extRelPath('perm') . 'mod1/perm.js');
+        $doc->loadJavascriptLib(
+            ExtensionManagementUtility::extRelPath('beuser') . 'Resources/Public/JavaScript/Permissions.js'
+        );
         // Setting up the context sensitive menu:
         $doc->getContextMenuCode();
 
@@ -233,7 +235,7 @@ class PermissionModuleController extends \TYPO3\CMS\Perm\Controller\PermissionMo
         );
 
         // CSH
-        $buttons['csh'] = BackendUtility::cshItem('_MOD_web_info', '', $this->getBackPath(), '', true);
+        $buttons['csh'] = BackendUtility::cshItem('_MOD_web_info', '');
         // View page
         $buttons['view'] = '<a href="#" onclick="' .
             htmlspecialchars(BackendUtility::viewonclick(

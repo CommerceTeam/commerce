@@ -46,9 +46,9 @@ class AttributeEditFunc
         /**
          * Document template.
          *
-         * @var \TYPO3\CMS\Backend\Template\SmallDocumentTemplate $doc
+         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
          */
-        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\SmallDocumentTemplate');
+        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
         $doc->backPath = $this->getBackPath();
 
         $attributeStoragePid = $parameter['row']['pid'];

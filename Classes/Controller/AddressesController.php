@@ -138,7 +138,7 @@ class AddressesController extends BaseController
             case 'delete':
                 $addresses = $this->getAddresses(
                     (int) $this->user['uid'],
-                    (int) $this->addresses[$this->piVars['addressid']]['tx_commerce_address_type_id']
+                    (int) $this->addresses[(int) $this->piVars['addressid']]['tx_commerce_address_type_id']
                 );
                 if (count($addresses) <= $this->conf['minAddressCount']) {
                     $this->sysMessage = $this->pi_getLL('message_cant_delete');
@@ -459,7 +459,7 @@ class AddressesController extends BaseController
             }
 
             $itemMarkerArray['###SELECT###'] .= 'name="' . $hiddenFieldPrefix . '[address_uid]" value="' .
-                $address['uid'] . '" />';
+                (int) $address['uid'] . '" />';
 
             foreach ($hooks as $hookObj) {
                 if (method_exists($hookObj, 'processAddressMarker')) {
@@ -755,7 +755,7 @@ class AddressesController extends BaseController
 
         $baseMarkerArray['###ADDRESS_FORM_BACK###'] = $this->pi_linkToPage(
             $this->pi_getLL('label_form_back', 'back'),
-            $this->piVars['backpid'],
+            (int) $this->piVars['backpid'],
             '',
             array(
                 'tx_commerce_pi3' => array(

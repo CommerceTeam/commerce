@@ -335,7 +335,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
              * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
              */
             $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
-            $mount->init($this->getBackendUser()->user['uid']);
+            $mount->init((int) $this->getBackendUser()->user['uid']);
 
             // only go if the item is in the mounts
             if ($mount->isInCommerceMounts($this->openCategory)) {

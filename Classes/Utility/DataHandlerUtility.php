@@ -26,7 +26,11 @@ define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/Classes/Utility/');
 $BACK_PATH = '../../../../../typo3/';
 
 $MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_cce.xml';
-require_once $BACK_PATH . 'init.php';
+
+// @todo remove by using routing
+define('TYPO3_MODE', 'BE');
+require $BACK_PATH . '/sysext/core/Classes/Core/Bootstrap.php';
+\TYPO3\CMS\Core\Core\Bootstrap::getInstance()->run('typo3/');
 
 /**
  * Language
@@ -251,7 +255,7 @@ class DataHandlerUtility
         } else {
             // get current item in clipboard
             $item = $this->clipObj->getSelectedRecord();
-            $uidClip = $item['uid'];
+            $uidClip = (int) $item['uid'];
             $uidTarget = 0;
 
             // check which command we actually want to execute
@@ -640,9 +644,9 @@ class DataHandlerUtility
 /**
  * Service object.
  *
- * @var DataHandlerUtility
+ * @var \CommerceTeam\Commerce\Utility\DataHandlerUtility
  */
-$SOBE = GeneralUtility::makeInstance('DataHandlerUtility');
+$SOBE = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\DataHandlerUtility::class);
 $SOBE->init();
 $SOBE->initClipboard();
 $SOBE->main();

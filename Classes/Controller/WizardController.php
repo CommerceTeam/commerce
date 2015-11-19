@@ -188,7 +188,10 @@ class WizardController
         // If a page-record was returned, the user had read-access to the page.
         if ($this->pageinfo['uid']) {
             // Get record of parent page
-            $this->pidInfo = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('pages', $this->pageinfo['pid']);
+            $this->pidInfo = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord(
+                'pages',
+                (int) $this->pageinfo['pid']
+            );
             // Checking the permissions for the user with regard to the
             // parent page: Can he create new pages, new content record, new page after?
             if ($backendUser->doesUserHaveAccess($this->pageinfo, 16)) {
@@ -218,7 +221,7 @@ class WizardController
         if ($this->pageinfo['uid'] || $backendUser->isAdmin()) {
             // Acquiring TSconfig for this module/current page:
             $this->web_list_modTSconfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getModTSconfig(
-                $this->pageinfo['uid'],
+                (int) $this->pageinfo['uid'],
                 'mod.web_list'
             );
             $this->allowedNewTables = GeneralUtility::trimExplode(
@@ -229,7 +232,7 @@ class WizardController
 
                 // Acquiring TSconfig for this module/parent page:
             $this->web_list_modTSconfig_pid = \TYPO3\CMS\Backend\Utility\BackendUtility::getModTSconfig(
-                $this->pageinfo['pid'],
+                (int) $this->pageinfo['pid'],
                 'mod.web_list'
             );
             $this->allowedNewTables_pid = GeneralUtility::trimExplode(

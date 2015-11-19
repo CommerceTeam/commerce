@@ -406,7 +406,7 @@ class OrderEditFunc
             );
             $page = $pageRepository->findByUid($localOrderPid);
             if (!empty($page)) {
-                $orderPid = $page['pid'];
+                $orderPid = (int) $page['pid'];
             }
         }
 
