@@ -307,7 +307,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 	 */
 	protected function centurionMultiplication($price) {
 		$price = floatval($price);
-		$result = intval($price * 100);
+		$result = round($price * 100);
 		return $result;
 	}
 
