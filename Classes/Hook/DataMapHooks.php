@@ -1352,7 +1352,7 @@ class Tx_Commerce_Hook_DataMapHooks {
 			}
 
 			// check if the article has already a price
-			$res = $database->exec_SELECTquery('*', 'tx_commerce_article_prices', 'uid_article = ' . $productId, '', '', 1);
+			$res = $database->exec_SELECTquery('*', 'tx_commerce_article_prices', 'uid_article = ' . $aUid, '', '', 1);
 			if ($database->sql_num_rows($res) == 0 && $aRes['sys_language_uid'] < 1) {
 				// create a new price if no one exists
 				$database->exec_INSERTquery('tx_commerce_article_prices',
