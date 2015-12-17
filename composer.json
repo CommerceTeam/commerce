@@ -14,9 +14,16 @@
 		"commerce",
 		"eCommerce"
 	],
-
+	
+	"replace": {
+		"commerce": "self.version",
+		"typo3-ter/commerce": "self.version"
+	},
 	"require": {
-		"typo3/cms-core": "*"
+		"typo3/cms-core": "*",
+		"tt_address": ">= 3.0",
+		"dynaflex": ">= 2.0",
+		"static_info_tables": ">= 6.2.0"
 	},
 	"autoload": {
 		"psr-4": {
