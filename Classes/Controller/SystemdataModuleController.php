@@ -14,13 +14,14 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Module\BaseScriptClass;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 /**
@@ -30,7 +31,7 @@ use TYPO3\CMS\Backend\Template\ModuleTemplate;
  *
  * @author 2005-2013 Ingo Schmitt <is@marketing-factory.de>
  */
-class SystemdataModuleController extends BaseScriptClass
+class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 {
     /**
      * PopView id - for opening a window with the page
@@ -128,21 +129,13 @@ class SystemdataModuleController extends BaseScriptClass
      */
     public function __construct()
     {
+        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->getLanguageService()->includeLLFile(
             'EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml'
         );
-        $GLOBALS['SOBE'] = $this;
-        $this->init();
-    }
-
-    /**
-     * @return void
-     */
-    public static function render()
-    {
-        $instance = GeneralUtility::makeInstance(self::class);
-        $instance->main();
-        $instance->printContent();
+        $this->MCONF = array(
+            'name' => $this->moduleName,
+        );
     }
 
     /**
@@ -152,8 +145,6 @@ class SystemdataModuleController extends BaseScriptClass
      */
     public function init()
     {
-        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
-        $this->MCONF['name'] = $this->moduleName;
         $this->page_id = $this->modPid = (int) reset(FolderRepository::initFolders('Commerce', 'commerce'));
         $this->attributePid = (int) reset(FolderRepository::initFolders('Attributes', 'commerce', $this->modPid));
         $this->popView = GeneralUtility::_GP('popView');
@@ -234,9 +225,9 @@ class SystemdataModuleController extends BaseScriptClass
             ');
 
             // Render content:
-            $content .= $this->moduleContent();
+            $content .= $this->getModuleContent();
 
-            $this->makeButtons();
+            $this->getButtons();
         } else {
             $this->moduleTemplate->addJavaScriptCode(
                 'mainJsFunctions',
@@ -256,7 +247,7 @@ class SystemdataModuleController extends BaseScriptClass
      *
      * @return void
      */
-    public function makeButtons()
+    public function getButtons()
     {
         $buttonBar = $this->moduleTemplate->getDocHeaderComponent()->getButtonBar();
 
@@ -326,21 +317,11 @@ class SystemdataModuleController extends BaseScriptClass
     }
 
     /**
-     * Prints out the module HTML.
-     *
-     * @return void
-     */
-    public function printContent()
-    {
-        echo $this->moduleTemplate->renderContent();
-    }
-
-    /**
      * Generates the module content.
      *
      * @return string
      */
-    protected function moduleContent()
+    protected function getModuleContent()
     {
         switch ((string) $this->MOD_SETTINGS['function']) {
             case '2':
@@ -358,6 +339,24 @@ class SystemdataModuleController extends BaseScriptClass
         }
 
         return $content;
+    }
+
+    /**
+     * Injects the request object for the current request or subrequest
+     * Simply calls main() and init() and outputs the content
+     *
+     * @param ServerRequestInterface $request the current request
+     * @param ResponseInterface $response
+     * @return ResponseInterface the response with the content
+     */
+    public function mainAction(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        $GLOBALS['SOBE'] = $this;
+        $this->init();
+        $this->main();
+
+        $response->getBody()->write($this->moduleTemplate->renderContent());
+        return $response;
     }
 
     /**

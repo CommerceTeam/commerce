@@ -63,14 +63,11 @@ $boot = function ($packageKey) {
             'commerce',
             'category',
             '',
-            PATH_TXCOMMERCE . 'Modules/Category/',
+            '',
             [
-                'script' => '_DISPATCH',
-                'name' => 'commerce_category',
+                'routeTarget' => \CommerceTeam\Commerce\Controller\CategoryModuleController::class . '::mainAction',
                 'access' => 'user,group',
-                // for links generated in the module and the navFrame
-                'route' => 'CommerceTeam_commerce_Category',
-                'workspaces' => 'online',
+                'name' => 'commerce_category',
                 'labels' => array(
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_category.xml',
                     'tabs_images' => [
@@ -78,7 +75,6 @@ $boot = function ($packageKey) {
                     ],
                 ),
                 'navigationFrameModule' => 'CommerceTeam_commerce_CategoryNavigation',
-                'navigationFrameModuleParameters' => array('currentModule' => 'commerce_category'),
             ]
         );
 
@@ -87,14 +83,11 @@ $boot = function ($packageKey) {
             'commerce',
             'permission',
             '',
-            PATH_TXCOMMERCE . 'Modules/Permission/',
+            '',
             [
-                'script' => '_DISPATCH',
-                'name' => 'commerce_permission',
+                'routeTarget' => \CommerceTeam\Commerce\Controller\PermissionModuleController::class . '::mainAction',
                 'access' => 'user,group',
-                // for links generated in the module and the navFrame
-                'route' => 'CommerceTeam_commerce_Permission',
-                'workspaces' => 'online',
+                'name' => 'commerce_permission',
                 'labels' => array(
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_access.xml',
                     'tabs_images' => [
@@ -102,7 +95,6 @@ $boot = function ($packageKey) {
                     ],
                 ),
                 'navigationFrameModule' => 'CommerceTeam_commerce_CategoryNavigation',
-                'navigationFrameModuleParameters' => array('currentModule' => 'commerce_permission'),
             ]
         );
 
@@ -111,14 +103,11 @@ $boot = function ($packageKey) {
             'commerce',
             'order',
             '',
-            PATH_TXCOMMERCE . 'Modules/Order/',
+            '',
             [
-                'script' => '_DISPATCH',
-                'name' => 'commerce_order',
+                'routeTarget' => \CommerceTeam\Commerce\Controller\OrdersModuleController::class . '::mainAction',
                 'access' => 'user,group',
-                // for links generated in the module and the navFrame
-                'route' => 'CommerceTeam_commerce_Order',
-                'workspaces' => 'online',
+                'name' => 'commerce_order',
                 'labels' => array(
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml',
                     'tabs_images' => [
@@ -126,7 +115,6 @@ $boot = function ($packageKey) {
                     ],
                 ),
                 'navigationFrameModule' => 'CommerceTeam_commerce_OrderNavigation',
-                'navigationFrameModuleParameters' => array('currentModule' => 'commerce_order'),
             ]
         );
 
@@ -135,14 +123,11 @@ $boot = function ($packageKey) {
             'commerce',
             'statistic',
             '',
-            PATH_TXCOMMERCE . 'Modules/Statistic/',
+            '',
             [
-                'script' => '_DISPATCH',
-                'name' => 'commerce_statistic',
+                'routeTarget' => \CommerceTeam\Commerce\Controller\StatisticModuleController::class . '::mainAction',
                 'access' => 'user,group',
-                // for links generated in the module and the navFrame
-                'route' => 'CommerceTeam_commerce_Statistic',
-                'workspaces' => 'online',
+                'name' => 'commerce_statistic',
                 'labels' => array(
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml',
                     'tabs_images' => [
@@ -150,7 +135,6 @@ $boot = function ($packageKey) {
                     ],
                 ),
                 'navigationFrameModule' => 'CommerceTeam_commerce_OrderNavigation',
-                'navigationFrameModuleParameters' => array('currentModule' => 'commerce_statistic'),
             ]
         );
 
@@ -159,14 +143,11 @@ $boot = function ($packageKey) {
             'commerce',
             'systemdata',
             '',
-            PATH_TXCOMMERCE . 'Modules/Systemdata/',
+            '',
             [
-                'script' => '_DISPATCH',
-                'name' => 'commerce_systemdata',
+                'routeTarget' => \CommerceTeam\Commerce\Controller\SystemdataModuleController::class . '::mainAction',
                 'access' => 'user,group',
-                // for links generated in the module and the navFrame
-                'route' => 'CommerceTeam_commerce_Systemdata',
-                'workspaces' => 'online',
+                'name' => 'commerce_systemdata',
                 'labels' => array(
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml',
                     'tabs_images' => [
@@ -174,7 +155,6 @@ $boot = function ($packageKey) {
                     ],
                 ),
                 'navigationFrameModule' => 'CommerceTeam_commerce_SystemdataNavigation',
-                'navigationFrameModuleParameters' => array('currentModule' => 'commerce_systemdata'),
             ]
         );
 
@@ -211,7 +191,7 @@ $boot = function ($packageKey) {
             tx_commerce_trackingcodes = 1
             tx_commerce_moveordermails = 1
         }
-    '
+            '
         );
 
         // Add default page TS config
@@ -231,7 +211,7 @@ $boot = function ($packageKey) {
 
         # CONFIGURATION of RTE in table "tx_commerce_articles", field "description_extra"
         RTE.config.tx_commerce_articles.description_extra < RTE.config.tx_commerce_products.description
-    '
+            '
         );
     }
 

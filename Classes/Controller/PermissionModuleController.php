@@ -14,12 +14,17 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Beuser\Controller\PermissionAjaxController;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use TYPO3\CMS\Backend\Template\Components\ButtonBar;
+use TYPO3\CMS\Core\Imaging\Icon;
 
 /**
  * Module: Permission setting.
@@ -39,11 +44,35 @@ use TYPO3\CMS\Beuser\Controller\PermissionAjaxController;
 class PermissionModuleController extends \TYPO3\CMS\Beuser\Controller\PermissionController
 {
     /**
+     * The name of the module
+     *
+     * @var string
+     */
+    protected $moduleName = 'commerce_permission';
+
+    /**
+     * ModuleTemplate Container
+     *
+     * @var ModuleTemplate
+     */
+    protected $moduleTemplate;
+
+    /**
      * Categorory uid.
      *
      * @var int
      */
     protected $categoryUid = 0;
+
+    /**
+     * @var ServerRequestInterface
+     */
+    protected $request;
+
+    /**
+     * @var string
+     */
+    protected $content = '';
 
     /**
      * Constructor.
@@ -52,22 +81,13 @@ class PermissionModuleController extends \TYPO3\CMS\Beuser\Controller\Permission
      */
     public function __construct()
     {
-        $GLOBALS['SOBE'] = $this;
         parent::__construct();
+        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_perm.xlf');
         $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_access.xml');
-        $this->init();
-    }
-
-    /**
-     * @return void
-     */
-    public static function render()
-    {
-        /** @var self $instance */
-        $instance = GeneralUtility::makeInstance(self::class);
-        $instance->main();
-        $instance->printContent();
+        $this->MCONF = array(
+            'name' => $this->moduleName,
+        );
     }
 
     /**
@@ -103,9 +123,6 @@ class PermissionModuleController extends \TYPO3\CMS\Beuser\Controller\Permission
         $this->perms_clause = \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1);
 
         $this->initPage();
-
-        // Set up menus:
-        $this->menuConfig();
     }
 
     /**
@@ -199,63 +216,69 @@ class PermissionModuleController extends \TYPO3\CMS\Beuser\Controller\Permission
                 $this->doEdit();
             }
 
-            $docHeaderButtons = $this->getButtons();
-            $markers['CSH'] = $docHeaderButtons['csh'];
-            $markers['FUNC_MENU'] = BackendUtility::getFuncMenu(
-                $this->id,
-                'SET[mode]',
-                $this->MOD_SETTINGS['mode'],
-                $this->MOD_MENU['mode']
-            );
-            $markers['CONTENT'] = $this->content;
-
-            // Build the <body> for the module
-            $this->content = $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
+            $this->registerDocHeaderButtons();
         } else {
             // If no access or if ID == zero
             $this->content .= $this->doc->header($language->getLL('permissions'));
         }
-
-        // Renders the module page
-        $this->content = $this->doc->render($language->getLL('permissions'), $this->content);
     }
 
     /**
-     * Create the panel of buttons for submitting the form or otherwise
-     * perform operations.
+     * Registers the Icons into the docheader
      *
-     * @return array all available buttons as an assoc. array
+     * @return void
+     * @throws \InvalidArgumentException
      */
-    protected function getButtons()
+    protected function registerDocHeaderButtons()
     {
-        $buttons = array(
-            'csh' => '',
-            'view' => '',
-            'shortcut' => '',
-        );
+        /** @var ButtonBar $buttonBar */
+        $buttonBar = $this->moduleTemplate->getDocHeaderComponent()->getButtonBar();
+        $getVars = $this->request->getQueryParams();
 
-        // CSH
-        $buttons['csh'] = BackendUtility::cshItem('_MOD_web_info', '');
-        // View page
-        $buttons['view'] = '<a href="#" onclick="' .
-            htmlspecialchars(BackendUtility::viewonclick(
-                $this->id,
-                $this->getBackPath(),
-                BackendUtility::BEgetRootLine($this->pageinfo['uid'])
-            )) .
-            '" title="' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.showPage', true) .
-            '">' . IconUtility::getSpriteIcon('actions-document-view') . '</a>';
-
-        // Shortcut
-        if ($this->getBackendUser()->mayMakeShortcut()) {
-            $buttons['shortcut'] = $this->doc->makeShortcutIcon(
-                'id, edit_record, pointer, new_unique_uid, search_field, search_levels, showLimit',
-                implode(',', array_keys($this->MOD_MENU)),
-                $this->MCONF['name']
-            );
+        $extensionName = 'commerce';
+        if (empty($getVars)) {
+            $modulePrefix = strtolower('tx_' . $extensionName . '_' . $this->moduleName);
+            $getVars = array('id', 'M', $modulePrefix);
         }
+        $shortcutButton = $buttonBar->makeShortcutButton()
+            ->setModuleName($this->moduleName)
+            ->setGetVariables($getVars);
+        $buttonBar->addButton($shortcutButton);
 
-        return $buttons;
+        if ($this->id > 0) {
+            $iconFactory = $this->moduleTemplate->getIconFactory();
+            $viewButton = $buttonBar->makeLinkButton()
+                ->setOnClick(BackendUtility::viewOnClick(
+                    $this->pageInfo['uid'],
+                    '',
+                    BackendUtility::BEgetRootLine($this->pageInfo['uid'])
+                ))
+                ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.showPage'))
+                ->setIcon($iconFactory->getIcon('actions-document-view', Icon::SIZE_SMALL))
+                ->setHref('#');
+
+            $buttonBar->addButton($viewButton, ButtonBar::BUTTON_POSITION_LEFT, 3);
+        }
+    }
+
+    /**
+     * Injects the request object for the current request or subrequest
+     * Simply calls main() and init() and outputs the content
+     *
+     * @param ServerRequestInterface $request the current request
+     * @param ResponseInterface $response
+     * @return ResponseInterface the response with the content
+     */
+    public function mainAction(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        $GLOBALS['SOBE'] = $this;
+        $this->request = $request;
+        $this->init();
+        $this->main();
+
+        $this->moduleTemplate->setContent($this->content);
+        $response->getBody()->write($this->moduleTemplate->renderContent());
+        return $response;
     }
 
     /* Listing and Form rendering */

@@ -14,9 +14,12 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 /**
  * Class \CommerceTeam\Commerce\Controller\OrdersModuleController.
@@ -25,6 +28,20 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
 {
+    /**
+     * The name of the module
+     *
+     * @var string
+     */
+    protected $moduleName = 'commerce_order';
+
+    /**
+     * ModuleTemplate Container
+     *
+     * @var ModuleTemplate
+     */
+    protected $moduleTemplate;
+
     /**
      * The script for the wizard of the command 'new'.
      *
@@ -53,19 +70,11 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
      */
     public function __construct()
     {
-        $GLOBALS['SOBE'] = $this;
         parent::__construct();
-        $this->init();
-    }
-
-    /**
-     * @return void
-     */
-    public static function render()
-    {
-        $instance = GeneralUtility::makeInstance(self::class);
-        $instance->main();
-        $instance->printContent();
+        $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml');
+        $this->MCONF = array(
+            'name' => $this->moduleName,
+        );
     }
 
     /**
@@ -75,9 +84,6 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
      */
     public function init()
     {
-        $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml');
-        $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_list.php');
-
         // Setting GPvars:
         $this->id = (int) GeneralUtility::_GP('id');
         // Find the right pid for the Ordersfolder
@@ -466,7 +472,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
         }
 
         $buttons = $dblist->getButtons($this->pageinfo);
-        $docHeaderButtons = $this->getHeaderButtons($buttons);
+        $docHeaderButtons = $this->getButtons($buttons);
 
         $markers = array(
             'CSH' => $docHeaderButtons['csh'],
@@ -488,7 +494,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
      *
      * @return array All available buttons as an assoc. array
      */
-    protected function getHeaderButtons(array $buttons)
+    protected function getButtons(array $buttons)
     {
         $backendUser = $this->getBackendUser();
         $language = $this->getLanguageService();
@@ -517,6 +523,25 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
         }
 
         return $buttons;
+    }
+
+    /**
+     * Injects the request object for the current request or subrequest
+     * Simply calls main() and init() and outputs the content
+     *
+     * @param ServerRequestInterface $request the current request
+     * @param ResponseInterface $response
+     * @return ResponseInterface the response with the content
+     */
+    public function mainAction(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        $GLOBALS['SOBE'] = $this;
+        $this->init();
+        $this->main();
+
+        $this->moduleTemplate->setContent($this->content);
+        $response->getBody()->write($this->moduleTemplate->renderContent());
+        return $response;
     }
 
 

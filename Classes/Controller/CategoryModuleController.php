@@ -14,10 +14,14 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Backend\Template\Components\ButtonBar;
+use TYPO3\CMS\Core\Imaging\Icon;
 
 /**
  * Class \CommerceTeam\Commerce\Controller\CategoryModuleController.
@@ -32,6 +36,13 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
      * @var string
      */
     public $scriptNewWizard = 'wizard.php';
+
+    /**
+     * The name of the module
+     *
+     * @var string
+     */
+    protected $moduleName = 'commerce_category';
 
     /**
      * Category uid.
@@ -54,19 +65,14 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
      */
     public function __construct()
     {
-        $GLOBALS['SOBE'] = $this;
         parent::__construct();
-        $this->init();
-    }
-
-    /**
-     * @return void
-     */
-    public static function render()
-    {
-        $instance = GeneralUtility::makeInstance(self::class);
-        $instance->main();
-        $instance->printContent();
+        $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_list.xml');
+        $this->getLanguageService()->includeLLFile(
+            'EXT:commerce/Resources/Private/Language/locallang_mod_category.xml'
+        );
+        $this->MCONF = array(
+            'name' => $this->moduleName,
+        );
     }
 
     /**
@@ -76,7 +82,6 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
      */
     public function init()
     {
-        $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_list.xml');
 
         // Setting GPvars:
         $this->id = (int) GeneralUtility::_GP('id');
@@ -107,8 +112,6 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             $this->categoryUid = (int) $controlArray['uid'];
         }
 
-        // Module name;
-        $this->MCONF = $GLOBALS['MCONF'];
         // Page select clause:
         $this->perms_clause = \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1);
 
@@ -539,6 +542,33 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         }
 
         $docHeaderButtons = $dbList->getButtons($this->pageinfo);
+        // @todo use docHeaderButtons
+        $this->registerDocHeaderButtons();
+
+        $this->content = $this->body;
+    }
+
+    /**
+     * Registers the Icons into the docheader
+     *
+     * @return void
+     * @throws \InvalidArgumentException
+     */
+    protected function registerDocHeaderButtons()
+    {
+        /** @var ButtonBar $buttonBar */
+        $buttonBar = $this->moduleTemplate->getDocHeaderComponent()->getButtonBar();
+        $getVars = $this->request->getQueryParams();
+
+        $extensionName = 'commerce';
+        if (empty($getVars)) {
+            $modulePrefix = strtolower('tx_' . $extensionName . '_' . $this->moduleName);
+            $getVars = array('id', 'M', $modulePrefix);
+        }
+        $shortcutButton = $buttonBar->makeShortcutButton()
+            ->setModuleName($this->moduleName)
+            ->setGetVariables($getVars);
+        $buttonBar->addButton($shortcutButton);
 
         if (!$this->categoryUid) {
             $docHeaderButtons['edit'] = '';
@@ -551,18 +581,40 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             $this->getCategoryPath($this->pageinfo) :
             $this->getPagePath($this->pageinfo);
 
-        $markers = array(
-            'CSH' => $docHeaderButtons['csh'],
-            'CATPATH' => $categoryPath,
-            'CATINFO' => $categoryInfo,
-            'CONTENT' => $this->body,
-            'EXTRACONTAINERCLASS' => $this->table ? 'singletable' : '',
-        );
+        if ($this->id > 0 || $this->categoryUid > 0) {
+            $iconFactory = $this->moduleTemplate->getIconFactory();
+            $viewButton = $buttonBar->makeLinkButton()
+                ->setOnClick(BackendUtility::viewOnClick(
+                    $this->pageInfo['uid'],
+                    '',
+                    BackendUtility::BEgetRootLine($this->pageInfo['uid'])
+                ))
+                ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.showPage'))
+                ->setIcon($iconFactory->getIcon('actions-document-view', Icon::SIZE_SMALL))
+                ->setHref('#');
 
-        // Build the <body> for the module
-        $this->content = $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
-        // Renders the module page
-        $this->content = $this->doc->render('DB list', $this->content);
+            $buttonBar->addButton($viewButton, ButtonBar::BUTTON_POSITION_LEFT, 3);
+        }
+    }
+
+    /**
+     * Injects the request object for the current request or subrequest
+     * Simply calls main() and init() and outputs the content
+     *
+     * @param ServerRequestInterface $request the current request
+     * @param ResponseInterface $response
+     * @return ResponseInterface the response with the content
+     */
+    public function mainAction(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        $GLOBALS['SOBE'] = $this;
+        $this->request = $request;
+        $this->init();
+        $this->main();
+
+        $this->moduleTemplate->setContent($this->content);
+        $response->getBody()->write($this->moduleTemplate->renderContent());
+        return $response;
     }
 
     /**

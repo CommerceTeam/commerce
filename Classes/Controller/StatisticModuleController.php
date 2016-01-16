@@ -14,8 +14,11 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 /**
  * Module 'Statistics' for the 'commerce' extension.
@@ -32,6 +35,20 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
      * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
      */
     public $doc;
+
+    /**
+     * The name of the module
+     *
+     * @var string
+     */
+    protected $moduleName = 'commerce_statistic';
+
+    /**
+     * ModuleTemplate Container
+     *
+     * @var ModuleTemplate
+     */
+    protected $moduleTemplate;
 
     /**
      * Page information.
@@ -61,18 +78,14 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
      */
     public function __construct()
     {
-        $GLOBALS['SOBE'] = $this;
-        $this->init();
-    }
-
-    /**
-     * @return void
-     */
-    public static function render()
-    {
-        $instance = GeneralUtility::makeInstance(self::class);
-        $instance->main();
-        $instance->printContent();
+        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
+        $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_list.php');
+        $this->getLanguageService()->includeLLFile(
+            'EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml'
+        );
+        $this->MCONF = array(
+            'name' => $this->moduleName,
+        );
     }
 
     /**
@@ -82,12 +95,6 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
      */
     public function init()
     {
-        $language = $this->getLanguageService();
-        $language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml');
-        $language->includeLLFile('EXT:lang/locallang_mod_web_list.php');
-
-        $this->MCONF = $GLOBALS['MCONF'];
-
         parent::init();
 
         $this->statistics = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\StatisticsUtility');
@@ -174,13 +181,13 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
         // Checking access:
         if (($this->id && $access) || $backendUser->isAdmin()) {
             // Render content:
-            $this->moduleContent();
+            $this->getModuleContent();
         } else {
             // If no access or if ID == zero
             $this->content .= $this->doc->header($language->getLL('statistic'));
         }
 
-        $docHeaderButtons = $this->getHeaderButtons();
+        $docHeaderButtons = $this->getButtons();
 
         $markers = array(
             'CSH' => $docHeaderButtons['csh'],
@@ -204,44 +211,12 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
     }
 
     /**
-     * Prints out the module HTML.
-     *
-     * @return void
-     */
-    public function printContent()
-    {
-        echo $this->content;
-    }
-
-    /**
-     * Generates the module content.
-     *
-     * @return void
-     */
-    protected function moduleContent()
-    {
-        switch ((int) $this->MOD_SETTINGS['function']) {
-            case 2:
-                $this->content .= $this->incrementalAggregation();
-                break;
-
-            case 3:
-                $this->content .= $this->completeAggregation();
-                break;
-
-            case 1:
-            default:
-                $this->content .= $this->showStatistics();
-        }
-    }
-
-    /**
      * Create the panel of buttons for submitting the form
      * or otherwise perform operations.
      *
      * @return array all available buttons as an assoc. array
      */
-    protected function getHeaderButtons()
+    protected function getButtons()
     {
         $backendUser = $this->getBackendUser();
         $language = $this->getLanguageService();
@@ -292,6 +267,47 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
         }
 
         return $buttons;
+    }
+
+    /**
+     * Generates the module content.
+     *
+     * @return void
+     */
+    protected function getModuleContent()
+    {
+        switch ((int) $this->MOD_SETTINGS['function']) {
+            case 2:
+                $this->content .= $this->incrementalAggregation();
+                break;
+
+            case 3:
+                $this->content .= $this->completeAggregation();
+                break;
+
+            case 1:
+            default:
+                $this->content .= $this->showStatistics();
+        }
+    }
+
+    /**
+     * Injects the request object for the current request or subrequest
+     * Simply calls main() and init() and outputs the content
+     *
+     * @param ServerRequestInterface $request the current request
+     * @param ResponseInterface $response
+     * @return ResponseInterface the response with the content
+     */
+    public function mainAction(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        $GLOBALS['SOBE'] = $this;
+        $this->init();
+        $this->main();
+
+        $this->moduleTemplate->setContent($this->content);
+        $response->getBody()->write($this->moduleTemplate->renderContent());
+        return $response;
     }
 
     /**
