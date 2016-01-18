@@ -16,6 +16,9 @@ deliveryID = 2
 # cat=basic/enable/10; type=int; label=UID of the SYSTEM-Category. Simple mode will be disabled for this category to allow multiple payment & delivery articles
 systemCategoryID = 1
 
+# cat=basic/enable/20; type=String; label=Default Currency (ISO3): Defines which currency is used by the Money ViewHelper to format prices correctly. Please use ISO3 code of currency, see static_info_currencies for available currencies.
+defaultCurrency = EUR
+
 # cat=basic/enable/30; type=int; label=Page-ID for Invoice: Defines which Page displays the Invoice.
 invoicePageID = 0
 

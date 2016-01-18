@@ -329,7 +329,7 @@ class CategoryRepository extends Repository
         }
 
         // Versioning - no deleted or versioned records, nor live placeholders
-        $whereClause .= ' AND tx_commerce_products.deleted = 0 AND tx_commerce_products.pid != -1 AND tx_commerce_products.t3ver_state != 1';
+        $whereClause .= ' AND tx_commerce_products.sys_language_uid = 0 AND tx_commerce_products.deleted = 0 AND tx_commerce_products.pid != -1 AND tx_commerce_products.t3ver_state != 1';
         $queryArray = array(
             'SELECT' => 'DISTINCT(tx_commerce_products.uid)',
             'FROM' => 'tx_commerce_products
