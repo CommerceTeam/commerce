@@ -359,11 +359,11 @@ class Tx_Commerce_Domain_Repository_CategoryRepository extends Tx_Commerce_Domai
 			$whereClause .= $this->enableFields('tx_commerce_article_prices', $GLOBALS['TSFE']->showHiddenRecords);
 		}
 
-			// Versioning - no deleted or versioned records, nor live placeholders
-		$whereClause .= ' AND tx_commerce_products.deleted = 0 AND tx_commerce_products.pid != -1 AND tx_commerce_products.t3ver_state != 1';
+		// Versioning - no deleted or versioned records, nor live placeholders
+		$whereClause .= ' AND tx_commerce_products.sys_language_uid = 0 AND tx_commerce_products.deleted = 0 AND tx_commerce_products.pid != -1 AND tx_commerce_products.t3ver_state != 1';
 		$queryArray = array(
 			'SELECT' => 'tx_commerce_products.uid',
-			'FROM' => 'tx_commerce_products ,tx_commerce_products_categories_mm,tx_commerce_articles, tx_commerce_article_prices',
+			'FROM' => 'tx_commerce_products, tx_commerce_products_categories_mm, tx_commerce_articles, tx_commerce_article_prices',
 			'WHERE' => 'tx_commerce_products.uid=tx_commerce_products_categories_mm.uid_local ' . $whereClause,
 			'GROUPBY' => '',
 			'ORDERBY' => $localOrderField,
