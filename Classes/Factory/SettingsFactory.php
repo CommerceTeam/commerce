@@ -112,10 +112,10 @@ class SettingsFactory implements SingletonInterface
     protected function getSettings()
     {
         if (!is_array($this->settings)) {
-            if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey])) {
-                $this->settings = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey];
+            if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extensionKey])) {
+                $this->settings = $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extensionKey];
             } else {
-                $this->settings = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey]);
+                $this->settings = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extensionKey]);
             }
         }
     }
@@ -132,7 +132,7 @@ class SettingsFactory implements SingletonInterface
         if (!isset($this->extConfValueCache[$path])) {
             $pathParts = GeneralUtility::trimExplode('.', $path);
 
-            $configuration = $this->settings['extConf'];
+            $configuration = $this->settings;
 
             foreach ($pathParts as $pathPart) {
                 if (isset($configuration[$pathPart])) {

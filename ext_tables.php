@@ -158,6 +158,28 @@ $boot = function ($packageKey) {
             ]
         );
 
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
+            'commerce_systemdata',
+            \CommerceTeam\Commerce\Controller\SystemdataAttributesModuleFunctionController::class,
+            null,
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml:title_attributes'
+        );
+
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
+            'commerce_systemdata',
+            \CommerceTeam\Commerce\Controller\SystemdataManufacturerModuleFunctionController::class,
+            null,
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml:title_manufacturer'
+        );
+
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
+            'commerce_systemdata',
+            \CommerceTeam\Commerce\Controller\SystemdataSupplierModuleFunctionController::class,
+            null,
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml:title_supplier'
+        );
+
+
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
             'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct',
             \CommerceTeam\Commerce\Controller\CategoryNavigationFrameController::class .

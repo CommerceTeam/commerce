@@ -14,6 +14,8 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Module\BaseScriptClass;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
@@ -57,27 +59,6 @@ class SystemdataNavigationFrameController extends BaseScriptClass
      * @var StandaloneView
      */
     protected $view;
-
-    /**
-     * Constructor
-     *
-     * @return self
-     */
-    public function __construct()
-    {
-        $GLOBALS['SOBE'] = $this;
-        $this->init();
-    }
-
-    /**
-     * @return void
-     */
-    public static function render()
-    {
-        $instance = GeneralUtility::makeInstance(self::class);
-        $instance->main();
-        $instance->printContent();
-    }
 
     /**
      * Initialization.
@@ -131,32 +112,57 @@ class SystemdataNavigationFrameController extends BaseScriptClass
      */
     public function main()
     {
-        $this->makeButtons();
+        $this->getButtons();
 
         $templatePathAndFilename = GeneralUtility::getFileAbsFileName(
             'EXT:commerce/Resources/Private/Backend/mod_systemdata_navigation.html'
         );
         $this->view->setTemplatePathAndFilename($templatePathAndFilename);
 
-        $attributeUrl = BackendUtility::getModuleUrl('commerce_systemdata', array('SET' => array('function' => 1)));
-        $manufacturerUrl = BackendUtility::getModuleUrl('commerce_systemdata', array('SET' => array('function' => 2)));
-        $supplierUrl = BackendUtility::getModuleUrl('commerce_systemdata', array('SET' => array('function' => 3)));
+        $attributeUrl = BackendUtility::getModuleUrl(
+            'commerce_systemdata',
+            array('SET' => array(
+                'function' => 'CommerceTeam\Commerce\Controller\SystemdataAttributesModuleFunctionController'
+            ))
+        );
+        $manufacturerUrl = BackendUtility::getModuleUrl(
+            'commerce_systemdata',
+            array('SET' => array(
+                'function' => 'CommerceTeam\Commerce\Controller\SystemdataManufacturerModuleFunctionController'
+            ))
+        );
+        $supplierUrl = BackendUtility::getModuleUrl(
+            'commerce_systemdata',
+            array('SET' => array(
+                'function' => 'CommerceTeam\Commerce\Controller\SystemdataSupplierModuleFunctionController'
+            ))
+        );
         $this->view->assign('attributeUrl', $attributeUrl);
         $this->view->assign('manufacturerUrl', $manufacturerUrl);
         $this->view->assign('supplierUrl', $supplierUrl);
 
         // Set content
-        $this->moduleTemplate->setContent($this->view->render());
+        $this->content = $this->view->render();
     }
 
     /**
-     * Outputting the accumulated content to screen.
+     * Injects the request object for the current request or subrequest
+     * Then checks for module functions that have hooked in, and renders menu etc.
      *
-     * @return void
+     * @param ServerRequestInterface $request the current request
+     * @param ResponseInterface $response
+     * @return ResponseInterface the response with the content
      */
-    public function printContent()
+    public function mainAction(ServerRequestInterface $request, ResponseInterface $response)
     {
-        echo $this->moduleTemplate->renderContent();
+        $GLOBALS['SOBE'] = $this;
+        $this->init();
+
+        $this->main();
+
+        $this->moduleTemplate->setContent($this->content);
+        $response->getBody()->write($this->moduleTemplate->renderContent());
+        return $response;
     }
 
     /**
@@ -165,7 +171,7 @@ class SystemdataNavigationFrameController extends BaseScriptClass
      *
      * @return array all available buttons as an assoc. array
      */
-    protected function makeButtons()
+    protected function getButtons()
     {
         $buttonBar = $this->moduleTemplate->getDocHeaderComponent()->getButtonBar();
 
@@ -182,16 +188,5 @@ class SystemdataNavigationFrameController extends BaseScriptClass
                 $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.reload', true)
             )->setIcon($this->moduleTemplate->getIconFactory()->getIcon('actions-refresh', Icon::SIZE_SMALL));
         $buttonBar->addButton($refreshButton, ButtonBar::BUTTON_POSITION_RIGHT);
-    }
-
-
-    /**
-     * Get back path.
-     *
-     * @return string
-     */
-    protected function getBackPath()
-    {
-        return $GLOBALS['BACK_PATH'];
     }
 }

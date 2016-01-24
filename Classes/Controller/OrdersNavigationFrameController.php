@@ -14,8 +14,12 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Backend\Template\Components\ButtonBar;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -77,25 +81,9 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
     public $doc;
 
     /**
-     * Constructor
-     *
-     * @return self
+     * @var ModuleTemplate
      */
-    public function __construct()
-    {
-        $GLOBALS['SOBE'] = $this;
-        $this->init();
-    }
-
-    /**
-     * @return void
-     */
-    public static function render()
-    {
-        $instance = GeneralUtility::makeInstance(self::class);
-        $instance->main();
-        $instance->printContent();
-    }
+    public $moduleTemplate;
 
     /**
      * Initiation of the class.
@@ -115,6 +103,8 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
         // Generate Folder if necessary
         // @todo move init folder somewhere else as its to hefty to try to create the folders over and over again
         \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
+
+        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
 
         // Create page tree object:
         $this->pagetree = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\OrderTree::class);
@@ -155,7 +145,6 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
          */
         $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $this->doc = $doc;
-        $this->doc->backPath = $this->getBackPath();
         $this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');
         $this->doc->showFlashMessages = false;
 
@@ -226,18 +215,7 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
      */
     public function main()
     {
-        // Produce browse-tree:
-        $tree = $this->pagetree->getBrowsableTree();
-        // Outputting page tree:
-        $this->content .= $tree;
-
-        $docHeaderButtons = $this->getButtons();
-
-        $markers = array(
-            'IMG_RESET' => '',
-            'WORKSPACEINFO' => '',
-            'CONTENT' => $this->content,
-        );
+        $this->getButtons();
 
         // Build the <body> for the module
         $this->content = $this->doc->startPage(
@@ -246,49 +224,47 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
             )
         );
 
-        $subparts = array();
-        // Build the <body> for the module
-        $this->content .= $this->doc->moduleBody(array(), $docHeaderButtons, $markers, $subparts);
-        $this->content .= $this->doc->endPage();
-        $this->content = $this->doc->insertStylesAndJS($this->content);
+        // Outputting page tree:
+        $this->content .= $this->pagetree->getBrowsableTree();
     }
 
     /**
-     * Outputting the accumulated content to screen.
+     * Injects the request object for the current request or subrequest
+     * Then checks for module functions that have hooked in, and renders menu etc.
      *
-     * @return void
+     * @param ServerRequestInterface $request the current request
+     * @param ResponseInterface $response
+     * @return ResponseInterface the response with the content
      */
-    public function printContent()
+    public function mainAction(ServerRequestInterface $request, ResponseInterface $response)
     {
-        echo $this->content;
+        $GLOBALS['SOBE'] = $this;
+        $this->init();
+
+        $this->main();
+
+        $this->moduleTemplate->setContent($this->content);
+        $response->getBody()->write($this->moduleTemplate->renderContent());
+        return $response;
     }
 
     /**
      * Create the panel of buttons for submitting the form
      * or otherwise perform operations.
      *
-     * @return array all available buttons as an assoc. array
+     * @return void
      */
     protected function getButtons()
     {
-        $buttons = array(
-            'csh' => '',
-            'refresh' => '',
-        );
+        $buttonBar = $this->moduleTemplate->getDocHeaderComponent()->getButtonBar();
 
         // Refresh
-        $buttons['refresh'] = '<a href="' . htmlspecialchars(GeneralUtility::getIndpEnv('REQUEST_URI')) . '">' .
-            \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh') .
-            '</a>';
-
-        // CSH
-        $buttons['csh'] = str_replace(
-            'typo3-csh-inline',
-            'typo3-csh-inline show-right',
-            BackendUtility::cshItem('xMOD_csh_commercebe', 'orderstree', $this->getBackPath())
-        );
-
-        return $buttons;
+        $refreshButton = $buttonBar->makeLinkButton()
+            ->setHref(GeneralUtility::getIndpEnv('REQUEST_URI'))
+            ->setTitle(
+                $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.reload', true)
+            )->setIcon($this->moduleTemplate->getIconFactory()->getIcon('actions-refresh', Icon::SIZE_SMALL));
+        $buttonBar->addButton($refreshButton, ButtonBar::BUTTON_POSITION_RIGHT);
     }
 
     /**
@@ -335,46 +311,5 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
     {
         // Setting temporary mount point ID:
         $this->getBackendUser()->setAndSaveSessionData('pageTree_temporaryMountPoint_orders', (int) $pageId);
-    }
-
-
-    /**
-     * Get backend user.
-     *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-     */
-    protected function getBackendUser()
-    {
-        return $GLOBALS['BE_USER'];
-    }
-
-    /**
-     * Get language service.
-     *
-     * @return \TYPO3\CMS\Lang\LanguageService
-     */
-    protected function getLanguageService()
-    {
-        return $GLOBALS['LANG'];
-    }
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
-     * Get back path.
-     *
-     * @return string
-     */
-    protected function getBackPath()
-    {
-        return $GLOBALS['BACK_PATH'];
     }
 }

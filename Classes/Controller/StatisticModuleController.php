@@ -14,7 +14,6 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
