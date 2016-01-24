@@ -14,7 +14,10 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Http\AjaxRequestHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -55,25 +58,9 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
     protected $hasFilterBox;
 
     /**
-     * Constructor
-     *
-     * @return self
+     * @var ModuleTemplate
      */
-    public function __construct()
-    {
-        $GLOBALS['SOBE'] = $this;
-        $this->init();
-    }
-
-    /**
-     * @return void
-     */
-    public static function render()
-    {
-        $instance = GeneralUtility::makeInstance(self::class);
-        $instance->main();
-        $instance->printContent();
-    }
+    public $moduleTemplate;
 
     /**
      * Setter for currentSubScript.
@@ -100,6 +87,8 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
             'EXT:commerce/Resources/Private/Language/locallang_mod_category.xml'
         );
 
+        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
+
         // Get the Category Tree
         $this->categoryTree = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryTree::class);
         $this->categoryTree->setBare($bare);
@@ -124,9 +113,7 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
          *
          * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
          */
-        $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
-        $this->doc = $doc;
-        $this->doc->backPath = $this->getBackPath();
+        $this->doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $this->doc->setModuleTemplate('EXT:commerce/Rsources/Private/Backend/mod_navigation.html');
         $this->doc->showFlashMessages = false;
 
@@ -137,8 +124,7 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
         }
 
         .x-tree-root-ct ul li.expanded ul {
-            background: url("' . $this->getBackPath() .
-                'sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
+            background: url("sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
         }
 
         .x-tree-root-ct ul li.expanded.last ul {
@@ -249,13 +235,23 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
     }
 
     /**
-     * Print content.
+     * Injects the request object for the current request or subrequest
+     * Then checks for module functions that have hooked in, and renders menu etc.
      *
-     * @return void
+     * @param ServerRequestInterface $request the current request
+     * @param ResponseInterface $response
+     * @return ResponseInterface the response with the content
      */
-    public function printContent()
+    public function mainAction(ServerRequestInterface $request, ResponseInterface $response)
     {
-        echo $this->content;
+        $GLOBALS['SOBE'] = $this;
+        $this->init();
+
+        $this->main();
+
+        $this->moduleTemplate->setContent($this->content);
+        $response->getBody()->write($this->moduleTemplate->renderContent());
+        return $response;
     }
 
     /**
@@ -279,7 +275,7 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
         $buttons['csh'] = str_replace(
             'typo3-csh-inline',
             'typo3-csh-inline show-right',
-            BackendUtility::cshItem('xMOD_csh_commercebe', 'categorytree', $this->getBackPath())
+            BackendUtility::cshItem('xMOD_csh_commercebe', 'categorytree')
         );
 
         return $buttons;
@@ -352,16 +348,5 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
         $updater = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\UpdateUtility::class);
 
         return $updater->access();
-    }
-
-
-    /**
-     * Get back path.
-     *
-     * @return string
-     */
-    protected function getBackPath()
-    {
-        return $GLOBALS['BACK_PATH'];
     }
 }
