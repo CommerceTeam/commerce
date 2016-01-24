@@ -361,7 +361,7 @@ class ClickmenuUtility extends ClickMenu
              * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
             $category = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $clipRecord['uid']
             );
             $category->loadData();
@@ -394,7 +394,7 @@ class ClickmenuUtility extends ClickMenu
          *
          * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
          */
-        $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
         $mount->init((int) $backendUser->user['uid']);
         $rights['DBmount'] = (in_array($uid, $mount->getMountData()));
 
@@ -405,7 +405,7 @@ class ClickmenuUtility extends ClickMenu
          * @var \CommerceTeam\Commerce\Domain\Model\Category $category
          */
         $category = GeneralUtility::makeInstance(
-            'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+            \CommerceTeam\Commerce\Domain\Model\Category::class,
             $categoryToCheckRightsOn
         );
         if ($categoryToCheckRightsOn) {
@@ -445,7 +445,7 @@ class ClickmenuUtility extends ClickMenu
          *
          * @var \CommerceTeam\Commerce\Domain\Model\Product $product
          */
-        $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uid);
+        $product = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Product::class, $uid);
 
         $parentCategories = $product->getParentCategories();
 
@@ -501,7 +501,7 @@ class ClickmenuUtility extends ClickMenu
          *
          * @var \CommerceTeam\Commerce\Domain\Model\Article $article
          */
-        $article = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $uid);
+        $article = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Article::class, $uid);
 
         // get the parent categories of the product
         $parentCategories = $article->getParentProduct()->getParentCategories();

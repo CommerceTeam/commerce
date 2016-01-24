@@ -99,7 +99,7 @@ class GeneralUtility
              *
              * @var \CommerceTeam\Commerce\Domain\Model\Basket $basket
              */
-            $basket = CoreGeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Basket');
+            $basket = CoreGeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Basket::class);
             $basket->setSessionId($basketId);
             $basket->loadData();
             $feUser->tx_commerce_basket = $basket;
@@ -151,7 +151,7 @@ class GeneralUtility
              * @var \CommerceTeam\Commerce\Domain\Model\Product $product
              */
             $product = CoreGeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                \CommerceTeam\Commerce\Domain\Model\Product::class,
                 $productUid
             );
             $product->loadData();
@@ -297,9 +297,9 @@ class GeneralUtility
             /**
              * Mail message.
              *
-             * @var \TYPO3\CMS\Core\Mail\MailMessage
+             * @var \TYPO3\CMS\Core\Mail\MailMessage $message
              */
-            $message = CoreGeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Mail\\MailMessage');
+            $message = CoreGeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
             $message->setCharset($mailconf['defaultCharset']);
 
             if ($mailconf['encoding'] == 'base64') {

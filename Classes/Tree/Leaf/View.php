@@ -201,7 +201,7 @@ class View extends Base
         if (!is_numeric($index)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'setLeafIndex (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+                    'setLeafIndex (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -232,7 +232,7 @@ class View extends Base
         if (!is_numeric($bank)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'setBank (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+                    'setBank (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -253,7 +253,7 @@ class View extends Base
         if (!is_string($name)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'setTreeName (CommerceTeam\\Commerce\\Tree\\Leaf\\View)
+                    'setTreeName (' . self::class . ')
                      gets passed wrong-cast parameters. Should be string but is not.',
                     COMMERCE_EXTKEY,
                     2
@@ -342,7 +342,7 @@ class View extends Base
         if (!is_array($row)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'getRootIcon (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+                    'getRootIcon (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -371,7 +371,7 @@ class View extends Base
         if (!is_array($row) || !is_string($additionalParams)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'wrapIcon (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+                    'wrapIcon (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -384,11 +384,11 @@ class View extends Base
             $additionalParams = '&control[' . $this->table . '][uid]=' . $row['uid'];
 
             switch (get_class($this)) {
-                case 'CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryView':
+                case \CommerceTeam\Commerce\Tree\Leaf\CategoryView::class:
                     $additionalParams .= '&parentCategory=' . $row['uid'];
                     break;
 
-                case 'CommerceTeam\\Commerce\\Tree\\Leaf\\ProductView':
+                case \CommerceTeam\Commerce\Tree\Leaf\ProductView::class:
                     $additionalParams .= '&parentCategory=' . $row['item_parent'];
                     break;
 
@@ -427,7 +427,7 @@ class View extends Base
         if (!is_array($row) || !is_numeric($bank)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'wrapTitle (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+                    'wrapTitle (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -477,7 +477,7 @@ class View extends Base
         if (!is_array($row)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'getJumpToParam (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+                    'getJumpToParam (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -509,7 +509,7 @@ class View extends Base
         if (!is_array($row)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'PMicon (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+                    'PMicon (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -572,7 +572,7 @@ class View extends Base
         if (!is_string($icon) || !is_string($cmd)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'PMiconATagWrap (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+                    'PMiconATagWrap (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );

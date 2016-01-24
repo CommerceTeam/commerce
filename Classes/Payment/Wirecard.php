@@ -284,7 +284,7 @@ class Wirecard
      *
      * @return string
      */
-    protected function getwirecardXML()
+    public function getwirecardXML()
     {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
 			<WIRECARD_BXML xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance"

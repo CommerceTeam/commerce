@@ -48,7 +48,7 @@ class AttributeEditFunc
          *
          * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
          */
-        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $doc->backPath = $this->getBackPath();
 
         $attributeStoragePid = $parameter['row']['pid'];
@@ -67,7 +67,7 @@ class AttributeEditFunc
          * @var AttributeValueRepository $attributeValueRepository
          */
         $attributeValueRepository = GeneralUtility::makeInstance(
-            'CommerceTeam\\Commerce\\Domain\\Repository\\AttributeValueRepository'
+            \CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository::class
         );
         $attributeValues = $attributeValueRepository->findByAttributeInPage($attributeUid, $attributeStoragePid);
 

@@ -124,7 +124,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
      */
     public function initPage()
     {
-        $this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $this->doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $this->doc->backPath = $this->getBackPath();
         $this->doc->docType = 'xhtml_trans';
         $this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
@@ -170,7 +170,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
          *
          * @var \CommerceTeam\Commerce\ViewHelpers\OrderRecordList $dblist
          */
-        $dblist = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\OrderRecordList');
+        $dblist = GeneralUtility::makeInstance(\CommerceTeam\Commerce\ViewHelpers\OrderRecordList::class);
         $dblist->backPath = $this->getBackPath();
         $dblist->script = BackendUtility::getModuleUrl('commerce_orders', array(), '');
         $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
@@ -212,7 +212,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
          *
          * @var \TYPO3\CMS\Backend\Clipboard\Clipboard
          */
-        $clipObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Clipboard\\Clipboard');
+        $clipObj = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Clipboard\Clipboard::class);
         $dblist->clipObj = $clipObj;
         // Initialize - reads the clipboard content from the user session
         $dblist->clipObj->initializeClipboard();
@@ -270,7 +270,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
                      *
                      * @var \TYPO3\CMS\Core\DataHandling\DataHandler
                      */
-                    $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+                    $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
                     $tce->stripslashes_values = 0;
                     $tce->start(array(), $cmd);
                     $tce->process_cmdmap();

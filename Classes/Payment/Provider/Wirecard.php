@@ -121,7 +121,9 @@ class Wirecard extends ProviderAbstract
          *
          * @var \CommerceTeam\Commerce\Payment\Payment $paymentLib
          */
-        $paymentLib = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Payment\\Payment');
+        $paymentLib = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \CommerceTeam\Commerce\Payment\Payment::class
+        );
 
         // I think there is a new URL for testing with wirecard, so overwrite
         // the old value. you can replace this with your own.
@@ -182,7 +184,9 @@ class Wirecard extends ProviderAbstract
          *
          * @var OrderRepository
          */
-        $orderRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\OrderRepository');
+        $orderRepository = GeneralUtility::makeInstance(
+            \CommerceTeam\Commerce\Domain\Repository\OrderRepository::class
+        );
         $orderRepository->updateByUid(
             $orderUid,
             array('payment_ref_id' => $this->paymentRefId)

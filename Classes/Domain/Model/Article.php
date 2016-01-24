@@ -34,7 +34,7 @@ class Article extends AbstractEntity
      *
      * @var string
      */
-    protected $databaseClass = 'CommerceTeam\\Commerce\\Domain\\Repository\\ArticleRepository';
+    protected $databaseClass = \CommerceTeam\Commerce\Domain\Repository\ArticleRepository::class;
 
     /**
      * Database connection.
@@ -254,7 +254,7 @@ class Article extends AbstractEntity
         $return = false;
         if ($this->uid > 0) {
             $this->lang_uid = $languageUid;
-            $this->databaseConnection = GeneralUtility::makeInstance($this->databaseClass);
+            $this->databaseConnection = parent::getDatabaseConnection();
 
             $hooks = HookFactory::getHooks('Domain/Model/Article', 'init');
             foreach ($hooks as $hook) {
@@ -331,9 +331,9 @@ class Article extends AbstractEntity
         /**
          * Page repository.
          *
-         * @var \TYPO3\CMS\Frontend\Page\PageRepository
+         * @var \TYPO3\CMS\Frontend\Page\PageRepository $pageSelect
          */
-        $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+        $pageSelect = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
         $whereClause = $pageSelect->enableFields('tx_commerce_attributes', '', $ignore);
 
         $database = $this->getDatabaseConnection();
@@ -528,7 +528,7 @@ class Article extends AbstractEntity
                      * @var \CommerceTeam\Commerce\Domain\Model\ArticlePrice $price
                      */
                     $price = GeneralUtility::makeInstance(
-                        'CommerceTeam\\Commerce\\Domain\\Model\\ArticlePrice',
+                        \CommerceTeam\Commerce\Domain\Model\ArticlePrice::class,
                         $pricdUid
                     );
                     $price->loadData();
@@ -583,7 +583,7 @@ class Article extends AbstractEntity
     {
         if ($this->parentProduct == null) {
             $this->parentProduct = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                \CommerceTeam\Commerce\Domain\Model\Product::class,
                 $this->getParentProductUid()
             );
         }
@@ -725,7 +725,7 @@ class Article extends AbstractEntity
                 $this->price_uid = $priceData[0];
 
                 $this->price = GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\ArticlePrice',
+                    \CommerceTeam\Commerce\Domain\Model\ArticlePrice::class,
                     $this->price_uid
                 );
                 if ($this->price) {
@@ -874,6 +874,7 @@ class Article extends AbstractEntity
 
         return $data;
     }
+
 
     /**
      * Get database connection.

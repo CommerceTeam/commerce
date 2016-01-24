@@ -316,7 +316,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $paymentObject = GeneralUtility::makeInstance($config['class'], $this);
         if (!$paymentObject instanceof \CommerceTeam\Commerce\Payment\PaymentInterface) {
             throw new \Exception(
-                $config['class'] . ' must implement \\CommerceTeam\\Commerce\\Payment\\PaymentInterface'
+                $config['class'] . ' must implement ' . \CommerceTeam\Commerce\Payment\PaymentInterface::class
             );
         }
 
@@ -1563,7 +1563,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             return $this->error(
                 'renderElement',
                 __LINE__,
-                'No supart defined for class.CommerceTeam\\Commerce\\Controller\\BaseController::renderElement'
+                'No subpart defined for class. ' . \CommerceTeam\Commerce\Controller\BaseController::class .
+                '::renderElement'
             );
         }
         if (strlen($template) < 1) {
@@ -1806,7 +1807,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                  * @var Product $product
                  */
                 $product = GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                    \CommerceTeam\Commerce\Domain\Model\Product::class,
                     $myProductId,
                     $this->getFrontendController()->sys_language_uid
                 );
@@ -2010,7 +2011,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
          * @var Article $cheapestArticle
          */
         $cheapestArticle = GeneralUtility::makeInstance(
-            'CommerceTeam\\Commerce\\Domain\\Model\\Article',
+            \CommerceTeam\Commerce\Domain\Model\Article::class,
             $cheapestArticleUid
         );
         $cheapestArticle->loadData();
@@ -2028,7 +2029,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
          * @var Article $cheapestArticle
          */
         $cheapestArticle = GeneralUtility::makeInstance(
-            'CommerceTeam\\Commerce\\Domain\\Model\\Article',
+            \CommerceTeam\Commerce\Domain\Model\Article::class,
             $cheapestArticleUid
         );
         $cheapestArticle->loadData();

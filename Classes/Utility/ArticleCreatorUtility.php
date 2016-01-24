@@ -86,7 +86,7 @@ class ArticleCreatorUtility
      */
     public function __construct()
     {
-        $this->belib = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUtility');
+        $this->belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
         $this->returnUrl = htmlspecialchars(urlencode(GeneralUtility::_GP('returnUrl')));
     }
 

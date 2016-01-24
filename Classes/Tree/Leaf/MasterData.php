@@ -75,7 +75,8 @@ abstract class MasterData extends Data
         if (!is_numeric($index) || !is_array($indices)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'initRecords (CommerceTeam\\Commerce\\Tree\\Leaf\\MasterData) gets passed invalid parameters.',
+                    'initRecords (' . self::class .
+                    ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -95,7 +96,7 @@ abstract class MasterData extends Data
         if (!$backendUser->check('tables_select', $this->table)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'initRecords (CommerceTeam\\Commerce\\Tree\\Leaf\\MasterData)
+                    'initRecords (' . self::class . ')
                      Usergroup is not allowed to view the records.',
                     COMMERCE_EXTKEY,
                     2
@@ -133,7 +134,8 @@ abstract class MasterData extends Data
         if (!is_array($mountIds)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'setMounts (CommerceTeam\\Commerce\\Tree\\Leaf\\MasterData) gets passed invalid parameters.',
+                    'setMounts (' . self::class .
+                    ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -159,7 +161,7 @@ abstract class MasterData extends Data
         if (!is_numeric($uid)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'setUid (CommerceTeam\\Commerce\\Tree\\Leaf\\MasterData) gets passed invalid parameters.',
+                    'setUid (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -193,7 +195,8 @@ abstract class MasterData extends Data
         if (!is_numeric($depth)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'setDepth (CommerceTeam\\Commerce\\Tree\\Leaf\\MasterData) gets passed invalid parameters.',
+                    'setDepth (' . self::class .
+                    ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -218,8 +221,7 @@ abstract class MasterData extends Data
         if (!is_numeric($index) || !is_array($indices) || !is_array($this->mountIds) || empty($this->mountIds)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'getRecordsByMountpoints (CommerceTeam\\Commerce\\Tree\\Leaf\\MasterData)
-                     gets passed invalid parameters.',
+                    'getRecordsByMountpoints (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -321,7 +323,7 @@ abstract class MasterData extends Data
         ) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'getRecursiveUids (CommerceTeam\\Commerce\\Tree\\Leaf\\MasterData) gets passed invalid parameters.',
+                    'getRecursiveUids (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );

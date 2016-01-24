@@ -50,7 +50,7 @@ abstract class SlaveData extends Data
         if (!is_array($this->positionArray[$firstIndex])) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'getPositionsByIndices (CommerceTeam\\Commerce\\Tree\\Leaf\\SlaveData)
+                    'getPositionsByIndices (' . self::class . ')
                     does not find the first Index in the position array.',
                     COMMERCE_EXTKEY,
                     2
@@ -81,7 +81,7 @@ abstract class SlaveData extends Data
         if (!is_numeric($index) || !is_array($parentIndices) || is_null($parentLeafData)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'initRecords (CommerceTeam\\Commerce\\Tree\\Leaf\\SlaveData) gets passed invalid parameters.',
+                    'initRecords (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );

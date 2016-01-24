@@ -49,7 +49,7 @@ class CategoryView extends View
         if (!is_array($row)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'getJumpToParam (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+                    'getJumpToParam (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );

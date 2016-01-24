@@ -480,7 +480,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
              *
              * @var \TYPO3\CMS\Core\Charset\CharsetConverter
              */
-            $csObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
+            $csObj = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
             $csObj->initCharset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset']);
 
             if (!$beCsvCharset) {

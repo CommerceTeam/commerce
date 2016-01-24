@@ -92,7 +92,7 @@ abstract class Browsetree
         $this->leafcount = 0;
         $this->isInit = false;
         $this->noClickmenu = false;
-        $this->renderBy = 'CommerceTeam\\Commerce\\Tree\\Leaf\\Mounts';
+        $this->renderBy = \CommerceTeam\Commerce\Tree\Leaf\Mounts::class;
         $this->startingUid = 0;
     }
 
@@ -120,7 +120,8 @@ abstract class Browsetree
         if (!is_bool($flag)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'noClickmenu (CommerceTeam\\Commerce\\Tree\\Browsetree) gets a non-bool parameter (expected bool)!',
+                    'noClickmenu (' . \CommerceTeam\Commerce\Tree\Browsetree::class .
+                    ') gets a non-bool parameter (expected bool)!',
                     COMMERCE_EXTKEY,
                     2
                 );
@@ -162,7 +163,7 @@ abstract class Browsetree
         if (!is_numeric($index) || !isset($this->leafs[$index])) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'getLeaf (CommerceTeam\\Commerce\\Tree\\Browsetree) has an invalid parameter.',
+                    'getLeaf (' . \CommerceTeam\Commerce\Tree\Browsetree::class . ') has an invalid parameter.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -196,7 +197,7 @@ abstract class Browsetree
     public function readByMounts()
     {
         // set internal var
-        $this->renderBy = 'CommerceTeam\\Commerce\\Tree\\Leaf\\Mounts';
+        $this->renderBy = \CommerceTeam\Commerce\Tree\Leaf\Mounts::class;
     }
 
     /**
@@ -213,7 +214,7 @@ abstract class Browsetree
         if (!is_numeric($uid)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'readRecursively (CommerceTeam\\Commerce\\Tree\\Browsetree) has an invalid parameter.',
+                    'readRecursively (' . \CommerceTeam\Commerce\Tree\Browsetree::class . ') has an invalid parameter.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -239,15 +240,13 @@ abstract class Browsetree
         $return = '';
 
         switch ($this->renderBy) {
-            case 'CommerceTeam\\Commerce\\Tree\\Leaf\\Mounts':
+            case \CommerceTeam\Commerce\Tree\Leaf\Mounts::class:
                 $this->getTreeByMountpoints();
                 $return = $this->printTreeByMountpoints();
                 break;
 
             case 'recursively':
                 $this->getTree();
-                // @todo decide what needs to happen here
-                $this->printTree(0);
                 break;
 
             default:
@@ -270,7 +269,6 @@ abstract class Browsetree
      * @param array $parameter Array from PM link
      *
      * @return string HTML Code for Tree
-     * @todo Make it possible as well for a recursive tree
      */
     public function getBrowseableAjaxTree(array $parameter)
     {
@@ -405,21 +403,6 @@ abstract class Browsetree
         $out .= $leafMaster->printChildleafsByLoop($id, $bank, $pid);
 
         return $out;
-    }
-
-    /**
-     * Prints the Tree starting with the uid.
-     *
-     * @param int $uid UID of the Item that will be started with
-     *
-     * @return void
-     * @todo Implement this function if it is ever needed.
-     *     So far it's not. Delete this function if it is never needed.
-     */
-    public function printTree($uid)
-    {
-        die('The function printTree in Browsetree.php is not yet filled.
-            Fill it if you are using it. Search for this text to find the code. ' . $uid);
     }
 
     /**

@@ -28,5 +28,5 @@ class Category extends Master
      *
      * @var string
      */
-    protected $mountClass = 'CommerceTeam\\Commerce\\Tree\\CategoryMounts';
+    protected $mountClass = \CommerceTeam\Commerce\Tree\CategoryMounts::class;
 }

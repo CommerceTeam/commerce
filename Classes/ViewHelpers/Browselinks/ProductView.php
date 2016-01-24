@@ -98,8 +98,7 @@ class ProductView extends \CommerceTeam\Commerce\Tree\Leaf\View
         if (!is_array($row) || !is_numeric($bank)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'wrapTitle (CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\ProductView)
-                        gets passed invalid parameters.',
+                    'wrapTitle (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );

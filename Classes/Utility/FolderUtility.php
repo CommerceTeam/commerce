@@ -208,9 +208,9 @@ class FolderUtility
         /**
          * Backend library.
          *
-         * @var BackendUtility
+         * @var BackendUtility $belib
          */
-        $belib = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUtility');
+        $belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
         $articles = $belib->getArticlesOfProduct($pUid, 'classname=\'' . $key . '\'');
 
         if (is_array($articles) and !empty($articles)) {

@@ -41,7 +41,7 @@ return array(
                 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_deliveryaddress',
             'config' => array(
                 'type' => 'user',
-                'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\OrderEditFunc->deliveryAddress',
+                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->deliveryAddress',
             ),
         ),
         'order_type_uid' => array(
@@ -86,7 +86,7 @@ return array(
             'config' => array(
                 'type' => 'select',
                 'foreign_table' => 'pages',
-                'itemsProcFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\OrderEditFunc->orderStatus',
+                'itemsProcFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->orderStatus',
             ),
         ),
         'cust_fe_user' => array(
@@ -116,7 +116,7 @@ return array(
             'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_invoice',
             'config' => array(
                 'type' => 'user',
-                'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\OrderEditFunc->invoiceAddress',
+                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->invoiceAddress',
             ),
         ),
         'paymenttype' => array(
@@ -131,7 +131,7 @@ return array(
             'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.sum_price_net',
             'config' => array(
                 'type' => 'user',
-                'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\OrderEditFunc->orderArticles',
+                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->orderArticles',
             ),
         ),
         'sum_price_gross' => array(
@@ -139,7 +139,7 @@ return array(
                 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.sum_price_gross',
             'config' => array(
                 'type' => 'user',
-                'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\OrderEditFunc->sumPriceGrossFormat',
+                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->sumPriceGrossFormat',
             ),
         ),
         'payment_ref_id' => array(

@@ -237,7 +237,7 @@ class BackendUserUtility implements SingletonInterface
              * @var \CommerceTeam\Commerce\Domain\Repository\CategoryRepository $repository
              */
             $repository = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Repository\\CategoryRepository'
+                \CommerceTeam\Commerce\Domain\Repository\CategoryRepository::class
             );
             $output = $repository->getCategoryRootline((int) $uid, $clause);
 

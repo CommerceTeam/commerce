@@ -52,7 +52,7 @@ class FeuserDaoObject extends BasicDaoObject
          * @var FeuserAddressFieldmapper
          */
         $feuserAddressMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            'CommerceTeam\\Commerce\\Dao\\FeuserAddressFieldmapper'
+            \CommerceTeam\Commerce\Dao\FeuserAddressFieldmapper::class
         );
         $fields = $feuserAddressMapper->getFeuserFields();
 

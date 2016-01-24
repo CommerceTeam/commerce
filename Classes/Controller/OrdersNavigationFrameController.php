@@ -115,7 +115,7 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
         \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
 
         // Create page tree object:
-        $this->pagetree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\OrderTree');
+        $this->pagetree = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\OrderTree::class);
         $this->pagetree->ext_IconMode = $backendUser->getTSConfigVal('options.pageTree.disableIconLinkToContextmenu');
         $this->pagetree->ext_showPageId = $backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
         $this->pagetree->addField('alias');
@@ -150,7 +150,7 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
          *
          * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
          */
-        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $this->doc = $doc;
         $this->doc->backPath = $this->getBackPath();
         $this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');

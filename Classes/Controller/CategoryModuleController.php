@@ -134,7 +134,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
          *
          * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
          */
-        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $doc->backPath = $this->getBackPath();
         $doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_category_index.html');
         $this->doc = $doc;
@@ -154,11 +154,11 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         if (!$this->modTSconfig['properties']['noCreateRecordsLink']) {
             $controls = array(
                 'category' => array(
-                    'dataClass' => 'CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryData',
+                    'dataClass' => \CommerceTeam\Commerce\Tree\Leaf\CategoryData::class,
                     'parent' => 'parent_category',
                 ),
                 'product' => array(
-                    'dataClass' => 'CommerceTeam\\Commerce\\Tree\\Leaf\\ProductData',
+                    'dataClass' => \CommerceTeam\Commerce\Tree\Leaf\ProductData::class,
                     'parent' => 'categories',
                 ),
             );
@@ -231,7 +231,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
          *
          * @var \CommerceTeam\Commerce\ViewHelpers\CategoryRecordList $dbList
          */
-        $dbList = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\CategoryRecordList');
+        $dbList = GeneralUtility::makeInstance(\CommerceTeam\Commerce\ViewHelpers\CategoryRecordList::class);
         $dbList->backPath = $this->getBackPath();
         $dbList->script = BackendUtility::getModuleUrl('commerce_category', array(), '');
 
@@ -240,7 +240,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
          *
          * @var \CommerceTeam\Commerce\Utility\BackendUserUtility $utility
          */
-        $utility = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUserUtility');
+        $utility = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUserUtility::class);
         $dbList->calcPerms = $utility->calcPerms(
             (array) BackendUtility::getRecord('tx_commerce_categories', $this->categoryUid)
         );
@@ -284,7 +284,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
          *
          * @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj
          */
-        $clipObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Clipboard\\Clipboard');
+        $clipObj = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Clipboard\Clipboard::class);
         $dbList->clipObj = $clipObj;
         // Initialize - reads the clipboard content from the user session
         $dbList->clipObj->initializeClipboard();
@@ -340,7 +340,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                      *
                      * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
                      */
-                    $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+                    $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
                     $tce->stripslashes_values = 0;
                     $tce->start(array(), $cmd);
                     $tce->process_cmdmap();

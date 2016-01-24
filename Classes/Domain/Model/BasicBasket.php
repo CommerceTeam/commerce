@@ -680,7 +680,7 @@ class BasicBasket
                  * @var \CommerceTeam\Commerce\Domain\Model\Article $article
                  */
                 $article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Article',
+                    \CommerceTeam\Commerce\Domain\Model\Article::class,
                     $articleUid,
                     $this->getFrontendController()->sys_language_uid
                 );
@@ -708,7 +708,7 @@ class BasicBasket
                  * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
                  */
                 $basketItem = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\BasketItem',
+                    \CommerceTeam\Commerce\Domain\Model\BasketItem::class,
                     $articleUid,
                     $quantity,
                     $priceid,

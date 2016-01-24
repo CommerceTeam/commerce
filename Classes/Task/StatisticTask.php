@@ -50,7 +50,7 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             $excludeStatisticFolders = SettingsFactory::getInstance()->getExtConf('excludeStatisticFolders');
         }
 
-        $this->statistics = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\StatisticsUtility');
+        $this->statistics = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\StatisticsUtility::Class);
         $this->statistics->init($excludeStatisticFolders);
     }
 

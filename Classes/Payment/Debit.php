@@ -137,7 +137,9 @@ class Debit extends PaymentAbstract
          *
          * @var OrderRepository
          */
-        $orderRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\OrderRepository');
+        $orderRepository = GeneralUtility::makeInstance(
+            \CommerceTeam\Commerce\Domain\Repository\OrderRepository::class
+        );
         $orderRepository->updateByUid(
             $orderUid,
             array(

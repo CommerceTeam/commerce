@@ -31,7 +31,7 @@ class Category extends AbstractEntity
      *
      * @var string
      */
-    protected $databaseClass = 'CommerceTeam\\Commerce\\Domain\\Repository\\CategoryRepository';
+    protected $databaseClass = \CommerceTeam\Commerce\Domain\Repository\CategoryRepository::class;
 
     /**
      * Database connection.
@@ -279,7 +279,7 @@ class Category extends AbstractEntity
         if ($uid > 0) {
             $this->uid = $uid;
             $this->lang_uid = $languageUid;
-            $this->databaseConnection = GeneralUtility::makeInstance($this->databaseClass);
+            $this->databaseConnection = parent::getDatabaseConnection();
 
             $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Model/Category', 'init');
             foreach ($hooks as $hook) {
@@ -340,11 +340,7 @@ class Category extends AbstractEntity
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Category $childCategory
                  */
-                $childCategory = GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Category',
-                    $childCategoryUid,
-                    $this->lang_uid
-                );
+                $childCategory = GeneralUtility::makeInstance(self::class, $childCategoryUid, $this->lang_uid);
 
                 $this->categories[$childCategoryUid] = $childCategory;
             }
@@ -425,7 +421,7 @@ class Category extends AbstractEntity
                  * @var \CommerceTeam\Commerce\Domain\Model\Product $product
                  */
                 $product = GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                    \CommerceTeam\Commerce\Domain\Model\Product::class,
                     $productUid,
                     $this->lang_uid
                 );
@@ -507,7 +503,7 @@ class Category extends AbstractEntity
     {
         if ($this->parent_category_uid && !$this->parent_category) {
             $this->parent_category = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                self::class,
                 $this->parent_category_uid,
                 $this->lang_uid
             );
@@ -532,11 +528,7 @@ class Category extends AbstractEntity
              *
              * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
-            $category = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
-                $parent,
-                $this->lang_uid
-            );
+            $category = GeneralUtility::makeInstance(self::class, $parent, $this->lang_uid);
             $parentCats[] = $category;
         }
 
@@ -631,11 +623,7 @@ class Category extends AbstractEntity
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
-                $category = GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Category',
-                    $oneCategoryUid,
-                    $this->lang_uid
-                );
+                $category = GeneralUtility::makeInstance(self::class, $oneCategoryUid, $this->lang_uid);
                 $category->loadData();
                 $returnList = array_merge($returnList, $category->getProductUids());
             }
@@ -731,9 +719,9 @@ class Category extends AbstractEntity
             /**
              * Typoscript parser.
              *
-             * @var \TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser
+             * @var \TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser $parseObj
              */
-            $parseObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\Parser\\TypoScriptParser');
+            $parseObj = GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser::class);
             $parseObj->parse($categoryTs);
             $this->categoryTSconfig = $parseObj->setup;
         }
@@ -885,11 +873,7 @@ class Category extends AbstractEntity
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
-                $category = GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Category',
-                    $oneCategoryUid,
-                    $this->lang_uid
-                );
+                $category = GeneralUtility::makeInstance(self::class, $oneCategoryUid, $this->lang_uid);
                 $category->loadData();
                 $returnValue = $category->hasProductsInSubCategories($depth);
                 if ($returnValue == true) {

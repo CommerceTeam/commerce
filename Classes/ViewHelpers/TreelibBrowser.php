@@ -140,9 +140,8 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass
          *
          * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
          */
-        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $this->doc = $doc;
-        $this->doc->docType = 'xhtml_trans';
         $this->doc->backPath = $this->getBackPath();
 
         // from tx_dam_SCbase
@@ -226,7 +225,7 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass
          *
          * @var \TYPO3\CMS\Backend\Form\FormEngine $form
          */
-        $form = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
+        $form = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Form\FormEngine::class);
         $form->initDefaultBEmode();
         $form->backPath = $this->getBackPath();
 
@@ -284,7 +283,7 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass
          *
          * @var \TYPO3\CMS\Backend\Form\DataPreprocessor $trData
          */
-        $trData = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\DataPreprocessor');
+        $trData = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Form\DataPreprocessor::class);
         $trData->addRawData = true;
         $trData->lockRecords = true;
         $trData->fetchRecord($this->table, $this->uid, '');

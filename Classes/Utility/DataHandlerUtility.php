@@ -193,9 +193,8 @@ class DataHandlerUtility
             'CB[paste]=' . rawurlencode($this->CB['paste']) . '&CB[pad]=' . $this->CB['pad'];
 
         // Initializing document template object:
-        $this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $this->doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $this->doc->backPath = $this->getBackPath();
-        $this->doc->docType = 'xhtml_trans';
         $this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
         $this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
         $this->doc->loadJavascriptLib(
@@ -215,9 +214,9 @@ class DataHandlerUtility
             /**
              * Clipboard.
              *
-             * @var \TYPO3\CMS\Backend\Clipboard\Clipboard
+             * @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj
              */
-            $clipObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Clipboard\\Clipboard');
+            $clipObj = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Clipboard\Clipboard::class);
             $clipObj->initializeClipboard();
             $clipObj->setCurrentPad($this->CB['pad']);
             $this->clipObj = $clipObj;
@@ -322,7 +321,7 @@ class DataHandlerUtility
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Product $product
                  */
-                $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uidClip);
+                $product = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Product::class, $uidClip);
                 $product->loadData();
                 $prods = $product->getL18nProducts();
 
@@ -357,7 +356,7 @@ class DataHandlerUtility
                      *
                      * @var \CommerceTeam\Commerce\Tree\Leaf\ProductData $productData
                      */
-                    $productData = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductData');
+                    $productData = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\Leaf\ProductData::class);
                     $productData->init();
 
                     $records = $productData->getRecordsDbList($uidTarget);
@@ -417,7 +416,7 @@ class DataHandlerUtility
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
-                $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $uidClip);
+                $category = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Category::class, $uidClip);
                 $category->loadData();
                 $cats = $category->getL18nCategories();
 
@@ -451,7 +450,7 @@ class DataHandlerUtility
                  *
                  * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryData $categoryData
                  */
-                $categoryData = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryData');
+                $categoryData = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\Leaf\CategoryData::class);
                 $categoryData->init();
 
                 $records = $categoryData->getRecordsDbList($uidTarget);

@@ -137,7 +137,7 @@ class PermissionModuleController extends \TYPO3\CMS\Beuser\Controller\Permission
          *
          * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
          */
-        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $doc->backPath = $this->getBackPath();
         $doc->setModuleTemplate('EXT:perm/Resources/Private/Templates/perm.html');
         $doc->form = '<form action="' . $this->getBackPath() . 'tce_db.php" method="post" name="editform">';
@@ -302,7 +302,7 @@ class PermissionModuleController extends \TYPO3\CMS\Beuser\Controller\Permission
              * @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage
              */
             $flashMessage = GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                 $language->getLL('WorkspaceWarningText'),
                 $language->getLL('WorkspaceWarning'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
@@ -312,7 +312,7 @@ class PermissionModuleController extends \TYPO3\CMS\Beuser\Controller\Permission
              *
              * @var \TYPO3\CMS\Core\Messaging\FlashMessageService $flashMessageService
              */
-            $flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+            $flashMessageService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
             /**
              * Flash message queue.
              *
@@ -517,7 +517,7 @@ class PermissionModuleController extends \TYPO3\CMS\Beuser\Controller\Permission
          *
          * @var \CommerceTeam\Commerce\Tree\CategoryTree $tree
          */
-        $tree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
+        $tree = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryTree::class);
         $tree->setBare();
         $tree->init();
         $tree->readRecursively($this->categoryUid, $this->MOD_SETTINGS['depth']);
@@ -763,7 +763,7 @@ class PermissionModuleController extends \TYPO3\CMS\Beuser\Controller\Permission
          *
          * @var \CommerceTeam\Commerce\Tree\CategoryTree $tree
          */
-        $tree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
+        $tree = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryTree::class);
         $tree->setBare();
         $tree->readRecursively($this->categoryUid, $this->getLevels);
         $tree->init();

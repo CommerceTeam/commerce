@@ -69,7 +69,7 @@ class FeuserObserver
          *
          * @var FeuserDao
          */
-        $feuserDao = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserDao', $id);
+        $feuserDao = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\FeuserDao::class, $id);
 
         // get main address id from feuser object
         $topId = $feuserDao->get('tx_commerce_tt_address_id');
@@ -79,9 +79,9 @@ class FeuserObserver
             /**
              * Address data access object.
              *
-             * @var AddressDao
+             * @var AddressDao $addressDao
              */
-            $addressDao = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDao');
+            $addressDao = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\AddressDao::class);
 
             // set feuser uid and main address flag
             $addressDao->set('tx_commerce_fe_user_id', $feuserDao->get('id'));
@@ -93,16 +93,16 @@ class FeuserObserver
             }
         } else {
             // get existing address object
-            $addressDao = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDao', $topId);
+            $addressDao = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\AddressDao::class, $topId);
         }
 
         // apply changes to address object
         /**
          * Field mapper.
          *
-         * @var FeuserAddressFieldmapper
+         * @var FeuserAddressFieldmapper $fieldMapper
          */
-        $fieldMapper = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserAddressFieldmapper');
+        $fieldMapper = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\FeuserAddressFieldmapper::class);
         $fieldMapper->mapFeuserToAddress($feuserDao, $addressDao);
 
         // save address object

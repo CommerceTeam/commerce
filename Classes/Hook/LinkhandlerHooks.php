@@ -88,7 +88,7 @@ class LinkhandlerHooks
          * @var ContentObjectRenderer
          */
         $localcObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            'TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer'
+            \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class
         );
 
         $displayPageId = $this->getFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi1.']['overridePid'];

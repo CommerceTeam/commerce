@@ -75,9 +75,9 @@ class BasicDao
      */
     protected function init()
     {
-        $this->parser = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\BasicDaoParser');
-        $this->mapper = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\BasicDaoMapper', $this->parser);
-        $this->object = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\BasicDaoObject');
+        $this->parser = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\BasicDaoParser::class);
+        $this->mapper = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\BasicDaoMapper::class, $this->parser);
+        $this->object = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\BasicDaoObject::class);
     }
 
     /**

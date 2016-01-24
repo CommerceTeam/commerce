@@ -43,7 +43,7 @@ $language->includeLLFile('EXT:lang/locallang_misc.xml');
  * @var \CommerceTeam\Commerce\ViewHelpers\TreelibBrowser $treelibBrowser
  */
 $treelibBrowser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-    'CommerceTeam\\Commerce\\ViewHelpers\\TreelibBrowser'
+    \CommerceTeam\Commerce\ViewHelpers\TreelibBrowser::class
 );
 $treelibBrowser->main();
 $treelibBrowser->printContent();

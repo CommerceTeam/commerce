@@ -84,7 +84,7 @@ class CategoryTree extends Browsetree
          *
          * @var \CommerceTeam\Commerce\Tree\Leaf\Category $categoryLeaf
          */
-        $categoryLeaf = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Category');
+        $categoryLeaf = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\Leaf\Category::class);
 
         // Instantiate the categorydata, -view and set
         // the permission mask (or the string rep.)
@@ -93,7 +93,7 @@ class CategoryTree extends Browsetree
          *
          * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryData $categorydata
          */
-        $categorydata = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryData');
+        $categorydata = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\Leaf\CategoryData::class);
         $categorydata->setPermsMask(BackendUtility::getPermMask($this->minCategoryPerms));
 
         /**
@@ -101,7 +101,7 @@ class CategoryTree extends Browsetree
          *
          * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryView $categoryview
          */
-        $categoryview = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryView');
+        $categoryview = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\Leaf\CategoryView::class);
         // disable the root onclick if the perms are set to editcontent
         // this way we cannot select the root as a parent for any content item
         $categoryview->noRootOnclick(($this->minCategoryPerms == 'editcontent'));
@@ -112,7 +112,7 @@ class CategoryTree extends Browsetree
         }
 
         // Configure the noOnclick for the leaf
-        if (GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Category')) {
+        if (GeneralUtility::inList($this->noClickList, \CommerceTeam\Commerce\Tree\Leaf\Category::class)) {
             $categoryview->noOnclick();
         }
 
@@ -129,23 +129,23 @@ class CategoryTree extends Browsetree
              *
              * @var \CommerceTeam\Commerce\Tree\Leaf\Product $productleaf
              */
-            $productleaf = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Product');
+            $productleaf = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\Leaf\Product::class);
             /**
              * Article leaf.
              *
              * @var \CommerceTeam\Commerce\Tree\Leaf\Article $articleleaf
              */
-            $articleleaf = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Article');
+            $articleleaf = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\Leaf\Article::class);
 
             /**
              * Product view.
              *
              * @var \CommerceTeam\Commerce\Tree\Leaf\ProductView $productview
              */
-            $productview = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductView');
+            $productview = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\Leaf\ProductView::class);
 
             // Configure the noOnclick for the leaf
-            if (GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Product')) {
+            if (GeneralUtility::inList($this->noClickList, \CommerceTeam\Commerce\Tree\Leaf\Product::class)) {
                 $productview->noOnclick();
             }
 
@@ -154,10 +154,10 @@ class CategoryTree extends Browsetree
              *
              * @var \CommerceTeam\Commerce\Tree\Leaf\ArticleView $articleview
              */
-            $articleview = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ArticleView');
+            $articleview = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\Leaf\ArticleView::class);
 
             // Configure the noOnclick for the leaf
-            if (GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Article')) {
+            if (GeneralUtility::inList($this->noClickList, \CommerceTeam\Commerce\Tree\Leaf\Article::class)) {
                 $articleview->noOnclick();
             }
 
@@ -172,7 +172,7 @@ class CategoryTree extends Browsetree
              *
              * @var \CommerceTeam\Commerce\Tree\Leaf\ProductData $productData
              */
-            $productData = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductData');
+            $productData = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\Leaf\ProductData::class);
             $productleaf->initBasic($productview, $productData);
 
             /**
@@ -180,7 +180,7 @@ class CategoryTree extends Browsetree
              *
              * @var \CommerceTeam\Commerce\Tree\Leaf\ArticleData $articleData
              */
-            $articleData = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ArticleData');
+            $articleData = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\Leaf\ArticleData::class);
             $articleleaf->initBasic($articleview, $articleData);
 
             $categoryLeaf->addLeaf($productleaf);

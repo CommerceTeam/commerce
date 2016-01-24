@@ -73,7 +73,7 @@ class AddressObserver
          *
          * @var AddressDao
          */
-        $addressDao = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDao', $id);
+        $addressDao = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\AddressDao::class, $id);
 
         // get feuser id
         $feuserId = $addressDao->get('tx_commerce_fe_user_id');
@@ -83,17 +83,17 @@ class AddressObserver
             /**
              * Frontend user data access object.
              *
-             * @var FeuserDao
+             * @var FeuserDao $feuserDao
              */
-            $feuserDao = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserDao', $feuserId);
+            $feuserDao = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\FeuserDao::class, $feuserId);
 
             // update feuser object
             /**
              * Frontend user address field mapper.
              *
-             * @var FeuserAddressFieldmapper
+             * @var FeuserAddressFieldmapper $fieldMapper
              */
-            $fieldMapper = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserAddressFieldmapper');
+            $fieldMapper = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\FeuserAddressFieldmapper::class);
             $fieldMapper->mapAddressToFeuser($addressDao, $feuserDao);
 
             // set main address id in feuser
@@ -118,7 +118,7 @@ class AddressObserver
          * @var FrontendUserRepository
          */
         $userRepository = GeneralUtility::makeInstance(
-            'CommerceTeam\\Commerce\\Domain\\Repository\\FrontendUserRepository'
+            \CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository::class
         );
         $frontendUser = $userRepository->findByAddressId((int) $uid);
 

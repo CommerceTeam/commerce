@@ -94,7 +94,7 @@ class Articles
      *
      * @var array
      */
-    public $hooks = array('CommerceTeam\\Commerce\\Configuration\\Dca\\Articles');
+    public $hooks = array(\CommerceTeam\Commerce\Configuration\Dca\Articles::class);
 
     /**
      * Alter dca on load.

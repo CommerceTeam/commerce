@@ -30,7 +30,7 @@ class Master extends Leaf
      *
      * @var string
      */
-    protected $mountClass = 'CommerceTeam\\Commerce\\Tree\\Leaf\\Mounts';
+    protected $mountClass = \CommerceTeam\Commerce\Tree\Leaf\Mounts::class;
 
     /**
      * Flag if the Leafitems shall be read by specific mountpoints.
@@ -134,7 +134,7 @@ class Master extends Leaf
         if (!is_array($mountIds)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'setMounts (CommerceTeam\\Commerce\\Tree\\Leaf\\Master) gets passed invalid parameters.',
+                    'setMounts (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -170,7 +170,7 @@ class Master extends Leaf
         if (!is_numeric($uid)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'setUid (CommerceTeam\\Commerce\\Tree\\Leaf\\Master) gets passed invalid parameters.',
+                    'setUid (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -203,7 +203,7 @@ class Master extends Leaf
         if (!is_numeric($depth)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'setDepth (CommerceTeam\\Commerce\\Tree\\Leaf\\Master) gets passed invalid parameters.',
+                    'setDepth (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -276,7 +276,7 @@ class Master extends Leaf
         if (!is_array($row)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'hasChildren (CommerceTeam\\Commerce\\Tree\\Leaf\\Master) gets passed invalid parameters.',
+                    'hasChildren (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -313,8 +313,7 @@ class Master extends Leaf
         if (!is_numeric($startUid) || !is_numeric($bank)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'printChildleafsByLoop (CommerceTeam\\Commerce\\Tree\\Leaf\\Master)
-                        gets passed invalid parameters.',
+                    'printChildleafsByLoop (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -351,8 +350,7 @@ class Master extends Leaf
         if ($child == null) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'printChildleafsByLoop (CommerceTeam\\Commerce\\Tree\\Leaf\\Master)
-                        cannot find the starting item by its uid.',
+                    'printChildleafsByLoop (' . self::class . ') cannot find the starting item by its uid.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -440,7 +438,7 @@ class Master extends Leaf
                 $child = $childElements[0];
 
                 $out .= '<ul>';
-                ++$level;
+                $level++;
 
                 // add all children except the first to the stack
                 for ($j = $m - 1; $j > 0; --$j) {
@@ -471,7 +469,7 @@ class Master extends Leaf
         // DLOG
         if (TYPO3_DLOG) {
             GeneralUtility::devLog(
-                'printChildLeafsByLoop (CommerceTeam\\Commerce\\Tree\\Leaf\\Master) did ' .
+                'printChildLeafsByLoop (' . self::class . ') did ' .
                 ($crazyStart - $crazyRecursion) . ' loops!',
                 COMMERCE_EXTKEY,
                 1
@@ -493,7 +491,7 @@ class Master extends Leaf
         if ($crazyRecursion <= 0) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'printChildleafsByLoop (CommerceTeam\\Commerce\\Tree\\Leaf\\Master)
+                    'printChildleafsByLoop (' . self::class . ')
                      was put to hold because there was a danger of endless recursion.',
                     COMMERCE_EXTKEY,
                     3

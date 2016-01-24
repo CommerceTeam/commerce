@@ -38,7 +38,7 @@ class Product extends AbstractEntity
      *
      * @var string
      */
-    protected $databaseClass = 'CommerceTeam\\Commerce\\Domain\\Repository\\ProductRepository';
+    protected $databaseClass = \CommerceTeam\Commerce\Domain\Repository\ProductRepository::class;
 
     /**
      * Database connection.
@@ -297,7 +297,7 @@ class Product extends AbstractEntity
         if ($uid) {
             $this->uid = $uid;
             $this->lang_uid = $langUid;
-            $this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
+            $this->databaseConnection = parent::getDatabaseConnection();
 
             $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Model/Product', 'init');
             foreach ($hooks as $hook) {
@@ -539,7 +539,7 @@ class Product extends AbstractEntity
              * @var \CommerceTeam\Commerce\Domain\Model\Article $article
              */
             $article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Article',
+                \CommerceTeam\Commerce\Domain\Model\Article::class,
                 $rawArticleUid,
                 $this->lang_uid
             );
@@ -794,7 +794,7 @@ class Product extends AbstractEntity
                 usort(
                     $targetData[$attributeUid]['values'],
                     array(
-                        'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                        \CommerceTeam\Commerce\Domain\Model\Product::class,
                         'compareBySorting',
                     )
                 );
@@ -1055,7 +1055,7 @@ class Product extends AbstractEntity
                      * @var \CommerceTeam\Commerce\Domain\Model\Product $product
                      */
                     $product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                        self::class,
                         $productId,
                         $this->lang_uid
                     );
@@ -1239,7 +1239,7 @@ class Product extends AbstractEntity
                         usort(
                             $valuelist,
                             array(
-                                'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                                \CommerceTeam\Commerce\Domain\Model\Product::class,
                                 'compareBySorting',
                             )
                         );
@@ -1360,7 +1360,7 @@ class Product extends AbstractEntity
                  * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attribute
                  */
                 $attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
+                    \CommerceTeam\Commerce\Domain\Model\Attribute::class,
                     $attributeUid,
                     $this->getFrontendController()->sys_language_uid
                 );
@@ -1471,7 +1471,7 @@ class Product extends AbstractEntity
                      * @var \CommerceTeam\Commerce\Domain\Model\Article $article
                      */
                     $article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        'CommerceTeam\\Commerce\\Domain\\Model\\Article',
+                        \CommerceTeam\Commerce\Domain\Model\Article::class,
                         $articleUid,
                         $this->lang_uid
                     );

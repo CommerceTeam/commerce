@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\Tree;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Extension class for the BrowseTreeView class,
@@ -77,11 +78,9 @@ class OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
      */
     public function wrapIcon($icon, array &$row)
     {
-        $language = $this->getLanguageService();
-
         // If the record is locked, present a warning sign.
         if (($lockInfo = \TYPO3\CMS\Backend\Utility\BackendUtility::isRecordLocked('pages', $row['uid']))) {
-            $aOnClick = 'alert(' . $language->JScharCode($lockInfo['msg']) . ');return false;';
+            $aOnClick = 'alert(' . GeneralUtility::quoteJSvalue($lockInfo['msg']) . ');return false;';
             $lockIcon = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' .
                 \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
                     'status-warning-in-use',
@@ -97,7 +96,7 @@ class OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
 
         // Wrap icon in click-menu link.
         if (!$this->ext_IconMode) {
-            $thePageIcon = $this->getDocumentTemplate()->wrapClickMenuOnIcon(
+            $thePageIcon = \TYPO3\CMS\Backend\Utility\BackendUtility::wrapClickMenuOnIcon(
                 $thePageIcon,
                 'pages',
                 $row['uid'],

@@ -269,10 +269,11 @@ class Navigation
      * @var array
      */
     protected $repositoryNames = array(
-        'tx_commerce_categories' => 'CommerceTeam\\Commerce\\Domain\\Repository\\CategoryRepository',
-        'tx_commerce_products' => 'CommerceTeam\\Commerce\\Domain\\Repository\\ProductRepository',
-        'tx_commerce_categories_parent_category_mm' => 'CommerceTeam\\Commerce\\Domain\\Repository\\CategoryRepository',
-        'tx_commerce_products_categories_mm' => 'CommerceTeam\\Commerce\\Domain\\Repository\\ProductRepository',
+        'tx_commerce_categories' => \CommerceTeam\Commerce\Domain\Repository\CategoryRepository::class,
+        'tx_commerce_products' => \CommerceTeam\Commerce\Domain\Repository\ProductRepository::class,
+        'tx_commerce_categories_parent_category_mm' =>
+            \CommerceTeam\Commerce\Domain\Repository\CategoryRepository::class,
+        'tx_commerce_products_categories_mm' => \CommerceTeam\Commerce\Domain\Repository\ProductRepository::class,
     );
 
     /**
@@ -447,7 +448,7 @@ class Navigation
              * @var \CommerceTeam\Commerce\Domain\Model\Product $product
              */
             $product = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                \CommerceTeam\Commerce\Domain\Model\Product::class,
                 $this->gpVars['showUid']
             );
             $product->loadData();
@@ -464,7 +465,7 @@ class Navigation
              * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
             $category = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $this->choosenCat
             );
             $category->loadData();
@@ -641,7 +642,7 @@ class Navigation
         $i = 1;
         foreach ($conf as $k) {
             if ($k == $i . '.') {
-                $conf[$i . '.']['itemArrayProcFunc'] = 'CommerceTeam\\Commerce\\ViewHelpers\\Navigation->clear';
+                $conf[$i . '.']['itemArrayProcFunc'] = self::class . '->clear';
                 ++$i;
             }
         }
@@ -1154,7 +1155,7 @@ class Navigation
              * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
             $category = GeneralUtility::makeinstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $row['uid'],
                 $row['sys_language_uid']
             );
@@ -1305,7 +1306,7 @@ class Navigation
         $this->gpVars['basketHashValue'] = $this->getBasket()->getBasketHashValue();
         if (!is_object($this->category)) {
             $this->category = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $this->mConf['category'],
                 $this->getFrontendController()->sys_language_uid
             );
@@ -1326,7 +1327,7 @@ class Navigation
              * @var \CommerceTeam\Commerce\Domain\Model\Product $product
              */
             $product = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                \CommerceTeam\Commerce\Domain\Model\Product::class,
                 $this->gpVars['showUid'],
                 $this->getFrontendController()->sys_language_uid
             );
@@ -1338,7 +1339,7 @@ class Navigation
              * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
             $category = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $this->gpVars['catUid'],
                 $this->getFrontendController()->sys_language_uid
             );
@@ -1395,7 +1396,7 @@ class Navigation
              * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
             $category = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $categoryUid,
                 $this->getFrontendController()->sys_language_uid
             );
@@ -1455,7 +1456,7 @@ class Navigation
          *
          * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend $navigationCache
          */
-        $navigationCache = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')
+        $navigationCache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)
             ->getCache('commerce_navigation');
         $navigationCache->set($hash, $data);
     }
@@ -1476,7 +1477,7 @@ class Navigation
          *
          * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend $navigationCache
          */
-        $navigationCache = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')
+        $navigationCache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)
             ->getCache('commerce_navigation');
 
         return $navigationCache->get($hash);
@@ -1603,7 +1604,7 @@ class Navigation
                  * @var \CommerceTeam\Commerce\Domain\Model\Product $product
                  */
                 $product = GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                    \CommerceTeam\Commerce\Domain\Model\Product::class,
                     $productRow['uid']
                 );
                 $product->loadData();
@@ -1716,7 +1717,7 @@ class Navigation
          *
          * @var \TYPO3\CMS\Frontend\Page\CacheHashCalculator $cacheHashCalculator
          */
-        $cacheHashCalculator = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
+        $cacheHashCalculator = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\CacheHashCalculator::class);
 
         return $cacheHashCalculator->calculateCacheHash($cacheHashCalculator->getRelevantParameters($parameter));
     }

@@ -195,7 +195,7 @@ class AddressesController extends BaseController
          *
          * @var \SJBR\StaticInfoTables\PiBaseApi
          */
-        $staticInfo = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('SJBR\\StaticInfoTables\\PiBaseApi');
+        $staticInfo = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\SJBR\StaticInfoTables\PiBaseApi::class);
         $staticInfo->init();
         $this->staticInfo = $staticInfo;
 

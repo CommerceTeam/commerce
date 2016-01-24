@@ -146,7 +146,7 @@ return array(
                 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.order_id',
             'config' => array(
                 'type' => 'user',
-                'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\OrderEditFunc->articleOrderId',
+                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->articleOrderId',
                 'readOnly' => true,
             ),
         ),

@@ -36,7 +36,7 @@ class ExtdirectSystemdataNavigationProvider extends \TYPO3\CMS\Backend\Tree\Abst
     protected function initDataProvider()
     {
         /** @var $dataProvider \TYPO3\CMS\Backend\Tree\Pagetree\DataProvider */
-        $dataProvider = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Tree\\Pagetree\\DataProvider');
+        $dataProvider = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\DataProvider::class);
         $this->setDataProvider($dataProvider);
     }
 
@@ -63,7 +63,7 @@ class ExtdirectSystemdataNavigationProvider extends \TYPO3\CMS\Backend\Tree\Abst
     {
         $this->initDataProvider();
         /** @var $node \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
-        $node = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Tree\\Pagetree\\PagetreeNode', (array) $nodeData);
+        $node = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode::class, (array) $nodeData);
         if ($nodeId === 'root') {
             $nodeCollection = $this->dataProvider->getTreeMounts();
         } else {
@@ -80,7 +80,7 @@ class ExtdirectSystemdataNavigationProvider extends \TYPO3\CMS\Backend\Tree\Abst
     public function getIndicators()
     {
         /** @var $indicatorProvider \TYPO3\CMS\Backend\Tree\Pagetree\Indicator */
-        $indicatorProvider = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Tree\\Pagetree\\Indicator');
+        $indicatorProvider = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\Indicator::class);
         $indicatorHtmlArr = $indicatorProvider->getAllIndicators();
         $indicator = array(
             'html' => implode(' ', $indicatorHtmlArr),
@@ -100,10 +100,10 @@ class ExtdirectSystemdataNavigationProvider extends \TYPO3\CMS\Backend\Tree\Abst
         $indicators = $this->getIndicators();
         $configuration = array(
             'Configuration' => array(
-                'hideFilter' => $GLOBALS['BE_USER']->getTSConfigVal('options.pageTree.hideFilter'),
-                'displayDeleteConfirmation' => $GLOBALS['BE_USER']->jsConfirmation(4),
-                'canDeleteRecursivly' => $GLOBALS['BE_USER']->uc['recursiveDelete'] == true,
-                'disableIconLinkToContextmenu' => $GLOBALS['BE_USER']->getTSConfigVal(
+                'hideFilter' => $this->getBackendUser()->getTSConfigVal('options.pageTree.hideFilter'),
+                'displayDeleteConfirmation' => $this->getBackendUser()->jsConfirmation(4),
+                'canDeleteRecursivly' => $this->getBackendUser()->uc['recursiveDelete'] == true,
+                'disableIconLinkToContextmenu' => $this->getBackendUser()->getTSConfigVal(
                     'options.pageTree.disableIconLinkToContextmenu'
                 ),
                 'indicator' => $indicators['html'],
@@ -111,5 +111,16 @@ class ExtdirectSystemdataNavigationProvider extends \TYPO3\CMS\Backend\Tree\Abst
         );
 
         return $configuration;
+    }
+
+
+    /**
+     * Get backend user.
+     *
+     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     */
+    protected function getBackendUser()
+    {
+        return $GLOBALS['BE_USER'];
     }
 }

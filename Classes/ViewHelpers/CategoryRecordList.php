@@ -1197,7 +1197,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
              *
              * @var \CommerceTeam\Commerce\Utility\BackendUserUtility $utility
              */
-            $utility = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUserUtility');
+            $utility = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUserUtility::class);
             $localCalcPerms = $utility->calcPerms(
                 (array) BackendUtility::getRecord('tx_commerce_categories', $this->parentUid)
             );

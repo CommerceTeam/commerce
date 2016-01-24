@@ -227,7 +227,7 @@ class Data extends Base
         if (!is_numeric($uid)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'isExpanded (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) gets passed invalid parameters.',
+                    'isExpanded (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -249,7 +249,7 @@ class Data extends Base
         if (!is_array($positionIds)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'setPositions (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) gets passed invalid parameters.',
+                    'setPositions (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -295,8 +295,7 @@ class Data extends Base
         if ($l == 0) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'getPositionsByIndices (CommerceTeam\\Commerce\\Tree\\Leaf\\Data)
-                     cannot proceed because it did not find mounts',
+                    'getPositionsByIndices (' . self::class . ' ) cannot proceed because it did not find mounts',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -349,7 +348,7 @@ class Data extends Base
         if (!is_numeric($bank)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'setBank (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) gets passed invalid parameters.',
+                    'setBank (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -420,7 +419,7 @@ class Data extends Base
         if (!is_numeric($rootUid) || !is_numeric($depth) || !is_numeric($crazyRecursionLimiter)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'sort (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) gets passed invalid parameters.',
+                    'sort (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -503,7 +502,7 @@ class Data extends Base
         if (!is_numeric($uid)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'getChildByUid (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) gets passed invalid parameters.',
+                    'getChildByUid (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -532,7 +531,7 @@ class Data extends Base
         if (!is_numeric($pid)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'getChildrenByPid (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) gets passed invalid parameters.',
+                    'getChildrenByPid (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -606,7 +605,7 @@ class Data extends Base
         if ($database->sql_error()) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'loadRecords (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) could not load records.
+                    'loadRecords (' . self::class . ') could not load records.
                         Possible sql error. Empty rows returned.',
                     COMMERCE_EXTKEY,
                     3
@@ -664,7 +663,8 @@ class Data extends Base
         if ($checkRightRow !== false && !$this->checkAccess($this->itemTable, $checkRightRow)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'loadRecords (CommerceTeam\\Commerce\\Tree\\Leaf\\Data) could not load records because it doesn\'t
+                    'loadRecords (' . self::class .
+                    ') could not load records because it doesn\'t
                         have permissions on the commerce folder. Return empty array.',
                     COMMERCE_EXTKEY,
                     3

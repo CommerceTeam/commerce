@@ -34,7 +34,7 @@ class Money
      * includeLibs.moneylib = EXT:commerce/Classes/ViewHelpers/Money.php
      * price_net = stdWrap
      * price_net {
-     *   postUserFunc = CommerceTeam\\Commerce\\ViewHelpers\\Money->user_tsFormat
+     *   postUserFunc = \CommerceTeam\Commerce\ViewHelpers\Money->user_tsFormat
      *   postUserFunc.currency = EUR
      *   postUserFunc.withSymbol = 0
      * }.
@@ -83,7 +83,7 @@ class Money
          * @var CurrencyRepository
          */
         $currencyRepository = GeneralUtility::makeInstance(
-            'CommerceTeam\Commerce\Domain\Repository\CurrencyRepository'
+            \CommerceTeam\Commerce\Domain\Repository\CurrencyRepository::class
         );
         $currency = $currencyRepository->findByIso3($currencyKey);
 

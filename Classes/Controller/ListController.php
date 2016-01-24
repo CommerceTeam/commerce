@@ -277,7 +277,7 @@ class ListController extends BaseController
         if ($this->piVars['catUid']) {
             $this->cat = (int) $this->piVars['catUid'];
             $tmpCategory = GeneralUtility::makeinstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $this->cat,
                 $this->getFrontendController()->sys_language_uid
             );
@@ -288,7 +288,7 @@ class ListController extends BaseController
         if (!$this->piVars['catUid'] || !$accessible) {
             $this->cat = (int) $this->master_cat;
             $tmpCategory = GeneralUtility::makeinstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $this->cat,
                 $this->getFrontendController()->sys_language_uid
             );
@@ -333,7 +333,7 @@ class ListController extends BaseController
         if (($this->piVars['catUid']) && ($this->conf['checkCategoryTree'] == 1)) {
             // Validate given CAT UID, if is below master_cat
             $this->masterCategoryObj = GeneralUtility::makeinstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $this->master_cat,
                 $this->getFrontendController()->sys_language_uid
             );
@@ -363,7 +363,7 @@ class ListController extends BaseController
              * @var Category category
              */
             $this->category = GeneralUtility::makeinstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $this->cat,
                 $this->getFrontendController()->sys_language_uid
             );
@@ -514,7 +514,7 @@ class ListController extends BaseController
             }
 
             $this->product = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                \CommerceTeam\Commerce\Domain\Model\Product::class,
                 $productId,
                 $this->getFrontendController()->sys_language_uid
             );
@@ -843,7 +843,7 @@ class ListController extends BaseController
                              * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attribute
                              */
                             $attribute = GeneralUtility::makeInstance(
-                                'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
+                                \CommerceTeam\Commerce\Domain\Model\Attribute::class,
                                 $attributeUid,
                                 $this->getFrontendController()->sys_language_uid
                             );
@@ -964,7 +964,7 @@ class ListController extends BaseController
                          * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attribute
                          */
                         $attribute = GeneralUtility::makeInstance(
-                            'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
+                            \CommerceTeam\Commerce\Domain\Model\Attribute::class,
                             $attrUid,
                             $this->getFrontendController()->sys_language_uid
                         );

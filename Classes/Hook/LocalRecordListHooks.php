@@ -80,7 +80,7 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
     {
         $language = $this->getLanguageService();
 
-        if (get_class($parentObject) == 'CommerceTeam\\Commerce\\ViewHelpers\\OrderRecordList') {
+        if (get_class($parentObject) == \CommerceTeam\Commerce\ViewHelpers\OrderRecordList::class) {
             $icon = '';
             foreach ($parentObject->fieldArray as $fCol) {
                 // Calculate users permissions to edit records in the table:

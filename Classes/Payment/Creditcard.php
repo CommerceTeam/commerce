@@ -79,7 +79,7 @@ class Creditcard extends PaymentAbstract
          *
          * @var \CommerceTeam\Commerce\Payment\Ccvs $ccvs
          */
-        $ccvs = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Payment\\Ccvs');
+        $ccvs = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Payment\Ccvs::class);
         $result = $ccvs->validateCreditCard($formData['cc_number'], $formData['cc_checksum']);
         $this->errorMessages[] = $ccvs->CCVSError;
 

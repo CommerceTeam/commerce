@@ -101,7 +101,7 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
         );
 
         // Get the Category Tree
-        $this->categoryTree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
+        $this->categoryTree = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryTree::class);
         $this->categoryTree->setBare($bare);
         $this->categoryTree->setSimpleMode((int) SettingsFactory::getInstance()->getExtConf('simpleMode'));
         $this->categoryTree->setNavigationFrame(true);
@@ -124,10 +124,10 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
          *
          * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
          */
-        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $this->doc = $doc;
         $this->doc->backPath = $this->getBackPath();
-        $this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');
+        $this->doc->setModuleTemplate('EXT:commerce/Rsources/Private/Backend/mod_navigation.html');
         $this->doc->showFlashMessages = false;
 
         $this->doc->inDocStyles .= '
@@ -349,7 +349,7 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
          *
          * @var \CommerceTeam\Commerce\Utility\UpdateUtility $updater
          */
-        $updater = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\UpdateUtility');
+        $updater = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\UpdateUtility::class);
 
         return $updater->access();
     }

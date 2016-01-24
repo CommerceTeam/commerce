@@ -41,7 +41,7 @@ class AttributeEditorUtility
      */
     public function __construct()
     {
-        $this->belib = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUtility');
+        $this->belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
     }
 
     /**

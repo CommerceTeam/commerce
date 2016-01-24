@@ -38,7 +38,7 @@ class Attribute extends AbstractEntity
      *
      * @var string
      */
-    protected $databaseClass = 'CommerceTeam\\Commerce\\Domain\\Repository\\AttributeRepository';
+    protected $databaseClass = \CommerceTeam\Commerce\Domain\Repository\AttributeRepository::class;
 
     /**
      * Database connection.
@@ -148,7 +148,7 @@ class Attribute extends AbstractEntity
         if ($uid > 0) {
             $this->uid = $uid;
             $this->lang_uid = (int) $languageUid;
-            $this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
+            $this->databaseConnection = parent::getDatabaseConnection();
 
             $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Model/Attribute', 'init');
             foreach ($hooks as $hook) {
@@ -183,7 +183,7 @@ class Attribute extends AbstractEntity
                      * @var \CommerceTeam\Commerce\Domain\Model\AttributeValue $attributeValue
                      */
                     $attributeValue = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        'CommerceTeam\\Commerce\\Domain\\Model\\AttributeValue',
+                        \CommerceTeam\Commerce\Domain\Model\AttributeValue::class,
                         $valueUid,
                         $this->lang_uid
                     );
@@ -334,7 +334,7 @@ class Attribute extends AbstractEntity
              *
              * @var \CommerceTeam\Commerce\Domain\Model\Attribute $parent
              */
-            $parent = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(get_class($this));
+            $parent = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(self::class);
             $parent->init($this->parent, $this->lang_uid);
             $parent->loadData($translationMode);
 
@@ -357,12 +357,12 @@ class Attribute extends AbstractEntity
             $childAttributeList = $this->databaseConnection->getChildAttributeUids($this->uid);
 
             foreach ($childAttributeList as $childAttributeUid) {
-                /*
+                /**
                  * Attribute
                  *
-                 * @var $parent \CommerceTeam\Commerce\Domain\Model\Attribute
+                 * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attribute
                  */
-                $attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(get_class($this));
+                $attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(self::class);
                 $attribute->init($childAttributeUid, $this->lang_uid);
                 $attribute->loadData($translationMode);
 

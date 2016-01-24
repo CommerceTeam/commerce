@@ -63,7 +63,7 @@ class Slave extends Leaf
         if (is_null($parentLeaf)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'setParentLeaf (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) gets passed invalid parameters.',
+                    'setParentLeaf (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -88,7 +88,7 @@ class Slave extends Leaf
         if (!is_numeric($index) || !is_array($parentIndices)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'init (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) gets passed invalid parameters.',
+                    'init (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -120,7 +120,7 @@ class Slave extends Leaf
         if (!is_numeric($startUid) || !is_numeric($bank)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'printChildleafsByLoop (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) gets passed invalid parameters.',
+                    'printChildleafsByLoop (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -147,8 +147,7 @@ class Slave extends Leaf
         if (null == $child) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'printChildleafsByLoop (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave)
-                        cannot find the starting category by its uid.',
+                    'printChildleafsByLoop (' . self::class . ') cannot find the starting category by its uid.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -226,8 +225,7 @@ class Slave extends Leaf
         if (!is_numeric($pid) || !is_numeric($bank)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'printChildleafsByParent (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave)
-                        gets passed invalid parameters.',
+                    'printChildleafsByParent (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -254,7 +252,7 @@ class Slave extends Leaf
         // DLOG
         if (TYPO3_DLOG) {
             \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                'printChildleafsByParent (CommerceTeam\\Commerce\\Tree\\Leaf\\Slave) did ' . $l . ' loops!',
+                'printChildleafsByParent (' . self::class . ') did ' . $l . ' loops!',
                 COMMERCE_EXTKEY,
                 1
             );

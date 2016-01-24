@@ -349,7 +349,7 @@ class Products
      *
      * @var array
      */
-    public $hooks = array('CommerceTeam\\Commerce\\Configuration\\Dca\\Products');
+    public $hooks = array(\CommerceTeam\Commerce\Configuration\Dca\Products::class);
 
     /**
      * Constructor.

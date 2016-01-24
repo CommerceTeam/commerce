@@ -90,7 +90,7 @@ class AbstractEntity
      *
      * @var string
      */
-    protected $databaseClass = 'CommerceTeam\\Commerce\\Domain\\Repository\\Repository';
+    protected $databaseClass = \CommerceTeam\Commerce\Domain\Repository\Repository::class;
 
     /**
      * Database connection.
@@ -187,7 +187,7 @@ class AbstractEntity
                  * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attribute
                  */
                 $attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
+                    \CommerceTeam\Commerce\Domain\Model\Attribute::class,
                     $attributeUid,
                     $this->lang_uid
                 );
@@ -297,11 +297,7 @@ class AbstractEntity
             $this->translationMode = $translationMode;
         }
 
-        if (!$this->databaseConnection) {
-            $this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
-        }
-
-        $this->data = $this->databaseConnection->getData($this->uid, $this->lang_uid, $translationMode);
+        $this->data = $this->getDatabaseConnection()->getData($this->uid, $this->lang_uid, $translationMode);
 
         foreach ($this->fieldlist as $field) {
             $this->$field = $this->data[$field];
@@ -350,11 +346,7 @@ class AbstractEntity
      */
     public function isAccessible()
     {
-        if (!$this->databaseConnection) {
-            $this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
-        }
-
-        return $this->databaseConnection->isAccessible($this->uid);
+        return $this->getDatabaseConnection()->isAccessible($this->uid);
     }
 
     /**
@@ -374,11 +366,7 @@ class AbstractEntity
      */
     public function isValidUid()
     {
-        if (!$this->databaseConnection) {
-            $this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
-        }
-
-        return $this->databaseConnection->isUid($this->uid);
+        return $this->getDatabaseConnection()->isUid($this->uid);
     }
 
     /**
@@ -414,6 +402,18 @@ class AbstractEntity
         $this->getFrontendController()->indexedDocTitle = $title;
     }
 
+
+    /**
+     * @return \CommerceTeam\Commerce\Domain\Repository\Repository|object
+     */
+    protected function getDatabaseConnection()
+    {
+        if (!$this->databaseConnection) {
+            $this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
+        }
+
+        return $this->databaseConnection;
+    }
 
     /**
      * Get typoscript frontend controller.

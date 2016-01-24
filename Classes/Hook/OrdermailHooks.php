@@ -83,8 +83,8 @@ class OrdermailHooks
      */
     public function __construct()
     {
-        $this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
-        $this->csConvObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
+        $this->cObj = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
+        $this->csConvObj = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
         $this->templatePath = PATH_site . 'uploads/tx_commerce/';
     }
 
@@ -142,7 +142,7 @@ class OrdermailHooks
          *
          * @var \TYPO3\CMS\Frontend\Page\PageRepository
          */
-        $pageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+        $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
 
         $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',

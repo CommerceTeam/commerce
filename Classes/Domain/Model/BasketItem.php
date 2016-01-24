@@ -161,7 +161,7 @@ class BasketItem
          * @var \CommerceTeam\Commerce\Domain\Model\Article $article
          */
         $article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            'CommerceTeam\\Commerce\\Domain\\Model\\Article',
+            \CommerceTeam\Commerce\Domain\Model\Article::class,
             $uid,
             $this->lang_uid
         );
@@ -182,7 +182,7 @@ class BasketItem
              * @var \CommerceTeam\Commerce\Domain\Model\ArticlePrice $price
              */
             $price = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\ArticlePrice',
+                \CommerceTeam\Commerce\Domain\Model\ArticlePrice::class,
                 $priceid,
                 $this->lang_uid
             );
@@ -198,7 +198,7 @@ class BasketItem
         }
 
         /*
-         * Article is not availiabe, so clear object
+         * Article is not available, so clear object
          */
         $this->quantity = 0;
         $this->article = null;
@@ -573,7 +573,7 @@ class BasketItem
         $this->priceid = $this->article->getActualPriceforScaleUid($quantity);
 
         $this->price = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            'CommerceTeam\\Commerce\\Domain\\Model\\ArticlePrice',
+            \CommerceTeam\Commerce\Domain\Model\ArticlePrice::class,
             $this->priceid,
             $this->lang_uid
         );

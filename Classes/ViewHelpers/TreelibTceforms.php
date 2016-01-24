@@ -307,7 +307,7 @@ class TreelibTceforms
          *
          * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
          */
-        $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
         $mount->init($userid);
 
         $preselected = $mount->getMountDataLabeled();
@@ -343,7 +343,7 @@ class TreelibTceforms
          *
          * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
          */
-        $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
         $mount->initByGroup($groupuid);
 
         $preselected = $mount->getMountDataLabeled();
@@ -383,7 +383,7 @@ class TreelibTceforms
          *
          * @var \CommerceTeam\Commerce\Domain\Model\Category $category
          */
-        $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $catUid);
+        $category = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Category::class, $catUid);
         $category->loadData();
         $parent = $category->getParentCategories();
 
@@ -394,7 +394,7 @@ class TreelibTceforms
          *
          * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
          */
-        $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
         $mount->init((int) $this->getBackendUser()->user['uid']);
 
         if (is_array($parent)) {
@@ -443,7 +443,7 @@ class TreelibTceforms
          *
          * @var \CommerceTeam\Commerce\Domain\Model\Category $category
          */
-        $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $catUid);
+        $category = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Category::class, $catUid);
         $category->loadData();
 
         $this->itemArrayProcessed = array();
@@ -453,7 +453,7 @@ class TreelibTceforms
          *
          * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
          */
-        $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
         $mount->init((int) $this->getBackendUser()->user['uid']);
 
         // Separate Key and Title with a |
@@ -491,7 +491,7 @@ class TreelibTceforms
          *
          * @var \CommerceTeam\Commerce\Domain\Model\Product $product
          */
-        $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uid);
+        $product = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Product::class, $uid);
         $product->loadData();
 
         // read parent categories from the live product
@@ -514,7 +514,7 @@ class TreelibTceforms
              * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
             $category = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $parentCategories[$i]
             );
             $category->loadData();
@@ -562,7 +562,7 @@ class TreelibTceforms
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Product $product
                  */
-                $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $uid);
+                $product = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Product::class, $uid);
                 $product->loadData();
 
                 $itemArray[] = $value . '|' . $product->getTitle();
@@ -572,7 +572,7 @@ class TreelibTceforms
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Article $article
                  */
-                $article = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $uid);
+                $article = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Article::class, $uid);
                 $article->loadData();
 
                 $itemArray[] = $value . '|' . $article->getTitle();
@@ -582,7 +582,7 @@ class TreelibTceforms
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
-                $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $uid);
+                $category = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Category::class, $uid);
                 $category->loadData();
 
                 $itemArray[] = $value . '|' . $category->getTitle();

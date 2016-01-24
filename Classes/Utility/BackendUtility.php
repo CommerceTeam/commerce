@@ -1483,8 +1483,7 @@ class BackendUtility
         if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'swapProductAttributes (CommerceTeam\\Commerce\\Utility\\BackendUtility)
-                        gets passed invalid parameters.',
+                    'swapProductAttributes (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -1550,8 +1549,7 @@ class BackendUtility
         if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'swapProductArticles (CommerceTeam\\Commerce\\Utility\\BackendUtility)
-                        gets passed invalid parameters.',
+                    'swapProductArticles (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -1654,7 +1652,7 @@ class BackendUtility
          *
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
-        $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+        $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
         $tce->stripslashes_values = 0;
 
         $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -1741,7 +1739,7 @@ class BackendUtility
              *
              * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
              */
-            $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+            $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
             $tce->stripslashes_values = 0;
 
             $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -1920,7 +1918,7 @@ class BackendUtility
          *
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
-        $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+        $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
         $tce->stripslashes_values = 0;
         // set workspace bypass if requested
         $tce->bypassWorkspaceRestrictions = $ignoreWs;
@@ -2033,7 +2031,7 @@ class BackendUtility
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Article $article
                  */
-                $article = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $uidNew);
+                $article = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Article::class, $uidNew);
                 $productUid = $article->getParentProductUid();
 
                 // load uid of the localized product
@@ -2058,7 +2056,7 @@ class BackendUtility
              *
              * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
              */
-            $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+            $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
             $tce->stripslashes_values = 0;
             // set workspace bypass if requested
             $tce->bypassWorkspaceRestrictions = $ignoreWs;
@@ -2177,7 +2175,7 @@ class BackendUtility
              *
              * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
              */
-            $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+            $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
             $tce->stripslashes_values = 0;
 
             $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -2309,7 +2307,7 @@ class BackendUtility
          *
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
-        $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+        $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
         $tce->stripslashes_values = 0;
 
         $backendUser = self::getBackendUser();
@@ -3053,7 +3051,7 @@ class BackendUtility
          *
          * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
          */
-        $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+        $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
         $mount->init((int) $backendUser->user['uid']);
 
         foreach ($categoryUids as $categoryUid) {
@@ -3067,7 +3065,7 @@ class BackendUtility
              *
              * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
-            $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $categoryUid);
+            $category = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Category::class, $categoryUid);
             // check perms
             foreach ($perms as $perm) {
                 if (!$category->isPermissionSet($perm)) {
@@ -3274,7 +3272,7 @@ class BackendUtility
          *
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
-        $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+        $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
         $tce->stripslashes_values = 0;
 
         $backendUser = self::getBackendUser();
@@ -3472,7 +3470,7 @@ class BackendUtility
          *
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
-        $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+        $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
         $tce->stripslashes_values = 0;
 
         $backendUser = self::getBackendUser();

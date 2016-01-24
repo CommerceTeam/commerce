@@ -160,17 +160,18 @@ $boot = function ($packageKey) {
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
             'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct',
-            'CommerceTeam\\Commerce\\Controller\\CategoryNavigationFrameController->ajaxExpandCollapseWithoutProduct'
+            \CommerceTeam\Commerce\Controller\CategoryNavigationFrameController::class .
+            '->ajaxExpandCollapseWithoutProduct'
         );
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
             'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse',
-            'CommerceTeam\\Commerce\\Controller\\CategoryNavigationFrameController->ajaxExpandCollapse'
+            \CommerceTeam\Commerce\Controller\CategoryNavigationFrameController::class . '->ajaxExpandCollapse'
         );
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
             'CommerceTeam_Commerce_PermissionAjaxController::dispatch',
-            'CommerceTeam\\Commerce\\Controller\\PermissionAjaxController->dispatch'
+            \CommerceTeam\Commerce\Controller\PermissionAjaxController::class . '->dispatch'
         );
 
         // commerce icon
@@ -217,7 +218,7 @@ $boot = function ($packageKey) {
 
     // Add context menu for category trees in BE
     $GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = array(
-        'name' => 'CommerceTeam\\Commerce\\Utility\\ClickmenuUtility',
+        'name' => \CommerceTeam\Commerce\Utility\ClickmenuUtility::class,
         'path' => PATH_TXCOMMERCE . 'Classes/Utility/ClickmenuUtility.php',
     );
 

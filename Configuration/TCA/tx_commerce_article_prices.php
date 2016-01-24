@@ -19,7 +19,7 @@ return array(
         'label' => 'price_net',
         'label_alt' => 'price_net,price_gross,purchase_price',
         'label_alt_force' => 1,
-        'label_userFunc' => 'CommerceTeam\\Commerce\\Domain\\Model\\ArticlePrice->getTcaRecordTitle',
+        'label_userFunc' => \CommerceTeam\Commerce\Domain\Model\ArticlePrice::class . '->getTcaRecordTitle',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
@@ -166,7 +166,7 @@ return array(
             'label' => 'Article UID',
             'config' => array(
                 'type' => 'user',
-                'userFunc' => 'CommerceTeam\\Commerce\\Utility\\ArticleCreatorUtility->articleUid',
+                'userFunc' => \CommerceTeam\Commerce\Utility\ArticleCreatorUtility::class . '->articleUid',
             ),
         ),
     ),

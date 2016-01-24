@@ -60,7 +60,7 @@ class CategoryView extends \CommerceTeam\Commerce\Tree\Leaf\View
         if (!is_array($row)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'getJumpToParam (CommerceTeam\\Commerce\\Tree\\Leaf\\View) gets passed invalid parameters.',
+                    'getJumpToParam (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );
@@ -98,8 +98,7 @@ class CategoryView extends \CommerceTeam\Commerce\Tree\Leaf\View
         if (!is_array($row) || !is_numeric($bank)) {
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
-                    'wrapTitle (CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\CategoryView)
-                        gets passed invalid parameters.',
+                    'wrapTitle (' . self::class . ') gets passed invalid parameters.',
                     COMMERCE_EXTKEY,
                     3
                 );

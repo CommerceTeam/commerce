@@ -33,8 +33,8 @@ class FeuserDao extends BasicDao
      */
     protected function init()
     {
-        $this->parser = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserDaoParser');
-        $this->mapper = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserDaoMapper', $this->parser);
-        $this->object = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\FeuserDaoObject');
+        $this->parser = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\FeuserDaoParser::class);
+        $this->mapper = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\FeuserDaoMapper::class, $this->parser);
+        $this->object = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\FeuserDaoObject::class);
     }
 }

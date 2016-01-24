@@ -170,7 +170,7 @@ class CheckoutController extends BaseController
          *
          * @var \SJBR\StaticInfoTables\PiBaseApi $staticInfo
          */
-        $staticInfo = GeneralUtility::makeInstance('SJBR\\StaticInfoTables\\PiBaseApi');
+        $staticInfo = GeneralUtility::makeInstance(\SJBR\StaticInfoTables\PiBaseApi::class);
         $staticInfo->init();
         $this->staticInfo = $staticInfo;
 
@@ -577,7 +577,7 @@ class CheckoutController extends BaseController
              *
              * @var \CommerceTeam\Commerce\Controller\AddressesController $addressMgm
              */
-            $addressMgm = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\AddressesController');
+            $addressMgm = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Controller\AddressesController::class);
             $addressMgm->cObj = $this->cObj;
             $addressMgm->templateCode = $this->templateCode;
             $addressMgm->init($addressManagerConf, false);
@@ -746,7 +746,7 @@ class CheckoutController extends BaseController
              *
              * @var \CommerceTeam\Commerce\Controller\AddressesController $addressMgm
              */
-            $addressMgm = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\AddressesController');
+            $addressMgm = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Controller\AddressesController::class);
             $addressMgm->cObj = $this->cObj;
             $addressMgm->templateCode = $this->templateCode;
             $addressMgm->init($addressManagerConf, false);
@@ -1256,7 +1256,7 @@ class CheckoutController extends BaseController
          *
          * @var \CommerceTeam\Commerce\Domain\Model\Basket $basket
          */
-        $basket = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Basket');
+        $basket = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Basket::class);
         $basket->setSessionId(md5($feUser->id . ':' . rand(0, PHP_INT_MAX)));
         $basket->loadData();
 
@@ -2367,7 +2367,7 @@ class CheckoutController extends BaseController
                  *
                  * @var \CommerceTeam\Commerce\Controller\CheckoutController $userMailObj
                  */
-                $userMailObj = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\CheckoutController');
+                $userMailObj = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Controller\CheckoutController::class);
                 $userMailObj->conf = $this->conf;
                 $userMailObj->pi_setPiVarDefaults();
                 $userMailObj->cObj = $this->cObj;
@@ -2519,7 +2519,7 @@ class CheckoutController extends BaseController
              *
              * @var \CommerceTeam\Commerce\Controller\CheckoutController $adminMailObj
              */
-            $adminMailObj = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Controller\\CheckoutController');
+            $adminMailObj = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Controller\CheckoutController::class);
             $adminMailObj->conf = $this->conf;
             $adminMailObj->pi_setPiVarDefaults();
             $adminMailObj->cObj = $this->cObj;
@@ -2986,7 +2986,7 @@ class CheckoutController extends BaseController
          *
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler
          */
-        $tceMain = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+        $tceMain = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
         $tceMain->bypassWorkspaceRestrictions = true;
         $tceMain->recInsertAccessCache['tx_commerce_orders'][$pid] = 1;
         $tceMain->recInsertAccessCache['tx_commerce_order_articles'][$pid] = 1;
@@ -3007,7 +3007,7 @@ class CheckoutController extends BaseController
              *
              * @var \TYPO3\CMS\Backend\FrontendBackendUserAuthentication
              */
-            $backendUser = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\FrontendBackendUserAuthentication');
+            $backendUser = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\FrontendBackendUserAuthentication::class);
             $backendUser->warningEmail = $GLOBALS['TYPO3_CONF_VARS']['BE']['warning_email_addr'];
             $backendUser->lockIP = $GLOBALS['TYPO3_CONF_VARS']['BE']['lockIP'];
             $backendUser->auth_timeout_field = (int) $GLOBALS['TYPO3_CONF_VARS']['BE']['sessionTimeout'];
@@ -3040,7 +3040,7 @@ class CheckoutController extends BaseController
              *
              * @var \TYPO3\CMS\Lang\LanguageService
              */
-            $language = GeneralUtility::makeInstance('TYPO3\\CMS\\Lang\\LanguageService');
+            $language = GeneralUtility::makeInstance(\TYPO3\CMS\Lang\LanguageService::class);
             $language->init($this->getBackendUser()->uc['lang']);
             $GLOBALS['LANG'] = $language;
         }

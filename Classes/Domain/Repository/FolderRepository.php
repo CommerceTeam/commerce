@@ -65,7 +65,7 @@ class FolderRepository
              *
              * @var \CommerceTeam\Commerce\Utility\UpdateUtility $updateUtility
              */
-            $updateUtility = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\UpdateUtility');
+            $updateUtility = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\UpdateUtility::class);
             $updateUtility->main();
         }
 

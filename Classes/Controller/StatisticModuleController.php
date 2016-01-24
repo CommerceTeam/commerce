@@ -97,7 +97,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
     {
         parent::init();
 
-        $this->statistics = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\StatisticsUtility');
+        $this->statistics = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\StatisticsUtility::class);
         $this->statistics->init((int) SettingsFactory::getInstance()->getExtConf('excludeStatisticFolders'));
 
         $this->orderPageId = current(array_unique(
@@ -112,7 +112,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
             $this->id = $this->orderPageId;
         }
 
-        $this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $this->doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $this->doc->backPath = $this->getBackPath();
         $this->doc->docType = 'xhtml_trans';
         $this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');

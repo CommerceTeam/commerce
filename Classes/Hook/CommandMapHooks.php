@@ -74,7 +74,7 @@ class CommandMapHooks
      */
     public function __construct()
     {
-        $this->belib = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUtility');
+        $this->belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
     }
 
 
@@ -128,7 +128,7 @@ class CommandMapHooks
              * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
             $category = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $categoryUid
             );
             $category->loadData();
@@ -141,7 +141,7 @@ class CommandMapHooks
                  * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
                 $category = GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                    \CommerceTeam\Commerce\Domain\Model\Category::class,
                     $category->getL18nParent()
                 );
             }
@@ -152,7 +152,7 @@ class CommandMapHooks
              *
              * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
              */
-            $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+            $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
             $mount->init((int) $this->getBackendUser()->user['uid']);
 
             if (!$category->isPermissionSet($command) || !$mount->isInCommerceMounts($category->getUid())) {
@@ -207,14 +207,14 @@ class CommandMapHooks
              * @var \CommerceTeam\Commerce\Domain\Model\Product $product
              */
             $product = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                \CommerceTeam\Commerce\Domain\Model\Product::class,
                 $productUid
             );
 
             // check if product or if translated the translation parent category
             if (!current($product->getParentCategories())) {
                 $product = GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                    \CommerceTeam\Commerce\Domain\Model\Product::class,
                     $product->getL18nParent()
                 );
             }
@@ -259,7 +259,7 @@ class CommandMapHooks
              * @var \CommerceTeam\Commerce\Domain\Model\Article $article
              */
             $article = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Article',
+                \CommerceTeam\Commerce\Domain\Model\Article::class,
                 $articleUid
             );
             $article->loadData();
@@ -274,7 +274,7 @@ class CommandMapHooks
             // check if product or if translated the translation parent category
             if (!current($product->getParentCategories())) {
                 $product = GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                    \CommerceTeam\Commerce\Domain\Model\Product::class,
                     $product->getL18nParent()
                 );
             }
@@ -613,7 +613,7 @@ class CommandMapHooks
          *
          * @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipboard
          */
-        $clipboard = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Clipboard\\Clipboard');
+        $clipboard = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Clipboard\Clipboard::class);
         $clipboard->initializeClipboard();
         $clipboard->setCurrentPad($pasteData['pad']);
 
@@ -662,7 +662,7 @@ class CommandMapHooks
              *
              * @var DataHandler
              */
-            $tce = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+            $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
             $tce->stripslashes_values = 0;
 
             $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
@@ -916,7 +916,7 @@ class CommandMapHooks
          *
          * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $errorDocument
          */
-        $errorDocument = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $errorDocument = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $errorDocument->backPath = '';
 
         $errorHeadline = $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:error', 1);
@@ -924,7 +924,7 @@ class CommandMapHooks
         $onClickAction = 'onclick="document.location=\'' . htmlspecialchars($_SERVER['HTTP_REFERER']) .
             '\'; return false;"';
 
-        $content = $errorDocument->startPage('CommerceTeam\\Commerce\\Hook\\CommandMapHooks error Output');
+        $content = $errorDocument->startPage(self::class . ' error Output');
         $content .= '
 			<br/>
 			<br/>

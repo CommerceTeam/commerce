@@ -87,7 +87,7 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
                  * @var \CommerceTeam\Commerce\Domain\Model\Product $product
                  */
                 $product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                    \CommerceTeam\Commerce\Domain\Model\Product::class,
                     $row['t3ver_oid'],
                     $sysLanguageUid
                 );

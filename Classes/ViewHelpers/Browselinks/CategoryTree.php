@@ -75,7 +75,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
          *
          * @var \CommerceTeam\Commerce\Tree\Leaf\Category $categoryLeaf
          */
-        $categoryLeaf = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Category');
+        $categoryLeaf = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\Leaf\Category::class);
 
         // Instantiate the categorydata, -view and set
         // the permission mask (or the string rep.)
@@ -84,7 +84,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
          *
          * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryData $categorydata
          */
-        $categorydata = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryData');
+        $categorydata = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\Leaf\CategoryData::class);
         $categorydata->setPermsMask(BackendUtility::getPermMask($this->minCategoryPerms));
 
         /**
@@ -93,14 +93,14 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
          * @var \CommerceTeam\Commerce\ViewHelpers\Browselinks\CategoryView $categoryview
          */
         $categoryview = GeneralUtility::makeInstance(
-            'CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\CategoryView'
+            \CommerceTeam\Commerce\ViewHelpers\Browselinks\CategoryView::class
         );
         // disable the root onclick if the perms are set to editcontent
         // - this way we cannot select the root as a parent for any content item
         $categoryview->noRootOnclick(($this->minCategoryPerms == 'editcontent'));
 
         // Configure the noOnclick for the leaf
-        if (GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Category')) {
+        if (GeneralUtility::inList($this->noClickList, \CommerceTeam\Commerce\Tree\Leaf\Category::class)) {
             $categoryview->noOnclick();
         }
 
@@ -114,7 +114,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
          *
          * @var \CommerceTeam\Commerce\Tree\Leaf\Product $productleaf
          */
-        $productleaf = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Product');
+        $productleaf = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\Leaf\Product::class);
 
         /**
          * Product view.
@@ -122,11 +122,11 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
          * @var \CommerceTeam\Commerce\ViewHelpers\Browselinks\ProductView $productview
          */
         $productview = GeneralUtility::makeInstance(
-            'CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\ProductView'
+            \CommerceTeam\Commerce\ViewHelpers\Browselinks\ProductView::class
         );
 
         // Configure the noOnclick for the leaf
-        if (GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Product')) {
+        if (GeneralUtility::inList($this->noClickList, \CommerceTeam\Commerce\Tree\Leaf\Product::class)) {
             $productview->noOnclick();
         }
 
@@ -135,7 +135,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
          *
          * @var \CommerceTeam\Commerce\Tree\Leaf\ProductData $productData
          */
-        $productData = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductData');
+        $productData = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\Leaf\ProductData::class);
 
         $productleaf->initBasic($productview, $productData);
 
@@ -334,7 +334,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
              *
              * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
              */
-            $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+            $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
             $mount->init((int) $this->getBackendUser()->user['uid']);
 
             // only go if the item is in the mounts
@@ -349,7 +349,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
                  * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
                 $category = GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                    \CommerceTeam\Commerce\Domain\Model\Category::class,
                     $this->openCategory
                 );
                 $category->loadData();

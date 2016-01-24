@@ -34,8 +34,8 @@ class AddressDao extends BasicDao
      */
     protected function init()
     {
-        $this->parser = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDaoParser');
-        $this->mapper = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDaoMapper', $this->parser);
-        $this->object = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Dao\\AddressDaoObject');
+        $this->parser = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\AddressDaoParser::class);
+        $this->mapper = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\AddressDaoMapper::class, $this->parser);
+        $this->object = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\AddressDaoObject::class);
     }
 }

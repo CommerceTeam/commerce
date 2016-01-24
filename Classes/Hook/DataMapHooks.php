@@ -58,7 +58,7 @@ class DataMapHooks
      */
     public function __construct()
     {
-        $this->belib = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUtility');
+        $this->belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
     }
 
     /**
@@ -217,7 +217,7 @@ class DataMapHooks
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Product $product
                  */
-                $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $id);
+                $product = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Product::class, $id);
                 $product->loadData();
 
                 $parentCategory = $product->getMasterparentCategory();
@@ -611,14 +611,14 @@ class DataMapHooks
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
-                $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $checkId);
+                $category = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Category::class, $checkId);
                 $category->loadData();
 
                 // Use the l18n parent as category for permission checks.
                 if ($l18nParent || $category->getField('l18n_parent') > 0) {
                     $checkId = $l18nParent ?: $category->getField('l18n_parent');
                     $category = GeneralUtility::makeInstance(
-                        'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                        \CommerceTeam\Commerce\Domain\Model\Category::class,
                         $checkId
                     );
                 }
@@ -629,7 +629,7 @@ class DataMapHooks
                  *
                  * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
                  */
-                $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+                $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
                 $mount->init((int) $backendUser->user['uid']);
 
                 // check
@@ -698,7 +698,7 @@ class DataMapHooks
                      *
                      * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
                      */
-                    $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+                    $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
                     $mount->init((int) $backendUser->user['uid']);
 
                     // if the user has no right to see one of the parent categories or its not
@@ -720,7 +720,7 @@ class DataMapHooks
                  *
                  * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
                  */
-                $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+                $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
                 $mount->init((int) $backendUser->user['uid']);
 
                 if ($mount->isInCommerceMounts(0)) {
@@ -756,14 +756,14 @@ class DataMapHooks
                      *
                      * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                      */
-                    $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $uid);
+                    $category = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Category::class, $uid);
 
                     /**
                      * Category mounts.
                      *
                      * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
                      */
-                    $mount = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryMounts');
+                    $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
                     $mount->init((int) $backendUser->user['uid']);
 
                     // abort if the parent category is not in the webmounts
@@ -837,7 +837,7 @@ class DataMapHooks
                      * @var \CommerceTeam\Commerce\Domain\Model\Category $catDirect
                      */
                     $catDirect = GeneralUtility::makeInstance(
-                        'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                        \CommerceTeam\Commerce\Domain\Model\Category::class,
                         $catUid
                     );
                     $catDirect->loadData();
@@ -903,7 +903,7 @@ class DataMapHooks
              *
              * @var \CommerceTeam\Commerce\Domain\Model\Product $item
              */
-            $item = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $id);
+            $item = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Product::class, $id);
 
             $parentCategories = $item->getParentCategories();
 
@@ -976,7 +976,7 @@ class DataMapHooks
              *
              * @var \CommerceTeam\Commerce\Domain\Model\Article $article
              */
-            $article = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Article', $id);
+            $article = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Article::class, $id);
             $article->loadData();
 
             // get the parent categories of the product
@@ -986,14 +986,14 @@ class DataMapHooks
              * @var \CommerceTeam\Commerce\Domain\Model\Product $product
              */
             $product = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                \CommerceTeam\Commerce\Domain\Model\Product::class,
                 $article->getParentProductUid()
             );
             $product->loadData();
 
             if ($product->getL18nParent()) {
                 $product = GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+                    \CommerceTeam\Commerce\Domain\Model\Product::class,
                     $product->getL18nParent()
                 );
                 $product->loadData();
@@ -1124,7 +1124,7 @@ class DataMapHooks
              *
              * @var \CommerceTeam\Commerce\Domain\Model\Product $product
              */
-            $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $id);
+            $product = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Product::class, $id);
             $product->loadData();
 
             if (isset($fieldArray['categories'])) {
@@ -1157,7 +1157,7 @@ class DataMapHooks
              *
              * @var \CommerceTeam\Commerce\Domain\Model\Product $product
              */
-            $product = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Product', $id);
+            $product = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Product::class, $id);
 
             $parentCategories = $product->getParentCategories();
 
@@ -1175,7 +1175,7 @@ class DataMapHooks
                  * @var \CommerceTeam\Commerce\Utility\ArticleCreatorUtility $articleCreator
                  */
                 $articleCreator = GeneralUtility::makeInstance(
-                    'CommerceTeam\\Commerce\\Utility\\ArticleCreatorUtility'
+                    \CommerceTeam\Commerce\Utility\ArticleCreatorUtility::Class
                 );
                 $articleCreator->init($id, $this->belib->getProductFolderUid());
 

@@ -121,7 +121,7 @@ class Mounts extends Base
         $this->mountdata = array();
         $this->pointer = 0;
         $this->user = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            'TYPO3\\CMS\\Core\\Authentication\\BackendUserAuthentication'
+            \TYPO3\CMS\Core\Authentication\BackendUserAuthentication::class
         );
         $this->group = 0;
         $this->byGroup = false;
@@ -142,7 +142,7 @@ class Mounts extends Base
         if (!is_numeric($uid) || $this->field == null) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'init (CommerceTeam\\Commerce\\Tree\\Leaf\\Mounts)
+                    'init (' . self::class . ')
                      gets passed invalid parameters. Script is aborted.',
                     COMMERCE_EXTKEY,
                     2

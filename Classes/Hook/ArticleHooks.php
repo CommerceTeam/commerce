@@ -87,7 +87,7 @@ class ArticleHooks
          * @var ArticleRepository
          */
         $articleRepository = GeneralUtility::makeInstance(
-            'CommerceTeam\\Commerce\\Domain\\Repository\\ArticleRepository'
+            \CommerceTeam\Commerce\Domain\Repository\ArticleRepository::class
         );
         $row = $articleRepository->findByClassname($classname);
 
@@ -99,7 +99,7 @@ class ArticleHooks
              * @var \CommerceTeam\Commerce\Domain\Model\Article $deliveryArticle
              */
             $deliveryArticle = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Model\\Article',
+                \CommerceTeam\Commerce\Domain\Model\Article::class,
                 $row['uid'],
                 $article->getLang()
             );

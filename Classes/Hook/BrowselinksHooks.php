@@ -74,7 +74,7 @@ class BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserH
 
         $this->script = '<script src="' . $linkToTreeJs . '" type="text/javascript"></script>';
         $this->script .= GeneralUtility::wrapJS('
-            Tree.ajaxID = "CommerceTeam\\Commerce\\Hook\\BrowselinksHooks::ajaxExpandCollapse";
+            Tree.ajaxID = "' . \CommerceTeam\Commerce\Hook\BrowselinksHooks::class . '::ajaxExpandCollapse";
         ');
 
         if ($parentObject->RTEtsConfigParams) {
@@ -119,7 +119,7 @@ class BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserH
     protected function initTree()
     {
         // initialize the tree
-        $this->treeObj = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\Browselinks\\CategoryTree');
+        $this->treeObj = GeneralUtility::makeInstance(\CommerceTeam\Commerce\ViewHelpers\Browselinks\CategoryTree::class);
         $this->treeObj->init();
     }
 

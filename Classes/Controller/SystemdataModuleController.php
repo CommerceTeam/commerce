@@ -432,7 +432,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
          *
          * @var \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList $recordList
          */
-        $recordList = GeneralUtility::makeInstance('TYPO3\\CMS\\Recordlist\\RecordList\\DatabaseRecordList');
+        $recordList = GeneralUtility::makeInstance(\TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList::class);
         $recordList->backPath = $this->getBackPath();
         $recordList->initializeLanguages();
 

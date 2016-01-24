@@ -65,7 +65,7 @@ class TceFunc
          *
          * @var \CommerceTeam\Commerce\Tree\CategoryTree $categoryTree
          */
-        $categoryTree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
+        $categoryTree = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryTree::class);
         // disabled clickmenu
         $categoryTree->noClickmenu();
         // set the minimum permissions
@@ -94,7 +94,7 @@ class TceFunc
          *
          * @var \CommerceTeam\Commerce\ViewHelpers\TreelibTceforms $renderBrowseTrees
          */
-        $renderBrowseTrees = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\TreelibTceforms');
+        $renderBrowseTrees = GeneralUtility::makeInstance(\CommerceTeam\Commerce\ViewHelpers\TreelibTceforms::class);
         $renderBrowseTrees->init($parameter);
 
         // Render the tree
@@ -336,7 +336,7 @@ class TceFunc
                      * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                      */
                     $category = GeneralUtility::makeInstance(
-                        'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                        \CommerceTeam\Commerce\Domain\Model\Category::class,
                         $defaultValues['tx_commerce_categories']['parent_category']
                     );
                     $category->loadData();
@@ -352,7 +352,7 @@ class TceFunc
                      * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                      */
                     $category = GeneralUtility::makeInstance(
-                        'CommerceTeam\\Commerce\\Domain\\Model\\Category',
+                        \CommerceTeam\Commerce\Domain\Model\Category::class,
                         $defaultValues['tx_commerce_products']['categories']
                     );
                     $category->loadData();

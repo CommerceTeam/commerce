@@ -120,7 +120,7 @@ class OrderEditFunc
          *
          * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
          */
-        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $doc->backPath = $this->getBackPath();
 
         /*
@@ -147,16 +147,16 @@ class OrderEditFunc
          *
          * @var \CommerceTeam\Commerce\Domain\Repository\PageRepository $pageRepository
          */
-        $pageRepository = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Repository\\PageRepository');
+        $pageRepository = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Repository\PageRepository::class);
         $orderEditable = !empty($pageRepository->findEditFolderByUid($orderStoragePid));
 
         /**
          * Order article repository.
          *
-         * @var OrderArticleRepository
+         * @var OrderArticleRepository $orderArticleRepository
          */
         $orderArticleRepository = GeneralUtility::makeInstance(
-            'CommerceTeam\\Commerce\\Domain\\Repository\\OrderArticleRepository'
+            \CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository::class
         );
         $orderArticles = $orderArticleRepository->findByOrderIdInPage($orderId, $orderStoragePid);
 
@@ -330,10 +330,10 @@ class OrderEditFunc
             /**
              * Order repository.
              *
-             * @var OrderRepository
+             * @var OrderRepository $orderRepository
              */
             $orderRepository = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Repository\\OrderRepository'
+                \CommerceTeam\Commerce\Domain\Repository\OrderRepository::class
             );
             $orderRepository->updateByOrderId($orderId, $values);
         }
@@ -402,7 +402,7 @@ class OrderEditFunc
              * @var \CommerceTeam\Commerce\Domain\Repository\PageRepository $pageRepository
              */
             $pageRepository = GeneralUtility::makeInstance(
-                'CommerceTeam\\Commerce\\Domain\\Repository\\PageRepository'
+                \CommerceTeam\Commerce\Domain\Repository\PageRepository::class
             );
             $page = $pageRepository->findByUid($localOrderPid);
             if (!empty($page)) {
@@ -477,9 +477,9 @@ class OrderEditFunc
          * as this class is included via alt_doc we don't have to require template.php
          * in fact an require would cause an error.
          *
-         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
+         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
          */
-        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $doc->backPath = $this->getBackPath();
 
         $content = '';
@@ -565,7 +565,7 @@ class OrderEditFunc
          *
          * @var \CommerceTeam\Commerce\ViewHelpers\OrderRecordlist $dblist
          */
-        $dblist = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\OrderRecordlist');
+        $dblist = GeneralUtility::makeInstance(\CommerceTeam\Commerce\ViewHelpers\OrderRecordlist::class);
         $dblist->backPath = $this->getBackPath();
         $dblist->script = 'index.php';
         $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);

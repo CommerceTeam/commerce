@@ -167,7 +167,7 @@ class WizardController
         $this->defVals = GeneralUtility::_GP('defVals');
 
         // Create instance of template class for output
-        $this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+        $this->doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $this->doc->backPath = $this->getBackPath();
         $this->doc->docType = 'xhtml_trans';
         $this->doc->JScode = '';

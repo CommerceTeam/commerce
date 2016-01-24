@@ -338,7 +338,7 @@ class BasketController extends BaseController
                      * @var Article $article
                      */
                     $article = GeneralUtility::makeInstance(
-                        'CommerceTeam\\Commerce\\Domain\\Model\\Article',
+                        \CommerceTeam\Commerce\Domain\Model\Article::class,
                         $articleUid
                     );
                     $article->loadData('basket');
@@ -680,7 +680,7 @@ class BasketController extends BaseController
     public function makeDelivery(array $basketArray = array())
     {
         $this->deliveryProduct = GeneralUtility::makeInstance(
-            'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+            \CommerceTeam\Commerce\Domain\Model\Product::class,
             $this->conf['delProdId'],
             $this->getFrontendController()->sys_language_uid
         );
@@ -774,7 +774,7 @@ class BasketController extends BaseController
     public function makePayment(array $basketArray = array())
     {
         $this->paymentProduct = GeneralUtility::makeInstance(
-            'CommerceTeam\\Commerce\\Domain\\Model\\Product',
+            \CommerceTeam\Commerce\Domain\Model\Product::class,
             $this->conf['payProdId'],
             $this->getFrontendController()->sys_language_uid
         );
@@ -925,7 +925,7 @@ class BasketController extends BaseController
                      * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attribute
                      */
                     $attribute = GeneralUtility::makeInstance(
-                        'CommerceTeam\\Commerce\\Domain\\Model\\Attribute',
+                        \CommerceTeam\Commerce\Domain\Model\Attribute::class,
                         $attributeUid,
                         $this->getFrontendController()->sys_language_uid
                     );

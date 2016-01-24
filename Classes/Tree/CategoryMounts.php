@@ -60,7 +60,7 @@ class CategoryMounts extends \CommerceTeam\Commerce\Tree\Leaf\Mounts
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
-                $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $id);
+                $category = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Category::class, $id);
                 $category->loadData();
 
                 $title = ($category->isPermissionSet('show') && $this->isInCommerceMounts($category->getUid())) ?
@@ -104,9 +104,9 @@ class CategoryMounts extends \CommerceTeam\Commerce\Tree\Leaf\Mounts
         /**
          * Category.
          *
-         *@var \CommerceTeam\Commerce\Domain\Model\Category
+         *@var \CommerceTeam\Commerce\Domain\Model\Category $category
          */
-        $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $categoryUid);
+        $category = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Category::class, $categoryUid);
         $category->loadData();
 
         $tmpCats = $category->getParentCategories();

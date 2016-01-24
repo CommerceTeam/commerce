@@ -125,7 +125,7 @@ class InvoiceController extends BaseController
          *
          * @var \TYPO3\CMS\Core\Charset\CharsetConverter
          */
-        $convert = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
+        $convert = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
 
         // If there is no order id, this plugin serves no pupose
         $this->order_id = $this->piVars['order_id'];
@@ -272,7 +272,7 @@ class InvoiceController extends BaseController
              * @var \TYPO3\CMS\Core\Messaging\ErrorpageMessage
              */
             $messageObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\ErrorpageMessage',
+                \TYPO3\CMS\Core\Messaging\ErrorpageMessage::class,
                 'Login-error',
                 'No user logged in! Sorry, I can\'t proceed then!'
             );
