@@ -259,8 +259,7 @@ class DataMapHooks
             $incomingFieldArray['create_new_scale_prices_count'] = 0;
 
             // get pid
-            $commercePid = FolderRepository::initFolders('Commerce', 'commerce');
-            $productPid = FolderRepository::initFolders('Products', 'commerce', $commercePid);
+            $productPid = \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid();
 
             // set some status vars
             $myScaleAmountStart = $pricesStartamount;

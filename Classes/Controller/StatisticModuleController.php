@@ -22,7 +22,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 /**
- * Module 'Statistics' for the 'commerce' extension.
+ * Module 'Statistics' for the COMMERCE_EXTKEY extension.
  *
  * Class \CommerceTeam\Commerce\Controller\StatisticModuleController
  *
@@ -101,16 +101,15 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
         $this->statistics = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\StatisticsUtility::class);
         $this->statistics->init((int) SettingsFactory::getInstance()->getExtConf('excludeStatisticFolders'));
 
+        $this->orderPageId = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid();
+
         /*
          * If we get an id via GP use this, else use the default id
          */
         $this->id = (int) GeneralUtility::_GP('id');
         if (!$this->id) {
-            \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
             $this->id = $this->orderPageId;
         }
-        $modPid = FolderRepository::initFolders('Commerce', 'commerce');
-        $this->orderPageId = FolderRepository::initFolders('Orders', 'commerce', $modPid);
 
         $this->doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $this->doc->backPath = $this->getBackPath();

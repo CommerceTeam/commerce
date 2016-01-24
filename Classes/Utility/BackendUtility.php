@@ -3089,16 +3089,35 @@ class BackendUtility
     }
 
     /**
-     * Returns the UID of the Product Folder.
+     * Returns the UID of the product folder.
      *
      * @return int UID
      */
     public static function getProductFolderUid()
     {
-        $modPid = FolderRepository::initFolders('Commerce', 'commerce');
-        $prodPid = FolderRepository::initFolders('Products', 'commerce', $modPid);
+        static $productPid = null;
 
-        return $prodPid;
+        if (is_null($productPid)) {
+            $productPid = FolderRepository::initFolders('Products', FolderRepository::initFolders('Commerce'));
+        }
+
+        return $productPid;
+    }
+
+    /**
+     * Returns the UID of the order folder.
+     *
+     * @return int UID
+     */
+    public static function getOrderFolderUid()
+    {
+        static $orderPid = null;
+
+        if (is_null($orderPid)) {
+            $orderPid = FolderRepository::initFolders('Orders', FolderRepository::initFolders('Commerce'));
+        }
+
+        return $orderPid;
     }
 
     /**

@@ -26,11 +26,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class FolderRepository
 {
     /**
-     * Find the extension folders or create one.
+     * Find the extension folders.
      *
-     * @param string $title Folder Title as named in pages table
-     * @param string $module Extension Moduke
+     * @param string $title Folder title as named in pages table
      * @param int $pid Parent Page id
+     * @param string $module Extension module
      * @param bool $parentTitle Deprecated parameter do not use it to create folders on the fly
      * @param bool $executeUpdateUtility Deprecated parameter
      *
@@ -38,28 +38,37 @@ class FolderRepository
      */
     public static function initFolders(
         $title = 'Commerce',
-        $module = 'commerce',
         $pid = 0,
+        $module = COMMERCE_EXTKEY,
         $parentTitle = false,
         $executeUpdateUtility = true
     ) {
         if ($parentTitle) {
             GeneralUtility::deprecationLog(
-                'Creating parent folder is not supported anymore. Please change your code to use createFolder'
+                'Creating parent folder is not supported anymore. Please change your code to use createFolder. Parameter will get removed in version 6.'
             );
+        }
+
+        if ($executeUpdateUtility) {
+            GeneralUtility::deprecationLog(
+                'Executing update utility is not supported anymore. Please change your code to call it on your own. Parameter will get removed in version 6.'
+            );
+        }
+
+        if (is_string($pid) && is_int($module)) {
+            GeneralUtility::deprecationLog(
+                'Parameter $pid and $module swapped position. Fallback handling will get removed in version 6.'
+            );
+            $temp = $pid;
+            $pid = $module;
+            $module = $temp;
+            unset($temp);
         }
 
         $folder = self::getFolder($module, $pid, $title);
         if (empty($folder)) {
             self::createFolder($title, $module, $pid);
             $folder = self::getFolder($module, $pid, $title);
-        }
-
-        // @todo move to FolderUtility
-        if ($executeUpdateUtility) {
-            GeneralUtility::deprecationLog(
-                'Executing update utility is not supported anymore. Please change your code to call it on your own'
-            );
         }
 
         return (int)$folder['uid'];
@@ -75,7 +84,7 @@ class FolderRepository
      * @return array rows of found extension folders
      * @deprecated since Version 5 will be removed in 6. Please use only getFolder instead
      */
-    public static function getFolders($module = 'commerce', $pid = 0, $title = '') {
+    public static function getFolders($module = COMMERCE_EXTKEY, $pid = 0, $title = '') {
         GeneralUtility::logDeprecatedFunction();
         $row = self::getFolder($module, $pid, $title);
         return isset($row['uid']) ? array($row['uid'] => $row) : array();
@@ -90,7 +99,7 @@ class FolderRepository
      *
      * @return array rows of found extension folders
      */
-    public static function getFolder($module = 'commerce', $pid = 0, $title = '')
+    public static function getFolder($module = COMMERCE_EXTKEY, $pid = 0, $title = '')
     {
         $row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
             'uid, pid, title',
@@ -111,16 +120,23 @@ class FolderRepository
      * @param int $pid Page id
      *
      * @return int
-     *
-     * @todo get title from extkey
-     * @todo sorting
      */
-    protected function createFolder($title = 'Commerce', $module = 'commerce', $pid = 0)
+    protected function createFolder($title = 'Commerce', $module = COMMERCE_EXTKEY, $pid = 0)
     {
+        $sorting = self::getDatabaseConnection()->exec_SELECTgetRows(
+            'sorting',
+            'pages',
+            'pid = ' . $pid,
+            '',
+            'sorting DESC',
+            1,
+            'sorting'
+        );
+
         self::getDatabaseConnection()->exec_INSERTquery(
             'pages',
             array(
-                'sorting' => 10111,
+                'sorting' => $sorting ? $sorting + 1 : 10111,
                 'perms_user' => 31,
                 'perms_group' => 31,
                 'perms_everybody' => 31,

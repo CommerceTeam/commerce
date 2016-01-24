@@ -117,9 +117,9 @@ class AttributeEditorUtility
          * Get PID to select only the Attribute Values in the correct PID
          */
         FolderUtility::initFolders();
-        $modPid = FolderRepository::initFolders('Commerce', 'commerce');
-        FolderRepository::initFolders('Products', 'commerce', $modPid);
-        $attrPid = FolderRepository::initFolders('Attributes', 'commerce', $modPid);
+        $modPid = FolderRepository::initFolders('Commerce');
+        FolderRepository::initFolders('Products', $modPid);
+        $attrPid = FolderRepository::initFolders('Attributes', $modPid);
 
         if ($aData['has_valuelist'] == 1) {
             $config['config'] = array(

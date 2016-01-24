@@ -17,11 +17,11 @@ namespace CommerceTeam\Commerce\Controller;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Module\BaseScriptClass;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
-use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 /**
  * Main script class for the systemData navigation frame.
@@ -90,16 +90,16 @@ class SystemdataNavigationFrameController extends BaseScriptClass
             'EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml'
         );
 
-        $this->id = FolderRepository::initFolders('Commerce', 'commerce');
+        $this->id = FolderRepository::initFolders('Commerce');
         if (!$this->id) {
             \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
-            $this->id = FolderRepository::initFolders('Commerce', 'commerce');
+            $this->id = FolderRepository::initFolders('Commerce');
         }
 
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
 
         $this->view = GeneralUtility::makeInstance(StandaloneView::class);
-        $this->view->getRequest()->setControllerExtensionName('commerce');
+        $this->view->getRequest()->setControllerExtensionName(COMMERCE_EXTKEY);
 
         $this->moduleTemplate->addJavaScriptCode('jumpToUrl', '
             function jumpTo(url, linkObj) {

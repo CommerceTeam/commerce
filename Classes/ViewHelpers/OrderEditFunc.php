@@ -372,8 +372,7 @@ class OrderEditFunc
         $data['items'] = array();
 
         // Find the right pid for the Ordersfolder
-        $modPid = FolderRepository::initFolders('Commerce', 'commerce');
-        $orderPid = FolderRepository::initFolders('Orders', 'commerce', $modPid);
+        $orderPid = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid();
 
         /*
          * Get the pages below $order_pid

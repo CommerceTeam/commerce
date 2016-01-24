@@ -1085,8 +1085,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
 
             // Find the right pid for the Ordersfolder
-            $modPid = FolderRepository::initFolders('Commerce', 'commerce');
-            $orderPid = FolderRepository::initFolders('Orders', 'commerce', $modPid);
+            $orderPid = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid();
 
             $orderFolders = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderSelector(
                 $orderPid,

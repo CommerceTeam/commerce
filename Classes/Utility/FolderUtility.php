@@ -46,15 +46,15 @@ class FolderUtility
          *
          * @todo Get list from Order folders from TS
          */
-        $modPid = FolderRepository::initFolders('Commerce', 'commerce');
-        $prodPid = FolderRepository::initFolders('Products', 'commerce', $modPid);
-        FolderRepository::initFolders('Attributes', 'commerce', $modPid);
+        $modPid = FolderRepository::initFolders('Commerce');
+        $prodPid = FolderRepository::initFolders('Products', $modPid);
+        FolderRepository::initFolders('Attributes', $modPid);
 
-        $orderPid = FolderRepository::initFolders('Orders', 'commerce', $modPid);
-        FolderRepository::initFolders('Incoming', 'commerce', $orderPid);
-        FolderRepository::initFolders('Working', 'commerce', $orderPid);
-        FolderRepository::initFolders('Waiting', 'commerce', $orderPid);
-        FolderRepository::initFolders('Delivered', 'commerce', $orderPid);
+        $orderPid = FolderRepository::initFolders('Orders', $modPid);
+        FolderRepository::initFolders('Incoming', $orderPid);
+        FolderRepository::initFolders('Working', $orderPid);
+        FolderRepository::initFolders('Waiting', $orderPid);
+        FolderRepository::initFolders('Delivered', $orderPid);
 
         // Create System Product for payment and other things.
         $now = time();

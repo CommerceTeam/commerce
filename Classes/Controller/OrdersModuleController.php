@@ -91,8 +91,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
             $this->id = 0;
         }
         // Find the right pid for the Ordersfolder
-        $modPid = FolderRepository::initFolders('Commerce', 'commerce');
-        $this->orderPid = FolderRepository::initFolders('Orders', 'commerce', $modPid);
+        $this->orderPid = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid();
         if ($this->id == $this->orderPid) {
             $this->id = 0;
         }

@@ -153,8 +153,8 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
      */
     public function init()
     {
-        $this->newRecordPid = $this->id = FolderRepository::initFolders('Commerce', 'commerce');
-        $this->attributePid = FolderRepository::initFolders('Attributes', 'commerce', $this->id);
+        $this->newRecordPid = $this->id = FolderRepository::initFolders('Commerce');
+        $this->attributePid = FolderRepository::initFolders('Attributes', $this->id);
         $this->popView = GeneralUtility::_GP('popView');
 
         $this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);

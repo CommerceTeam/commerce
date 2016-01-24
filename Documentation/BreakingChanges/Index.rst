@@ -67,6 +67,8 @@ which need name, please copy it from the 4.0.0 tag.
 Changed
 _______
 All modules are now useing the core ModuleTemplate api.
-FolderRepository::initFolders now returns only the pid as integer of for the parameter given not the parents in an array
-FolderRepository::initFolders does not create folders magicaly anymore. Please create it using FolderRepository::createFolder
-FolderRepository::initFolders does not call the update utility anymore. Please call it on your own
+FolderRepository::initFolders
+ - now returns only the pid as integer of for the parameter given not the parents in an array.
+ - does not create folders magicaly anymore. Please create it using FolderRepository::createFolder.
+ - does not call the update utility anymore. Please call it on your own.
+ - parameter $module and $pid changes position in method call. Fallback handling will be dropped in version 6

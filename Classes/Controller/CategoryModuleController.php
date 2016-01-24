@@ -88,8 +88,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         if (!$this->id) {
             // @todo move init folder somewhere else as its to hefty to try to create the folders over and over again
             \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
-            $modPid = FolderRepository::initFolders('Commerce', 'commerce');
-            $this->id = FolderRepository::initFolders('Products', 'commerce', $modPid);
+            $this->id = \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid();
         }
 
         // Initialize the listing object, dblist, for rendering the list:

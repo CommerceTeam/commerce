@@ -102,8 +102,7 @@ class PermissionModuleController extends \TYPO3\CMS\Beuser\Controller\Permission
         if (!$this->id) {
             // @todo move init folder somewhere else as its to hefty to try to create the folders over and over again
             \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
-            $modPid = FolderRepository::initFolders('Commerce', 'commerce');
-            $this->id = FolderRepository::initFolders('Products', 'commerce', $modPid);
+            $this->id = \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid();
         }
 
         $this->edit = GeneralUtility::_GP('edit');
@@ -235,9 +234,8 @@ class PermissionModuleController extends \TYPO3\CMS\Beuser\Controller\Permission
         $buttonBar = $this->moduleTemplate->getDocHeaderComponent()->getButtonBar();
         $getVars = $this->request->getQueryParams();
 
-        $extensionName = 'commerce';
         if (empty($getVars)) {
-            $modulePrefix = strtolower('tx_' . $extensionName . '_' . $this->moduleName);
+            $modulePrefix = strtolower('tx_commerce_' . $this->moduleName);
             $getVars = array('id', 'M', $modulePrefix);
         }
         $shortcutButton = $buttonBar->makeShortcutButton()
@@ -249,9 +247,9 @@ class PermissionModuleController extends \TYPO3\CMS\Beuser\Controller\Permission
             $iconFactory = $this->moduleTemplate->getIconFactory();
             $viewButton = $buttonBar->makeLinkButton()
                 ->setOnClick(BackendUtility::viewOnClick(
-                    $this->pageInfo['uid'],
+                    (int) $this->pageInfo['uid'],
                     '',
-                    BackendUtility::BEgetRootLine($this->pageInfo['uid'])
+                    BackendUtility::BEgetRootLine((int) $this->pageInfo['uid'])
                 ))
                 ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.showPage'))
                 ->setIcon($iconFactory->getIcon('actions-document-view', Icon::SIZE_SMALL))

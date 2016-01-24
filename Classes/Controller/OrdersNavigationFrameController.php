@@ -129,10 +129,9 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
         $this->pagetree->addField('url');
 
         // Temporary DB mounts:
-        // @todo fix this
-        $modPid = FolderRepository::initFolders('Commerce', 'commerce');
-        $this->pagetree->MOUNTS = array_unique(
-            FolderRepository::initFolders('Orders', 'commerce', $modPid)
+        // @todo fix this to match expectations of MOUNTS
+        $this->pagetree->MOUNTS = array(
+            \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid()
         );
         $this->initializeTemporaryDatabaseMount();
 
@@ -357,6 +356,16 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
     protected function getLanguageService()
     {
         return $GLOBALS['LANG'];
+    }
+
+    /**
+     * Get database connection.
+     *
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
     }
 
     /**

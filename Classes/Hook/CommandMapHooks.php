@@ -576,16 +576,11 @@ class CommandMapHooks
      */
     protected function getLocale()
     {
-        $commercePid = FolderRepository::initFolders('Commerce', 'commerce');
-        $productPid = FolderRepository::initFolders('Products', 'commerce', $commercePid);
-
-        $database = $this->getDatabaseConnection();
-
         $locale = array_keys(
-            (array) $database->exec_SELECTgetRows(
+            (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
                 'sys_language_uid',
                 'pages_language_overlay',
-                'pid = ' . $productPid,
+                'pid = ' . \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid(),
                 '',
                 '',
                 '',
