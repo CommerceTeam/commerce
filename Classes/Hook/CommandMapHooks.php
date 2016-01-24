@@ -576,8 +576,8 @@ class CommandMapHooks
      */
     protected function getLocale()
     {
-        list($commercePid) = FolderRepository::initFolders('Commerce', 'commerce');
-        list($productPid) = FolderRepository::initFolders('Products', 'commerce', $commercePid);
+        $commercePid = FolderRepository::initFolders('Commerce', 'commerce');
+        $productPid = FolderRepository::initFolders('Products', 'commerce', $commercePid);
 
         $database = $this->getDatabaseConnection();
 

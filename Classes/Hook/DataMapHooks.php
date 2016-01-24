@@ -259,8 +259,8 @@ class DataMapHooks
             $incomingFieldArray['create_new_scale_prices_count'] = 0;
 
             // get pid
-            list($commercePid) = FolderRepository::initFolders('Commerce', 'commerce');
-            list($productPid) = FolderRepository::initFolders('Products', 'commerce', $commercePid);
+            $commercePid = FolderRepository::initFolders('Commerce', 'commerce');
+            $productPid = FolderRepository::initFolders('Products', 'commerce', $commercePid);
 
             // set some status vars
             $myScaleAmountStart = $pricesStartamount;
@@ -368,10 +368,7 @@ class DataMapHooks
                     }
 
                     foreach ($hooks as $hookObj) {
-                        if (method_exists($hookObj, 'moveOrders_preMoveOrder')) {
-                            // @deprecated This method call gets removed in 5.0.0
-                            $hookObj->moveOrders_preMoveOrder($order, $incomingFieldArray);
-                        } elseif (method_exists($hookObj, 'moveOrdersPreMoveOrder')) {
+                        if (method_exists($hookObj, 'moveOrdersPreMoveOrder')) {
                             $hookObj->moveOrdersPreMoveOrder($order, $incomingFieldArray);
                         }
                     }
@@ -406,10 +403,7 @@ class DataMapHooks
                     $database->exec_UPDATEquery('tx_commerce_orders', 'uid = ' . $order['uid'], $order);
 
                     foreach ($hooks as $hookObj) {
-                        if (method_exists($hookObj, 'moveOrders_postMoveOrder')) {
-                            // @deprecated This method call gets removed in 5.0.0
-                            $hookObj->moveOrders_postMoveOrder($order, $incomingFieldArray);
-                        } elseif (method_exists($hookObj, 'moveOrdersPostMoveOrder')) {
+                        if (method_exists($hookObj, 'moveOrdersPostMoveOrder')) {
                             $hookObj->moveOrdersPostMoveOrder($order, $incomingFieldArray);
                         }
                     }

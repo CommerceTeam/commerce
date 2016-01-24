@@ -27,7 +27,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * \CommerceTeam\Commerce\Utility\FolderUtility::methodname
  *
  * Creation of tx_commerce_basic folders
- * call: tx_commerce_create_folder::initFolders()
  *
  * Class \CommerceTeam\Commerce\Utility\FolderUtility
  *
@@ -47,11 +46,11 @@ class FolderUtility
          *
          * @todo Get list from Order folders from TS
          */
-        list($modPid) = FolderRepository::initFolders('Commerce', 'commerce');
-        list($prodPid) = FolderRepository::initFolders('Products', 'commerce', $modPid);
+        $modPid = FolderRepository::initFolders('Commerce', 'commerce');
+        $prodPid = FolderRepository::initFolders('Products', 'commerce', $modPid);
         FolderRepository::initFolders('Attributes', 'commerce', $modPid);
 
-        list($orderPid) = FolderRepository::initFolders('Orders', 'commerce', $modPid);
+        $orderPid = FolderRepository::initFolders('Orders', 'commerce', $modPid);
         FolderRepository::initFolders('Incoming', 'commerce', $orderPid);
         FolderRepository::initFolders('Working', 'commerce', $orderPid);
         FolderRepository::initFolders('Waiting', 'commerce', $orderPid);
@@ -68,7 +67,7 @@ class FolderUtility
         $res = $database->exec_SELECTquery(
             'uid',
             'tx_commerce_categories',
-            'uname = \'SYSTEM\' AND parent_category = \'\' AND deleted = 0'
+            'uname = "SYSTEM" AND parent_category = "" AND deleted = 0'
         );
         $catUid = $database->sql_fetch_assoc($res);
         $catUid = $catUid['uid'];
@@ -87,6 +86,14 @@ class FolderUtility
                 self::makeSystemCatsProductsArtcilesAndPrices($catUid, strtoupper($type), $addArray);
             }
         }
+
+        /**
+         * Update utility.
+         *
+         * @var \CommerceTeam\Commerce\Utility\UpdateUtility $updateUtility
+         */
+        $updateUtility = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\UpdateUtility::class);
+        $updateUtility->main();
     }
 
     /**

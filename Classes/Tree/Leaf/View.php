@@ -188,7 +188,7 @@ class View extends Base
         } else {
             $this->backPath = $rootPathT3 . TYPO3_mainDir;
         }
-        $this->iconPath = $this->backPath . PATH_TXCOMMERCE_ICON_TREE_REL;
+        $this->iconPath = $this->backPath . PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/';
     }
 
     /**

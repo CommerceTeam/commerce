@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
@@ -1084,12 +1085,8 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
 
             // Find the right pid for the Ordersfolder
-            $orderPid = current(array_unique(\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders(
-                'Orders',
-                'Commerce',
-                0,
-                'Commerce'
-            )));
+            $modPid = FolderRepository::initFolders('Commerce', 'commerce');
+            $orderPid = FolderRepository::initFolders('Orders', 'commerce', $modPid);
 
             $orderFolders = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderSelector(
                 $orderPid,

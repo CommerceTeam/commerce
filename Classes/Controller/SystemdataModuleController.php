@@ -21,6 +21,7 @@ use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
@@ -43,7 +44,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
     /**
      * @var int
      */
-    public $page_id = 0;
+    public $id = 0;
 
     /**
      * Page record.
@@ -57,7 +58,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
      *
      * @var int
      */
-    public $modPid;
+    public $newRecordPid;
 
     /**
      * Attribute page id.
@@ -109,6 +110,11 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
     public $content;
 
     /**
+     * @var IconFactory
+     */
+    protected $iconFactory;
+
+    /**
      * The name of the module
      *
      * @var string
@@ -129,10 +135,12 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
      */
     public function __construct()
     {
+        $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->getLanguageService()->includeLLFile(
             'EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml'
         );
+
         $this->MCONF = array(
             'name' => $this->moduleName,
         );
@@ -145,12 +153,12 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
      */
     public function init()
     {
-        $this->page_id = $this->modPid = (int) reset(FolderRepository::initFolders('Commerce', 'commerce'));
-        $this->attributePid = (int) reset(FolderRepository::initFolders('Attributes', 'commerce', $this->modPid));
+        $this->newRecordPid = $this->id = FolderRepository::initFolders('Commerce', 'commerce');
+        $this->attributePid = FolderRepository::initFolders('Attributes', 'commerce', $this->id);
         $this->popView = GeneralUtility::_GP('popView');
 
         $this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);
-        $this->pageinfo = BackendUtility::readPageAccess($this->page_id, $this->perms_clause);
+        $this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
 
         $this->menuConfig();
     }
@@ -184,7 +192,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
         $access = is_array($this->pageinfo) ? 1 : 0;
 
         $content = '';
-        if ($this->page_id && $access) {
+        if ($this->id && $access) {
             // JavaScript
             $this->moduleTemplate->addJavaScriptCode('jumpToUrl', '
                 function jumpToUrl(URL,formEl) {
@@ -203,13 +211,13 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 
             $this->moduleTemplate->addJavaScriptCode('mainJsFunctions', '
                 if (top.fsMod) {
-                    top.fsMod.recentIds["web"] = ' . (int)$this->page_id . ';
-                    top.fsMod.navFrameHighlightedID["web"] = "pages' . (int)$this->page_id .
-                        '_"+top.fsMod.currentBank; ' . (int)$this->page_id . ';
+                    top.fsMod.recentIds["web"] = ' . (int)$this->id . ';
+                    top.fsMod.navFrameHighlightedID["web"] = "pages' . (int)$this->id .
+                        '_"+top.fsMod.currentBank; ' . (int)$this->id . ';
                 }
                 ' . (
                     $this->popView ?
-                    BackendUtility::viewOnClick($this->page_id, '', BackendUtility::BEgetRootLine($this->page_id)) :
+                    BackendUtility::viewOnClick($this->id, '', BackendUtility::BEgetRootLine($this->id)) :
                     ''
                 ) . '
                 function deleteRecord(table,id,url) {   //
@@ -231,7 +239,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
         } else {
             $this->moduleTemplate->addJavaScriptCode(
                 'mainJsFunctions',
-                'if (top.fsMod) top.fsMod.recentIds["web"] = ' . (int)$this->page_id . ';'
+                'if (top.fsMod) top.fsMod.recentIds["web"] = ' . (int)$this->id . ';'
             );
 
             $content .= '<h1>' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] . '</h1>';
@@ -273,9 +281,9 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
         }
 
         // Add CSH (Context Sensitive Help) icon to tool bar
-        if (!strlen($this->page_id)) {
+        if (!strlen($this->id)) {
             $cshKey = 'list_module_noId';
-        } elseif (!$this->page_id) {
+        } elseif (!$this->id) {
             $cshKey = 'list_module_root';
         } else {
             $cshKey = 'list_module';
@@ -288,10 +296,10 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
         // New
         $onClick = 'return jumpExt(' . GeneralUtility::quoteJSvalue(
             BackendUtility::getModuleUrl('db_new', [
-                'id' => $this->page_id,
+                'id' => $this->id,
                 'edit' => array(
                     'tx_commerce_' . $this->tableForNewLink => array(
-                        $this->modPid => 'new'
+                        $this->newRecordPid => 'new'
                     )
                 )
             ])
@@ -334,7 +342,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 
             case '1':
             default:
-                $this->modPid = $this->attributePid;
+                $this->newRecordPid = $this->attributePid;
                 $content = $this->getAttributeListing();
         }
 
@@ -724,7 +732,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
         return $this->getDatabaseConnection()->exec_SELECTquery(
             '*',
             $table,
-            'pid = ' . (int) $this->modPid . ' AND hidden = 0 AND deleted = 0',
+            'pid = ' . (int) $this->newRecordPid . ' AND hidden = 0 AND deleted = 0',
             '',
             'title'
         );

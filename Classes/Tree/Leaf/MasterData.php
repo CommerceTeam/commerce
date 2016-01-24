@@ -256,28 +256,22 @@ abstract class MasterData extends Data
             $this->where['uid'] = $subquery;
         }
 
-        // Hook: getRecordsByMountpoints_preLoadRecords
+        // Hook: getRecordsByMountpointsPreLoadRecords
         foreach ($hooks as $hookObj) {
-            if (method_exists($hookObj, 'getRecordsByMountpoints_preLoadRecords')) {
-                // @deprecated This method call gets removed in 5.0.0
-                $hookObj->getRecordsByMountpoints_preLoadRecords($positions, $this);
-            } elseif (method_exists($hookObj, 'getRecordsByMountpointsPreLoadRecords')) {
+            if (method_exists($hookObj, 'getRecordsByMountpointsPreLoadRecords')) {
                 $hookObj->getRecordsByMountpointsPreLoadRecords($positions, $this);
             }
         }
 
         $records = $this->loadRecords();
 
-        // Hook: getRecordsByMountpoints_postProcessRecords
+        // Hook: getRecordsByMountpointsPostProcessRecords
         // useful especially if you are reading your tree items from an MM table and
         // have the mountpoint 0 - that mountpoint is not in the DB and thus you won't
         // see the correct tree if you belong to that group, use this mount to create
         // the relations in the MM table to the fictional root record
         foreach ($hooks as $hookObj) {
-            if (method_exists($hookObj, 'getRecordsByMountpoints_postProcessRecords')) {
-                // @deprecated This method call gets removed in 5.0.0
-                $hookObj->getRecordsByMountpoints_postProcessRecords($records, $this);
-            } elseif (method_exists($hookObj, 'getRecordsByMountpointsPostProcessRecords')) {
+            if (method_exists($hookObj, 'getRecordsByMountpointsPostProcessRecords')) {
                 $hookObj->getRecordsByMountpointsPostProcessRecords($records, $this);
             }
         }

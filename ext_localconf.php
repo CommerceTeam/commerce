@@ -23,10 +23,6 @@ $boot = function ($packageKey) {
         define('PATH_TXCOMMERCE_ICON_TABLE_REL', PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/');
     }
 
-    if (!defined('PATH_TXCOMMERCE_ICON_TREE_REL')) {
-        define('PATH_TXCOMMERCE_ICON_TREE_REL', PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/');
-    }
-
     // Define special article types
     define('NORMALARTICLETYPE', 1);
     define('PAYMENTARTICLETYPE', 2);
@@ -39,7 +35,7 @@ $boot = function ($packageKey) {
         unserialize($typo3ConfVars['EXT']['extConf'][$packageKey]);
 
     // Payment settings
-    $typo3ConfVars['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT'] = array(
+    $typo3ConfVars['EXT']['extConf'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT'] = array(
         'tablefields' => array(
             'title' => 'SYSTEMPRODUCT_PAYMENT',
             'description' => 'Products to manage payment',
@@ -72,13 +68,13 @@ $boot = function ($packageKey) {
     );
 
     // Delivery settings
-    $typo3ConfVars['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY'] = array(
+    $typo3ConfVars['EXT']['extConf'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY'] = array(
         'tablefields' => array(
             'title' => 'SYSTEMPRODUCT_DELIVERY',
             'description' => 'product zum Verwalten der Lieferarten',
         ),
     );
-    $typo3ConfVars['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY']['types'] = array(
+    $typo3ConfVars['EXT']['extConf'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY']['types'] = array(
         'sysdelivery' => array(
             'type' => DELIVERYARTICLETYPE,
         ),

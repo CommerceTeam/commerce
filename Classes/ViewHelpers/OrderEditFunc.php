@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository;
 use CommerceTeam\Commerce\Domain\Repository\OrderRepository;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
@@ -371,9 +372,8 @@ class OrderEditFunc
         $data['items'] = array();
 
         // Find the right pid for the Ordersfolder
-        list($orderPid) = array_unique(
-            \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')
-        );
+        $modPid = FolderRepository::initFolders('Commerce', 'commerce');
+        $orderPid = FolderRepository::initFolders('Orders', 'commerce', $modPid);
 
         /*
          * Get the pages below $order_pid

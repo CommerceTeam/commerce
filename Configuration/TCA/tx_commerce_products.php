@@ -13,6 +13,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+$languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:';
+
 /**
  * Dynamic config file for tx_commerce_products.
  *
@@ -20,7 +22,7 @@
  */
 $GLOBALS['TCA']['tx_commerce_products'] = array(
     'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products',
+        'title' => $languageFile . 'tx_commerce_products',
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -140,7 +142,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         ),
         'title' => array(
             'exclude' => 0,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.title',
+            'label' => $languageFile . 'tx_commerce_products.title',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -150,7 +152,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         ),
         'subtitle' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.subtitle',
+            'label' => $languageFile . 'tx_commerce_products.subtitle',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -160,7 +162,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         ),
         'navtitle' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.navtitle',
+            'label' => $languageFile . 'tx_commerce_products.navtitle',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -170,7 +172,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         ),
         'keywords' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.keywords',
+            'label' => $languageFile . 'tx_commerce_products.keywords',
             'config' => array(
                 'type' => 'text',
                 'cols' => '30',
@@ -179,7 +181,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         ),
         'description' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.description',
+            'label' => $languageFile . 'tx_commerce_products.description',
             'config' => array(
                 'type' => 'text',
                 'cols' => '30',
@@ -201,7 +203,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         ),
         'images' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.images',
+            'label' => $languageFile . 'tx_commerce_products.images',
             'l10n_mode' => 'mergeIfNotBlank',
             'config' => array(
                 'type' => 'group',
@@ -218,7 +220,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         ),
         'teaser' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.teaser',
+            'label' => $languageFile . 'tx_commerce_products.teaser',
             'config' => array(
                 'type' => 'text',
                 'cols' => '30',
@@ -240,7 +242,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         ),
         'teaserimages' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.teaserimages',
+            'label' => $languageFile . 'tx_commerce_products.teaserimages',
             'l10n_mode' => 'mergeIfNotBlank',
             'config' => array(
                 'type' => 'group',
@@ -258,7 +260,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         'categories' => array(
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.categories',
+            'label' => $languageFile . 'tx_commerce_products.categories',
             'config' => array(
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -276,7 +278,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 
         'manufacturer_uid' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.title',
+            'label' => $languageFile . 'tx_commerce_manufacturer.title',
             'l10n_mode' => 'exclude',
             'config' => array(
                 'type' => 'select',
@@ -284,7 +286,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
                 'foreign_table_where' => 'ORDER BY tx_commerce_manufacturer.title ASC',
                 'items' => array(
                     array(
-                        'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.noManufacturer',
+                        $languageFile . 'tx_commerce_products.noManufacturer',
                         0
                     ),
                 ),
@@ -293,7 +295,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         'relatedpage' => array(
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.relatedpage',
+            'label' => $languageFile . 'tx_commerce_products.relatedpage',
             'config' => array(
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -306,7 +308,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         'relatedproducts' => array(
             'exclude' => 1,
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.relatedproducts',
+                $languageFile . 'tx_commerce_products.relatedproducts',
             'config' => array(
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -320,7 +322,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         ),
         'attributes' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.attributes',
+            'label' => $languageFile . 'tx_commerce_products.attributes',
             'config' => array(
                 'type' => 'flex',
                 'ds' => array(
@@ -339,7 +341,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         'attributesedit' => array(
             'exclude' => 1,
             'l10n_display' => 'hideDiff',
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.attributes',
+            'label' => $languageFile . 'tx_commerce_products.attributes',
             'config' => array(
                 'type' => 'flex',
                 'ds' => array(
@@ -357,7 +359,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
         ),
         'articles' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.articles',
+            'label' => $languageFile . 'tx_commerce_products.articles',
             'config' => array(
                 'type' => 'flex',
                 'ds' => array(
@@ -370,38 +372,16 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 		<sEXISTING>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.existing_articles</sheetTitle>
+					<sheetTitle>' . $languageFile . 'tx_commerce_products.existing_articles</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
 					<existingArticles>
 						<TCEforms>
 							<config>
-								<!--<type>inline</type>
-								<foreign_field>uid_product</foreign_field>
-								<foreign_label>title</foreign_label>
-								<foreign_sortby>sorting</foreign_sortby>
-								<appearance>
-									<collapseAll>TRUE</collapseAll>
-									<expandSingle>TRUE</expandSingle>
-									<useSortable>TRUE</useSortable>
-									<levelLinksPosition>none</levelLinksPosition>
-									<showPossibleLocalizationRecords>FALSE</showPossibleLocalizationRecords>
-									<showRemovedLocalizationRecords>FALSE</showRemovedLocalizationRecords>
-									<showSynchronizationLink>FALSE</showSynchronizationLink>
-									<showAllLocalizationLink></showAllLocalizationLink>
-									<enabledControls>
-										<info>FALSE</info>
-										<new>FALSE</new>
-										<dragdrop>TRUE</dragdrop>
-										<sort>TRUE</sort>
-										<hide>TRUE</hide>
-										<delete>TRUE</delete>
-										<localize>FALSE</localize>
-									</enabledControls>
-								</appearance>-->
 								<type>user</type>
-								<userFunc>CommerceTeam\\Commerce\\Utility\\ArticleCreatorUtility->existingArticles</userFunc>
+								<userFunc>' . \CommerceTeam\Commerce\Utility\ArticleCreatorUtility::class .
+                        '->existingArticles</userFunc>
 							</config>
 						</TCEforms>
 					</existingArticles>
@@ -411,7 +391,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 		<sCREATE>
 			<ROOT>
 				<TCEforms>
-				<sheetTitle>LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.producible_articles</sheetTitle>
+				<sheetTitle>' . $languageFile . 'tx_commerce_products.producible_articles</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
@@ -419,7 +399,8 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 						<TCEforms>
 							<config>
 								<type>user</type>
-								<userFunc>CommerceTeam\\Commerce\\Utility\\ArticleCreatorUtility->producibleArticles</userFunc>
+								<userFunc>' . \CommerceTeam\Commerce\Utility\ArticleCreatorUtility::class .
+                        '->producibleArticles</userFunc>
 							</config>
 						</TCEforms>
 					</producibleArticles>
@@ -434,7 +415,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 
         'articleslok' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.articleslok',
+            'label' => $languageFile . 'tx_commerce_products.articleslok',
             'config' => array(
                 'type' => 'flex',
                 'ds' => array(
@@ -447,7 +428,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 		<sEXISTING>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.existing_articles</sheetTitle>
+					<sheetTitle>' . $languageFile . 'tx_commerce_products.existing_articles</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
@@ -455,7 +436,8 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 						<TCEforms>
 							<config>
 								<type>user</type>
-								<userFunc>CommerceTeam\\Commerce\\Utility\\ArticleCreatorUtility->existingArticles</userFunc>
+								<userFunc>' . \CommerceTeam\Commerce\Utility\ArticleCreatorUtility::class .
+                        '->existingArticles</userFunc>
 							</config>
 						</TCEforms>
 					</existingArticles>
@@ -500,7 +482,7 @@ if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][COMMERCE_EXTKEY]['simple
     && $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][COMMERCE_EXTKEY]['simpleMode']) {
     $GLOBALS['TCA']['tx_commerce_products']['columns']['articles'] = array(
         'exclude' => 1,
-        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.articles',
+        'label' => $languageFile . 'tx_commerce_products.articles',
         'config' => array(
             'type' => 'inline',
             'foreign_table' => 'tx_commerce_articles',

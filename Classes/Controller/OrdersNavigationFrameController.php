@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -112,6 +113,7 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
         $this->setTemporaryDatabaseMount = GeneralUtility::_GP('setTempDBmount');
 
         // Generate Folder if necessary
+        // @todo move init folder somewhere else as its to hefty to try to create the folders over and over again
         \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
 
         // Create page tree object:
@@ -127,8 +129,10 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
         $this->pagetree->addField('url');
 
         // Temporary DB mounts:
+        // @todo fix this
+        $modPid = FolderRepository::initFolders('Commerce', 'commerce');
         $this->pagetree->MOUNTS = array_unique(
-            \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')
+            FolderRepository::initFolders('Orders', 'commerce', $modPid)
         );
         $this->initializeTemporaryDatabaseMount();
 

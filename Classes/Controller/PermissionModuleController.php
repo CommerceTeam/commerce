@@ -100,10 +100,10 @@ class PermissionModuleController extends \TYPO3\CMS\Beuser\Controller\Permission
         // Setting GPvars:
         $this->id = (int) GeneralUtility::_GP('id');
         if (!$this->id) {
+            // @todo move init folder somewhere else as its to hefty to try to create the folders over and over again
             \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
-            $this->id = current(
-                array_unique(FolderRepository::initFolders('Products', 'Commerce', 0, 'Commerce'))
-            );
+            $modPid = FolderRepository::initFolders('Commerce', 'commerce');
+            $this->id = FolderRepository::initFolders('Products', 'commerce', $modPid);
         }
 
         $this->edit = GeneralUtility::_GP('edit');

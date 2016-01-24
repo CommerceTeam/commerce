@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\Utility;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 
 /**
  * Update Class for DB Updates of version 0.11.0.
@@ -122,20 +123,8 @@ class UpdateUtility
         /*
          * Get data from folder
          */
-        list($modPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders(
-            'Commerce',
-            'commerce',
-            0,
-            '',
-            false
-        );
-        list($prodPid) = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders(
-            'Products',
-            'commerce',
-            $modPid,
-            '',
-            false
-        );
+        $modPid = FolderRepository::initFolders('Commerce', 'commerce');
+        $prodPid = FolderRepository::initFolders('Products', 'commerce', $modPid);
         $resrights = $database->exec_SELECTquery(
             'perms_userid, perms_groupid, perms_user, perms_group, perms_everybody',
             'pages',

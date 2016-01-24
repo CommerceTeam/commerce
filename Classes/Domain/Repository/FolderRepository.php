@@ -31,45 +31,38 @@ class FolderRepository
      * @param string $title Folder Title as named in pages table
      * @param string $module Extension Moduke
      * @param int $pid Parent Page id
-     * @param string $parentTitle Parent Folder Title
-     * @param bool $executeUpdateUtility Execute update utility
+     * @param bool $parentTitle Deprecated parameter do not use it to create folders on the fly
+     * @param bool $executeUpdateUtility Deprecated parameter
      *
-     * @return array
+     * @return int
      */
     public static function initFolders(
         $title = 'Commerce',
         $module = 'commerce',
         $pid = 0,
-        $parentTitle = '',
+        $parentTitle = false,
         $executeUpdateUtility = true
     ) {
-        // creates a Commerce folder on the fly
-        // not really a clean way ...
         if ($parentTitle) {
-            $parentFolders = self::getFolders($module, $pid, $parentTitle);
-            $currentParentFolders = current($parentFolders);
-            $pid = $currentParentFolders['uid'];
+            GeneralUtility::deprecationLog(
+                'Creating parent folder is not supported anymore. Please change your code to use createFolder'
+            );
         }
 
-        $folders = self::getFolders($module, $pid, $title);
-        if (empty($folders)) {
+        $folder = self::getFolder($module, $pid, $title);
+        if (empty($folder)) {
             self::createFolder($title, $module, $pid);
-            $folders = self::getFolders($module, $pid, $title);
+            $folder = self::getFolder($module, $pid, $title);
         }
 
-        $currentFolder = current($folders);
-
+        // @todo move to FolderUtility
         if ($executeUpdateUtility) {
-            /**
-             * Update utility.
-             *
-             * @var \CommerceTeam\Commerce\Utility\UpdateUtility $updateUtility
-             */
-            $updateUtility = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\UpdateUtility::class);
-            $updateUtility->main();
+            GeneralUtility::deprecationLog(
+                'Executing update utility is not supported anymore. Please change your code to call it on your own'
+            );
         }
 
-        return array($currentFolder['uid'], implode(',', array_keys($folders)));
+        return (int)$folder['uid'];
     }
 
     /**
@@ -80,8 +73,24 @@ class FolderRepository
      * @param string $title Title
      *
      * @return array rows of found extension folders
+     * @deprecated since Version 5 will be removed in 6. Please use only getFolder instead
      */
-    public static function getFolders($module = 'commerce', $pid = 0, $title = '')
+    public static function getFolders($module = 'commerce', $pid = 0, $title = '') {
+        GeneralUtility::logDeprecatedFunction();
+        $row = self::getFolder($module, $pid, $title);
+        return isset($row['uid']) ? array($row['uid'] => $row) : array();
+    }
+
+    /**
+     * Find folder by module and title takes pid into account.
+     *
+     * @param string $module Module
+     * @param int $pid Page id
+     * @param string $title Title
+     *
+     * @return array rows of found extension folders
+     */
+    public static function getFolder($module = 'commerce', $pid = 0, $title = '')
     {
         $row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
             'uid, pid, title',
@@ -90,7 +99,7 @@ class FolderRepository
             ' AND module=\'' . $module . '\' ' . \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('pages')
         );
 
-        return isset($row['uid']) ? array($row['uid'] => $row) : array();
+        return (array) $row;
     }
 
     /**

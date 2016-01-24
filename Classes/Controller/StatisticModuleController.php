@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
@@ -100,21 +101,19 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
         $this->statistics = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\StatisticsUtility::class);
         $this->statistics->init((int) SettingsFactory::getInstance()->getExtConf('excludeStatisticFolders'));
 
-        $this->orderPageId = current(array_unique(
-            \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce')
-        ));
-
         /*
          * If we get an id via GP use this, else use the default id
          */
         $this->id = (int) GeneralUtility::_GP('id');
         if (!$this->id) {
+            \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
             $this->id = $this->orderPageId;
         }
+        $modPid = FolderRepository::initFolders('Commerce', 'commerce');
+        $this->orderPageId = FolderRepository::initFolders('Orders', 'commerce', $modPid);
 
         $this->doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $this->doc->backPath = $this->getBackPath();
-        $this->doc->docType = 'xhtml_trans';
         $this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
 
         $this->doc->form = '<form action="" method="POST" name="editform">';
@@ -178,6 +177,8 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
         $this->pageinfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($this->id, $this->perms_clause);
         $access = is_array($this->pageinfo);
 
+        $this->content = $this->doc->header($language->getLL('statistic'));
+
         // Checking access:
         if (($this->id && $access) || $backendUser->isAdmin()) {
             // Render content:
@@ -202,12 +203,6 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
                 $this->MOD_MENU['function']
             )
         );
-
-        // put it all together
-        $this->content = $this->doc->startPage($language->getLL('statistic'));
-        $this->content .= $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
-        $this->content .= $this->doc->endPage();
-        $this->content = $this->doc->insertStylesAndJS($this->content);
     }
 
     /**

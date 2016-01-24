@@ -86,10 +86,13 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
     {
         // Setting GPvars:
         $this->id = (int) GeneralUtility::_GP('id');
+        if (!$this->id) {
+            \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
+            $this->id = 0;
+        }
         // Find the right pid for the Ordersfolder
-        $this->orderPid = current(
-            array_unique(FolderRepository::initFolders('Orders', 'Commerce', 0, 'Commerce'))
-        );
+        $modPid = FolderRepository::initFolders('Commerce', 'commerce');
+        $this->orderPid = FolderRepository::initFolders('Orders', 'commerce', $modPid);
         if ($this->id == $this->orderPid) {
             $this->id = 0;
         }
@@ -481,9 +484,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
         );
 
         // Build the <body> for the module
-        $this->content = $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
-        // Renders the module page
-        $this->content = $this->doc->render('DB list', $this->content);
+        $this->content = $this->body;
     }
 
     /**

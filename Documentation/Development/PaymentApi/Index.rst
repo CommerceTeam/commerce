@@ -22,4 +22,4 @@ The basic structure is like this:
 - Like a payment type, a provider can have multiple criteria, if all criteria return true for a specific provider, the provider is selected as payment provider of the chosen payment type.
 
 
-See the default $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT'] in ext_localconf.php for example configuration and settings.
+See the default $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT'] in ext_localconf.php for example configuration and settings.

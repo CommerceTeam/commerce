@@ -3095,8 +3095,8 @@ class BackendUtility
      */
     public static function getProductFolderUid()
     {
-        list($modPid) = FolderRepository::initFolders('Commerce', 'commerce');
-        list($prodPid) = FolderRepository::initFolders('Products', 'commerce', $modPid);
+        $modPid = FolderRepository::initFolders('Commerce', 'commerce');
+        $prodPid = FolderRepository::initFolders('Products', 'commerce', $modPid);
 
         return $prodPid;
     }

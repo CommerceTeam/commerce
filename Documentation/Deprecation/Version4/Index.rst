@@ -8,8 +8,8 @@
 
 .. _emails:
 
-Deprecated sind 4.x
-===================
+Deprecated since 4.x
+====================
 
 The tx_graytree_foldername field should not be used anymore. Instead the field tx_commerce_foldername was integrated. Until June
 2016 an update helps to migrate the values.

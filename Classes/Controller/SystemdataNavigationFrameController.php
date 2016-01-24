@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Module\BaseScriptClass;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
@@ -89,10 +90,11 @@ class SystemdataNavigationFrameController extends BaseScriptClass
             'EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml'
         );
 
-        $this->id = reset(\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders(
-            'Commerce',
-            'commerce'
-        ));
+        $this->id = FolderRepository::initFolders('Commerce', 'commerce');
+        if (!$this->id) {
+            \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
+            $this->id = FolderRepository::initFolders('Commerce', 'commerce');
+        }
 
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
 

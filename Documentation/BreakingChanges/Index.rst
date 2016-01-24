@@ -33,7 +33,6 @@ CommerceTeam\Commerce\ViewHelpers\TreelibTceforms::setIframeTreeBrowserScript
 CommerceTeam\Commerce\ViewHelpers\TreelibTceforms::renderIframe
 CommerceTeam\Commerce\ViewHelpers\TreelibTceforms::getIframeParameter
 
-
 Renamed module key
 ------------------
 Since 4.x the key of the main module of commerce isn't **txcommerceM1** but **commerce**
@@ -56,3 +55,18 @@ Replaced
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']
 	with
 	$GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][COMMERCE_EXTKEY]
+
+Since Version 5
+---------------
+Removed
+_______
+- Both the ClassAliasMap.php and LegacyClassesForIde.php. If you need still need to know which class was renamed into
+which need name, please copy it from the 4.0.0 tag.
+- PATH_TXCOMMERCE_ICON_TREE_REL as it was used only in one path.
+
+Changed
+_______
+All modules are now useing the core ModuleTemplate api.
+FolderRepository::initFolders now returns only the pid as integer of for the parameter given not the parents in an array
+FolderRepository::initFolders does not create folders magicaly anymore. Please create it using FolderRepository::createFolder
+FolderRepository::initFolders does not call the update utility anymore. Please call it on your own
