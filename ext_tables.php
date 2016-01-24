@@ -118,6 +118,7 @@ $boot = function ($packageKey) {
             ]
         );
 
+
         // Statistic Module
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
             'commerce',
@@ -137,6 +138,29 @@ $boot = function ($packageKey) {
                 'navigationFrameModule' => 'CommerceTeam_commerce_OrderNavigation',
             ]
         );
+
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
+            'commerce_statistic',
+            \CommerceTeam\Commerce\Controller\StatisticShowStatisticsModuleFunctionController::class,
+            null,
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml:statistics'
+        );
+
+        if (\CommerceTeam\Commerce\Factory\SettingsFactory::getInstance()->getExtConf('allowAggregation') == 1) {
+            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
+                'commerce_statistic',
+                \CommerceTeam\Commerce\Controller\StatisticIncrementalAggregationModuleFunctionController::class,
+                null,
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml:incremental_aggregation'
+            );
+
+            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
+                'commerce_statistic',
+                \CommerceTeam\Commerce\Controller\StatisticCompleteAggregationModuleFunctionController::class,
+                null,
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml:complete_aggregation'
+            );
+        }
 
         // Systemdata module
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
