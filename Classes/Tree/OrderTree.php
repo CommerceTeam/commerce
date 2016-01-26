@@ -43,7 +43,7 @@ class OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
      *
      * @var string
      */
-    public $thisScript = 'navigation.php';
+    public $thisScript = 'index.php';
 
     /**
      * Calls init function.

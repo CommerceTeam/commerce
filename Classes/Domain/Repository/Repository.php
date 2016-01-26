@@ -337,16 +337,17 @@ class Repository
      * Get enableFields
      *
      * @param string $tableName
-     * @param boolean $showHiddenRecords
+     * @param bool $showHiddenRecords
      * @param string $replace
      *
      * @return string
      */
-    public function enableFields($tableName, $showHiddenRecords = -1, $replace = '') {
+    public function enableFields($tableName, $showHiddenRecords = false, $replace = '')
+    {
         if (TYPO3_MODE === 'FE') {
-            $result = $GLOBALS['TSFE']->sys_page->enableFields($tableName, $showHiddenRecords);
+            $result = $this->getFrontendController()->sys_page->enableFields($tableName, $showHiddenRecords);
         } else {
-            $result = t3lib_BEfunc::BEenableFields($tableName);
+            $result = \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($tableName);
         }
 
         if ($replace != '') {
