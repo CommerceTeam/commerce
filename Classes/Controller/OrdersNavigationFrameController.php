@@ -143,8 +143,7 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
          *
          * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
          */
-        $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
-        $this->doc = $doc;
+        $this->doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');
         $this->doc->showFlashMessages = false;
 
@@ -157,7 +156,7 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
         $this->doc->JScode = $this->doc->wrapScriptTags(
             $subScript . '
 
-                // Function, loading the list frame from navigation tree:
+            // Function, loading the list frame from navigation tree:
             function jumpTo(id, linkObj, highLightID) {
                 var theUrl = top.TS.PATH_typo3 + top.currentSubScript + "&id=" + id;
 
@@ -205,7 +204,6 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
         '
         );
 
-        $this->doc->bodyTagId = 'typo3-pagetree';
     }
 
     /**
@@ -216,13 +214,6 @@ class OrdersNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScri
     public function main()
     {
         $this->getButtons();
-
-        // Build the <body> for the module
-        $this->content = $this->doc->startPage(
-            $this->getLanguageService()->sl(
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_orders.navigation_title'
-            )
-        );
 
         // Outputting page tree:
         $this->content .= $this->pagetree->getBrowsableTree();

@@ -149,6 +149,9 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
                         window.location.href = URL;
                     }
                 }
+
+                T3_THIS_LOCATION = '
+                . GeneralUtility::quoteJSvalue(rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'))) . ';
             ');
 
             $this->moduleTemplate->addJavaScriptCode('mainJsFunctions', '

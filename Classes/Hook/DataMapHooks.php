@@ -1056,7 +1056,7 @@ class DataMapHooks
             BackendUtility::setUpdateSignal('updateFolderTree');
         }
 
-        $this->afterDatabaseHandleDynaflex($table, $id);
+        // @todo dynaflex special handling removed what was dropped by that?
     }
 
     /**
@@ -1209,51 +1209,6 @@ class DataMapHooks
 
         // @todo what to do with this? it was empty before refactoring
         $this->belib->savePriceFlexformWithArticle($id, (int) $uidArticle, $fieldArray);
-    }
-
-    /**
-     * After database dynaflex handling.
-     *
-     * @param string $table Table
-     * @param int $id Id
-     *
-     * @return void
-     */
-    protected function afterDatabaseHandleDynaflex($table, $id)
-    {
-        $backendUser = $this->getBackendUser();
-
-        $record = BackendUtility::getRecord($table, $id);
-
-        $backendUser->uc['txcommerce_afterDatabaseOperations'] = 1;
-        $backendUser->writeUC();
-
-        $dynaFlexConf = \Tx_Dynaflex_Utility_TcaUtility::loadDynaFlexConfig($table, (int) $record['pid'], $record);
-        $dynaFlexConf = $dynaFlexConf['DCA'];
-
-        $backendUser->uc['txcommerce_afterDatabaseOperations'] = 0;
-        $backendUser->writeUC();
-
-        if (!is_array($dynaFlexConf) || empty($dynaFlexConf)) {
-            return;
-        }
-
-        // txcommerce_copyProcess: this is so that dynaflex is not called when we copy
-        // an article - otherwise we would get an error
-        if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('dynaflex')
-            && (!isset($backendUser->uc['txcommerce_copyProcess']) || $backendUser->uc['txcommerce_copyProcess'])
-        ) {
-            $dynaFlexConf[0]['uid'] = $id;
-            $dynaFlexConf[1]['uid'] = $id;
-
-            /**
-             * Dynaflex.
-             *
-             * @var \Tx_Dynaflex_Utility_TcaUtility
-             */
-            $dynaflex = GeneralUtility::makeInstance('Tx_Dynaflex_Utility_TcaUtility', $GLOBALS['TCA'], $dynaFlexConf);
-            $GLOBALS['TCA'] = $dynaflex->getDynamicTCA();
-        }
     }
 
     /**

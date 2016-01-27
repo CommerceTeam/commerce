@@ -32,6 +32,8 @@
 			<label index="desc_supplier">Create and edit the suppliers.</label>
 			<label index="create_supplier">Create new supplier</label>
 			<label index="deleteWarningSupplier">Do you really want to delete this supplier?</label>
+			<label index="noSupplier">There are no supplier available.</label>
+			<label index="noManufacturer">There are no manufacturer available.</label>
 		</languageKey>
 	</data>
 </T3locallang>

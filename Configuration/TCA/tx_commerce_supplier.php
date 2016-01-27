@@ -38,6 +38,14 @@ return array(
             contactperson, logo',
     ),
     'columns' => array(
+        'hidden' => array(
+            'exclude' => 1,
+            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
+            'config' => array(
+                'type' => 'check',
+                'default' => '0',
+            ),
+        ),
         'title' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_supplier.title',

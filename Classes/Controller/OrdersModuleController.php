@@ -26,7 +26,7 @@ use TYPO3\CMS\Backend\Template\ModuleTemplate;
  *
  * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
-class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
+class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 {
     /**
      * The name of the module
@@ -41,13 +41,6 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
      * @var ModuleTemplate
      */
     protected $moduleTemplate;
-
-    /**
-     * The script for the wizard of the command 'new'.
-     *
-     * @var string
-     */
-    public $scriptNewWizard = 'wizard.php';
 
     /**
      * Body content.
@@ -70,7 +63,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
      */
     public function __construct()
     {
-        parent::__construct();
+        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml');
         $this->MCONF = array(
             'name' => $this->moduleName,
@@ -96,6 +89,8 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
             $this->id = 0;
         }
 
+        $recordlist = GeneralUtility::makeInstance(\TYPO3\CMS\Recordlist\RecordList::class);
+
         // Initialize the listing object, dblist, for rendering the list:
         $this->pointer = max(min(GeneralUtility::_GP('pointer'), 100000), 0);
         $this->imagemode = GeneralUtility::_GP('imagemode');
@@ -113,10 +108,24 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);
 
         $this->initPage();
-        $this->clearCache();
-
         // Set up menus:
         $this->menuConfig();
+    }
+
+    /**
+     * Clear cache
+     *
+     * @return void
+     */
+    public function clearCache()
+    {
+        if (GeneralUtility::_GP('clear_all_cache')) {
+            /** @var DataHandler $tce */
+            $tce = GeneralUtility::makeInstance(DataHandler::class);
+            $tce->stripslashes_values = false;
+            $tce->start(array(), array());
+            $tce->clear_cacheCmd('all');
+        }
     }
 
     /**
@@ -127,8 +136,6 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
     public function initPage()
     {
         $this->doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
-        $this->doc->backPath = $this->getBackPath();
-        $this->doc->docType = 'xhtml_trans';
         $this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
 
         $this->doc->form = '<form action="" method="POST">';
@@ -173,7 +180,6 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
          * @var \CommerceTeam\Commerce\ViewHelpers\OrderRecordList $dblist
          */
         $dblist = GeneralUtility::makeInstance(\CommerceTeam\Commerce\ViewHelpers\OrderRecordList::class);
-        $dblist->backPath = $this->getBackPath();
         $dblist->script = BackendUtility::getModuleUrl('commerce_orders', array(), '');
         $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
         $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
@@ -328,7 +334,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
                 ' . $this->doc->redirectUrls($listUrl) . '
                 ' . $dblist->CBfunctions() . '
                 function editRecords(table, idList, addParams, CBflag) {
-                    window.location.href = "' . $this->getBackPath() . 'alt_doc.php?returnUrl=' .
+                    window.location.href = "alt_doc.php?returnUrl=' .
                     rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI')) .
                 '&edit[" + table + "][" + idList + "]=edit" + addParams;
                 }
@@ -513,7 +519,8 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
 
         // If access to Web>List for user, then link to that module.
         if ($backendUser->check('modules', 'web_list')) {
-            $href = $this->getBackPath() . 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
+            // @todo modify to use index.php entry
+            $href = 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
                 rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
             $buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' .
                 \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
@@ -537,41 +544,15 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
     {
         $GLOBALS['SOBE'] = $this;
         $this->init();
+
+        // Checking for first level external objects
+        $this->checkExtObj();
+
+        $this->clearCache();
         $this->main();
 
         $this->moduleTemplate->setContent($this->content);
         $response->getBody()->write($this->moduleTemplate->renderContent());
         return $response;
-    }
-
-
-    /**
-     * Get backend user.
-     *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-     */
-    protected function getBackendUser()
-    {
-        return $GLOBALS['BE_USER'];
-    }
-
-    /**
-     * Get language service.
-     *
-     * @return \TYPO3\CMS\Lang\LanguageService
-     */
-    protected function getLanguageService()
-    {
-        return $GLOBALS['LANG'];
-    }
-
-    /**
-     * Get back path.
-     *
-     * @return string
-     */
-    protected function getBackPath()
-    {
-        return $GLOBALS['BACK_PATH'];
     }
 }
