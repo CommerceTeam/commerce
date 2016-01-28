@@ -54,13 +54,13 @@ class SystemdataSupplierModuleFunctionController extends AbstractFunctionModule
         $this->iconFactory = $this->pObj->moduleTemplate->getIconFactory();
         $fields = explode(',', SettingsFactory::getInstance()->getExtConf('coSuppliers'));
 
-        $headerRow = '<tr>';
+        $headerRow = '<tr><td class="col-icon"></td><td class="col-title">';
         foreach ($fields as $field) {
-            $headerRow .= '<td><strong>' . $this->getLanguageService()->sL(
+            $headerRow .= '<strong>' . $this->getLanguageService()->sL(
                 BackendUtility::getItemLabel($this->table, htmlspecialchars($field))
-            ) . '</strong></td>';
+            ) . '</strong>';
         }
-        $headerRow .= '<td></td></tr>';
+        $headerRow .= '</td><td class="col-control"></td></tr>';
 
         $result = $this->fetchSupplier();
         $supplierRows = $this->renderRows($result, $fields);
@@ -77,7 +77,6 @@ class SystemdataSupplierModuleFunctionController extends AbstractFunctionModule
                 FlashMessage::INFO
             )->render();
         } else {
-
             $out = '
 
             <!--
@@ -88,8 +87,9 @@ class SystemdataSupplierModuleFunctionController extends AbstractFunctionModule
                     ' . $tableHeader . '
                     </div>
                     <div class="table-fit" id="recordlist-' . htmlspecialchars($this->table) . '" data-state="expanded">
-                        <table data-table="' . htmlspecialchars($this->table) . '" class="table table-striped table-hover">
-                            ' . $headerRow . $supplierRows . '
+                        <table data-table="' . htmlspecialchars($this->table)
+                . '" class="table table-striped table-hover">
+                            <thead>' . $headerRow . '</thead><tbody>' . $supplierRows . '</tbody>
                         </table>
                     </div>
                 </div>
@@ -141,13 +141,15 @@ class SystemdataSupplierModuleFunctionController extends AbstractFunctionModule
             if ($row[$hiddenField]) {
                 $iconIdentifier = 'actions-edit-unhide';
                 $params = 'data[' . $this->table . '][' . $row['uid'] . '][' . $hiddenField . ']=0';
+                $state = 'hidden';
             } else {
                 $iconIdentifier = 'actions-edit-hide';
                 $params = 'data[' . $this->table . '][' . $row['uid'] . '][' . $hiddenField . ']=1';
+                $state = 'visible';
             }
             $hideTitle = $this->getLanguageService()->getLL('hide', true);
             $unhideTitle = $this->getLanguageService()->getLL('unHide', true);
-            $hideAction = '<a class="btn btn-default t3js-record-hide" data-state="hidden" href="#"'
+            $hideAction = '<a class="btn btn-default t3js-record-hide" data-state="' . $state . '" href="#"'
                 . ' data-params="' . htmlspecialchars($params) . '"'
                 . ' title="' . $unhideTitle . '"'
                 . ' data-toggle-title="' . $hideTitle . '">'
@@ -156,15 +158,15 @@ class SystemdataSupplierModuleFunctionController extends AbstractFunctionModule
             // delete action
             $actionName = 'delete';
             $refCountMsg = BackendUtility::referenceCount(
-                    $this->table,
-                    $row['uid'],
-                    ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.referencesToRecord'),
-                    $this->getReferenceCount($this->table, $row['uid'])
-                ) . BackendUtility::translationCount(
-                    $this->table,
-                    $row['uid'],
-                    ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.translationsOfRecord')
-                );
+                $this->table,
+                $row['uid'],
+                ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.referencesToRecord'),
+                $this->getReferenceCount($this->table, $row['uid'])
+            ) . BackendUtility::translationCount(
+                $this->table,
+                $row['uid'],
+                ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.translationsOfRecord')
+            );
             $titleOrig = BackendUtility::getRecordTitle($this->table, $row, false, true);
             $title = GeneralUtility::slashJS(GeneralUtility::fixed_lgd_cs($titleOrig, $this->fixedL), true);
             $warningText = $this->getLanguageService()->getLL($actionName . 'Warning') . ' "' . $title . '" '
@@ -179,13 +181,19 @@ class SystemdataSupplierModuleFunctionController extends AbstractFunctionModule
                 . ' data-message="' . htmlspecialchars($warningText) . '" title="' . $linkTitle . '"'
                 . '>' . $icon . '</a>';
 
+            $toolTip = BackendUtility::getRecordToolTip($row, $this->table);
+            $iconImg = '<span ' . $toolTip . '>'
+                . $this->iconFactory->getIconForRecord($this->table, $row, Icon::SIZE_SMALL)->render()
+                . '</span>';
+
             $output .= '<tr data-uid="' . $row['uid'] . '">';
+            $output .= '<td class="col-icon">' . $iconImg . '</td>';
 
             foreach ($fields as $field) {
                 $output .= '<td valign="top">' . htmlspecialchars($row[$field]) . '</td>';
             }
 
-            $output .= '<td>' . $editAction . $hideAction . $deleteAction . '</td></tr>';
+            $output .= '<td class="col-control">' . $editAction . $hideAction . $deleteAction . '</td></tr>';
         }
 
         return $output;
