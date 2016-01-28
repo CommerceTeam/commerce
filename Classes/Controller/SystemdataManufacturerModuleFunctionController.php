@@ -65,7 +65,11 @@ class SystemdataManufacturerModuleFunctionController extends AbstractFunctionMod
         $result = $this->fetchManufacturer();
         $manufacturerRows = $this->renderRows($result, $fields);
 
-        $tableHeader = '';
+        $tableHeader = '<a>' . $this->getLanguageService()->sL(
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:' . $this->table
+        )
+            . ' (<span class="t3js-table-total-items">'
+            . $this->getDatabaseConnection()->sql_num_rows($result) . '</span>)</a>';
 
         if (!$manufacturerRows) {
             $out = $flashMessage = GeneralUtility::makeInstance(

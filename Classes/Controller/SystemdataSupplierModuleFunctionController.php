@@ -65,7 +65,11 @@ class SystemdataSupplierModuleFunctionController extends AbstractFunctionModule
         $result = $this->fetchSupplier();
         $supplierRows = $this->renderRows($result, $fields);
 
-        $tableHeader = '';
+        $tableHeader = '<a>' . $this->getLanguageService()->sL(
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:' . $this->table
+        )
+            . ' (<span class="t3js-table-total-items">'
+            . $this->getDatabaseConnection()->sql_num_rows($result) . '</span>)</a>';
 
         if (!$supplierRows) {
             $out = $flashMessage = GeneralUtility::makeInstance(
