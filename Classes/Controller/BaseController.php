@@ -295,7 +295,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     {
         if (!is_string($paymentType)) {
             throw new \Exception(
-                'Expected variable of type string for ' . $paymentType . ' but a ' . getType($paymentType) .
+                'Expected variable of type string for ' . $paymentType . ' but a ' . gettype($paymentType) .
                 ' was given.',
                 1305675802
             );
@@ -349,10 +349,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         if (is_array($this->LOCAL_LANG[$this->getFrontendController()->tmpl->setup['config.']['language']])
             && is_array($this->LOCAL_LANG['default'])
         ) {
-            $markerArr = GeneralUtility::array_merge(
-                $this->LOCAL_LANG['default'],
-                $this->LOCAL_LANG[$this->getFrontendController()->tmpl->setup['config.']['language']]
-            );
+            $markerArr = $this->LOCAL_LANG[$this->getFrontendController()->tmpl->setup['config.']['language']] +
+                $this->LOCAL_LANG['default'];
         } elseif (is_array($this->LOCAL_LANG['default'])) {
             $markerArr = $this->LOCAL_LANG['default'];
         } else {
@@ -1379,7 +1377,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         switch (strtoupper($typoscriptType)) {
             case 'IMGTEXT':
                 $typoscriptConfig['imgList'] = $value;
-                $output = $this->cObj->IMGTEXT($typoscriptConfig);
+                $output = $this->cObj->cObjGetSingle('IMGTEXT', $typoscriptConfig);
                 break;
 
             case 'RELATION':
@@ -1454,17 +1452,17 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                                 $typoscriptConfig['file'] = $typoscriptConfig['imgPath'] . $oneValue;
                             }
                         }
-                        $output .= $this->cObj->IMAGE($typoscriptConfig);
+                        $output .= $this->cObj->cObjGetSingle('IMAGE', $typoscriptConfig);
                     }
                 } elseif (strlen($typoscriptConfig['file']) && $typoscriptConfig['file'] != 'GIFBUILDER') {
-                    $output .= $this->cObj->IMAGE($typoscriptConfig);
+                    $output .= $this->cObj->cObjGetSingle('IMAGE', $typoscriptConfig);
                 }
                 break;
 
             case 'IMG_RESOURCE':
                 if (is_string($value) && !empty($value)) {
                     $typoscriptConfig['file'] = $typoscriptConfig['imgPath'] . $value;
-                    $output = $this->cObj->IMG_RESOURCE($typoscriptConfig);
+                    $output = $this->cObj->cObjGetSingle('IMG_RESOURCE', $typoscriptConfig);
                 }
                 break;
 
@@ -2309,6 +2307,6 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     protected function getBasket()
     {
-        return $this->getFrontendUser()->tx_commerce_basket;
+        return \CommerceTeam\Commerce\Utility\GeneralUtility::getBasket();
     }
 }

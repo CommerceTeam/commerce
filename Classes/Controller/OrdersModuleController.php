@@ -57,6 +57,11 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
     protected $orderPid;
 
     /**
+     * @var array
+     */
+    protected $pageinfo = array();
+
+    /**
      * Constructor
      *
      * @return self
@@ -471,7 +476,7 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
                 '</div>' . $this->body;
         }
         // Additional footer content
-        $footerContentHook = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['recordlist/mod1/index.php']['drawFooterHook'];
+        $footerContentHook = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['recordlist/Modules/Recordlist/index.php']['drawFooterHook'];
         if (is_array($footerContentHook)) {
             foreach ($footerContentHook as $hook) {
                 $params = array();

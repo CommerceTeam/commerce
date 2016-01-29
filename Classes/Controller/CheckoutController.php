@@ -1250,6 +1250,8 @@ class CheckoutController extends BaseController
 
         $basket->finishOrder();
 
+        GeneralUtility::removeSingletonInstance(\CommerceTeam\Commerce\Domain\Model\Basket::class, $basket);
+
         // create new basket to remove all values from old one
         /**
          * Basket.
@@ -1262,7 +1264,6 @@ class CheckoutController extends BaseController
 
         $feUser->setKey('ses', 'orderId', null);
         $feUser->setKey('ses', 'commerceBasketId-' . $basket->getBasketStoragePid(), $basket->getSessionId());
-        $feUser->tx_commerce_basket = $basket;
 
         return $content;
     }

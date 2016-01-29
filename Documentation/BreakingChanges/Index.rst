@@ -67,8 +67,13 @@ which need name, please copy it from the 4.0.0 tag.
 Changed
 _______
 All modules are now useing the core ModuleTemplate api.
+
 FolderRepository::initFolders
  - now returns only the pid as integer of for the parameter given not the parents in an array.
  - does not create folders magicaly anymore. Please create it using FolderRepository::createFolder.
  - does not call the update utility anymore. Please call it on your own.
  - parameter $module and $pid changes position in method call. Fallback handling will be dropped in version 6
+
+The basket is now a singleton object and not attached to the feuser object anymore. As long as you
+use the api method \CommerceTeam\Commerce\Utility\GeneralUtility::getBasket() you dont need to change
+your code.

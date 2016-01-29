@@ -76,7 +76,12 @@ class GeneralUtility
     {
         $basket = self::getBasket();
 
-        if (!is_object($basket)) {
+        if (!is_object($basket) || !$basket->getSessionId()) {
+            \TYPO3\CMS\Core\Utility\GeneralUtility::removeSingletonInstance(
+                \CommerceTeam\Commerce\Domain\Model\Basket::class,
+                $basket
+            );
+
             $feUser = self::getFrontendUser();
 
             $commerceBasketIdKey = 'commerceBasketId-' . self::getBasketStoragePid();
@@ -102,7 +107,7 @@ class GeneralUtility
             $basket = CoreGeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Basket::class);
             $basket->setSessionId($basketId);
             $basket->loadData();
-            $feUser->tx_commerce_basket = $basket;
+            // @todo make singleton (setSingletonInstance/removeSingletonInstance)
 
             if ($useCookieAsBasketIdFallback
                 && (
@@ -447,8 +452,8 @@ class GeneralUtility
      *
      * @return \CommerceTeam\Commerce\Domain\Model\Basket
      */
-    protected static function getBasket()
+    public static function getBasket()
     {
-        return self::getFrontendUser()->tx_commerce_basket;
+        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Basket::class);
     }
 }

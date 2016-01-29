@@ -17,14 +17,14 @@ namespace CommerceTeam\Commerce\Domain\Model;
 use CommerceTeam\Commerce\Factory\HookFactory;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 use CommerceTeam\Commerce\Utility\GeneralUtility;
+use TYPO3\CMS\Core\SingletonInterface;
 
 /**
  * Frontend library for handling the basket. This class should be used
  * when rendering the basket and changing the basket items.
  *
- * The basket object is stored as object within the Frontend user
- * fe_user->tx_commerce_basket, you could access the Basket object in the
- * Frontend via frontend user basket;
+ * The basket object is singleton, you could access the Basket object via
+ * \CommerceTeam\Commerce\Utility\GeneralUtility::getBasket()
  *
  * Do not access class variables directly, always use the get and set methods,
  * variables will be changed in php5 to private
@@ -35,7 +35,7 @@ use CommerceTeam\Commerce\Utility\GeneralUtility;
  *
  * @author 2005-2013 Ingo Schmitt <is@marketing-factory.de>
  */
-class Basket extends BasicBasket
+class Basket extends BasicBasket implements SingletonInterface
 {
     /**
      * Storage-type for the data.

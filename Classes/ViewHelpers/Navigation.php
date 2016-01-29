@@ -1776,6 +1776,6 @@ class Navigation
      */
     protected function getBasket()
     {
-        return $this->getFrontendUser()->tx_commerce_basket;
+        return \CommerceTeam\Commerce\Utility\GeneralUtility::getBasket();
     }
 }
