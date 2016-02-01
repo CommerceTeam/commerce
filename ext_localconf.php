@@ -31,11 +31,12 @@ $boot = function ($packageKey) {
     // Unserialize the plugin configuration so we can use it
     // This array holds global definitions of arbitrary commerce settings
     // Add unserialized ext conf settings to global array for easy access
-    $typo3ConfVars['EXT']['extConf'][COMMERCE_EXTKEY] =
-        unserialize($typo3ConfVars['EXT']['extConf'][$packageKey]);
+    if (is_string($typo3ConfVars['EXT']['extConf'][$packageKey])) {
+        $typo3ConfVars['EXT']['extConf'][$packageKey] = unserialize($typo3ConfVars['EXT']['extConf'][$packageKey]);
+    }
 
     // Payment settings
-    $typo3ConfVars['EXT']['extConf'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT'] = array(
+    $typo3ConfVars['EXT']['extConf'][$packageKey]['SYSPRODUCTS']['PAYMENT'] = array(
         'tablefields' => array(
             'title' => 'SYSTEMPRODUCT_PAYMENT',
             'description' => 'Products to manage payment',

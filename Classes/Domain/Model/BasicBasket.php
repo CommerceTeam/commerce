@@ -24,8 +24,6 @@ namespace CommerceTeam\Commerce\Domain\Model;
  *
  * Class \CommerceTeam\Commerce\Domain\Model\BasicBasket
  *
- * @todo: Implement basket as singleton
- *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class BasicBasket
