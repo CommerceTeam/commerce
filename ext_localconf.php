@@ -12,11 +12,11 @@ $boot = function ($packageKey) {
     }
 
     if (!defined('PATH_TXCOMMERCE')) {
-        define('PATH_TXCOMMERCE', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(COMMERCE_EXTKEY));
+        define('PATH_TXCOMMERCE', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($packageKey));
     }
 
     if (!defined('PATH_TXCOMMERCE_REL')) {
-        define('PATH_TXCOMMERCE_REL', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath(COMMERCE_EXTKEY));
+        define('PATH_TXCOMMERCE_REL', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($packageKey));
     }
 
     if (!defined('PATH_TXCOMMERCE_ICON_TABLE_REL')) {
@@ -69,13 +69,13 @@ $boot = function ($packageKey) {
     );
 
     // Delivery settings
-    $typo3ConfVars['EXT']['extConf'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY'] = array(
+    $typo3ConfVars['EXT']['extConf'][$packageKey]['SYSPRODUCTS']['DELIVERY'] = array(
         'tablefields' => array(
             'title' => 'SYSTEMPRODUCT_DELIVERY',
             'description' => 'product zum Verwalten der Lieferarten',
         ),
     );
-    $typo3ConfVars['EXT']['extConf'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY']['types'] = array(
+    $typo3ConfVars['EXT']['extConf'][$packageKey]['SYSPRODUCTS']['DELIVERY']['types'] = array(
         'sysdelivery' => array(
             'type' => DELIVERYARTICLETYPE,
         ),
@@ -83,35 +83,35 @@ $boot = function ($packageKey) {
 
     // Add frontend plugins to content.default static template
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
-        COMMERCE_EXTKEY,
+        $packageKey,
         'Classes/Controller/ListController.php',
         '_pi1',
         'list_type',
         1
     );
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
-        COMMERCE_EXTKEY,
+        $packageKey,
         'Classes/Controller/BasketController.php',
         '_pi2',
         'list_type',
         0
     );
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
-        COMMERCE_EXTKEY,
+        $packageKey,
         'Classes/Controller/CheckoutController.php',
         '_pi3',
         'list_type',
         0
     );
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
-        COMMERCE_EXTKEY,
+        $packageKey,
         'Classes/Controller/AddressesController.php',
         '_pi4',
         'list_type',
         0
     );
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
-        COMMERCE_EXTKEY,
+        $packageKey,
         'Classes/Controller/InvoiceController.php',
         '_pi6',
         'list_type',

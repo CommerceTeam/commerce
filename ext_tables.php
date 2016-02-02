@@ -41,13 +41,13 @@ $boot = function ($packageKey) {
 
         // add main module
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-            'commerce',
+            $packageKey,
             '',
             'after:file',
             PATH_TXCOMMERCE . 'Modules/Main/',
             [
                 'script' => '_DISPATCH',
-                'name' => 'commerce',
+                'name' => $packageKey,
                 'workspaces' => 'online',
                 'labels' => array(
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_main.xml',
@@ -60,7 +60,7 @@ $boot = function ($packageKey) {
 
         // add category module
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-            'commerce',
+            $packageKey,
             'category',
             '',
             '',
@@ -80,7 +80,7 @@ $boot = function ($packageKey) {
 
         // Access Module
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-            'commerce',
+            $packageKey,
             'permission',
             '',
             '',
@@ -100,7 +100,7 @@ $boot = function ($packageKey) {
 
         // Orders module
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-            'commerce',
+            $packageKey,
             'order',
             '',
             '',
@@ -121,7 +121,7 @@ $boot = function ($packageKey) {
 
         // Statistic Module
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-            'commerce',
+            $packageKey,
             'statistic',
             '',
             '',
@@ -164,7 +164,7 @@ $boot = function ($packageKey) {
 
         // Systemdata module
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-            'commerce',
+            $packageKey,
             'systemdata',
             '',
             '',

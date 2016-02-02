@@ -125,7 +125,9 @@ class InvoiceController extends BaseController
          *
          * @var \TYPO3\CMS\Core\Charset\CharsetConverter
          */
-        $convert = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
+        $convert = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Charset\CharsetConverter::class
+        );
 
         // If there is no order id, this plugin serves no pupose
         $this->order_id = $this->piVars['order_id'];
@@ -197,13 +199,13 @@ class InvoiceController extends BaseController
                 $this->conf['invoiceheader'],
                 $this->conf['invoiceheader.']
             );
-            $markerArray['###INVOICE_SHOP_NAME###'] = $this->cObj->TEXT($this->conf['shopname.']);
+            $markerArray['###INVOICE_SHOP_NAME###'] = $this->cObj->cObjGetSingle('TEXT', $this->conf['shopname.']);
             $markerArray['###INVOICE_SHOP_ADDRESS###'] = $this->cObj->cObjGetSingle(
                 $this->conf['shopdetails'],
                 $this->conf['shopdetails.']
             );
-            $markerArray['###INVOICE_INTRO_MESSAGE###'] = $this->cObj->TEXT($this->conf['intro.']);
-            $markerArray['###INVOICE_THANKYOU###'] = $this->cObj->TEXT($this->conf['thankyou.']);
+            $markerArray['###INVOICE_INTRO_MESSAGE###'] = $this->cObj->cObjGetSingle('TEXT', $this->conf['intro.']);
+            $markerArray['###INVOICE_THANKYOU###'] = $this->cObj->cObjGetSingle('TEXT', $this->conf['thankyou.']);
 
             // Hook to process new/changed marker
             $hooks = HookFactory::getHooks('Controller/InvoiceController', 'main');

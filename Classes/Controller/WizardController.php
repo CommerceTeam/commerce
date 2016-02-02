@@ -16,6 +16,8 @@ namespace CommerceTeam\Commerce\Controller;
 
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 use CommerceTeam\Commerce\Utility\BackendUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -25,6 +27,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class WizardController
 {
+    /**
+     * @var IconFactory
+     */
+    protected $iconFactory;
+
     /**
      * Page info.
      *
@@ -145,6 +152,16 @@ class WizardController
     protected $defVals;
 
     /**
+     * WizardController constructor.
+     *
+     * @return self
+     */
+    public function __construct()
+    {
+        $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+    }
+
+    /**
      * Constructor function for the class.
      *
      * @return void
@@ -168,8 +185,6 @@ class WizardController
 
         // Create instance of template class for output
         $this->doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
-        $this->doc->backPath = $this->getBackPath();
-        $this->doc->docType = 'xhtml_trans';
         $this->doc->JScode = '';
 
         $this->head = $language->getLL('newRecordGeneral', 1);
@@ -249,11 +264,9 @@ class WizardController
                 // Create go-back link.
             if ($this->returnUrl) {
                 $this->code .= '<br />
-                    <a href="' . htmlspecialchars($this->returnUrl) . '" class="typo3-goBack">'.
-                        \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
-                            'actions-view-go-back',
-                            array('title' => $language->getLL('goBack', 1))
-                        ) .
+                    <a href="' . htmlspecialchars($this->returnUrl) . '" class="typo3-goBack" title="' .
+                        $language->getLL('goBack', 1) . '">'.
+                        $this->iconFactory->getIcon('actions-view-go-back', Icon::SIZE_SMALL) .
                     '</a>';
             }
                 // Add all the content to an output section
@@ -283,11 +296,8 @@ class WizardController
         $language = $this->getLanguageService();
 
         // Slight spacer from header:
-        $this->code .= '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
-            $this->getBackPath(),
-            'gfx/ol/halfline.gif',
-            'width="18" height="8"'
-        ) . ' alt="" /><br />';
+        // @todo test with x-tree-icon alternativly
+        $this->code .= '<span class="x-tree-elbow-line"></span><br />';
 
         // New tables INSIDE this category
         foreach ($this->param as $table => $param) {
@@ -301,13 +311,9 @@ class WizardController
                 switch ($cmd) {
                     case 'new':
                         // Create new link for record:
-                        $rowContent = '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
-                            $this->getBackPath(),
-                            'gfx/ol/join.gif',
-                            'width="18" height="16"'
-                        ) . ' alt="" />' .
+                        $rowContent = '<span class="x-tree-ec-icon x-tree-elbow"></span>' .
                         $this->linkWrap(
-                            \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIconForRecord($table, array()) .
+                            $this->iconFactory->getIconForRecord($table, array(), Icon::SIZE_SMALL) .
                             $language->sL(SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.title'), 1),
                             $table,
                             $this->id
@@ -317,8 +323,8 @@ class WizardController
                         $tRows[] = '
                 <tr>
                     <td nowrap="nowrap">' . $rowContent . '</td>
-                    <td>' . \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem($table, '', $this->getBackPath(), '') .
-                            '</td>
+                    <td>' . \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem($table, '', $this->getBackPath(), '')
+                            . '</td>
                 </tr>
                 ';
                         break;
@@ -331,12 +337,7 @@ class WizardController
         // Compile table row:
         $tRows[] = '
 			<tr>
-				<td><img' .
-            \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
-                $this->getBackPath(),
-                'gfx/ol/stopper.gif',
-                'width="18" height="16"'
-            ) . ' alt="" /></td>
+				<td><span class="x-tree-lines x-tree-elbow-end"></span></td>
 				<td></td>
 			</tr>
 		';
@@ -417,7 +418,7 @@ class WizardController
         $result = false;
 
         if (!is_array($row)) {
-            if ($this->getBackendUser()->user['admin']) {
+            if ($this->getBackendUser()->isAdmin()) {
                 $result = true;
             } else {
                 $result = false;
