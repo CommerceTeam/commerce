@@ -357,8 +357,8 @@ class Wirecard
      *
      * @return string
      */
-    protected function getCountryCode($country)
+    protected function getCountryCode($country = 'DEU')
     {
-        return 'DEU';
+        return $country;
     }
 }

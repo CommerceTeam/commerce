@@ -411,8 +411,7 @@ class Master extends Leaf
             if ($child['uid']) {
                 $out .= $this->view->PMicon($child, $isLast, $exp, $isBank, $hasChildren);
             } else {
-                $backPath = $this->getControllerDocumentTemplate()->backPath;
-                $out .= '<img alt="" src="' . $backPath . 'clear.gif" class="x-tree-ec-icon x-tree-elbow-end-minus">';
+                $out .= '<span class="x-tree-ec-icon x-tree-elbow-end-minus"></span>';
             }
 
             $out .= $child['uid'] ? $this->view->getIcon($child) : $this->view->getRootIcon($child);

@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\Tree\Leaf;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -399,9 +400,8 @@ class View extends Base
         }
 
             // Wrap the Context Menu on the Icon if it is allowed
-        if ($this->getDocumentTemplate() && !$this->noClickmenu) {
-            $this->getDocumentTemplate()->backPath = $this->getBackPath();
-            $icon = $this->getDocumentTemplate()->wrapClickMenuOnIcon(
+        if (!$this->noClickmenu) {
+            $icon = BackendUtility::wrapClickMenuOnIcon(
                 $icon,
                 $this->table,
                 $row['uid'],

@@ -77,3 +77,6 @@ FolderRepository::initFolders
 The basket is now a singleton object and not attached to the feuser object anymore. As long as you
 use the api method \CommerceTeam\Commerce\Utility\GeneralUtility::getBasket() you dont need to change
 your code.
+
+Drop overwrite action from clickmenu. It does not make sense and only leads to strange side effects.
+Drop DataHandlerUtility as it was only used for overwrite action.

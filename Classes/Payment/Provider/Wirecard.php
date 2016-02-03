@@ -21,14 +21,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Wirecard payment provider implementation.
  *
  * Testing data:
- * Card type			Test number
- * Visa      			4111 1111 1111 1111
- * MasterCard			5500 0000 0000 0004
- * American Express		3400 0000 0000 009
- * Diner's Club			3000 0000 0000 04
- * Carte Blanche		3000 0000 0000 04
- * Discover				6011 0000 0000 0004
- * JCB					3088 0000 0000 0009
+ * Card type            Test number
+ * Visa                 4111 1111 1111 1111
+ * MasterCard           5500 0000 0000 0004
+ * American Express     3400 0000 0000 009
+ * Diner's Club         3000 0000 0000 04
+ * Carte Blanche        3000 0000 0000 04
+ * Discover             6011 0000 0000 0004
+ * JCB                  3088 0000 0000 0009
  *
  * Class \CommerceTeam\Commerce\Payment\Provider\Wirecard
  *

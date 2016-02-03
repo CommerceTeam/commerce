@@ -96,7 +96,6 @@ class ExtdirectSystemdataNavigationProvider extends \TYPO3\CMS\Backend\Tree\Abst
      */
     public function loadResources()
     {
-        $file = 'LLL:EXT:lang/locallang_core.xlf:';
         $indicators = $this->getIndicators();
         $configuration = array(
             'Configuration' => array(

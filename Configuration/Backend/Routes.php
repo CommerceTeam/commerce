@@ -13,4 +13,8 @@ return [
         'path' => '/commerceteam/commerce/systemdatanavigation',
         'target' => \CommerceTeam\Commerce\Controller\SystemdataNavigationFrameController::class . '::mainAction'
     ],
+    'CommerceTeam_commerce_DataHandler' => [
+        'path' => '/commerceteam/commerce/datahandler',
+        'target' => \CommerceTeam\Commerce\Utility\DataHandler::class . '::mainAction'
+    ],
 ];

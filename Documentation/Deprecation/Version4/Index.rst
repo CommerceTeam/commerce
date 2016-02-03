@@ -704,17 +704,6 @@ Removed hooks since 4.x
 	, , ['commerce/Classes/Utility/BackendUtility.php']['overwriteProduct'], ['commerce/Utility/BackendUtility']['overwriteProduct']
 
 
-.. _\CommerceTeam\Commerce\Utility\DataHandlerUtility_hooks:
-.. csv-table::
-	:header: Class, Method, Hook, Replacement
-	:widths: 25, 10, 35, 30
-
-	\CommerceTeam\Commerce\Utility\DataHandlerUtility, showCopyWizard, ['commerce/mod_cce/class.tx_commerce_cce_db.php']['copyWizardClass'], ['commerce/Utility/DataHandlerUtility']['showCopyWizard']
-	, , ['commerce/Classes/Utility/DataHandlerUtility.php']['copyWizard'], ['commerce/Utility/DataHandlerUtility']['showCopyWizard']
-	, commitCommand, ['commerce/mod_cce/class.tx_commerce_cce_db.php']['commitCommandClass'], ['commerce/Utility/DataHandlerUtility']['commitCommand']
-	, , ['commerce/Classes/Utility/DataHandlerUtility.php']['commitCommand'], ['commerce/Utility/DataHandlerUtility']['commitCommand']
-
-
 .. _\CommerceTeam\Commerce\Utility\FolderUtility_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement

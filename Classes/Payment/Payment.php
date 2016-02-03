@@ -64,7 +64,7 @@ class Payment extends Wirecard
     public function __construct()
     {
         parent::__construct();
-        $this->setReferenzID();
+        $this->setReferenzId();
     }
 
     /**

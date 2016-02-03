@@ -542,57 +542,6 @@ class ClickmenuUtility extends ClickMenu
     }
 
     /**
-     * Displays the overwrite option.
-     *
-     * @param string $table Table that is to be host of the overwrite
-     * @param int $uid Uid of the item that is to be overwritten
-     * @param array $elInfo Info Array
-     *
-     * @return string
-     */
-    public function DB_overwrite($table, $uid, array $elInfo)
-    {
-        $language = $this->getLanguageService();
-        $backendUser = $this->getBackendUser();
-
-        $loc = 'top.content' . (
-            $this->clickMenu->listFrame && !$this->clickMenu->alwaysContentFrame ?
-            '.list_frame' :
-            ''
-        );
-
-        if ($backendUser->jsConfirmation(2)) {
-            $conf = $loc . ' && confirm(' . $language->JScharCode(
-                sprintf(
-                    $language->sL(
-                        'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:clickmenu.overwriteConfirm'
-                    ),
-                    $elInfo[0],
-                    $elInfo[1]
-                )
-            ) . ')';
-        } else {
-            $conf = $loc;
-        }
-        $editOnClick = 'if(' . $conf . '){' . $loc . '.location.href=top.TS.PATH_typo3+\'' .
-            $this->overwriteUrl($table, $uid, 0) . '&redirect=\'+top.rawurlencode(' .
-            $this->clickMenu->frameLocation($loc . '.document') . '); hideCM();}';
-
-        return $this->clickMenu->linkItem(
-            $language->makeEntities(
-                $language->sL(
-                    'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:clickmenu.overwrite',
-                    1
-                )
-            ),
-            $this->clickMenu->excludeIcon(
-                \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-paste-into')
-            ),
-            $editOnClick . 'return false;'
-        );
-    }
-
-    /**
      * Displays the 'Send to review/public' option.
      *
      * @param string $table Table that is to be host of the sending
@@ -616,30 +565,6 @@ class ClickmenuUtility extends ClickMenu
             1
         );
     }
-
-    /**
-     * Overwrite url of the element (database).
-     *
-     * @param string $table Tablename
-     * @param int $uid Uid of the record that should be overwritten
-     * @param int $redirect If set, then the redirect URL will point
-     *      back to the current script, but with CB reset.
-     *
-     * @return string
-     */
-    protected function overwriteUrl($table, $uid, $redirect = 1)
-    {
-        $backendUser = $this->getBackendUser();
-
-        return $this->clickMenu->clipObj->backPath . PATH_TXCOMMERCE_REL . 'Classes/Utility/DataHandlerUtility.php?' .
-            ($redirect ? 'redirect=' . rawurlencode(GeneralUtility::linkThisScript(array('CB' => ''))) : '') .
-            '&vC=' . $backendUser->veriCode() .
-            '&prErr=1&uPT=1' .
-            '&CB[overwrite]=' . rawurlencode($table . '|' . $uid) .
-            '&CB[pad]=' . $this->clickMenu->clipObj->current .
-            BackendUtility::getUrlToken('tceAction');
-    }
-
 
     /**
      * Get backend user.

@@ -795,38 +795,6 @@ ______________________
 	                                                                                    | **Result**                           | void
 	========================================= ========================================= ====================================== ===================================================================
 
-Utility/DataHandlerUtility
-__________________________
-
-.. container:: ts-properties
-
-	========================================= ========================================= ====================================== ===================================================================
-	Hookname                                  Call                                      Parameter / Result                     Type
-	========================================= ========================================= ====================================== ===================================================================
-	showCopyWizard                            | beforeFormClose                         | $uidClip                             | Integer
-	                                          |                                         | $uidTarget                           | Integer
-	                                          |                                         | $command                             | String
-	                                          |                                         | $userIgnoreClose                     | Boolean
-	                                          |                                         | **Result**                           | String
-	                                          | beforeFormClose                         | $uidClip                             | Integer
-	                                          |                                         | $uidTarget                           | Integer
-	                                          |                                         | $command                             | String
-	                                          |                                         | $userIgnoreClose                     | Boolean
-	                                          |                                         | **Result**                           | String
-	                                          | beforeTransform                         | $uidClip                             | Integer
-	                                                                                    | $uidTarget                           | Integer
-	                                                                                    | $command                             | String
-	                                                                                    | **Result**                           | String
-	commitCommand                             | beforeCommit                            | $uidClip                             | Integer
-	                                          |                                         | $uidTarget                           | Integer
-	                                          |                                         | $command                             | String
-	                                          |                                         | **Result**                           | void
-	                                          | afterCommit                             | $uidClip                             | Integer
-	                                                                                    | $uidTarget                           | Integer
-	                                                                                    | $command                             | String
-	                                                                                    | **Result**                           | void
-	========================================= ========================================= ====================================== ===================================================================
-
 Utility/GeneralUtility
 ______________________
 

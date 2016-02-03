@@ -46,15 +46,18 @@ class Creditcard extends PaymentAbstract
      */
     public function needAdditionalData()
     {
+        /** @var $languageFactory \TYPO3\CMS\Core\Localization\LocalizationFactory */
+        $languageFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\LocalizationFactory::class);
+
         $basePath = PATH_TXCOMMERCE . 'Resources/Private/Language/locallang_creditcard.xml';
 
         foreach ($this->parentObject->LOCAL_LANG as $llKey => $_) {
-            $newLl = GeneralUtility::readLLfile($basePath, $llKey);
+            $newLl = $languageFactory->getParsedData($basePath, $llKey);
             $this->LOCAL_LANG[$llKey] = $newLl[$llKey];
         }
 
         if ($this->parentObject->altLLkey) {
-            $tempLocalLang = GeneralUtility::readLLfile($basePath, $this->parentObject->altLLkey);
+            $tempLocalLang = $languageFactory->getParsedData($basePath, $this->parentObject->altLLkey);
             $this->LOCAL_LANG = array_merge(is_array($this->LOCAL_LANG) ? $this->LOCAL_LANG : array(), $tempLocalLang);
         }
 
