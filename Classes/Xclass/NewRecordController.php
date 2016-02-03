@@ -17,7 +17,6 @@ namespace CommerceTeam\Commerce\Xclass;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Utility\IconUtility;
 
 /**
  * Class NewRecordController.
@@ -43,10 +42,21 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
         // If there was a page - or if the user is admin
         // (admins has access to the root) we proceed:
         if ($this->pageinfo['uid'] || $this->getBackendUserAuthentication()->isAdmin()) {
+            if (empty($this->pageinfo)) {
+                // Explicitly pass an empty array to the docHeader
+                $this->moduleTemplate->getDocHeaderComponent()->setMetaInformation([]);
+            } else {
+                $this->moduleTemplate->getDocHeaderComponent()->setMetaInformation($this->pageinfo);
+            }
             // Acquiring TSconfig for this module/current page:
             $this->web_list_modTSconfig = BackendUtility::getModTSconfig((int) $this->pageinfo['uid'], 'mod.web_list');
+
             // allow only commerce related tables
-            $this->allowedNewTables = array('tx_commerce_categories', 'tx_commerce_products');
+            $this->allowedNewTables = array(
+                'tx_commerce_categories',
+                'tx_commerce_products'
+            );
+
             $this->deniedNewTables = GeneralUtility::trimExplode(
                 ',',
                 $this->web_list_modTSconfig['properties']['deniedNewTables'],
@@ -76,23 +86,11 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
             }
             // Set header-HTML and return_url
             if (is_array($this->pageinfo) && $this->pageinfo['uid']) {
-                $iconImgTag = IconUtility::getSpriteIconForRecord(
-                    'pages',
-                    $this->pageinfo,
-                    array('title' => htmlspecialchars($this->pageinfo['_thePath']))
-                );
-                $title = strip_tags($this->pageinfo[SettingsFactory::getInstance()->getTcaValue('pages.ctrl.label')]);
+                $title = strip_tags($this->pageinfo[$GLOBALS['TCA']['pages']['ctrl']['label']]);
             } else {
-                $iconImgTag = IconUtility::getSpriteIcon(
-                    'apps-pagetree-root',
-                    array('title' => htmlspecialchars($this->pageinfo['_thePath']))
-                );
                 $title = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
             }
-            $this->code = '<span class="typo3-moduleHeader">' .
-                $this->doc->wrapClickMenuOnIcon($iconImgTag, 'pages', $this->pageinfo['uid']) .
-                htmlspecialchars(GeneralUtility::fixed_lgd_cs($title, 45)) . '</span><br />';
-            $this->R_URI = $this->returnUrl;
+            $this->moduleTemplate->setTitle($title);
             // GENERATE the HTML-output depending on mode (pagesOnly is the page wizard)
             // Regular new element:
             if (!$this->pagesOnly) {
@@ -102,18 +100,11 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
                 $this->pagesOnly();
             }
             // Add all the content to an output section
-            $this->content .= $this->doc->section('', $this->code);
+            $this->content .= '<div>' . $this->code . '</div>';
             // Setting up the buttons and markers for docheader
-            $docHeaderButtons = $this->getButtons();
-            $markers['CSH'] = $docHeaderButtons['csh'];
-            $markers['CONTENT'] = $this->content;
+            $this->getButtons();
             // Build the <body> for the module
-            $this->content = $this->doc->startPage(
-                $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:db_new.php.pagetitle')
-            );
-            $this->content .= $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
-            $this->content .= $this->doc->endPage();
-            $this->content = $this->doc->insertStylesAndJS($this->content);
+            $this->moduleTemplate->setContent($this->content);
         }
     }
 

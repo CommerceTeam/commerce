@@ -16,7 +16,8 @@ namespace CommerceTeam\Commerce\Xclass;
 
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -48,27 +49,25 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
         if ($table !== 'tx_commerce_products') {
             return parent::adminLinks($table, $row);
         } else {
+            /** @var IconFactory $iconFactory */
+            $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
             $language = $this->getLanguageService();
 
             // Edit link:
-            $adminLink = '<a href="#" onclick="' .
-                htmlspecialchars(
-                    BackendUtility::editOnClick('&edit[' . $table . '][' . $row['uid'] . ']=edit', $this->getBackPath())
-                ) .
-                '">' .
-                IconUtility::getSpriteIcon(
-                    'actions-document-open',
-                    array('title' => $language->sL('LLL:EXT:lang/locallang_core.xml:cm.edit', true))
-                ) . '</a>';
+            $adminLink = '<a href="#" onclick="'
+                . htmlspecialchars(
+                    BackendUtility::editOnClick('&edit[' . $table . '][' . $row['uid'] . ']=edit')
+                )
+                . '" title="' . $language->sL('LLL:EXT:lang/locallang_core.xml:cm.edit') . '">'
+                . $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL) . '</a>';
 
             // Delete link:
             $adminLink .= '<a href="' .
-                htmlspecialchars($this->doc->issueCommand('&cmd[' . $table . '][' . $row['uid'] . '][delete]=1')) .
-                '">' .
-                IconUtility::getSpriteIcon(
-                    'actions-edit-delete',
-                    array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:cm.delete', true))
-                ) . '</a>';
+                htmlspecialchars(BackendUtility::getLinkToDataHandlerAction(
+                    '&cmd[' . $table . '][' . $row['uid'] . '][delete]=1'
+                ))
+                . '" title="' . $language->sL('LLL:EXT:lang/locallang_core.php:cm.delete', true) . '">'
+                . $iconFactory->getIcon('actions-edit-delete', Icon::SIZE_SMALL) . '</a>';
 
             if ($row['pid'] == -1) {
                 // get page TSconfig
@@ -93,23 +92,23 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
                 );
                 $product->loadData();
 
-                $getVars = ($sysLanguageUid > 0 ? '&L=' . $sysLanguageUid : '') .
-                    '&ADMCMD_vPrev[' . rawurlencode($table . ':' . $row['t3ver_oid']) . ']=' . $row['uid'] .
-                    '&no_cache=1&tx_commerce_pi1[showUid]=' . $product->getUid() .
-                    '&tx_commerce_pi1[catUid]=' . current($product->getMasterparentCategory());
+                $getVars = ($sysLanguageUid > 0 ? '&L=' . $sysLanguageUid : '')
+                    . '&ADMCMD_vPrev[' . rawurlencode($table . ':' . $row['t3ver_oid']) . ']=' . $row['uid']
+                    . '&no_cache=1&tx_commerce_pi1[showUid]=' . $product->getUid()
+                    . '&tx_commerce_pi1[catUid]=' . current($product->getMasterparentCategory());
 
-                $adminLink .= '<a href="#" onclick="' .
-                    htmlspecialchars(
+                $adminLink .= '<a href="#" onclick="'
+                    . htmlspecialchars(
                         BackendUtility::viewOnClick(
                             $previewPageId,
-                            $this->getBackPath(),
+                            '',
                             BackendUtility::BEgetRootLine($row['_REAL_PID']),
                             '',
                             '',
                             $getVars
                         )
                     ) .
-                    '">' . IconUtility::getSpriteIcon('actions-document-view') . '</a>';
+                    '">' . $iconFactory->getIcon('actions-document-view', Icon::SIZE_SMALL) . '</a>';
             }
 
             return $adminLink;
@@ -125,15 +124,5 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
     protected function getLanguageService()
     {
         return $GLOBALS['LANG'];
-    }
-
-    /**
-     * Get back path.
-     *
-     * @return string
-     */
-    protected function getBackPath()
-    {
-        return $GLOBALS['BACK_PATH'];
     }
 }

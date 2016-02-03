@@ -271,7 +271,7 @@ class BasketItem
      */
     public function getEanCode()
     {
-        return $this->article->getEanCode();
+        return $this->article->getEancode();
     }
 
     /**

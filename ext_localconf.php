@@ -213,9 +213,9 @@ $boot = function ($packageKey) {
 
     $typo3ConfVars['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess']['commerce'] =
         \CommerceTeam\Commerce\Hook\SrfeuserregisterPi1Hook::class;
-    $typo3ConfVars['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['deleteAddress']['commerce'] =
+    $typo3ConfVars['EXTCONF']['commerce/Controller/AddressesController']['deleteAddress']['commerce'] =
         \CommerceTeam\Commerce\Hook\Pi4Hooks::class;
-    $typo3ConfVars['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['saveAddress']['commerce'] =
+    $typo3ConfVars['EXTCONF']['commerce/Controller/AddressesController']['saveAddress']['commerce'] =
         \CommerceTeam\Commerce\Hook\Pi4Hooks::class;
 
     // Register dynaflex dca files

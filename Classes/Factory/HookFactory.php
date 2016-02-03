@@ -23,24 +23,19 @@ class HookFactory
 {
     /**
      * Class name map.
-     *
-     * @todo this map needs to be extendes to all supported maps
+     * Extend if mapping for old hook class name is needed
      *
      * @var array
      */
-    protected static $classNameMap = array(
-        'commerce/Controller/ListController' => 'commerce/Classes/Controller/ListController.php',
-        'commerce/Controller/AddressesController' => 'commerce/Classes/Controller/AddressesController.php',
-    );
+    protected static $classNameMap = array();
 
     /**
      * Hook name map.
+     * Extend if mapping for old hook name is needed
      *
      * @var array
      */
-    protected static $hookNameMap = array(
-        'preMakeListView' => 'preRenderListView',
-    );
+    protected static $hookNameMap = array();
 
     /**
      * Get hook objects.

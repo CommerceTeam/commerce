@@ -1455,7 +1455,7 @@ class Product extends AbstractEntity
             if ($this->getT3verOid() > 0
                 && $this->getT3verOid() != $this->uid
                 && (
-                    is_Object($this->getFrontendController())
+                    is_object($this->getFrontendController())
                     && $this->getFrontendController()->beUserLogin
                 )
             ) {

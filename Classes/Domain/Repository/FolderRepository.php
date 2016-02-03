@@ -45,13 +45,15 @@ class FolderRepository
     ) {
         if ($parentTitle) {
             GeneralUtility::deprecationLog(
-                'Creating parent folder is not supported anymore. Please change your code to use createFolder. Parameter will get removed in version 6.'
+                'Creating parent folder is not supported anymore. Please change your code to use createFolder.
+                    Parameter will get removed in version 6.'
             );
         }
 
         if ($executeUpdateUtility) {
             GeneralUtility::deprecationLog(
-                'Executing update utility is not supported anymore. Please change your code to call it on your own. Parameter will get removed in version 6.'
+                'Executing update utility is not supported anymore. Please change your code to call it on your own.
+                    Parameter will get removed in version 6.'
             );
         }
 
@@ -84,7 +86,8 @@ class FolderRepository
      * @return array rows of found extension folders
      * @deprecated since Version 5 will be removed in 6. Please use only getFolder instead
      */
-    public static function getFolders($module = COMMERCE_EXTKEY, $pid = 0, $title = '') {
+    public static function getFolders($module = COMMERCE_EXTKEY, $pid = 0, $title = '')
+    {
         GeneralUtility::logDeprecatedFunction();
         $row = self::getFolder($module, $pid, $title);
         return isset($row['uid']) ? array($row['uid'] => $row) : array();

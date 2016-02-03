@@ -14,11 +14,11 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -644,10 +644,11 @@ class CommandMapHooks
      */
     protected function copyProductTanslations($oldProductUid, $newProductUid)
     {
-        $database = $this->getDatabaseConnection();
-        $backendUser = $this->getBackendUser();
-
-        $products = $database->exec_SELECTgetRows('*', 'tx_commerce_products', 'l18n_parent = ' . $oldProductUid);
+        $products = $this->getDatabaseConnection()->exec_SELECTgetRows(
+            '*',
+            'tx_commerce_products',
+            'l18n_parent = ' . $oldProductUid
+        );
 
         foreach ($products as $product) {
             $oldTranslationProductUid = $product['uid'];
@@ -658,9 +659,8 @@ class CommandMapHooks
              * @var DataHandler
              */
             $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-            $tce->stripslashes_values = 0;
 
-            $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
+            $tcaDefaultOverride = $this->getBackendUser()->getTSConfigProp('TCAdefaults');
             if (is_array($tcaDefaultOverride)) {
                 $tce->setDefaultsFromUserTS($tcaDefaultOverride);
             }
@@ -905,6 +905,8 @@ class CommandMapHooks
     protected function error($error)
     {
         $language = $this->getLanguageService();
+        /** @var IconFactory $iconFactory */
+        $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
 
         /**
          * Document template.
@@ -912,7 +914,6 @@ class CommandMapHooks
          * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $errorDocument
          */
         $errorDocument = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
-        $errorDocument->backPath = '';
 
         $errorHeadline = $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:error', 1);
         $submitLabel = $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:continue', 1);
@@ -928,7 +929,7 @@ class CommandMapHooks
 					<td colspan="2" align="center"><strong>' . $errorHeadline . '</strong></td>
 				</tr>
 				<tr class="bgColor4">
-					<td valign="top">' . IconUtility::getSpriteIcon('status-dialog-error') . '</td>
+					<td valign="top">' . $iconFactory->getIcon('status-dialog-error', Icon::SIZE_SMALL) . '</td>
 					<td>' . $language->sL($error, 0) . '</td>
 				</tr>
 				<tr>

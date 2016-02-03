@@ -14,7 +14,6 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -584,7 +583,7 @@ class DataMapHooks
      */
     protected function postProcessCategory($status, $table, $id, array &$fieldArray, DataHandler $pObj)
     {
-        $backendUser = $this->getBackendUser();
+        $backendUserData = $this->getBackendUser()->user;
 
         // Will be called for every Category that is in the datamap - so at this time
         // we only need to worry about the current $id item
@@ -623,7 +622,7 @@ class DataMapHooks
                  * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
                  */
                 $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
-                $mount->init((int) $backendUser->user['uid']);
+                $mount->init((int) $backendUserData['uid']);
 
                 // check
                 if (!$category->isPermissionSet('edit') || !$mount->isInCommerceMounts($category->getUid())) {
@@ -656,7 +655,7 @@ class DataMapHooks
 
             // add permissions for current user
             if ($status == 'new') {
-                $fieldArray['perms_userid'] = $backendUser->user['uid'];
+                $fieldArray['perms_userid'] = $backendUserData['uid'];
                 // 31 grants every right
                 $fieldArray['perms_user'] = 31;
             }
@@ -692,7 +691,7 @@ class DataMapHooks
                      * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
                      */
                     $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
-                    $mount->init((int) $backendUser->user['uid']);
+                    $mount->init((int) $backendUserData['uid']);
 
                     // if the user has no right to see one of the parent categories or its not
                     // in the mounts it would miss afterwards
@@ -714,7 +713,7 @@ class DataMapHooks
                  * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
                  */
                 $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
-                $mount->init((int) $backendUser->user['uid']);
+                $mount->init((int) $backendUserData['uid']);
 
                 if ($mount->isInCommerceMounts(0)) {
                     // assign the root as the parent category if it is empty
@@ -757,7 +756,7 @@ class DataMapHooks
                      * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
                      */
                     $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
-                    $mount->init((int) $backendUser->user['uid']);
+                    $mount->init((int) $backendUserData['uid']);
 
                     // abort if the parent category is not in the webmounts
                     if (!$mount->isInCommerceMounts($uid)) {
@@ -839,6 +838,7 @@ class DataMapHooks
                     $tmpParents = null;
                     $i = 1000;
 
+                    /** @var \CommerceTeam\Commerce\Domain\Model\Category $cat */
                     while (!is_null($cat = @array_pop($tmpCats))) {
                         // Prevent endless recursion
                         if ($i < 0) {
@@ -1526,7 +1526,7 @@ class DataMapHooks
                 if (is_array($pXml['data']['sDEF']['lDEF'])) {
                     foreach (array_keys($pXml['data']['sDEF']['lDEF']) as $key) {
                         $data = array();
-                        $uid = $this->belib->getUIdFromKey($key, $data);
+                        $uid = $this->belib->getUidFromKey($key, $data);
                         if (!in_array($uid, $ct4Attributes)) {
                             unset($pXml['data']['sDEF']['lDEF'][$key]);
                         }

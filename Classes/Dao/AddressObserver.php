@@ -131,7 +131,7 @@ class AddressObserver
                 $msg = $parentObject->pi_getLL('error_deleted_address_is_default');
             }
             if ($parentObject instanceof DataHandler) {
-                $msg = self::getLanguageService()->sl(
+                $msg = self::getLanguageService()->sL(
                     'LLL:EXT:commerce/Resources/Private/Language/locallang.xml:error_deleted_address_is_default'
                 );
             }

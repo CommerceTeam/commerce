@@ -176,8 +176,8 @@ class OrdermailHooks
         $templates = $this->generateTemplateArray($mailkind, $pid, $detaildata['order_sys_language_uid']);
 
         foreach ($templates as $template) {
-            $this->templateCode = GeneralUtility::getURL($this->templatePath . $template['mailtemplate']);
-            $this->templateCodeHtml = GeneralUtility::getURL($this->templatePath . $template['htmltemplate']);
+            $this->templateCode = GeneralUtility::getUrl($this->templatePath . $template['mailtemplate']);
+            $this->templateCodeHtml = GeneralUtility::getUrl($this->templatePath . $template['htmltemplate']);
 
             $settingsFactory = SettingsFactory::getInstance();
             $senderemail = $template['senderemail'] == '' ?
@@ -192,6 +192,8 @@ class OrdermailHooks
             } else {
                 $sendername = $template['sendername'];
             }
+
+            $pluginConfig = $this->getTypoScriptFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi3'];
 
             // Mailconf for tx_commerce_div::sendMail($mailconf);
             $mailconf = array(
@@ -211,7 +213,7 @@ class OrdermailHooks
                 'recipient_copy' => $template['BCC'],
                 'fromEmail' => $senderemail,
                 'fromName' => $sendername,
-                'replyTo' => $this->cObj->conf['usermail.']['from'],
+                'replyTo' => $pluginConfig['usermail.']['from'],
                 'priority' => '3',
                 'callLocation' => 'processOrdermails',
             );
@@ -347,5 +349,13 @@ class OrdermailHooks
     protected function getDatabaseConnection()
     {
         return $GLOBALS['TYPO3_DB'];
+    }
+
+    /**
+     * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $frontend
+     */
+    protected function getTypoScriptFrontendController()
+    {
+        return $GLOBALS['TSFE'];
     }
 }

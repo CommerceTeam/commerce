@@ -16,8 +16,10 @@ namespace CommerceTeam\Commerce\Hook;
 
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class \CommerceTeam\Commerce\Hook\LocalRecordListHooks.
@@ -78,6 +80,8 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
      */
     public function renderListHeader($table, $currentIdList, $headerColumns, &$parentObject)
     {
+        /** @var IconFactory $iconFactory */
+        $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $language = $this->getLanguageService();
 
         if (get_class($parentObject) == \CommerceTeam\Commerce\ViewHelpers\OrderRecordList::class) {
@@ -130,9 +134,9 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
                                 && $parentObject->showNewRecLink($table)
                             ) {
                                 if ($table == 'pages') {
-                                    $sprite = IconUtility::getSpriteIcon('actions-page-new');
+                                    $sprite = $iconFactory->getIcon('actions-page-new', Icon::SIZE_SMALL);
                                 } else {
-                                    $sprite = IconUtility::getSpriteIcon('actions-document-new');
+                                    $sprite = $iconFactory->getIcon('actions-document-new', Icon::SIZE_SMALL);
                                 }
 
                                 if ($table == 'tt_content' && $parentObject->newWizards) {
@@ -153,7 +157,7 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
                                     ) . '" title="' . $language->getLL('new', true) . '">' . $sprite . '</a>';
                                 } elseif ($table == 'pages' && $parentObject->newWizards) {
                                     $icon = '<a href="' . htmlspecialchars(
-                                        $parentObject->backPath . 'db_new.php?id=' . $parentObject->id .
+                                        'db_new.php?id=' . $parentObject->id .
                                         '&pagesOnly=1&returnUrl=' .
                                         rawurlencode(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI'))
                                     ) . '" title="' . $language->getLL('new', true) . '">' . $sprite . '</a>';
@@ -165,7 +169,7 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
                                     }
 
                                     $icon = '<a href="#" onclick="' . htmlspecialchars(
-                                        BackendUtility::editOnClick($params, $parentObject->backPath, -1)
+                                        BackendUtility::editOnClick($params, '', -1)
                                     ) . '" title="' . $language->getLL('new', true) . '">' . $sprite . '</a>';
                                 }
                             }
@@ -180,9 +184,9 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
                                 $params = '&edit[' . $table . '][' . $editIdList . ']=edit&columnsOnly=' .
                                     implode(',', $parentObject->fieldArray) . '&disHelp=1';
                                 $icon .= '<a href="#" onclick="' . htmlspecialchars(
-                                    BackendUtility::editOnClick($params, $parentObject->backPath, -1)
+                                    BackendUtility::editOnClick($params, '', -1)
                                 ) . '" title="' . $language->getLL('editShownColumns', true) . '">' .
-                                    IconUtility::getSpriteIcon('actions-document-open') . '</a>';
+                                    $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL) . '</a>';
                             }
                             // add an empty entry, so column count fits again after moving this into $icon
                             $headerColumns[$fCol] = '&nbsp;';
@@ -204,8 +208,10 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
                             if ($parentObject->clipNumPane()) {
                                 $headerColumns[$fCol] .= '<a href="' . htmlspecialchars(
                                     $parentObject->listURL('', -1) . '&duplicateField=' . $fCol
-                                ) . '" title="' . $language->getLL('clip_duplicates', true) .
-                                    '">' .  IconUtility::getSpriteIcon('actions-document-duplicates-select') . '</a>';
+                                ) . '" title="' . $language->getLL('clip_duplicates', true)
+                                    . '">'
+                                    .  $iconFactory->getIcon('actions-document-duplicates-select', Icon::SIZE_SMALL)
+                                    . '</a>';
                             }
 
                             // If the table can be edited, add link for
@@ -225,9 +231,9 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
                                     rtrim(trim($language->sL(BackendUtility::getItemLabel($table, $fCol))), ':')
                                 );
                                 $headerColumns[$fCol] .= '<a href="#" onclick="' . htmlspecialchars(
-                                    BackendUtility::editOnClick($params, $parentObject->backPath, -1)
+                                    BackendUtility::editOnClick($params, '', -1)
                                 ) . '" title="' . htmlspecialchars($iTitle) . '">' .
-                                    IconUtility::getSpriteIcon('actions-document-open') . '</a>';
+                                    $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL) . '</a>';
                             }
                         }
                         $headerColumns[$fCol] .= $parentObject->addSortLink(
