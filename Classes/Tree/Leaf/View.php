@@ -15,7 +15,8 @@ namespace CommerceTeam\Commerce\Tree\Leaf;
  */
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -47,27 +48,6 @@ class View extends Base
      * @var string
      */
     protected $table;
-
-    /**
-     * Iconpath and Iconname.
-     *
-     * @var string
-     */
-    protected $iconPath = '../typo3conf/ext/commerce/Resources/Public/Icons/Table/';
-
-    /**
-     * Icon name.
-     *
-     * @var string
-     */
-    protected $iconName;
-
-    /**
-     * Back Path.
-     *
-     * @var string
-     */
-    protected $backPath = '../../../../../../typo3/';
 
     /**
      * Prefix for DOM Id.
@@ -102,7 +82,7 @@ class View extends Base
      *
      * @var string
      */
-    protected $rootIconName = 'commerce_globus.gif';
+    protected $rootIconName = 'extensions-commerce-globus';
 
     /**
      * Command.
@@ -169,27 +149,19 @@ class View extends Base
     protected $parentCategory = 0;
 
     /**
-     * Initialises the variables iconPath and backPath.
+     * @var IconFactory
+     */
+    protected $iconFactory;
+
+    /**
+     * Constructor
      *
      * @return self
      */
     public function __construct()
     {
         parent::__construct();
-
-        $rootPathT3 = GeneralUtility::getIndpEnv('TYPO3_SITE_PATH');
-
-            // If we don't have any data, set /
-        if (empty($rootPathT3)) {
-            $rootPathT3 = '/';
-        }
-
-        if ($this->getBackPath()) {
-            $this->backPath = $this->getBackPath();
-        } else {
-            $this->backPath = $rootPathT3 . TYPO3_mainDir;
-        }
-        $this->iconPath = $this->backPath . PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/';
+        $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
     }
 
     /**
@@ -307,8 +279,6 @@ class View extends Base
 
     /**
      * Get icon for the row.
-     * If $this->iconPath and $this->iconName is set,
-     * try to get icon based on those values.
      *
      * @param array $row Item row.
      *
@@ -316,23 +286,17 @@ class View extends Base
      */
     public function getIcon(array $row)
     {
-        if ($this->iconPath && $this->iconName) {
-            $icon = '<img' . IconUtility::skinImg('', $this->iconPath . $this->iconName, 'width="18" height="16"') .
-                ' alt=""' .
-                ($this->showDefaultTitleAttribute ? ' title="UID: ' . $row['uid'] . '"' : '') . ' />';
-        } else {
-            $icon = IconUtility::getSpriteIconForRecord($this->table, $row, array(
-                'title' => ($this->showDefaultTitleAttribute ? 'UID: ' . $row['uid'] : $this->getTitleAttrib($row)),
-                'class' => 'c-recIcon',
-            ));
-        }
+        $icon = $this->iconFactory->getIconForRecord(
+            'tcarecords-' . $this->table . '-default',
+            $row,
+            Icon::SIZE_SMALL
+        );
 
         return $this->wrapIcon($icon, $row);
     }
 
     /**
-     * Get the icon for the root
-     * $this->iconPath and $this->rootIconName have to be set.
+     * Get the icon for the root $this->rootIconName have to be set.
      *
      * @param array $row Data
      *
@@ -352,8 +316,7 @@ class View extends Base
             return '';
         }
 
-        $icon = '<img' . IconUtility::skinImg($this->iconPath, $this->rootIconName, 'width="18" height="16"') .
-            ' title="Root" alt="" />';
+        $icon = $this->iconFactory->getIcon($this->rootIconName, Icon::SIZE_SMALL);
 
         return $this->wrapIcon($icon, $row);
     }
@@ -522,8 +485,7 @@ class View extends Base
         $plusMinus = $hasChildren ? $plusMinus : '';
         $bottom = ($isLast) ? '-end' : '';
         $bottom = ($isBank) ? '' : $bottom;
-        $icon = '<img alt="" src="' . $this->backPath . 'clear.gif" class="x-tree-ec-icon x-tree-elbow' . $bottom .
-            $plusMinus . '">';
+        $icon = '<span class="x-tree-ec-icon x-tree-elbow' . $bottom . $plusMinus . '"></span';
 
         if ($hasChildren) {
             // Calculate the command
@@ -585,25 +547,5 @@ class View extends Base
         $js = htmlspecialchars('Tree.load(' . GeneralUtility::quoteJSvalue($cmd) . ', ' . (int) $isExpand . ', this);');
 
         return '<a class="pm" onclick="' . $js . '">' . $icon . '</a>';
-    }
-
-    /**
-     * Get back path.
-     *
-     * @return string
-     */
-    protected function getBackPath()
-    {
-        return $GLOBALS['BACK_PATH'];
-    }
-
-    /**
-     * Get document template.
-     *
-     * @return \TYPO3\CMS\Backend\Template\DocumentTemplate
-     */
-    protected function getDocumentTemplate()
-    {
-        return $GLOBALS['TBE_TEMPLATE'];
     }
 }

@@ -13,6 +13,18 @@ $boot = function ($packageKey) {
             '<INCLUDE_TYPOSCRIPT: source="FILE:EXT:' . $packageKey . '/Configuration/PageTS/ModWizards.ts">'
         );
 
+
+        /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
+        $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Imaging\IconRegistry::class
+        );
+        $iconRegistry->registerIcon(
+            'extensions-commerce-globus',
+            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/commerce_globus.gif']
+        );
+
+
         if (!isset($GLOBALS['TBE_MODULES']['commerce'])) {
             $tbeModules = array();
             foreach ($GLOBALS['TBE_MODULES'] as $key => $val) {

@@ -18,6 +18,7 @@ use CommerceTeam\Commerce\Factory\SettingsFactory;
 use CommerceTeam\Commerce\Utility\BackendUtility as CommerceBackendUtility;
 use TYPO3\CMS\Backend\ClickMenu\ClickMenu;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -536,7 +537,7 @@ class ClickmenuUtility extends ClickMenu
 
         return $this->linkItem(
             $this->label('new'),
-            $this->excludeIcon(\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-new')),
+            $this->excludeIcon($this->iconFactory->getIcon('actions-document-new', Icon::SIZE_SMALL)),
             $editOnClick . 'return hideCM();'
         );
     }

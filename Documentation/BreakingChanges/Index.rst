@@ -58,6 +58,7 @@ Replaced
 
 Since Version 5
 ---------------
+
 Removed
 _______
 - Both the ClassAliasMap.php and LegacyClassesForIde.php. If you need still need to know which class was renamed into

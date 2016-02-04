@@ -119,7 +119,9 @@ class BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserH
     protected function initTree()
     {
         // initialize the tree
-        $this->treeObj = GeneralUtility::makeInstance(\CommerceTeam\Commerce\ViewHelpers\Browselinks\CategoryTree::class);
+        $this->treeObj = GeneralUtility::makeInstance(
+            \CommerceTeam\Commerce\ViewHelpers\Browselinks\CategoryTree::class
+        );
         $this->treeObj->init();
     }
 

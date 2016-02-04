@@ -1653,7 +1653,6 @@ class BackendUtility
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
         $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-        $tce->stripslashes_values = 0;
 
         $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
         if (is_array($tcaDefaultOverride)) {
@@ -1740,7 +1739,6 @@ class BackendUtility
              * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
              */
             $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-            $tce->stripslashes_values = 0;
 
             $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
             if (is_array($tcaDefaultOverride)) {
@@ -1919,7 +1917,7 @@ class BackendUtility
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
         $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-        $tce->stripslashes_values = 0;
+
         // set workspace bypass if requested
         $tce->bypassWorkspaceRestrictions = $ignoreWs;
 
@@ -2057,7 +2055,7 @@ class BackendUtility
              * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
              */
             $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-            $tce->stripslashes_values = 0;
+
             // set workspace bypass if requested
             $tce->bypassWorkspaceRestrictions = $ignoreWs;
 
@@ -2176,7 +2174,6 @@ class BackendUtility
              * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
              */
             $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-            $tce->stripslashes_values = 0;
 
             $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
             if (is_array($tcaDefaultOverride)) {
@@ -2308,7 +2305,6 @@ class BackendUtility
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
         $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-        $tce->stripslashes_values = 0;
 
         $backendUser = self::getBackendUser();
 
@@ -3198,7 +3194,6 @@ class BackendUtility
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
         $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-        $tce->stripslashes_values = 0;
 
         $backendUser = self::getBackendUser();
 
@@ -3292,7 +3287,6 @@ class BackendUtility
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
         $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-        $tce->stripslashes_values = 0;
 
         $backendUser = self::getBackendUser();
 
@@ -3490,7 +3484,6 @@ class BackendUtility
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
         $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-        $tce->stripslashes_values = 0;
 
         $backendUser = self::getBackendUser();
 

@@ -367,11 +367,9 @@ class ArticleCreatorUtility
         if (!empty($valueMatrix)) {
             $onClick = 'onclick="updateArticleList()"';
             $selectAllRow = '<tr><td><input type="checkbox" id="selectAllArticles" ' . $onClick . '/></td>';
-            $selectAllRow .= '<td colspan="' . ($colCount - 1) . '">' .
-                $fObj->sL(
-                    'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_all_articles'
-                ) .
-                '</td></tr>';
+            $selectAllRow .= '<td colspan="' . ($colCount - 1) . '">' . $fObj->sL(
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_all_articles'
+            ) . '</td></tr>';
         }
 
         $result = '<table border="0">' . $selectJs . $headRow . $emptyRow . $selectAllRow . $resultRows . '</table>';
