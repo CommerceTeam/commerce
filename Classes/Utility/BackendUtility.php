@@ -2607,9 +2607,8 @@ class BackendUtility
             if ($backendUser->isAdmin()) {
                 return ' 1=1';
             }
-
-            // Make sure it's int.
             $perms = (int) $perms;
+            // Make sure it's integer.
             $str = ' (' .
                 // Everybody
                 '(tx_commerce_categories.perms_everybody & ' . $perms . ' = ' . $perms . ')' .

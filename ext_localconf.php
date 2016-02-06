@@ -158,19 +158,6 @@ $boot = function ($packageKey) {
         'user,group'
     );
 
-    // Add linkhandler for "commerce"
-    $scOptions['LinkBrowser']['hooks']['commerce'] = array(
-        'handler' => \CommerceTeam\Commerce\Hook\LinkhandlerHooks::class,
-    );
-    $scOptions['typo3/class.browse_links.php']['browseLinksHook']['commerce'] =
-        \CommerceTeam\Commerce\Hook\BrowselinksHooks::class;
-    $scOptions['ext/rtehtmlarea/mod3/class.tx_rtehtmlarea_browse_links.php']['browseLinksHook']['commerce'] =
-        \CommerceTeam\Commerce\Hook\BrowselinksHooks::class;
-
-    // Add ajax listener for tree in linkcommerce
-    $typo3ConfVars['BE']['AJAX'][\CommerceTeam\Commerce\Hook\BrowselinksHooks::class . '::ajaxExpandCollapse'] =
-        \CommerceTeam\Commerce\Hook\BrowselinksHooks::class . '->ajaxExpandCollapse';
-
     // Hooks for datamap procesing
     // For processing the order sfe, when changing the pid
     $scOptions['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['commerce'] =

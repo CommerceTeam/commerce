@@ -12,6 +12,12 @@ Deprecated since 5.x
 ====================
 FolderRepository::getFolders should not be used anymore, please use ::getFolder instead
 
+LinkHandling for commerce changed to commerce|c:\{uid\}|p:\{uid\}.
+The old format commerce:tx_commerce_products:\{uid\}|tx_commerce_categories:\{uid\}
+or commerce:tx_commerce_categories:\{uid\}|tx_commerce_products:\{uid\} get converted while link picking
+and rendering in frontend for one version. To fix these kind of urls please use the SQL query:
+// @todo add query
+
 
 Removed methods since 5.x
 =========================

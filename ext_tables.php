@@ -2,6 +2,8 @@
 defined('TYPO3_MODE') or die();
 
 $boot = function ($packageKey) {
+    $scOptions = &$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'];
+
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
         $packageKey,
         'Configuration/TypoScript/',
@@ -13,6 +15,25 @@ $boot = function ($packageKey) {
             '<INCLUDE_TYPOSCRIPT: source="FILE:EXT:' . $packageKey . '/Configuration/PageTS/ModWizards.ts">'
         );
 
+
+        // Add browselinks controller hook for "commerce"
+        $scOptions['LinkBrowser']['hooks']['1454567334718'] = array(
+            'handler' => \CommerceTeam\Commerce\Hook\BrowseLinksHook::class,
+        );
+
+
+        // register commerce link handlers
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('
+        TCEMAIN.linkHandler {
+            commerce {
+                handler = CommerceTeam\\Commerce\\LinkHandler\\CommerceLinkHandler
+                label = LLL:EXT:commerce/Resources/Private/Language/locallang_mod_main.xlf:mlang_tabs_tab
+                displayAfter = page
+                displayBefore = file
+                scanAfter = page
+            }
+        }
+        ');
 
         /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
         $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
@@ -38,7 +59,7 @@ $boot = function ($packageKey) {
 
         if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('t3skin')) {
             $presetSkinImgs = is_array($GLOBALS['TBE_STYLES']['skinImg']) ? $GLOBALS['TBE_STYLES']['skinImg'] : array();
-
+            // @todo fix icon overload
             $GLOBALS['TBE_STYLES']['skinImg'] = array_merge(
                 $presetSkinImgs,
                 array(
@@ -232,6 +253,7 @@ $boot = function ($packageKey) {
             \CommerceTeam\Commerce\Controller\PermissionAjaxController::class . '->dispatch'
         );
 
+        // @todo change to icon api
         // commerce icon
         $GLOBALS['TBE_STYLES']['spritemanager']['singleIcons']['tcarecords-pages-contains-commerce'] =
             PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/commerce_folder.gif';
