@@ -182,9 +182,9 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         /**
          * Order record list.
          *
-         * @var \CommerceTeam\Commerce\ViewHelpers\OrderRecordList $dblist
+         * @var \CommerceTeam\Commerce\RecordList\OrderRecordList $dblist
          */
-        $dblist = GeneralUtility::makeInstance(\CommerceTeam\Commerce\ViewHelpers\OrderRecordList::class);
+        $dblist = GeneralUtility::makeInstance(\CommerceTeam\Commerce\RecordList\OrderRecordList::class);
         $dblist->script = BackendUtility::getModuleUrl('commerce_orders', array(), '');
         $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
         $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];

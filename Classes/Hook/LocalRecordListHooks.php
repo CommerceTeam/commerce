@@ -34,7 +34,7 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
      * @param string $table Database table
      * @param array $row Record row
      * @param array $cells Clip-icons to get modified
-     * @param \CommerceTeam\Commerce\ViewHelpers\CategoryRecordList $parentObject Parent
+     * @param \CommerceTeam\Commerce\RecordList\CategoryRecordList $parentObject Parent
      *
      * @return array the modified clip-icons
      */
@@ -59,7 +59,7 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
      * @param string $table The current database table
      * @param array $row The current record row
      * @param array $cells The default control-icons to get modified
-     * @param \CommerceTeam\Commerce\ViewHelpers\CategoryRecordList $parentObject Parent
+     * @param \CommerceTeam\Commerce\RecordList\CategoryRecordList $parentObject Parent
      *
      * @return array the modified control-icons
      */
@@ -74,7 +74,7 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
      * @param string $table Table
      * @param array $currentIdList Current id list
      * @param array $headerColumns Header columns
-     * @param \CommerceTeam\Commerce\ViewHelpers\OrderRecordList $parentObject Parent
+     * @param \CommerceTeam\Commerce\RecordList\OrderRecordList $parentObject Parent
      *
      * @return array
      */
@@ -84,7 +84,7 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $language = $this->getLanguageService();
 
-        if (get_class($parentObject) == \CommerceTeam\Commerce\ViewHelpers\OrderRecordList::class) {
+        if (get_class($parentObject) == \CommerceTeam\Commerce\RecordList\OrderRecordList::class) {
             $icon = '';
             foreach ($parentObject->fieldArray as $fCol) {
                 // Calculate users permissions to edit records in the table:

@@ -1,5 +1,5 @@
 <?php
-namespace CommerceTeam\Commerce\ViewHelpers;
+namespace CommerceTeam\Commerce\RecordList;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -24,10 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Extension of DatabaseRecordList to render category and product lists.
- *
- * Class \CommerceTeam\Commerce\ViewHelpers\CategoryRecordList
- *
- * @author 2005-2012 Franz Holzinger <kontakt@fholzinger.com>
  */
 class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList
 {

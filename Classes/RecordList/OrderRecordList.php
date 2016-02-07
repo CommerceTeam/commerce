@@ -1,5 +1,5 @@
 <?php
-namespace CommerceTeam\Commerce\ViewHelpers;
+namespace CommerceTeam\Commerce\RecordList;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -23,10 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Renders order listin the BE order module.
- *
- * Class \CommerceTeam\Commerce\ViewHelpers\OrderRecordList
- *
- * @author 2005-2013 Daniel Schöttgen <ds@marketing-factory.de>
  */
 class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList
 {
