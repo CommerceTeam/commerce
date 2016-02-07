@@ -41,8 +41,16 @@ $boot = function ($packageKey) {
             \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
             ['source' => 'EXT:commerce/Resources/Public/Icons/Table/commerce_globus.gif']
         );
+        // icon to show for system folders with contains commerce selected
+        $iconRegistry->registerIcon(
+            'apps-pagetree-folder-contains-commerce',
+            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/commerce_folder.gif']
+        );
+        $GLOBALS['TCA']['pages']['ctrl']['typeicon_classes']['contains-commerce'] =
+            'apps-pagetree-folder-contains-commerce';
 
-
+        // add commerce main module after file module
         if (!isset($GLOBALS['TBE_MODULES']['commerce'])) {
             $tbeModules = array();
             foreach ($GLOBALS['TBE_MODULES'] as $key => $val) {
@@ -52,21 +60,6 @@ $boot = function ($packageKey) {
                 }
             }
             $GLOBALS['TBE_MODULES'] = $tbeModules;
-        }
-
-        if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('t3skin')) {
-            $presetSkinImgs = is_array($GLOBALS['TBE_STYLES']['skinImg']) ? $GLOBALS['TBE_STYLES']['skinImg'] : array();
-            // @todo fix icon overload
-            $GLOBALS['TBE_STYLES']['skinImg'] = array_merge(
-                $presetSkinImgs,
-                array(
-                    'MOD:commerce_permission/../../../Resources/Public/Icons/mod_access.gif' => array(
-                        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('t3skin')
-                        . 'icons/module_web_perms.png',
-                        'width="24" height="24"',
-                    ),
-                )
-            );
         }
 
         // add main module
@@ -121,7 +114,7 @@ $boot = function ($packageKey) {
                 'labels' => array(
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_access.xml',
                     'tabs_images' => [
-                        'tab' => 'EXT:commerce/Resources/Public/Icons/mod_access.gif'
+                        'tab' => 'EXT:beuser/Resources/Public/Icons/module-permission.svg'
                     ],
                 ),
                 'navigationFrameModule' => 'CommerceTeam_commerce_CategoryNavigation',
@@ -147,7 +140,6 @@ $boot = function ($packageKey) {
                 'navigationFrameModule' => 'CommerceTeam_commerce_OrderNavigation',
             ]
         );
-
 
         // Statistic Module
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
@@ -249,13 +241,6 @@ $boot = function ($packageKey) {
             'CommerceTeam_Commerce_PermissionAjaxController::dispatch',
             \CommerceTeam\Commerce\Controller\PermissionAjaxController::class . '->dispatch'
         );
-
-        // @todo change to icon api
-        // commerce icon
-        $GLOBALS['TBE_STYLES']['spritemanager']['singleIcons']['tcarecords-pages-contains-commerce'] =
-            PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/commerce_folder.gif';
-        $GLOBALS['TCA']['pages']['ctrl']['typeicon_classes']['contains-commerce'] =
-            'tcarecords-pages-contains-commerce';
 
         // Add default User TS config
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig(
