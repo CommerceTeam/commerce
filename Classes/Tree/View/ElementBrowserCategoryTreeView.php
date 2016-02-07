@@ -82,7 +82,7 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
     public function wrapTitle($title, $v, $ext_pArrPages = false)
     {
         if ($this->ext_isLinkable($v['uid'])) {
-            return '<span class="list-tree-title"><a href="#" class="t3js-pageLink" data-id="commerce|c:'
+            return '<span class="list-tree-title"><a href="#" class="t3js-pageLink" data-id="commerce:c:'
                 . (int)$v['uid'] . '">' . $title . '</a></span>';
         } else {
             return '<span class="list-tree-title text-muted">' . $title . '</span>';
@@ -147,9 +147,8 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
                 . CoreBackendUtility::versioningPlaceholderClause($this->table) . $this->clause;
             return $db->exec_SELECTcountRows(
                 'uid',
-                $this->table
-                    . ' INNER JOIN tx_commerce_categories_parent_category_mm AS mm
-                        ON ' . $this->table . '.uid = mm.uid_local',
+                $this->table . ' INNER JOIN tx_commerce_categories_parent_category_mm AS mm
+                    ON ' . $this->table . '.uid = mm.uid_local',
                 $where
             );
         }
@@ -284,23 +283,28 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
 
 
     /**
-     * Checks if the page id, $id, is found within the webmounts set up for the user.
-     * This should ALWAYS be checked for any page id a user works with, whether it's about reading, writing or whatever.
+     * Checks if the category id, $id, is found within the webmounts set up for the user.
+     * This should ALWAYS be checked for any category id a user works with, whether it's about reading,
+     * writing or whatever.
      * The point is that this will add the security that a user can NEVER touch parts outside his mounted
-     * pages in the page tree. This is otherwise possible if the raw page permissions allows for it.
+     * categories in the category tree. This is otherwise possible if the raw page permissions allows for it.
      * So this security check just makes it easier to make safe user configurations.
      * If the user is admin OR if this feature is disabled
      * (fx. by setting TYPO3_CONF_VARS['BE']['lockBeUserToDBmounts']=0) then it returns "1" right away
-     * Otherwise the function will return the uid of the webmount which was first found in the rootline of the input page $id
+     * Otherwise the function will return the uid of the webmount which was first found in the rootline of the
+     * input category $id
      *
-     * @param int $id Page ID to check
-     * @param string $readPerms Content of "->getPagePermsClause(1)" (read-permissions). If not set, they will be internally calculated (but if you have the correct value right away you can save that database lookup!)
+     * @param int $id category ID to check
+     * @param string $readPerms Content of "->getPagePermsClause(1)" (read-permissions). If not set,
+     *  they will be internally calculated (but if you have the correct value right away you can save
+     *  that database lookup!)
      * @param bool|int $exitOnError If set, then the function will exit with an error message.
      * @throws \RuntimeException
      * @return int|NULL The page UID of a page in the rootline that matched a mount point
      */
     protected function isInWebMount($id, $readPerms = '', $exitOnError = 0)
     {
+        // @todo check if this method is fully functional
         if (!$GLOBALS['TYPO3_CONF_VARS']['BE']['lockBeUserToDBmounts'] || $this->getBackendUser()->isAdmin()) {
             return 1;
         }

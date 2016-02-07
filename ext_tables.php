@@ -10,23 +10,20 @@ $boot = function ($packageKey) {
         'COMMERCE'
     );
 
+    // register for RteHtmlParser::TS_links_rte and ContentObjectRenderer::resolveMixedLinkParameter
+    $scOptions['tslib/class.tslib_content.php']['typolinkLinkHandler']['commerce'] =
+        \CommerceTeam\Commerce\LinkHandler\CommerceLinkHandler::class;
+
     if (TYPO3_MODE == 'BE') {
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
             '<INCLUDE_TYPOSCRIPT: source="FILE:EXT:' . $packageKey . '/Configuration/PageTS/ModWizards.ts">'
         );
 
-
-        // Add browselinks controller hook for "commerce"
-        $scOptions['LinkBrowser']['hooks']['1454567334718'] = array(
-            'handler' => \CommerceTeam\Commerce\Hook\BrowseLinksHook::class,
-        );
-
-
         // register commerce link handlers
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('
         TCEMAIN.linkHandler {
             commerce {
-                handler = CommerceTeam\\Commerce\\LinkHandler\\CommerceLinkHandler
+                handler = ' . \CommerceTeam\Commerce\LinkHandler\CommerceLinkHandler::class . '
                 label = LLL:EXT:commerce/Resources/Private/Language/locallang_mod_main.xlf:mlang_tabs_tab
                 displayAfter = page
                 displayBefore = file

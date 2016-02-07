@@ -72,26 +72,25 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
 
         $url = $linkParts['url'];
 
-        // @deprecated Remove these replacements in Version 6 they are only for compatibility
-        $url = str_replace('commerce:', 'commerce|', $url);
-        $url = str_replace('tx_commerce_categories', 'c', $url);
-        $url = str_replace('tx_commerce_products', 'p', $url);
+        $url = $this->fixDeprecatedParameter($url, 'picking');
 
-        $parts = explode('|', $url);
-        if ($parts[0] != 'commerce' || count($parts) < 2) {
+        if (strpos($url, 'commerce:') === false) {
             return false;
         }
 
+        $url = str_replace('commerce:', '', $url);
+        $parts = explode('|', $url);
+
         $this->linkParts = $linkParts;
 
-        for ($i = 1; $i < count($parts); $i++) {
-            if (strpos($parts[$i], 'c') !== false) {
-                $categoryParts = explode(':', $parts[$i]);
+        foreach ($parts as $part) {
+            if (strpos($part, 'c') !== false) {
+                $categoryParts = explode(':', $part);
                 $this->linkParts['category'] = (int)$categoryParts[1];
             }
 
-            if (strpos($parts[$i], 'p') !== false) {
-                $productParts = explode(':', $parts[$i]);
+            if (strpos($part, 'p') !== false) {
+                $productParts = explode(':', $part);
                 $this->linkParts['product'] = (int)$productParts[1];
             }
         }
@@ -140,10 +139,17 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
         if (empty($this->linkParts)) {
             return [];
         }
+
+        $parts = [];
+        if ($this->linkParts['category'] > 0) {
+            $parts[] = 'c:' . $this->linkParts['category'];
+        }
+        if ($this->linkParts['product'] > 0) {
+            $parts[] = 'p:' . $this->linkParts['product'];
+        }
+
         return [
-            'data-current-link' => 'commerce'
-                . ($this->linkParts['category'] > 0 ? '|c:' . $this->linkParts['category'] : '')
-                . ($this->linkParts['product'] > 0 ? '|p:' . $this->linkParts['product'] : '')
+            'data-current-link' => 'commerce:' . implode('|', $parts),
         ];
     }
 
@@ -291,7 +297,7 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
 							' . $icon . '
 						</span>
 						<span class="list-tree-title">
-							<a href="#" class="t3js-pageLink" data-id="commerce|c:' . (int)$expCategoryId
+							<a href="#" class="t3js-pageLink" data-id="commerce:c:' . (int)$expCategoryId
                 . '" data-anchor="|p:' . (int)$row['uid'] . '">
 								'
                 . htmlspecialchars(BackendUtility::getRecordTitle('tx_commerce_products', $row, true)) . '
@@ -319,105 +325,110 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
     }
 
 
-
-
-    // @todo move frontend link rendering methods to appropriate class
-
     /**
-     * Main function.
+     * Main function to render urls in frontend with ContentObjectRenderer::resolveMixedLinkParameter
      *
-     * @param string $linktxt Link text
-     * @param array $conf Configuration
+     * @param string $linkText Link text
+     * @param array $configuration Configuration
      * @param string $linkHandlerKeyword Keyword
      * @param string $linkHandlerValue Value
-     * @param string $linkParameter Link parameter
-     * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $pObj Parent
-
+     * @param string $mixedLinkParameter Link parameter
+     * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObjectRender Parent
+     *
      * @return string
      */
     public function main(
-        $linktxt,
-        array $conf,
+        $linkText,
+        array $configuration,
         $linkHandlerKeyword,
         $linkHandlerValue,
-        $linkParameter,
-        \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer &$pObj
+        $mixedLinkParameter,
+        \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer &$contentObjectRender
     ) {
-        $linkHandlerData = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('|', $linkHandlerValue);
+        if ($linkHandlerKeyword !== 'commerce') {
+            return $linkText;
+        }
+
+        $linkHandlerValue = $this->fixDeprecatedParameter($linkHandlerValue, 'rendering');
+        $parts = explode('|', $linkHandlerValue);
 
         $addparams = '';
-        foreach ($linkHandlerData as $linkData) {
-            $params = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(':', $linkData);
-            if (isset($params[0])) {
-                if ($params[0] == 'tx_commerce_products') {
-                    $addparams .= '&tx_commerce_pi1[showUid]=' . (int) $params[1];
-                } elseif ($params[0] == 'tx_commerce_categories') {
-                    $addparams .= '&tx_commerce_pi1[catUid]=' . (int) $params[1];
-                }
+        foreach ($parts as $part) {
+            if (strpos($part, 'c') !== false) {
+                $categoryParts = explode(':', $part);
+                $addparams .= '&tx_commerce_pi1[catUid]=' . (int)$categoryParts[1];
             }
-            if (isset($params[2])) {
-                if ($params[2] == 'tx_commerce_products') {
-                    $addparams .= '&tx_commerce_pi1[showUid]=' . (int) $params[3];
-                } elseif ($params[2] == 'tx_commerce_categories') {
-                    $addparams .= '&tx_commerce_pi1[catUid]=' . (int) $params[3];
-                }
+
+            if (strpos($part, 'p') !== false) {
+                $productParts = explode(':', $part);
+                $addparams .= '&tx_commerce_pi1[showUid]=' . (int)$productParts[1];
             }
         }
 
-        if (strpos($addparams, 'showUid') === false) {
+        if (!empty($addparams) && strpos($addparams, 'showUid') === false) {
             $addparams .= '&tx_commerce_pi1[showUid]=';
         }
 
-        if (strlen($addparams) <= 0) {
-            return $linktxt;
+        if (!$addparams) {
+            return $linkText;
         }
 
-        /**
-         * Local content object.
-         *
-         * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
-         */
-        $localcObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class
-        );
-
-        $displayPageId = $this->getFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi1.']['overridePid'];
+        /** @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $controller */
+        $controller = $GLOBALS['TSFE'];
+        $displayPageId = $controller->tmpl->setup['plugin.']['tx_commerce_pi1.']['overridePid'];
         if (empty($displayPageId)) {
             $displayPageId = SettingsFactory::getInstance()->getExtConf('previewPageID');
         }
-
-        // remove the first param of '$link_param' (this is the page id wich is
-        // set by $DisplayPID) and add all params left (e.g. css class,
-        // target...) to the value of $lconf['paramter']
-        $linkParamArray = explode(' ', $linkParameter);
-        if (is_array($linkParamArray)) {
-            $linkParamArray = array_splice($linkParamArray, 1);
-            if (!empty($linkParamArray)) {
-                $linkParameter = $displayPageId . ' ' . implode(' ', $linkParamArray);
-            } else {
-                $linkParameter = $displayPageId;
-            }
-        } else {
-            $linkParameter = $displayPageId;
+        if (empty($displayPageId)) {
+            return 'ERROR: neither overridePid in TypoScript nor previewPageID in Extension Settings are configured to
+                render commerce categor and product urls';
         }
 
-        $lconf = $conf;
-        unset($lconf['parameter.']);
-        $lconf['parameter'] = $linkParameter;
-        $lconf['additionalParams'] .= $addparams;
-        $lconf['useCacheHash'] = true;
+        $linkParamArray = explode(' ', $mixedLinkParameter);
+        if (is_array($linkParamArray)) {
+            // Remove first parameter as it must be the page id. If the array is still not empty
+            // prepend the remaining parameters with the configured page id
+            $linkParamArray = array_splice($linkParamArray, 1);
+            if (!empty($linkParamArray)) {
+                $mixedLinkParameter = $displayPageId . ' ' . implode(' ', $linkParamArray);
+            } else {
+                $mixedLinkParameter = $displayPageId;
+            }
+        } else {
+            $mixedLinkParameter = $displayPageId;
+        }
 
-        return $localcObj->typoLink($linktxt, $lconf);
+        $linkConfiguration = $configuration;
+        unset($linkConfiguration['parameter.']);
+        $linkConfiguration['parameter'] = $mixedLinkParameter;
+        $linkConfiguration['additionalParams'] .= $addparams;
+        $linkConfiguration['useCacheHash'] = true;
+
+        return $contentObjectRender->typoLink($linkText, $linkConfiguration);
     }
 
-
     /**
-     * Get typoscript frontend controller.
+     * Fix url if deprecated parameter are still present in url
      *
-     * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+     * @param string $url
+     * @param string $action [picking|rendering]
+     *
+     * @return string
+     * @deprecated Remove in version 6. This is only a temporary fix
      */
-    protected function getFrontendController()
+    protected function fixDeprecatedParameter($url, $action)
     {
-        return $GLOBALS['TSFE'];
+        if (strpos($url, 'tx_commerce_categories') !== false
+            || strpos($url, 'tx_commerce_products') !== false) {
+            GeneralUtility::deprecationLog('
+                Commerce: deprecated parameter tx_commerce_categories or tx_commerce_products found while link "'
+                . $action . '". See documentation section Deprecation/Version5.
+            ');
+        }
+
+        $url = str_replace('tx_commerce_categories', 'c', $url);
+        $url = str_replace('tx_commerce_products', 'p', $url);
+
+        return $url;
     }
 }
