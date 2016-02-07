@@ -20,10 +20,12 @@ $tempColumns = array(
         'config' => array(
             'type' => 'select',
             'foreign_table' => 'tx_commerce_categories',
+            'foreign_table_where' => ' AND sys_language_uid = 0',
             'size' => 10,
             'minitems' => 0,
             'maxitems' => 20,
-            'renderMode' => 'tree',
+            // @todo provide alternative tree that can handle large category trees
+            // 'renderMode' => 'tree',
             'treeConfig' => array(
                 'expandAll' => true,
                 'parentField' => 'parent_category',
