@@ -16,6 +16,7 @@ namespace CommerceTeam\Commerce\LinkHandler;
 
 use CommerceTeam\Commerce\Factory\SettingsFactory;
 use CommerceTeam\Commerce\Tree\View\ElementBrowserCategoryTreeView;
+use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
@@ -244,10 +245,13 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
             // Set to the current link page id.
             $expCategoryId = $this->linkParts['category'];
         }
+
+        /** @var BackendUserUtility $backendUserUtility */
+        $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
         // Draw the record list IF there is a page id to expand:
         if (!$expCategoryId
             || !MathUtility::canBeInterpretedAsInteger($expCategoryId)
-            || !$this->getBackendUser()->isInWebMount($expCategoryId)) {
+            || !$backendUserUtility->isInWebMount($expCategoryId)) {
             return '';
         }
 

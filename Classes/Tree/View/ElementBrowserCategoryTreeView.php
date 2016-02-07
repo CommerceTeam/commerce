@@ -1,6 +1,7 @@
 <?php
 namespace CommerceTeam\Commerce\Tree\View;
 
+use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility as CoreBackendUtility;
 use CommerceTeam\Commerce\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -57,7 +58,10 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
         //  - and sorting them correctly
         parent::init(' AND ' . BackendUtility::getCategoryPermsClause(1) . ' ' . $clause, 'sorting');
         $this->title = 'Commerce';
-        $this->MOUNTS = $this->returnCategoryMounts();
+
+        /** BackendUserUtility */
+        $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
+        $this->MOUNTS = $backendUserUtility->returnWebmounts();
     }
 
     /**
@@ -87,6 +91,97 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
         } else {
             return '<span class="list-tree-title text-muted">' . $title . '</span>';
         }
+    }
+
+    /**
+     * Fetches the data for the tree
+     *
+     * @param int $uid item id for which to select subitems (parent id)
+     * @param int $depth Max depth (recursivity limit)
+     * @param string $depthData HTML-code prefix for recursive calls.
+
+     * @return int The count of items on the level
+     */
+    public function getTree($uid, $depth = 999, $depthData = '')
+    {
+        // Buffer for id hierarchy is reset:
+        $this->buffer_idH = array();
+        // Init vars
+        $depth = (int)$depth;
+        $HTML = '';
+        $a = 0;
+        $res = $this->getDataInit($uid);
+        $c = $this->getDataCount($res);
+        $crazyRecursionLimiter = 999;
+        $idH = array();
+        $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
+        // Traverse the records:
+        while ($crazyRecursionLimiter > 0 && ($row = $this->getDataNext($res))) {
+            $pageUid = ($this->table === 'tx_commerce_categories') ? $row['uid'] : $row['pid'];
+            if (!$backendUserUtility->isInWebMount((int)$pageUid)) {
+                // Current record is not within web mount => skip it
+                continue;
+            }
+
+            $a++;
+            $crazyRecursionLimiter--;
+            $newID = $row['uid'];
+            if ($newID == 0) {
+                throw new \RuntimeException('Endless recursion detected: TYPO3 has detected an error in the database.
+                    Please fix it manually (e.g. using phpMyAdmin) and change the UID of ' . $this->table .
+                    ':0 to a new value. See http://forge.typo3.org/issues/16150 to get more information about a
+                    possible cause.', 1294586383);
+            }
+            // Reserve space.
+            $this->tree[] = array();
+            end($this->tree);
+            // Get the key for this space
+            $treeKey = key($this->tree);
+            // If records should be accumulated, do so
+            if ($this->setRecs) {
+                $this->recs[(int)$row['uid']] = $row;
+            }
+            // Accumulate the id of the element in the internal arrays
+            $this->ids[] = ($idH[(int)$row['uid']]['uid'] = $row['uid']);
+            $this->ids_hierarchy[$depth][] = $row['uid'];
+            $this->orig_ids_hierarchy[$depth][] = $row['_ORIG_uid'] ?: $row['uid'];
+
+            // Make a recursive call to the next level
+            $nextLevelDepthData = $depthData . '<span class="treeline-icon treeline-icon-'
+                . ($a === $c ? 'clear' : 'line') . '"></span>';
+            $hasSub = $this->expandNext((int)$newID) && !$row['php_tree_stop'];
+            if ($depth > 1 && $hasSub) {
+                $nextCount = $this->getTree((int)$newID, $depth - 1, $nextLevelDepthData);
+                if (!empty($this->buffer_idH)) {
+                    $idH[(int)$row['uid']]['subrow'] = $this->buffer_idH;
+                }
+                // Set "did expand" flag
+                $isOpen = 1;
+            } else {
+                $nextCount = $this->getCount((int)$newID);
+                // Clear "did expand" flag
+                $isOpen = 0;
+            }
+            // Set HTML-icons, if any:
+            if ($this->makeHTML) {
+                $HTML = $this->PMicon($row, $a, $c, $nextCount, $isOpen) . $this->wrapStop($this->getIcon($row), $row);
+            }
+            // Finally, add the row/HTML content to the ->tree array in the reserved key.
+            $this->tree[$treeKey] = array(
+                'row' => $row,
+                'HTML' => $HTML,
+                'invertedDepth' => $depth,
+                'depthData' => $depthData,
+                'bank' => $this->bank,
+                'hasSub' => $nextCount && $hasSub,
+                'isFirst' => $a === 1,
+                'isLast' => $a === $c,
+            );
+        }
+
+        $this->getDataFree($res);
+        $this->buffer_idH = $idH;
+        return $c;
     }
 
     /**
@@ -281,56 +376,6 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
         return $icon;
     }
 
-
-    /**
-     * Checks if the category id, $id, is found within the webmounts set up for the user.
-     * This should ALWAYS be checked for any category id a user works with, whether it's about reading,
-     * writing or whatever.
-     * The point is that this will add the security that a user can NEVER touch parts outside his mounted
-     * categories in the category tree. This is otherwise possible if the raw page permissions allows for it.
-     * So this security check just makes it easier to make safe user configurations.
-     * If the user is admin OR if this feature is disabled
-     * (fx. by setting TYPO3_CONF_VARS['BE']['lockBeUserToDBmounts']=0) then it returns "1" right away
-     * Otherwise the function will return the uid of the webmount which was first found in the rootline of the
-     * input category $id
-     *
-     * @param int $id category ID to check
-     * @param string $readPerms Content of "->getPagePermsClause(1)" (read-permissions). If not set,
-     *  they will be internally calculated (but if you have the correct value right away you can save
-     *  that database lookup!)
-     * @param bool|int $exitOnError If set, then the function will exit with an error message.
-     * @throws \RuntimeException
-     * @return int|NULL The page UID of a page in the rootline that matched a mount point
-     */
-    protected function isInWebMount($id, $readPerms = '', $exitOnError = 0)
-    {
-        // @todo check if this method is fully functional
-        if (!$GLOBALS['TYPO3_CONF_VARS']['BE']['lockBeUserToDBmounts'] || $this->getBackendUser()->isAdmin()) {
-            return 1;
-        }
-        $id = (int)$id;
-        // Check if input id is an offline version page in which case we will map id to the online version:
-        $checkRec = CoreBackendUtility::getRecord('tx_commerce_categories', $id, 'pid,t3ver_oid');
-        if ($checkRec['pid'] == -1) {
-            $id = (int)$checkRec['t3ver_oid'];
-        }
-        if (!$readPerms) {
-            $readPerms = BackendUtility::getCategoryPermsClause(1);
-        }
-        if ($id > 0) {
-            $wM = $this->returnCategoryMounts();
-            $rL = BackendUtility::BEgetRootLine($id, ' AND ' . $readPerms);
-            foreach ($rL as $v) {
-                if ($v['uid'] && in_array($v['uid'], $wM)) {
-                    return $v['uid'];
-                }
-            }
-        }
-        if ($exitOnError) {
-            throw new \RuntimeException('Access Error: This page is not within your DB-mounts', 1294586445);
-        }
-        return null;
-    }
 
     /**
      * Returns an array with the webmounts.

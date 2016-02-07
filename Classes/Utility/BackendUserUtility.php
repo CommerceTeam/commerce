@@ -187,8 +187,12 @@ class BackendUserUtility implements SingletonInterface
      * @return array
      * @todo Define visibility
      */
-    protected function returnWebmounts()
+    public function returnWebmounts()
     {
+        if ($this->getBackendUser()->isAdmin()) {
+            return [ 0 ];
+        }
+
         $groups = $this->getDatabaseConnection()->exec_SELECTgetRows(
             'tx_commerce_mountpoints',
             'be_groups',
