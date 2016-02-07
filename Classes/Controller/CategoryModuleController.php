@@ -116,7 +116,6 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             $defaultValues = current($defaultValuesFromGetPost);
             $this->categoryUid = (int) $defaultValues['uid'];
         }
-        $this->categoryUid = 2;
     }
 
     /**
@@ -178,55 +177,6 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         } elseif ($this->modTSconfig['properties']['enableLocalizationView'] === 'deactivated') {
             $this->MOD_SETTINGS['localization'] = false;
         }
-
-
-        // @todo move to where the flavor... the right position is (CategoryRecordList::getDocHeaderButtons())
-        $newRecordIcon = '';
-        // Link for creating new records:
-        if (!$this->modTSconfig['properties']['noCreateRecordsLink']) {
-            $controls = array(
-                'category' => array(
-                    'dataClass' => \CommerceTeam\Commerce\Tree\Leaf\CategoryData::class,
-                    'parent' => 'parent_category',
-                ),
-                'product' => array(
-                    'dataClass' => \CommerceTeam\Commerce\Tree\Leaf\ProductData::class,
-                    'parent' => 'categories',
-                ),
-            );
-
-            $newRecordLink = $this->scriptNewWizard . '?id=' . (int) $this->id;
-            foreach ($controls as $controlData) {
-                /**
-                 * Tree data.
-                 *
-                 * @var \CommerceTeam\Commerce\Tree\Leaf\Data $treeData
-                 */
-                $treeData = GeneralUtility::makeInstance($controlData['dataClass']);
-                $treeData->init();
-
-                if ($treeData->getTable()) {
-                    $newRecordLink .= '&edit[' . $treeData->getTable() . '][-' . $this->categoryUid . ']=new';
-                    $newRecordLink .= '&defVals[' . $treeData->getTable() . '][' . $controlData['parent'] . ']=' .
-                        $this->categoryUid;
-                }
-            }
-
-            $newRecordIcon = '
-                <!--
-                    Link for creating a new record:
-                -->
-                <a href="'
-                . htmlspecialchars(
-                    $newRecordLink . '&returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'))
-                ) . '">' . $this->iconFactory->getIconForRecord(
-                    'actions-document-new',
-                    array('title' => $lang->getLL('editPage', 1)),
-                    Icon::SIZE_SMALL
-                ) . '</a>';
-        }
-
-
 
         // Initialize the dblist object:
         /** @var \CommerceTeam\Commerce\RecordList\CategoryRecordList $dbList */
@@ -310,7 +260,6 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             && !$this->modTSconfig['properties']['showClipControlPanelsDespiteOfCMlayers']
         );
 
-        $dbList->newRecordIcon = $newRecordIcon;
         $dbList->parentUid = $this->categoryUid;
         $dbList->tableList = 'tx_commerce_categories,tx_commerce_products';
 

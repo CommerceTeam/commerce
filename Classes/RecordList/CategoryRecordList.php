@@ -224,6 +224,59 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         return $buttons;
     }
 
+    public function getDocHeaderButtons($moduleTemplate)
+    {
+        parent::getDocHeaderButtons($moduleTemplate);
+        $module = $this->getModule();
+        $lang = $this->getLanguageService();
+
+        $newRecordIcon = '';
+        // New record on pages that are not locked by editlock
+        if (!$module->modTSconfig['properties']['noCreateRecordsLink'] && $this->editLockPermissions()) {
+            $controls = array(
+                'category' => array(
+                    'dataClass' => \CommerceTeam\Commerce\Tree\Leaf\CategoryData::class,
+                    'parent' => 'parent_category',
+                ),
+                'product' => array(
+                    'dataClass' => \CommerceTeam\Commerce\Tree\Leaf\ProductData::class,
+                    'parent' => 'categories',
+                ),
+            );
+
+            $newRecordLink = $this->scriptNewWizard . '?id=' . (int) $this->id;
+            foreach ($controls as $controlData) {
+                /**
+                 * Tree data.
+                 *
+                 * @var \CommerceTeam\Commerce\Tree\Leaf\Data $treeData
+                 */
+                $treeData = GeneralUtility::makeInstance($controlData['dataClass']);
+                $treeData->init();
+
+                if ($treeData->getTable()) {
+                    $newRecordLink .= '&edit[' . $treeData->getTable() . '][-' . $this->parentUid . ']=new';
+                    $newRecordLink .= '&defVals[' . $treeData->getTable() . '][' . $controlData['parent'] . ']=' .
+                        $this->parentUid;
+                }
+            }
+
+            $newRecordIcon = '
+                <!--
+                    Link for creating a new record:
+                -->
+                <a href="'
+                . htmlspecialchars(
+                    $newRecordLink . '&returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'))
+                ) . '">' . $this->iconFactory->getIconForRecord(
+                    'actions-document-new',
+                    array('title' => $lang->getLL('editPage', 1)),
+                    Icon::SIZE_SMALL
+                ) . '</a>';
+        }
+        $this->newRecordIcon = $newRecordIcon;
+    }
+
     /**
      * Creates the listing of records from a single table.
      *
