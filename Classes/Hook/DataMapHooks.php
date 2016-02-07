@@ -508,7 +508,7 @@ class DataMapHooks
 
             foreach ($correlationTypes as $key => $data) {
                 $keyData = array();
-                // @todo this cant work, we are checking on a new created empty array
+                $this->belib->getUidFromKey($key, $keyData);
                 if ($keyData[0] == 'ct') {
                     // get the attributes from the categories of this product
                     $localAttributes = explode(',', $data['vDEF']);
