@@ -14,14 +14,17 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use TYPO3\CMS\Backend\Clipboard\Clipboard;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Extbase\Service\TypoScriptService;
 
 /**
  * Class \CommerceTeam\Commerce\Controller\CategoryModuleController.
@@ -66,12 +69,8 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
     public function __construct()
     {
         parent::__construct();
-        $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_list.xml');
         $this->getLanguageService()->includeLLFile(
             'EXT:commerce/Resources/Private/Language/locallang_mod_category.xml'
-        );
-        $this->MCONF = array(
-            'name' => $this->moduleName,
         );
     }
 
@@ -82,61 +81,42 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
      */
     public function init()
     {
+        $this->iconFactory = $this->moduleTemplate->getIconFactory();
+        $backendUser = $this->getBackendUserAuthentication();
+        $this->perms_clause = \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1);
+        // Get session data
+        $sessionData = $backendUser->getSessionData(CategoryModuleController::class);
+        $this->search_field = !empty($sessionData['search_field']) ? $sessionData['search_field'] : '';
 
-        // Setting GPvars:
+        // GPvars:
         $this->id = (int) GeneralUtility::_GP('id');
         if (!$this->id) {
-            // @todo move init folder somewhere else as its to hefty to try to create the folders over and over again
             \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
             $this->id = \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid();
         }
-
-        // Initialize the listing object, dblist, for rendering the list:
-        $this->pointer = max(min(GeneralUtility::_GP('pointer'), 100000), 0);
+        $this->pointer = max(GeneralUtility::_GP('pointer'), 0);
         $this->imagemode = GeneralUtility::_GP('imagemode');
         $this->table = GeneralUtility::_GP('table');
         $this->search_field = GeneralUtility::_GP('search_field');
-        $this->search_levels = GeneralUtility::_GP('search_levels');
-        $this->showLimit = (int) GeneralUtility::_GP('showLimit');
+        $this->search_levels = (int)GeneralUtility::_GP('search_levels');
+        $this->showLimit = GeneralUtility::_GP('showLimit');
         $this->returnUrl = GeneralUtility::sanitizeLocalUrl(GeneralUtility::_GP('returnUrl'));
-
-        $this->clear_cache = (bool) GeneralUtility::_GP('clear_cache');
+        $this->clear_cache = GeneralUtility::_GP('clear_cache');
         $this->cmd = GeneralUtility::_GP('cmd');
         $this->cmd_table = GeneralUtility::_GP('cmd_table');
-
-        // Setting GPvars:
-        $controlParams = GeneralUtility::_GP('control');
-        if ($controlParams) {
-            $controlArray = current($controlParams);
-            $this->categoryUid = (int) $controlArray['uid'];
-        }
-
-        // Page select clause:
-        $this->perms_clause = \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1);
-
-        $this->initPage();
-        $this->clearCache();
-
+        $sessionData['search_field'] = $this->search_field;
         // Set up menus:
         $this->menuConfig();
-    }
+        // Store session data
+        $backendUser->setAndSaveSessionData(CategoryModuleController::class, $sessionData);
 
-    /**
-     * Initializes the Page.
-     *
-     * @return void
-     */
-    public function initPage()
-    {
-        /**
-         * Template.
-         *
-         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
-         */
-        $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
-        $doc->backPath = $this->getBackPath();
-        $doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_category_index.html');
-        $this->doc = $doc;
+        // Get category uid from control
+        $defaultValuesFromGetPost = GeneralUtility::_GP('defVals');
+        if ($defaultValuesFromGetPost) {
+            $defaultValues = current($defaultValuesFromGetPost);
+            $this->categoryUid = (int) $defaultValues['uid'];
+        }
+        $this->categoryUid = 2;
     }
 
     /**
@@ -146,8 +126,61 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
      */
     public function main()
     {
-        $language = $this->getLanguageService();
+        $backendUser = $this->getBackendUserAuthentication();
+        $lang = $this->getLanguageService();
+        // Loading current category/page record and checking access:
+        if ($this->categoryUid) {
+            $this->pageinfo = \CommerceTeam\Commerce\Utility\BackendUtility::readCategoryAccess(
+                $this->categoryUid,
+                $this->perms_clause
+            );
+        } else {
+            $this->pageinfo = BackendUtility::readPageAccess(
+                $this->id,
+                $this->getBackendUserAuthentication()->getPagePermsClause(1)
+            );
+        }
+        $access = is_array($this->pageinfo);
 
+        $this->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/AjaxDataHandler');
+        $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
+        $calcPerms = $backendUserUtility->calcPerms($this->pageinfo);
+        $userCanEditPage = $calcPerms & Permission::PAGE_EDIT
+            && !empty($this->id)
+            && ($backendUser->isAdmin() || (int)$this->pageinfo['editlock'] === 0);
+        if ($userCanEditPage) {
+            $this->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/PageActions', 'function(PageActions) {
+                PageActions.setPageId(' . (int)$this->id . ');
+                PageActions.initializePageTitleRenaming();
+            }');
+        }
+        $this->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Recordlist/Tooltip');
+        // Apply predefined values for hidden checkboxes
+        // Set predefined value for DisplayBigControlPanel:
+        if ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'activated') {
+            $this->MOD_SETTINGS['bigControlPanel'] = true;
+        } elseif ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'deactivated') {
+            $this->MOD_SETTINGS['bigControlPanel'] = false;
+        }
+        // Set predefined value for Clipboard:
+        if ($this->modTSconfig['properties']['enableClipBoard'] === 'activated') {
+            $this->MOD_SETTINGS['clipBoard'] = true;
+        } elseif ($this->modTSconfig['properties']['enableClipBoard'] === 'deactivated') {
+            $this->MOD_SETTINGS['clipBoard'] = false;
+        } else {
+            if ($this->MOD_SETTINGS['clipBoard'] === null) {
+                $this->MOD_SETTINGS['clipBoard'] = true;
+            }
+        }
+        // Set predefined value for LocalizationView:
+        if ($this->modTSconfig['properties']['enableLocalizationView'] === 'activated') {
+            $this->MOD_SETTINGS['localization'] = true;
+        } elseif ($this->modTSconfig['properties']['enableLocalizationView'] === 'deactivated') {
+            $this->MOD_SETTINGS['localization'] = false;
+        }
+
+
+        // @todo move to where the flavor... the right position is (CategoryRecordList::getDocHeaderButtons())
         $newRecordIcon = '';
         // Link for creating new records:
         if (!$this->modTSconfig['properties']['noCreateRecordsLink']) {
@@ -183,67 +216,24 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                 <!--
                     Link for creating a new record:
                 -->
-                <a href="' .
-                htmlspecialchars(
+                <a href="'
+                . htmlspecialchars(
                     $newRecordLink . '&returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'))
-                ) . '">' . IconUtility::getSpriteIcon(
+                ) . '">' . $this->iconFactory->getIconForRecord(
                     'actions-document-new',
-                    array('title' => $language->getLL('editPage', 1))
+                    array('title' => $lang->getLL('editPage', 1)),
+                    Icon::SIZE_SMALL
                 ) . '</a>';
         }
 
-        // Access check...
-        // The page will show only if there is a valid page
-        // and if this page may be viewed by the user
-        if ($this->categoryUid) {
-            $this->pageinfo = \CommerceTeam\Commerce\Utility\BackendUtility::readCategoryAccess(
-                $this->categoryUid,
-                $this->perms_clause
-            );
-        } else {
-            $this->pageinfo = BackendUtility::readPageAccess($this->id, $this->getBackendUser()->getPagePermsClause(1));
-        }
-        $access = is_array($this->pageinfo);
-        // Apply predefined values for hidden checkboxes
-        // Set predefined value for DisplayBigControlPanel:
-        if ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'activated') {
-            $this->MOD_SETTINGS['bigControlPanel'] = true;
-        } elseif ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'deactivated') {
-            $this->MOD_SETTINGS['bigControlPanel'] = false;
-        }
-        // Set predefined value for Clipboard:
-        if ($this->modTSconfig['properties']['enableClipBoard'] === 'activated') {
-            $this->MOD_SETTINGS['clipBoard'] = true;
-        } elseif ($this->modTSconfig['properties']['enableClipBoard'] === 'deactivated') {
-            $this->MOD_SETTINGS['clipBoard'] = false;
-        }
-        // Set predefined value for LocalizationView:
-        if ($this->modTSconfig['properties']['enableLocalizationView'] === 'activated') {
-            $this->MOD_SETTINGS['localization'] = true;
-        } elseif ($this->modTSconfig['properties']['enableLocalizationView'] === 'deactivated') {
-            $this->MOD_SETTINGS['localization'] = false;
-        }
+
 
         // Initialize the dblist object:
-        /**
-         * Category record list.
-         *
-         * @var \CommerceTeam\Commerce\ViewHelpers\CategoryRecordList $dbList
-         */
-        $dbList = GeneralUtility::makeInstance(\CommerceTeam\Commerce\ViewHelpers\CategoryRecordList::class);
-        $dbList->backPath = $this->getBackPath();
-        $dbList->script = BackendUtility::getModuleUrl('commerce_category', array(), '');
-
-        /**
-         * Backend utility.
-         *
-         * @var \CommerceTeam\Commerce\Utility\BackendUserUtility $utility
-         */
-        $utility = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUserUtility::class);
-        $dbList->calcPerms = $utility->calcPerms(
-            (array) BackendUtility::getRecord('tx_commerce_categories', $this->categoryUid)
-        );
-        $dbList->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
+        /** @var \CommerceTeam\Commerce\RecordList\CategoryRecordList $dbList */
+        $dbList = GeneralUtility::makeInstance(\CommerceTeam\Commerce\RecordList\CategoryRecordList::class);
+        $dbList->script = BackendUtility::getModuleUrl('commerce_category');
+        $dbList->calcPerms = $calcPerms;
+        $dbList->thumbs = $backendUser->uc['thumbnailsByDefault'];
         $dbList->returnUrl = $this->returnUrl;
         $dbList->allFields = $this->MOD_SETTINGS['bigControlPanel'] || $this->table ? 1 : 0;
         $dbList->localizationView = $this->MOD_SETTINGS['localization'];
@@ -253,7 +243,6 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $dbList->hideTables = $this->modTSconfig['properties']['hideTables'];
         $dbList->hideTranslations = $this->modTSconfig['properties']['hideTranslations'];
         $dbList->tableTSconfigOverTCA = $this->modTSconfig['properties']['table.'];
-        $dbList->alternateBgColors = $this->modTSconfig['properties']['alternateBgColors'] ? 1 : 0;
         $dbList->allowedNewTables = GeneralUtility::trimExplode(
             ',',
             $this->modTSconfig['properties']['allowedNewTables'],
@@ -266,24 +255,27 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         );
         $dbList->newWizards = $this->modTSconfig['properties']['newWizards'] ? 1 : 0;
         $dbList->pageRow = $this->pageinfo;
-        ++$dbList->counter;
+        $dbList->counter++;
         $dbList->MOD_MENU = array('bigControlPanel' => '', 'clipBoard' => '', 'localization' => '');
         $dbList->modTSconfig = $this->modTSconfig;
         $clickTitleMode = trim($this->modTSconfig['properties']['clickTitleMode']);
         $dbList->clickTitleMode = $clickTitleMode === '' ? 'edit' : $clickTitleMode;
-
-        $dbList->newRecordIcon = $newRecordIcon;
-        $dbList->parentUid = $this->categoryUid;
-        $dbList->tableList = 'tx_commerce_categories,tx_commerce_products';
-
+        if (isset($this->modTSconfig['properties']['tableDisplayOrder.'])) {
+            $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
+            $dbList->setTableDisplayOrder(
+                $typoScriptService->convertTypoScriptArrayToPlainArray(
+                    $this->modTSconfig['properties']['tableDisplayOrder.']
+                )
+            );
+        }
         // Clipboard is initialized:
         // Start clipboard
         /**
          * Clipboard.
          *
-         * @var \TYPO3\CMS\Backend\Clipboard\Clipboard $clipObj
+         * @var Clipboard $clipObj
          */
-        $clipObj = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Clipboard\Clipboard::class);
+        $clipObj = GeneralUtility::makeInstance(Clipboard::class);
         $dbList->clipObj = $clipObj;
         // Initialize - reads the clipboard content from the user session
         $dbList->clipObj->initializeClipboard();
@@ -310,15 +302,17 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $dbList->clipObj->cleanCurrent();
         // Save the clipboard content
         $dbList->clipObj->endClipboard();
-
         // This flag will prevent the clipboard panel in being shown.
-        // It is set, the clickmenu-layer is active AND the extended
-        // view is not enabled.
+        // It is set, if the clickmenu-layer is active AND the extended view is not enabled.
         $dbList->dontShowClipControlPanels = (
-            !$this->MOD_SETTINGS['bigControlPanel'] &&
-            $dbList->clipObj->current == 'normal' &&
-            !$this->modTSconfig['properties']['showClipControlPanelsDespiteOfCMlayers']
+            !$this->MOD_SETTINGS['bigControlPanel']
+            && $dbList->clipObj->current == 'normal'
+            && !$this->modTSconfig['properties']['showClipControlPanelsDespiteOfCMlayers']
         );
+
+        $dbList->newRecordIcon = $newRecordIcon;
+        $dbList->parentUid = $this->categoryUid;
+        $dbList->tableList = 'tx_commerce_categories,tx_commerce_products';
 
         if ($access || ($this->id === 0 && $this->search_levels > 0 && strlen($this->search_field) > 0)) {
             // Deleting records...:
@@ -333,24 +327,22 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                         $iKparts = explode('|', $iK);
                         $cmd[$iKparts[0]][$iKparts[1]]['delete'] = 1;
                     }
-
                     /**
                      * Data handler.
                      *
                      * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
                      */
                     $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-                    $tce->stripslashes_values = 0;
                     $tce->start(array(), $cmd);
                     $tce->process_cmdmap();
-                    if (isset($cmd['pages'])) {
+                    if (isset($cmd['tx_commerce_categories'])) {
                         BackendUtility::setUpdateSignal('updateFolderTree');
                     }
                     $tce->printLogErrorMessages(GeneralUtility::getIndpEnv('REQUEST_URI'));
                 }
             }
             // Initialize the listing object, dblist, for rendering the list:
-            $this->pointer = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->pointer, 0, 100000);
+            $this->pointer = max(0, (int)$this->pointer);
             $dbList->start(
                 $this->id,
                 $this->table,
@@ -360,19 +352,17 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                 $this->showLimit
             );
             $dbList->setDispFields();
-            $dbList->perms_clause = $this->perms_clause;
             // Render versioning selector:
             if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('version')) {
-                $dbList->HTMLcode .= $this->doc->getVersionSelector($this->id);
+                $dbList->HTMLcode .= $this->moduleTemplate->getVersionSelector($this->id);
             }
-
-            $dbList->parentUid = $this->categoryUid;
-
             // Render the list of tables:
             $dbList->generateList();
             $listUrl = $dbList->listURL();
             // Add JavaScript functions to the page:
-            $this->doc->JScode = $this->doc->wrapScriptTags('
+            $this->moduleTemplate->addJavaScriptCode(
+                'CategoryModuleController',
+                '
                 function jumpExt(URL, anchor) {
                     var anc = anchor ? anchor : "";
                     window.location.href = URL + (T3_THIS_LOCATION ? "&returnUrl=" + T3_THIS_LOCATION : "") + anc;
@@ -382,21 +372,31 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                     window.location.href = URL + (T3_RETURN_URL ? "&returnUrl=" + T3_RETURN_URL : "");
                     return false;
                 }
+                function jumpToUrl(URL) {
+                    window.location.href = URL;
+                    return false;
+                }
 
                 function setHighlight(id) {
                     top.fsMod.recentIds["web"] = id;
-                    top.fsMod.navFrameHighlightedID["web"]="pages"+id+"_"+top.fsMod.currentBank;	// For highlighting
+                    // For highlighting
+                    top.fsMod.navFrameHighlightedID["web"] = "pages" + id + "_" + top.fsMod.currentBank;
+                    top.fsMod.navFrameHighlightedID["commerce"] = "tx_commerce_categories" + id + "_"
+                        + top.fsMod.currentBank;
 
                     if (top.content && top.content.nav_frame && top.content.nav_frame.refresh_nav) {
                         top.content.nav_frame.refresh_nav();
                     }
                 }
-                ' . $this->doc->redirectUrls($listUrl) . '
+                ' . $this->moduleTemplate->redirectUrls($listUrl) . '
                 ' . $dbList->CBfunctions() . '
-                function editRecords(table,idList,addParams,CBflag) {
-                    window.location.href="' . $this->getBackPath() . 'alt_doc.php?returnUrl=' .
-                    rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI')) .
-                '&edit["+table+"]["+idList+"]=edit"+addParams;
+                function editRecords(table, idList, addParams, CBflag) {
+                    window.location.href = "'
+                . BackendUtility::getModuleUrl(
+                    'record_edit',
+                    array('returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'))
+                )
+                . '&edit[" + table + "][" + idList + "]=edit" + addParams;
                 }
                 function editList(table, idList) {
                     var list = "";
@@ -419,19 +419,36 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                 }
 
                 if (top.fsMod) {
-                    top.fsMod.recentIds["web"] = ' . $this->id . ';
-                    top.fsMod.recentIds["commerce"] = ' . $this->categoryUid . ';
+                    top.fsMod.recentIds["web"] = ' . (int)$this->id . ';
+                    top.fsMod.recentIds["commerce"] = ' . (int)$this->categoryUid . ';
                 }
-            ');
+                '
+            );
 
             // Setting up the context sensitive menu:
-            $this->doc->getContextMenuCode();
+            $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/ClickMenu');
         }
         // access
         // Begin to compile the whole page, starting out with page header:
-        $this->body = $this->doc->header($this->pageinfo['title']);
+        if (!$this->id) {
+            $this->body = $this->moduleTemplate->header('Commerce');
+        } else {
+            $this->body = $this->moduleTemplate->header($this->pageinfo['title']);
+        }
+
+        if (!empty($dbList->HTMLcode)) {
+            $output = $dbList->HTMLcode;
+        } else {
+            $output = $flashMessage = GeneralUtility::makeInstance(
+                FlashMessage::class,
+                $lang->getLL('noRecordsOnThisPage'),
+                '',
+                FlashMessage::INFO
+            )->render();
+        }
+
         $this->body .= '<form action="' . htmlspecialchars($dbList->listURL()) . '" method="post" name="dblistForm">';
-        $this->body .= $dbList->HTMLcode;
+        $this->body .= $output;
         $this->body .= '<input type="hidden" name="cmd_table" /><input type="hidden" name="cmd" /></form>';
         // If a listing was produced, create the page footer with search form etc:
         if ($dbList->HTMLcode) {
@@ -448,65 +465,69 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                     <div id="typo3-listOptions">
                         <form action="" method="post">';
 
+            // add the page id and the current selected categor uid to the function links
             $functionParameter = array('id' => $this->id);
             if ($this->categoryUid) {
-                $functionParameter['control[tx_commerce_categories][uid]'] = $this->categoryUid;
+                $functionParameter['defVals[tx_commerce_categories][uid]'] = $this->categoryUid;
             }
 
             // Add "display bigControlPanel" checkbox:
             if ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'selectable') {
-                $this->body .= BackendUtility::getFuncCheck(
-                    $functionParameter,
-                    'SET[bigControlPanel]',
-                    $this->MOD_SETTINGS['bigControlPanel'],
-                    '',
-                    $this->table ? '&table=' . $this->table : '',
-                    'id="checkLargeControl"'
-                );
-                $this->body .= '<label for="checkLargeControl">' .
-                    BackendUtility::wrapInHelp(
-                        'xMOD_csh_corebe',
-                        'list_options',
-                        $language->getLL('largeControl', true)
-                    ) .
-                    '</label><br />';
+                $this->body .= '<div class="checkbox">'
+                    . '<label for="checkLargeControl">'
+                    . BackendUtility::getFuncCheck(
+                        $functionParameter,
+                        'SET[bigControlPanel]',
+                        $this->MOD_SETTINGS['bigControlPanel'],
+                        '',
+                        $this->table ? '&table=' . $this->table : '',
+                        'id="checkLargeControl"'
+                    )
+                    . BackendUtility::wrapInHelp('xMOD_csh_corebe', 'list_options', $lang->getLL('largeControl', true))
+                    . '</label>'
+                    . '</div>';
             }
+
             // Add "clipboard" checkbox:
             if ($this->modTSconfig['properties']['enableClipBoard'] === 'selectable' && $dbList->showClipboard) {
-                $this->body .= BackendUtility::getFuncCheck(
-                    $functionParameter,
-                    'SET[clipBoard]',
-                    $this->MOD_SETTINGS['clipBoard'],
-                    '',
-                    $this->table ? '&table=' . $this->table : '',
-                    'id="checkShowClipBoard"'
-                );
-                $this->body .= '<label for="checkShowClipBoard">'.
-                    BackendUtility::wrapInHelp(
-                        'xMOD_csh_corebe',
-                        'list_options',
-                        $language->getLL('showClipBoard', true)
-                    ) .
-                    '</label><br />';
+                if ($dbList->showClipboard) {
+                    $this->body .= '<div class="checkbox">'
+                        . '<label for="checkShowClipBoard">'
+                        . BackendUtility::getFuncCheck(
+                            $functionParameter,
+                            'SET[clipBoard]',
+                            $this->MOD_SETTINGS['clipBoard'],
+                            '',
+                            $this->table ? '&table=' . $this->table : '',
+                            'id="checkShowClipBoard"'
+                        )
+                        . BackendUtility::wrapInHelp(
+                            'xMOD_csh_corebe',
+                            'list_options',
+                            $lang->getLL('showClipBoard', true)
+                        )
+                        . '</label>'
+                        . '</div>';
+                }
             }
+
             // Add "localization view" checkbox:
             if ($this->modTSconfig['properties']['enableLocalizationView'] === 'selectable') {
-                $this->body .= BackendUtility::getFuncCheck(
-                    $functionParameter,
-                    'SET[localization]',
-                    $this->MOD_SETTINGS['localization'],
-                    '',
-                    $this->table ? '&table=' . $this->table : '',
-                    'id="checkLocalization"'
-                );
-                $this->body .= '<label for="checkLocalization">'.
-                    BackendUtility::wrapInHelp(
-                        'xMOD_csh_corebe',
-                        'list_options',
-                        $language->getLL('localization', true)
-                    ) .
-                    '</label><br />';
+                $this->body .= '<div class="checkbox">'
+                    . '<label for="checkLocalization">'
+                    . BackendUtility::getFuncCheck(
+                        $functionParameter,
+                        'SET[localization]',
+                        $this->MOD_SETTINGS['localization'],
+                        '',
+                        $this->table ? '&table=' . $this->table : '',
+                        'id="checkLocalization"'
+                    )
+                    . BackendUtility::wrapInHelp('xMOD_csh_corebe', 'list_options', $lang->getLL('localization', true))
+                    . '</label>'
+                    . '</div>';
             }
+
             $this->body .= '
                         </form>
                     </div>';
@@ -514,86 +535,44 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         // Printing clipboard if enabled
         if ($this->MOD_SETTINGS['clipBoard']
             && $dbList->showClipboard
-            && ($dbList->HTMLcode || $dbList->clipObj->hasElements())
-        ) {
+            && ($dbList->HTMLcode || $dbList->clipObj->hasElements())) {
             $this->body .= '<div class="db_list-dashboard">' . $dbList->clipObj->printClipboard() . '</div>';
         }
-        // Search box:
-        if (!$this->modTSconfig['properties']['disableSearchBox']
-            && ($dbList->HTMLcode || $dbList->searchString !== '')
-        ) {
-            $sectionTitle = BackendUtility::wrapInHelp(
-                'xMOD_csh_corebe',
-                'list_searchbox',
-                $language->sL('LLL:EXT:lang/locallang_core.xlf:labels.search', true)
-            );
-            $this->body .= '<div class="db_list-searchbox">' .
-                $this->doc->section($sectionTitle, $dbList->getSearchBox(), false, true, false, true) .
-                '</div>';
-        }
         // Additional footer content
-        $footerContentHook = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['recordlist/mod1/index.php']['drawFooterHook'];
+        $footerContentHook =
+            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['recordlist/Modules/Recordlist/index.php']['drawFooterHook'];
         if (is_array($footerContentHook)) {
             foreach ($footerContentHook as $hook) {
                 $params = array();
                 $this->body .= GeneralUtility::callUserFunction($hook, $params, $this);
             }
         }
+        // Setting up the buttons for docheader
+        $dbList->getDocHeaderButtons($this->moduleTemplate);
+        // searchbox toolbar
+        if (!$this->modTSconfig['properties']['disableSearchBox']
+            && ($dbList->HTMLcode || !empty($dbList->searchString))) {
+            $this->content = $dbList->getSearchBox();
+            $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/ToggleSearchToolbox');
 
-        $docHeaderButtons = $dbList->getButtons($this->pageinfo);
-        // @todo use docHeaderButtons
-        $this->registerDocHeaderButtons();
-
-        $this->content = $this->body;
-    }
-
-    /**
-     * Registers the Icons into the docheader
-     *
-     * @return void
-     * @throws \InvalidArgumentException
-     */
-    protected function registerDocHeaderButtons()
-    {
-        /** @var ButtonBar $buttonBar */
-        $buttonBar = $this->moduleTemplate->getDocHeaderComponent()->getButtonBar();
-        $getVars = $this->request->getQueryParams();
-
-        $extensionName = 'commerce';
-        if (empty($getVars)) {
-            $modulePrefix = strtolower('tx_' . $extensionName . '_' . $this->moduleName);
-            $getVars = array('id', 'M', $modulePrefix);
-        }
-        $shortcutButton = $buttonBar->makeShortcutButton()
-            ->setModuleName($this->moduleName)
-            ->setGetVariables($getVars);
-        $buttonBar->addButton($shortcutButton);
-
-        if (!$this->categoryUid) {
-            $docHeaderButtons['edit'] = '';
+            $searchButton = $this->moduleTemplate->getDocHeaderComponent()->getButtonBar()->makeLinkButton();
+            $searchButton
+                ->setHref('#')
+                ->setClasses('t3js-toggle-search-toolbox')
+                ->setTitle($lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.title.searchIcon'))
+                ->setIcon($this->iconFactory->getIcon('actions-search', Icon::SIZE_SMALL));
+            $this->moduleTemplate->getDocHeaderComponent()->getButtonBar()->addButton(
+                $searchButton,
+                ButtonBar::BUTTON_POSITION_LEFT,
+                90
+            );
         }
 
-        $categoryInfo = $this->categoryUid ?
-            $this->getCategoryInfo($this->pageinfo) :
-            $this->getPageInfo($this->pageinfo);
-        $categoryPath = $this->categoryUid ?
-            $this->getCategoryPath($this->pageinfo) :
-            $this->getPagePath($this->pageinfo);
-
-        if ($this->id > 0 || $this->categoryUid > 0) {
-            $iconFactory = $this->moduleTemplate->getIconFactory();
-            $viewButton = $buttonBar->makeLinkButton()
-                ->setOnClick(BackendUtility::viewOnClick(
-                    $this->pageInfo['uid'],
-                    '',
-                    BackendUtility::BEgetRootLine($this->pageInfo['uid'])
-                ))
-                ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.showPage'))
-                ->setIcon($iconFactory->getIcon('actions-document-view', Icon::SIZE_SMALL))
-                ->setHref('#');
-
-            $buttonBar->addButton($viewButton, ButtonBar::BUTTON_POSITION_LEFT, 3);
+        if ($this->pageinfo) {
+            $this->moduleTemplate->getDocHeaderComponent()->setMetaInformation($this->pageinfo);
         }
+
+        $this->content .= $this->body;
     }
 
     /**
@@ -607,8 +586,8 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
     public function mainAction(ServerRequestInterface $request, ResponseInterface $response)
     {
         $GLOBALS['SOBE'] = $this;
-        $this->request = $request;
         $this->init();
+        $this->clearCache();
         $this->main();
 
         $this->moduleTemplate->setContent($this->content);
@@ -626,7 +605,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
     protected function getCategoryPath(array $categoryRecord)
     {
         $language = $this->getLanguageService();
-        $backendUser = $this->getBackendUser();
+        $backendUser = $this->getBackendUserAuthentication();
 
         // Is this a real page
         if (is_array($categoryRecord) && $categoryRecord['uid']) {
@@ -668,149 +647,34 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
     protected function getCategoryInfo(array $categoryRecord)
     {
         // Add icon with clickmenu, etc:
-        // If there IS a real page
+        // If there IS a real category
         if (is_array($categoryRecord) && $categoryRecord['uid']) {
-            $alttext = BackendUtility::getRecordIconAltText($categoryRecord, 'tx_commerce_categories');
-            $iconImg = IconUtility::getSpriteIconForRecord(
+            $title = BackendUtility::getRecordTitle('tx_commerce_categories', $categoryRecord);
+            $theIcon = $this->iconFactory->getIconForRecord(
                 'tx_commerce_categories',
                 $categoryRecord,
-                array('title' => $alttext)
+                Icon::SIZE_SMALL
             );
-            // Make Icon:
-            $theIcon = $this->doc->wrapClickMenuOnIcon($iconImg, 'tx_commerce_categories', $categoryRecord['uid']);
             $uid = $categoryRecord['uid'];
-            $title = BackendUtility::getRecordTitle('tx_commerce_categories', $categoryRecord);
         } else {
-            $title = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
-
             // On root-level of page tree
+            $title = 'Commerce';
             // Make Icon
-            $iconImg = IconUtility::getSpriteIcon('apps-pagetree-root', array('title' => htmlspecialchars($title)));
-
-            if ($this->getBackendUser()->isAdmin()) {
-                $theIcon = $this->doc->wrapClickMenuOnIcon($iconImg, 'tx_commerce_categories', 0);
-            } else {
-                $theIcon = $iconImg;
-            }
-
-            $uid = '0';
+            $theIcon = $this->iconFactory->getIconForRecord(
+                'apps-pagetree-root',
+                array('title' => htmlspecialchars($title))
+            );
+            $uid = 0;
         }
+        $theIcon = $this->doc->wrapClickMenuOnIcon(
+            $theIcon,
+            'tx_commerce_categories',
+            $categoryRecord['uid'] ?: 0
+        );
 
         // Setting icon with clickmenu + uid
         $pageInfo = $theIcon . '<strong>' . htmlspecialchars($title) . '&nbsp;[' . $uid . ']</strong>';
 
         return $pageInfo;
-    }
-
-    /**
-     * Generate the page path for docheader.
-     *
-     * @param array $pageRecord Current page
-     *
-     * @return string Page path
-     */
-    protected function getPagePath(array $pageRecord)
-    {
-        $backendUser = $this->getBackendUser();
-
-        // Is this a real page
-        if (is_array($pageRecord) && $pageRecord['uid']) {
-            $title = substr($pageRecord['_thePathFull'], 0, -1);
-            // remove current page title
-            $pos = strrpos($title, '/');
-            if ($pos !== false) {
-                $title = substr($title, 0, $pos) . '/';
-            }
-        } else {
-            $title = '';
-        }
-
-        // Setting the path of the page
-        $pagePath = $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) .
-            ': <span class="typo3-docheader-pagePath">';
-
-        // crop the title to title limit (or 50, if not defined)
-        $cropLength = empty($backendUser->uc['titleLen']) ? 50 : $backendUser->uc['titleLen'];
-        $croppedTitle = GeneralUtility::fixed_lgd_cs($title, -$cropLength);
-        if ($croppedTitle !== $title) {
-            $pagePath .= '<abbr title="' . htmlspecialchars($title) . '">' . htmlspecialchars($croppedTitle) .
-                '</abbr>';
-        } else {
-            $pagePath .= htmlspecialchars($title);
-        }
-        $pagePath .= '</span>';
-
-        return $pagePath;
-    }
-
-    /**
-     * Setting page icon with clickmenu + uid for docheader.
-     *
-     * @param array $pageRecord Current page
-     *
-     * @return string Page info
-     */
-    protected function getPageInfo(array $pageRecord)
-    {
-        // Add icon with clickmenu, etc:
-        // If there IS a real page
-        if (is_array($pageRecord) && $pageRecord['uid']) {
-            $alttext = BackendUtility::getRecordIconAltText($pageRecord, 'pages');
-            $iconImg = IconUtility::getSpriteIconForRecord('pages', $pageRecord, array('title' => $alttext));
-            // Make Icon:
-            $theIcon = $this->doc->wrapClickMenuOnIcon($iconImg, 'pages', $pageRecord['uid']);
-            $uid = $pageRecord['uid'];
-            $title = BackendUtility::getRecordTitle('pages', $pageRecord);
-        } else {
-            $title = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
-
-            // On root-level of page tree
-            // Make Icon
-            $iconImg = IconUtility::getSpriteIcon('apps-pagetree-root', array('title' => htmlspecialchars($title)));
-
-            if ($this->getBackendUser()->isAdmin()) {
-                $theIcon = $this->doc->wrapClickMenuOnIcon($iconImg, 'pages', 0);
-            } else {
-                $theIcon = $iconImg;
-            }
-
-            $uid = '0';
-        }
-
-        // Setting icon with clickmenu + uid
-        $pageInfo = $theIcon . '<strong>' . htmlspecialchars($title) . '&nbsp;[' . $uid . ']</strong>';
-
-        return $pageInfo;
-    }
-
-
-    /**
-     * Get back path.
-     *
-     * @return string
-     */
-    protected function getBackPath()
-    {
-        return $GLOBALS['BACK_PATH'];
-    }
-
-    /**
-     * Get backend user.
-     *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-     */
-    protected function getBackendUser()
-    {
-        return $GLOBALS['BE_USER'];
-    }
-
-    /**
-     * Get language service.
-     *
-     * @return \TYPO3\CMS\Lang\LanguageService
-     */
-    protected function getLanguageService()
-    {
-        return $GLOBALS['LANG'];
     }
 }
