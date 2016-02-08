@@ -111,7 +111,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             'export' => '',
         );
         // Get users permissions for this row:
-        $localCalcPerms = $this->getBackendUser()->calcPerms($row);
+        $localCalcPerms = $this->getBackendUserAuthentication()->calcPerms($row);
         // CSH
         if (!strlen($this->id)) {
             $buttons['csh'] = BackendUtility::cshItem(
@@ -193,7 +193,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 $language->sL('LLL:EXT:lang/locallang_core.xlf:labels.reload', true) .
                 '">' . $this->iconFactory->getIcon('actions-system-refresh', Icon::SIZE_SMALL) . '</a>';
             // Shortcut
-            if ($this->getBackendUser()->mayMakeShortcut()) {
+            if ($this->getBackendUserAuthentication()->mayMakeShortcut()) {
                 $buttons['shortcut'] = $this->getDocumentTemplate()->makeShortcutIcon(
                     'id, imagemode, pointer, table, search_field, search_levels, showLimit, sortField, sortRev',
                     implode(',', array_keys($this->MOD_MENU)),
@@ -293,7 +293,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
     {
         $database = $this->getDatabaseConnection();
         $language = $this->getLanguageService();
-        $backendUser = $this->getBackendUser();
+        $backendUser = $this->getBackendUserAuthentication();
 
         $tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
 
@@ -577,7 +577,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 $accRows = array();
                 while (($row = $database->sql_fetch_assoc($result))) {
                     // In offline workspace, look for alternative record:
-                    BackendUtility::workspaceOL($table, $row, $this->getBackendUser()->workspace, true);
+                    BackendUtility::workspaceOL($table, $row, $this->getBackendUserAuthentication()->workspace, true);
 
                     if (is_array($row)) {
                         $accRows[] = $row;
@@ -641,7 +641,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                                     BackendUtility::workspaceOL(
                                         $table,
                                         $lRow,
-                                        $this->getBackendUser()->workspace,
+                                        $this->getBackendUserAuthentication()->workspace,
                                         true
                                     );
                                     if (is_array($lRow)
@@ -1225,7 +1225,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      */
     public function makeControl($table, array $row)
     {
-        $backendUser = $this->getBackendUser();
+        $backendUser = $this->getBackendUserAuthentication();
         $language = $this->getLanguageService();
         $tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
 
@@ -1331,7 +1331,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                         $table,
                         $row['uid'],
                         'uid',
-                        $this->getBackendUser()->workspace,
+                        $this->getBackendUserAuthentication()->workspace,
                         false,
                         $row
                     );
@@ -1760,7 +1760,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      */
     public function makeLocalizationPanel($table, array $row)
     {
-        $backendUser = $this->getBackendUser();
+        $backendUser = $this->getBackendUserAuthentication();
 
         $out = array(0 => '', 1 => '');
 
@@ -1892,7 +1892,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
     public function linkWrapItems($table, $uid, $code, array $row)
     {
         $language = $this->getLanguageService();
-        $backendUser = $this->getBackendUser();
+        $backendUser = $this->getBackendUserAuthentication();
 
         // If the title is blank, make a "no title" label:
         if (!strcmp($code, '')) {
@@ -1959,46 +1959,6 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         return $code;
     }
 
-
-    /**
-     * Get backend user.
-     *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-     */
-    protected function getBackendUser()
-    {
-        return $GLOBALS['BE_USER'];
-    }
-
-    /**
-     * Get language service.
-     *
-     * @return \TYPO3\CMS\Lang\LanguageService
-     */
-    protected function getLanguageService()
-    {
-        return $GLOBALS['LANG'];
-    }
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Dbal\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
-     * Get document template.
-     *
-     * @return \TYPO3\CMS\Backend\Template\DocumentTemplate
-     */
-    protected function getDocumentTemplate()
-    {
-        return $GLOBALS['TBE_TEMPLATE'];
-    }
 
     /**
      * Get back path.

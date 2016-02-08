@@ -14,9 +14,8 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Template\ModuleTemplate;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Clipboard\Clipboard;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -34,13 +33,6 @@ use TYPO3\CMS\Extbase\Service\TypoScriptService;
 class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
 {
     /**
-     * The script for the wizard of the command 'new'.
-     *
-     * @var string
-     */
-    public $scriptNewWizard = 'wizard.php';
-
-    /**
      * The name of the module
      *
      * @var string
@@ -48,18 +40,17 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
     protected $moduleName = 'commerce_category';
 
     /**
+     * @var ModuleTemplate
+     */
+    protected $moduleTemplate;
+
+    /**
      * Category uid.
      *
      * @var int
      */
     public $categoryUid = 0;
-
-    /**
-     * Body content.
-     *
-     * @var string
-     */
-    public $body;
+    // 2, 3, 2941, 2952, 2942
 
     /**
      * Constructor
@@ -68,10 +59,14 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
      */
     public function __construct()
     {
-        parent::__construct();
+        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
+        $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_list.xlf');
         $this->getLanguageService()->includeLLFile(
             'EXT:commerce/Resources/Private/Language/locallang_mod_category.xml'
         );
+        $this->moduleTemplate->getPageRenderer()->loadJquery();
+        $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Recordlist/FieldSelectBox');
+        $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Recordlist/Recordlist');
     }
 
     /**
@@ -125,6 +120,9 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
      */
     public function main()
     {
+        // @todo only for development remove next line
+        $this->categoryUid = 2;
+
         $backendUser = $this->getBackendUserAuthentication();
         $lang = $this->getLanguageService();
         // Loading current category/page record and checking access:
@@ -136,7 +134,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         } else {
             $this->pageinfo = BackendUtility::readPageAccess(
                 $this->id,
-                $this->getBackendUserAuthentication()->getPagePermsClause(1)
+                $backendUser->getPagePermsClause(1)
             );
         }
         $access = is_array($this->pageinfo);
@@ -417,7 +415,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             // add the page id and the current selected categor uid to the function links
             $functionParameter = array('id' => $this->id);
             if ($this->categoryUid) {
-                $functionParameter['defVals[tx_commerce_categories][uid]'] = $this->categoryUid;
+                $functionParameter['defVals']['tx_commerce_categories']['uid'] = $this->categoryUid;
             }
 
             // Add "display bigControlPanel" checkbox:
@@ -522,108 +520,5 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         }
 
         $this->content .= $this->body;
-    }
-
-    /**
-     * Injects the request object for the current request or subrequest
-     * Simply calls main() and init() and outputs the content
-     *
-     * @param ServerRequestInterface $request the current request
-     * @param ResponseInterface $response
-     * @return ResponseInterface the response with the content
-     */
-    public function mainAction(ServerRequestInterface $request, ResponseInterface $response)
-    {
-        $GLOBALS['SOBE'] = $this;
-        $this->init();
-        $this->clearCache();
-        $this->main();
-
-        $this->moduleTemplate->setContent($this->content);
-        $response->getBody()->write($this->moduleTemplate->renderContent());
-        return $response;
-    }
-
-    /**
-     * Returns the Category Path info.
-     *
-     * @param array $categoryRecord Category row
-     *
-     * @return string
-     */
-    protected function getCategoryPath(array $categoryRecord)
-    {
-        $language = $this->getLanguageService();
-        $backendUser = $this->getBackendUserAuthentication();
-
-        // Is this a real page
-        if (is_array($categoryRecord) && $categoryRecord['uid']) {
-            $title = substr($categoryRecord['_thePathFull'], 0, -1);
-            // remove current page title
-            $pos = strrpos($title, '/');
-            if ($pos !== false) {
-                $title = substr($title, 0, $pos) . '/';
-            }
-        } else {
-            $title = '';
-        }
-
-        // Setting the path of the page
-        $pagePath = $language->sL('LLL:EXT:lang/locallang_core.php:labels.path', 1) .
-            ': <span class="typo3-docheader-pagePath">';
-
-        // crop the title to title limit (or 50, if not defined)
-        $cropLength = empty($backendUser->uc['titleLen']) ? 50 : $backendUser->uc['titleLen'];
-        $croppedTitle = GeneralUtility::fixed_lgd_cs($title, -$cropLength);
-        if ($croppedTitle !== $title) {
-            $pagePath .= '<abbr title="' . htmlspecialchars($title) . '">' . htmlspecialchars($croppedTitle) .
-                '</abbr>';
-        } else {
-            $pagePath .= htmlspecialchars($title);
-        }
-        $pagePath .= '</span>';
-
-        return $pagePath;
-    }
-
-    /**
-     * Returns the info for the Category Path.
-     *
-     * @param array $categoryRecord Category record
-     *
-     * @return string
-     */
-    protected function getCategoryInfo(array $categoryRecord)
-    {
-        // Add icon with clickmenu, etc:
-        // If there IS a real category
-        if (is_array($categoryRecord) && $categoryRecord['uid']) {
-            $title = BackendUtility::getRecordTitle('tx_commerce_categories', $categoryRecord);
-            $theIcon = $this->iconFactory->getIconForRecord(
-                'tx_commerce_categories',
-                $categoryRecord,
-                Icon::SIZE_SMALL
-            );
-            $uid = $categoryRecord['uid'];
-        } else {
-            // On root-level of page tree
-            $title = 'Commerce';
-            // Make Icon
-            $theIcon = $this->iconFactory->getIconForRecord(
-                'apps-pagetree-root',
-                array('title' => htmlspecialchars($title))
-            );
-            $uid = 0;
-        }
-        $theIcon = $this->doc->wrapClickMenuOnIcon(
-            $theIcon,
-            'tx_commerce_categories',
-            $categoryRecord['uid'] ?: 0
-        );
-
-        // Setting icon with clickmenu + uid
-        $pageInfo = $theIcon . '<strong>' . htmlspecialchars($title) . '&nbsp;[' . $uid . ']</strong>';
-
-        return $pageInfo;
     }
 }

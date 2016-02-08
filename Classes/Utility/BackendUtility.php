@@ -1608,7 +1608,7 @@ class BackendUtility
      */
     public function copyArticle($uid, $uidProduct, array $locale = array())
     {
-        $backendUser = self::getBackendUser();
+        $backendUser = self::getBackendUserAuthentication();
         $database = self::getDatabaseConnection();
 
         // check params
@@ -1720,7 +1720,7 @@ class BackendUtility
      */
     public function copyPrices($uidFrom, $uidTo)
     {
-        $backendUser = self::getBackendUser();
+        $backendUser = self::getBackendUserAuthentication();
         $database = self::getDatabaseConnection();
 
         // select all existing prices of the article
@@ -1883,7 +1883,7 @@ class BackendUtility
         // First prepare user defined hooks
         $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Utility/BackendUtility', 'copyProduct');
 
-        $backendUser = self::getBackendUser();
+        $backendUser = self::getBackendUserAuthentication();
         $database = self::getDatabaseConnection();
 
         if ($sorting == 0) {
@@ -1991,7 +1991,7 @@ class BackendUtility
             return false;
         }
 
-        $backendUser = self::getBackendUser();
+        $backendUser = self::getBackendUserAuthentication();
         $database = self::getDatabaseConnection();
 
         $tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
@@ -2105,7 +2105,7 @@ class BackendUtility
      */
     public function overwriteLocale($table, $uidCopied, $uidOverwrite, $loc)
     {
-        $backendUser = $this->getBackendUser();
+        $backendUser = $this->getBackendUserAuthentication();
 
         // check params
         if (!is_string($table) || !is_numeric($uidCopied) || !is_numeric($uidOverwrite) || !is_numeric($loc)) {
@@ -2306,7 +2306,7 @@ class BackendUtility
          */
         $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
 
-        $backendUser = self::getBackendUser();
+        $backendUser = self::getBackendUserAuthentication();
 
         $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
         if (is_array($tcaDefaultOverride)) {
@@ -2601,7 +2601,7 @@ class BackendUtility
      */
     public static function getCategoryPermsClause($perms)
     {
-        $backendUser = self::getBackendUser();
+        $backendUser = self::getBackendUserAuthentication();
 
         if (is_array($backendUser->user)) {
             if ($backendUser->isAdmin()) {
@@ -2643,7 +2643,7 @@ class BackendUtility
             return false;
         }
 
-        $backendUser = self::getBackendUser();
+        $backendUser = self::getBackendUserAuthentication();
 
         // If User is admin, he may do anything
         if ($backendUser->isAdmin()) {
@@ -2815,12 +2815,10 @@ class BackendUtility
      */
     public static function readCategoryAccess($id, $permsClause)
     {
-        $backendUser = self::getBackendUser();
-
         if ((string) $id != '') {
             $id = (int) $id;
             if (!$id) {
-                if ($backendUser->isAdmin()) {
+                if (static::getBackendUserAuthentication()->isAdmin()) {
                     $path = '/';
                     $pageinfo['_thePath'] = $path;
 
@@ -2984,15 +2982,13 @@ class BackendUtility
      */
     protected static function getCategoryForRootline($uid, $clause, $workspaceOl)
     {
-        $database = self::getDatabaseConnection();
-
-        static $getPageForRootlineCache = array();
+        static $getCategoryForRootlineCache = array();
         $ident = $uid . '-' . $clause . '-' . $workspaceOl;
 
-        if (is_array($getPageForRootlineCache[$ident])) {
-            $row = $getPageForRootlineCache[$ident];
+        if (is_array($getCategoryForRootlineCache[$ident])) {
+            $row = $getCategoryForRootlineCache[$ident];
         } else {
-            $res = $database->exec_SELECTquery(
+            $row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
                 'mm.uid_foreign AS pid, tx_commerce_categories.uid, tx_commerce_categories.hidden,
                     tx_commerce_categories.title, tx_commerce_categories.ts_config, tx_commerce_categories.t3ver_oid,
                     tx_commerce_categories.perms_userid, tx_commerce_categories.perms_groupid,
@@ -3006,17 +3002,16 @@ class BackendUtility
                 \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('tx_commerce_categories') . ' ' . $clause
             );
 
-            $row = $database->sql_fetch_assoc($res);
-            if ($row) {
+            if (is_array($row)) {
                 if ($workspaceOl) {
                     \TYPO3\CMS\Backend\Utility\BackendUtility::workspaceOL('tx_commerce_categories', $row);
                 }
                 if (is_array($row)) {
                     \TYPO3\CMS\Backend\Utility\BackendUtility::fixVersioningPid('tx_commerce_categories', $row);
-                    $getPageForRootlineCache[$ident] = $row;
+                    $getCategoryForRootlineCache[$ident] = $row;
                 }
+                $row['_is_category'] = true;
             }
-            $database->sql_free_result($res);
         }
 
         return $row;
@@ -3034,7 +3029,7 @@ class BackendUtility
      */
     public static function checkPermissionsOnCategoryContent(array $categoryUids, array $perms)
     {
-        $backendUser = self::getBackendUser();
+        $backendUser = self::getBackendUserAuthentication();
 
         // admin is allowed to do anything
         if ($backendUser->isAdmin()) {
@@ -3194,7 +3189,7 @@ class BackendUtility
          */
         $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
 
-        $backendUser = self::getBackendUser();
+        $backendUser = self::getBackendUserAuthentication();
 
         $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
         if (is_array($tcaDefaultOverride)) {
@@ -3287,7 +3282,7 @@ class BackendUtility
          */
         $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
 
-        $backendUser = self::getBackendUser();
+        $backendUser = self::getBackendUserAuthentication();
 
         $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
         if (is_array($tcaDefaultOverride)) {
@@ -3484,7 +3479,7 @@ class BackendUtility
          */
         $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
 
-        $backendUser = self::getBackendUser();
+        $backendUser = self::getBackendUserAuthentication();
 
         $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
         if (is_array($tcaDefaultOverride)) {
@@ -3522,7 +3517,7 @@ class BackendUtility
      *
      * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
      */
-    protected static function getBackendUser()
+    protected static function getBackendUserAuthentication()
     {
         return $GLOBALS['BE_USER'];
     }
