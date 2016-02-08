@@ -14,8 +14,7 @@ namespace CommerceTeam\Commerce\RecordList;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -209,7 +208,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         $language = $this->getLanguageService();
         $backendUser = $this->getBackendUser();
 
-        $tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
+        $tableConfig = ConfigurationUtility::getInstance()->getTcaValue($table);
 
         // Init
         $addWhere = '';
@@ -259,10 +258,10 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         }
 
         // Cleaning up:
-        if (SettingsFactory::getInstance()->getExtConf('showArticleNumber') == 1) {
+        if (ConfigurationUtility::getInstance()->getExtConf('showArticleNumber') == 1) {
             $this->defaultFieldArray[] = 'article_number';
         }
-        if (SettingsFactory::getInstance()->getExtConf('showArticleTitle') == 1) {
+        if (ConfigurationUtility::getInstance()->getExtConf('showArticleTitle') == 1) {
             $this->defaultFieldArray[] = 'article_name';
         }
         $this->fieldArray = array_merge($this->fieldArray, $this->defaultFieldArray);
@@ -809,7 +808,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 while (($localRow = $database->sql_fetch_assoc($typesResult))) {
                     if ($localRow['icon']) {
                         $filepath = $this->backPath .
-                            SettingsFactory::getInstance()->getTcaValue(
+                            ConfigurationUtility::getInstance()->getTcaValue(
                                 'tx_commerce_order_types.columns.icon.config.uploadfolder'
                             ) . '/' .
                             $localRow['icon'];
@@ -850,7 +849,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 
         // Add row to CSV list:
         if ($this->csvOutput) {
-            $beCsvCharset = SettingsFactory::getInstance()->getExtConf('BECSVCharset');
+            $beCsvCharset = ConfigurationUtility::getInstance()->getExtConf('BECSVCharset');
             // Charset Conversion
             /**
              * Charset converter.
@@ -932,7 +931,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             );
             $fl = $label ? $label : '[' . $fN . ']';
             // Field label
-            $labelForField = SettingsFactory::getInstance()->getTcaValue($table . '.columns.' . $fN . '.label');
+            $labelForField = ConfigurationUtility::getInstance()->getTcaValue($table . '.columns.' . $fN . '.label');
             $fL = $labelForField ? rtrim($language->sL($labelForField), ':') : $fl;
             $opt[] = '
                 <option value="' . $fN . '"' .
@@ -975,7 +974,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         $database = $this->getDatabaseConnection();
         $language = $this->getLanguageService();
 
-        $tableReadOnly = SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.readOnly');
+        $tableReadOnly = ConfigurationUtility::getInstance()->getTcaValue($table . '.ctrl.readOnly');
 
         // Init:
         $theData = array();
@@ -986,7 +985,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                     // Path
                 case '_CLIPBOARD_':
                     if ($this->id && !$tableReadOnly && $this->getController()->MOD_SETTINGS['bigControlPanel']) {
-                        $foreignTable = SettingsFactory::getInstance()
+                        $foreignTable = ConfigurationUtility::getInstance()
                             ->getTcaValue('tx_commerce_orders.columns.newpid.config.foreign_table');
                         $resParent = $database->exec_SELECTquery(
                             'pid',
@@ -999,7 +998,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                             // Get the pages below $orderPid
                             $ret = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderSelector(
                                 $this->orderPid,
-                                SettingsFactory::getInstance()->getExtConf('OrderFolderRecursiveLevel')
+                                ConfigurationUtility::getInstance()->getExtConf('OrderFolderRecursiveLevel')
                             );
                             $moveToSelectorRow .= '<select name="modeDestUid" size="1">
 								<option value="" selected="selected">' .
@@ -1051,7 +1050,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             }
         }
 
-        $tableControl = SettingsFactory::getInstance()->getTcaValue($table . '.ctrl');
+        $tableControl = ConfigurationUtility::getInstance()->getTcaValue($table . '.ctrl');
 
         // Set ORDER BY:
         $orderBy = $tableControl['sortby'] ?
@@ -1304,7 +1303,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
     {
         $backendUser = $this->getBackendUser();
 
-        $tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
+        $tableConfig = ConfigurationUtility::getInstance()->getTcaValue($table);
 
         // Init fieldlist array:
         $fieldListArr = array();

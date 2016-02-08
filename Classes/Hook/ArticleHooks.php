@@ -15,7 +15,7 @@ namespace CommerceTeam\Commerce\Hook;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -78,7 +78,7 @@ class ArticleHooks
      */
     protected function getDeliveryArticle(\CommerceTeam\Commerce\Domain\Model\Article &$article)
     {
-        $deliveryConf = SettingsFactory::getInstance()->getConfiguration('SYSPRODUCTS.DELIVERY.types');
+        $deliveryConf = ConfigurationUtility::getInstance()->getConfiguration('SYSPRODUCTS.DELIVERY.types');
         $classname = array_shift(array_keys($deliveryConf));
 
         /**

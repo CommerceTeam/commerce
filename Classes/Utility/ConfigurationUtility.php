@@ -1,5 +1,5 @@
 <?php
-namespace CommerceTeam\Commerce\Factory;
+namespace CommerceTeam\Commerce\Utility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -22,14 +22,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
-class SettingsFactory implements SingletonInterface
+class ConfigurationUtility implements SingletonInterface
 {
     /**
      * Extension key.
      *
      * @var string
      */
-    protected $extensionKey = COMMERCE_EXTKEY;
+    protected $extensionKey = 'commerce';
 
     /**
      * Settings.
@@ -61,8 +61,9 @@ class SettingsFactory implements SingletonInterface
 
     /**
      * Instance.
+
      *
-     * @var SettingsFactory
+*@var ConfigurationUtility
      */
     protected static $instance = null;
 
@@ -79,10 +80,11 @@ class SettingsFactory implements SingletonInterface
 
     /**
      * Constructor.
-     *
+
      * Block external instantiation
+
      *
-     * @return self
+*@return ConfigurationUtility
      */
     protected function __construct()
     {
@@ -90,8 +92,9 @@ class SettingsFactory implements SingletonInterface
 
     /**
      * Get instance.
+
      *
-     * @return SettingsFactory
+*@return ConfigurationUtility
      */
     public static function getInstance()
     {

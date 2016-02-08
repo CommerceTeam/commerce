@@ -15,7 +15,7 @@ namespace CommerceTeam\Commerce\Controller;
  */
 
 use CommerceTeam\Commerce\Factory\HookFactory;
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 
 /**
  * Plugin 'commerce_invoice' for the 'commerce_invoice' extension.
@@ -98,7 +98,7 @@ class InvoiceController extends BaseController
         $this->pi_loadLL();
 
         // Checking backend user login
-        $this->invoiceBackendOnly(SettingsFactory::getInstance()->getExtConf('invoiceBackendOnly'));
+        $this->invoiceBackendOnly(ConfigurationUtility::getInstance()->getExtConf('invoiceBackendOnly'));
 
         // Check for the logged in USER
         // It could be an FE USer, a BE User or an automated script

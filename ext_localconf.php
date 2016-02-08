@@ -212,6 +212,10 @@ $boot = function ($packageKey) {
         \CommerceTeam\Commerce\Configuration\Dca\Products::class;
     $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_articles']['commerce'] =
         \CommerceTeam\Commerce\Configuration\Dca\Articles::class;
+
+    if (is_array($typo3ConfVars['EXT']['extConf'][$packageKey])) {
+        $typo3ConfVars['EXT']['extConf'][$packageKey] = serialize($typo3ConfVars['EXT']['extConf'][$packageKey]);
+    }
 };
 
 $boot('commerce');

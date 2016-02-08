@@ -1,7 +1,7 @@
 <?php
 namespace CommerceTeam\Commerce\Controller;
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
@@ -52,7 +52,7 @@ class SystemdataSupplierModuleFunctionController extends AbstractFunctionModule
 
         $this->newRecordPid = $this->pObj->id;
         $this->iconFactory = $this->pObj->moduleTemplate->getIconFactory();
-        $fields = explode(',', SettingsFactory::getInstance()->getExtConf('coSuppliers'));
+        $fields = explode(',', ConfigurationUtility::getInstance()->getExtConf('coSuppliers'));
 
         $headerRow = '<tr><td class="col-icon"></td><td class="col-title">';
         foreach ($fields as $field) {

@@ -168,7 +168,7 @@ $boot = function ($packageKey) {
             'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml:statistics'
         );
 
-        if (\CommerceTeam\Commerce\Factory\SettingsFactory::getInstance()->getExtConf('allowAggregation') == 1) {
+        if (\CommerceTeam\Commerce\Utility\ConfigurationUtility::getInstance()->getExtConf('allowAggregation') == 1) {
             \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
                 'commerce_statistic',
                 \CommerceTeam\Commerce\Controller\StatisticIncrementalAggregationModuleFunctionController::class,

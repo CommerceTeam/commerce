@@ -15,7 +15,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository;
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -43,14 +43,6 @@ class AttributeEditFunc
         $foreignTable = 'tx_commerce_attribute_values';
         $table = 'tx_commerce_attributes';
 
-        /**
-         * Document template.
-         *
-         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
-         */
-        $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
-        $doc->backPath = $this->getBackPath();
-
         $attributeStoragePid = $parameter['row']['pid'];
         $attributeUid = $parameter['row']['uid'];
         /*
@@ -59,7 +51,7 @@ class AttributeEditFunc
 
         // @todo TS config of fields in list
         $rowFields = array('attributes_uid', 'value');
-        $titleCol = SettingsFactory::getInstance()->getTcaValue($foreignTable . '.ctrl.label');
+        $titleCol = ConfigurationUtility::getInstance()->getTcaValue($foreignTable . '.ctrl.label');
 
         /**
          * Attribute value repository.

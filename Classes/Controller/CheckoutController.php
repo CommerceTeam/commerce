@@ -16,7 +16,7 @@ namespace CommerceTeam\Commerce\Controller;
 
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Factory\HookFactory;
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use CommerceTeam\Commerce\ViewHelpers\Money;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -215,7 +215,7 @@ class CheckoutController extends BaseController
         $hooks = HookFactory::getHooks('Controller/CheckoutController', 'main');
 
         // Set basket to readonly, if set in extension configuration
-        if (SettingsFactory::getInstance()->getExtConf('lockBasket') == 1) {
+        if (ConfigurationUtility::getInstance()->getExtConf('lockBasket') == 1) {
             $basket = $this->getBasket();
             $basket->setReadOnly();
             $basket->storeData();
@@ -346,7 +346,7 @@ class CheckoutController extends BaseController
             }
         }
 
-        return $this->pi_WrapInBaseClass($content);
+        return $this->pi_wrapInBaseClass($content);
     }
 
     /**
@@ -853,7 +853,7 @@ class CheckoutController extends BaseController
         // Check if we already have a payment object
         // If we don't have one, try to create a new one from the config
         if (!isset($paymentObj)) {
-            $config = SettingsFactory::getInstance()->getConfiguration(
+            $config = ConfigurationUtility::getInstance()->getConfiguration(
                 'SYSPRODUCTS.PAYMENT.types.' . strtolower((string) $paymentType)
             );
 
@@ -1055,7 +1055,7 @@ class CheckoutController extends BaseController
 
         if (!is_object($paymentObj)) {
             $paymentType = $this->getPaymentType();
-            $config = SettingsFactory::getInstance()->getConfiguration(
+            $config = ConfigurationUtility::getInstance()->getConfiguration(
                 'SYSPRODUCTS.PAYMENT.types.' . strtolower((string) $paymentType)
             );
 
@@ -1068,7 +1068,7 @@ class CheckoutController extends BaseController
 
             $paymentObj = GeneralUtility::makeInstance($config['class'], $this);
         } else {
-            $config = SettingsFactory::getInstance()->getConfiguration(
+            $config = ConfigurationUtility::getInstance()->getConfiguration(
                 'SYSPRODUCTS.PAYMENT.types.' . $paymentObj->getType()
             );
         }
@@ -1120,7 +1120,9 @@ class CheckoutController extends BaseController
             }
         }
 
-        if (method_exists($paymentObj, 'hasSpecialFinishingForm') && $paymentObj->hasSpecialFinishingForm($_REQUEST)) {
+        if (method_exists($paymentObj, 'hasSpecialFinishingForm')
+            && $paymentObj->hasSpecialFinishingForm($_REQUEST)
+            && method_exists($paymentObj, 'getSpecialFinishingForm')) {
             return $paymentObj->getSpecialFinishingForm($config, $this->sessionData, $basket);
         } elseif (!$paymentObj->finishingFunction($config, $this->sessionData, $basket)) {
             return $this->handlePayment($paymentObj);
@@ -1157,10 +1159,10 @@ class CheckoutController extends BaseController
             $orderData['pid'] = $this->conf['newOrderPid'];
         }
         if (empty($orderData['pid']) || ($orderData['pid'] < 0)) {
-            $comPid = array_keys(FolderRepository::getFolders($this->extKey, 0, 'COMMERCE'));
-            $ordPid = array_keys(FolderRepository::getFolders($this->extKey, $comPid[0], 'Orders'));
-            $incPid = array_keys(FolderRepository::getFolders($this->extKey, $ordPid[0], 'Incoming'));
-            $orderData['pid'] = $incPid[0];
+            $comPid = FolderRepository::getFolder($this->extKey, 0, 'COMMERCE')['uid'];
+            $ordPid = FolderRepository::getFolder($this->extKey, $comPid, 'Orders')['uid'];
+            $incPid = FolderRepository::getFolder($this->extKey, $ordPid, 'Incoming')['uid'];
+            $orderData['pid'] = $incPid['uid'];
         }
 
         // Save the order, execute the hooks and stock
@@ -2366,7 +2368,7 @@ class CheckoutController extends BaseController
                  *
                  * @var \CommerceTeam\Commerce\Controller\CheckoutController $userMailObj
                  */
-                $userMailObj = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Controller\CheckoutController::class);
+                $userMailObj = GeneralUtility::makeInstance(self::class);
                 $userMailObj->conf = $this->conf;
                 $userMailObj->pi_setPiVarDefaults();
                 $userMailObj->cObj = $this->cObj;
@@ -3010,7 +3012,6 @@ class CheckoutController extends BaseController
             $backendUser->warningEmail = $GLOBALS['TYPO3_CONF_VARS']['BE']['warning_email_addr'];
             $backendUser->lockIP = $GLOBALS['TYPO3_CONF_VARS']['BE']['lockIP'];
             $backendUser->auth_timeout_field = (int) $GLOBALS['TYPO3_CONF_VARS']['BE']['sessionTimeout'];
-            $backendUser->OS = TYPO3_OS;
             if (TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) {
                 $backendUser->dontSetCookie = true;
             }

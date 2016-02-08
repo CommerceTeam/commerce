@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\Payment\Provider;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 
 /**
  * Abstract payment provider implementation.
@@ -75,7 +75,7 @@ abstract class ProviderAbstract implements ProviderInterface
     protected function loadCriteria()
     {
         // Get and instantiate registered criteria of this payment provider
-        $criteraConfigurations = SettingsFactory::getInstance()
+        $criteraConfigurations = ConfigurationUtility::getInstance()
             ->getConfiguration('SYSPRODUCTS.PAYMENT.types.' . $this->paymentObject->getType() . '.provider.' .
                 $this->type . '.criteria');
 

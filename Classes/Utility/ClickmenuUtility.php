@@ -14,7 +14,6 @@ namespace CommerceTeam\Commerce\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
 use CommerceTeam\Commerce\Utility\BackendUtility as CommerceBackendUtility;
 use TYPO3\CMS\Backend\ClickMenu\ClickMenu;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -147,7 +146,7 @@ class ClickmenuUtility extends ClickMenu
             'copyType' => 'after',
         );
 
-        $settingsFactory = SettingsFactory::getInstance();
+        $settingsFactory = ConfigurationUtility::getInstance();
 
         // used to hide cut,copy icons for l10n-records
         // should only be performed for overlay-records within the same table

@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -179,7 +179,7 @@ class OrdermailHooks
             $this->templateCode = GeneralUtility::getUrl($this->templatePath . $template['mailtemplate']);
             $this->templateCodeHtml = GeneralUtility::getUrl($this->templatePath . $template['htmltemplate']);
 
-            $settingsFactory = SettingsFactory::getInstance();
+            $settingsFactory = ConfigurationUtility::getInstance();
             $senderemail = $template['senderemail'] == '' ?
                 $settingsFactory->getExtConf('defEmailAddress') :
                 $template['senderemail'];

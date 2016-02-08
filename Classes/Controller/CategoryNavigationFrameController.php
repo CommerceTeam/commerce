@@ -16,7 +16,7 @@ namespace CommerceTeam\Commerce\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Http\AjaxRequestHandler;
@@ -92,7 +92,7 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
         // Get the Category Tree
         $this->categoryTree = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryTree::class);
         $this->categoryTree->setBare($bare);
-        $this->categoryTree->setSimpleMode((int) SettingsFactory::getInstance()->getExtConf('simpleMode'));
+        $this->categoryTree->setSimpleMode((int) ConfigurationUtility::getInstance()->getExtConf('simpleMode'));
         $this->categoryTree->setNavigationFrame(true);
         $this->categoryTree->init();
 

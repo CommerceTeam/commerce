@@ -17,6 +17,7 @@ namespace CommerceTeam\Commerce\Controller;
 use CommerceTeam\Commerce\Template\ModuleTemplate;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use TYPO3\CMS\Backend\Clipboard\Clipboard;
+use TYPO3\CMS\Backend\Template\Components\Buttons\LinkButton;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
@@ -49,8 +50,9 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
      *
      * @var int
      */
-    public $categoryUid = 0;
+    public $categoryUid = 2;
     // 2, 3, 2941, 2952, 2942
+    // @todo only for development set to 0 afterward set to 0 again
 
     /**
      * Constructor
@@ -120,9 +122,6 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
      */
     public function main()
     {
-        // @todo only for development remove next line
-        $this->categoryUid = 2;
-
         $backendUser = $this->getBackendUserAuthentication();
         $lang = $this->getLanguageService();
         // Loading current category/page record and checking access:
@@ -377,21 +376,24 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         }
         // access
         // Begin to compile the whole page, starting out with page header:
-        if (!$this->id) {
-            $this->body = $this->moduleTemplate->header('Commerce');
-        } else {
-            $this->body = $this->moduleTemplate->header($this->pageinfo['title']);
-        }
+        $this->body = $this->moduleTemplate->header(!$this->id ? 'Commerce' : $this->pageinfo['title']);
 
         if (!empty($dbList->HTMLcode)) {
             $output = $dbList->HTMLcode;
         } else {
-            $output = $flashMessage = GeneralUtility::makeInstance(
+            /** @var FlashMessage $flashMessage */
+            $flashMessage = GeneralUtility::makeInstance(
                 FlashMessage::class,
                 $lang->getLL('noRecordsOnThisPage'),
                 '',
                 FlashMessage::INFO
-            )->render();
+            );
+            $severityClass = sprintf('alert %s', $flashMessage->getClass());
+            $messageContent = htmlspecialchars($flashMessage->getMessage());
+            if ($flashMessage->getTitle() !== '') {
+                $messageContent = sprintf('<h4>%s</h4>', htmlspecialchars($flashMessage->getTitle())) . $messageContent;
+            }
+            $output = sprintf('<li class="%s">%s</li>', htmlspecialchars($severityClass), $messageContent);
         }
 
         $this->body .= '<form action="' . htmlspecialchars($dbList->listURL()) . '" method="post" name="dblistForm">';
@@ -502,6 +504,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             $this->content = $dbList->getSearchBox();
             $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/ToggleSearchToolbox');
 
+            /** @var LinkButton $searchButton */
             $searchButton = $this->moduleTemplate->getDocHeaderComponent()->getButtonBar()->makeLinkButton();
             $searchButton
                 ->setHref('#')

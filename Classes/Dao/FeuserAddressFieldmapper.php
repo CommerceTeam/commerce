@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\Dao;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 
 /**
  * This class handles basic database storage by object mapping.
@@ -56,7 +56,7 @@ class FeuserAddressFieldmapper
      */
     public function __construct()
     {
-        $this->mapping = trim(SettingsFactory::getInstance()->getExtConf('feuser_address_mapping'), ' ;');
+        $this->mapping = trim(ConfigurationUtility::getInstance()->getExtConf('feuser_address_mapping'), ' ;');
     }
 
     /**

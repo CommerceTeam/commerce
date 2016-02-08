@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\Dao;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 
 /**
  * This class used by the Dao for database storage.
@@ -41,6 +41,6 @@ class FeuserDaoMapper extends BasicDaoMapper
     public function init()
     {
         parent::init();
-        $this->createPid = SettingsFactory::getInstance()->getExtConf('create_feuser_pid');
+        $this->createPid = ConfigurationUtility::getInstance()->getExtConf('create_feuser_pid');
     }
 }

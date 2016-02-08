@@ -43,7 +43,7 @@
 							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.product_name</label>
 							<config>
 								<type>select</type>
-								<itemsProcFunc>\CommerceTeam\Commerce\Utility\TceformsUtility->productsSelector</itemsProcFunc>
+								<itemsProcFunc>CommerceTeam\Commerce\Utility\TceformsUtility->productsSelector</itemsProcFunc>
 								<foreign_table>tx_commerce_products</foreign_table>
 								<size>1</size>
 								<minitems>0</minitems>
@@ -58,10 +58,11 @@
 							<config>
 								<type>select</type>
 								<foreign_table>tx_commerce_categories</foreign_table>
+								<foreign_table_where> AND sys_language_uid = 0</foreign_table_where>
 								<size>10</size>
 								<minitems>0</minitems>
 								<maxitems>1</maxitems>
-								<renderMode>tree</renderMode>
+								<!-- <renderMode>tree</renderMode> -->
 								<treeConfig>
 									<expandAll>1</expandAll>
 									<parentField>parent_category</parentField>

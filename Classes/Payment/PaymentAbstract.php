@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\Payment;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -158,7 +158,7 @@ abstract class PaymentAbstract implements PaymentInterface
     protected function findCriterion()
     {
         // Create criterion objects if defined
-        $criteraConfigurations = SettingsFactory::getInstance()
+        $criteraConfigurations = ConfigurationUtility::getInstance()
             ->getConfiguration('SYSPRODUCTS.PAYMENT.types.' . $this->type . '.criteria');
 
         if (is_array($criteraConfigurations)) {
@@ -198,7 +198,7 @@ abstract class PaymentAbstract implements PaymentInterface
     protected function findProvider()
     {
         // Check if type has criteria, create all needed objects
-        $providerConfigurations = SettingsFactory::getInstance()
+        $providerConfigurations = ConfigurationUtility::getInstance()
             ->getConfiguration('SYSPRODUCTS.PAYMENT.types.' . $this->type . '.provider');
 
         if (is_array($providerConfigurations)) {

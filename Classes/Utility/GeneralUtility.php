@@ -14,7 +14,6 @@ namespace CommerceTeam\Commerce\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility as CoreGeneralUtility;
 
 /**
@@ -88,7 +87,7 @@ class GeneralUtility
 
             $basketId = $feUser->getKey('ses', $commerceBasketIdKey);
 
-            $useCookieAsBasketIdFallback = SettingsFactory::getInstance()->getExtConf('useCookieAsBasketIdFallback');
+            $useCookieAsBasketIdFallback = ConfigurationUtility::getInstance()->getExtConf('useCookieAsBasketIdFallback');
             if (empty($basketId) && $useCookieAsBasketIdFallback && isset($_COOKIE[$commerceBasketIdKey])) {
                 $basketId = $_COOKIE[$commerceBasketIdKey];
             }
@@ -215,7 +214,7 @@ class GeneralUtility
     public static function generateSessionKey($key)
     {
         $frontendUser = self::getFrontendUser();
-        if (SettingsFactory::getInstance()->getExtConf('userSessionMd5Encrypt')) {
+        if (ConfigurationUtility::getInstance()->getExtConf('userSessionMd5Encrypt')) {
             $sessionKey = md5($key . ':' . $frontendUser->user['uid']);
         } else {
             $sessionKey = $key . ':' . $frontendUser->user['uid'];
@@ -420,7 +419,7 @@ class GeneralUtility
                 ->tmpl
                     ->setup['plugin.']['tx_commerce_pi2.']['basketStoragePid'];
         } else {
-            $basketStoragePid = SettingsFactory::getInstance()->getExtConf('BasketStoragePid');
+            $basketStoragePid = ConfigurationUtility::getInstance()->getExtConf('BasketStoragePid');
         }
 
         return $basketStoragePid;

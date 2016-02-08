@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 
 /**
  * Class \CommerceTeam\Commerce\Hook\TceFormsHooks.
@@ -42,7 +42,7 @@ class TceFormsHooks
      */
     public function getSingleField_preProcess($table, $field, &$row)
     {
-        $settingsFactory = SettingsFactory::getInstance();
+        $settingsFactory = ConfigurationUtility::getInstance();
 
         if ($table == 'tx_commerce_products' && $settingsFactory->getExtConf('simpleMode') == 1) {
             $this->lastMaxItems = $settingsFactory->getTcaValue(
@@ -97,7 +97,7 @@ class TceFormsHooks
      */
     public function getSingleField_postProcess($table, $field, array $row, &$out)
     {
-        $settingsFactory = SettingsFactory::getInstance();
+        $settingsFactory = ConfigurationUtility::getInstance();
         // This value is set, if the preProcess updated the tca earlyer
         if ($this->lastMaxItems !== false) {
             $GLOBALS['TCA']['tx_commerce_products']['columns']['articles']['config']['maxitems'] = $this->lastMaxItems;

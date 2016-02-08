@@ -51,8 +51,8 @@ class MetaInformation extends \TYPO3\CMS\Backend\Template\Components\MetaInforma
             $title = 'Commerce';
         }
         // Setting icon with clickMenu + uid
-        return $theIcon .
-            ' <strong>' . htmlspecialchars($title) . ($uid !== '' ? '&nbsp;[' . $uid . ']' : '') . '</strong>' .
-            (!empty($additionalInfo) ? ' ' . htmlspecialchars($additionalInfo) : '');
+        return $theIcon
+            . ' <strong>' . htmlspecialchars($title) . ($uid !== '' ? '&nbsp;[' . $uid . ']' : '') . '</strong>'
+            . (!empty($additionalInfo) ? ' ' . htmlspecialchars($additionalInfo) : '');
     }
 }

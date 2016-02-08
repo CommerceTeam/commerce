@@ -818,11 +818,10 @@ class ListController extends BaseController
                     }
                 }
             }
-            // @todo wtf need to be reworked how it was ment to be
             if (is_array($arrAttSubmit)) {
                 $attributeMatrix = $product->getSelectAttributeValueMatrix($arrAttSubmit);
             } else {
-                $attributeMatrix = $product->getSelectAttributeValueMatrix($arrAttSubmit);
+                $attributeMatrix = $product->getSelectAttributeValueMatrix();
             }
 
             if ($this->conf['allArticles'] || $count == 1) {

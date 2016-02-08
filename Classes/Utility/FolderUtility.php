@@ -15,7 +15,6 @@ namespace CommerceTeam\Commerce\Utility;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
-use CommerceTeam\Commerce\Factory\SettingsFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -80,7 +79,7 @@ class FolderUtility
             $catUid = $database->sql_insert_id();
         }
 
-        $sysProducts = SettingsFactory::getInstance()->getConfiguration('SYSPRODUCTS');
+        $sysProducts = ConfigurationUtility::getInstance()->getConfiguration('SYSPRODUCTS');
         if (is_array($sysProducts)) {
             foreach ($sysProducts as $type => $_) {
                 self::makeSystemCatsProductsArtcilesAndPrices($catUid, strtoupper($type), $addArray);
@@ -109,7 +108,7 @@ class FolderUtility
     {
         $productUid = self::makeProduct($catUid, $type, $addArray);
         // create some articles, depending on the PAYMENT types
-        $sysProductTypes = (array) SettingsFactory::getInstance()->getConfiguration('SYSPRODUCTS.' . $type . '.types');
+        $sysProductTypes = (array) ConfigurationUtility::getInstance()->getConfiguration('SYSPRODUCTS.' . $type . '.types');
         foreach ($sysProductTypes as $key => $value) {
             self::makeArticle($productUid, $key, $value, $addArray);
         }

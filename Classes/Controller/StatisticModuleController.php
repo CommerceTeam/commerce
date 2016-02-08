@@ -16,7 +16,7 @@ namespace CommerceTeam\Commerce\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
@@ -99,7 +99,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
         parent::init();
 
         $this->statistics = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\StatisticsUtility::class);
-        $this->statistics->init((int) SettingsFactory::getInstance()->getExtConf('excludeStatisticFolders'));
+        $this->statistics->init((int) ConfigurationUtility::getInstance()->getExtConf('excludeStatisticFolders'));
 
         $this->orderPageId = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid();
 

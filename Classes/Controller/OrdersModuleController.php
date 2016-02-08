@@ -484,6 +484,7 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
             }
         }
 
+        // @todo replace with getDocHeaderButtons
         $buttons = $dblist->getButtons($this->pageinfo);
         $docHeaderButtons = $this->getButtons($buttons);
 

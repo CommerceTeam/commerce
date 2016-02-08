@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -305,7 +305,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
     public function generateList()
     {
         $backendUser = $this->getBackendUser();
-        $settingsFactory = SettingsFactory::getInstance();
+        $settingsFactory = ConfigurationUtility::getInstance();
 
         // @todo auf eine tabelle beschränken, keine while liste mehr
         foreach ($GLOBALS['TCA'] as $tableName) {
@@ -473,7 +473,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
 
         // Add row to CSV list:
         if ($this->csvOutput) {
-            $beCsvCharset = SettingsFactory::getInstance()->getExtConf('BECSVCharset');
+            $beCsvCharset = ConfigurationUtility::getInstance()->getExtConf('BECSVCharset');
             // Charset Conversion
             /**
              * Charset converter.
@@ -546,7 +546,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
             $tables = array('fe_users');
             $temporaryData = '';
             foreach ($tables as $workTable) {
-                if (SettingsFactory::getInstance()->getTcaValue($workTable . '.columns.' . $fCol)) {
+                if (ConfigurationUtility::getInstance()->getTcaValue($workTable . '.columns.' . $fCol)) {
                     $temporaryData = $this->addSortLink(
                         $language->sL(BackendUtility::getItemLabel($workTable, $fCol, '<i>[|]</i>')),
                         $fCol,
@@ -584,7 +584,7 @@ class FeuserRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLi
     {
         // Loading all TCA details for this table:
 
-        $tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
+        $tableConfig = ConfigurationUtility::getInstance()->getTcaValue($table);
 
         // Init
         $addWhere = '';

@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use CommerceTeam\Commerce\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
@@ -314,7 +314,7 @@ class WizardController
                         $rowContent = '<span class="x-tree-ec-icon x-tree-elbow"></span>' .
                         $this->linkWrap(
                             $this->iconFactory->getIconForRecord($table, array(), Icon::SIZE_SMALL) .
-                            $language->sL(SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.title'), 1),
+                            $language->sL(ConfigurationUtility::getInstance()->getTcaValue($table . '.ctrl.title'), 1),
                             $table,
                             $this->id
                         );

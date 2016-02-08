@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\LinkHandler;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use CommerceTeam\Commerce\Tree\View\ElementBrowserCategoryTreeView;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use Psr\Http\Message\ServerRequestInterface;
@@ -381,7 +381,7 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
         $controller = $GLOBALS['TSFE'];
         $displayPageId = $controller->tmpl->setup['plugin.']['tx_commerce_pi1.']['overridePid'];
         if (empty($displayPageId)) {
-            $displayPageId = SettingsFactory::getInstance()->getExtConf('previewPageID');
+            $displayPageId = ConfigurationUtility::getInstance()->getExtConf('previewPageID');
         }
         if (empty($displayPageId)) {
             return 'ERROR: neither overridePid in TypoScript nor previewPageID in Extension Settings are configured to

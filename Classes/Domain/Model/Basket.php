@@ -15,7 +15,7 @@ namespace CommerceTeam\Commerce\Domain\Model;
  */
 
 use CommerceTeam\Commerce\Factory\HookFactory;
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use CommerceTeam\Commerce\Utility\GeneralUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 
@@ -73,7 +73,7 @@ class Basket extends BasicBasket implements SingletonInterface
      */
     public function __construct()
     {
-        if (SettingsFactory::getInstance()->getExtConf('basketType') == 'persistent') {
+        if (ConfigurationUtility::getInstance()->getExtConf('basketType') == 'persistent') {
             $this->storageType = 'persistent';
         }
     }

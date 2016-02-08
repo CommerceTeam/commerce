@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Imaging\Icon;
@@ -439,7 +439,7 @@ class CommandMapHooks
                     unset($localizedProductAttribute['attributeData']);
                     unset($localizedProductAttribute['has_valuelist']);
 
-                    switch (SettingsFactory::getInstance()->getExtConf('attributeLocalizationType')) {
+                    switch (ConfigurationUtility::getInstance()->getExtConf('attributeLocalizationType')) {
                         case self::ATTRIBUTE_LOCALIZATION_TITLE_EMPTY:
                             unset($localizedProductAttribute['default_value']);
                             break;

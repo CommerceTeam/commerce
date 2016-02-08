@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -206,7 +206,7 @@ class DataMapHooks
             if ($pagesTypoScriptConfig['tx_commerce.']['singlePid']) {
                 $previewPageId = $pagesTypoScriptConfig['tx_commerce.']['singlePid'];
             } else {
-                $previewPageId = SettingsFactory::getInstance()->getExtConf('previewPageID');
+                $previewPageId = ConfigurationUtility::getInstance()->getExtConf('previewPageID');
             }
 
             if ($previewPageId > 0) {
@@ -1404,7 +1404,7 @@ class DataMapHooks
         $database = $this->getDatabaseConnection();
 
         // create an article and a new price for a new product
-        if (SettingsFactory::getInstance()->getExtConf('simpleMode') && $productId != null) {
+        if (ConfigurationUtility::getInstance()->getExtConf('simpleMode') && $productId != null) {
             // search for an article of this product
             $res = $database->exec_SELECTquery('*', 'tx_commerce_articles', 'uid_product = ' . $productId, '', '', 1);
 

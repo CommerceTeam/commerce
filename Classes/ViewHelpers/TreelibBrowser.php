@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -240,7 +240,7 @@ class TreelibBrowser extends \TYPO3\CMS\Backend\Module\BaseScriptClass
                 'defaultExtras' => $this->flexConfig['defaultExtras'],
             );
         } else {
-            $settingsFactory = SettingsFactory::getInstance();
+            $settingsFactory = ConfigurationUtility::getInstance();
             $parameter['fieldConf'] = array(
                 'label' => $form->sL(
                     $settingsFactory->getTcaValue($this->table . '.columns.' . $this->field . '.label')

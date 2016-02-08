@@ -14,7 +14,9 @@ namespace CommerceTeam\Commerce\RecordList;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
+use CommerceTeam\Commerce\Utility\BackendUserUtility;
+use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Imaging\IconFactory;
@@ -35,11 +37,16 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
     public $parentUid;
 
     /**
+     * @var BackendUserUtility
+     */
+    protected $backendUserUtility;
+
+    /**
      * Additional where per table.
      *
      * @var array
      */
-    public $addWhere = array(
+    protected $addWhere = array(
         'tx_commerce_products' => ' AND uid_foreign = %d',
         'tx_commerce_categories' => ' AND uid_foreign = %d',
     );
@@ -49,7 +56,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @var array
      */
-    public $joinTables = array(
+    protected $joinTables = array(
         'tx_commerce_products' => ' LEFT JOIN tx_commerce_products_categories_mm
             ON tx_commerce_products.uid = tx_commerce_products_categories_mm.uid_local',
         'tx_commerce_categories' => ' LEFT JOIN tx_commerce_categories_parent_category_mm
@@ -57,11 +64,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
     );
 
     /**
-     * Module menu.
-     *
-     * @var array
+     * @var int
      */
-    public $MOD_MENU;
+    protected $previewPageId = 0;
 
     /**
      * New record icon.
@@ -70,17 +75,12 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      */
     public $newRecordIcon = '';
 
-    /**
-     * Page information.
-     *
-     * @var array
-     */
-    public $pageinfo;
-
-    /**
-     * @var int
-     */
-    public $alternateBgColors = 0;
+    public function __construct()
+    {
+        parent::__construct();
+        $this->backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
+        $this->previewPageId = (int)ConfigurationUtility::getInstance()->getExtConf('previewPageID');
+    }
 
     /**
      * Create the panel of buttons for submitting the form
@@ -92,8 +92,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      */
     public function getButtons(array $row)
     {
-        $language = $this->getLanguageService();
-
+        $module = $this->getModule();
+        $backendUser = $this->getBackendUserAuthentication();
+        $lang = $this->getLanguageService();
         $buttons = array(
             'csh' => '',
             'view' => '',
@@ -111,23 +112,14 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             'export' => '',
         );
         // Get users permissions for this row:
-        $localCalcPerms = $this->getBackendUserAuthentication()->calcPerms($row);
+        $localCalcPerms = $this->backendUserUtility->calcPerms($row);
         // CSH
-        if (!strlen($this->id)) {
-            $buttons['csh'] = BackendUtility::cshItem(
-                'xMOD_csh_commerce',
-                'list_module_noId'
-            );
+        if ((string)$this->id === '') {
+            $buttons['csh'] = BackendUtility::cshItem('xMOD_csh_commerce', 'list_module_noId');
         } elseif (!$this->id) {
-            $buttons['csh'] = BackendUtility::cshItem(
-                'xMOD_csh_commerce',
-                'list_module_root'
-            );
+            $buttons['csh'] = BackendUtility::cshItem('xMOD_csh_commerce', 'list_module_root');
         } else {
-            $buttons['csh'] = BackendUtility::cshItem(
-                'xMOD_csh_commerce',
-                'list_module'
-            );
+            $buttons['csh'] = BackendUtility::cshItem('xMOD_csh_commerce', 'list_module');
         }
 
         if (isset($this->id)) {
@@ -138,7 +130,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                     htmlspecialchars(
                         'return jumpExt(\'' . $this->backPath . 'db_new.php?id=' . $this->id . $params . '\');'
                     ) .
-                    '" title="' . $language->getLL('newRecordGeneral', true) . '">' .
+                    '" title="' . $lang->getLL('newRecordGeneral', true) . '">' .
                     $this->iconFactory->getIcon('actions-document-new', Icon::SIZE_SMALL) . '</a>';
             }
             // If edit permissions are set, see
@@ -148,7 +140,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 $params = '&edit[tx_commerce_categories][' . $this->pageRow['uid'] . ']=edit';
                 $buttons['edit'] = '<a href="#" onclick="' .
                     htmlspecialchars(BackendUtility::editOnClick($params, $this->backPath, -1)) .
-                    '" title="' . $language->getLL('editPage', true) . '">' .
+                    '" title="' . $lang->getLL('editPage', true) . '">' .
                     $this->iconFactory->getIcon('actions-page-open', Icon::SIZE_SMALL) . '</a>';
             }
             // Paste
@@ -165,7 +157,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                                 $elFromTable
                             )
                         ) .
-                        '" title="' . $language->getLL('clip_paste', true) . '">' .
+                        '" title="' . $lang->getLL('clip_paste', true) . '">' .
                         $this->iconFactory->getIcon('actions-document-paste-after', Icon::SIZE_SMALL) . '</a>';
                 }
             }
@@ -175,7 +167,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             ) {
                 // CSV
                 $buttons['csv'] = '<a href="' . htmlspecialchars($this->listURL() . '&csv=1') . '" title="' .
-                    $language->sL('LLL:EXT:lang/locallang_core.xlf:labels.csv', true) . '">' .
+                    $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.csv', true) . '">' .
                     $this->iconFactory->getIcon('mimetypes-text-csv', Icon::SIZE_SMALL) . '</a>';
                 // Export
                 if (ExtensionManagementUtility::isLoaded('impexp')) {
@@ -184,16 +176,16 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                         htmlspecialchars(
                             $url . '&tx_impexp[list][]=' . rawurlencode(($this->table . ':' . $this->id))
                         ) .
-                        '" title="' . $language->sL('LLL:EXT:lang/locallang_core.xlf:rm.export', true) . '">' .
+                        '" title="' . $lang->sL('LLL:EXT:lang/locallang_core.xlf:rm.export', true) . '">' .
                         $this->iconFactory->getIcon('actions-document-export-t3d', Icon::SIZE_SMALL) . '</a>';
                 }
             }
             // Reload
             $buttons['reload'] = '<a href="' . htmlspecialchars($this->listURL()) . '" title="' .
-                $language->sL('LLL:EXT:lang/locallang_core.xlf:labels.reload', true) .
+                $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.reload', true) .
                 '">' . $this->iconFactory->getIcon('actions-system-refresh', Icon::SIZE_SMALL) . '</a>';
             // Shortcut
-            if ($this->getBackendUserAuthentication()->mayMakeShortcut()) {
+            if ($backendUser->mayMakeShortcut()) {
                 $buttons['shortcut'] = $this->getDocumentTemplate()->makeShortcutIcon(
                     'id, imagemode, pointer, table, search_field, search_levels, showLimit, sortField, sortRev',
                     implode(',', array_keys($this->MOD_MENU)),
@@ -205,7 +197,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 $buttons['back'] = '<a href="'.
                     htmlspecialchars(GeneralUtility::linkThisUrl($this->returnUrl, array('id' => $this->id))) .
                     '" class="typo3-goBack" title="' .
-                    $language->sL('LLL:EXT:lang/locallang_core.xlf:labels.goBack', true) . '">' .
+                    $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.goBack', true) . '">' .
                     $this->iconFactory->getIcon('actions-view-go-back', Icon::SIZE_SMALL) . '</a>';
             }
 
@@ -215,7 +207,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 $this->parentUid = $this->pageRow['pid'];
                 $buttons['level_up'] = '<a href="' . htmlspecialchars($this->listURL($this->id)) .
                     '" onclick="setHighlight(' . $this->pageRow['pid'] . ')" title="' .
-                    $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', true) . '">' .
+                    $lang->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', true) . '">' .
                     $this->iconFactory->getIcon('actions-view-go-up', Icon::SIZE_SMALL) . '</a>';
                 $this->parentUid = $temp;
             }
@@ -226,10 +218,68 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
     public function getDocHeaderButtons($moduleTemplate)
     {
-        parent::getDocHeaderButtons($moduleTemplate);
+        $buttonBar = $moduleTemplate->getDocHeaderComponent()->getButtonBar();
         $module = $this->getModule();
+        $backendUser = $this->getBackendUserAuthentication();
         $lang = $this->getLanguageService();
+        // Get users permissions for this page record:
+        $localCalcPerms = $this->backendUserUtility->calcPerms($this->pageRow);
 
+        // CSH
+        if ((string)$this->id === '') {
+            $fieldName = 'list_module_noId';
+        } elseif (!$this->id) {
+            $fieldName = 'list_module_root';
+        } else {
+            $fieldName = 'list_module';
+        }
+        $cshButton = $buttonBar->makeHelpButton()
+            ->setModuleName('xMOD_csh_corebe')
+            ->setFieldName($fieldName);
+        $buttonBar->addButton($cshButton);
+
+        if (isset($this->id)) {
+            // New record on pages that are not locked by editlock
+            if (!$module->modTSconfig['properties']['noCreateRecordsLink'] && $this->editLockPermissions()) {
+                $onClick = 'return jumpExt(' . GeneralUtility::quoteJSvalue(
+                    BackendUtility::getModuleUrl(
+                        'db_new',
+                        [
+                            'id' => $this->id,
+                            'defVals' => [
+                                'tx_commerce_categories' => [
+                                    'uid' => $this->parentUid,
+                                ]
+                            ]
+                        ]
+                    )
+                ) . ');';
+                $newRecordButton = $buttonBar->makeLinkButton()
+                    ->setHref('#')
+                    ->setOnClick($onClick)
+                    ->setTitle($lang->getLL('newRecordGeneral'))
+                    ->setIcon($this->iconFactory->getIcon('actions-document-new', Icon::SIZE_SMALL));
+                $buttonBar->addButton($newRecordButton, ButtonBar::BUTTON_POSITION_LEFT, 10);
+            }
+
+            if ($this->previewPageId && $this->parentUid) {
+                $onClick = BackendUtility::viewOnClick(
+                    $this->id,
+                    '',
+                    BackendUtility::BEgetRootLine($this->id),
+                    '',
+                    'index.php?id=' . $this->previewPageId . '&tx_commerce_pi1[catUid]=' . $this->parentUid
+                );
+                $viewButton = $buttonBar->makeLinkButton()
+                    ->setHref('#')
+                    ->setOnClick($onClick)
+                    ->setTitle($lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.showPage'))
+                    ->setIcon($this->iconFactory->getIcon('actions-document-view', Icon::SIZE_SMALL));
+                $buttonBar->addButton($viewButton, ButtonBar::BUTTON_POSITION_LEFT, 20);
+            }
+        }
+
+        // @todo remove if implemente above
         $newRecordIcon = '';
         // New record on pages that are not locked by editlock
         if (!$module->modTSconfig['properties']['noCreateRecordsLink'] && $this->editLockPermissions()) {
@@ -295,7 +345,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         $language = $this->getLanguageService();
         $backendUser = $this->getBackendUserAuthentication();
 
-        $tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
+        $tableConfig = ConfigurationUtility::getInstance()->getTcaValue($table);
 
         // Init
         $addWhere = '';
@@ -737,7 +787,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             }
         }
 
-        $tableControl = SettingsFactory::getInstance()->getTcaValue($table . '.ctrl');
+        $tableControl = ConfigurationUtility::getInstance()->getTcaValue($table . '.ctrl');
 
         // Set ORDER BY:
         $orderBy = $tableControl['sortby'] ?
@@ -918,7 +968,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
     public function renderListHeader($table, array $currentIdList)
     {
         $language = $this->getLanguageService();
-        $tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
+        $tableConfig = ConfigurationUtility::getInstance()->getTcaValue($table);
 
         // Init:
         $theData = array();
@@ -1227,7 +1277,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
     {
         $backendUser = $this->getBackendUserAuthentication();
         $language = $this->getLanguageService();
-        $tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
+        $tableConfig = ConfigurationUtility::getInstance()->getTcaValue($table);
 
         if ($this->dontShowClipControlPanels) {
             return '';
@@ -1633,7 +1683,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         // enables to hide the copy, cut and paste icons for localized records
         // - doesn't make much sense to perform these options for them
         $isL10nOverlay = $this->localizationView && $table != 'pages_language_overlay'
-            && $row[SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.transOrigPointerField')] != 0;
+            && $row[ConfigurationUtility::getInstance()->getTcaValue($table . '.ctrl.transOrigPointerField')] != 0;
         // Return blank, if disabled:
         // Whether a numeric clipboard pad is active or the normal
         // pad we will see different content of the panel:
@@ -1695,7 +1745,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         $elFromTable = $this->clipObj->elFromTable($table);
         // IF elements are found and they can be individually ordered,
         // then add a "paste after" icon:
-        if (!empty($elFromTable) && SettingsFactory::getInstance()->getTcaValue($table . '.ctrl.sortby')) {
+        if (!empty($elFromTable) && ConfigurationUtility::getInstance()->getTcaValue($table . '.ctrl.sortby')) {
             $cells['pasteAfter'] = $isL10nOverlay ? $this->spaceIcon : '<a href="' .
                 htmlspecialchars($this->clipObj->pasteUrl($table, -$row['uid'])) . '" onclick="' .
                 htmlspecialchars('return ' . $this->clipObj->confirmMsg($table, $row, 'after', $elFromTable)) .
@@ -1768,7 +1818,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         $translations = $this->translateTools->translationInfo($table, $row['uid'], 0, $row, $this->selFieldList);
 
         // Language title and icon:
-        $out[0] = $this->languageFlag($row[SettingsFactory::getInstance()
+        $out[0] = $this->languageFlag($row[ConfigurationUtility::getInstance()
             ->getTcaValue($table . '.ctrl.languageField')]);
 
         if (is_array($translations)) {

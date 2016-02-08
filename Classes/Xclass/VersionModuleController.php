@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\Xclass;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
@@ -29,13 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModuleController
 {
-    /**
-     * Document template object.
-     *
-     * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
-     */
-    public $doc;
-
     /**
      * Administrative links for a table / record.
      *
@@ -75,7 +68,7 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
                 if ($pagesTyposcriptConfig['tx_commerce.']['singlePid']) {
                     $previewPageId = $pagesTyposcriptConfig['tx_commerce.']['singlePid'];
                 } else {
-                    $previewPageId = SettingsFactory::getInstance()->getExtConf('previewPageID');
+                    $previewPageId = ConfigurationUtility::getInstance()->getExtConf('previewPageID');
                 }
 
                 $sysLanguageUid = (int) $row['sys_language_uid'];

@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Form\Element\InlineElement;
 
 /**
@@ -64,7 +64,7 @@ class IrreHooks implements \TYPO3\CMS\Backend\Form\Element\InlineElementHookInte
         $isVirtual,
         array &$enabledControls = null
     ) {
-        $settingsFactory = SettingsFactory::getInstance();
+        $settingsFactory = ConfigurationUtility::getInstance();
 
         if (is_null($enabledControls)) {
             $enabledControls = array('new' => true, 'hide' => true, 'delete' => true);

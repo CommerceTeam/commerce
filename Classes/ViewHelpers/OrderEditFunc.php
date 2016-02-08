@@ -14,10 +14,9 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository;
 use CommerceTeam\Commerce\Domain\Repository\OrderRepository;
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -110,7 +109,7 @@ class OrderEditFunc
     public function orderArticles(array $parameter)
     {
         $language = $this->getLanguageService();
-        $settingsFactory = SettingsFactory::getInstance();
+        $settingsFactory = ConfigurationUtility::getInstance();
 
         $content = '';
         $orderArticleTable = 'tx_commerce_order_articles';
@@ -411,7 +410,7 @@ class OrderEditFunc
 
         $data['items'] = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderSelector(
             $orderPid,
-            SettingsFactory::getInstance()->getExtConf('OrderFolderRecursiveLevel')
+            ConfigurationUtility::getInstance()->getExtConf('OrderFolderRecursiveLevel')
         );
     }
 
@@ -489,7 +488,7 @@ class OrderEditFunc
         if (($data = BackendUtility::getRecord(
             $table,
             $uid,
-            'uid,' . SettingsFactory::getInstance()->getTcaValue($table . '.interface.showRecordFieldList')
+            'uid,' . ConfigurationUtility::getInstance()->getTcaValue($table . '.interface.showRecordFieldList')
         ))) {
             /*
              * We should get just one Result
@@ -517,7 +516,7 @@ class OrderEditFunc
             $content .= $doc->spacer(10);
 
             $display = array();
-            $showRecordFieldList = SettingsFactory::getInstance()
+            $showRecordFieldList = ConfigurationUtility::getInstance()
                 ->getTcaValue($table . '.interface.showRecordFieldList');
             foreach ($data as $key => $value) {
                 /*

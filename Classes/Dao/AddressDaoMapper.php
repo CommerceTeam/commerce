@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\Dao;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 
 /**
  * Address Dao mapping
@@ -42,6 +42,6 @@ class AddressDaoMapper extends BasicDaoMapper
     protected function init()
     {
         parent::init();
-        $this->createPid = SettingsFactory::getInstance()->getExtConf('create_address_pid');
+        $this->createPid = ConfigurationUtility::getInstance()->getExtConf('create_address_pid');
     }
 }

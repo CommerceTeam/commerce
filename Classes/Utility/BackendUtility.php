@@ -15,7 +15,7 @@ namespace CommerceTeam\Commerce\Utility;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -1290,7 +1290,7 @@ class BackendUtility
              * 1: Copy
              * 2: prepend [Translate to .$langRec['title'].:]
              */
-            switch (SettingsFactory::getInstance()->getExtConf('attributeLocalizationType')) {
+            switch (ConfigurationUtility::getInstance()->getExtConf('attributeLocalizationType')) {
                 case 0:
                     unset($attributeFlexformData['data']['sDEF']['lDEF']);
                     break;
@@ -1393,7 +1393,7 @@ class BackendUtility
 
         $database = self::getDatabaseConnection();
 
-        $foreignTable = SettingsFactory::getInstance()
+        $foreignTable = ConfigurationUtility::getInstance()
             ->getTcaValue('tx_commerce_orders.columns.newpid.config.foreign_table');
         $result = $database->exec_SELECTquery(
             '*',
@@ -1994,7 +1994,7 @@ class BackendUtility
         $backendUser = self::getBackendUserAuthentication();
         $database = self::getDatabaseConnection();
 
-        $tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
+        $tableConfig = ConfigurationUtility::getInstance()->getTcaValue($table);
         if ($tableConfig && $uidCopied) {
             // make data
             $rec = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordLocalization($table, $uidCopied, $languageUid);
@@ -2116,7 +2116,7 @@ class BackendUtility
             return false;
         }
 
-        $tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
+        $tableConfig = ConfigurationUtility::getInstance()->getTcaValue($table);
         // check if table is defined in the TCA
         if ($tableConfig && $uidCopied) {
             // make data
@@ -3295,7 +3295,7 @@ class BackendUtility
         $language = 0;
         $uid = $origUid = (int) $uidFrom;
 
-        $tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
+        $tableConfig = ConfigurationUtility::getInstance()->getTcaValue($table);
         // Only copy if the table is defined in TCA, a uid is given
         if ($tableConfig && $uid) {
             // This checks if the record can be selected

@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\Xclass;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Factory\SettingsFactory;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -126,7 +126,7 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
         $parameters = '&edit[' . $table . '][' . $pid . ']=new';
 
         $contentTable = $GLOBALS['TYPO3_CONF_VARS']['SYS']['contentTable'];
-        $contentTableConfig = SettingsFactory::getInstance()->getTcaValue($contentTable);
+        $contentTableConfig = ConfigurationUtility::getInstance()->getTcaValue($contentTable);
         if ($table == 'pages'
             && $contentTable
             && $contentTableConfig
