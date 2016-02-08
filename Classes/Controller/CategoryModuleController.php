@@ -38,7 +38,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
      *
      * @var string
      */
-    protected $moduleName = 'commerce_category';
+    public $moduleName = 'commerce_category';
 
     /**
      * @var ModuleTemplate

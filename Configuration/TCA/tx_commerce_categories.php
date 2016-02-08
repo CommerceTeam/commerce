@@ -241,7 +241,7 @@ return array(
                 'size' => 10,
                 'minitems' => 1,
                 'maxitems' => 20,
-                'renderMode' => 'tree',
+                //'renderMode' => 'tree',
                 'treeConfig' => array(
                     'expandAll' => true,
                     'parentField' => 'parent_category',
