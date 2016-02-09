@@ -31,7 +31,7 @@ class Category extends AbstractEntity
      *
      * @var string
      */
-    protected $databaseClass = \CommerceTeam\Commerce\Domain\Repository\CategoryRepository::class;
+    protected $repositoryClass = \CommerceTeam\Commerce\Domain\Repository\CategoryRepository::class;
 
     /**
      * Database connection.
@@ -279,7 +279,6 @@ class Category extends AbstractEntity
         if ($uid > 0) {
             $this->uid = $uid;
             $this->lang_uid = $languageUid;
-            $this->databaseConnection = parent::getDatabaseConnection();
 
             $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Model/Category', 'init');
             foreach ($hooks as $hook) {
@@ -480,7 +479,7 @@ class Category extends AbstractEntity
      */
     public function getL18nCategories()
     {
-        return $this->databaseConnection->getL18nCategories($this->uid);
+        return $this->getRepository()->getL18nCategories($this->uid);
     }
 
     /**
@@ -520,7 +519,7 @@ class Category extends AbstractEntity
      */
     public function getParentCategories()
     {
-        $parents = $this->databaseConnection->getParentCategories($this->uid);
+        $parents = $this->getRepository()->getParentCategories($this->uid);
         $parentCats = array();
         foreach ($parents as $parent) {
             /**
@@ -755,11 +754,11 @@ class Category extends AbstractEntity
             $this->teaserImagesArray = GeneralUtility::trimExplode(',', $this->teaserimages, true);
 
             $this->categories_uid = array_unique(
-                $this->databaseConnection->getChildCategories($this->uid, $this->lang_uid)
+                $this->getRepository()->getChildCategories($this->uid, $this->lang_uid)
             );
-            $this->parent_category_uid = $this->databaseConnection->getParentCategory($this->uid);
+            $this->parent_category_uid = $this->getRepository()->getParentCategory($this->uid);
             $this->products_uid = array_unique(
-                $this->databaseConnection->getChildProducts($this->uid, $this->lang_uid)
+                $this->getRepository()->getChildProducts($this->uid, $this->lang_uid)
             );
             $this->data_loaded = true;
         }
@@ -775,7 +774,7 @@ class Category extends AbstractEntity
         if (!$this->permsLoaded && $this->uid) {
             $this->permsLoaded = true;
 
-            $this->perms_record = $this->databaseConnection->getPermissionsRecord($this->uid);
+            $this->perms_record = $this->getRepository()->getPermissionsRecord($this->uid);
 
             // if the record isn't loaded, abort.
             if (empty($this->perms_record)) {
@@ -903,7 +902,7 @@ class Category extends AbstractEntity
             return false;
         }
             // Update parent_category
-        $set = $this->databaseConnection->updateRecord($this->uid, array('parent_category' => $parentUid));
+        $set = $this->getRepository()->updateRecord($this->uid, array('parent_category' => $parentUid));
             // Only update relations if parent_category was successfully set
         if ($set) {
             $catList = array($parentUid);

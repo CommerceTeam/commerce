@@ -37,7 +37,7 @@ class AttributeValue extends AbstractEntity
      *
      * @var string
      */
-    protected $databaseClass = \CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository::class;
+    protected $repositoryClass = \CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository::class;
 
     /**
      * Database connection.
@@ -121,7 +121,6 @@ class AttributeValue extends AbstractEntity
     {
         $this->uid = (int) $uid;
         $this->lang_uid = (int) $languageUid;
-        $this->databaseConnection = parent::getDatabaseConnection();
 
         $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Model/AttributeValue', 'init');
         foreach ($hooks as $hook) {

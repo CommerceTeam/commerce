@@ -38,7 +38,7 @@ class Attribute extends AbstractEntity
      *
      * @var string
      */
-    protected $databaseClass = \CommerceTeam\Commerce\Domain\Repository\AttributeRepository::class;
+    protected $repositoryClass = \CommerceTeam\Commerce\Domain\Repository\AttributeRepository::class;
 
     /**
      * Database connection.
@@ -148,7 +148,6 @@ class Attribute extends AbstractEntity
         if ($uid > 0) {
             $this->uid = $uid;
             $this->lang_uid = (int) $languageUid;
-            $this->databaseConnection = parent::getDatabaseConnection();
 
             $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Model/Attribute', 'init');
             foreach ($hooks as $hook) {
@@ -175,7 +174,7 @@ class Attribute extends AbstractEntity
     public function getAllValues($returnAsObjects = false, $product = false)
     {
         if ($this->attributeValuesLoaded === false) {
-            if (($this->attribute_value_uids = $this->databaseConnection->getAttributeValueUids($this->uid))) {
+            if (($this->attribute_value_uids = $this->getRepository()->getAttributeValueUids($this->uid))) {
                 foreach ($this->attribute_value_uids as $valueUid) {
                     /**
                      * Attribute value
@@ -239,7 +238,7 @@ class Attribute extends AbstractEntity
      */
     public function getFirstAttributeValueUid($includeValues = false)
     {
-        $attributes = $this->databaseConnection->getAttributeValueUids($this->uid);
+        $attributes = $this->getRepository()->getAttributeValueUids($this->uid);
 
         if (is_array($includeValues) && !empty($includeValues)) {
             $attributes = array_intersect($attributes, array_keys($includeValues));
@@ -354,7 +353,7 @@ class Attribute extends AbstractEntity
     public function getChildren($translationMode = false)
     {
         if ($this->children === null) {
-            $childAttributeList = $this->databaseConnection->getChildAttributeUids($this->uid);
+            $childAttributeList = $this->getRepository()->getChildAttributeUids($this->uid);
 
             foreach ($childAttributeList as $childAttributeUid) {
                 /**

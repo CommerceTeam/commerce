@@ -38,7 +38,7 @@ class Product extends AbstractEntity
      *
      * @var string
      */
-    protected $databaseClass = \CommerceTeam\Commerce\Domain\Repository\ProductRepository::class;
+    protected $repositoryClass = \CommerceTeam\Commerce\Domain\Repository\ProductRepository::class;
 
     /**
      * Database connection.
@@ -297,7 +297,6 @@ class Product extends AbstractEntity
         if ($uid) {
             $this->uid = $uid;
             $this->lang_uid = $langUid;
-            $this->databaseConnection = parent::getDatabaseConnection();
 
             $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Model/Product', 'init');
             foreach ($hooks as $hook) {
@@ -969,7 +968,7 @@ class Product extends AbstractEntity
      */
     public function getL18nProducts()
     {
-        return $this->databaseConnection->getL18nProducts($this->uid);
+        return $this->getRepository()->getL18nProducts($this->uid);
     }
 
     /**
@@ -982,7 +981,7 @@ class Product extends AbstractEntity
         $result = '';
 
         if ($this->getManufacturerUid()) {
-            $result = $this->databaseConnection->getManufacturerTitle($this->getManufacturerUid());
+            $result = $this->getRepository()->getManufacturerTitle($this->getManufacturerUid());
         }
 
         return $result;
@@ -1005,7 +1004,7 @@ class Product extends AbstractEntity
      */
     public function getMasterparentCategory()
     {
-        return $this->databaseConnection->getMasterParentCategory($this->uid);
+        return $this->getRepository()->getMasterParentCategory($this->uid);
     }
 
     /**
@@ -1015,7 +1014,7 @@ class Product extends AbstractEntity
      */
     public function getParentCategories()
     {
-        return $this->databaseConnection->getParentCategories($this->uid);
+        return $this->getRepository()->getParentCategories($this->uid);
     }
 
     /**
@@ -1046,7 +1045,7 @@ class Product extends AbstractEntity
     public function getRelatedProducts()
     {
         if (!$this->relatedProducts_loaded) {
-            $this->relatedProduct_uids = $this->databaseConnection->getRelatedProductUids($this->uid);
+            $this->relatedProduct_uids = $this->getRepository()->getRelatedProductUids($this->uid);
             if (!empty($this->relatedProduct_uids)) {
                 foreach (array_keys($this->relatedProduct_uids) as $productId) {
                     /**
@@ -1463,7 +1462,7 @@ class Product extends AbstractEntity
             }
 
             $this->articles = array();
-            if (($this->articles_uids = $this->databaseConnection->getArticles($uidToLoadFrom))) {
+            if (($this->articles_uids = $this->getRepository()->getArticles($uidToLoadFrom))) {
                 foreach ($this->articles_uids as $articleUid) {
                     /**
                      * Article.
@@ -1551,7 +1550,7 @@ class Product extends AbstractEntity
         }
 
         // Update parent_category
-        $set = $this->databaseConnection->updateRecord($this->uid, array('categories' => $parentUid));
+        $set = $this->getRepository()->updateRecord($this->uid, array('categories' => $parentUid));
 
         // Update relations only, if parent_category was successfully set
         if ($set) {
@@ -1602,26 +1601,5 @@ class Product extends AbstractEntity
     public static function compareBySorting(array $array1, array $array2)
     {
         return $array1['sorting'] - $array2['sorting'];
-    }
-
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
-     * Get typoscript frontend controller.
-     *
-     * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
-     */
-    protected function getFrontendController()
-    {
-        return $GLOBALS['TSFE'];
     }
 }

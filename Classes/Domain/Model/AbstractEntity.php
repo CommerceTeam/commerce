@@ -25,6 +25,8 @@ namespace CommerceTeam\Commerce\Domain\Model;
  * @var int
  * @see sql tx_commerce_attribute_correlationtypes
  */
+use TYPO3\CMS\Core\Database\DatabaseConnection;
+
 define('ATTRIB_SELECTOR', 1);
 
 /**
@@ -90,7 +92,7 @@ class AbstractEntity
      *
      * @var string
      */
-    protected $databaseClass = \CommerceTeam\Commerce\Domain\Repository\Repository::class;
+    protected $repositoryClass = \CommerceTeam\Commerce\Domain\Repository\Repository::class;
 
     /**
      * Database connection.
@@ -297,7 +299,7 @@ class AbstractEntity
             $this->translationMode = $translationMode;
         }
 
-        $this->data = $this->getDatabaseConnection()->getData($this->uid, $this->lang_uid, $translationMode);
+        $this->data = $this->getRepository()->getData($this->uid, $this->lang_uid, $translationMode);
 
         foreach ($this->fieldlist as $field) {
             $this->$field = $this->data[$field];
@@ -346,7 +348,7 @@ class AbstractEntity
      */
     public function isAccessible()
     {
-        return $this->getDatabaseConnection()->isAccessible($this->uid);
+        return $this->getRepository()->isAccessible($this->uid);
     }
 
     /**
@@ -366,7 +368,7 @@ class AbstractEntity
      */
     public function isValidUid()
     {
-        return $this->getDatabaseConnection()->isUid($this->uid);
+        return $this->getRepository()->isUid($this->uid);
     }
 
     /**
@@ -406,13 +408,21 @@ class AbstractEntity
     /**
      * @return \CommerceTeam\Commerce\Domain\Repository\Repository|object
      */
-    protected function getDatabaseConnection()
+    protected function getRepository()
     {
         if (!$this->databaseConnection) {
-            $this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->databaseClass);
+            $this->databaseConnection = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->repositoryClass);
         }
 
         return $this->databaseConnection;
+    }
+
+    /**
+     * @return DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
     }
 
     /**

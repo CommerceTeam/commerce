@@ -994,6 +994,16 @@ class BasicBasket
 
 
     /**
+     * Get database connection.
+     *
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
+    }
+
+    /**
      * Get typoscript frontend controller.
      *
      * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
@@ -1001,5 +1011,15 @@ class BasicBasket
     protected function getFrontendController()
     {
         return $GLOBALS['TSFE'];
+    }
+
+    /**
+     * Get frontend user.
+     *
+     * @return \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
+     */
+    protected function getFrontendUser()
+    {
+        return $this->getFrontendController()->fe_user;
     }
 }

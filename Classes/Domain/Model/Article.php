@@ -34,7 +34,7 @@ class Article extends AbstractEntity
      *
      * @var string
      */
-    protected $databaseClass = \CommerceTeam\Commerce\Domain\Repository\ArticleRepository::class;
+    protected $repositoryClass = \CommerceTeam\Commerce\Domain\Repository\ArticleRepository::class;
 
     /**
      * Database connection.
@@ -254,7 +254,6 @@ class Article extends AbstractEntity
         $return = false;
         if ($this->uid > 0) {
             $this->lang_uid = $languageUid;
-            $this->databaseConnection = parent::getDatabaseConnection();
 
             $hooks = HookFactory::getHooks('Domain/Model/Article', 'init');
             foreach ($hooks as $hook) {
@@ -391,7 +390,7 @@ class Article extends AbstractEntity
      */
     public function getAttributeValue($attributeUid, $valueListAsUid = false)
     {
-        return $this->databaseConnection->getAttributeValue($this->uid, $attributeUid, $valueListAsUid);
+        return $this->getRepository()->getAttributeValue($this->uid, $attributeUid, $valueListAsUid);
     }
 
     /**
@@ -551,7 +550,7 @@ class Article extends AbstractEntity
      */
     public function getPriceScales($startCount = 1)
     {
-        return $this->databaseConnection->getPriceScales($this->uid, $startCount);
+        return $this->getRepository()->getPriceScales($this->uid, $startCount);
     }
 
     /**
@@ -571,7 +570,7 @@ class Article extends AbstractEntity
      */
     public function getPriceUids()
     {
-        return $this->databaseConnection->getPrices($this->uid);
+        return $this->getRepository()->getPrices($this->uid);
     }
 
     /**
@@ -599,7 +598,7 @@ class Article extends AbstractEntity
     public function getParentProductUid()
     {
         if ($this->uid_product == null) {
-            $this->uid_product = $this->databaseConnection->getParentProductUid($this->uid);
+            $this->uid_product = $this->getRepository()->getParentProductUid($this->uid);
         }
 
         return $this->uid_product;
@@ -657,7 +656,7 @@ class Article extends AbstractEntity
         $result = '';
 
         if ($this->getSupplierUid()) {
-            $result = $this->databaseConnection->getSupplierName($this->getSupplierUid());
+            $result = $this->getRepository()->getSupplierName($this->getSupplierUid());
         }
 
         return $result;
@@ -718,7 +717,7 @@ class Article extends AbstractEntity
     public function loadPrices($translationMode = false)
     {
         if ($this->prices_loaded == false) {
-            $this->prices_uids = $this->databaseConnection->getPrices($this->uid);
+            $this->prices_uids = $this->getRepository()->getPrices($this->uid);
 
             if ($this->prices_uids) {
                 $priceData = array_shift($this->prices_uids);

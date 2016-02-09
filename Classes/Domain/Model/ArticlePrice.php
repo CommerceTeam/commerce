@@ -30,7 +30,7 @@ class ArticlePrice extends AbstractEntity
      *
      * @var string
      */
-    protected $databaseClass = \CommerceTeam\Commerce\Domain\Repository\ArticlePriceRepository::class;
+    protected $repositoryClass = \CommerceTeam\Commerce\Domain\Repository\ArticlePriceRepository::class;
 
     /**
      * Database connection.
@@ -115,8 +115,6 @@ class ArticlePrice extends AbstractEntity
         $initializationResult = false;
         $this->uid = (int) $uid;
         if ($this->uid > 0) {
-            $this->databaseConnection = parent::getDatabaseConnection();
-
             $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Domain/Model/ArticlePrice', 'init');
             foreach ($hooks as $hook) {
                 if (method_exists($hook, 'postinit')) {
