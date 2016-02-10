@@ -1182,11 +1182,24 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
         // "Show" link (only tx_commerce_categories and tx_commerce_products elements)
         if ($table == 'tx_commerce_categories' || $table == 'tx_commerce_products') {
-            $params = $table == 'tx_commerce_categories' ?
-                $row['uid'] :
-                '&tx_commerce_pi1[catUid]=' . $this->parentUid;
+            $params = '&tx_commerce_pi1[catUid]=';
+            if ($table == 'tx_commerce_categories') {
+                if ($row['l18n_parent']) {
+                    $params .= $row['l18n_parent'] . '&L=' . $row['sys_language_uid'];
+                } else {
+                    $params .= $row['uid'];
+                }
+            } else {
+                $params .= $this->parentUid;
+            }
+
             if ($table == 'tx_commerce_products') {
-                $params .= '&tx_commerce_pi1[showUid]=' . $row['uid'];
+                $params .= '&tx_commerce_pi1[showUid]=';
+                if ($row['l18n_parent']) {
+                    $params .= $row['l18n_parent'] . '&L=' . $row['sys_language_uid'];
+                } else {
+                    $params .= $row['uid'];
+                }
             }
             /** @var $cacheHash CacheHashCalculator */
             $cacheHash = GeneralUtility::makeInstance(CacheHashCalculator::class);
@@ -1231,6 +1244,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         $this->addActionToCellGroup($cells, $viewBigAction, 'viewBig');
 
         // "Move" wizard link for tx_commerce_categories/tx_commerce_products elements:
+        // @todo fix this
         if ($permsEdit && ($table === 'tx_commerce_products' || $table === 'tx_commerce_categories')) {
             $onClick = 'return jumpExt(' . GeneralUtility::quoteJSvalue(BackendUtility::getModuleUrl('move_element')
                 . '&table=' . $table . '&uid=' . $row['uid']) . ');';
@@ -1282,6 +1296,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             }
 
             // "Edit Perms" link:
+            // @todo fix this
             if ($table === 'tx_commerce_categories'
                 && $this->getBackendUserAuthentication()->check('modules', 'system_BeuserTxPermission')
                 && ExtensionManagementUtility::isLoaded('beuser')

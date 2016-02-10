@@ -3,6 +3,7 @@ namespace CommerceTeam\Commerce\Controller;
 
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -34,18 +35,58 @@ class SystemdataAttributesModuleFunctionController extends AbstractFunctionModul
      */
     public function main()
     {
+        $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_list.xlf');
+        $this->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/AjaxDataHandler');
+
         $this->newRecordPid = $this->attributePid = FolderRepository::initFolders('Attributes', $this->pObj->id);
         $language = $this->getLanguageService();
 
         $headerRow = '<tr>
-            <td class="bgColor6" colspan="3"><strong>' . $language->getLL('title_attributes') . '</strong></td>
-            <td class="bgColor6"><strong>' . $language->getLL('title_values') . '</strong></td>
+            <td class="col-icon"></td>
+            <td class="col-title"><strong>' . $language->getLL('title_attributes') . '</strong></td>
+            <td class="col-control"></td>
+            <td><strong>' . $language->getLL('title_values') . '</strong></td>
         </tr>';
 
         $result = $this->fetchAttributes();
         $attributeRows = $this->renderAttributeRows($result);
 
-        return '<table>' . $headerRow . $attributeRows . '</table>';
+        $tableHeader = '<a>' . $this->getLanguageService()->sL(
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:' . $this->table
+        )
+            . ' (<span class="t3js-table-total-items">'
+            . $this->getDatabaseConnection()->sql_num_rows($result) . '</span>)</a>';
+
+        if (!$attributeRows) {
+            $out = $flashMessage = GeneralUtility::makeInstance(
+                FlashMessage::class,
+                $this->getLanguageService()->sL(
+                    'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml:noManufacturer'
+                ),
+                '',
+                FlashMessage::INFO
+            )->render();
+        } else {
+            $out = '
+
+            <!--
+                DB listing of elements:	"' . htmlspecialchars($this->table) . '"
+            -->
+                <div class="panel panel-space panel-default">
+                    <div class="panel-heading">
+                    ' . $tableHeader . '
+                    </div>
+                    <div class="table-fit" id="recordlist-' . htmlspecialchars($this->table) . '" data-state="expanded">
+                        <table data-table="' . htmlspecialchars($this->table)
+                . '" class="table table-striped table-hover">
+                            <thead>' . $headerRow . '</thead><tbody>' . $attributeRows . '</tbody>
+                        </table>
+                    </div>
+                </div>
+            ';
+        }
+
+        return $out;
     }
 
     /**
@@ -123,104 +164,122 @@ class SystemdataAttributesModuleFunctionController extends AbstractFunctionModul
         $output = '';
 
         while (($attribute = $this->getDatabaseConnection()->sql_fetch_assoc($result))) {
+            // Edit link
+            $params = '&edit[' . $this->table . '][' . $attribute['uid'] . ']=edit';
+            $iconIdentifier = 'actions-open';
+            $editAction = '<a class="btn btn-default" href="#" onclick="'
+                . htmlspecialchars(BackendUtility::editOnClick($params, '', -1))
+                . '" title="' . $this->getLanguageService()->getLL('edit', true) . '">'
+                . $this->pObj->moduleTemplate->getIconFactory()->getIcon($iconIdentifier, Icon::SIZE_SMALL) . '</a>';
+
+            // Delete link
+            $actionName = 'delete';
             $refCountMsg = BackendUtility::referenceCount(
                 $this->table,
                 $attribute['uid'],
-                ' ' . $this->getLanguageService()->sL(
-                    'LLL:EXT:lang/locallang_core.xml:labels.referencesToRecord'
-                ),
+                ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.referencesToRecord'),
                 $this->pObj->getReferenceCount($this->table, $attribute['uid'])
+            ) . BackendUtility::translationCount(
+                $this->table,
+                $attribute['uid'],
+                ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.translationsOfRecord')
             );
-            $editParams = '&edit[' . $this->table . '][' . (int) $attribute['uid'] . ']=edit';
-            $deleteParams = '&cmd[' . $this->table . '][' . (int) $attribute['uid'] . '][delete]=1';
+            $titleOrig = BackendUtility::getRecordTitle($this->table, $attribute, false, true);
+            $title = GeneralUtility::slashJS(GeneralUtility::fixed_lgd_cs($titleOrig, 30), true);
+            $warningText = $this->getLanguageService()->getLL($actionName . 'Warning') . ' "' . $title . '" '
+                . '[' . $this->table . ':' . $attribute['uid'] . ']' . $refCountMsg;
 
-            $output .= '<tr><td align="center" valign="top"> ' .
-                BackendUtility::thumbCode($attribute, 'tx_commerce_attributes', 'icon', $this->getBackPath()) . '</td>';
+            $params = 'cmd[' . $this->table . '][' . $attribute['uid'] . '][delete]=1';
+            $icon = $this->pObj->moduleTemplate->getIconFactory()->getIcon(
+                'actions-edit-' . $actionName,
+                Icon::SIZE_SMALL
+            );
+            $linkTitle = $this->getLanguageService()->getLL($actionName, true);
+            $deleteAction = '<a class="btn btn-default t3js-record-delete" href="#" '
+                . ' data-l10parent="' . htmlspecialchars($attribute['l10n_parent']) . '"'
+                . ' data-params="' . htmlspecialchars($params) . '" data-title="'
+                . htmlspecialchars($titleOrig) . '"'
+                . ' data-message="' . htmlspecialchars($warningText) . '" title="' . $linkTitle . '"'
+                . '>' . $icon . '</a>';
+
+            $toolTip = BackendUtility::getRecordToolTip($attribute, $this->table);
+            $iconImg = '<span ' . $toolTip . '>'
+                . $this->pObj->moduleTemplate->getIconFactory()->getIconForRecord(
+                    $this->table,
+                    $attribute,
+                    Icon::SIZE_SMALL
+                )
+                . '</span>';
+
+            $fields = '';
             if ($attribute['internal_title']) {
-                $output .= '<td valign="top"><strong>' .
+                $fields .= '<strong>' .
                     htmlspecialchars($attribute['internal_title']) . '</strong> (' .
                     htmlspecialchars($attribute['title']) . ')';
             } else {
-                $output .= '<td valign="top" class="bgColor4"><strong>' .
+                $fields .= '<strong>' .
                     htmlspecialchars($attribute['title']) . '</strong>';
             }
 
             $catCount = $this->fetchRelationCount('tx_commerce_categories_attributes_mm', $attribute['uid']);
             $proCount = $this->fetchRelationCount('tx_commerce_products_attributes_mm', $attribute['uid']);
+            $artCount = $this->fetchRelationCount('tx_commerce_articles_article_attributes_mm', $attribute['uid']);
 
             // Select language versions
             $resLocalVersion = $this->fetchAttributeTranslation($attribute['uid']);
             if ($this->getDatabaseConnection()->sql_num_rows($resLocalVersion)) {
-                $output .= '<table >';
+                $fields .= '<table >';
                 while (($localAttributes = $this->getDatabaseConnection()->sql_fetch_assoc($resLocalVersion))) {
-                    $output .= '<tr><td>&nbsp;';
-                    $output .= '</td><td>';
+                    $fields .= '<tr><td>&nbsp;';
+                    $fields .= '</td><td>';
                     if ($localAttributes['internal_title']) {
-                        $output .= htmlspecialchars($localAttributes['internal_title']) .
+                        $fields .= htmlspecialchars($localAttributes['internal_title']) .
                             ' (' . htmlspecialchars($localAttributes['title']) . ')';
                     } else {
-                        $output .= htmlspecialchars($localAttributes['title']);
+                        $fields .= htmlspecialchars($localAttributes['title']);
                     }
-                    $output .= '</td><td>';
-                    $output .= $recordList->languageFlag($localAttributes['sys_language_uid']);
-                    $output .= '</td></tr>';
+                    $fields .= '</td><td>';
+                    $fields .= $recordList->languageFlag($localAttributes['sys_language_uid']);
+                    $fields .= '</td></tr>';
                 }
-                $output .= '</table>';
+                $fields .= '</table>';
             }
 
-            $output .= '<br />' . $this->getLanguageService()->getLL('usage');
-            $output .= ' <strong>' . $this->getLanguageService()->getLL('categories') . '</strong>: ' . $catCount;
-            $output .= ' <strong>' . $this->getLanguageService()->getLL('products') . '</strong>: ' . $proCount;
-            $output .= '</td>';
+            $fields .= '<br />' . $this->getLanguageService()->getLL('usage');
+            $fields .= ' <strong>' . $this->getLanguageService()->getLL('categories') . '</strong>: ' . $catCount;
+            $fields .= ' <strong>' . $this->getLanguageService()->getLL('products') . '</strong>: ' . $proCount;
+            $fields .= ' <strong>' . $this->getLanguageService()->getLL('articles') . '</strong>: ' . $artCount;
 
-            $onClickAction = 'onclick="' .
-                htmlspecialchars(BackendUtility::editOnClick($editParams, $this->getBackPath(), -1)) . '"';
-
-            $output .= '<td><a href="#" ' . $onClickAction . '>' .
-                $this->pObj->moduleTemplate->getIconFactory()->getIcon(
-                    'actions-document-open',
-                    Icon::SIZE_SMALL,
-                    array('title' => $this->getLanguageService()->getLL('edit', true))
-                ) .
-                '</a>';
-            $output .= '<a href="#" onclick="' . htmlspecialchars(
-                'if (confirm(' . GeneralUtility::quoteJSvalue(
-                    $this->getLanguageService()->getLL('deleteWarningManufacturer') . ' "' . $attribute['title'] .
-                    '" ' . $refCountMsg
-                ) . ')) {jumpToUrl(\'' . BackendUtility::getLinkToDataHandlerAction($deleteParams, -1) .
-                '\');} return false;'
-            ) . '">' .
-                $this->pObj->moduleTemplate->getIconFactory()->getIcon(
-                    'actions-edit-delete',
-                    Icon::SIZE_SMALL,
-                    array('title' => $this->getLanguageService()->getLL('delete', true))
-                ) .
-                '</a>';
-
-            $output .= '</td><td>';
-
+            $valueList = '';
             if ($attribute['has_valuelist'] == 1) {
                 $valueRes = $this->getDatabaseConnection()->exec_SELECTquery(
                     '*',
                     'tx_commerce_attribute_values',
-                    'attributes_uid = ' . (int) $attribute['uid'] . ' AND hidden = 0 AND deleted = 0',
+                    'attributes_uid = ' . $attribute['uid'] . ' AND hidden = 0 AND deleted = 0',
                     '',
                     'sorting'
                 );
                 if ($this->getDatabaseConnection()->sql_num_rows($valueRes)) {
-                    $output .= '<table border="0">';
+                    $valueList .= '<table border="0">';
                     while (($value = $this->getDatabaseConnection()->sql_fetch_assoc($valueRes))) {
-                        $output .= '<tr><td>' . htmlspecialchars($value['value']) . '</td></tr>';
+                        $valueList .= '<tr><td>' . htmlspecialchars($value['value']) . '</td></tr>';
                     }
-                    $output .= '</table>';
+                    $valueList .= '</table>';
                 } else {
-                    $output .= $this->getLanguageService()->getLL('no_values');
+                    $valueList .= $this->getLanguageService()->getLL('no_values');
                 }
             } else {
-                $output .= $this->getLanguageService()->getLL('no_valuelist');
+                $valueList .= $this->getLanguageService()->getLL('no_valuelist');
             }
 
-            $output .= '</td></tr>';
+            $output .= '<tr data-uid="' . $attribute['uid'] . '">';
+            $output .= '<td class="col-icon">' . $iconImg . '</td>
+                <td nowrap="nowrap">' . $fields . '</td>';
+
+
+            $output .= '<td class="col-control">' . $editAction . $deleteAction . '</td>
+                <td>' . $valueList . '</td>
+            </tr>';
         }
 
         return $output;

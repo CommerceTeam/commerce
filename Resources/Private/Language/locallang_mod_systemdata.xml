@@ -24,6 +24,7 @@
 			<label index="usage">Usage in</label>
 			<label index="categories">categories</label>
 			<label index="products">products</label>
+			<label index="articles">articles</label>
 			<label index="title_manufacturer">Manufacturer</label>
 			<label index="desc_manufacturer">Create and edit the manufacturers.</label>
 			<label index="create_manufacturer">Create new manufacturer</label>

@@ -52,7 +52,7 @@ $boot = function ($packageKey) {
 
         // add commerce main module after file module
         if (!isset($GLOBALS['TBE_MODULES']['commerce'])) {
-            $tbeModules = array();
+            $tbeModules = [];
             foreach ($GLOBALS['TBE_MODULES'] as $key => $val) {
                 $tbeModules[$key] = $val;
                 if ($key == 'file') {
@@ -72,12 +72,12 @@ $boot = function ($packageKey) {
                 'script' => '_DISPATCH',
                 'name' => $packageKey,
                 'workspaces' => 'online',
-                'labels' => array(
+                'labels' => [
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_main.xml',
                     'tabs_images' => [
                         'tab' => 'EXT:commerce/Resources/Public/Icons/mod_main.gif'
                     ],
-                ),
+                ],
             ]
         );
 
@@ -91,12 +91,12 @@ $boot = function ($packageKey) {
                 'routeTarget' => \CommerceTeam\Commerce\Controller\CategoryModuleController::class . '::mainAction',
                 'access' => 'user,group',
                 'name' => 'commerce_category',
-                'labels' => array(
+                'labels' => [
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_category.xml',
                     'tabs_images' => [
                         'tab' => 'EXT:commerce/Resources/Public/Icons/mod_category.gif'
                     ],
-                ),
+                ],
                 'navigationFrameModule' => 'CommerceTeam_commerce_CategoryNavigation',
             ]
         );
@@ -111,12 +111,12 @@ $boot = function ($packageKey) {
                 'routeTarget' => \CommerceTeam\Commerce\Controller\PermissionModuleController::class . '::mainAction',
                 'access' => 'user,group',
                 'name' => 'commerce_permission',
-                'labels' => array(
+                'labels' => [
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_access.xml',
                     'tabs_images' => [
                         'tab' => 'EXT:beuser/Resources/Public/Icons/module-permission.svg'
                     ],
-                ),
+                ],
                 'navigationFrameModule' => 'CommerceTeam_commerce_CategoryNavigation',
             ]
         );
@@ -131,12 +131,12 @@ $boot = function ($packageKey) {
                 'routeTarget' => \CommerceTeam\Commerce\Controller\OrdersModuleController::class . '::mainAction',
                 'access' => 'user,group',
                 'name' => 'commerce_order',
-                'labels' => array(
+                'labels' => [
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml',
                     'tabs_images' => [
                         'tab' => 'EXT:commerce/Resources/Public/Icons/mod_orders.gif'
                     ],
-                ),
+                ],
                 'navigationFrameModule' => 'CommerceTeam_commerce_OrderNavigation',
             ]
         );
@@ -151,12 +151,12 @@ $boot = function ($packageKey) {
                 'routeTarget' => \CommerceTeam\Commerce\Controller\StatisticModuleController::class . '::mainAction',
                 'access' => 'user,group',
                 'name' => 'commerce_statistic',
-                'labels' => array(
+                'labels' => [
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml',
                     'tabs_images' => [
                         'tab' => 'EXT:commerce/Resources/Public/Icons/mod_statistic.gif'
                     ],
-                ),
+                ],
                 'navigationFrameModule' => 'CommerceTeam_commerce_OrderNavigation',
             ]
         );
@@ -194,12 +194,12 @@ $boot = function ($packageKey) {
                 'routeTarget' => \CommerceTeam\Commerce\Controller\SystemdataModuleController::class . '::mainAction',
                 'access' => 'user,group',
                 'name' => 'commerce_systemdata',
-                'labels' => array(
+                'labels' => [
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml',
                     'tabs_images' => [
                         'tab' => 'EXT:commerce/Resources/Public/Icons/mod_systemdata.gif'
                     ],
-                ),
+                ],
                 'navigationFrameModule' => 'CommerceTeam_commerce_SystemdataNavigation',
             ]
         );

@@ -56,6 +56,7 @@ Replaced
 	with
 	$GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][COMMERCE_EXTKEY]
 
+
 Since Version 5
 ---------------
 
@@ -81,3 +82,7 @@ your code.
 
 Drop overwrite action from clickmenu. It does not make sense and only leads to strange side effects.
 Drop DataHandlerUtility as it was only used for overwrite action.
+
+In domain models the databaseClass is renamed into repositoryClass
+In AbstractEntity getDatabaseConnection() got renamed into getRepository() to make match what it returns and a
+new getDatabaseConnection() is put instead to return the TYPO3 databaseConnection.

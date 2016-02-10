@@ -85,12 +85,11 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $sessionData = $backendUser->getSessionData(CategoryModuleController::class);
         $this->search_field = !empty($sessionData['search_field']) ? $sessionData['search_field'] : '';
 
+        // In commerce context all categories and products are stored in only one folder so no need to use get vars
+        \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
+        $this->id = \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid();
+
         // GPvars:
-        $this->id = (int) GeneralUtility::_GP('id');
-        if (!$this->id) {
-            \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
-            $this->id = \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid();
-        }
         $this->pointer = max(GeneralUtility::_GP('pointer'), 0);
         $this->imagemode = GeneralUtility::_GP('imagemode');
         $this->table = GeneralUtility::_GP('table');
