@@ -118,7 +118,8 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
     public function init()
     {
         parent::init();
-        $this->id = FolderRepository::initFolders('Commerce');
+        $commercePid = FolderRepository::initFolders('Commerce');
+        $this->id = FolderRepository::initFolders('Attributes', $commercePid);
         $this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);
     }
 
@@ -136,42 +137,86 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 
         if ($this->id && $this->access) {
             // JavaScript
-            $this->moduleTemplate->addJavaScriptCode('jumpToUrl', '
-                function jumpToUrl(URL,formEl) {
-                    if (document.editform && TBE_EDITOR.isFormChanged)  {
-                        // Check if the function exists... (works in all browsers?)
-                        if (!TBE_EDITOR.isFormChanged()) {
-                            window.location.href = URL;
-                        } else if (formEl) {
-                            if (formEl.type == "checkbox") formEl.checked = formEl.checked ? 0 : 1;
-                        }
-                    } else {
-                        window.location.href = URL;
-                    }
+            $this->moduleTemplate->addJavaScriptCode(
+                'SystemdataModuleController',
+                '
+                function jumpExt(URL, anchor) {
+                    var anc = anchor ? anchor : "";
+                    window.location.href = URL + (T3_THIS_LOCATION ? "&returnUrl=" + T3_THIS_LOCATION : "") + anc;
+                    return false;
+                }
+                function jumpSelf(URL) {
+                    window.location.href = URL + (T3_RETURN_URL ? "&returnUrl=" + T3_RETURN_URL : "");
+                    return false;
+                }
+                function jumpToUrl(URL) {
+                    window.location.href = URL;
+                    return false;
                 }
 
-                T3_THIS_LOCATION = '
-                . GeneralUtility::quoteJSvalue(rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'))) . ';
-            ');
+                function setHighlight(id) {
+                    top.fsMod.recentIds["web"] = id;
+                    // For highlighting
+                    top.fsMod.navFrameHighlightedID["web"] = "pages" + id + "_" + top.fsMod.currentBank;
+                    top.fsMod.navFrameHighlightedID["commerce"] = "tx_commerce_categories" + id + "_"
+                        + top.fsMod.currentBank;
 
-            $this->moduleTemplate->addJavaScriptCode('mainJsFunctions', '
+                    if (top.content && top.content.nav_frame && top.content.nav_frame.refresh_nav) {
+                        top.content.nav_frame.refresh_nav();
+                    }
+                }
+                ' . $this->moduleTemplate->redirectUrls(GeneralUtility::getIndpEnv('REQUEST_URI')) . '
+                function editRecords(table, idList, addParams, CBflag) {
+                    window.location.href = "'
+                . BackendUtility::getModuleUrl(
+                    'record_edit',
+                    array('returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'))
+                )
+                . '&edit[" + table + "][" + idList + "]=edit" + addParams;
+                }
+                function editList(table, idList) {
+                    var list = "";
+
+                    // Checking how many is checked, how many is not
+                    var pointer = 0;
+                    var pos = idList.indexOf(",");
+                    while (pos != -1) {
+                        if (cbValue(table + "|" + idList.substr(pointer, pos-pointer))) {
+                            list += idList.substr(pointer, pos-pointer) + ",";
+                        }
+                        pointer = pos + 1;
+                        pos = idList.indexOf(",", pointer);
+                    }
+                    if (cbValue(table + "|" + idList.substr(pointer))) {
+                        list += idList.substr(pointer) + ",";
+                    }
+
+                    return list ? list : idList;
+                }
+                '
+            );
+
+            $this->moduleTemplate->addJavaScriptCode(
+                'mainJsFunctions',
+                '
                 if (top.fsMod) {
                     top.fsMod.recentIds["web"] = ' . (int)$this->id . ';
-                    top.fsMod.navFrameHighlightedID["web"] = "pages' . (int)$this->id .
-                        '_"+top.fsMod.currentBank; ' . (int)$this->id . ';
+                    top.fsMod.navFrameHighlightedID["web"] = "pages' . (int)$this->id
+                . '_"+top.fsMod.currentBank; ' . (int)$this->id . ';
                 }
 
                 function deleteRecord(table,id,url) {   //
-                    if (confirm(' . GeneralUtility::quoteJSvalue($this->getLanguageService()->getLL('deleteWarning')) .
-                        ')) {
+                    if (confirm(' . GeneralUtility::quoteJSvalue($this->getLanguageService()->getLL('deleteWarning'))
+                . ')) {
                         window.location.href = ' .
-                GeneralUtility::quoteJSvalue(BackendUtility::getModuleUrl('tce_db') . '&cmd[') .
-                ' + table + "][ " + id + "][delete]=1&redirect=" + escape(url) + "&vC=' .
-                $this->getBackendUser()->veriCode() . '&prErr=1&uPT=1";
+                GeneralUtility::quoteJSvalue(BackendUtility::getModuleUrl('tce_db') . '&cmd[')
+                . ' + table + "][ " + id + "][delete]=1&redirect=" + escape(url) + "&vC='
+                . $this->getBackendUser()->veriCode() . '&prErr=1&uPT=1";
                     }
                     return false;
                 }
-            ');
+                '
+            );
 
             $this->content .= '<h1>' . $this->getLanguageService()->sL($this->extClassConf['title']) . '</h1>';
             $this->extObjContent();

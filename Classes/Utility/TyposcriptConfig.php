@@ -31,10 +31,27 @@ class TyposcriptConfig extends \TYPO3\CMS\Core\Configuration\TypoScript\Conditio
      */
     public function matchCondition(array $conditionParameters)
     {
+        $module = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('M');
+
+        if ($conditionParameters[0] == $module) {
+            $result = true;
+        } else {
+            $record = $this->getPageRecord();
+            $isCommerceModulePage = isset($record['module']) && $record['module'] == 'commerce';
+
+            $result = $isCommerceModulePage;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getPageRecord()
+    {
         $pageId = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
 
-        $record = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL('pages', $pageId);
-
-        return is_array($record) && isset($record['module']) && $record['module'] == 'commerce';
+        return (array) \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL('pages', $pageId);
     }
 }

@@ -1,8 +1,8 @@
 <?php
 namespace CommerceTeam\Commerce\Controller;
 
-use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
@@ -16,19 +16,14 @@ class SystemdataAttributesModuleFunctionController extends AbstractFunctionModul
     public $pObj;
 
     /**
-     * @var int
-     */
-    protected $attributePid;
-
-    /**
-     * @var int
-     */
-    public $newRecordPid;
-
-    /**
      * @var string
      */
     public $table = 'tx_commerce_attributes';
+
+    /**
+     * @var IconFactory
+     */
+    protected $iconFactory;
 
     /**
      * @return string
@@ -38,14 +33,13 @@ class SystemdataAttributesModuleFunctionController extends AbstractFunctionModul
         $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_list.xlf');
         $this->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/AjaxDataHandler');
 
-        $this->newRecordPid = $this->attributePid = FolderRepository::initFolders('Attributes', $this->pObj->id);
-        $language = $this->getLanguageService();
+        $this->iconFactory = $this->pObj->moduleTemplate->getIconFactory();
 
         $headerRow = '<tr>
             <td class="col-icon"></td>
-            <td class="col-title"><strong>' . $language->getLL('title_attributes') . '</strong></td>
+            <td class="col-title"><strong>' . $this->getLanguageService()->getLL('title_attributes') . '</strong></td>
             <td class="col-control"></td>
-            <td><strong>' . $language->getLL('title_values') . '</strong></td>
+            <td><strong>' . $this->getLanguageService()->getLL('title_values') . '</strong></td>
         </tr>';
 
         $result = $this->fetchAttributes();
@@ -99,7 +93,7 @@ class SystemdataAttributesModuleFunctionController extends AbstractFunctionModul
         return $this->getDatabaseConnection()->exec_SELECTquery(
             '*',
             'tx_commerce_attributes',
-            'pid = ' . (int) $this->attributePid .
+            'pid = ' . (int) $this->pObj->id .
             ' AND hidden = 0 AND deleted = 0 and (sys_language_uid = 0 OR sys_language_uid = -1)',
             '',
             'internal_title, title'
@@ -118,7 +112,7 @@ class SystemdataAttributesModuleFunctionController extends AbstractFunctionModul
         return $this->getDatabaseConnection()->exec_SELECTquery(
             '*',
             'tx_commerce_attributes',
-            'pid = ' . (int) $this->attributePid .
+            'pid = ' . (int) $this->pObj->id .
             ' AND hidden = 0 AND deleted = 0 AND sys_language_uid != 0 and l18n_parent =' . (int) $uid,
             '',
             'sys_language_uid'
@@ -170,7 +164,7 @@ class SystemdataAttributesModuleFunctionController extends AbstractFunctionModul
             $editAction = '<a class="btn btn-default" href="#" onclick="'
                 . htmlspecialchars(BackendUtility::editOnClick($params, '', -1))
                 . '" title="' . $this->getLanguageService()->getLL('edit', true) . '">'
-                . $this->pObj->moduleTemplate->getIconFactory()->getIcon($iconIdentifier, Icon::SIZE_SMALL) . '</a>';
+                . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL) . '</a>';
 
             // Delete link
             $actionName = 'delete';
@@ -190,10 +184,7 @@ class SystemdataAttributesModuleFunctionController extends AbstractFunctionModul
                 . '[' . $this->table . ':' . $attribute['uid'] . ']' . $refCountMsg;
 
             $params = 'cmd[' . $this->table . '][' . $attribute['uid'] . '][delete]=1';
-            $icon = $this->pObj->moduleTemplate->getIconFactory()->getIcon(
-                'actions-edit-' . $actionName,
-                Icon::SIZE_SMALL
-            );
+            $icon = $this->iconFactory->getIcon('actions-edit-' . $actionName, Icon::SIZE_SMALL);
             $linkTitle = $this->getLanguageService()->getLL($actionName, true);
             $deleteAction = '<a class="btn btn-default t3js-record-delete" href="#" '
                 . ' data-l10parent="' . htmlspecialchars($attribute['l10n_parent']) . '"'
@@ -204,7 +195,7 @@ class SystemdataAttributesModuleFunctionController extends AbstractFunctionModul
 
             $toolTip = BackendUtility::getRecordToolTip($attribute, $this->table);
             $iconImg = '<span ' . $toolTip . '>'
-                . $this->pObj->moduleTemplate->getIconFactory()->getIconForRecord(
+                . $this->iconFactory->getIconForRecord(
                     $this->table,
                     $attribute,
                     Icon::SIZE_SMALL

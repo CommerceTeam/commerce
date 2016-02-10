@@ -23,7 +23,6 @@ coProducts = hidden[starttime|endtime|fe_group],title,subtitle[navtitle],descrip
 # cat=simpleMode/other/100; type=String; label=fields for articles...: that should be displayed in simple mode
 coArticles = ordernumber,eancode,prices
 
-
 # cat=backend/other/100; type=String; label=fields for suppliers...: which fields are displayed in the backend
 coSuppliers = title
 

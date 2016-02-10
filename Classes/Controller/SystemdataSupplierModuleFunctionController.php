@@ -17,11 +17,6 @@ class SystemdataSupplierModuleFunctionController extends AbstractFunctionModule
     public $pObj;
 
     /**
-     * @var int
-     */
-    public $newRecordPid;
-
-    /**
      * @var string
      */
     public $table = 'tx_commerce_supplier';
@@ -46,21 +41,22 @@ class SystemdataSupplierModuleFunctionController extends AbstractFunctionModule
      */
     public function main()
     {
-        $this->pObj->moduleTemplate->getPageRenderer()->loadRequireJsModule(
-            'TYPO3/CMS/Backend/AjaxDataHandler'
-        );
+        $this->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/AjaxDataHandler');
 
-        $this->newRecordPid = $this->pObj->id;
         $this->iconFactory = $this->pObj->moduleTemplate->getIconFactory();
         $fields = explode(',', ConfigurationUtility::getInstance()->getExtConf('coSuppliers'));
 
-        $headerRow = '<tr><td class="col-icon"></td><td class="col-title">';
+        $headerRow = '<tr>
+            <td class="col-icon"></td>
+            <td class="col-title">';
         foreach ($fields as $field) {
             $headerRow .= '<strong>' . $this->getLanguageService()->sL(
                 BackendUtility::getItemLabel($this->table, htmlspecialchars($field))
             ) . '</strong>';
         }
-        $headerRow .= '</td><td class="col-control"></td></tr>';
+        $headerRow .= '</td>
+            <td class="col-control"></td>
+        </tr>';
 
         $result = $this->fetchSupplier();
         $supplierRows = $this->renderRows($result, $fields);

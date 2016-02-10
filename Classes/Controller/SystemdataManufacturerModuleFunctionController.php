@@ -17,11 +17,6 @@ class SystemdataManufacturerModuleFunctionController extends AbstractFunctionMod
     public $pObj;
 
     /**
-     * @var int
-     */
-    public $newRecordPid;
-
-    /**
      * @var string
      */
     public $table = 'tx_commerce_manufacturer';
@@ -46,11 +41,8 @@ class SystemdataManufacturerModuleFunctionController extends AbstractFunctionMod
      */
     public function main()
     {
-        $this->pObj->moduleTemplate->getPageRenderer()->loadRequireJsModule(
-            'TYPO3/CMS/Backend/AjaxDataHandler'
-        );
+        $this->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/AjaxDataHandler');
 
-        $this->newRecordPid = $this->pObj->id;
         $this->iconFactory = $this->pObj->moduleTemplate->getIconFactory();
         $fields = explode(',', ConfigurationUtility::getInstance()->getExtConf('coManufacturers'));
 
@@ -138,7 +130,7 @@ class SystemdataManufacturerModuleFunctionController extends AbstractFunctionMod
             $editAction = '<a class="btn btn-default" href="#" onclick="'
                 . htmlspecialchars(BackendUtility::editOnClick($params, '', -1))
                 . '" title="' . $this->getLanguageService()->getLL('edit', true) . '">'
-                . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render() . '</a>';
+                . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL) . '</a>';
 
             // hide action
             $hiddenField = $GLOBALS['TCA'][$this->table]['ctrl']['enablecolumns']['disabled'];
@@ -157,7 +149,7 @@ class SystemdataManufacturerModuleFunctionController extends AbstractFunctionMod
                 . ' data-params="' . htmlspecialchars($params) . '"'
                 . ' title="' . $unhideTitle . '"'
                 . ' data-toggle-title="' . $hideTitle . '">'
-                . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render() . '</a>';
+                . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL) . '</a>';
 
             // delete action
             $actionName = 'delete';
@@ -177,7 +169,7 @@ class SystemdataManufacturerModuleFunctionController extends AbstractFunctionMod
                 . '[' . $this->table . ':' . $row['uid'] . ']' . $refCountMsg;
 
             $params = 'cmd[' . $this->table . '][' . $row['uid'] . '][delete]=1';
-            $icon = $this->iconFactory->getIcon('actions-edit-' . $actionName, Icon::SIZE_SMALL)->render();
+            $icon = $this->iconFactory->getIcon('actions-edit-' . $actionName, Icon::SIZE_SMALL);
             $linkTitle = $this->getLanguageService()->getLL($actionName, true);
             $deleteAction = '<a class="btn btn-default t3js-record-delete" href="#" '
                 . ' data-l10parent="' . htmlspecialchars($row['l10n_parent']) . '"'
