@@ -8,6 +8,9 @@ mod.web_list.deniedNewTables = tx_commerce_address_types, tx_commerce_article_pr
 mod.web_list.allowedNewTables = tx_commerce_attributes, tx_commerce_manufacturer, tx_commerce_supplier
 [end]
 
+[CommerceTeam\Commerce\Utility\TyposcriptConfig commerce_order]
+mod.web_list.allowedNewTables = tx_commerce_orders, tx_commerce_order_articles
+[end]
 
 mod.commerce_category.enableDisplayBigControlPanel = selectable
 mod.commerce_category.enableClipBoard = selectable
