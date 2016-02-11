@@ -221,7 +221,6 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
             $this->content .= '<h1>' . $this->getLanguageService()->sL($this->extClassConf['title']) . '</h1>';
             $this->extObjContent();
             $this->getButtons();
-            $this->generateMenu();
         } else {
             $this->moduleTemplate->addJavaScriptCode(
                 'mainJsFunctions',
@@ -233,39 +232,6 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 
             $this->getButtons();
         }
-    }
-
-    /**
-     * Generates the menu based on $this->MOD_MENU
-     *
-     * @return void
-     * @throws \InvalidArgumentException
-     */
-    protected function generateMenu()
-    {
-        $menu = $this->moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
-        $menu->setIdentifier('WebFuncJumpMenu');
-        foreach ($this->MOD_MENU['function'] as $controller => $title) {
-            $item = $menu
-                ->makeMenuItem()
-                ->setHref(
-                    BackendUtility::getModuleUrl(
-                        $this->moduleName,
-                        [
-                            'id' => $this->id,
-                            'SET' => [
-                                'function' => $controller
-                            ]
-                        ]
-                    )
-                )
-                ->setTitle($title);
-            if ($controller === $this->MOD_SETTINGS['function']) {
-                $item->setActive(true);
-            }
-            $menu->addMenuItem($item);
-        }
-        $this->moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->addMenu($menu);
     }
 
     /**
@@ -335,16 +301,8 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
         $buttonBar->addButton($contextSensitiveHelpButton);
 
         // New
-        $onClick = 'return jumpExt(' . GeneralUtility::quoteJSvalue(
-            BackendUtility::getModuleUrl('db_new', array(
-                'id' => $this->id,
-                'edit' => array(
-                    'tx_commerce_' . $this->extObj->table => array(
-                        $this->extObj->newRecordPid => 'new'
-                    )
-                )
-            ))
-        ) . ');';
+        $params = '&edit[' . $this->extObj->table . '][' . $this->id . ']=new';
+        $onClick = htmlspecialchars(BackendUtility::editOnClick($params, '', -1));
         $newRecordButton = $buttonBar->makeLinkButton()
             ->setHref('#')
             ->setOnClick($onClick)
