@@ -42,7 +42,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @var int
      */
-    public $parentUid;
+    public $categoryUid;
 
     /**
      * @var BackendUserUtility
@@ -131,7 +131,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                             'id' => $this->id,
                             'defVals' => [
                                 'tx_commerce_categories' => [
-                                    'uid' => $this->parentUid,
+                                    'uid' => $this->categoryUid,
                                 ]
                             ]
                         ]
@@ -146,8 +146,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             }
 
             // Preview
-            if ($this->previewPageId && $this->parentUid) {
-                $params = '&tx_commerce_pi1[catUid]=' . $this->parentUid;
+            if ($this->previewPageId && $this->categoryUid) {
+                $params = '&tx_commerce_pi1[catUid]=' . $this->categoryUid;
                 /** @var $cacheHash CacheHashCalculator */
                 $cacheHash = GeneralUtility::makeInstance(CacheHashCalculator::class);
                 $cHash = $cacheHash->generateForParameters($params);
@@ -707,7 +707,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         $pC = ($table == 'tx_commerce_categories' && $this->perms_clause) ? ' AND ' . $this->perms_clause : '';
 
         // extra where for commerce
-        $categoryWhere = sprintf($this->addWhere[$table], $this->parentUid);
+        $categoryWhere = sprintf($this->addWhere[$table], $this->categoryUid);
 
         // Adding search constraints:
         $search = $this->makeSearchString($table, $id);
@@ -1169,7 +1169,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         $localCalcPerms = 0;
         if ($table == 'tx_commerce_categories' || $table == 'tx_commerce_products') {
             $localCalcPerms = $backendUserUtility->calcPerms(
-                (array) BackendUtility::getRecord('tx_commerce_categories', $this->parentUid)
+                (array) BackendUtility::getRecord('tx_commerce_categories', $this->categoryUid)
             );
         }
 
@@ -1181,6 +1181,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         $permsEdit = $this->overlayEditLockPermissions($table, $row, $permsEdit);
 
         // "Show" link (only tx_commerce_categories and tx_commerce_products elements)
+        // @todo test url generation
         if ($table == 'tx_commerce_categories' || $table == 'tx_commerce_products') {
             $params = '&tx_commerce_pi1[catUid]=';
             if ($table == 'tx_commerce_categories') {
@@ -1190,7 +1191,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                     $params .= $row['uid'];
                 }
             } else {
-                $params .= $this->parentUid;
+                $params .= $this->categoryUid;
             }
 
             if ($table == 'tx_commerce_products') {
@@ -1246,10 +1247,11 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         // "Move" wizard link for tx_commerce_categories/tx_commerce_products elements:
         // @todo fix this
         if ($permsEdit && ($table === 'tx_commerce_products' || $table === 'tx_commerce_categories')) {
-            $onClick = 'return jumpExt(' . GeneralUtility::quoteJSvalue(BackendUtility::getModuleUrl('move_element')
+            $onClick = 'return jumpExt('
+                . GeneralUtility::quoteJSvalue(BackendUtility::getModuleUrl('move_commerce_element')
                 . '&table=' . $table . '&uid=' . $row['uid']) . ');';
             $linkTitleLL = $this->getLanguageService()->getLL(
-                'move_' . ($table === 'tx_commerce_products' ? 'record' : 'tx_commerce_categories'),
+                'move_' . ($table === 'tx_commerce_products' ? 'record' : 'page'),
                 true
             );
             $icon = ($table == 'tx_commerce_categories' ?
@@ -1272,6 +1274,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             $this->addActionToCellGroup($cells, $historyAction, 'history');
 
             // Versioning:
+            // @todo needs testing
             if (ExtensionManagementUtility::isLoaded('version')
                 && !ExtensionManagementUtility::isLoaded('workspaces')
             ) {
@@ -1321,6 +1324,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                         $params = '&edit[' . $table . '][' . -(
                             $row['_MOVE_PLH'] ? $row['_MOVE_PLH_uid'] : $row['uid']
                         ) . ']=new';
+                        $categoryField = $table == 'tx_commerce_categories' ? 'parent_category' : 'categories';
+                        $params .= '&defVals[' . $table . '][' . $categoryField . '] = ' . $this->categoryUid;
+
                         $icon = ($table == 'tx_commerce_categories' ?
                             $this->iconFactory->getIcon('actions-page-new', Icon::SIZE_SMALL) :
                             $this->iconFactory->getIcon('actions-add', Icon::SIZE_SMALL)
@@ -1463,6 +1469,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             $this->addActionToCellGroup($cells, $deleteAction, 'delete');
 
             // "Levels" links: Moving tx_commerce_categories into new levels...
+            // @todo fix this
             if ($permsEdit && $table == 'tx_commerce_categories' && !$this->searchLevels) {
                 // Up (Paste as the page right after the current parent page)
                 if ($this->calcPerms & Permission::PAGE_NEW) {
@@ -1803,8 +1810,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         } else {
             $urlParameters['id'] = $this->id;
         }
-        if ($this->parentUid) {
-            $urlParameters['defVals']['tx_commerce_categories']['uid'] = $this->parentUid;
+        if ($this->categoryUid) {
+            $urlParameters['defVals']['tx_commerce_categories']['uid'] = $this->categoryUid;
         }
         if ($table === '-1') {
             $urlParameters['table'] = $this->table;

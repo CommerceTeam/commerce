@@ -106,10 +106,9 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $backendUser->setAndSaveSessionData(CategoryModuleController::class, $sessionData);
 
         // Get category uid from control
-        $defaultValuesFromGetPost = GeneralUtility::_GP('defVals');
-        if ($defaultValuesFromGetPost) {
-            $defaultValues = current($defaultValuesFromGetPost);
-            $this->categoryUid = (int) $defaultValues['uid'];
+        $controlFromGetPost = GeneralUtility::_GP('control');
+        if (is_array($controlFromGetPost)) {
+            $this->categoryUid = (int) $controlFromGetPost['categoryUid'];
         }
     }
 
@@ -255,7 +254,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             && !$this->modTSconfig['properties']['showClipControlPanelsDespiteOfCMlayers']
         );
 
-        $dbList->parentUid = $this->categoryUid;
+        $dbList->categoryUid = $this->categoryUid;
         $dbList->tableList = 'tx_commerce_categories,tx_commerce_products';
 
         if ($access || ($this->id === 0 && $this->search_levels > 0 && strlen($this->search_field) > 0)) {
@@ -415,7 +414,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             // add the page id and the current selected categor uid to the function links
             $functionParameter = array('id' => $this->id);
             if ($this->categoryUid) {
-                $functionParameter['defVals']['tx_commerce_categories']['uid'] = $this->categoryUid;
+                $functionParameter['control']['categoryUid'] = $this->categoryUid;
             }
 
             // Add "display bigControlPanel" checkbox:
