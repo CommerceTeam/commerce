@@ -151,13 +151,6 @@ $boot = function ($packageKey) {
     $scOptions['typo3/backend.php']['renderPreProcess']['commerce'] =
         \CommerceTeam\Commerce\Hook\BackendHooks::class . '->addJsFiles';
 
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
-        'TYPO3.Components.SystemdataNavframe.DataProvider',
-        \CommerceTeam\Commerce\Tree\Pagetree\ExtdirectSystemdataNavigationProvider::class,
-        'commerce',
-        'user,group'
-    );
-
     // Hooks for datamap procesing
     // For processing the order sfe, when changing the pid
     $scOptions['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['commerce'] =
