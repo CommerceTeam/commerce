@@ -80,9 +80,9 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
     public function __construct()
     {
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
-        $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_list.php');
+        $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_list.xlf');
         $this->getLanguageService()->includeLLFile(
-            'EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml'
+            'EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf'
         );
         $this->MCONF = array(
             'name' => $this->moduleName,

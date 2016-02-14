@@ -15,7 +15,7 @@
 
 return array(
     'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_address_types',
+        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_address_types',
         'label' => 'title',
         'readOnly' => 1,
         'adminOnly' => 1,
@@ -68,7 +68,7 @@ return array(
         ),
         'title' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_address_types.title',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_address_types.title',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -78,7 +78,7 @@ return array(
         ),
         'name' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_address_types.name',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_address_types.name',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',

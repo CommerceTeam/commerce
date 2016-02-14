@@ -411,7 +411,7 @@ class TreelibTceforms
                 $title = ($category->isPermissionSet('show') && $mount->isInCommerceMounts($category->getUid())) ?
                     $category->getTitle() :
                     $this->getLanguageService()->sL(
-                        'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess',
+                        'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xlf:leaf.restrictedAccess',
                         1
                     );
                 $this->itemArrayProcessed[] = $category->getUid() . '|' . $title;
@@ -460,7 +460,7 @@ class TreelibTceforms
         $title = ($category->isPermissionSet('show') && $mount->isInCommerceMounts($category->getUid())) ?
             $category->getTitle() :
             $this->getLanguageService()->sL(
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xlf:leaf.restrictedAccess',
                 1
             );
         $this->itemArrayProcessed = array($category->getUid() . '|' . $title);
@@ -522,7 +522,7 @@ class TreelibTceforms
             $title = ($category->isPermissionSet('show')) ?
                 $category->getTitle() :
                 $this->getLanguageService()->sL(
-                    'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:leaf.restrictedAccess',
+                    'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xlf:leaf.restrictedAccess',
                     1
                 );
             // Separate Key and Title with a |

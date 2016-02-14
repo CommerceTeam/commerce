@@ -189,7 +189,7 @@ class CommandMapHooks
                 // Error output, no articles
                 $command = '';
                 $this->error(
-                    'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:product.localization_without_article'
+                    'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:product.localization_without_article'
                 );
             }
 
@@ -251,7 +251,7 @@ class CommandMapHooks
     {
         if ($command == 'localize') {
             $command = '';
-            $this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:article.localization');
+            $this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:article.localization');
         } elseif ($command == 'delete') {
             /**
              * Article.
@@ -388,7 +388,7 @@ class CommandMapHooks
         // get the uid of the newly created product
         $localizedProductUid = $this->pObj->copyMappingArray['tx_commerce_products'][$productUid];
         if ($localizedProductUid == null) {
-            $this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:product.no_find_uid');
+            $this->error('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:product.no_find_uid');
         }
 
         $backendUser = $this->getBackendUser();
@@ -502,7 +502,7 @@ class CommandMapHooks
         if (empty($articles)) {
             // Error Output, no Articles
             $this->error(
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:product.localization_without_article'
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:product.localization_without_article'
             );
         }
 
@@ -915,8 +915,8 @@ class CommandMapHooks
          */
         $errorDocument = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
 
-        $errorHeadline = $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:error', 1);
-        $submitLabel = $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:continue', 1);
+        $errorHeadline = $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:error', 1);
+        $submitLabel = $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:continue', 1);
         $onClickAction = 'onclick="document.location=\'' . htmlspecialchars($_SERVER['HTTP_REFERER']) .
             '\'; return false;"';
 

@@ -15,7 +15,7 @@
 
 return array(
     'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_types',
+        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_types',
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -68,7 +68,7 @@ return array(
         ),
         'title' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_types.title',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_types.title',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -78,7 +78,7 @@ return array(
         ),
         'icon' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_types.icon',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_types.icon',
             'l10n_mode' => 'mergeIfNotBlank',
             'config' => array(
                 'type' => 'group',

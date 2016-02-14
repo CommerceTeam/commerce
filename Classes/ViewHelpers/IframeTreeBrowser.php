@@ -18,7 +18,7 @@ define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/Classes/ViewHelpers/');
 $BACK_PATH = '../../../../../typo3/';
 
 $MLANG['default']['tabs_images']['tab'] = 'moduleicon.gif';
-$MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/locallang_iframetreebrowser.xml';
+$MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/locallang_iframetreebrowser.xlf';
 
 $MCONF['script'] = 'index.php';
 $MCONF['name'] = 'commerce_txcommerceTreeBrowser';
@@ -35,7 +35,7 @@ require $BACK_PATH . '/sysext/core/Classes/Core/Bootstrap.php';
  * @var \TYPO3\CMS\Lang\LanguageService $language
  */
 $language = $GLOBALS['LANG'];
-$language->includeLLFile('EXT:lang/locallang_misc.xml');
+$language->includeLLFile('EXT:lang/locallang_misc.xlf');
 
 /**
  * Treelib browser.

@@ -68,7 +68,7 @@ class SystemdataNavigationFrameController extends BaseScriptClass
     public function init()
     {
         $this->getLanguageService()->includeLLFile(
-            'EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml'
+            'EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf'
         );
 
         $this->id = FolderRepository::initFolders('Commerce');

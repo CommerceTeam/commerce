@@ -15,7 +15,7 @@
 
 return array(
     'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles',
+        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles',
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -33,14 +33,14 @@ return array(
     ),
     'columns' => array(
         'tstamp' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.tstamp',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.tstamp',
             'config' => array(
                 'type' => 'input',
                 'readOnly' => true,
             ),
         ),
         'crdate' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.crdate',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.crdate',
             'config' => array(
                 'type' => 'input',
                 'readOnly' => true,
@@ -50,7 +50,7 @@ return array(
         ),
         'article_uid' => array(
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.article_uid',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.article_uid',
             'config' => array(
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -62,7 +62,7 @@ return array(
         ),
         'article_type_uid' => array(
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.article_type_uid',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.article_type_uid',
             'config' => array(
                 'type' => 'input',
                 'readOnly' => true,
@@ -70,7 +70,7 @@ return array(
         ),
         'article_number' => array(
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.article_number',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.article_number',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -79,7 +79,7 @@ return array(
             ),
         ),
         'title' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.title',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.title',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -89,7 +89,7 @@ return array(
         ),
         'subtitle' => array(
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.subtitle',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.subtitle',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -99,7 +99,7 @@ return array(
         ),
         'price_net' => array(
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.price_net',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.price_net',
             'config' => array(
                 'type' => 'input',
                 'size' => '6',
@@ -108,7 +108,7 @@ return array(
         ),
         'price_gross' => array(
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.price_gross',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.price_gross',
             'config' => array(
                 'type' => 'input',
                 'size' => '6',
@@ -116,7 +116,7 @@ return array(
             ),
         ),
         'tax' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.tax',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.tax',
             'config' => array(
                 'type' => 'input',
                 'size' => '6',
@@ -124,7 +124,7 @@ return array(
             ),
         ),
         'amount' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.amount',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.amount',
             'config' => array(
                 'type' => 'input',
                 'size' => '2',
@@ -133,7 +133,7 @@ return array(
         ),
         'order_uid' => array(
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.order_uid',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.order_uid',
             'config' => array(
                 'type' => 'select',
                 'foreign_table' => 'tx_commerce_orders',
@@ -143,7 +143,7 @@ return array(
         // @todo Declaration for iproc function for selecting right value
         'order_id' => array(
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_order_articles.order_id',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.order_id',
             'config' => array(
                 'type' => 'user',
                 'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->articleOrderId',

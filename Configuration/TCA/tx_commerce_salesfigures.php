@@ -15,7 +15,7 @@
 
 return array(
     'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures',
+        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures',
         'label' => 'uid',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -34,7 +34,7 @@ return array(
     'columns' => array(
         'year' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.year',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.year',
             'config' => array(
                 'type' => 'input',
                 'size' => '11',
@@ -45,7 +45,7 @@ return array(
         ),
         'month' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.month',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.month',
             'config' => array(
                 'type' => 'input',
                 'size' => '11',
@@ -56,7 +56,7 @@ return array(
         ),
         'day' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.day',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.day',
             'config' => array(
                 'type' => 'input',
                 'size' => '11',
@@ -67,7 +67,7 @@ return array(
         ),
         'dow' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.dow',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.dow',
             'config' => array(
                 'type' => 'input',
                 'size' => '11',
@@ -78,7 +78,7 @@ return array(
         ),
         'hour' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.hour',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.hour',
             'config' => array(
                 'type' => 'input',
                 'size' => '11',
@@ -90,7 +90,7 @@ return array(
         'pricegross' => array(
             'exclude' => 1,
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.pricegross',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.pricegross',
             'config' => array(
                 'type' => 'input',
                 'size' => '11',
@@ -101,7 +101,7 @@ return array(
         ),
         'pricenet' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.pricenet',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.pricenet',
             'config' => array(
                 'type' => 'input',
                 'size' => '11',
@@ -112,7 +112,7 @@ return array(
         ),
         'amount' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.amount',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.amount',
             'config' => array(
                 'type' => 'input',
                 'size' => '11',
@@ -123,7 +123,7 @@ return array(
         ),
         'orders' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_salesfigures.orders',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.orders',
             'config' => array(
                 'type' => 'input',
                 'size' => '11',

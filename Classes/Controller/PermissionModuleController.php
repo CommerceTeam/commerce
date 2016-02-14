@@ -84,7 +84,7 @@ class PermissionModuleController extends \TYPO3\CMS\Beuser\Controller\Permission
         parent::__construct();
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_perm.xlf');
-        $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_access.xml');
+        $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_access.xlf');
         $this->MCONF = array(
             'name' => $this->moduleName,
         );

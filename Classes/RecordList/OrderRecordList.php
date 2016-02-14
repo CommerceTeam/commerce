@@ -927,7 +927,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             $label = BackendUtility::getItemLabel(
                 $table,
                 $fN,
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml:|'
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xlf:|'
             );
             $fl = $label ? $label : '[' . $fN . ']';
             // Field label

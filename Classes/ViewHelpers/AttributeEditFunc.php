@@ -70,7 +70,7 @@ class AttributeEditFunc
              */
             $theData[$titleCol] = '<span class="c-table">' .
                 $language->sL(
-                    'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:attributeview.valuelist',
+                    'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:attributeview.valuelist',
                     1
                 ) .
                 '</span> (' . count($attributeValues) . ')';
@@ -182,7 +182,7 @@ class AttributeEditFunc
         $content .= '<div id="typo3-newRecordLink">
 			<a href="#" ' . $onClickAction . '>
 				' .
-            $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:attributeview.addvalue', 1) .
+            $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:attributeview.addvalue', 1) .
                 '</a>
 			</div>';
 

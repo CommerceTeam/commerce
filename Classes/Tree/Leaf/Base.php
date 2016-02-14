@@ -35,7 +35,7 @@ class Base
      *
      * @var string
      */
-    protected $llFile = 'EXT:commerce/Resources/Private/Language/locallang_treelib.xml';
+    protected $llFile = 'EXT:commerce/Resources/Private/Language/locallang_treelib.xlf';
 
     /**
      * Load the LocalLang features.

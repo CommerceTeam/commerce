@@ -13,7 +13,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-$languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:';
+$languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
 
 return array(
     'ctrl' => array(
@@ -88,7 +88,7 @@ return array(
                 'type' => 'check',
                 'items' => array(
                     '1' => array(
-                        '0' => 'LLL:EXT:lang/locallang_core.xml:labels.enabled',
+                        '0' => 'LLL:EXT:lang/locallang_core.xlf:labels.enabled',
                     ),
                 ),
             ),
@@ -137,9 +137,9 @@ return array(
                 'size' => 5,
                 'maxitems' => 50,
                 'items' => array(
-                    array('LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', -1),
-                    array('LLL:EXT:lang/locallang_general.xml:LGL.any_login', -2),
-                    array('LLL:EXT:lang/locallang_general.xml:LGL.usergroups', '--div--'),
+                    array('LLL:EXT:lang/locallang_general.xlf:LGL.hide_at_login', -1),
+                    array('LLL:EXT:lang/locallang_general.xlf:LGL.any_login', -2),
+                    array('LLL:EXT:lang/locallang_general.xlf:LGL.usergroups', '--div--'),
                 ),
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',

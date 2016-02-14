@@ -327,7 +327,7 @@ class ArticleCreatorUtility
         if ($rowCount > 1000) {
             return sprintf(
                 $fObj->sL(
-                    'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.to_many_articles'
+                    'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.to_many_articles'
                 ),
                 $rowCount
             );
@@ -341,7 +341,7 @@ class ArticleCreatorUtility
         $valueMatrix = (array) $this->getValues();
         $counter = 0;
         $resultRows = $fObj->sL(
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_warning'
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.create_warning'
         );
 
         $this->getRows($valueMatrix, $resultRows, $counter, $headRow);
@@ -349,7 +349,7 @@ class ArticleCreatorUtility
         $emptyRow = '<tr><td><input type="checkbox" name="createList[empty]" /></td>';
         $emptyRow .= '<td colspan="' . ($colCount - 1) . '">' .
             $fObj->sL(
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.empty_article'
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.empty_article'
             ) .
             '</td></tr>';
 
@@ -368,7 +368,7 @@ class ArticleCreatorUtility
             $onClick = 'onclick="updateArticleList()"';
             $selectAllRow = '<tr><td><input type="checkbox" id="selectAllArticles" ' . $onClick . '/></td>';
             $selectAllRow .= '<td colspan="' . ($colCount - 1) . '">' . $fObj->sL(
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_all_articles'
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.select_all_articles'
             ) . '</td></tr>';
         }
 

@@ -15,7 +15,7 @@
 
 return array(
     'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients',
+        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_newclients',
         'label' => 'uid',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -34,7 +34,7 @@ return array(
     'columns' => array(
         'year' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.year',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_newclients.year',
             'config' => array(
                 'type' => 'input',
                 'size' => '11',
@@ -45,7 +45,7 @@ return array(
         ),
         'month' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.month',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_newclients.month',
             'config' => array(
                 'type' => 'input',
                 'size' => '11',
@@ -56,7 +56,7 @@ return array(
         ),
         'day' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.day',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_newclients.day',
             'config' => array(
                 'type' => 'input',
                 'size' => '11',
@@ -67,7 +67,7 @@ return array(
         ),
         'dow' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.dow',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_newclients.dow',
             'config' => array(
                 'type' => 'input',
                 'size' => '11',
@@ -78,7 +78,7 @@ return array(
         ),
         'hour' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.hour',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_newclients.hour',
             'config' => array(
                 'type' => 'input',
                 'size' => '11',
@@ -90,7 +90,7 @@ return array(
         'registration' => array(
             'exclude' => 1,
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_newclients.registration',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_newclients.registration',
             'config' => array(
                 'type' => 'input',
                 'size' => '11',

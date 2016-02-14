@@ -16,7 +16,7 @@
 $tempColumns = array(
     'surname' => array(
         'exclude' => 1,
-        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tt_address.surname',
+        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tt_address.surname',
         'config' => array(
             'type' => 'input',
             'size' => '40',
@@ -25,7 +25,7 @@ $tempColumns = array(
     ),
     'tx_commerce_default_values' => array(
         'exclude' => 1,
-        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tt_address.tx_commerce_default_values',
+        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tt_address.tx_commerce_default_values',
         'config' => array(
             'type' => 'input',
             'size' => '4',
@@ -41,7 +41,7 @@ $tempColumns = array(
     ),
     'tx_commerce_fe_user_id' => array(
         'exclude' => 1,
-        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tt_address.tx_commerce_fe_user_id',
+        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tt_address.tx_commerce_fe_user_id',
         'config' => array(
             'type' => 'group',
             'internal_type' => 'db',
@@ -54,7 +54,7 @@ $tempColumns = array(
     'tx_commerce_address_type_id' => array(
         'exclude' => 1,
         'label' =>
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tt_address.tx_commerce_address_type_id',
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tt_address.tx_commerce_address_type_id',
         'config' => array(
             'type' => 'select',
             'item' => array(
@@ -70,7 +70,7 @@ $tempColumns = array(
     'tx_commerce_is_main_address' => array(
         'exclude' => 1,
         'label' =>
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tt_address.tx_commerce_is_main_address',
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tt_address.tx_commerce_is_main_address',
         'config' => array(
             'type' => 'check',
         ),

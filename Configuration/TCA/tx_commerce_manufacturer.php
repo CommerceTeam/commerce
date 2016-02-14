@@ -15,7 +15,7 @@
 
 return array(
     'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer',
+        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_manufacturer',
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -48,7 +48,7 @@ return array(
         ),
         'title' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.title',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_manufacturer.title',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -58,7 +58,7 @@ return array(
         ),
         'street' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.street',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_manufacturer.street',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -68,7 +68,7 @@ return array(
         ),
         'number' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.number',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_manufacturer.number',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -78,7 +78,7 @@ return array(
         ),
         'zip' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.zip',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_manufacturer.zip',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -88,7 +88,7 @@ return array(
         ),
         'city' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.city',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_manufacturer.city',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -98,7 +98,7 @@ return array(
         ),
         'country' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.country',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_manufacturer.country',
             'l10n_mode' => 'exclude',
             'config' => array(
                 'type' => 'select',
@@ -108,7 +108,7 @@ return array(
         ),
         'phone' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.phone',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_manufacturer.phone',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -118,7 +118,7 @@ return array(
         ),
         'fax' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.fax',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_manufacturer.fax',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -128,7 +128,7 @@ return array(
         ),
         'email' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.email',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_manufacturer.email',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -138,7 +138,7 @@ return array(
         ),
         'internet' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.internet',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_manufacturer.internet',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -149,7 +149,7 @@ return array(
         'contactperson' => array(
             'exclude' => 1,
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.contactperson',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_manufacturer.contactperson',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -159,7 +159,7 @@ return array(
         ),
         'logo' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_manufacturer.logo',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_manufacturer.logo',
             'l10n_mode' => 'mergeIfNotBlank',
             'config' => array(
                 'type' => 'group',

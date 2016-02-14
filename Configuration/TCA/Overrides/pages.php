@@ -14,7 +14,7 @@
  */
 
 $GLOBALS['TCA']['pages']['columns']['module']['config']['items'][] = array(
-    'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:commerce',
+    'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:commerce',
     'commerce',
 );
 
@@ -23,7 +23,7 @@ $tempColumns = array(
         'displayCond' => 'FIELD:tx_commerce_foldername:REQ:true',
         'exclude' => 1,
         'label' =>
-        'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_pages.tx_commerce_foldereditorder',
+        'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_pages.tx_commerce_foldereditorder',
         'config' => array(
             'type' => 'check',
             'default' => '0',

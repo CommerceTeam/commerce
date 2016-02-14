@@ -15,7 +15,7 @@
 
 return array(
     'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_trackingcodes',
+        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_trackingcodes',
         'label' => 'description',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -68,7 +68,7 @@ return array(
         ),
         'title' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_trackingcodes.title',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_trackingcodes.title',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -79,7 +79,7 @@ return array(
         'description' => array(
             'exclude' => 1,
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_trackingcodes.description',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_trackingcodes.description',
             'config' => array(
                 'type' => 'text',
                 'cols' => '30',

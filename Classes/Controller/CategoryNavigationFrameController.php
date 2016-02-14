@@ -84,7 +84,7 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
     public function init($bare = false)
     {
         $this->getLanguageService()->includeLLFile(
-            'EXT:commerce/Resources/Private/Language/locallang_mod_category.xml'
+            'EXT:commerce/Resources/Private/Language/locallang_mod_category.xlf'
         );
 
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
@@ -225,8 +225,8 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
         $subparts = array();
         // Build the <body> for the module
         $this->content = $this->doc->startPage(
-            $this->getLanguageService()->sl(
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title'
+            $this->getLanguageService()->sL(
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:mod_category.navigation_title'
             )
         );
         $this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers, $subparts);

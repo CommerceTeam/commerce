@@ -69,7 +69,7 @@ class Products
                         1 => array(
                             'name' => 'ct_###uid###',
                             'label' =>
-                                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.ct_###title###',
+                                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce.ct_###title###',
                             'config' => array(
                                 'type' => 'select',
                                 'foreign_table' => 'tx_commerce_attributes',
@@ -114,7 +114,7 @@ class Products
                         1 => array(
                             'name' => 'ct_###uid###',
                             'label' =>
-                                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.ct_###title###',
+                                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce.ct_###title###',
                             'config' => array(
                                 'type' => 'select',
                                 'foreign_table' => 'tx_commerce_attributes',
@@ -197,7 +197,7 @@ class Products
                     ),
                     'config' => array(
                         'text' => '
-							,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_attributes,
+							,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.select_attributes,
                                 attributes
                         ',
                     ),
@@ -225,7 +225,7 @@ class Products
                     ),
                     'config' => array(
                         'text' => '
-                            ,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.edit_attributes,
+                            ,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.edit_attributes,
                                 attributesedit
                         ',
                     ),
@@ -252,7 +252,7 @@ class Products
                     ),
                     'config' => array(
                         'text' => '
-                            ,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.localedit_attributes,
+                            ,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.localedit_attributes,
                                 attributesedit
                         ',
                     ),
@@ -270,7 +270,7 @@ class Products
                     ),
                     'config' => array(
                         'text' => '
-                            ,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_articles,
+                            ,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.create_articles,
                                 articles
                         ',
                     ),
@@ -289,7 +289,7 @@ class Products
                     ),
                     'config' => array(
                         'text' => '
-                            ,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,
+                            ,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.lokalise_articles,
                                 articleslok
                         ',
                     ),
@@ -308,7 +308,7 @@ class Products
                     ),
                     'config' => array(
                         'text' => '
-                            ,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.lokalise_articles,
+                            ,--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.lokalise_articles,
                                 articles
                         ',
                     ),
@@ -324,7 +324,7 @@ class Products
                     ),
                     'config' => array(
                         'text' =>
-                            ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.extras',
+                            ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.extras',
                     ),
                 ),
                 // 7

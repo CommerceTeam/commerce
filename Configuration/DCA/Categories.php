@@ -54,7 +54,7 @@ class Categories
                         1 => array(
                             'name' => 'ct_###uid###',
                             'label' =>
-                                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.ct_###title###',
+                                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce.ct_###title###',
                             'config' => array(
                                 'type' => 'select',
                                 'foreign_table' => 'tx_commerce_attributes',
@@ -99,7 +99,7 @@ class Categories
                         1 => array(
                             'name' => 'ct_###uid###',
                             'label' =>
-                                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.ct_###title###',
+                                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce.ct_###title###',
                             'config' => array(
                                 'type' => 'select',
                                 'foreign_table' => 'tx_commerce_attributes',

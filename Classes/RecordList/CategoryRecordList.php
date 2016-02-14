@@ -880,19 +880,19 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             switch ((string) $fCol) {
                 case '_PATH_':
                     // Path
-                    $theData[$fCol] = '<i>[' . $lang->sL('LLL:EXT:lang/locallang_core.php:labels._PATH_', true)
+                    $theData[$fCol] = '<i>[' . $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels._PATH_', true)
                         . ']</i>';
                     break;
 
                 case '_REF_':
                     // References
-                    $theData[$fCol] = '<i>[' . $lang->sL('LLL:EXT:lang/locallang_mod_file_list.xml:c__REF_', true)
+                    $theData[$fCol] = '<i>[' . $lang->sL('LLL:EXT:lang/locallang_mod_file_list.xlf:c__REF_', true)
                         . ']</i>';
                     break;
 
                 case '_LOCALIZATION_':
                     // Path
-                    $theData[$fCol] = '<i>[' . $lang->sL('LLL:EXT:lang/locallang_core.php:labels._LOCALIZATION_', true)
+                    $theData[$fCol] = '<i>[' . $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels._LOCALIZATION_', true)
                         . ']</i>';
                     break;
 

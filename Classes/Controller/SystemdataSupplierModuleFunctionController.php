@@ -62,7 +62,7 @@ class SystemdataSupplierModuleFunctionController extends AbstractFunctionModule
         $supplierRows = $this->renderRows($result, $fields);
 
         $tableHeader = '<a>' . $this->getLanguageService()->sL(
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:' . $this->table
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:' . $this->table
         )
             . ' (<span class="t3js-table-total-items">'
             . $this->getDatabaseConnection()->sql_num_rows($result) . '</span>)</a>';
@@ -71,7 +71,7 @@ class SystemdataSupplierModuleFunctionController extends AbstractFunctionModule
             $out = $flashMessage = GeneralUtility::makeInstance(
                 FlashMessage::class,
                 $this->getLanguageService()->sL(
-                    'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml:noSupplier'
+                    'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf:noSupplier'
                 ),
                 '',
                 FlashMessage::INFO

@@ -16,7 +16,7 @@
 $tempColumns = array(
     'tx_commerce_user_state_id' => array(
         'exclude' => 1,
-        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:fe_users.tx_commerce_user_state_id',
+        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:fe_users.tx_commerce_user_state_id',
         'config' => array(
             'type' => 'select',
             'item' => array(
@@ -30,7 +30,7 @@ $tempColumns = array(
     ),
     'tx_commerce_tt_address_id' => array(
         'exclude' => 1,
-        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:fe_users.tx_commerce_tt_address_id',
+        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:fe_users.tx_commerce_tt_address_id',
         'config' => array(
             'type' => 'select',
             'foreign_table' => 'tt_address',
@@ -56,7 +56,7 @@ $tempColumns = array(
     ),
     'tx_commerce_orders' => array(
         'exclude' => 1,
-        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:fe_users.tx_commerce_feuser_orders',
+        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:fe_users.tx_commerce_feuser_orders',
         'config' => array(
             'type' => 'user',
             'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->feUserOrders',
@@ -67,6 +67,6 @@ $tempColumns = array(
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('fe_users', $tempColumns, 1);
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
     'fe_users',
-    '--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:fe_users.tx_commerce,
+    '--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:fe_users.tx_commerce,
 		tx_commerce_tt_address_id,tx_commerce_user_state_id,tx_commerce_orders'
 );

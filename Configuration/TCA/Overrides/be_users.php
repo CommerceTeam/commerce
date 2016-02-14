@@ -16,7 +16,7 @@
 // extend beusers/begroups for access control
 $tempColumns = array(
     'tx_commerce_mountpoints' => array(
-        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:label.tx_commerce_mountpoints',
+        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:label.tx_commerce_mountpoints',
         'config' => array(
             'type' => 'select',
             'foreign_table' => 'tx_commerce_categories',

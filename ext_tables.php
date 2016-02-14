@@ -73,7 +73,7 @@ $boot = function ($packageKey) {
                 'name' => $packageKey,
                 'workspaces' => 'online',
                 'labels' => [
-                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_main.xml',
+                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_main.xlf',
                     'tabs_images' => [
                         'tab' => 'EXT:commerce/Resources/Public/Icons/mod_main.gif'
                     ],
@@ -92,7 +92,7 @@ $boot = function ($packageKey) {
                 'access' => 'user,group',
                 'name' => 'commerce_category',
                 'labels' => [
-                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_category.xml',
+                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_category.xlf',
                     'tabs_images' => [
                         'tab' => 'EXT:commerce/Resources/Public/Icons/mod_category.gif'
                     ],
@@ -112,7 +112,7 @@ $boot = function ($packageKey) {
                 'access' => 'user,group',
                 'name' => 'commerce_permission',
                 'labels' => [
-                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_access.xml',
+                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_access.xlf',
                     'tabs_images' => [
                         'tab' => 'EXT:beuser/Resources/Public/Icons/module-permission.svg'
                     ],
@@ -132,7 +132,7 @@ $boot = function ($packageKey) {
                 'access' => 'user,group',
                 'name' => 'commerce_order',
                 'labels' => [
-                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml',
+                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xlf',
                     'tabs_images' => [
                         'tab' => 'EXT:commerce/Resources/Public/Icons/mod_orders.gif'
                     ],
@@ -152,7 +152,7 @@ $boot = function ($packageKey) {
                 'access' => 'user,group',
                 'name' => 'commerce_statistic',
                 'labels' => [
-                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml',
+                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf',
                     'tabs_images' => [
                         'tab' => 'EXT:commerce/Resources/Public/Icons/mod_statistic.gif'
                     ],
@@ -165,7 +165,7 @@ $boot = function ($packageKey) {
             'commerce_statistic',
             \CommerceTeam\Commerce\Controller\StatisticShowStatisticsModuleFunctionController::class,
             null,
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml:statistics'
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf:statistics'
         );
 
         if (\CommerceTeam\Commerce\Utility\ConfigurationUtility::getInstance()->getExtConf('allowAggregation') == 1) {
@@ -173,14 +173,14 @@ $boot = function ($packageKey) {
                 'commerce_statistic',
                 \CommerceTeam\Commerce\Controller\StatisticIncrementalAggregationModuleFunctionController::class,
                 null,
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml:incremental_aggregation'
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf:incremental_aggregation'
             );
 
             \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
                 'commerce_statistic',
                 \CommerceTeam\Commerce\Controller\StatisticCompleteAggregationModuleFunctionController::class,
                 null,
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xml:complete_aggregation'
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf:complete_aggregation'
             );
         }
 
@@ -195,7 +195,7 @@ $boot = function ($packageKey) {
                 'access' => 'user,group',
                 'name' => 'commerce_systemdata',
                 'labels' => [
-                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml',
+                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf',
                     'tabs_images' => [
                         'tab' => 'EXT:commerce/Resources/Public/Icons/mod_systemdata.gif'
                     ],
@@ -208,21 +208,21 @@ $boot = function ($packageKey) {
             'commerce_systemdata',
             \CommerceTeam\Commerce\Controller\SystemdataAttributesModuleFunctionController::class,
             null,
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml:title_attributes'
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf:title_attributes'
         );
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
             'commerce_systemdata',
             \CommerceTeam\Commerce\Controller\SystemdataManufacturerModuleFunctionController::class,
             null,
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml:title_manufacturer'
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf:title_manufacturer'
         );
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
             'commerce_systemdata',
             \CommerceTeam\Commerce\Controller\SystemdataSupplierModuleFunctionController::class,
             null,
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml:title_supplier'
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf:title_supplier'
         );
 
 

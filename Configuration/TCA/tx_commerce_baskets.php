@@ -15,7 +15,7 @@
 
 return array(
     'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets',
+        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_baskets',
         'label' => 'uid',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -32,7 +32,7 @@ return array(
     'columns' => array(
         'sid' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.sid',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_baskets.sid',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -42,7 +42,7 @@ return array(
         ),
         'article_id' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.article_id',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_baskets.article_id',
             'config' => array(
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -54,7 +54,7 @@ return array(
         ),
         'price_id' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.price_id',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_baskets.price_id',
             'config' => array(
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -66,7 +66,7 @@ return array(
         ),
         'price_gross' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.price_gross',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_baskets.price_gross',
             'config' => array(
                 'type' => 'input',
                 'size' => '30',
@@ -75,7 +75,7 @@ return array(
         ),
         'price_net' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.price_net',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_baskets.price_net',
             'config' => array(
                 'type' => 'input',
                 'size' => '30',
@@ -84,7 +84,7 @@ return array(
         ),
         'quantity' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_baskets.quantity',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_baskets.quantity',
             'config' => array(
                 'type' => 'input',
                 'size' => '4',
@@ -100,7 +100,7 @@ return array(
         ),
         'finished_time' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_basket.finished_time',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_basket.finished_time',
             'config' => array(
                 'type' => 'input',
                 'eval' => 'date',
@@ -108,7 +108,7 @@ return array(
         ),
         'readonly' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_basket.readonly',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_basket.readonly',
             'config' => array(
                 'type' => 'check',
             ),

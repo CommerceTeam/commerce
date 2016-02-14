@@ -69,7 +69,7 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
     public function __construct()
     {
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
-        $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml');
+        $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_orders.xlf');
         $this->MCONF = array(
             'name' => $this->moduleName,
         );

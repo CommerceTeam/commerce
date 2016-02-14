@@ -139,7 +139,7 @@ class CreditCardValidationSolution
             $languageKey = $this->getFrontendController()->config['config']['language'];
         }
         $this->language->init($languageKey);
-        $this->language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_ccsv.xml');
+        $this->language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_ccsv.xlf');
     }
 
     /**

@@ -15,7 +15,7 @@
 
 return array(
     'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_tracking',
+        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_tracking',
         'label' => 'uid',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -33,7 +33,7 @@ return array(
     'columns' => array(
         'orders_uid' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_tracking.orders_uid',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_tracking.orders_uid',
             'config' => array(
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -46,7 +46,7 @@ return array(
         'trackingcodes_uid' => array(
             'exclude' => 1,
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_tracking.trackingcodes_uid',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_tracking.trackingcodes_uid',
             'config' => array(
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -58,7 +58,7 @@ return array(
         ),
         'msg' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_tracking.msg',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_tracking.msg',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',

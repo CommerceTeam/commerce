@@ -141,9 +141,9 @@ $boot = function ($packageKey) {
         $scOptions['scheduler']['tasks'][\CommerceTeam\Commerce\Task\StatisticTask::class] = array(
             'extension' => $packageKey,
             'title' => 'LLL:EXT:' . $packageKey
-                . '/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.name',
+                . '/Resources/Private/Language/locallang_be.xlf:tx_commerce_task_statistictask.name',
             'description' => 'LLL:EXT:' . $packageKey
-                . '/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.description',
+                . '/Resources/Private/Language/locallang_be.xlf:tx_commerce_task_statistictask.description',
             'additionalFields' => \CommerceTeam\Commerce\Task\StatisticTaskAdditionalFieldProvider::class,
         );
     }

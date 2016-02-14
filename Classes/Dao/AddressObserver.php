@@ -132,7 +132,7 @@ class AddressObserver
             }
             if ($parentObject instanceof DataHandler) {
                 $msg = self::getLanguageService()->sL(
-                    'LLL:EXT:commerce/Resources/Private/Language/locallang.xml:error_deleted_address_is_default'
+                    'LLL:EXT:commerce/Resources/Private/Language/locallang.xlf:error_deleted_address_is_default'
                 );
             }
         }

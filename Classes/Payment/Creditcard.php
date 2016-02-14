@@ -49,7 +49,7 @@ class Creditcard extends PaymentAbstract
         /** @var $languageFactory \TYPO3\CMS\Core\Localization\LocalizationFactory */
         $languageFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\LocalizationFactory::class);
 
-        $basePath = PATH_TXCOMMERCE . 'Resources/Private/Language/locallang_creditcard.xml';
+        $basePath = PATH_TXCOMMERCE . 'Resources/Private/Language/locallang_creditcard.xlf';
 
         foreach ($this->parentObject->LOCAL_LANG as $llKey => $_) {
             $newLl = $languageFactory->getParsedData($basePath, $llKey);

@@ -168,7 +168,7 @@ class OrderEditFunc
             */
             $theData[$titleCol] = '<span class="c-table">' .
                 $language->sL(
-                    'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:order_view.items.article_list',
+                    'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:order_view.items.article_list',
                     1
                 ) .
                 '</span> (' . count($orderArticles) . ')';
@@ -178,7 +178,7 @@ class OrderEditFunc
                     '&amp;tx_commerce_pi6[order_id]=' . $orderId . '&amp;type=' .
                     $settingsFactory->getExtConf('invoicePageType') . '" target="_blank">' .
                     $language->sL(
-                        'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:order_view.items.print_invoice',
+                        'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:order_view.items.print_invoice',
                         1
                     ) . ' *</a>';
             }

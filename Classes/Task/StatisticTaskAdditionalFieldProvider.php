@@ -73,14 +73,14 @@ class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\Addit
         $fieldHtml = $this->renderOptions(
             'tx_scheduler[' . $uid . '][commerce_statisticTask_aggregation]',
             $fieldId,
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:' . $this->aggregation,
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:' . $this->aggregation,
             $taskInfo[$uid]['commerce_statisticTask_aggregation']
         );
 
         $additionalFields[$fieldId] = array(
             'code' => $fieldHtml,
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:'
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:'
                 . 'tx_commerce_task_statistictask.selectAggregation',
             'cshKey' => '_MOD_tools_commerce',
             'cshLabel' => $fieldId,

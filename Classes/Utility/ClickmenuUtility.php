@@ -558,7 +558,7 @@ class ClickmenuUtility extends ClickMenu
             '&table=' . rawurlencode($table) . '&uid=' . $uid . '&sendToReview=1';
 
         return $this->clickMenu->linkItem(
-            $language->sL('LLL:EXT:version/locallang.xml:title_review', 1),
+            $language->sL('LLL:EXT:version/Resources/Private/Language/locallang.xlf:title_review', 1),
             $this->excludeIcon('<img src="' . $this->backPath . ExtensionManagementUtility::extRelPath('version') .
                 'cm1/cm_icon.gif" width="15" height="12" border="0" align="top" alt="" />'),
             $this->clickMenu->urlRefForCM($url),

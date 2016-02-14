@@ -15,7 +15,7 @@
 
 return array(
     'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders',
+        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders',
         'label' => 'order_id',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -38,14 +38,14 @@ return array(
     'columns' => array(
         'cust_deliveryaddress' => array(
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_deliveryaddress',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.cust_deliveryaddress',
             'config' => array(
                 'type' => 'user',
                 'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->deliveryAddress',
             ),
         ),
         'order_type_uid' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.order_type_uid',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.order_type_uid',
             'config' => array(
                 'type' => 'select',
                 'items' => array(
@@ -56,7 +56,7 @@ return array(
             ),
         ),
         'order_id' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.order_id',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.order_id',
             'config' => array(
                 'type' => 'input',
                 'readOnly' => true,
@@ -64,7 +64,7 @@ return array(
         ),
 
         'tstamp' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.tstamp',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.tstamp',
             'config' => array(
                 'type' => 'input',
                 'readOnly' => true,
@@ -72,7 +72,7 @@ return array(
         ),
 
         'crdate' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.crdate',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.crdate',
             'config' => array(
                 'type' => 'input',
                 'readOnly' => true,
@@ -82,7 +82,7 @@ return array(
         ),
 
         'newpid' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.pid',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.pid',
             'config' => array(
                 'type' => 'select',
                 'foreign_table' => 'pages',
@@ -90,7 +90,7 @@ return array(
             ),
         ),
         'cust_fe_user' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_fe_user',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.cust_fe_user',
             'config' => array(
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -113,14 +113,14 @@ return array(
             ),
         ),
         'cust_invoice' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_invoice',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.cust_invoice',
             'config' => array(
                 'type' => 'user',
                 'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->invoiceAddress',
             ),
         ),
         'paymenttype' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.paymenttype',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.paymenttype',
             'config' => array(
                 'type' => 'select',
                 'foreign_table' => 'tx_commerce_articles',
@@ -128,7 +128,7 @@ return array(
             ),
         ),
         'sum_price_net' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.sum_price_net',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.sum_price_net',
             'config' => array(
                 'type' => 'user',
                 'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->orderArticles',
@@ -136,14 +136,14 @@ return array(
         ),
         'sum_price_gross' => array(
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.sum_price_gross',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.sum_price_gross',
             'config' => array(
                 'type' => 'user',
                 'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->sumPriceGrossFormat',
             ),
         ),
         'payment_ref_id' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.payment_ref_id',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.payment_ref_id',
             'config' => array(
                 'type' => 'input',
                 'readOnly' => true,
@@ -151,7 +151,7 @@ return array(
             ),
         ),
         'cu_iso_3_uid' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cu_iso_3_uid',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.cu_iso_3_uid',
             'config' => array(
                 'type' => 'select',
                 'foreign_table' => 'static_currencies',
@@ -160,7 +160,7 @@ return array(
             ),
         ),
         'comment' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.comment',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.comment',
             'config' => array(
                 'type' => 'text',
                 'cols' => '30',
@@ -169,7 +169,7 @@ return array(
         ),
         'internalcomment' => array(
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.internalcomment',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.internalcomment',
             'config' => array(
                 'type' => 'text',
                 'cols' => '30',
@@ -189,12 +189,12 @@ return array(
             ),
         ),
         'pricefromnet' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.pricefromnet',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.pricefromnet',
             'config' => array(
                 'type' => 'select',
                 'items' => array(
-                    array('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:no', 0),
-                    array('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:yes', 1),
+                    array('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:no', 0),
+                    array('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:yes', 1),
                 ),
             ),
         ),
@@ -203,14 +203,14 @@ return array(
     'types' => array(
         '0' => array(
             'showitem' => '
-                --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.basis,
+                --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.basis,
                     order_id, crdate, order_type_uid, cu_iso_3_uid, newpid, paymenttype, payment_ref_id, comment,
                     internalcomment, order_sys_language_uid, pricefromnet,
-                --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.customer,
+                --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.customer,
                     cust_fe_user, cust_invoice,
-           --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.cust_deliveryaddress,
+           --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.cust_deliveryaddress,
                     cust_deliveryaddress,
-                --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_orders.items,
+                --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_orders.items,
                     sum_price_net, sum_price_gross, articles',
         ),
     ),

@@ -94,19 +94,19 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
                     // Path
                     case '_PATH_':
                         $headerColumns[$fCol] = '<i>[' .
-                            $language->sL('LLL:EXT:lang/locallang_core.php:labels._PATH_', 1) . ']</i>';
+                            $language->sL('LLL:EXT:lang/locallang_core.xlf:labels._PATH_', 1) . ']</i>';
                         break;
 
                     // References
                     case '_REF_':
                         $headerColumns[$fCol] = '<i>[' .
-                            $language->sL('LLL:EXT:lang/locallang_mod_file_list.xml:c__REF_', 1) . ']</i>';
+                            $language->sL('LLL:EXT:lang/locallang_mod_file_list.xlf:c__REF_', 1) . ']</i>';
                         break;
 
                     // Path
                     case '_LOCALIZATION_':
                         $headerColumns[$fCol] = '<i>[' .
-                            $language->sL('LLL:EXT:lang/locallang_core.php:labels._LOCALIZATION_', 1) . ']</i>';
+                            $language->sL('LLL:EXT:lang/locallang_core.xlf:labels._LOCALIZATION_', 1) . ']</i>';
                         break;
 
                     // Path
@@ -241,7 +241,7 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
                                 BackendUtility::getItemLabel(
                                     $table,
                                     $fCol,
-                                    'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xml:|'
+                                    'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xlf:|'
                                 )
                             ),
                             $fCol,

@@ -44,7 +44,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @var string
      */
-    public $scriptRelPath = 'Resources/Private/Language/locallang.xml';
+    public $scriptRelPath = 'Resources/Private/Language/locallang.xlf';
 
     /**
      * Configuration.

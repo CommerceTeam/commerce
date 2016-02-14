@@ -15,7 +15,7 @@
 
 return array(
     'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attribute_values',
+        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_attribute_values',
         'label' => 'value',
         'label_alt' => 'attributes_uid',
         'label_alt_force' => 1,
@@ -117,7 +117,7 @@ return array(
         'value' => array(
             'exclude' => 1,
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attribute_values.value',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_attribute_values.value',
             'config' => array(
                 'type' => 'input',
                 'size' => '40',
@@ -127,7 +127,7 @@ return array(
         ),
         'icon' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attribute_values.icon',
+            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_attribute_values.icon',
             'l10n_mode' => 'mergeIfNotBlank',
             'config' => array(
                 'type' => 'group',
@@ -144,7 +144,7 @@ return array(
         'showvalue' => array(
             'exclude' => 1,
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attribute_values.showvalue',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_attribute_values.showvalue',
             'l10n_mode' => 'exclude',
             'config' => array(
                 'type' => 'check',
@@ -154,7 +154,7 @@ return array(
         'attributes_uid' => array(
             'exclude' => 1,
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attribute_values.attributes_uid',
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_attribute_values.attributes_uid',
             'l10n_mode' => 'exclude',
             'config' => array(
                 'type' => 'select',

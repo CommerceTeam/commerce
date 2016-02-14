@@ -102,7 +102,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->getLanguageService()->includeLLFile(
-            'EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml'
+            'EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf'
         );
 
         $this->MCONF = array(
