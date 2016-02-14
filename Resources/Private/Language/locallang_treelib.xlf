@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-02-14T13:27:40Z" product-name="commerce">
+		<header/>
+		<body>
+			<trans-unit id="leaf.noMount" xml:space="preserve">
+				<source>You have no mounts enabled. Please contact your Site Administrator.</source>
+			</trans-unit>
+			<trans-unit id="leaf.category.root" xml:space="preserve">
+				<source>Category</source>
+			</trans-unit>
+			<trans-unit id="leaf.noTitle" xml:space="preserve">
+				<source>[no title]</source>
+			</trans-unit>
+			<trans-unit id="leaf.leaf.root" xml:space="preserve">
+				<source>[root]</source>
+			</trans-unit>
+			<trans-unit id="leaf.maxRecursion" xml:space="preserve">
+				<source>The output of the items has been stopped because the loop crossed the max. allowed recursion count.</source>
+			</trans-unit>
+			<trans-unit id="leaf.restrictedAccess" xml:space="preserve">
+				<source>Restricted Category</source>
+			</trans-unit>
+			<trans-unit id="clickmenu.copy" xml:space="preserve">
+				<source>Copy</source>
+			</trans-unit>
+			<trans-unit id="clickmenu.overwrite" xml:space="preserve">
+				<source>Overwrite</source>
+			</trans-unit>
+			<trans-unit id="clickmenu.overwriteConfirm" xml:space="preserve">
+				<source>Write &quot;%s&quot; to &quot;%s&quot;?</source>
+			</trans-unit>
+			<trans-unit id="clickmenu.paste" xml:space="preserve">
+				<source>Paste into</source>
+			</trans-unit>
+			<trans-unit id="clickmenu.pasteConfirm" xml:space="preserve">
+				<source>Paste &quot;%s&quot; into &quot;%s&quot;?</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

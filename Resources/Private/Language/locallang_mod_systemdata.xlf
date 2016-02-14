@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-02-14T13:27:19Z" product-name="commerce">
+		<header/>
+		<body>
+			<trans-unit id="mlang_tabs_tab" xml:space="preserve">
+				<source>Systemdata</source>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tabdescr" xml:space="preserve">
+				<source>Browse, edit and delete systemdata</source>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tablabel" xml:space="preserve">
+				<source>Systemdata</source>
+			</trans-unit>
+			<trans-unit id="title" xml:space="preserve">
+				<source>Systemdata</source>
+			</trans-unit>
+			<trans-unit id="title_attributes" xml:space="preserve">
+				<source>Attributes</source>
+			</trans-unit>
+			<trans-unit id="desc_attributes" xml:space="preserve">
+				<source>Create and edit the attributes which are used for defining articles from products.</source>
+			</trans-unit>
+			<trans-unit id="title_values" xml:space="preserve">
+				<source>Values</source>
+			</trans-unit>
+			<trans-unit id="create_attributes" xml:space="preserve">
+				<source>Create new attribute</source>
+			</trans-unit>
+			<trans-unit id="deleteWarningAttribute" xml:space="preserve">
+				<source>Do you really want to delete this attribute?</source>
+			</trans-unit>
+			<trans-unit id="no_values" xml:space="preserve">
+				<source>This attribute has no values</source>
+			</trans-unit>
+			<trans-unit id="no_valuelist" xml:space="preserve">
+				<source>This attribute has no value list</source>
+			</trans-unit>
+			<trans-unit id="usage" xml:space="preserve">
+				<source>Usage in</source>
+			</trans-unit>
+			<trans-unit id="categories" xml:space="preserve">
+				<source>categories</source>
+			</trans-unit>
+			<trans-unit id="products" xml:space="preserve">
+				<source>products</source>
+			</trans-unit>
+			<trans-unit id="articles" xml:space="preserve">
+				<source>articles</source>
+			</trans-unit>
+			<trans-unit id="title_manufacturer" xml:space="preserve">
+				<source>Manufacturer</source>
+			</trans-unit>
+			<trans-unit id="desc_manufacturer" xml:space="preserve">
+				<source>Create and edit the manufacturers.</source>
+			</trans-unit>
+			<trans-unit id="create_manufacturer" xml:space="preserve">
+				<source>Create new manufacturer</source>
+			</trans-unit>
+			<trans-unit id="deleteWarningManufacturer" xml:space="preserve">
+				<source>Do you really want to delete this manufacturer?</source>
+			</trans-unit>
+			<trans-unit id="title_supplier" xml:space="preserve">
+				<source>Supplier</source>
+			</trans-unit>
+			<trans-unit id="desc_supplier" xml:space="preserve">
+				<source>Create and edit the suppliers.</source>
+			</trans-unit>
+			<trans-unit id="create_supplier" xml:space="preserve">
+				<source>Create new supplier</source>
+			</trans-unit>
+			<trans-unit id="deleteWarningSupplier" xml:space="preserve">
+				<source>Do you really want to delete this supplier?</source>
+			</trans-unit>
+			<trans-unit id="noSupplier" xml:space="preserve">
+				<source>There are no supplier available.</source>
+			</trans-unit>
+			<trans-unit id="noManufacturer" xml:space="preserve">
+				<source>There are no manufacturer available.</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

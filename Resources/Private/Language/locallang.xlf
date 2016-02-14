@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-02-14T13:27:02Z" product-name="commerce">
+		<header/>
+		<body>
+			<trans-unit id="lang_addtobasketlink" xml:space="preserve">
+				<source>Add to Basket</source>
+			</trans-unit>
+			<trans-unit id="lang_toproduct" xml:space="preserve">
+				<source>To the product</source>
+			</trans-unit>
+			<trans-unit id="lang_header_image" xml:space="preserve">
+				<source>Image</source>
+			</trans-unit>
+			<trans-unit id="lang_header_title" xml:space="preserve">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="lang_header_teaser" xml:space="preserve">
+				<source>Teaser</source>
+			</trans-unit>
+			<trans-unit id="lang_header_price" xml:space="preserve">
+				<source>Price</source>
+			</trans-unit>
+			<trans-unit id="lang_header_action" xml:space="preserve">
+				<source></source>
+			</trans-unit>
+			<trans-unit id="lang_submit" xml:space="preserve">
+				<source>Submit</source>
+			</trans-unit>
+			<trans-unit id="all_options" xml:space="preserve">
+				<source>all</source>
+			</trans-unit>
+			<trans-unit id="error.productNotFound" xml:space="preserve">
+				<source>Product not found</source>
+			</trans-unit>
+			<trans-unit id="error.categoryNotFound" xml:space="preserve">
+				<source>Category not found</source>
+			</trans-unit>
+			<trans-unit id="lang_payment_force" xml:space="preserve">
+				<source>Please select</source>
+			</trans-unit>
+			<trans-unit id="lang_article" xml:space="preserve">
+				<source>Article</source>
+			</trans-unit>
+			<trans-unit id="lang_percent" xml:space="preserve">
+				<source>%</source>
+			</trans-unit>
+			<trans-unit id="lang_last_product" xml:space="preserve">
+				<source>Last Product</source>
+			</trans-unit>
+			<trans-unit id="lang_basket_qv_value" xml:space="preserve">
+				<source>Basket:</source>
+			</trans-unit>
+			<trans-unit id="lang_basket_qv_link" xml:space="preserve">
+				<source>Basket</source>
+			</trans-unit>
+			<trans-unit id="lang_basket_qv_chkout" xml:space="preserve">
+				<source>Checkout</source>
+			</trans-unit>
+			<trans-unit id="lang_basket_update" xml:space="preserve">
+				<source>update</source>
+			</trans-unit>
+			<trans-unit id="lang_basket_delete_item" xml:space="preserve">
+				<source>delete</source>
+			</trans-unit>
+			<trans-unit id="checkoutlink" xml:space="preserve">
+				<source>To the checkout</source>
+			</trans-unit>
+			<trans-unit id="delete_basket" xml:space="preserve">
+				<source>Clear basket</source>
+			</trans-unit>
+			<trans-unit id="noStock" xml:space="preserve">
+				<source>The amount of wanted articles is not available at this moment</source>
+			</trans-unit>
+			<trans-unit id="lang_basket_locked" xml:space="preserve">
+				<source>Your Basket is currently locked, since a checkout session is present. Please checkout your basket first</source>
+			</trans-unit>
+			<trans-unit id="general_name" xml:space="preserve">
+				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="general_surname" xml:space="preserve">
+				<source>Surname</source>
+			</trans-unit>
+			<trans-unit id="general_address" xml:space="preserve">
+				<source>Address</source>
+			</trans-unit>
+			<trans-unit id="general_zip" xml:space="preserve">
+				<source>Zip/Post code</source>
+			</trans-unit>
+			<trans-unit id="general_city" xml:space="preserve">
+				<source>City</source>
+			</trans-unit>
+			<trans-unit id="general_email" xml:space="preserve">
+				<source>Email</source>
+			</trans-unit>
+			<trans-unit id="general_phone" xml:space="preserve">
+				<source>Phone</source>
+			</trans-unit>
+			<trans-unit id="general_country" xml:space="preserve">
+				<source>Country</source>
+			</trans-unit>
+			<trans-unit id="general_company" xml:space="preserve">
+				<source>Company</source>
+			</trans-unit>
+			<trans-unit id="billing_title" xml:space="preserve">
+				<source>Billing address</source>
+			</trans-unit>
+			<trans-unit id="billing_deliveryaddress" xml:space="preserve">
+				<source>Enter a delivery address</source>
+			</trans-unit>
+			<trans-unit id="billing_nodeliveryaddress" xml:space="preserve">
+				<source>Billing address is the same as delivery address</source>
+			</trans-unit>
+			<trans-unit id="billing_submit" xml:space="preserve">
+				<source>Continue</source>
+			</trans-unit>
+			<trans-unit id="general_disclaimer" xml:space="preserve">
+				<source>All data will treated confidentially.</source>
+			</trans-unit>
+			<trans-unit id="privacy_agreement" xml:space="preserve">
+				<source>Privacy agreement</source>
+			</trans-unit>
+			<trans-unit id="delivery_title" xml:space="preserve">
+				<source>Delivery address</source>
+			</trans-unit>
+			<trans-unit id="delivery_submit" xml:space="preserve">
+				<source>Continue</source>
+			</trans-unit>
+			<trans-unit id="payment_title" xml:space="preserve">
+				<source>Payment</source>
+			</trans-unit>
+			<trans-unit id="payment_submit" xml:space="preserve">
+				<source>Next</source>
+			</trans-unit>
+			<trans-unit id="payment_disclaimer" xml:space="preserve">
+				<source>After clicking you will be taken to the secure payment service.</source>
+			</trans-unit>
+			<trans-unit id="listing_title" xml:space="preserve">
+				<source>Your basket</source>
+			</trans-unit>
+			<trans-unit id="listing_submit" xml:space="preserve">
+				<source>Continue</source>
+			</trans-unit>
+			<trans-unit id="listing_disclaimer" xml:space="preserve">
+				<source>Order is only a purchase request and fullfillment is not guaranteed until confirmation of the shop team.</source>
+			</trans-unit>
+			<trans-unit id="termstext" xml:space="preserve">
+				<source>Please confirm that you have read our %1$s</source>
+			</trans-unit>
+			<trans-unit id="termstext_tca" xml:space="preserve">
+				<source>terms and conditions</source>
+			</trans-unit>
+			<trans-unit id="comment" xml:space="preserve">
+				<source>Your comment</source>
+			</trans-unit>
+			<trans-unit id="finish_message_good" xml:space="preserve">
+				<source>The transaction was completed successfully</source>
+			</trans-unit>
+			<trans-unit id="finish_message_bad" xml:space="preserve">
+				<source>The transaction failed. You may choose to try again.</source>
+			</trans-unit>
+			<trans-unit id="finish_message_thankyou" xml:space="preserve">
+				<source>Thank you for your order. Your shopteam</source>
+			</trans-unit>
+			<trans-unit id="finish_message_noemail" xml:space="preserve">
+				<source>Your email address is not valid. Please try again.</source>
+			</trans-unit>
+			<trans-unit id="finish_message_email" xml:space="preserve">
+				<source>A confirmation email has been sent.</source>
+			</trans-unit>
+			<trans-unit id="finish_mail_header_admin" xml:space="preserve">
+				<source>The Order has been sent. Thank you.</source>
+			</trans-unit>
+			<trans-unit id="finish_mail_body_admin" xml:space="preserve">
+				<source>A new order has been received.</source>
+			</trans-unit>
+			<trans-unit id="finish_mail_header_user" xml:space="preserve">
+				<source>Your order at my-online-shop.org</source>
+			</trans-unit>
+			<trans-unit id="finish_mail_body_user" xml:space="preserve">
+				<source>Thank you for our order at Planet Botanic</source>
+			</trans-unit>
+			<trans-unit id="order_confirmation" xml:space="preserve">
+				<source>Order confirmation</source>
+			</trans-unit>
+			<trans-unit id="error_field_username" xml:space="preserve">
+				<source>Please enter a valid email as username, this email is already registered</source>
+			</trans-unit>
+			<trans-unit id="error_terms_not_accepted" xml:space="preserve">
+				<source>Please accept our Terms and Conditions</source>
+			</trans-unit>
+			<trans-unit id="detaillink" xml:space="preserve">
+				<source>Details</source>
+			</trans-unit>
+			<trans-unit id="lang_payment" xml:space="preserve">
+				<source>Payment</source>
+			</trans-unit>
+			<trans-unit id="lang_payment_description" xml:space="preserve">
+				<source>Please choose your preferred payment option.</source>
+			</trans-unit>
+			<trans-unit id="lang_delivery" xml:space="preserve">
+				<source>Delivery</source>
+			</trans-unit>
+			<trans-unit id="lang_delivery_description" xml:space="preserve">
+				<source>Please choose your preferred delivery option.</source>
+			</trans-unit>
+			<trans-unit id="lang_net_price" xml:space="preserve">
+				<source>Net price</source>
+			</trans-unit>
+			<trans-unit id="lang_value_added_tax" xml:space="preserve">
+				<source>Contained sales taxes</source>
+			</trans-unit>
+			<trans-unit id="lang_gross_price" xml:space="preserve">
+				<source>Total price</source>
+			</trans-unit>
+			<trans-unit id="lang_basket_header_title" xml:space="preserve">
+				<source>Your shopping basket</source>
+			</trans-unit>
+			<trans-unit id="lang_basket_header_text" xml:space="preserve">
+				<source>This is your shopping basket. You may change the quantities before continuing.</source>
+			</trans-unit>
+			<trans-unit id="lang_article_number" xml:space="preserve">
+				<source>Article number</source>
+			</trans-unit>
+			<trans-unit id="lang_price_net" xml:space="preserve">
+				<source>Net price</source>
+			</trans-unit>
+			<trans-unit id="lang_price_gross" xml:space="preserve">
+				<source>Price</source>
+			</trans-unit>
+			<trans-unit id="lang_count" xml:space="preserve">
+				<source>Quantity</source>
+			</trans-unit>
+			<trans-unit id="lang_pricesum_net" xml:space="preserve">
+				<source>Order total net</source>
+			</trans-unit>
+			<trans-unit id="lang_pricesum_gross" xml:space="preserve">
+				<source>Order total</source>
+			</trans-unit>
+			<trans-unit id="lang_change_number" xml:space="preserve">
+				<source>Change quantity</source>
+			</trans-unit>
+			<trans-unit id="lang_titel_empty" xml:space="preserve">
+				<source>Your shopping basket is currently empty.</source>
+			</trans-unit>
+			<trans-unit id="lang_text_empty" xml:space="preserve">
+				<source>Please return to the shop for more shopping.</source>
+			</trans-unit>
+			<trans-unit id="lang_title" xml:space="preserve">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="lang_billing_title" xml:space="preserve">
+				<source>Billing address</source>
+			</trans-unit>
+			<trans-unit id="lang_delivery_title" xml:space="preserve">
+				<source>Delivery address</source>
+			</trans-unit>
+			<trans-unit id="lang_username" xml:space="preserve">
+				<source>User:</source>
+			</trans-unit>
+			<trans-unit id="lang_password" xml:space="preserve">
+				<source>password:</source>
+			</trans-unit>
+			<trans-unit id="lang_intro_newuser" xml:space="preserve">
+				<source>Your user data for your next visit:</source>
+			</trans-unit>
+			<trans-unit id="label_sum_article_net" xml:space="preserve">
+				<source>Net product total</source>
+			</trans-unit>
+			<trans-unit id="label_sum_article_gross" xml:space="preserve">
+				<source>Product total</source>
+			</trans-unit>
+			<trans-unit id="label_sum_shipping_net" xml:space="preserve">
+				<source>Net deliver costs</source>
+			</trans-unit>
+			<trans-unit id="label_sum_shipping_gross" xml:space="preserve">
+				<source>Delivery cost</source>
+			</trans-unit>
+			<trans-unit id="label_sum_payment_net" xml:space="preserve">
+				<source>Net payment costs</source>
+			</trans-unit>
+			<trans-unit id="label_sum_payment_gross" xml:space="preserve">
+				<source>Payment costs</source>
+			</trans-unit>
+			<trans-unit id="label_sum_net" xml:space="preserve">
+				<source>Net order total</source>
+			</trans-unit>
+			<trans-unit id="label_sum_gross" xml:space="preserve">
+				<source>Order total</source>
+			</trans-unit>
+			<trans-unit id="label_sum_tax" xml:space="preserve">
+				<source>Including VAT</source>
+			</trans-unit>
+			<trans-unit id="label_percent" xml:space="preserve">
+				<source>%</source>
+			</trans-unit>
+			<trans-unit id="label_loginUser_mandatory_message" xml:space="preserve">
+				<source>The choosen address misses mandatory fields. Please edit the data</source>
+			</trans-unit>
+			<trans-unit id="not_all_articles_in_stock" xml:space="preserve">
+				<source>Your order could not proceed, because at this moment not all wanted articles are at stock in specified amount, </source>
+			</trans-unit>
+			<trans-unit id="no_stock_back" xml:space="preserve">
+				<source>Back to Basket</source>
+			</trans-unit>
+			<trans-unit id="label_step_billing" xml:space="preserve">
+				<source>Step 1: Billing Adress</source>
+			</trans-unit>
+			<trans-unit id="label_step_delivery" xml:space="preserve">
+				<source>Step 2: Delivery Adress</source>
+			</trans-unit>
+			<trans-unit id="label_step_payment" xml:space="preserve">
+				<source>Step 3: Payment</source>
+			</trans-unit>
+			<trans-unit id="label_step_listing" xml:space="preserve">
+				<source>Step 4: Check your details</source>
+			</trans-unit>
+			<trans-unit id="label_step_finish" xml:space="preserve">
+				<source>Step 5: Finish</source>
+			</trans-unit>
+			<trans-unit id="not_logged_in" xml:space="preserve">
+				<source>You are not logged in, so invoice view is not available!</source>
+			</trans-unit>
+			<trans-unit id="label_name" xml:space="preserve">
+				<source>Firstname: </source>
+			</trans-unit>
+			<trans-unit id="label_surname" xml:space="preserve">
+				<source>Name: </source>
+			</trans-unit>
+			<trans-unit id="label_company" xml:space="preserve">
+				<source>Company: </source>
+			</trans-unit>
+			<trans-unit id="label_city" xml:space="preserve">
+				<source>City: </source>
+			</trans-unit>
+			<trans-unit id="label_zip" xml:space="preserve">
+				<source>ZIP: </source>
+			</trans-unit>
+			<trans-unit id="label_address" xml:space="preserve">
+				<source>Address: </source>
+			</trans-unit>
+			<trans-unit id="label_country" xml:space="preserve">
+				<source>Country: </source>
+			</trans-unit>
+			<trans-unit id="label_email" xml:space="preserve">
+				<source>Email: </source>
+			</trans-unit>
+			<trans-unit id="label_link_edit" xml:space="preserve">
+				<source>Edit</source>
+			</trans-unit>
+			<trans-unit id="label_link_delete" xml:space="preserve">
+				<source>Delete</source>
+			</trans-unit>
+			<trans-unit id="label_addresses_of_type_1" xml:space="preserve">
+				<source>Billing addresses</source>
+			</trans-unit>
+			<trans-unit id="label_addresses_of_type_2" xml:space="preserve">
+				<source>Delivery addresses</source>
+			</trans-unit>
+			<trans-unit id="label_link_new" xml:space="preserve">
+				<source>Add new address</source>
+			</trans-unit>
+			<trans-unit id="label_no_address" xml:space="preserve">
+				<source>No addresses found, please create a new one</source>
+			</trans-unit>
+			<trans-unit id="label_link_new_type_1" xml:space="preserve">
+				<source>new billing address</source>
+			</trans-unit>
+			<trans-unit id="label_link_new_type_2" xml:space="preserve">
+				<source>new delivery address</source>
+			</trans-unit>
+			<trans-unit id="label_is_main_address" xml:space="preserve">
+				<source>This is my main address</source>
+			</trans-unit>
+			<trans-unit id="label_submit_edit" xml:space="preserve">
+				<source>Save changes</source>
+			</trans-unit>
+			<trans-unit id="label_submit_yes" xml:space="preserve">
+				<source>Yes</source>
+			</trans-unit>
+			<trans-unit id="label_submit_no" xml:space="preserve">
+				<source>No</source>
+			</trans-unit>
+			<trans-unit id="label_form_back" xml:space="preserve">
+				<source>Back</source>
+			</trans-unit>
+			<trans-unit id="error_field_mandatory" xml:space="preserve">
+				<source>The field is mandatory!</source>
+			</trans-unit>
+			<trans-unit id="error_field_email" xml:space="preserve">
+				<source>Please enter a valid email address</source>
+			</trans-unit>
+			<trans-unit id="error_field_string" xml:space="preserve">
+				<source>The input of this field has to be a string</source>
+			</trans-unit>
+			<trans-unit id="error_field_int" xml:space="preserve">
+				<source>The input of this field has to be an integer</source>
+			</trans-unit>
+			<trans-unit id="error_field_min" xml:space="preserve">
+				<source>Please enter a minimum number of %d characters</source>
+			</trans-unit>
+			<trans-unit id="error_field_max" xml:space="preserve">
+				<source>Please enter a maximum number of %d characters</source>
+			</trans-unit>
+			<trans-unit id="error_field_alpha" xml:space="preserve">
+				<source>Only characters from A to Z or a to z are allowed</source>
+			</trans-unit>
+			<trans-unit id="error_deleted_address_is_default" xml:space="preserve">
+				<source>You cannot delete this address, since it is your default address. Please choose a different address as the default address and try again.</source>
+			</trans-unit>
+			<trans-unit id="question_delete" xml:space="preserve">
+				<source>Do you really want to delete the address above?</source>
+			</trans-unit>
+			<trans-unit id="message_address_changed" xml:space="preserve">
+				<source>The address was changed</source>
+			</trans-unit>
+			<trans-unit id="message_address_deleted" xml:space="preserve">
+				<source>The address was deleted</source>
+			</trans-unit>
+			<trans-unit id="message_address_new" xml:space="preserve">
+				<source>The address was created</source>
+			</trans-unit>
+			<trans-unit id="message_edit_billing" xml:space="preserve">
+				<source>edit billing address</source>
+			</trans-unit>
+			<trans-unit id="message_edit_delivery" xml:space="preserve">
+				<source>edit delivery address</source>
+			</trans-unit>
+			<trans-unit id="message_edit_unknown" xml:space="preserve">
+				<source>edit address</source>
+			</trans-unit>
+			<trans-unit id="error_orderid" xml:space="preserve">
+				<source>No Order Was Specified</source>
+			</trans-unit>
+			<trans-unit id="error_nodata" xml:space="preserve">
+				<source>There was an error with displaying your order. Please try again or contact the shop administrator</source>
+			</trans-unit>
+			<trans-unit id="lang_delivery_address" xml:space="preserve">
+				<source>Delivery address</source>
+			</trans-unit>
+			<trans-unit id="lang_billing_address" xml:space="preserve">
+				<source>Billing address</source>
+			</trans-unit>
+			<trans-unit id="lang_introduction" xml:space="preserve">
+				<source>Dear</source>
+			</trans-unit>
+			<trans-unit id="lang_pos" xml:space="preserve">
+				<source>Item</source>
+			</trans-unit>
+			<trans-unit id="lang_quantity" xml:space="preserve">
+				<source>Qty</source>
+			</trans-unit>
+			<trans-unit id="lang_article_description" xml:space="preserve">
+				<source>Description</source>
+			</trans-unit>
+			<trans-unit id="lang_price" xml:space="preserve">
+				<source>Price</source>
+			</trans-unit>
+			<trans-unit id="lang_total" xml:space="preserve">
+				<source>Total</source>
+			</trans-unit>
+			<trans-unit id="lang_gross_total" xml:space="preserve">
+				<source>Gross total</source>
+			</trans-unit>
+			<trans-unit id="lang_net_total" xml:space="preserve">
+				<source>Net total</source>
+			</trans-unit>
+			<trans-unit id="lang_sum_total" xml:space="preserve">
+				<source>Sum</source>
+			</trans-unit>
+			<trans-unit id="lang_tax" xml:space="preserve">
+				<source>VAT (included in total)</source>
+			</trans-unit>
+			<trans-unit id="lang_order_date" xml:space="preserve">
+				<source>Order Date</source>
+			</trans-unit>
+			<trans-unit id="lang_order_num" xml:space="preserve">
+				<source>Order Number</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

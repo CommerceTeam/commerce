@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-02-14T13:27:10Z" product-name="commerce">
+		<header/>
+		<body>
+			<trans-unit id="ErrNumberString" xml:space="preserve">
+				<source>Number isn't a string</source>
+			</trans-unit>
+			<trans-unit id="ErrVisa14" xml:space="preserve">
+				<source>Visa usually has 16 or 13 digits, but you entered 14</source>
+			</trans-unit>
+			<trans-unit id="ErrUnknown" xml:space="preserve">
+				<source>First four digits, %s, indicate unknown card type</source>
+			</trans-unit>
+			<trans-unit id="ErrAccepted" xml:space="preserve">
+				<source>Programmer improperly used the Accepted argument</source>
+			</trans-unit>
+			<trans-unit id="ErrNoAccept" xml:space="preserve">
+				<source>We don't accept %s cards</source>
+			</trans-unit>
+			<trans-unit id="ErrShort" xml:space="preserve">
+				<source>Number is missing %s digit(s)</source>
+			</trans-unit>
+			<trans-unit id="ErrLong" xml:space="preserve">
+				<source>Number has %s too many digit(s)</source>
+			</trans-unit>
+			<trans-unit id="ErrChecksum" xml:space="preserve">
+				<source>Number failed checksum test</source>
+			</trans-unit>
+			<trans-unit id="ErrMonthString" xml:space="preserve">
+				<source>Month isn't a string</source>
+			</trans-unit>
+			<trans-unit id="ErrMonthFormat" xml:space="preserve">
+				<source>Month has invalid format</source>
+			</trans-unit>
+			<trans-unit id="ErrYearString" xml:space="preserve">
+				<source>Year isn't a string</source>
+			</trans-unit>
+			<trans-unit id="ErrYearFormat" xml:space="preserve">
+				<source>Year has invalid format</source>
+			</trans-unit>
+			<trans-unit id="ErrExpired" xml:space="preserve">
+				<source>Card has expired</source>
+			</trans-unit>
+			<trans-unit id="ErrCheckNumber" xml:space="preserve">
+				<source>Length of control number - %s - not ok</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

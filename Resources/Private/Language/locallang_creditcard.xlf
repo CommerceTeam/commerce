@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-02-14T13:27:43Z" product-name="commerce">
+		<header/>
+		<body>
+			<trans-unit id="payment_cc_number" xml:space="preserve">
+				<source>Card Number</source>
+			</trans-unit>
+			<trans-unit id="payment_cc_type" xml:space="preserve">
+				<source>Credit Card</source>
+			</trans-unit>
+			<trans-unit id="payment_cc_checksum" xml:space="preserve">
+				<source>Credit card controlnumber</source>
+			</trans-unit>
+			<trans-unit id="payment_addtext" xml:space="preserve">
+				<source>(To find your creditcard's CVV2 number, refer to the last three numbers on the back of your creditcard)</source>
+			</trans-unit>
+			<trans-unit id="payment_cc_expirationYear" xml:space="preserve">
+				<source>Expiration year (XXXX)</source>
+			</trans-unit>
+			<trans-unit id="payment_cc_expirationMonth" xml:space="preserve">
+				<source>Expiration month (XX)</source>
+			</trans-unit>
+			<trans-unit id="payment_cc_holder" xml:space="preserve">
+				<source>Holder</source>
+			</trans-unit>
+			<trans-unit id="CCVSErrNumberString" xml:space="preserve">
+				<source>Number isn't a string</source>
+			</trans-unit>
+			<trans-unit id="CCVSErrVisa14" xml:space="preserve">
+				<source>Visa usually has 16 or 13 digits, but you entered 14</source>
+			</trans-unit>
+			<trans-unit id="CCVSErrUnknown" xml:space="preserve">
+				<source>First four digits indicate unknown card type</source>
+			</trans-unit>
+			<trans-unit id="CCVSErrAccepted" xml:space="preserve">
+				<source>Programmer improperly used the Accepted argument</source>
+			</trans-unit>
+			<trans-unit id="CCVSErrNoAccept" xml:space="preserve">
+				<source>We don't accept your choosen cards</source>
+			</trans-unit>
+			<trans-unit id="CCVSErrShort" xml:space="preserve">
+				<source>Card Number is too short</source>
+			</trans-unit>
+			<trans-unit id="CCVSErrLong" xml:space="preserve">
+				<source>Card Number is too long</source>
+			</trans-unit>
+			<trans-unit id="CCVSErrChecksum" xml:space="preserve">
+				<source>Number failed checksum test</source>
+			</trans-unit>
+			<trans-unit id="CCVSErrMonthString" xml:space="preserve">
+				<source>Month isn't a string</source>
+			</trans-unit>
+			<trans-unit id="CCVSErrMonthFormat" xml:space="preserve">
+				<source>Month has invalid format</source>
+			</trans-unit>
+			<trans-unit id="CCVSErrYearString" xml:space="preserve">
+				<source>Year isn't a string</source>
+			</trans-unit>
+			<trans-unit id="CCVSErrYearFormat" xml:space="preserve">
+				<source>Year has invalid format</source>
+			</trans-unit>
+			<trans-unit id="CCVSErrExpired" xml:space="preserve">
+				<source>Card has expired</source>
+			</trans-unit>
+			<trans-unit id="CCVSErrCheckNumber" xml:space="preserve">
+				<source>Length of controlnumber is not ok</source>
+			</trans-unit>
+			<trans-unit id="defaultPaymentDataError" xml:space="preserve">
+				<source>DataError: Please check your data or choose another paymentmethod</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

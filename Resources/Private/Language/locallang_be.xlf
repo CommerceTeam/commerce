@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-02-14T13:27:06Z" product-name="commerce">
+		<header/>
+		<body>
+			<trans-unit id="mod_access.navigation_title" xml:space="preserve">
+				<source>Access tree</source>
+			</trans-unit>
+			<trans-unit id="mod_category.navigation_title" xml:space="preserve">
+				<source>Category tree</source>
+			</trans-unit>
+			<trans-unit id="mod_orders.navigation_title" xml:space="preserve">
+				<source>Orders tree</source>
+			</trans-unit>
+			<trans-unit id="mod_statistic.navigation_title" xml:space="preserve">
+				<source>Statistic tree</source>
+			</trans-unit>
+			<trans-unit id="mod_systemdata.navigation_title" xml:space="preserve">
+				<source>Access tree</source>
+			</trans-unit>
+			<trans-unit id="linkhandler.category_tree" xml:space="preserve">
+				<source>Category Tree</source>
+			</trans-unit>
+			<trans-unit id="linkhandler.products" xml:space="preserve">
+				<source>Products</source>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_pi1" xml:space="preserve">
+				<source>Commerce: Product Listing</source>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_pi2" xml:space="preserve">
+				<source>Commerce: Basket</source>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_pi3" xml:space="preserve">
+				<source>Commerce: Checkout</source>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_pi4" xml:space="preserve">
+				<source>Commerce: Address Management</source>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_pi6" xml:space="preserve">
+				<source>Commerce: Invoice</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.sheet_product" xml:space="preserve">
+				<source>Product data</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.sheet_template" xml:space="preserve">
+				<source>Templates</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.product_id" xml:space="preserve">
+				<source>Product ID:</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.product_name" xml:space="preserve">
+				<source>Product:</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.category_selection" xml:space="preserve">
+				<source>Category selection</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.template" xml:space="preserve">
+				<source>Template file</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.numberOfTopproducts" xml:space="preserve">
+				<source>Number topproducts</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.maxRecords" xml:space="preserve">
+				<source>Number products</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.maxPages" xml:space="preserve">
+				<source>Number pages (Pagebrowser)</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.showPageBrowser" xml:space="preserve">
+				<source>show Pagebrowser</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.dontLinkActivePage" xml:space="preserve">
+				<source>don't link act Page (Pagebrowser)</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.showFirstLast" xml:space="preserve">
+				<source>show First/Last (Pagebrowser)</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.showRange" xml:space="preserve">
+				<source>show Range (Pagebrowser)</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.showItemCount" xml:space="preserve">
+				<source>show Item count (Pagebrowser)</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.hscText" xml:space="preserve">
+				<source>htmlspecialchar Text (Pagebrowser)</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.type" xml:space="preserve">
+				<source>Display type</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.currency" xml:space="preserve">
+				<source>Currency</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.basketPID" xml:space="preserve">
+				<source>Basket page</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.listPid" xml:space="preserve">
+				<source>List page</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.singlePid" xml:space="preserve">
+				<source>Single page</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.displayPID" xml:space="preserve">
+				<source>DEPRECATED use List or Single page instead! Detail page</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.type.normal" xml:space="preserve">
+				<source>Default view</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pi1.pi_flexform.type.teaser" xml:space="preserve">
+				<source>Teaser view</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_task_statistictask.name" xml:space="preserve">
+				<source>Commerce Statistics</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_task_statistictask.description" xml:space="preserve">
+				<source>Aggregate statistics</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_task_statistictask.selectAggregation" xml:space="preserve">
+				<source>Select aggregation</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_task_statistictask.incrementalAggregation" xml:space="preserve">
+				<source>Incremental aggregation</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_task_statistictask.completeAggregation" xml:space="preserve">
+				<source>Complete aggregation</source>
+			</trans-unit>
+			<trans-unit id="order_view.order_status" xml:space="preserve">
+				<source>Order status</source>
+			</trans-unit>
+			<trans-unit id="order_view.items.article_list" xml:space="preserve">
+				<source>Article list</source>
+			</trans-unit>
+			<trans-unit id="order_view.items.print_invoice" xml:space="preserve">
+				<source>Print Invoice</source>
+			</trans-unit>
+			<trans-unit id="order_view.items.add_article" xml:space="preserve">
+				<source>Additional article</source>
+			</trans-unit>
+			<trans-unit id="attributeview.valuelist" xml:space="preserve">
+				<source>Attribute values</source>
+			</trans-unit>
+			<trans-unit id="attributeview.addvalue" xml:space="preserve">
+				<source>Aditional Value</source>
+			</trans-unit>
+			<trans-unit id="articles.add_article_price" xml:space="preserve">
+				<source>Add new price</source>
+			</trans-unit>
+			<trans-unit id="articles.del_article_price" xml:space="preserve">
+				<source>Delete this price</source>
+			</trans-unit>
+			<trans-unit id="article" xml:space="preserve">
+				<source>Article</source>
+			</trans-unit>
+			<trans-unit id="category" xml:space="preserve">
+				<source>Category</source>
+			</trans-unit>
+			<trans-unit id="product" xml:space="preserve">
+				<source>Product</source>
+			</trans-unit>
+			<trans-unit id="order" xml:space="preserve">
+				<source>Order</source>
+			</trans-unit>
+			<trans-unit id="commerce" xml:space="preserve">
+				<source>Commerce Sysfolder</source>
+			</trans-unit>
+			<trans-unit id="yes" xml:space="preserve">
+				<source>yes</source>
+			</trans-unit>
+			<trans-unit id="no" xml:space="preserve">
+				<source>no</source>
+			</trans-unit>
+			<trans-unit id="error" xml:space="preserve">
+				<source>Error</source>
+			</trans-unit>
+			<trans-unit id="continue" xml:space="preserve">
+				<source>Continue</source>
+			</trans-unit>
+			<trans-unit id="article.localization" xml:space="preserve">
+				<source>Articles can only be localized by localizing a product</source>
+			</trans-unit>
+			<trans-unit id="product.localization_without_article" xml:space="preserve">
+				<source>Products without articles could not be localized</source>
+			</trans-unit>
+			<trans-unit id="product.no_copy_allowed" xml:space="preserve">
+				<source>It's not allowed to copy products that have articles.</source>
+			</trans-unit>
+			<trans-unit id="product.no_find_uid" xml:space="preserve">
+				<source>The uid of the localized product could not be found. Localization was NOT successful.</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2016-02-14T13:27:22Z" product-name="commerce">
+		<header/>
+		<body>
+			<trans-unit id="mlang_tabs_tab" xml:space="preserve" approved="yes">
+				<source>Statistics</source>
+				<target>Statistics</target>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tabdescr" xml:space="preserve" approved="yes">
+				<source>Statistics for Commerce</source>
+				<target>Statistics for Commerce</target>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tablabel" xml:space="preserve" approved="yes">
+				<source>Stats</source>
+				<target>Stats</target>
+			</trans-unit>
+			<trans-unit id="title" xml:space="preserve" approved="yes">
+				<source>Statistics</source>
+				<target>Statistics</target>
+			</trans-unit>
+			<trans-unit id="statistics" xml:space="preserve" approved="yes">
+				<source>Statistic</source>
+				<target>Statistic</target>
+			</trans-unit>
+			<trans-unit id="incremental_aggregation" xml:space="preserve" approved="yes">
+				<source>Incremental aggregation</source>
+				<target>Incremental aggregation</target>
+			</trans-unit>
+			<trans-unit id="complete_aggregation" xml:space="preserve" approved="yes">
+				<source>Full aggregation</source>
+				<target>Full aggregation</target>
+			</trans-unit>
+			<trans-unit id="may_take_long_periode" xml:space="preserve" approved="yes">
+				<source>This process may have a long run time.</source>
+				<target>Dieser Vorgang kann eventuelle eine hohe Laufzeit haben</target>
+			</trans-unit>
+			<trans-unit id="monday" xml:space="preserve" approved="yes">
+				<source>Monday</source>
+				<target>Monday</target>
+			</trans-unit>
+			<trans-unit id="tuesday" xml:space="preserve" approved="yes">
+				<source>Tuesday</source>
+				<target>Tuesday</target>
+			</trans-unit>
+			<trans-unit id="wednesday" xml:space="preserve" approved="yes">
+				<source>Wednesday</source>
+				<target>Wednesday</target>
+			</trans-unit>
+			<trans-unit id="thursday" xml:space="preserve" approved="yes">
+				<source>Thursday</source>
+				<target>Thursday</target>
+			</trans-unit>
+			<trans-unit id="friday" xml:space="preserve" approved="yes">
+				<source>Friday</source>
+				<target>Friday</target>
+			</trans-unit>
+			<trans-unit id="saturday" xml:space="preserve" approved="yes">
+				<source>Saturday</source>
+				<target>Saturday</target>
+			</trans-unit>
+			<trans-unit id="sunday" xml:space="preserve" approved="yes">
+				<source>Sunday</source>
+				<target>Sunday</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2016-02-14T13:27:10Z" product-name="commerce">
+		<header/>
+		<body>
+			<trans-unit id="ErrNumberString" xml:space="preserve" approved="yes">
+				<source>Number isn't a string</source>
+				<target>Nummer ist keine Zeichenkette</target>
+			</trans-unit>
+			<trans-unit id="ErrVisa14" xml:space="preserve" approved="yes">
+				<source>Visa usually has 16 or 13 digits, but you entered 14</source>
+				<target>Visa hat normalerweise 16 oder 13 Stellen, aber Sie gaben eine 14 stellige Nummer ein</target>
+			</trans-unit>
+			<trans-unit id="ErrUnknown" xml:space="preserve" approved="yes">
+				<source>First four digits, %s, indicate unknown card type</source>
+				<target>Den ersten vier Stellen (%s) zufolge handelt es sich um eine unbekannte Kartenart</target>
+			</trans-unit>
+			<trans-unit id="ErrAccepted" xml:space="preserve" approved="yes">
+				<source>Programmer improperly used the Accepted argument</source>
+				<target>Der Programmierer verwendete das 'accepted' Argument falsch</target>
+			</trans-unit>
+			<trans-unit id="ErrNoAccept" xml:space="preserve" approved="yes">
+				<source>We don't accept %s cards</source>
+				<target>Wir nehmen keine %s-Karten</target>
+			</trans-unit>
+			<trans-unit id="ErrShort" xml:space="preserve" approved="yes">
+				<source>Number is missing %s digit(s)</source>
+				<target>Es fehlen %s Stelle(n)</target>
+			</trans-unit>
+			<trans-unit id="ErrLong" xml:space="preserve" approved="yes">
+				<source>Number has %s too many digit(s)</source>
+				<target>Nummer hat %s Stelle(n) zu viel</target>
+			</trans-unit>
+			<trans-unit id="ErrChecksum" xml:space="preserve" approved="yes">
+				<source>Number failed checksum test</source>
+				<target>Prüfsummenfehler</target>
+			</trans-unit>
+			<trans-unit id="ErrMonthString" xml:space="preserve" approved="yes">
+				<source>Month isn't a string</source>
+				<target>Monat ist keine Zeichenkette</target>
+			</trans-unit>
+			<trans-unit id="ErrMonthFormat" xml:space="preserve" approved="yes">
+				<source>Month has invalid format</source>
+				<target>Monat hat ein unzulässiges Format</target>
+			</trans-unit>
+			<trans-unit id="ErrYearString" xml:space="preserve" approved="yes">
+				<source>Year isn't a string</source>
+				<target>Jahr ist keine Zeichenkette</target>
+			</trans-unit>
+			<trans-unit id="ErrYearFormat" xml:space="preserve" approved="yes">
+				<source>Year has invalid format</source>
+				<target>Jahr hat ein unzulässiges Format</target>
+			</trans-unit>
+			<trans-unit id="ErrExpired" xml:space="preserve" approved="yes">
+				<source>Card has expired</source>
+				<target>Karte ist abgelaufen</target>
+			</trans-unit>
+			<trans-unit id="ErrCheckNumber" xml:space="preserve" approved="yes">
+				<source>Length of control number - %s - not ok</source>
+				<target>Länge der Kontrollnummer - %s - nicht ok</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

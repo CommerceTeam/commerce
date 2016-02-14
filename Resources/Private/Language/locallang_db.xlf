@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-02-14T13:27:34Z" product-name="commerce">
+		<header/>
+		<body>
+			<trans-unit id="tabs.references" xml:space="preserve">
+				<source>References</source>
+			</trans-unit>
+			<trans-unit id="tt_address.surname" xml:space="preserve">
+				<source>Surname</source>
+			</trans-unit>
+			<trans-unit id="tt_address.company" xml:space="preserve">
+				<source>Company</source>
+			</trans-unit>
+			<trans-unit id="tt_address.tx_commerce_default_values" xml:space="preserve">
+				<source>Default values</source>
+			</trans-unit>
+			<trans-unit id="tt_address.tx_commerce_fe_user_id" xml:space="preserve">
+				<source>User</source>
+			</trans-unit>
+			<trans-unit id="tt_address.tx_commerce_address_type_id" xml:space="preserve">
+				<source>Address type</source>
+			</trans-unit>
+			<trans-unit id="tt_address.tx_commerce_is_main_address" xml:space="preserve">
+				<source>Is main address</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_commerce_feuser_orders" xml:space="preserve">
+				<source>Commerce orders</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_commerce_user_state_id" xml:space="preserve">
+				<source>Commerce user state</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_commerce_tt_address_id" xml:space="preserve">
+				<source>Commerce address</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce.ct_selector" xml:space="preserve">
+				<source>Generate article from</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce.ct_shall" xml:space="preserve">
+				<source>Show always in article</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce.ct_can" xml:space="preserve">
+				<source>Show if set in article</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce.ct_product" xml:space="preserve">
+				<source>Show if set in product</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce.ct_filter_attributes" xml:space="preserve">
+				<source>Filter attributes</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products" xml:space="preserve">
+				<source>Products</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.extras" xml:space="preserve">
+				<source>Extra information</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.title" xml:space="preserve">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.subtitle" xml:space="preserve">
+				<source>Subtitle</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.navtitle" xml:space="preserve">
+				<source>Navigation title</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.keywords" xml:space="preserve">
+				<source>Keywords</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.description" xml:space="preserve">
+				<source>Description</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.images" xml:space="preserve">
+				<source>Images</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.teaser" xml:space="preserve">
+				<source>Teaser</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.teaserimages" xml:space="preserve">
+				<source>Teaser images</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.categories" xml:space="preserve">
+				<source>Categories</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.attributes" xml:space="preserve">
+				<source>Attributes</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.create_articles" xml:space="preserve">
+				<source>Articles</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.lokalise_articles" xml:space="preserve">
+				<source>Localise Articles</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.select_attributes" xml:space="preserve">
+				<source>Select attributes</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.edit_attributes" xml:space="preserve">
+				<source>Edit attributes</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.localedit_attributes" xml:space="preserve">
+				<source>Edit localised attributes</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.from_cat" xml:space="preserve">
+				<source>From category</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.existing_articles" xml:space="preserve">
+				<source>Existing articles</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.producible_articles" xml:space="preserve">
+				<source>Producible articles</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.to_many_articles" xml:space="preserve">
+				<source>With this combination of attributes, the list of possible articles would be %d rows long. Please reduce the number of select attributes!</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.create_warning" xml:space="preserve">
+				<source>If you create articles, NO OTHER fields will be saved to products and articles!</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.empty_article" xml:space="preserve">
+				<source>Create an empty article</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.select_all_articles" xml:space="preserve">
+				<source>Select all articles</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.no_article" xml:space="preserve">
+				<source>No articles existing for this product</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.relatedpage" xml:space="preserve">
+				<source>Related Page</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.relatedproducts" xml:space="preserve">
+				<source>Related Products</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.noManufacturer" xml:space="preserve">
+				<source>----</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_article_types" xml:space="preserve">
+				<source>Article Types</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_article_types.title" xml:space="preserve">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_article_types.name" xml:space="preserve">
+				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_article" xml:space="preserve">
+				<source>Article</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles" xml:space="preserve">
+				<source>Articles</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.extras" xml:space="preserve">
+				<source>Extra information</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.title" xml:space="preserve">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.subtitle" xml:space="preserve">
+				<source>Subtitle</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.images" xml:space="preserve">
+				<source>Images</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.ordernumber" xml:space="preserve">
+				<source>Ordernumber</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.eancode" xml:space="preserve">
+				<source>Eancode</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.description_extra" xml:space="preserve">
+				<source>Extra description</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.plain_text" xml:space="preserve">
+				<source>Plain text</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.prices" xml:space="preserve">
+				<source>Prices</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.price_gross" xml:space="preserve">
+				<source>Price gross</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.price_net" xml:space="preserve">
+				<source>Price net</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.price_scale_amount" xml:space="preserve">
+				<source>Price scale amount</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.purchase_price" xml:space="preserve">
+				<source>Purchase price</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.tax" xml:space="preserve">
+				<source>Tax</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.article_type_uid" xml:space="preserve">
+				<source>Article type</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.products_uid" xml:space="preserve">
+				<source>products_uid</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.article_attributes" xml:space="preserve">
+				<source>Article attributes</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.relatedpage" xml:space="preserve">
+				<source>Related Page</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_article_prices" xml:space="preserve">
+				<source>Article Prices</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_article_prices.price_gross" xml:space="preserve">
+				<source>Price gross</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_article_prices.price_net" xml:space="preserve">
+				<source>Price net</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.price_scale_amount_start" xml:space="preserve">
+				<source>Price scale amount start</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.price_scale_amount_end" xml:space="preserve">
+				<source>Price scale amount end</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.price_scale_count" xml:space="preserve">
+				<source>Price scale add prices</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.price_scale_steps" xml:space="preserve">
+				<source>Price scale steps</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.price_scale_startamount" xml:space="preserve">
+				<source>Price scale startamount</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.price_scale_fe_group" xml:space="preserve">
+				<source>Price scale access</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_article_prices.purchase_price" xml:space="preserve">
+				<source>Purchase price</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_baskets" xml:space="preserve">
+				<source>Baskets</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_baskets.sid" xml:space="preserve">
+				<source>Session id</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_baskets.finished_time" xml:space="preserve">
+				<source>Finished time</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_baskets.article_id" xml:space="preserve">
+				<source>Article uid</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_baskets.price_id" xml:space="preserve">
+				<source>Price uid</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_baskets.price_gross" xml:space="preserve">
+				<source>Price gross</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_baskets.price_net" xml:space="preserve">
+				<source>Price net</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_baskets.quantity" xml:space="preserve">
+				<source>Quantity</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_baskets.readonly" xml:space="preserve">
+				<source>Read Only</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attributes" xml:space="preserve">
+				<source>Attributes</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attributes.has_valuelist" xml:space="preserve">
+				<source>Has valuelist</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attributes.multiple" xml:space="preserve">
+				<source>Allow multiple selection</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attributes.title" xml:space="preserve">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attributes.internal_title" xml:space="preserve">
+				<source>Internal title</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attributes.unit" xml:space="preserve">
+				<source>Unit</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attributes.valuelist" xml:space="preserve">
+				<source>Valuelist</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attributes.valueformat" xml:space="preserve">
+				<source>Outputformat of Value</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attributes.valueformat.money" xml:space="preserve">
+				<source> Money (123.12) </source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attributes.valueformat.integer" xml:space="preserve">
+				<source> Integer (123) </source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attributes.valueformat.float" xml:space="preserve">
+				<source> Float (123.1) </source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attributes.basis" xml:space="preserve">
+				<source> Basic Data </source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attributes.valuelistlist" xml:space="preserve">
+				<source> Related Values </source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attributes.icon" xml:space="preserve">
+				<source>Icon</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attributes.iconMode" xml:space="preserve">
+				<source>Icon Mode (inactive = dropdowns, active = radiobuttons)</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attribute_correlationtypes" xml:space="preserve">
+				<source>Attribute Correlationtypes</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attribute_correlationtypes.title" xml:space="preserve">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attribute_values" xml:space="preserve">
+				<source>Attribute Values</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attribute_values.value" xml:space="preserve">
+				<source>Value</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attribute_values.icon" xml:space="preserve">
+				<source>Icon</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attribute_values.showvalue" xml:space="preserve">
+				<source>Show Value in Article/ Product</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_attribute_values.attributes_uid" xml:space="preserve">
+				<source>Attributes uid</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_categories" xml:space="preserve">
+				<source>Categories</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_categories.title" xml:space="preserve">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_categories.subtitle" xml:space="preserve">
+				<source>Subtitle</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_categories.description" xml:space="preserve">
+				<source>Description</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_categories.images" xml:space="preserve">
+				<source>Images</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_categories.navtitle" xml:space="preserve">
+				<source>Navtitle</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_categories.keywords" xml:space="preserve">
+				<source>Keywords</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_categories.attributes" xml:space="preserve">
+				<source>Attributes</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_categories.parent_category" xml:space="preserve">
+				<source>Parent category</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_categories.select_attributes" xml:space="preserve">
+				<source>Select attributes</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_categories.extendToSubpages" xml:space="preserve">
+				<source>Include subpages:</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_categories.ts_config" xml:space="preserve">
+				<source>Category TypoScript</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_trackingcodes" xml:space="preserve">
+				<source>Trackingcodes</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_trackingcodes.title" xml:space="preserve">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_trackingcodes.description" xml:space="preserve">
+				<source>Description</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_order_types" xml:space="preserve">
+				<source>Order Types</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_order_types.title" xml:space="preserve">
+				<source>Icon</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_tracking" xml:space="preserve">
+				<source>Tracking</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_tracking.orders_uid" xml:space="preserve">
+				<source>Orders uid</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_tracking.trackingcodes_uid" xml:space="preserve">
+				<source>Trackingcodes uid</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_tracking.msg" xml:space="preserve">
+				<source>Message</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders" xml:space="preserve">
+				<source>Orders</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.cust_deliveryaddress" xml:space="preserve">
+				<source>Customer delivery address</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.order_type_uid" xml:space="preserve">
+				<source>Order type</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.order_id" xml:space="preserve">
+				<source>Order number</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.cust_fe_user" xml:space="preserve">
+				<source>Customer feuser</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.cust_invoice" xml:space="preserve">
+				<source>Customer invoice address</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.paymenttype" xml:space="preserve">
+				<source>Paymenttype</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.sum_price_net" xml:space="preserve">
+				<source>Sum price net</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.sum_price_gross" xml:space="preserve">
+				<source>Sum price gross</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.crdate" xml:space="preserve">
+				<source>Create Date</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.payment_ref_id" xml:space="preserve">
+				<source>Payment reference ID</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.basis" xml:space="preserve">
+				<source>Basis</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.customer" xml:space="preserve">
+				<source>Customerdata</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.items" xml:space="preserve">
+				<source>Items</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.cu_iso_3_uid" xml:space="preserve">
+				<source>Currency ISO Code</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.payment" xml:space="preserve">
+				<source>Payment</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.delivery" xml:space="preserve">
+				<source>Delivery</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.articles" xml:space="preserve">
+				<source>Articles</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.pricefromnet" xml:space="preserve">
+				<source>Price from net</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.tstamp" xml:space="preserve">
+				<source>Timestamp</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_order_articles" xml:space="preserve">
+				<source>Order articles</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_order_articles.article_type_uid" xml:space="preserve">
+				<source>Article type</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_order_articles.article_uid" xml:space="preserve">
+				<source>Article uid</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_order_articles.article_number" xml:space="preserve">
+				<source>Article number</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_order_articles.title" xml:space="preserve">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_order_articles.subtitle" xml:space="preserve">
+				<source>Subtitle</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_order_articles.price_net" xml:space="preserve">
+				<source>Price net</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_order_articles.price_gross" xml:space="preserve">
+				<source>Price gross</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_order_articles.tax" xml:space="preserve">
+				<source>Tax</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_order_articles.amount" xml:space="preserve">
+				<source>Amount</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_order_articles.order_id" xml:space="preserve">
+				<source>Order number</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_order_articles.order_uid" xml:space="preserve">
+				<source>Order</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.comment" xml:space="preserve">
+				<source>Customer comment</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_orders.internalcomment" xml:space="preserve">
+				<source>Shop comment</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_address_types" xml:space="preserve">
+				<source>Address Types</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_address_types.title" xml:space="preserve">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tt_address" xml:space="preserve">
+				<source>Address</source>
+			</trans-unit>
+			<trans-unit id="tt_address.name" xml:space="preserve">
+				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_user_states" xml:space="preserve">
+				<source>User States</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_user_states.title" xml:space="preserve">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_user_states.icon" xml:space="preserve">
+				<source>Icon</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_moveordermails" xml:space="preserve">
+				<source>Move Order Mail</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_moveordermails.hidden" xml:space="preserve">
+				<source>Hide</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_moveordermails.name" xml:space="preserve">
+				<source>Name of Template</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_moveordermails.mailkind.I.0" xml:space="preserve">
+				<source>Mail when move in</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_moveordermails.mailkind.I.1" xml:space="preserve">
+				<source>Mail when move out</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_moveordermails.mailkind" xml:space="preserve">
+				<source>When should mail be send</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_moveordermails.mailtemplate" xml:space="preserve">
+				<source>Reference to PLAIN-Mailtemplate</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_moveordermails.htmltemplate" xml:space="preserve">
+				<source>Reference to HTML-Mailtemplate</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_moveordermails.mailcharset" xml:space="preserve">
+				<source>Mail Charset</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_moveordermails.sendername" xml:space="preserve">
+				<source>E-Mail Sendername (if not set: Mailaddress)</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_moveordermails.senderemail" xml:space="preserve">
+				<source>E-Mailaddress of Sender (if not set: Moduledefault)</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_moveordermails.otherreceiver" xml:space="preserve">
+				<source>Other Mailreceiver than Customer</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_moveordermails.BCC" xml:space="preserve">
+				<source>BCC Mail to</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_salesfigures" xml:space="preserve">
+				<source>Sales figures aggregation</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_salesfigures.year" xml:space="preserve">
+				<source>Year of sale</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_salesfigures.month" xml:space="preserve">
+				<source>Month of sale</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_salesfigures.day" xml:space="preserve">
+				<source>Day of sale</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_salesfigures.dow" xml:space="preserve">
+				<source>Day of Sale</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_salesfigures.hour" xml:space="preserve">
+				<source>Hour of Sale</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_salesfigures.pricegross" xml:space="preserve">
+				<source>Sum Price Gross</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_salesfigures.pricenet" xml:space="preserve">
+				<source>Sum Price Net</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_salesfigures.amount" xml:space="preserve">
+				<source>Sum amount</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_salesfigures.orders" xml:space="preserve">
+				<source>Sum of Orders</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_newclients" xml:space="preserve">
+				<source>Aggregation of new clients</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_newclients.year" xml:space="preserve">
+				<source>Year of registration</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_newclients.month" xml:space="preserve">
+				<source>Month of registration</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_newclients.day" xml:space="preserve">
+				<source>Day of registration</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_newclients.dow" xml:space="preserve">
+				<source>Day of week</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_newclients.hour" xml:space="preserve">
+				<source>Hour of registration</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_newclients.registration" xml:space="preserve">
+				<source>Sum of registrations</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_manufacturer" xml:space="preserve">
+				<source>Manufacturer</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_manufacturer.title" xml:space="preserve">
+				<source>Manufacturer</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_manufacturer.street" xml:space="preserve">
+				<source>Street</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_manufacturer.number" xml:space="preserve">
+				<source>Number</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_manufacturer.zip" xml:space="preserve">
+				<source>Zip</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_manufacturer.city" xml:space="preserve">
+				<source>City</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_manufacturer.country" xml:space="preserve">
+				<source>Country</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_manufacturer.phone" xml:space="preserve">
+				<source>Phone</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_manufacturer.fax" xml:space="preserve">
+				<source>Fax</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_manufacturer.email" xml:space="preserve">
+				<source>Email</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_manufacturer.internet" xml:space="preserve">
+				<source>Internet</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_manufacturer.contactperson" xml:space="preserve">
+				<source>Contact Person</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_manufacturer.logo" xml:space="preserve">
+				<source>Logo</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_supplier" xml:space="preserve">
+				<source>Supplier</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_supplier.title" xml:space="preserve">
+				<source>Supplier</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_supplier.street" xml:space="preserve">
+				<source>Street</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_supplier.number" xml:space="preserve">
+				<source>Number</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_supplier.zip" xml:space="preserve">
+				<source>Zip</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_supplier.city" xml:space="preserve">
+				<source>City</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_supplier.country" xml:space="preserve">
+				<source>Country</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_supplier.phone" xml:space="preserve">
+				<source>Phone</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_supplier.fax" xml:space="preserve">
+				<source>Fax</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_supplier.email" xml:space="preserve">
+				<source>Email</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_supplier.internet" xml:space="preserve">
+				<source>Internet</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_supplier.contactperson" xml:space="preserve">
+				<source>Contact Person</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_supplier.logo" xml:space="preserve">
+				<source>Logo</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_pages.tx_commerce_foldereditorder" xml:space="preserve">
+				<source>Orders in this folder editable</source>
+			</trans-unit>
+			<trans-unit id="label.tx_commerce_mountpoints" xml:space="preserve">
+				<source>Commerce Mounts:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_commerce" xml:space="preserve">
+				<source>Commerce</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
