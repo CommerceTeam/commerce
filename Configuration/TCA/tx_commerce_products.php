@@ -478,8 +478,8 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
     ),
 );
 
-if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][COMMERCE_EXTKEY]['simpleMode'])
-    && $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][COMMERCE_EXTKEY]['simpleMode']) {
+if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']['simpleMode'])
+    && $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']['simpleMode']) {
     $GLOBALS['TCA']['tx_commerce_products']['columns']['articles'] = array(
         'exclude' => 1,
         'label' => $languageFile . 'tx_commerce_products.articles',

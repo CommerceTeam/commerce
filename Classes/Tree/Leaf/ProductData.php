@@ -92,7 +92,7 @@ class ProductData extends SlaveData
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'getRecordsDbList (productdata) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -105,7 +105,7 @@ class ProductData extends SlaveData
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'getRecordsDbList (productdata): Usergroup is not allowed to view records.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     2
                 );
             }

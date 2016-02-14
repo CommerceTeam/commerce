@@ -66,7 +66,7 @@ class Master extends Leaf
     {
         if (!is_numeric($index) || !is_array($parentIndices)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('init (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('init (leaf) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return;
@@ -98,7 +98,7 @@ class Master extends Leaf
     ) {
         if (is_null($view) || is_null($data)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('initBasic (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('initBasic (leaf) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return;
@@ -135,7 +135,7 @@ class Master extends Leaf
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'setMounts (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -171,7 +171,7 @@ class Master extends Leaf
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'setUid (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -204,7 +204,7 @@ class Master extends Leaf
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'setDepth (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -247,7 +247,7 @@ class Master extends Leaf
     {
         if (!is_array($row) || !is_numeric($pid)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('isLast (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('isLast (leaf) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -277,7 +277,7 @@ class Master extends Leaf
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'hasChildren (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -314,7 +314,7 @@ class Master extends Leaf
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'printChildleafsByLoop (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -351,7 +351,7 @@ class Master extends Leaf
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'printChildleafsByLoop (' . self::class . ') cannot find the starting item by its uid.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -470,7 +470,7 @@ class Master extends Leaf
             GeneralUtility::devLog(
                 'printChildLeafsByLoop (' . self::class . ') did ' .
                 ($crazyStart - $crazyRecursion) . ' loops!',
-                COMMERCE_EXTKEY,
+                'commerce',
                 1
             );
         }
@@ -492,7 +492,7 @@ class Master extends Leaf
                 GeneralUtility::devLog(
                     'printChildleafsByLoop (' . self::class . ')
                      was put to hold because there was a danger of endless recursion.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }

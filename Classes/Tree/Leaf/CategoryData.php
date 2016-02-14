@@ -86,7 +86,7 @@ class CategoryData extends MasterData
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'setPermsMask (categorydata) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -122,7 +122,7 @@ class CategoryData extends MasterData
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'getRecordsDbList (categorydata) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -137,7 +137,7 @@ class CategoryData extends MasterData
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'getRecordsDbList (categorydata): Usergroup is not allowed to view the records.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     2
                 );
             }

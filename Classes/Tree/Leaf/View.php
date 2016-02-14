@@ -175,7 +175,7 @@ class View extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'setLeafIndex (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -206,7 +206,7 @@ class View extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'setBank (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -228,7 +228,7 @@ class View extends Base
                 GeneralUtility::devLog(
                     'setTreeName (' . self::class . ')
                      gets passed wrong-cast parameters. Should be string but is not.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     2
                 );
             }
@@ -308,7 +308,7 @@ class View extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'getRootIcon (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -336,7 +336,7 @@ class View extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'wrapIcon (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -391,7 +391,7 @@ class View extends Base
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'wrapTitle (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -441,7 +441,7 @@ class View extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'getJumpToParam (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -473,7 +473,7 @@ class View extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'PMicon (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -535,7 +535,7 @@ class View extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'PMiconATagWrap (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }

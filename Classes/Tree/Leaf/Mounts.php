@@ -144,7 +144,7 @@ class Mounts extends Base
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'init (' . self::class . ')
                      gets passed invalid parameters. Script is aborted.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     2
                 );
             }
@@ -184,7 +184,7 @@ class Mounts extends Base
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'initByGroup (mounts) gets passed invalid parameters. Script is aborted.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     2
                 );
             }

@@ -61,7 +61,7 @@ class ProductView extends \CommerceTeam\Commerce\Tree\Leaf\View
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'getJumpToParam (productview) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -99,7 +99,7 @@ class ProductView extends \CommerceTeam\Commerce\Tree\Leaf\View
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'wrapTitle (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }

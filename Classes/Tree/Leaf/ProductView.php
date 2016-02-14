@@ -54,7 +54,7 @@ class ProductView extends View
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'wrapTitle (productview) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -87,7 +87,7 @@ class ProductView extends View
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'getJumpToParam (productview) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }

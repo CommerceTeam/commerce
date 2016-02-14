@@ -64,7 +64,7 @@ class Slave extends Leaf
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'setParentLeaf (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -89,7 +89,7 @@ class Slave extends Leaf
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'init (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -121,7 +121,7 @@ class Slave extends Leaf
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'printChildleafsByLoop (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -148,7 +148,7 @@ class Slave extends Leaf
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'printChildleafsByLoop (' . self::class . ') cannot find the starting category by its uid.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -226,7 +226,7 @@ class Slave extends Leaf
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'printChildleafsByParent (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -253,7 +253,7 @@ class Slave extends Leaf
         if (TYPO3_DLOG) {
             \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                 'printChildleafsByParent (' . self::class . ') did ' . $l . ' loops!',
-                COMMERCE_EXTKEY,
+                'commerce',
                 1
             );
         }

@@ -120,7 +120,7 @@ class CategoryMounts extends \CommerceTeam\Commerce\Tree\Leaf\Mounts
                     GeneralUtility::devLog(
                         'isInCommerceMounts (categorymounts) has aborted because $i (' . $i .
                         ') has reached its allowed recursive maximum.',
-                        COMMERCE_EXTKEY,
+                        'commerce',
                         3
                     );
                 }

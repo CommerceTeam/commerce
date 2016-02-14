@@ -40,7 +40,8 @@ Since 4.x the key of the main module of commerce isn't **txcommerceM1** but **co
 Removed constansts
 ------------------
 key, replacement
-COMMERCE_EXTkey, COMMERCE_EXTKEY
+COMMERCE_EXTkey, removed
+COMMERCE_EXTKEY, removed
 PATH_txcommerce, PATH_TXCOMMERCE
 PATH_txcommerce_rel, PATH_TXCOMMERCE_REL
 PATH_txcommerce_icon_table_rel, PATH_TXCOMMERCE_ICON_TABLE_REL
@@ -52,9 +53,9 @@ DELIVERYArticleType, DELIVERYARTICLETYPE
 Changed since TYPO3 6.2
 -----------------------
 Replaced
-	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf']
 	with
-	$GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][COMMERCE_EXTKEY]
+	$GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']
 
 
 Since Version 5

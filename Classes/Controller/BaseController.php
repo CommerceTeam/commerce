@@ -37,7 +37,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @var string
      */
-    public $extKey = COMMERCE_EXTKEY;
+    public $extKey = 'commerce';
 
     /**
      * Path to this script relative to the extension dir.

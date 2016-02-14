@@ -122,7 +122,7 @@ abstract class Browsetree
                 GeneralUtility::devLog(
                     'noClickmenu (' . \CommerceTeam\Commerce\Tree\Browsetree::class .
                     ') gets a non-bool parameter (expected bool)!',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     2
                 );
             }
@@ -164,7 +164,7 @@ abstract class Browsetree
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'getLeaf (' . \CommerceTeam\Commerce\Tree\Browsetree::class . ') has an invalid parameter.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -215,7 +215,7 @@ abstract class Browsetree
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'readRecursively (' . \CommerceTeam\Commerce\Tree\Browsetree::class . ') has an invalid parameter.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -253,7 +253,7 @@ abstract class Browsetree
                 if (TYPO3_DLOG) {
                     GeneralUtility::devLog(
                         'The Browseable Tree could not be printed. No rendering method was specified',
-                        COMMERCE_EXTKEY,
+                        'commerce',
                         3
                     );
                 }
@@ -276,7 +276,7 @@ abstract class Browsetree
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'The browseable AJAX tree (getBrowseableAjaxTree) was not printed because a parameter was invalid.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -357,7 +357,7 @@ abstract class Browsetree
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'The AJAX Tree (printAjaxTree) was not printed because the parameter was invalid.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -441,7 +441,7 @@ abstract class Browsetree
     {
         if (!is_numeric($rootUid)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('getRecordsAsArray has an invalid $rootUid', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('getRecordsAsArray has an invalid $rootUid', 'commerce', 3);
             }
 
             return array();
@@ -484,7 +484,7 @@ abstract class Browsetree
     {
         if (!is_numeric($rootUid)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('getRecordsPerLevelArray has an invalid parameter.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('getRecordsPerLevelArray has an invalid parameter.', 'commerce', 3);
             }
 
             return array();
@@ -542,7 +542,7 @@ abstract class Browsetree
             $positions = array();
             $this->savePosition($positions);
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('Resetting the Positions of the Browsetree. Were damaged.', COMMERCE_EXTKEY, 2);
+                GeneralUtility::devLog('Resetting the Positions of the Browsetree. Were damaged.', 'commerce', 2);
             }
         }
 
@@ -624,7 +624,7 @@ abstract class Browsetree
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'The Positions were not saved because the parameter was invalid',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }

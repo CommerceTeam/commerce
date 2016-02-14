@@ -1484,7 +1484,7 @@ class BackendUtility
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'swapProductAttributes (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -1550,7 +1550,7 @@ class BackendUtility
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'swapProductArticles (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -1614,7 +1614,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uid) || !is_numeric($uidProduct)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyArticle (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('copyArticle (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -1848,7 +1848,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uid) || !is_numeric($categoryUid) || !is_numeric($sorting)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('copyProduct (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -1985,7 +1985,7 @@ class BackendUtility
         // check params
         if (!is_string($table) || !is_numeric($uidCopied) || !is_numeric($uidNew) || !is_numeric($languageUid)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyLocale (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('copyLocale (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -2110,7 +2110,7 @@ class BackendUtility
         // check params
         if (!is_string($table) || !is_numeric($uidCopied) || !is_numeric($uidOverwrite) || !is_numeric($loc)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyLocale (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('copyLocale (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -2220,7 +2220,7 @@ class BackendUtility
         // check params
         if (!is_string($table) || !is_numeric($uid)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('deleteL18n (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('deleteL18n (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -2257,7 +2257,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uid) || !is_numeric($parentUid) || $uid == $parentUid) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyCategory (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('copyCategory (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -2376,7 +2376,7 @@ class BackendUtility
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'chmodCategoryByCategory (belib) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -2460,7 +2460,7 @@ class BackendUtility
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'copyProductsByCategory (belib) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -2508,7 +2508,7 @@ class BackendUtility
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'copyCategoriesByCategory (belib) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -2554,7 +2554,7 @@ class BackendUtility
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'copyArticlesByProduct (belib) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -2704,7 +2704,7 @@ class BackendUtility
     {
         if (!is_string($perm)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('getPermMask (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('getPermMask (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return 0;
@@ -2759,7 +2759,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uid) || !is_string($perm)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('checkProductPerms (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('checkProductPerms (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -2772,7 +2772,7 @@ class BackendUtility
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'checkProductPerms (belib) gets passed an invalid permission to check for.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -3126,7 +3126,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uidFrom) || !is_numeric($uidTo) || $uidFrom == $uidTo) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('overwriteProduct (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('overwriteProduct (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -3432,7 +3432,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uidFrom) || !is_numeric($uidTo)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyArticle (belib) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('copyArticle (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;

@@ -5,11 +5,6 @@ call_user_func(function ($packageKey) {
     $scOptions = &$typo3ConfVars['SC_OPTIONS'];
 
     // Definition of some helpful constants
-    if (!defined('COMMERCE_EXTKEY')) {
-        /* @noinspection PhpUndefinedVariableInspection */
-        define('COMMERCE_EXTKEY', $packageKey);
-    }
-
     if (!defined('PATH_TXCOMMERCE')) {
         define('PATH_TXCOMMERCE', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($packageKey));
     }

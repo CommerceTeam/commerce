@@ -107,7 +107,7 @@ class ClickmenuUtility extends ClickMenu
         // Check for List allow
         if (!$backendUser->check('tables_select', $table)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('Clickmenu not allowed for user.', COMMERCE_EXTKEY, 1);
+                GeneralUtility::devLog('Clickmenu not allowed for user.', 'commerce', 1);
             }
 
             return '';

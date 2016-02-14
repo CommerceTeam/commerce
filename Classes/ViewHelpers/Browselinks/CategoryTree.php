@@ -220,7 +220,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'getCategory (categorytree) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -235,7 +235,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'getCategory (categorytree) cannot find the category leaf.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -265,7 +265,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'Resetting the Positions of the Browsetree. Were damaged.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     2
                 );
             }
@@ -368,7 +368,7 @@ class CategoryTree extends \CommerceTeam\Commerce\Tree\Browsetree
                             GeneralUtility::devLog(
                                 'initializePositionSaving (link_categorytree) has aborted
                                 because $i has reached its allowed recursive maximum.',
-                                COMMERCE_EXTKEY,
+                                'commerce',
                                 3
                             );
                         }

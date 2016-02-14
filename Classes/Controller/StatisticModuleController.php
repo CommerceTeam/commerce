@@ -22,7 +22,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 /**
- * Module 'Statistics' for the COMMERCE_EXTKEY extension.
+ * Module 'Statistics' for the commerce extension.
  *
  * Class \CommerceTeam\Commerce\Controller\StatisticModuleController
  *

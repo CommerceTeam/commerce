@@ -102,7 +102,7 @@ abstract class Leaf extends Base
     ) {
         if (is_null($view) || is_null($data)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('initBasic (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('initBasic (leaf) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return;
@@ -144,7 +144,7 @@ abstract class Leaf extends Base
     {
         if (null == $leaf) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('addLeaf (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('addLeaf (leaf) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -171,7 +171,7 @@ abstract class Leaf extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'setTreeName (leaf) gets passed invalid parameters. Are set to default!',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -192,7 +192,7 @@ abstract class Leaf extends Base
     {
         if (!is_numeric($index)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('getChildLeaf (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('getChildLeaf (leaf) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return null;
@@ -200,7 +200,7 @@ abstract class Leaf extends Base
 
         if ($index >= $this->leafcount) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('getChildLeaf (leaf) has an index out of bounds.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('getChildLeaf (leaf) has an index out of bounds.', 'commerce', 3);
             }
 
             return null;
@@ -220,7 +220,7 @@ abstract class Leaf extends Base
     {
         if (!is_array($positionIds)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('setPositions (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('setPositions (leaf) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return;
@@ -241,7 +241,7 @@ abstract class Leaf extends Base
     {
         if (!is_numeric($index) || !is_array($parentIndices)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('init (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('init (leaf) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return;
@@ -281,7 +281,7 @@ abstract class Leaf extends Base
     {
         if (!is_array($positions)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('setDataPositions (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('setDataPositions (leaf) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return;
@@ -313,7 +313,7 @@ abstract class Leaf extends Base
     {
         if (!is_numeric($rootUid)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('sort (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('sort (leaf) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return;
@@ -367,7 +367,7 @@ abstract class Leaf extends Base
     {
         if (!is_numeric($pid)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('leafsHaveRecords (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('leafsHaveRecords (leaf) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -401,7 +401,7 @@ abstract class Leaf extends Base
     {
         if (!is_array($row) || !is_numeric($pid)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('isLast (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('isLast (leaf) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -425,7 +425,7 @@ abstract class Leaf extends Base
     {
         if (!is_array($row)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('hasChildren (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('hasChildren (leaf) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -463,7 +463,7 @@ abstract class Leaf extends Base
     {
         if (!is_array($row)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('hasSubitems (leaf) gets passed invalid parameters.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('hasSubitems (leaf) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;

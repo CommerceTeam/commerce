@@ -97,7 +97,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
     public function __construct()
     {
         $this->view = GeneralUtility::makeInstance(StandaloneView::class);
-        $this->view->getRequest()->setControllerExtensionName(COMMERCE_EXTKEY);
+        $this->view->getRequest()->setControllerExtensionName('commerce');
 
         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);

@@ -77,7 +77,7 @@ abstract class MasterData extends Data
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'initRecords (' . self::class .
                     ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -98,7 +98,7 @@ abstract class MasterData extends Data
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'initRecords (' . self::class . ')
                      Usergroup is not allowed to view the records.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     2
                 );
             }
@@ -136,7 +136,7 @@ abstract class MasterData extends Data
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'setMounts (' . self::class .
                     ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -162,7 +162,7 @@ abstract class MasterData extends Data
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'setUid (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -197,7 +197,7 @@ abstract class MasterData extends Data
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'setDepth (' . self::class .
                     ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -222,7 +222,7 @@ abstract class MasterData extends Data
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'getRecordsByMountpoints (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -318,7 +318,7 @@ abstract class MasterData extends Data
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'getRecursiveUids (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }

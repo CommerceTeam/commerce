@@ -53,7 +53,7 @@ class ArticleView extends View
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'wrapTitle (articleview) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -87,7 +87,7 @@ class ArticleView extends View
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'getJumpToParam gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }

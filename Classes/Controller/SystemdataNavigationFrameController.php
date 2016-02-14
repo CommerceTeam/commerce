@@ -80,7 +80,7 @@ class SystemdataNavigationFrameController extends BaseScriptClass
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
 
         $this->view = GeneralUtility::makeInstance(StandaloneView::class);
-        $this->view->getRequest()->setControllerExtensionName(COMMERCE_EXTKEY);
+        $this->view->getRequest()->setControllerExtensionName('commerce');
 
         $this->moduleTemplate->addJavaScriptCode('jumpToUrl', '
             function jumpTo(url, linkObj) {

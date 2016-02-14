@@ -234,7 +234,7 @@ class CategoryTree extends Browsetree
         if (!is_bool($bare)) {
             // only issue warning but transform the value to bool anyways
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('Bare-Mode of the tree was set with a non-bool flag!', COMMERCE_EXTKEY, 2);
+                GeneralUtility::devLog('Bare-Mode of the tree was set with a non-bool flag!', 'commerce', 2);
             }
         }
         $this->bare = $bare;
@@ -279,7 +279,7 @@ class CategoryTree extends Browsetree
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'getCategory (categorytree) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -292,7 +292,7 @@ class CategoryTree extends Browsetree
         // check if there is a category leaf
         if (is_null($categoryLeaf)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('getCategory (categorytree) cannot find the category leaf.', COMMERCE_EXTKEY, 3);
+                GeneralUtility::devLog('getCategory (categorytree) cannot find the category leaf.', 'commerce', 3);
             }
 
             return array();

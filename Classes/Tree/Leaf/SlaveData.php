@@ -37,7 +37,7 @@ abstract class SlaveData extends Data
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'getPositionsByIndices (productdata) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -52,7 +52,7 @@ abstract class SlaveData extends Data
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'getPositionsByIndices (' . self::class . ')
                     does not find the first Index in the position array.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     2
                 );
             }
@@ -82,7 +82,7 @@ abstract class SlaveData extends Data
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'initRecords (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -96,7 +96,7 @@ abstract class SlaveData extends Data
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'initRecords User is not allowed to view table: ' . $this->table,
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }

@@ -39,7 +39,7 @@ class FolderRepository
     public static function initFolders(
         $title = 'Commerce',
         $pid = 0,
-        $module = COMMERCE_EXTKEY,
+        $module = 'commerce',
         $parentTitle = false,
         $executeUpdateUtility = true
     ) {
@@ -86,7 +86,7 @@ class FolderRepository
      * @return array rows of found extension folders
      * @deprecated since Version 5 will be removed in 6. Please use only getFolder instead
      */
-    public static function getFolders($module = COMMERCE_EXTKEY, $pid = 0, $title = '')
+    public static function getFolders($module = 'commerce', $pid = 0, $title = '')
     {
         GeneralUtility::logDeprecatedFunction();
         $row = self::getFolder($module, $pid, $title);
@@ -102,7 +102,7 @@ class FolderRepository
      *
      * @return array rows of found extension folders
      */
-    public static function getFolder($module = COMMERCE_EXTKEY, $pid = 0, $title = '')
+    public static function getFolder($module = 'commerce', $pid = 0, $title = '')
     {
         $row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
             'uid, pid, title',
@@ -124,7 +124,7 @@ class FolderRepository
      *
      * @return int
      */
-    protected function createFolder($title = 'Commerce', $module = COMMERCE_EXTKEY, $pid = 0)
+    protected function createFolder($title = 'Commerce', $module = 'commerce', $pid = 0)
     {
         $sorting = self::getDatabaseConnection()->exec_SELECTgetRows(
             'sorting',

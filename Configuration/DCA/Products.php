@@ -358,7 +358,7 @@ class Products
      */
     public function __construct()
     {
-        $simpleMode = $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][COMMERCE_EXTKEY]['simpleMode'];
+        $simpleMode = $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']['simpleMode'];
 
         if ($simpleMode == 1) {
             $this->DCA[1]['modifications'][0]['source_config']['where'] = 'uid = 4';

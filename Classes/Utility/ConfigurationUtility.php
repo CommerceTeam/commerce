@@ -153,7 +153,7 @@ class ConfigurationUtility implements SingletonInterface
     }
 
     /**
-     * Get configuration located in [COMMERCE_EXTKEY].
+     * Get configuration located in commerce.
      *
      * @param string $path Path to get value of
      *

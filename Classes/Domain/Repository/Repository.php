@@ -308,7 +308,7 @@ class Repository
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'updateRecord (db_alib) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -322,7 +322,7 @@ class Repository
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'updateRecord (db_alib): invalid sql.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }

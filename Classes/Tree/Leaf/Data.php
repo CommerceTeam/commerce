@@ -228,7 +228,7 @@ class Data extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'isExpanded (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -250,7 +250,7 @@ class Data extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'setPositions (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -274,7 +274,7 @@ class Data extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'getPositionsByIndices (productdata) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -296,7 +296,7 @@ class Data extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'getPositionsByIndices (' . self::class . ' ) cannot proceed because it did not find mounts',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -349,7 +349,7 @@ class Data extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'setBank (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -420,7 +420,7 @@ class Data extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'sort (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -503,7 +503,7 @@ class Data extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'getChildByUid (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -532,7 +532,7 @@ class Data extends Base
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog(
                     'getChildrenByPid (' . self::class . ') gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -607,7 +607,7 @@ class Data extends Base
                 GeneralUtility::devLog(
                     'loadRecords (' . self::class . ') could not load records.
                         Possible sql error. Empty rows returned.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
@@ -631,7 +631,7 @@ class Data extends Base
             if (!is_array($row)) {
                 GeneralUtility::devLog(
                     'There was an error overlaying a record with its workspace version.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
                 continue;
@@ -666,7 +666,7 @@ class Data extends Base
                     'loadRecords (' . self::class .
                     ') could not load records because it doesn\'t
                         have permissions on the commerce folder. Return empty array.',
-                    COMMERCE_EXTKEY,
+                    'commerce',
                     3
                 );
             }
