@@ -1,7 +1,6 @@
 <?php
-defined('TYPO3_MODE') or die();
 
-$boot = function ($packageKey) {
+call_user_func(function ($packageKey) {
     $typo3ConfVars = &$GLOBALS['TYPO3_CONF_VARS'];
     $scOptions = &$typo3ConfVars['SC_OPTIONS'];
 
@@ -209,7 +208,4 @@ $boot = function ($packageKey) {
     if (is_array($typo3ConfVars['EXT']['extConf'][$packageKey])) {
         $typo3ConfVars['EXT']['extConf'][$packageKey] = serialize($typo3ConfVars['EXT']['extConf'][$packageKey]);
     }
-};
-
-$boot('commerce');
-unset($boot);
+}, 'commerce');

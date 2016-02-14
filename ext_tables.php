@@ -1,7 +1,6 @@
 <?php
-defined('TYPO3_MODE') or die();
 
-$boot = function ($packageKey) {
+call_user_func(function ($packageKey) {
     $scOptions = &$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'];
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
@@ -62,7 +61,7 @@ $boot = function ($packageKey) {
             $GLOBALS['TBE_MODULES'] = $tbeModules;
         }
 
-        // add main module
+        // Main module
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
             $packageKey,
             '',
@@ -81,7 +80,7 @@ $boot = function ($packageKey) {
             ]
         );
 
-        // add category module
+        // Category module
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
             $packageKey,
             'category',
@@ -97,8 +96,18 @@ $boot = function ($packageKey) {
                         'tab' => 'EXT:commerce/Resources/Public/Icons/mod_category.gif'
                     ],
                 ],
-                'navigationFrameModule' => 'CommerceTeam_commerce_CategoryNavigation',
             ]
+        );
+
+        // Category navigation frame
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent(
+            'commerce_category',
+            'commerce-categorytree',
+            'commerce'
+        );
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
+            'TYPO3.Components.CategoryTree.DataProvider',
+            \CommerceTeam\Commerce\Tree\CategoryTree\ExtdirectTreeDataProvider::class
         );
 
         // Access Module
@@ -226,17 +235,20 @@ $boot = function ($packageKey) {
         );
 
 
+        // @todo obsolete?
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
             'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct',
             \CommerceTeam\Commerce\Controller\CategoryNavigationFrameController::class .
             '->ajaxExpandCollapseWithoutProduct'
         );
 
+        // @todo obsolete?
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
             'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse',
             \CommerceTeam\Commerce\Controller\CategoryNavigationFrameController::class . '->ajaxExpandCollapse'
         );
 
+        // @todo obsolete?
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
             'CommerceTeam_Commerce_PermissionAjaxController::dispatch',
             \CommerceTeam\Commerce\Controller\PermissionAjaxController::class . '->dispatch'
@@ -286,7 +298,4 @@ $boot = function ($packageKey) {
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToInsertRecords('tx_commerce_categories');
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToInsertRecords('tx_commerce_products');
-};
-
-$boot('commerce');
-unset($boot);
+}, 'commerce');
