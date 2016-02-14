@@ -1,1 +1,9 @@
+treeeditor.js
+tree.js
+filteringtree.js
+nodeui.js
+deletiondropzone.js
+toppanel.js
+contextmenu.js
+actions.js
 app.js

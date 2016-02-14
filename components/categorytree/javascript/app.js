@@ -208,7 +208,7 @@ TYPO3.Components.CategoryTree.App = Ext.extend(Ext.Panel, {
 						var element = Ext.fly(this.id + '-indicatorBar-temporaryMountPoint-clear');
 						var me = this;
 						element.on('click', function() {
-							top.TYPO3.Storage.Persistent.unset('categoryTree_temporaryMountPoint').done(
+							top.TYPO3.Storage.Persistent.unset('pageTree_temporaryMountPoint').done(
 								function() {
 									TYPO3.Components.CategoryTree.Configuration.temporaryMountPoint = null;
 									me.removeIndicator(me.temporaryMountPointInfoIndicator);
