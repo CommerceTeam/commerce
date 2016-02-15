@@ -27,7 +27,7 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
     /**
      * Data Provider
      *
-     * @var \TYPO3\CMS\Backend\Tree\Pagetree\DataProvider
+     * @var \CommerceTeam\Commerce\Tree\CategoryTree\DataProvider
      */
     protected $dataProvider = null;
 
@@ -51,8 +51,8 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
      */
     protected function initDataProvider()
     {
-        /** @var $dataProvider \TYPO3\CMS\Backend\Tree\Pagetree\DataProvider */
-        $dataProvider = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\DataProvider::class);
+        /** @var $dataProvider \CommerceTeam\Commerce\Tree\CategoryTree\DataProvider */
+        $dataProvider = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryTree\DataProvider::class);
         $this->setDataProvider($dataProvider);
     }
 
