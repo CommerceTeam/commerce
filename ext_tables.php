@@ -237,19 +237,6 @@ call_user_func(function ($packageKey) {
 
         // @todo obsolete?
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-            'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct',
-            \CommerceTeam\Commerce\Controller\CategoryNavigationFrameController::class .
-            '->ajaxExpandCollapseWithoutProduct'
-        );
-
-        // @todo obsolete?
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-            'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse',
-            \CommerceTeam\Commerce\Controller\CategoryNavigationFrameController::class . '->ajaxExpandCollapse'
-        );
-
-        // @todo obsolete?
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
             'CommerceTeam_Commerce_PermissionAjaxController::dispatch',
             \CommerceTeam\Commerce\Controller\PermissionAjaxController::class . '->dispatch'
         );
