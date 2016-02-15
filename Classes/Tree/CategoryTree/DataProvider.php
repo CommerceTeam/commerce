@@ -15,6 +15,7 @@ namespace CommerceTeam\Commerce\Tree\CategoryTree;
  */
 
 use CommerceTeam\Commerce\Factory\HookFactory;
+use TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNodeCollection;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -76,16 +77,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             ',',
             $GLOBALS['BE_USER']->getTSConfigVal('options.hideRecords.pages')
         );
-        $hookElements = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/tree/pagetree/class.t3lib_tree_pagetree_dataprovider.php']['postProcessCollections'];
-        if (is_array($hookElements)) {
-            foreach ($hookElements as $classRef) {
-                /** @var $hookObject \TYPO3\CMS\Backend\Tree\Pagetree\CollectionProcessorInterface */
-                $hookObject = GeneralUtility::getUserObj($classRef);
-                if ($hookObject instanceof \TYPO3\CMS\Backend\Tree\Pagetree\CollectionProcessorInterface) {
-                    $this->processCollectionHookObjects[] = $hookObject;
-                }
-            }
-        }
+        $this->processCollectionHookObjects = HookFactory::getHooks('Tree/CategoryTree/DataProvider', 'construct');
     }
 
     /**
@@ -105,15 +97,15 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     /**
      * Fetches the sub-nodes of the given node
      *
-     * @param \TYPO3\CMS\Backend\Tree\TreeNode $node
+     * @param \TYPO3\CMS\Backend\Tree\TreeNode|\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $node
      * @param int $mountPoint
      * @param int $level internally used variable as a recursion limiter
      * @return \TYPO3\CMS\Backend\Tree\TreeNodeCollection
      */
     public function getNodes(\TYPO3\CMS\Backend\Tree\TreeNode $node, $mountPoint = 0, $level = 0)
     {
-        /** @var $nodeCollection \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNodeCollection */
-        $nodeCollection = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNodeCollection::class);
+        /** @var $nodeCollection PagetreeNodeCollection */
+        $nodeCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
         if ($level >= 99 || $node->getStopPageTree()) {
             return $nodeCollection;
         }
@@ -199,12 +191,12 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      * @param \TYPO3\CMS\Backend\Tree\TreeNode $node
      * @param string $searchFilter
      * @param int $mountPoint
-     * @return \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNodeCollection the filtered nodes
+     * @return PagetreeNodeCollection the filtered nodes
      */
     public function getFilteredNodes(\TYPO3\CMS\Backend\Tree\TreeNode $node, $searchFilter, $mountPoint = 0)
     {
-        /** @var $nodeCollection \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNodeCollection */
-        $nodeCollection = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNodeCollection::class);
+        /** @var $nodeCollection PagetreeNodeCollection */
+        $nodeCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
         $records = $this->getSubpages(-1, $searchFilter);
         if (!is_array($records) || empty($records)) {
             return $nodeCollection;
@@ -224,7 +216,9 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         $nodeId = (int)$node->getId();
         $processedRecordIds = array();
         foreach ($records as $record) {
-            if ((int)$record['t3ver_wsid'] !== (int)$GLOBALS['BE_USER']->workspace && (int)$record['t3ver_wsid'] !== 0) {
+            if ((int)$record['t3ver_wsid'] !== (int)$GLOBALS['BE_USER']->workspace
+                && (int)$record['t3ver_wsid'] !== 0
+            ) {
                 continue;
             }
             $liveVersion = BackendUtility::getLiveVersionOfRecord('pages', $record['uid'], 'uid');
@@ -287,7 +281,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                     $refNode->setLeaf(false);
                     $reference = $refNode->getChildNodes();
                     if ($reference == null) {
-                        $reference = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNodeCollection::class);
+                        $reference = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
                         $refNode->setChildNodes($reference);
                     }
                 } else {
@@ -298,9 +292,14 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                     } else {
                         $text = preg_replace('/(' . $searchFilterQuoted . ')/i', $replacement, $refNode->getText());
                     }
-                    $refNode->setText($text, $refNode->getTextSourceField(), $refNode->getPrefix(), $refNode->getSuffix());
-                    /** @var $childCollection \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNodeCollection */
-                    $childCollection = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNodeCollection::class);
+                    $refNode->setText(
+                        $text,
+                        $refNode->getTextSourceField(),
+                        $refNode->getPrefix(),
+                        $refNode->getSuffix()
+                    );
+                    /** @var $childCollection PagetreeNodeCollection */
+                    $childCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
                     if ($i + 1 >= $amountOfRootlineElements) {
                         $childNodes = $this->getNodes($refNode, $mountPoint);
                         foreach ($childNodes as $childNode) {
@@ -331,12 +330,12 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      * Note: If you add the search filter parameter, the nodes will be filtered by this string.
      *
      * @param string $searchFilter
-     * @return \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNodeCollection
+     * @return PagetreeNodeCollection
      */
     public function getTreeMounts($searchFilter = '')
     {
-        /** @var $nodeCollection \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNodeCollection */
-        $nodeCollection = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNodeCollection::class);
+        /** @var $nodeCollection PagetreeNodeCollection */
+        $nodeCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
         $isTemporaryMountPoint = false;
         $rootNodeIsVirtual = false;
         $mountPoints = (int)$GLOBALS['BE_USER']->uc['pageTree_temporaryMountPoint'];
@@ -422,18 +421,23 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function getWhereClause($id, $searchFilter = '')
     {
-        $where = $GLOBALS['BE_USER']->getPagePermsClause(1) . BackendUtility::deleteClause('pages') . BackendUtility::versioningPlaceholderClause('pages');
+        $where = $GLOBALS['BE_USER']->getPagePermsClause(1) . BackendUtility::deleteClause('pages')
+            . BackendUtility::versioningPlaceholderClause('pages');
         if (is_numeric($id) && $id >= 0) {
             $where .= ' AND pid= ' . $GLOBALS['TYPO3_DB']->fullQuoteStr((int)$id, 'pages');
         }
 
         $excludedDoktypes = $GLOBALS['BE_USER']->getTSConfigVal('options.pageTree.excludeDoktypes');
         if (!empty($excludedDoktypes)) {
-            $excludedDoktypes = $GLOBALS['TYPO3_DB']->fullQuoteArray(GeneralUtility::intExplode(',', $excludedDoktypes), 'pages');
+            $excludedDoktypes = $GLOBALS['TYPO3_DB']->fullQuoteArray(
+                GeneralUtility::intExplode(',', $excludedDoktypes),
+                'pages'
+            );
             $where .= ' AND doktype NOT IN (' . implode(',', $excludedDoktypes) . ')';
         }
 
         if ($searchFilter !== '') {
+            $searchWhere = '';
             if (is_numeric($searchFilter) && $searchFilter > 0) {
                 $searchWhere .= 'uid = ' . (int)$searchFilter . ' OR ';
             }
