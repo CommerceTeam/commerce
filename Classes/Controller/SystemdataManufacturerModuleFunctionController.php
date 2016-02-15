@@ -37,6 +37,20 @@ class SystemdataManufacturerModuleFunctionController extends AbstractFunctionMod
     protected $referenceCount = array();
 
     /**
+     * Initialize the object
+     *
+     * @param \TYPO3\CMS\Backend\Module\BaseScriptClass $pObj A reference to the parent (calling) object
+     * @param array $conf The configuration set for this module - from global array TBE_MODULES_EXT
+     * @throws \RuntimeException
+     * @see \TYPO3\CMS\Backend\Module\BaseScriptClass::checkExtObj()
+     */
+    public function init(&$pObj, $conf)
+    {
+        parent::init($pObj, $conf);
+        $this->pObj->id = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders();
+    }
+
+    /**
      * @return string
      */
     public function main()

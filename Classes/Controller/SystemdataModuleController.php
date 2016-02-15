@@ -118,7 +118,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
     public function init()
     {
         parent::init();
-        $commercePid = FolderRepository::initFolders('Commerce');
+        $commercePid = FolderRepository::initFolders();
         $this->id = FolderRepository::initFolders('Attributes', $commercePid);
         $this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);
     }
@@ -301,18 +301,20 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
         $buttonBar->addButton($contextSensitiveHelpButton);
 
         // New
-        $params = '&edit[' . $this->extObj->table . '][' . $this->id . ']=new';
-        $onClick = htmlspecialchars(BackendUtility::editOnClick($params, '', -1));
-        $newRecordButton = $buttonBar->makeLinkButton()
-            ->setHref('#')
-            ->setOnClick($onClick)
-            ->setTitle(
-                $this->getLanguageService()->sL(
-                    'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newRecordGeneral',
-                    true
-                )
-            )->setIcon($this->moduleTemplate->getIconFactory()->getIcon('actions-document-new', Icon::SIZE_SMALL));
-        $buttonBar->addButton($newRecordButton, ButtonBar::BUTTON_POSITION_LEFT, 10);
+        if ($this->access) {
+            $params = '&edit[' . $this->extObj->table . '][' . $this->id . ']=new';
+            $onClick = htmlspecialchars(BackendUtility::editOnClick($params, '', -1));
+            $newRecordButton = $buttonBar->makeLinkButton()
+                ->setHref('#')
+                ->setOnClick($onClick)
+                ->setTitle(
+                    $this->getLanguageService()->sL(
+                        'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newRecordGeneral',
+                        true
+                    )
+                )->setIcon($this->moduleTemplate->getIconFactory()->getIcon('actions-document-new', Icon::SIZE_SMALL));
+            $buttonBar->addButton($newRecordButton, ButtonBar::BUTTON_POSITION_LEFT, 10);
+        }
 
         // Refresh
         $refreshButton = $buttonBar->makeLinkButton()
