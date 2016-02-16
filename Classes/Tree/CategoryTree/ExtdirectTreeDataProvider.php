@@ -131,11 +131,11 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
         }
         $doktypes = GeneralUtility::trimExplode(
             ',',
-            $GLOBALS['BE_USER']->getTSConfigVal('options.pageTree.doktypesToShowInNewPageDragArea')
+            $this->getBackendUserAuthentication()->getTSConfigVal('options.pageTree.doktypesToShowInNewPageDragArea')
         );
         $output = array();
         $allowedDoktypes = GeneralUtility::trimExplode(',', $GLOBALS['BE_USER']->groupData['pagetypes_select'], true);
-        $isAdmin = $GLOBALS['BE_USER']->isAdmin();
+        $isAdmin = $this->getBackendUserAuthentication()->isAdmin();
         // Early return if backend user may not create any doktype
         if (!$isAdmin && empty($allowedDoktypes)) {
             return $output;
@@ -144,7 +144,7 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
             if (!$isAdmin && !in_array($doktype, $allowedDoktypes)) {
                 continue;
             }
-            $label = $GLOBALS['LANG']->sL($doktypeLabelMap[$doktype], true);
+            $label = $this->getLanguageService()->sL($doktypeLabelMap[$doktype], true);
             $icon = $this->iconFactory->getIcon(
                 $GLOBALS['TCA']['pages']['ctrl']['typeicon_classes'][$doktype],
                 Icon::SIZE_SMALL
@@ -184,44 +184,72 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
      */
     public function loadResources()
     {
+        $lang = $this->getLanguageService();
+        $backendUser = $this->getBackendUserAuthentication();
         $file = 'LLL:EXT:lang/locallang_core.xlf:';
+        $backendFile = 'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:';
         $indicators = $this->getIndicators();
         $configuration = array(
             'LLL' => array(
-                'copyHint' => $GLOBALS['LANG']->sL($file . 'tree.copyHint', true),
-                'fakeNodeHint' => $GLOBALS['LANG']->sL($file . 'mess.please_wait', true),
-                'activeFilterMode' => $GLOBALS['LANG']->sL($file . 'tree.activeFilterMode', true),
-                'dropToRemove' => $GLOBALS['LANG']->sL($file . 'tree.dropToRemove', true),
-                'buttonRefresh' => $GLOBALS['LANG']->sL($file . 'labels.refresh', true),
-                'buttonNewNode' => $GLOBALS['LANG']->sL($file . 'tree.buttonNewNode', true),
-                'buttonFilter' => $GLOBALS['LANG']->sL($file . 'tree.buttonFilter', true),
-                'dropZoneElementRemoved' => $GLOBALS['LANG']->sL($file . 'tree.dropZoneElementRemoved', true),
-                'dropZoneElementRestored' => $GLOBALS['LANG']->sL($file . 'tree.dropZoneElementRestored', true),
-                'searchTermInfo' => $GLOBALS['LANG']->sL($file . 'tree.searchTermInfo', true),
-                'temporaryMountPointIndicatorInfo' => $GLOBALS['LANG']->sl($file . 'labels.temporaryDBmount', true),
-                'deleteDialogTitle' => $GLOBALS['LANG']->sL('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:deleteItem', true),
-                'deleteDialogMessage' => $GLOBALS['LANG']->sL('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:deleteWarning', true),
-                'recursiveDeleteDialogMessage' => $GLOBALS['LANG']->sL('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:recursiveDeleteWarning', true)
+                'copyHint' => $lang->sL($file . 'tree.copyHint', true),
+                'fakeNodeHint' => $lang->sL($file . 'mess.please_wait', true),
+                'activeFilterMode' => $lang->sL($file . 'tree.activeFilterMode', true),
+                'dropToRemove' => $lang->sL($file . 'tree.dropToRemove', true),
+                'buttonRefresh' => $lang->sL($file . 'labels.refresh', true),
+                'buttonNewNode' => $lang->sL($file . 'tree.buttonNewNode', true),
+                'buttonFilter' => $lang->sL($file . 'tree.buttonFilter', true),
+                'dropZoneElementRemoved' => $lang->sL($file . 'tree.dropZoneElementRemoved', true),
+                'dropZoneElementRestored' => $lang->sL($file . 'tree.dropZoneElementRestored', true),
+                'searchTermInfo' => $lang->sL($file . 'tree.searchTermInfo', true),
+                'temporaryMountPointIndicatorInfo' => $lang->sL($file . 'labels.temporaryDBmount', true),
+                'deleteDialogTitle' => $lang->sL($backendFile . 'deleteItem', true),
+                'deleteDialogMessage' => $lang->sL($backendFile . 'deleteWarning', true),
+                'recursiveDeleteDialogMessage' => $lang->sL($backendFile . 'recursiveDeleteWarning', true)
             ),
             'Configuration' => array(
-                'hideFilter' => $GLOBALS['BE_USER']->getTSConfigVal('options.pageTree.hideFilter'),
-                'displayDeleteConfirmation' => $GLOBALS['BE_USER']->jsConfirmation(JsConfirmation::DELETE),
-                'canDeleteRecursivly' => $GLOBALS['BE_USER']->uc['recursiveDelete'] == true,
-                'disableIconLinkToContextmenu' => $GLOBALS['BE_USER']->getTSConfigVal('options.pageTree.disableIconLinkToContextmenu'),
+                'hideFilter' => $backendUser->getTSConfigVal('options.pageTree.hideFilter'),
+                'displayDeleteConfirmation' => $backendUser->jsConfirmation(JsConfirmation::DELETE),
+                'canDeleteRecursivly' => $backendUser->uc['recursiveDelete'] == true,
+                'disableIconLinkToContextmenu' => $backendUser->getTSConfigVal(
+                    'options.pageTree.disableIconLinkToContextmenu'
+                ),
                 'indicator' => $indicators['html'],
                 'temporaryMountPoint' => Commands::getMountPointPath()
             ),
             'Icons' => array(
-                'InputClear' => $this->iconFactory->getIcon('actions-input-clear', Icon::SIZE_SMALL)->render(),
+                'InputClear' => $this->iconFactory->getIcon('actions-input-clear', Icon::SIZE_SMALL),
                 'Close' => $this->iconFactory->getIcon('actions-close', Icon::SIZE_SMALL)->render('inline'),
                 'TrashCan' => $this->iconFactory->getIcon('actions-edit-delete', Icon::SIZE_SMALL)->render('inline'),
-                'TrashCanRestore' => $this->iconFactory->getIcon('actions-edit-restore', Icon::SIZE_SMALL)->render('inline'),
+                'TrashCanRestore' => $this->iconFactory->getIcon(
+                    'actions-edit-restore',
+                    Icon::SIZE_SMALL
+                )->render('inline'),
                 'Info' => $this->iconFactory->getIcon('actions-document-info', Icon::SIZE_SMALL)->render('inline'),
-                'NewNode' => $this->iconFactory->getIcon('actions-page-new', Icon::SIZE_SMALL)->render(),
-                'Filter' => $this->iconFactory->getIcon('actions-filter', Icon::SIZE_SMALL)->render(),
-                'Refresh' => $this->iconFactory->getIcon('actions-refresh', Icon::SIZE_SMALL)->render()
+                'NewNode' => $this->iconFactory->getIcon('actions-page-new', Icon::SIZE_SMALL),
+                'Filter' => $this->iconFactory->getIcon('actions-filter', Icon::SIZE_SMALL),
+                'Refresh' => $this->iconFactory->getIcon('actions-refresh', Icon::SIZE_SMALL)
             )
         );
         return $configuration;
+    }
+
+    /**
+     * Get language service
+     *
+     * @return \TYPO3\CMS\Lang\LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
+    }
+
+    /**
+     * Get backend user authentication
+     *
+     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     */
+    protected function getBackendUserAuthentication()
+    {
+        return $GLOBALS['BE_USER'];
     }
 }
