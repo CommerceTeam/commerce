@@ -276,7 +276,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                 if (!$article) {
                     continue;
                 }
-                $articleNode = Commands::getArticleNode($article, $mountPoint);
+                $articleNode = Commands::getArticleNode($article);
                 $articleNode->setLeaf(true);
                 $nodeCollection->append($articleNode);
             }
