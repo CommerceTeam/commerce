@@ -78,11 +78,16 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
     public function getNextTreeLevel($nodeId, $nodeData)
     {
         $this->initDataProvider();
-        /** @var $node \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
-        $node = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode::class, (array)$nodeData);
         if ($nodeId === 'root') {
             $nodeCollection = $this->dataProvider->getTreeMounts();
         } else {
+            if (strpos($nodeId, 'p_') === 0) {
+                /** @var $node ProductNode */
+                $node = GeneralUtility::makeInstance(ProductNode::class, (array)$nodeData);
+            } else {
+                /** @var $node CategoryNode */
+                $node = GeneralUtility::makeInstance(CategoryNode::class, (array)$nodeData);
+            }
             $nodeCollection = $this->dataProvider->getNodes($node, $node->getMountPoint());
         }
         return $nodeCollection->toArray();
@@ -101,12 +106,12 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
         if (strval($searchFilter) === '') {
             return array();
         }
-        /** @var $node \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
-        $node = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode::class, (array)$nodeData);
         $this->initDataProvider();
         if ($nodeId === 'root') {
             $nodeCollection = $this->dataProvider->getTreeMounts($searchFilter);
         } else {
+            /** @var $node CategoryNode */
+            $node = GeneralUtility::makeInstance(CategoryNode::class, (array)$nodeData);
             $nodeCollection = $this->dataProvider->getFilteredNodes($node, $searchFilter, $node->getMountPoint());
         }
         return $nodeCollection->toArray();
@@ -122,36 +127,33 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
      */
     public function getNodeTypes()
     {
-        $doktypeLabelMap = array();
-        foreach ($GLOBALS['TCA']['pages']['columns']['doktype']['config']['items'] as $doktypeItemConfig) {
-            if ($doktypeItemConfig[1] === '--div--') {
-                continue;
-            }
-            $doktypeLabelMap[$doktypeItemConfig[1]] = $doktypeItemConfig[0];
-        }
-        $doktypes = GeneralUtility::trimExplode(
+        $output = [];
+        $allowedTables = GeneralUtility::trimExplode(
             ',',
-            $this->getBackendUserAuthentication()->getTSConfigVal('options.pageTree.doktypesToShowInNewPageDragArea')
+            $this->getBackendUserAuthentication()->groupData['tables_select']
         );
-        $output = array();
-        $allowedDoktypes = GeneralUtility::trimExplode(',', $GLOBALS['BE_USER']->groupData['pagetypes_select'], true);
         $isAdmin = $this->getBackendUserAuthentication()->isAdmin();
         // Early return if backend user may not create any doktype
-        if (!$isAdmin && empty($allowedDoktypes)) {
+        if (!$isAdmin && empty($allowedTables)) {
             return $output;
         }
-        foreach ($doktypes as $doktype) {
-            if (!$isAdmin && !in_array($doktype, $allowedDoktypes)) {
+        $tables = [
+            'tx_commerce_categories',
+            'tx_commerce_products',
+            'tx_commerce_articles',
+        ];
+        foreach ($tables as $table) {
+            if (!$isAdmin && !in_array($table, $allowedTables)) {
                 continue;
             }
-            $label = $this->getLanguageService()->sL($doktypeLabelMap[$doktype], true);
-            $icon = $this->iconFactory->getIcon(
-                $GLOBALS['TCA']['pages']['ctrl']['typeicon_classes'][$doktype],
-                Icon::SIZE_SMALL
-            )->render();
+            $label = $this->getLanguageService()->sL(
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:' . $table,
+                true
+            );
+            $icon = $this->iconFactory->getIconForRecord($table, [], Icon::SIZE_SMALL)->render();
             $output[] = array(
-                'nodeType' => $doktype,
-                'cls' => 'typo3-pagetree-topPanel-button',
+                'nodeType' => $table,
+                'cls' => 'commerce-categorytree-topPanel-button',
                 'html' => $icon,
                 'title' => $label,
                 'tooltip' => $label
@@ -232,6 +234,7 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
         );
         return $configuration;
     }
+
 
     /**
      * Get language service

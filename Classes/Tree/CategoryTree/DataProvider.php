@@ -71,24 +71,22 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         }
         $this->nodeLimit = abs((int)$nodeLimit);
 
-        $this->showRootlineAboveMounts = $GLOBALS['BE_USER']->getTSConfigVal('options.pageTree.showPathAboveMounts');
-
-        $this->hiddenRecords = GeneralUtility::trimExplode(
-            ',',
-            $GLOBALS['BE_USER']->getTSConfigVal('options.hideRecords.pages')
+        $this->showRootlineAboveMounts = $this->getBackendUserAuthentication()->getTSConfigVal(
+            'options.pageTree.showPathAboveMounts'
         );
+
         $this->processCollectionHookObjects = HookFactory::getHooks('Tree/CategoryTree/DataProvider', 'construct');
     }
 
     /**
      * Returns the root node.
      *
-     * @return \TYPO3\CMS\Backend\Tree\TreeNode the root node
+     * @return CategoryNode the root node
      */
     public function getRoot()
     {
-        /** @var $node \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
-        $node = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode::class);
+        /** @var $node CategoryNode */
+        $node = GeneralUtility::makeInstance(CategoryNode::class);
         $node->setId('root');
         $node->setExpanded(true);
         return $node;
@@ -115,8 +113,8 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         // and in case of a virtual root return the mountpoints as virtual "subpages"
         if ((int)$node->getId() === 0) {
             // check no temporary mountpoint is used
-            if (!(int)$GLOBALS['BE_USER']->uc['pageTree_temporaryMountPoint']) {
-                $mountPoints = array_map('intval', $GLOBALS['BE_USER']->returnWebmounts());
+            if (!(int)$this->getBackendUserAuthentication()->uc['pageTree_temporaryMountPoint']) {
+                $mountPoints = array_map('intval', $this->getBackendUserAuthentication()->returnWebmounts());
                 $mountPoints = array_unique($mountPoints);
                 if (!in_array(0, $mountPoints)) {
                     // using a virtual root node
@@ -160,7 +158,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                 } else {
                     $subNode->setLeaf(!$this->hasNodeSubPages($subNode->getId()));
                 }
-                if (!$GLOBALS['BE_USER']->isAdmin() && (int)$subpage['editlock'] === 1) {
+                if (!$this->getBackendUserAuthentication()->isAdmin() && (int)$subpage['editlock'] === 1) {
                     $subNode->setLabelIsEditable(false);
                 }
                 $nodeCollection->append($subNode);
@@ -204,9 +202,9 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             return $nodeCollection;
         }
         // check no temporary mountpoint is used
-        $mountPoints = (int)$GLOBALS['BE_USER']->uc['pageTree_temporaryMountPoint'];
+        $mountPoints = (int)$this->getBackendUserAuthentication()->uc['pageTree_temporaryMountPoint'];
         if (!$mountPoints) {
-            $mountPoints = array_map('intval', $GLOBALS['BE_USER']->returnWebmounts());
+            $mountPoints = array_map('intval', $this->getBackendUserAuthentication()->returnWebmounts());
             $mountPoints = array_unique($mountPoints);
         } else {
             $mountPoints = array($mountPoints);
@@ -216,7 +214,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         $nodeId = (int)$node->getId();
         $processedRecordIds = array();
         foreach ($records as $record) {
-            if ((int)$record['t3ver_wsid'] !== (int)$GLOBALS['BE_USER']->workspace
+            if ((int)$record['t3ver_wsid'] !== (int)$this->getBackendUserAuthentication()->workspace
                 && (int)$record['t3ver_wsid'] !== 0
             ) {
                 continue;
@@ -235,7 +233,11 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             }
             $processedRecordIds[] = $record['uid'];
 
-            $rootline = BackendUtility::BEgetRootLine($record['uid'], '', $GLOBALS['BE_USER']->workspace != 0);
+            $rootline = BackendUtility::BEgetRootLine(
+                $record['uid'],
+                '',
+                $this->getBackendUserAuthentication()->workspace != 0
+            );
             $rootline = array_reverse($rootline);
             if (!in_array(0, $mountPoints, true)) {
                 $isInsideMountPoints = false;
@@ -255,7 +257,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             for ($i = 0; $i < $amountOfRootlineElements; ++$i) {
                 $rootlineElement = $rootline[$i];
                 $rootlineElement['uid'] = (int)$rootlineElement['uid'];
-                $isInWebMount = (int)$GLOBALS['BE_USER']->isInWebMount($rootlineElement['uid']);
+                $isInWebMount = (int)$this->getBackendUserAuthentication()->isInWebMount($rootlineElement['uid']);
                 if (!$isInWebMount
                     || ($rootlineElement['uid'] === (int)$mountPoints[0]
                         && $rootlineElement['uid'] !== $isInWebMount)
@@ -338,31 +340,21 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         $nodeCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
         $isTemporaryMountPoint = false;
         $rootNodeIsVirtual = false;
-        $mountPoints = (int)$GLOBALS['BE_USER']->uc['pageTree_temporaryMountPoint'];
-        if (!$mountPoints) {
-            $mountPoints = array_map('intval', $GLOBALS['BE_USER']->returnWebmounts());
-            $mountPoints = array_unique($mountPoints);
-            if (!in_array(0, $mountPoints)) {
-                $rootNodeIsVirtual = true;
-                // use a virtual root
-                // the real mountpoints will be fetched in getNodes() then
-                // since those will be the "subpages" of the virtual root
-                $mountPoints = array(0);
-            }
-        } else {
-            $isTemporaryMountPoint = true;
-            $mountPoints = array($mountPoints);
+        $mountPoints = GeneralUtility::intExplode(
+            ',',
+            $this->getBackendUserAuthentication()->user['tx_commerce_mountpoints']
+        );
+        if ($this->getBackendUserAuthentication()->isAdmin()) {
+            $mountPoints = array_merge([0], $mountPoints);
         }
+        $mountPoints = array_unique($mountPoints);
         if (empty($mountPoints)) {
             return $nodeCollection;
         }
 
         foreach ($mountPoints as $mountPoint) {
             if ($mountPoint === 0) {
-                $sitename = 'TYPO3';
-                if ($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] !== '') {
-                    $sitename = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
-                }
+                $sitename = 'Commerce';
                 $record = array(
                     'uid' => 0,
                     'title' => $sitename
@@ -373,14 +365,14 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                     $subNode->setType('virtual_root');
                     $subNode->setIsDropTarget(false);
                 } else {
-                    $subNode->setType('pages_root');
+                    $subNode->setType('category_root');
                     $subNode->setIsDropTarget(true);
                 }
             } else {
                 if (in_array($mountPoint, $this->hiddenRecords)) {
                     continue;
                 }
-                $record = $this->getRecordWithWorkspaceOverlay($mountPoint);
+                $record = BackendUtility::getRecordWSOL('tx_commerce_categories', $mountPoint);
                 if (!$record) {
                     continue;
                 }
@@ -392,7 +384,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             }
             if (count($mountPoints) <= 1) {
                 $subNode->setExpanded(true);
-                $subNode->setCls('typo3-pagetree-node-notExpandable');
+                $subNode->setCls('commerce-categorytree-node-notExpandable');
             }
             $subNode->setIsMountPoint(true);
             $subNode->setDraggable(false);
@@ -421,15 +413,15 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function getWhereClause($id, $searchFilter = '')
     {
-        $where = $GLOBALS['BE_USER']->getPagePermsClause(1) . BackendUtility::deleteClause('pages')
+        $where = $this->getBackendUserAuthentication()->getPagePermsClause(1) . BackendUtility::deleteClause('pages')
             . BackendUtility::versioningPlaceholderClause('pages');
         if (is_numeric($id) && $id >= 0) {
-            $where .= ' AND pid= ' . $GLOBALS['TYPO3_DB']->fullQuoteStr((int)$id, 'pages');
+            $where .= ' AND pid= ' . $this->getDatabaseConnection()->fullQuoteStr((int)$id, 'pages');
         }
 
-        $excludedDoktypes = $GLOBALS['BE_USER']->getTSConfigVal('options.pageTree.excludeDoktypes');
+        $excludedDoktypes = $this->getBackendUserAuthentication()->getTSConfigVal('options.pageTree.excludeDoktypes');
         if (!empty($excludedDoktypes)) {
-            $excludedDoktypes = $GLOBALS['TYPO3_DB']->fullQuoteArray(
+            $excludedDoktypes = $this->getDatabaseConnection()->fullQuoteArray(
                 GeneralUtility::intExplode(',', $excludedDoktypes),
                 'pages'
             );
@@ -441,9 +433,9 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             if (is_numeric($searchFilter) && $searchFilter > 0) {
                 $searchWhere .= 'uid = ' . (int)$searchFilter . ' OR ';
             }
-            $searchFilter = $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $searchFilter . '%', 'pages');
-            $useNavTitle = $GLOBALS['BE_USER']->getTSConfigVal('options.pageTree.showNavTitle');
-            $useAlias = $GLOBALS['BE_USER']->getTSConfigVal('options.pageTree.searchInAlias');
+            $searchFilter = $this->getDatabaseConnection()->fullQuoteStr('%' . $searchFilter . '%', 'pages');
+            $useNavTitle = $this->getBackendUserAuthentication()->getTSConfigVal('options.pageTree.showNavTitle');
+            $useAlias = $this->getBackendUserAuthentication()->getTSConfigVal('options.pageTree.searchInAlias');
 
             $searchWhereAlias = '';
             if ($useAlias) {
@@ -472,7 +464,15 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     protected function getSubpages($id, $searchFilter = '')
     {
         $where = $this->getWhereClause($id, $searchFilter);
-        return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid,t3ver_wsid', 'pages', $where, '', 'sorting', '', 'uid');
+        return $this->getDatabaseConnection()->exec_SELECTgetRows(
+            'uid,t3ver_wsid',
+            'pages',
+            $where,
+            '',
+            'sorting',
+            '',
+            'uid'
+        );
     }
 
     /**
@@ -484,11 +484,36 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     protected function hasNodeSubPages($id)
     {
         $where = $this->getWhereClause($id);
-        $subpage = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('uid', 'pages', $where, '', 'sorting', '', 'uid');
+        $subpage = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'uid',
+            'pages',
+            $where,
+            '',
+            'sorting'
+        );
         $returnValue = true;
         if (!$subpage['uid']) {
             $returnValue = false;
         }
         return $returnValue;
+    }
+
+
+    /**
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
+    }
+
+    /**
+     * Get backend user authentication
+     *
+     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     */
+    protected function getBackendUserAuthentication()
+    {
+        return $GLOBALS['BE_USER'];
     }
 }
