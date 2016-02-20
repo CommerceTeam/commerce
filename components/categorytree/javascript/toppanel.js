@@ -416,9 +416,9 @@ TYPO3.Components.CategoryTree.TopPanel = Ext.extend(Ext.Panel, {
 				var clickedButton = this.dragData.item;
 
 				this.proxyElement.shadow = false;
-				this.proxyElement.innerHTML = '<div class="x-dd-drag-ghost-pagetree">' +
-					'<span class="x-dd-drag-ghost-pagetree-icon">' + clickedButton.initialConfig.html + '</span>' +
-					'<span class="x-dd-drag-ghost-pagetree-text">'  + clickedButton.title + '</span>' +
+				this.proxyElement.innerHTML = '<div class="x-dd-drag-ghost-categorytree">' +
+					'<span class="x-dd-drag-ghost-categorytree-icon">' + clickedButton.initialConfig.html + '</span>' +
+					'<span class="x-dd-drag-ghost-categorytree-text">'  + clickedButton.title + '</span>' +
 				'</div>';
 
 				this.proxy.update(this.proxyElement);

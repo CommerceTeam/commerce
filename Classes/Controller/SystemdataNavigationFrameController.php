@@ -28,7 +28,7 @@ use TYPO3\CMS\Backend\Template\ModuleTemplate;
 /**
  * Main script class for the systemData navigation frame.
  *
- * Class \CommerceTeam\Commerce\ViewHelpers\Navigation\SystemdataViewHelper
+ * Class SystemdataNavigationFrameController
  *
  * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
