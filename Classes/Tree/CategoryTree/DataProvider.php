@@ -15,6 +15,7 @@ namespace CommerceTeam\Commerce\Tree\CategoryTree;
  */
 
 use CommerceTeam\Commerce\Factory\HookFactory;
+use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNodeCollection;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -93,14 +94,27 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     }
 
     /**
+     * Empty method to satisfy abstract parent
+     *
+     * @param \TYPO3\CMS\Backend\Tree\TreeNode $node Node
+     * @param int $mountPoint Mount point
+     * @param int $level Internally used variable as a recursion limiter
+     *
+     * @return \TYPO3\CMS\Backend\Tree\TreeNodeCollection
+     */
+    public function getNodes(\TYPO3\CMS\Backend\Tree\TreeNode $node, $mountPoint = 0, $level = 0)
+    {
+    }
+
+    /**
      * Fetches the sub-nodes of the given node
      *
-     * @param \TYPO3\CMS\Backend\Tree\TreeNode|\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $node
+     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode|CategoryNode $node
      * @param int $mountPoint
      * @param int $level internally used variable as a recursion limiter
      * @return \TYPO3\CMS\Backend\Tree\TreeNodeCollection
      */
-    public function getNodes(\TYPO3\CMS\Backend\Tree\TreeNode $node, $mountPoint = 0, $level = 0)
+    public function getCategoryNodes(CategoryNode $node, $mountPoint = 0, $level = 0)
     {
         /** @var $nodeCollection PagetreeNodeCollection */
         $nodeCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
@@ -108,21 +122,22 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             return $nodeCollection;
         }
         $isVirtualRootNode = false;
-        $subpages = $this->getSubpages($node->getId());
+        $subCategories = $this->getSubCategories($node->getId());
         // check if fetching subpages the "root"-page
         // and in case of a virtual root return the mountpoints as virtual "subpages"
         if ((int)$node->getId() === 0) {
             // check no temporary mountpoint is used
             if (!(int)$this->getBackendUserAuthentication()->uc['pageTree_temporaryMountPoint']) {
-                $mountPoints = array_map('intval', $this->getBackendUserAuthentication()->returnWebmounts());
+                $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
+                $mountPoints = array_map('intval', $backendUserUtility->returnWebmounts());
                 $mountPoints = array_unique($mountPoints);
                 if (!in_array(0, $mountPoints)) {
                     // using a virtual root node
                     // so then return the mount points here as "subpages" of the first node
                     $isVirtualRootNode = true;
-                    $subpages = array();
+                    $subCategories = array();
                     foreach ($mountPoints as $webMountPoint) {
-                        $subpages[] = array(
+                        $subCategories[] = array(
                             'uid' => $webMountPoint,
                             'isMountPoint' => true
                         );
@@ -130,35 +145,43 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                 }
             }
         }
-        if (is_array($subpages) && !empty($subpages)) {
-            foreach ($subpages as $subpage) {
-                if (in_array($subpage['uid'], $this->hiddenRecords)) {
+        if (is_array($subCategories) && !empty($subCategories)) {
+            foreach ($subCategories as $subCategory) {
+                if (in_array($subCategory['uid'], $this->hiddenRecords)) {
                     continue;
                 }
                 // must be calculated above getRecordWithWorkspaceOverlay,
                 // because the information is lost otherwise
-                $isMountPoint = $subpage['isMountPoint'] === true;
+                $isMountPoint = $subCategory['isMountPoint'] === true;
                 if ($isVirtualRootNode) {
-                    $mountPoint = (int)$subpage['uid'];
+                    $mountPoint = (int)$subCategory['uid'];
                 }
-                $subpage = $this->getRecordWithWorkspaceOverlay($subpage['uid'], true);
-                if (!$subpage) {
+                $subCategory = BackendUtility::getRecordWSOL(
+                    'tx_commerce_categories',
+                    $subCategory['uid'],
+                    '*',
+                    '',
+                    true,
+                    true
+                );
+                if (!$subCategory) {
                     continue;
                 }
-                $subNode = Commands::getNewNode($subpage, $mountPoint);
+                $subNode = Commands::getCategoryNode($subCategory, $mountPoint);
                 $subNode->setIsMountPoint($isMountPoint);
                 if ($isMountPoint && $this->showRootlineAboveMounts) {
-                    $rootline = Commands::getMountPointPath($subpage['uid']);
+                    $rootline = Commands::getMountPointPath($subCategory['uid']);
                     $subNode->setReadableRootline($rootline);
                 }
                 if ($this->nodeCounter < $this->nodeLimit) {
-                    $childNodes = $this->getNodes($subNode, $mountPoint, $level + 1);
+                    $childNodes = $this->getCategoryNodes($subNode, $mountPoint, $level + 1);
+                    // @todo add product child nodes
                     $subNode->setChildNodes($childNodes);
                     $this->nodeCounter += $childNodes->count();
                 } else {
                     $subNode->setLeaf(!$this->hasNodeSubPages($subNode->getId()));
                 }
-                if (!$this->getBackendUserAuthentication()->isAdmin() && (int)$subpage['editlock'] === 1) {
+                if (!$this->getBackendUserAuthentication()->isAdmin() && (int)$subCategory['editlock'] === 1) {
                     $subNode->setLabelIsEditable(false);
                 }
                 $nodeCollection->append($subNode);
@@ -186,16 +209,16 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     /**
      * Returns a node collection of filtered nodes
      *
-     * @param \TYPO3\CMS\Backend\Tree\TreeNode $node
+     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode|CategoryNode $node
      * @param string $searchFilter
      * @param int $mountPoint
      * @return PagetreeNodeCollection the filtered nodes
      */
-    public function getFilteredNodes(\TYPO3\CMS\Backend\Tree\TreeNode $node, $searchFilter, $mountPoint = 0)
+    public function getFilteredNodes(CategoryNode $node, $searchFilter, $mountPoint = 0)
     {
         /** @var $nodeCollection PagetreeNodeCollection */
         $nodeCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
-        $records = $this->getSubpages(-1, $searchFilter);
+        $records = $this->getSubCategories(-1, $searchFilter);
         if (!is_array($records) || empty($records)) {
             return $nodeCollection;
         } elseif (count($records) > 500) {
@@ -287,7 +310,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                         $refNode->setChildNodes($reference);
                     }
                 } else {
-                    $refNode = Commands::getNewNode($rootlineElement, $mountPoint);
+                    $refNode = Commands::getCategoryNode($rootlineElement, $mountPoint);
                     $replacement = '<span class="typo3-pagetree-filteringTree-highlight">$1</span>';
                     if ($isNumericSearchFilter && (int)$rootlineElement['uid'] === (int)$searchFilter) {
                         $text = str_replace('$1', $refNode->getText(), $replacement);
@@ -359,7 +382,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                     'uid' => 0,
                     'title' => $sitename
                 );
-                $subNode = Commands::getNewNode($record);
+                $subNode = Commands::getCategoryNode($record);
                 $subNode->setLabelIsEditable(false);
                 if ($rootNodeIsVirtual) {
                     $subNode->setType('virtual_root');
@@ -376,7 +399,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                 if (!$record) {
                     continue;
                 }
-                $subNode = Commands::getNewNode($record, $mountPoint);
+                $subNode = Commands::getCategoryNode($record, $mountPoint);
                 if ($this->showRootlineAboveMounts && !$isTemporaryMountPoint) {
                     $rootline = Commands::getMountPointPath($record['uid']);
                     $subNode->setReadableRootline($rootline);
@@ -389,7 +412,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             $subNode->setIsMountPoint(true);
             $subNode->setDraggable(false);
             if ($searchFilter === '') {
-                $childNodes = $this->getNodes($subNode, $mountPoint);
+                $childNodes = $this->getCategoryNodes($subNode, $mountPoint);
             } else {
                 $childNodes = $this->getFilteredNodes($subNode, $searchFilter, $mountPoint);
                 $subNode->setExpanded(true);
@@ -455,21 +478,58 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     }
 
     /**
+     * Returns the where clause for fetching pages
+     *
+     * @param int $id Page id
+     * @param string $searchFilter Search filter
+     *
+     * @return string
+     */
+    protected function getCategoryWhereClause($id, $searchFilter = '')
+    {
+        $where = \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1) .
+            BackendUtility::deleteClause('tx_commerce_categories') .
+            BackendUtility::versioningPlaceholderClause('tx_commerce_categories');
+        if (is_numeric($id) && $id >= 0) {
+            $where .= ' AND uid_foreign = ' . (int) $id;
+        }
+
+        if ($searchFilter !== '') {
+            $searchWhere = '';
+            if (is_numeric($searchFilter) && $searchFilter > 0) {
+                $searchWhere .= 'uid = ' . (int) $searchFilter . ' OR ';
+            }
+
+            $searchFilter = $this->getDatabaseConnection()->fullQuoteStr(
+                '%' . $searchFilter . '%',
+                'tx_commerce_categories'
+            );
+            $searchWhere .= 'title LIKE ' . $searchFilter;
+
+            $where .= ' AND (' . $searchWhere . ')';
+        }
+
+        return $where;
+    }
+
+    /**
      * Returns all sub-pages of a given id
      *
      * @param int $id
      * @param string $searchFilter
      * @return array
      */
-    protected function getSubpages($id, $searchFilter = '')
+    protected function getSubCategories($id, $searchFilter = '')
     {
-        $where = $this->getWhereClause($id, $searchFilter);
-        return $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid,t3ver_wsid',
-            'pages',
+        $where = $this->getCategoryWhereClause($id, $searchFilter);
+        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            'uid, t3ver_wsid',
+            'tx_commerce_categories
+                INNER JOIN tx_commerce_categories_parent_category_mm ON
+                    tx_commerce_categories.uid = tx_commerce_categories_parent_category_mm.uid_local',
             $where,
             '',
-            'sorting',
+            'tx_commerce_categories.sorting',
             '',
             'uid'
         );

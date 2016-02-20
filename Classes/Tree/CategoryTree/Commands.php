@@ -262,6 +262,7 @@ class Commands
         if (self::$useNavTitle === null) {
             self::$useNavTitle = self::getBackendUserAuthentication()->getTSConfigVal('options.pageTree.showNavTitle');
         }
+        // @todo make category rootline in commerce BEutility
         $rootline = array_reverse(BackendUtility::BEgetRootLine($uid));
         array_shift($rootline);
         $path = array();
@@ -316,7 +317,186 @@ class Commands
      * @param int $mountPoint
      * @return \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode
      */
-    public static function getNewNode($record, $mountPoint = 0)
+    public static function getCategoryNode($record, $mountPoint = 0)
+    {
+        $backendUser = self::getBackendUserAuthentication();
+        $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+        if (self::$titleLength === null) {
+            self::$useNavTitle = $backendUser->getTSConfigVal('options.pageTree.showNavTitle');
+            self::$addIdAsPrefix = $backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
+            self::$addDomainName = $backendUser->getTSConfigVal('options.pageTree.showDomainNameWithTitle');
+            self::$backgroundColors = $backendUser->getTSConfigProp('options.pageTree.backgroundColor');
+            self::$titleLength = (int)$backendUser->uc['titleLen'];
+        }
+        if (!isset(self::$backgroundColors['category'])) {
+            self::$backgroundColors['category'] = $backendUser->getTSConfigProp('options.pageTree.backgroundColor');
+        }
+
+        /** @var $subNode CategoryNode */
+        $subNode = GeneralUtility::makeInstance(CategoryNode::class);
+        $subNode->setRecord($record);
+        $subNode->setCls($record['_CSSCLASS']);
+        $subNode->setType('tx_commerce_categories');
+        $subNode->setId($record['uid']);
+        $subNode->setMountPoint($mountPoint);
+        $subNode->setWorkspaceId($record['_ORIG_uid'] ?: $record['uid']);
+        $subNode->setBackgroundColor(self::$backgroundColors[$record['uid']]);
+        $field = 'title';
+        $text = $record['title'];
+        if (self::$useNavTitle && trim($record['nav_title']) !== '') {
+            $field = 'nav_title';
+            $text = $record['nav_title'];
+        }
+        if (trim($text) === '') {
+            $visibleText = '['
+                . self::getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.no_title', true)
+                . ']';
+        } else {
+            $visibleText = $text;
+        }
+        $visibleText = GeneralUtility::fixed_lgd_cs($visibleText, self::$titleLength);
+        $suffix = '';
+        if (self::$addDomainName) {
+            $domain = self::getDomainName($record['uid']);
+            $suffix = $domain !== '' ? ' [' . $domain . ']' : '';
+        }
+        $qtip = str_replace(' - ', '<br />', htmlspecialchars(BackendUtility::titleAttribForPages($record, '', false)));
+        $prefix = '';
+        $lockInfo = BackendUtility::isRecordLocked('tx_commerce_categories', $record['uid']);
+        if (is_array($lockInfo)) {
+            $qtip .= '<br />' . htmlspecialchars($lockInfo['msg']);
+            $prefix .= '<span class="commerce-categorytree-status">'
+                . (string)$iconFactory->getIcon('status-warning-in-use', Icon::SIZE_SMALL) . '</span>';
+        }
+        // Call stats information hook
+        $stat = '';
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks'])) {
+            $_params = array('pages', $record['uid']);
+            $fakeThis = null;
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks'] as $_funcRef) {
+                $stat .= GeneralUtility::callUserFunction($_funcRef, $_params, $fakeThis);
+            }
+        }
+        $prefix .= htmlspecialchars(self::$addIdAsPrefix ? '[' . $record['uid'] . '] ' : '');
+        $subNode->setEditableText($text);
+        $subNode->setText(htmlspecialchars($visibleText), $field, $prefix, htmlspecialchars($suffix) . $stat);
+        $subNode->setQTip($qtip);
+        if ((int)$record['uid'] !== 0) {
+            $spriteIconCode = $iconFactory->getIconForRecord('tx_commerce_categories', $record, Icon::SIZE_SMALL);
+        } else {
+            $spriteIconCode = $iconFactory->getIcon('apps-pagetree-root', Icon::SIZE_SMALL);
+        }
+        $subNode->setSpriteIconCode((string)$spriteIconCode);
+        if (!$subNode->canCreateNewPages()
+            || VersionState::cast($record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
+        ) {
+            $subNode->setIsDropTarget(false);
+        }
+        if (!$subNode->canBeEdited()
+            || !$subNode->canBeRemoved()
+            || VersionState::cast($record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
+        ) {
+            $subNode->setDraggable(false);
+        }
+        return $subNode;
+    }
+
+    /**
+     * Creates a node with the given record information
+     *
+     * @param array $record
+     * @param int $mountPoint
+     * @return \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode
+     */
+    public static function getProductNode($record, $mountPoint = 0)
+    {
+        $backendUser = self::getBackendUserAuthentication();
+        $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+        if (self::$titleLength === null) {
+            self::$useNavTitle = $backendUser->getTSConfigVal('options.pageTree.showNavTitle');
+            self::$addIdAsPrefix = $backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
+            self::$addDomainName = $backendUser->getTSConfigVal('options.pageTree.showDomainNameWithTitle');
+            self::$backgroundColors = $backendUser->getTSConfigProp('options.pageTree.backgroundColor');
+            self::$titleLength = (int)$backendUser->uc['titleLen'];
+        }
+        /** @var $subNode \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
+        $subNode = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode::class);
+        $subNode->setRecord($record);
+        $subNode->setCls($record['_CSSCLASS']);
+        $subNode->setType('pages');
+        $subNode->setId($record['uid']);
+        $subNode->setStopPageTree($record['php_tree_stop']);
+        $subNode->setMountPoint($mountPoint);
+        $subNode->setWorkspaceId($record['_ORIG_uid'] ?: $record['uid']);
+        $subNode->setBackgroundColor(self::$backgroundColors[$record['uid']]);
+        $field = 'title';
+        $text = $record['title'];
+        if (self::$useNavTitle && trim($record['nav_title']) !== '') {
+            $field = 'nav_title';
+            $text = $record['nav_title'];
+        }
+        if (trim($text) === '') {
+            $visibleText = '['
+                . self::getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.no_title', true)
+                . ']';
+        } else {
+            $visibleText = $text;
+        }
+        $visibleText = GeneralUtility::fixed_lgd_cs($visibleText, self::$titleLength);
+        $suffix = '';
+        if (self::$addDomainName) {
+            $domain = self::getDomainName($record['uid']);
+            $suffix = $domain !== '' ? ' [' . $domain . ']' : '';
+        }
+        $qtip = str_replace(' - ', '<br />', htmlspecialchars(BackendUtility::titleAttribForPages($record, '', false)));
+        $prefix = '';
+        $lockInfo = BackendUtility::isRecordLocked('pages', $record['uid']);
+        if (is_array($lockInfo)) {
+            $qtip .= '<br />' . htmlspecialchars($lockInfo['msg']);
+            $prefix .= '<span class="typo3-pagetree-status">'
+                . (string)$iconFactory->getIcon('status-warning-in-use', Icon::SIZE_SMALL) . '</span>';
+        }
+        // Call stats information hook
+        $stat = '';
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks'])) {
+            $_params = array('pages', $record['uid']);
+            $fakeThis = null;
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks'] as $_funcRef) {
+                $stat .= GeneralUtility::callUserFunction($_funcRef, $_params, $fakeThis);
+            }
+        }
+        $prefix .= htmlspecialchars(self::$addIdAsPrefix ? '[' . $record['uid'] . '] ' : '');
+        $subNode->setEditableText($text);
+        $subNode->setText(htmlspecialchars($visibleText), $field, $prefix, htmlspecialchars($suffix) . $stat);
+        $subNode->setQTip($qtip);
+        if ((int)$record['uid'] !== 0) {
+            $spriteIconCode = $iconFactory->getIconForRecord('pages', $record, Icon::SIZE_SMALL);
+        } else {
+            $spriteIconCode = $iconFactory->getIcon('apps-pagetree-root', Icon::SIZE_SMALL);
+        }
+        $subNode->setSpriteIconCode((string)$spriteIconCode);
+        if (!$subNode->canCreateNewPages()
+            || VersionState::cast($record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
+        ) {
+            $subNode->setIsDropTarget(false);
+        }
+        if (!$subNode->canBeEdited()
+            || !$subNode->canBeRemoved()
+            || VersionState::cast($record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
+        ) {
+            $subNode->setDraggable(false);
+        }
+        return $subNode;
+    }
+
+    /**
+     * Creates a node with the given record information
+     *
+     * @param array $record
+     * @param int $mountPoint
+     * @return \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode
+     */
+    public static function getArticleNode($record, $mountPoint = 0)
     {
         $backendUser = self::getBackendUserAuthentication();
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
