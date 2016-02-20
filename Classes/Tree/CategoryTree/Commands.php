@@ -371,7 +371,7 @@ class Commands
         // Call stats information hook
         $stat = '';
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks'])) {
-            $_params = array('pages', $record['uid']);
+            $_params = array('tx_commerce_categories', $record['uid']);
             $fakeThis = null;
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks'] as $_funcRef) {
                 $stat .= GeneralUtility::callUserFunction($_funcRef, $_params, $fakeThis);
@@ -419,13 +419,12 @@ class Commands
             self::$backgroundColors = $backendUser->getTSConfigProp('options.pageTree.backgroundColor');
             self::$titleLength = (int)$backendUser->uc['titleLen'];
         }
-        /** @var $subNode \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
-        $subNode = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode::class);
+        /** @var $subNode ProductNode */
+        $subNode = GeneralUtility::makeInstance(ProductNode::class);
         $subNode->setRecord($record);
         $subNode->setCls($record['_CSSCLASS']);
-        $subNode->setType('pages');
+        $subNode->setType('tx_commerce_products');
         $subNode->setId($record['uid']);
-        $subNode->setStopPageTree($record['php_tree_stop']);
         $subNode->setMountPoint($mountPoint);
         $subNode->setWorkspaceId($record['_ORIG_uid'] ?: $record['uid']);
         $subNode->setBackgroundColor(self::$backgroundColors[$record['uid']]);
@@ -450,7 +449,7 @@ class Commands
         }
         $qtip = str_replace(' - ', '<br />', htmlspecialchars(BackendUtility::titleAttribForPages($record, '', false)));
         $prefix = '';
-        $lockInfo = BackendUtility::isRecordLocked('pages', $record['uid']);
+        $lockInfo = BackendUtility::isRecordLocked('tx_commerce_products', $record['uid']);
         if (is_array($lockInfo)) {
             $qtip .= '<br />' . htmlspecialchars($lockInfo['msg']);
             $prefix .= '<span class="typo3-pagetree-status">'
@@ -459,7 +458,7 @@ class Commands
         // Call stats information hook
         $stat = '';
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks'])) {
-            $_params = array('pages', $record['uid']);
+            $_params = array('tx_commerce_products', $record['uid']);
             $fakeThis = null;
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks'] as $_funcRef) {
                 $stat .= GeneralUtility::callUserFunction($_funcRef, $_params, $fakeThis);
@@ -470,7 +469,7 @@ class Commands
         $subNode->setText(htmlspecialchars($visibleText), $field, $prefix, htmlspecialchars($suffix) . $stat);
         $subNode->setQTip($qtip);
         if ((int)$record['uid'] !== 0) {
-            $spriteIconCode = $iconFactory->getIconForRecord('pages', $record, Icon::SIZE_SMALL);
+            $spriteIconCode = $iconFactory->getIconForRecord('tx_commerce_products', $record, Icon::SIZE_SMALL);
         } else {
             $spriteIconCode = $iconFactory->getIcon('apps-pagetree-root', Icon::SIZE_SMALL);
         }

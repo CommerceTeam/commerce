@@ -84,11 +84,12 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
             if (strpos($nodeId, 'p_') === 0) {
                 /** @var $node ProductNode */
                 $node = GeneralUtility::makeInstance(ProductNode::class, (array)$nodeData);
+                $nodeCollection = $this->dataProvider->getArticleNodes($node, $node->getMountPoint());
             } else {
                 /** @var $node CategoryNode */
                 $node = GeneralUtility::makeInstance(CategoryNode::class, (array)$nodeData);
+                $nodeCollection = $this->dataProvider->getCategoryNodes($node, $node->getMountPoint());
             }
-            $nodeCollection = $this->dataProvider->getNodes($node, $node->getMountPoint());
         }
         return $nodeCollection->toArray();
     }

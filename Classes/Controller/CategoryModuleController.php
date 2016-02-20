@@ -50,7 +50,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
      *
      * @var int
      */
-    public $categoryUid = 5;
+    public $categoryUid = 2;
     // @todo only for development set to 0 afterward set to 0 again
 
     /**

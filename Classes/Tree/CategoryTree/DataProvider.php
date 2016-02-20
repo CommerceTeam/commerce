@@ -109,7 +109,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     /**
      * Fetches the sub-nodes of the given node
      *
-     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode|CategoryNode $node
+     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode|CategoryNode|ProductNode $node
      * @param int $mountPoint
      * @param int $level internally used variable as a recursion limiter
      * @return \TYPO3\CMS\Backend\Tree\TreeNodeCollection
@@ -122,7 +122,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             return $nodeCollection;
         }
         $isVirtualRootNode = false;
-        $subCategories = $this->getSubCategories($node->getId());
+        $subCategories = $this->getCategories($node->getId());
         // check if fetching subpages the "root"-page
         // and in case of a virtual root return the mountpoints as virtual "subpages"
         if ((int)$node->getId() === 0) {
@@ -145,6 +145,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                 }
             }
         }
+        $addedCategoryOnThisLevel = true;
         if (is_array($subCategories) && !empty($subCategories)) {
             foreach ($subCategories as $subCategory) {
                 if (in_array($subCategory['uid'], $this->hiddenRecords)) {
@@ -175,11 +176,14 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                 }
                 if ($this->nodeCounter < $this->nodeLimit) {
                     $childNodes = $this->getCategoryNodes($subNode, $mountPoint, $level + 1);
-                    // @todo add product child nodes
                     $subNode->setChildNodes($childNodes);
                     $this->nodeCounter += $childNodes->count();
                 } else {
-                    $subNode->setLeaf(!$this->hasNodeSubPages($subNode->getId()));
+                    $addedCategoryOnThisLevel = false;
+                    $subNode->setLeaf(
+                        !$this->hasNodeSubCategories($subNode->getId())
+                        && !$this->hasNodeSubProducts($subNode->getId())
+                    );
                 }
                 if (!$this->getBackendUserAuthentication()->isAdmin() && (int)$subCategory['editlock'] === 1) {
                     $subNode->setLabelIsEditable(false);
@@ -187,6 +191,13 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                 $nodeCollection->append($subNode);
             }
         }
+
+        // its possible to have products on the same level as categries even
+        // even if nested categories are available
+        if ($addedCategoryOnThisLevel) {
+            $nodeCollection = $this->getProductNodes($node, $mountPoint, $level, $nodeCollection);
+        }
+
         foreach ($this->processCollectionHookObjects as $hookObject) {
             /** @var $hookObject \TYPO3\CMS\Backend\Tree\Pagetree\CollectionProcessorInterface */
             $hookObject->postProcessGetNodes($node, $mountPoint, $level, $nodeCollection);
@@ -195,16 +206,89 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     }
 
     /**
-     * Wrapper method for \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL
+     * Fetches the sub-nodes of the given node
      *
-     * @param int $uid The page id
-     * @param bool $unsetMovePointers Whether to unset move pointers
-     * @return array
+     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode|CategoryNode $node Node
+     * @param int $mountPoint Mount point
+     * @param int $level Internally used variable as a recursion limiter
+     * @param \TYPO3\CMS\Backend\Tree\TreeNodeCollection $nodeCollection Node Collection
+     *
+     * @return PagetreeNodeCollection
      */
-    protected function getRecordWithWorkspaceOverlay($uid, $unsetMovePointers = false)
+    public function getProductNodes(CategoryNode $node, $mountPoint = 0, $level = 0, $nodeCollection = null)
     {
-        return BackendUtility::getRecordWSOL('pages', $uid, '*', '', true, $unsetMovePointers);
+        if (is_null($nodeCollection)) {
+            /** @var $nodeCollection PagetreeNodeCollection */
+            $nodeCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
+        }
+        if ($level >= 99 || $node->getStopPageTree()) {
+            return $nodeCollection;
+        }
+        $products = $this->getProducts($node->getId());
+        if (is_array($products) && !empty($products)) {
+            foreach ($products as $product) {
+                $product = BackendUtility::getRecordWSOL('tx_commerce_products', $product['uid'], '*', '', true, true);
+                if (!$product) {
+                    continue;
+                }
+                $subNode = Commands::getProductNode($product, $mountPoint);
+                if ($this->nodeCounter < $this->nodeLimit) {
+                    $childNodes = $this->getArticleNodes($subNode, $nodeCollection);
+                    $subNode->setChildNodes($childNodes);
+                    $this->nodeCounter += $childNodes->count();
+                } else {
+                    $subNode->setLeaf(!$this->hasNodeSubArticles($subNode->getId()));
+                }
+                if (!$this->getBackendUserAuthentication()->isAdmin() && (int)$product['editlock'] === 1) {
+                    $subNode->setLabelIsEditable(false);
+                }
+                $nodeCollection->append($subNode);
+            }
+        }
+
+        foreach ($this->processCollectionHookObjects as $hookObject) {
+            /** @var $hookObject \TYPO3\CMS\Backend\Tree\Pagetree\CollectionProcessorInterface */
+            $hookObject->postProcessGetNodes($node, $mountPoint, $level, $nodeCollection);
+        }
+        return $nodeCollection;
     }
+
+    /**
+     * Fetches the sub-nodes of the given node
+     *
+     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode|ProductNode $node Node
+     * @param int $mountPoint Mount point
+     * @param int $level Internally used variable as a recursion limiter
+     *
+     * @return PagetreeNodeCollection
+     */
+    public function getArticleNodes(ProductNode $node, $mountPoint = 0, $level = 0)
+    {
+        /** @var $nodeCollection PagetreeNodeCollection */
+        $nodeCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
+        if ($level >= 99) {
+            return $nodeCollection;
+        }
+        $articles = $this->getArticles($node->getId());
+        if (is_array($articles) && !empty($articles)) {
+            foreach ($articles as $article) {
+                $article = BackendUtility::getRecordWSOL('tx_commerce_articles', $article['uid'], '*', '', true, true);
+                if (!$article) {
+                    continue;
+                }
+                $articleNode = Commands::getArticleNode($article, $mountPoint);
+                $articleNode->setLeaf(true);
+                $nodeCollection->append($articleNode);
+            }
+        }
+
+        foreach ($this->processCollectionHookObjects as $hookObject) {
+            /** @var $hookObject \TYPO3\CMS\Backend\Tree\Pagetree\CollectionProcessorInterface */
+            $hookObject->postProcessGetNodes($node, $mountPoint, $level, $nodeCollection);
+        }
+        return $nodeCollection;
+    }
+
 
     /**
      * Returns a node collection of filtered nodes
@@ -218,7 +302,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     {
         /** @var $nodeCollection PagetreeNodeCollection */
         $nodeCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
-        $records = $this->getSubCategories(-1, $searchFilter);
+        $records = $this->getCategories(-1, $searchFilter);
         if (!is_array($records) || empty($records)) {
             return $nodeCollection;
         } elseif (count($records) > 500) {
@@ -427,67 +511,18 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         return $nodeCollection;
     }
 
-    /**
-     * Returns the where clause for fetching pages
-     *
-     * @param int $id
-     * @param string $searchFilter
-     * @return string
-     */
-    protected function getWhereClause($id, $searchFilter = '')
-    {
-        $where = $this->getBackendUserAuthentication()->getPagePermsClause(1) . BackendUtility::deleteClause('pages')
-            . BackendUtility::versioningPlaceholderClause('pages');
-        if (is_numeric($id) && $id >= 0) {
-            $where .= ' AND pid= ' . $this->getDatabaseConnection()->fullQuoteStr((int)$id, 'pages');
-        }
-
-        $excludedDoktypes = $this->getBackendUserAuthentication()->getTSConfigVal('options.pageTree.excludeDoktypes');
-        if (!empty($excludedDoktypes)) {
-            $excludedDoktypes = $this->getDatabaseConnection()->fullQuoteArray(
-                GeneralUtility::intExplode(',', $excludedDoktypes),
-                'pages'
-            );
-            $where .= ' AND doktype NOT IN (' . implode(',', $excludedDoktypes) . ')';
-        }
-
-        if ($searchFilter !== '') {
-            $searchWhere = '';
-            if (is_numeric($searchFilter) && $searchFilter > 0) {
-                $searchWhere .= 'uid = ' . (int)$searchFilter . ' OR ';
-            }
-            $searchFilter = $this->getDatabaseConnection()->fullQuoteStr('%' . $searchFilter . '%', 'pages');
-            $useNavTitle = $this->getBackendUserAuthentication()->getTSConfigVal('options.pageTree.showNavTitle');
-            $useAlias = $this->getBackendUserAuthentication()->getTSConfigVal('options.pageTree.searchInAlias');
-
-            $searchWhereAlias = '';
-            if ($useAlias) {
-                $searchWhereAlias = ' OR alias LIKE ' . $searchFilter;
-            }
-
-            if ($useNavTitle) {
-                $searchWhere .= '(nav_title LIKE ' . $searchFilter .
-                ' OR (nav_title = "" AND title LIKE ' . $searchFilter . ')' . $searchWhereAlias . ')';
-            } else {
-                $searchWhere .= 'title LIKE ' . $searchFilter . $searchWhereAlias;
-            }
-
-            $where .= ' AND (' . $searchWhere . ')';
-        }
-        return $where;
-    }
 
     /**
      * Returns the where clause for fetching pages
      *
-     * @param int $id Page id
+     * @param int $id Category id
      * @param string $searchFilter Search filter
      *
      * @return string
      */
     protected function getCategoryWhereClause($id, $searchFilter = '')
     {
-        $where = \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1) .
+        $where = \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause($id) .
             BackendUtility::deleteClause('tx_commerce_categories') .
             BackendUtility::versioningPlaceholderClause('tx_commerce_categories');
         if (is_numeric($id) && $id >= 0) {
@@ -513,16 +548,88 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     }
 
     /**
+     * Returns the where clause for fetching pages
+     *
+     * @param int $id Category id
+     * @param string $searchFilter Search filter
+     *
+     * @return string
+     */
+    protected function getProductWhereClause($id, $searchFilter = '')
+    {
+        $where = \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause($id) .
+            BackendUtility::deleteClause('tx_commerce_products') .
+            BackendUtility::versioningPlaceholderClause('tx_commerce_products');
+
+        if (is_numeric($id) && $id >= 0) {
+            $where .= ' AND tx_commerce_categories.uid = ' . (int) $id;
+        }
+
+        if ($searchFilter !== '') {
+            $searchWhere = '';
+            if (is_numeric($searchFilter) && $searchFilter > 0) {
+                $searchWhere .= 'tx_commerce_products.uid = ' . (int) $searchFilter . ' OR ';
+            }
+            $searchFilter = $this->getDatabaseConnection()->fullQuoteStr(
+                '%' . $searchFilter . '%',
+                'tx_commerce_products'
+            );
+
+            $searchWhere .= 'tx_commerce_products.title LIKE ' . $searchFilter;
+
+            $where .= ' AND (' . $searchWhere . ')';
+        }
+
+        return $where;
+    }
+
+    /**
+     * Returns the where clause for fetching pages
+     *
+     * @param int $id Product id
+     * @param string $searchFilter Search filter
+     *
+     * @return string
+     */
+    protected function getArticleWhereClause($id, $searchFilter = '')
+    {
+        $where = '1=1' . BackendUtility::deleteClause('tx_commerce_articles') .
+            BackendUtility::versioningPlaceholderClause('tx_commerce_articles');
+
+        if (is_numeric($id) && $id >= 0) {
+            $where .= ' AND uid_product = ' . (int) $id;
+        }
+
+        if ($searchFilter !== '') {
+            $searchWhere = '';
+            if (is_numeric($searchFilter) && $searchFilter > 0) {
+                $searchWhere .= 'uid = ' . (int) $searchFilter . ' OR ';
+            }
+            $searchFilter = $this->getDatabaseConnection()->fullQuoteStr(
+                '%' . $searchFilter . '%',
+                'tx_commerce_articles'
+            );
+
+            $searchWhere .= 'title LIKE ' . $searchFilter;
+
+            $where .= ' AND (' . $searchWhere . ')';
+        }
+
+        return $where;
+    }
+
+
+    /**
      * Returns all sub-pages of a given id
      *
      * @param int $id
      * @param string $searchFilter
      * @return array
      */
-    protected function getSubCategories($id, $searchFilter = '')
+    protected function getCategories($id, $searchFilter = '')
     {
         $where = $this->getCategoryWhereClause($id, $searchFilter);
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+        return $this->getDatabaseConnection()->exec_SELECTgetRows(
             'uid, t3ver_wsid',
             'tx_commerce_categories
                 INNER JOIN tx_commerce_categories_parent_category_mm ON
@@ -536,25 +643,125 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     }
 
     /**
+     * Returns all sub-pages of a given id
+     *
+     * @param int $categoryId Category id
+     * @param string $searchFilter Search filter
+     *
+     * @return array
+     */
+    protected function getProducts($categoryId, $searchFilter = '')
+    {
+        $where = $this->getProductWhereClause($categoryId, $searchFilter);
+        return $this->getDatabaseConnection()->exec_SELECTgetRows(
+            'tx_commerce_products.uid, tx_commerce_products.t3ver_wsid',
+            'tx_commerce_products
+                INNER JOIN tx_commerce_products_categories_mm AS mm ON mm.uid_local = tx_commerce_products.uid
+                INNER JOIN tx_commerce_categories ON mm.uid_foreign = tx_commerce_categories.uid',
+            $where,
+            '',
+            'tx_commerce_products.sorting',
+            '',
+            'uid'
+        );
+    }
+
+    /**
+     * Returns all sub-pages of a given id
+     *
+     * @param int $productId Product id
+     * @param string $searchFilter Search filter
+     *
+     * @return array
+     */
+    protected function getArticles($productId, $searchFilter = '')
+    {
+        $where = $this->getArticleWhereClause($productId, $searchFilter);
+        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            'uid, t3ver_wsid',
+            'tx_commerce_articles',
+            $where,
+            '',
+            'sorting',
+            '',
+            'uid'
+        );
+    }
+
+
+    /**
      * Returns TRUE if the node has child's
      *
      * @param int $id
      * @return bool
      */
-    protected function hasNodeSubPages($id)
+    protected function hasNodeSubCategories($id)
     {
-        $where = $this->getWhereClause($id);
-        $subpage = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+        $where = $this->getCategoryWhereClause($id);
+        $category = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'tx_commerce_categories.uid',
+            'tx_commerce_categories
+                INNER JOIN tx_commerce_categories_parent_category_mm ON
+                    tx_commerce_categories.uid = tx_commerce_categories_parent_category_mm.uid_local',
+            $where,
+            '',
+            'tx_commerce_categories.sorting'
+        );
+        $returnValue = true;
+        if (!$category['uid']) {
+            $returnValue = false;
+        }
+        return $returnValue;
+    }
+
+    /**
+     * Returns TRUE if the node has child's
+     *
+     * @param int $id
+     * @return bool
+     */
+    protected function hasNodeSubProducts($id)
+    {
+        $where = $this->getProductWhereClause($id);
+        $product = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'tx_commerce_products.uid',
+            'tx_commerce_products
+                INNER JOIN tx_commerce_products_categories_mm AS mm ON mm.uid_local = tx_commerce_products.uid
+                INNER JOIN tx_commerce_categories ON mm.uid_foreign = tx_commerce_categories.uid',
+            $where,
+            '',
+            'tx_commerce_products.sorting'
+        );
+        $returnValue = true;
+        if (!$product['uid']) {
+            $returnValue = false;
+        }
+        return $returnValue;
+    }
+
+    /**
+     * Returns TRUE if the node has child's
+     *
+     * @param int $id Page id
+     *
+     * @return boolean
+     */
+    protected function hasNodeSubArticles($id)
+    {
+        $where = $this->getArticleWhereClause($id);
+        $article = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             'uid',
-            'pages',
+            'tx_commerce_articles',
             $where,
             '',
             'sorting'
         );
+
         $returnValue = true;
-        if (!$subpage['uid']) {
+        if (!$article['uid']) {
             $returnValue = false;
         }
+
         return $returnValue;
     }
 
