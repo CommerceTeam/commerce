@@ -217,7 +217,7 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
                 'temporaryMountPoint' => Commands::getMountPointPath()
             ),
             'Icons' => array(
-                'InputClear' => (string)$this->iconFactory->getIcon('actions-input-clear', Icon::SIZE_SMALL),
+                'InputClear' => $this->iconFactory->getIcon('actions-input-clear', Icon::SIZE_SMALL)->render('inline'),
                 'Close' => $this->iconFactory->getIcon('actions-close', Icon::SIZE_SMALL)->render('inline'),
                 'TrashCan' => $this->iconFactory->getIcon('actions-edit-delete', Icon::SIZE_SMALL)->render('inline'),
                 'TrashCanRestore' => $this->iconFactory->getIcon(
@@ -225,9 +225,9 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
                     Icon::SIZE_SMALL
                 )->render('inline'),
                 'Info' => $this->iconFactory->getIcon('actions-document-info', Icon::SIZE_SMALL)->render('inline'),
-                'NewNode' => (string)$this->iconFactory->getIcon('actions-page-new', Icon::SIZE_SMALL),
-                'Filter' => (string)$this->iconFactory->getIcon('actions-filter', Icon::SIZE_SMALL),
-                'Refresh' => (string)$this->iconFactory->getIcon('actions-refresh', Icon::SIZE_SMALL)
+                'NewNode' => $this->iconFactory->getIcon('actions-page-new', Icon::SIZE_SMALL)->render('inline'),
+                'Filter' => $this->iconFactory->getIcon('actions-filter', Icon::SIZE_SMALL)->render('inline'),
+                'Refresh' => $this->iconFactory->getIcon('actions-refresh', Icon::SIZE_SMALL)->render('inline')
             )
         );
         return $configuration;
