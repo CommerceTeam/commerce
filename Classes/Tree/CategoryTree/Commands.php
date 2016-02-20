@@ -112,7 +112,7 @@ class Commands
      */
     public static function updateNodeLabel(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $node, $updatedLabel)
     {
-        if ($GLOBALS['BE_USER']->checkLanguageAccess(0)) {
+        if (self::getBackendUserAuthentication()->checkLanguageAccess(0)) {
             $data['pages'][$node->getWorkspaceId()][$node->getTextSourceField()] = $updatedLabel;
             self::processTceCmdAndDataMap(array(), $data);
         } else {
@@ -181,7 +181,7 @@ class Commands
 
         $data['pages'][$placeholder]['pid'] = $pid;
         $data['pages'][$placeholder]['doktype'] = $pageType;
-        $data['pages'][$placeholder]['title'] = $GLOBALS['LANG']->sL(
+        $data['pages'][$placeholder]['title'] = self::getLanguageService()->sL(
             'LLL:EXT:lang/locallang_core.xlf:tree.defaultPageTitle',
             true
         );
@@ -260,7 +260,7 @@ class Commands
             return '';
         }
         if (self::$useNavTitle === null) {
-            self::$useNavTitle = $GLOBALS['BE_USER']->getTSConfigVal('options.pageTree.showNavTitle');
+            self::$useNavTitle = self::getBackendUserAuthentication()->getTSConfigVal('options.pageTree.showNavTitle');
         }
         $rootline = array_reverse(BackendUtility::BEgetRootLine($uid));
         array_shift($rootline);
@@ -299,7 +299,7 @@ class Commands
     {
         $whereClause = 'pid=' . (int)$uid . BackendUtility::deleteClause('sys_domain')
             . BackendUtility::BEenableFields('sys_domain');
-        $domain = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
+        $domain = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
             'domainName',
             'sys_domain',
             $whereClause,
@@ -318,13 +318,14 @@ class Commands
      */
     public static function getNewNode($record, $mountPoint = 0)
     {
+        $backendUser = self::getBackendUserAuthentication();
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         if (self::$titleLength === null) {
-            self::$useNavTitle = $GLOBALS['BE_USER']->getTSConfigVal('options.pageTree.showNavTitle');
-            self::$addIdAsPrefix = $GLOBALS['BE_USER']->getTSConfigVal('options.pageTree.showPageIdWithTitle');
-            self::$addDomainName = $GLOBALS['BE_USER']->getTSConfigVal('options.pageTree.showDomainNameWithTitle');
-            self::$backgroundColors = $GLOBALS['BE_USER']->getTSConfigProp('options.pageTree.backgroundColor');
-            self::$titleLength = (int)$GLOBALS['BE_USER']->uc['titleLen'];
+            self::$useNavTitle = $backendUser->getTSConfigVal('options.pageTree.showNavTitle');
+            self::$addIdAsPrefix = $backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
+            self::$addDomainName = $backendUser->getTSConfigVal('options.pageTree.showDomainNameWithTitle');
+            self::$backgroundColors = $backendUser->getTSConfigProp('options.pageTree.backgroundColor');
+            self::$titleLength = (int)$backendUser->uc['titleLen'];
         }
         /** @var $subNode \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
         $subNode = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode::class);
@@ -343,7 +344,9 @@ class Commands
             $text = $record['nav_title'];
         }
         if (trim($text) === '') {
-            $visibleText = '[' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.xlf:labels.no_title', true) . ']';
+            $visibleText = '['
+                . self::getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.no_title', true)
+                . ']';
         } else {
             $visibleText = $text;
         }
@@ -359,7 +362,7 @@ class Commands
         if (is_array($lockInfo)) {
             $qtip .= '<br />' . htmlspecialchars($lockInfo['msg']);
             $prefix .= '<span class="typo3-pagetree-status">'
-                . $iconFactory->getIcon('status-warning-in-use', Icon::SIZE_SMALL)->render() . '</span>';
+                . (string)$iconFactory->getIcon('status-warning-in-use', Icon::SIZE_SMALL) . '</span>';
         }
         // Call stats information hook
         $stat = '';
@@ -375,11 +378,11 @@ class Commands
         $subNode->setText(htmlspecialchars($visibleText), $field, $prefix, htmlspecialchars($suffix) . $stat);
         $subNode->setQTip($qtip);
         if ((int)$record['uid'] !== 0) {
-            $spriteIconCode = $iconFactory->getIconForRecord('pages', $record, Icon::SIZE_SMALL)->render();
+            $spriteIconCode = $iconFactory->getIconForRecord('pages', $record, Icon::SIZE_SMALL);
         } else {
-            $spriteIconCode = $iconFactory->getIcon('apps-pagetree-root', Icon::SIZE_SMALL)->render();
+            $spriteIconCode = $iconFactory->getIcon('apps-pagetree-root', Icon::SIZE_SMALL);
         }
-        $subNode->setSpriteIconCode($spriteIconCode);
+        $subNode->setSpriteIconCode((string)$spriteIconCode);
         if (!$subNode->canCreateNewPages()
             || VersionState::cast($record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
         ) {
@@ -392,5 +395,34 @@ class Commands
             $subNode->setDraggable(false);
         }
         return $subNode;
+    }
+
+
+    /**
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected static function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
+    }
+
+    /**
+     * Returns LanguageService
+     *
+     * @return \TYPO3\CMS\Lang\LanguageService
+     */
+    protected static function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
+    }
+
+    /**
+     * Get backend user authentication
+     *
+     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     */
+    protected static function getBackendUserAuthentication()
+    {
+        return $GLOBALS['BE_USER'];
     }
 }

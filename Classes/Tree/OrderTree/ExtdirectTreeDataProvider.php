@@ -34,12 +34,14 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\Pagetree\Extdire
     {
         $this->initDataProvider();
         if ($nodeId === 'root') {
-            $mountPoints = (int)$GLOBALS['BE_USER']->uc['pageTree_temporaryMountPoint'];
+            $backendUser = $this->getBackendUserAuthentication();
+            $mountPoints = $backendUser->uc['pageTree_temporaryMountPoint'];
 
-            $GLOBALS['BE_USER']->uc['pageTree_temporaryMountPoint'] = (int)BackendUtility::getOrderFolderUid();
+            // use temporary mount point to only show orders page and subpages
+            $backendUser->uc['pageTree_temporaryMountPoint'] = (int)BackendUtility::getOrderFolderUid();
             $nodeCollection = $this->dataProvider->getTreeMounts();
 
-            $GLOBALS['BE_USER']->uc['pageTree_temporaryMountPoint'] = $mountPoints;
+            $backendUser->uc['pageTree_temporaryMountPoint'] = $mountPoints;
         } else {
             /** @var $node PagetreeNode */
             $node = GeneralUtility::makeInstance(PagetreeNode::class, (array)$nodeData);
@@ -48,16 +50,6 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\Pagetree\Extdire
         return $nodeCollection->toArray();
     }
 
-
-    /**
-     * Get language service
-     *
-     * @return \TYPO3\CMS\Lang\LanguageService
-     */
-    protected function getLanguageService()
-    {
-        return $GLOBALS['LANG'];
-    }
 
     /**
      * Get backend user authentication

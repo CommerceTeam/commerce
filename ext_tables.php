@@ -126,7 +126,6 @@ call_user_func(function ($packageKey) {
                         'tab' => 'EXT:beuser/Resources/Public/Icons/module-permission.svg'
                     ],
                 ],
-                'navigationFrameModule' => 'CommerceTeam_commerce_CategoryNavigation',
             ]
         );
 
@@ -146,52 +145,18 @@ call_user_func(function ($packageKey) {
                         'tab' => 'EXT:commerce/Resources/Public/Icons/mod_orders.gif'
                     ],
                 ],
-                'navigationFrameModule' => 'CommerceTeam_commerce_OrderNavigation',
             ]
         );
-
-        // Statistic Module
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-            $packageKey,
-            'statistic',
-            '',
-            '',
-            [
-                'routeTarget' => \CommerceTeam\Commerce\Controller\StatisticModuleController::class . '::mainAction',
-                'access' => 'user,group',
-                'name' => 'commerce_statistic',
-                'labels' => [
-                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf',
-                    'tabs_images' => [
-                        'tab' => 'EXT:commerce/Resources/Public/Icons/mod_statistic.gif'
-                    ],
-                ],
-                'navigationFrameModule' => 'CommerceTeam_commerce_OrderNavigation',
-            ]
+        // Order navigation frame
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent(
+            'commerce_order',
+            'commerce-ordertree',
+            'commerce'
         );
-
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
-            'commerce_statistic',
-            \CommerceTeam\Commerce\Controller\StatisticShowStatisticsModuleFunctionController::class,
-            null,
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf:statistics'
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
+            'TYPO3.Components.OrderTree.DataProvider',
+            \CommerceTeam\Commerce\Tree\OrderTree\ExtdirectTreeDataProvider::class
         );
-
-        if (\CommerceTeam\Commerce\Utility\ConfigurationUtility::getInstance()->getExtConf('allowAggregation') == 1) {
-            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
-                'commerce_statistic',
-                \CommerceTeam\Commerce\Controller\StatisticIncrementalAggregationModuleFunctionController::class,
-                null,
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf:incremental_aggregation'
-            );
-
-            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
-                'commerce_statistic',
-                \CommerceTeam\Commerce\Controller\StatisticCompleteAggregationModuleFunctionController::class,
-                null,
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf:complete_aggregation'
-            );
-        }
 
         // Systemdata module
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
@@ -233,6 +198,48 @@ call_user_func(function ($packageKey) {
             null,
             'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf:title_supplier'
         );
+
+        // Statistic Module
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+            $packageKey,
+            'statistic',
+            '',
+            '',
+            [
+                'routeTarget' => \CommerceTeam\Commerce\Controller\StatisticModuleController::class . '::mainAction',
+                'access' => 'user,group',
+                'name' => 'commerce_statistic',
+                'labels' => [
+                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf',
+                    'tabs_images' => [
+                        'tab' => 'EXT:commerce/Resources/Public/Icons/mod_statistic.gif'
+                    ],
+                ],
+            ]
+        );
+
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
+            'commerce_statistic',
+            \CommerceTeam\Commerce\Controller\StatisticShowStatisticsModuleFunctionController::class,
+            null,
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf:statistics'
+        );
+
+        if (\CommerceTeam\Commerce\Utility\ConfigurationUtility::getInstance()->getExtConf('allowAggregation') == 1) {
+            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
+                'commerce_statistic',
+                \CommerceTeam\Commerce\Controller\StatisticIncrementalAggregationModuleFunctionController::class,
+                null,
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf:incremental_aggregation'
+            );
+
+            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
+                'commerce_statistic',
+                \CommerceTeam\Commerce\Controller\StatisticCompleteAggregationModuleFunctionController::class,
+                null,
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf:complete_aggregation'
+            );
+        }
 
 
         // @todo obsolete?
