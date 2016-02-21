@@ -81,7 +81,7 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
         if ($nodeId === 'root') {
             $nodeCollection = $this->dataProvider->getTreeMounts();
         } else {
-            if (strpos($nodeId, 'p_') === 0) {
+            if (strpos($nodeId, 'pp') === 0) {
                 /** @var $node ProductNode */
                 $node = GeneralUtility::makeInstance(ProductNode::class, (array)$nodeData);
                 $nodeCollection = $this->dataProvider->getArticleNodes($node, $node->getMountPoint());

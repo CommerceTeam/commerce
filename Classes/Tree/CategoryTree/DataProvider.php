@@ -179,11 +179,13 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                     $subNode->setChildNodes($childNodes);
                     $this->nodeCounter += $childNodes->count();
                 } else {
+                    $hasNodeSubCategories = !$this->hasNodeSubCategories($subNode->getId());
+                    // In permission module only categories should be used
+                    if ((!isset($_GET['namespace']) || $_GET['namespace'] != 'TYPO3.Components.PermissionTree')) {
+                        $hasNodeSubCategories = $hasNodeSubCategories && !$this->hasNodeSubProducts($subNode->getId());
+                    }
                     $addedCategoryOnThisLevel = false;
-                    $subNode->setLeaf(
-                        !$this->hasNodeSubCategories($subNode->getId())
-                        && !$this->hasNodeSubProducts($subNode->getId())
-                    );
+                    $subNode->setLeaf($hasNodeSubCategories);
                 }
                 if (!$this->getBackendUserAuthentication()->isAdmin() && (int)$subCategory['editlock'] === 1) {
                     $subNode->setLabelIsEditable(false);
@@ -194,7 +196,10 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
 
         // its possible to have products on the same level as categries even
         // even if nested categories are available
-        if ($addedCategoryOnThisLevel) {
+        if ($addedCategoryOnThisLevel
+            // In permission module only categories should be used
+            && (!isset($_GET['namespace']) || $_GET['namespace'] != 'TYPO3.Components.PermissionTree')
+        ) {
             $nodeCollection = $this->getProductNodes($node, $mountPoint, $level, $nodeCollection);
         }
 

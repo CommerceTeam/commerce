@@ -110,7 +110,7 @@ call_user_func(function ($packageKey) {
             \CommerceTeam\Commerce\Tree\CategoryTree\ExtdirectTreeDataProvider::class
         );
 
-        // Access Module
+        // Permission Module
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
             $packageKey,
             'permission',
@@ -127,6 +127,17 @@ call_user_func(function ($packageKey) {
                     ],
                 ],
             ]
+        );
+
+        // Permission navigation frame
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent(
+            'commerce_permission',
+            'commerce-permissiontree',
+            'commerce'
+        );
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
+            'TYPO3.Components.PermissionTree.DataProvider',
+            \CommerceTeam\Commerce\Tree\CategoryTree\ExtdirectTreeDataProvider::class
         );
 
         // Orders module
