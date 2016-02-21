@@ -252,13 +252,6 @@ call_user_func(function ($packageKey) {
             );
         }
 
-
-        // @todo obsolete?
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-            'CommerceTeam_Commerce_PermissionAjaxController::dispatch',
-            \CommerceTeam\Commerce\Controller\PermissionAjaxController::class . '->dispatch'
-        );
-
         // Add default User TS config
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig(
             '

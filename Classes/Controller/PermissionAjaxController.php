@@ -13,6 +13,9 @@ namespace CommerceTeam\Commerce\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -30,13 +33,13 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
     /**
      * The main dispatcher function. Collect data and prepare HTML output.
      *
-     * @param array $_ Parameters from the AJAX interface
-     * @param \TYPO3\CMS\Core\Http\AjaxRequestHandler $ajaxObj Ajax object
-     *
-     * @return void
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @return ResponseInterface
      */
-    public function dispatch(array $_ = array(), \TYPO3\CMS\Core\Http\AjaxRequestHandler &$ajaxObj = null)
+    public function dispatch(ServerRequestInterface $request, ResponseInterface $response)
     {
+        // @todo fix this
         $content = '';
 
         // Basic test for required value
@@ -48,7 +51,6 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
              * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
              */
             $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-            $tce->stripslashes_values = 1;
 
             // Determine the scripts to execute
             switch ($this->conf['action']) {
@@ -78,7 +80,8 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
                             $this->conf['new_owner_username']
                         );
                     } else {
-                        $ajaxObj->setError('An error occured: No page owner uid specified.');
+                        $response->getBody()->write('An error occured: No page owner uid specified.');
+                        $response = $response->withStatus(500);
                     }
                     break;
 
@@ -109,7 +112,8 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
                             $this->conf['new_group_username']
                         );
                     } else {
-                        $ajaxObj->setError('An error occured: No page group uid specified.');
+                        $response->getBody()->write('An error occured: No page group uid specified.');
+                        $response = $response->withStatus(500);
                     }
                     break;
 
@@ -153,8 +157,11 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
                     );
             }
         } else {
-            $ajaxObj->setError('This script cannot be called directly.');
+            $response->getBody()->write('This script cannot be called directly.');
+            $response = $response->withStatus(500);
         }
-        $ajaxObj->addContent($this->conf['page'] . '_' . $this->conf['who'], $content);
+        $response->getBody()->write($content);
+        $response = $response->withHeader('Content-Type', 'text/html; charset=utf-8');
+        return $response;
     }
 }
