@@ -35,7 +35,7 @@ class ArticleNode extends CategoryNode
      * @param string $prefix Defaults to 'a'
      * @return string
      */
-    public function calculateNodeId($prefix = 'a')
+    public function calculateNodeId($prefix = 'pa')
     {
         return $prefix . dechex($this->getId());
     }

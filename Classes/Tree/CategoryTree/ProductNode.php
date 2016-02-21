@@ -28,7 +28,7 @@ class ProductNode extends CategoryNode
      * @param string $prefix Defaults to 'p'
      * @return string
      */
-    public function calculateNodeId($prefix = 'p')
+    public function calculateNodeId($prefix = 'pp')
     {
         return $prefix . dechex($this->getId());
     }

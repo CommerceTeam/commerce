@@ -419,7 +419,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode
      * @param string $prefix Defaults to 'c'
      * @return string
      */
-    public function calculateNodeId($prefix = 'c')
+    public function calculateNodeId($prefix = 'pc')
     {
         return $prefix . dechex($this->getId()) . ($this->getMountPoint() ? '-' . dechex($this->getMountPoint()) : '');
     }
