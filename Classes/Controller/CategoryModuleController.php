@@ -50,8 +50,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
      *
      * @var int
      */
-    public $categoryUid = 2;
-    // @todo only for development set to 0 afterward set to 0 again
+    public $categoryUid = 0;
 
     /**
      * Constructor
@@ -107,7 +106,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
 
         // Get category uid from control
         $controlFromGetPost = GeneralUtility::_GP('control');
-        if (is_array($controlFromGetPost)) {
+        if (is_array($controlFromGetPost) && isset($controlFromGetPost['categoryUid'])) {
             $this->categoryUid = (int) $controlFromGetPost['categoryUid'];
         }
     }
@@ -324,7 +323,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                     top.fsMod.recentIds["web"] = id;
                     // For highlighting
                     top.fsMod.navFrameHighlightedID["web"] = "pages" + id + "_" + top.fsMod.currentBank;
-                    top.fsMod.navFrameHighlightedID["commerce"] = "tx_commerce_categories" + id + "_"
+                    top.fsMod.navFrameHighlightedID["commerce_category"] = "tx_commerce_categories" + id + "_"
                         + top.fsMod.currentBank;
 
                     if (top.content && top.content.nav_frame && top.content.nav_frame.refresh_nav) {
@@ -359,11 +358,6 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                     }
 
                     return list ? list : idList;
-                }
-
-                if (top.fsMod) {
-                    top.fsMod.recentIds["web"] = ' . (int)$this->id . ';
-                    top.fsMod.recentIds["commerce"] = ' . (int)$this->categoryUid . ';
                 }
                 '
             );

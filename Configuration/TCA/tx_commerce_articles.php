@@ -215,9 +215,11 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
                         'notNewRecords' => 1,
                         'RTEonly' => 1,
                         'type' => 'script',
-                        'title' => 'Full screen Rich Text Editing|Formatteret redigering i hele vinduet',
+                        'title' => 'Full screen Rich Text Editing',
                         'icon' => 'wizard_rte2.gif',
-                        'script' => 'wizard_rte.php',
+                        'module' => array(
+                            'name' => 'wizard_rte'
+                        )
                     ),
                 ),
             ),

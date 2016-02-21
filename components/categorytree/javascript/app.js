@@ -312,13 +312,13 @@ TYPO3.Components.CategoryTree.App = Ext.extend(Ext.Panel, {
 	},
 
 	/**
-	 * Refreshes the tree and selects the node defined by fsMod.recentIds['web']
+	 * Refreshes the tree and selects the node defined by fsMod.recentIds['commerce_category']
 	 *
 	 * @return {void}
 	 */
 	refreshTree: function() {
-		if (!isNaN(fsMod.recentIds['web']) && fsMod.recentIds['web'] !== '') {
-			this.select(fsMod.recentIds['web'], true);
+		if (!isNaN(fsMod.recentIds['commerce_category']) && fsMod.recentIds['commerce_category'] !== '') {
+			this.select(fsMod.recentIds['commerce_category'], true);
 		}
 
 		TYPO3.Components.CategoryTree.DataProvider.getIndicators(function(response) {

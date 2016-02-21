@@ -59,7 +59,7 @@ TYPO3.Components.CategoryTree.ContextMenu = Ext.extend(Ext.menu.Menu, {
 			fn: function (item) {
 				if (this.CategoryTree.commandProvider[item.callbackAction]) {
 					if (item.parentMenu.CategoryTree.stateHash) {
-						fsMod.recentIds['web'] = item.parentMenu.node.attributes.nodeData.id;
+						fsMod.recentIds['commerce_category'] = item.parentMenu.node.attributes.nodeData.id;
 						item.parentMenu.CategoryTree.stateHash['lastSelectedNode'] = item.parentMenu.node.id;
 					}
 

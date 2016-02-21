@@ -693,9 +693,15 @@ TYPO3.Components.CategoryTree.Actions = {
 	singleClick: function(node, tree) {
 		tree.currentSelectedNode = node;
 
-		var separator = '?';
-		if (currentSubScript.indexOf('?') !== -1) {
-			separator = '&';
+		var url = '';
+		if (node.attributes.type === 'tx_commerce_categories') {
+			// get category list
+			url = currentSubScript + node.attributes.jumpUrl;
+		} else {
+			// open product / article
+			var redirectUrl = TYPO3.Backend.ContentContainer.url || currentSubScript;
+
+			url = node.attributes.jumpUrl.replace(/T3_THIS_LOCATION/, top.rawurlencode(redirectUrl));
 		}
 
 		node.select();
@@ -711,11 +717,9 @@ TYPO3.Components.CategoryTree.Actions = {
 			);
 		}
 
-		fsMod.recentIds['web'] = node.attributes.nodeData.id;
+		fsMod.recentIds['commerce_category'] = node.id;
 
-		TYPO3.Backend.ContentContainer.setUrl(
-			currentSubScript + separator + 'id=' + node.attributes.nodeData.id
-		);
+		TYPO3.Backend.ContentContainer.setUrl(url);
 	},
 
 	/**

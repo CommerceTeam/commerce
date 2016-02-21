@@ -404,12 +404,22 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode
     }
 
     /**
-     * Returns the calculated id representation of this node
-     *
-     * @param string $prefix Defaults to 'p'
      * @return string
      */
-    public function calculateNodeId($prefix = 'p')
+    public function getJumpUrl()
+    {
+        $params = '&control[categoryUid]=' . $this->getId();
+
+        return $params;
+    }
+
+    /**
+     * Returns the calculated id representation of this node
+     *
+     * @param string $prefix Defaults to 'c'
+     * @return string
+     */
+    public function calculateNodeId($prefix = 'c')
     {
         return $prefix . dechex($this->getId()) . ($this->getMountPoint() ? '-' . dechex($this->getMountPoint()) : '');
     }
@@ -427,6 +437,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode
         $arrayRepresentation['realId'] = $this->getId();
         $arrayRepresentation['nodeData']['id'] = $this->getId();
         $arrayRepresentation['readableRootline'] = $this->getReadableRootline();
+        $arrayRepresentation['jumpUrl'] = $this->getJumpUrl();
         $arrayRepresentation['nodeData']['readableRootline'] = $this->getReadableRootline();
         $arrayRepresentation['nodeData']['mountPoint'] = $this->getMountPoint();
         $arrayRepresentation['nodeData']['workspaceId'] = $this->getWorkspaceId();

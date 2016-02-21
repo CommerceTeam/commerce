@@ -155,12 +155,6 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
                 }
 
                 function setHighlight(id) {
-                    top.fsMod.recentIds["web"] = id;
-                    // For highlighting
-                    top.fsMod.navFrameHighlightedID["web"] = "pages" + id + "_" + top.fsMod.currentBank;
-                    top.fsMod.navFrameHighlightedID["commerce"] = "tx_commerce_categories" + id + "_"
-                        + top.fsMod.currentBank;
-
                     if (top.content && top.content.nav_frame && top.content.nav_frame.refresh_nav) {
                         top.content.nav_frame.refresh_nav();
                     }
@@ -199,12 +193,6 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
             $this->moduleTemplate->addJavaScriptCode(
                 'mainJsFunctions',
                 '
-                if (top.fsMod) {
-                    top.fsMod.recentIds["web"] = ' . (int)$this->id . ';
-                    top.fsMod.navFrameHighlightedID["web"] = "pages' . (int)$this->id
-                . '_"+top.fsMod.currentBank; ' . (int)$this->id . ';
-                }
-
                 function deleteRecord(table,id,url) {   //
                     if (confirm(' . GeneralUtility::quoteJSvalue($this->getLanguageService()->getLL('deleteWarning'))
                 . ')) {
@@ -222,11 +210,6 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
             $this->extObjContent();
             $this->getButtons();
         } else {
-            $this->moduleTemplate->addJavaScriptCode(
-                'mainJsFunctions',
-                'if (top.fsMod) top.fsMod.recentIds["web"] = ' . (int)$this->id . ';'
-            );
-
             $this->content = '<h1>' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] . '</h1>';
             $this->content .= 'Access denied or commerce pages not created yet!';
 

@@ -26,6 +26,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class FolderRepository
 {
     /**
+     * Cache of page ids
+     *
+     * @var array
+     */
+    protected static $folderIds = array();
+
+    /**
      * Find the extension folders.
      *
      * @param string $title Folder title as named in pages table
@@ -66,6 +73,10 @@ class FolderRepository
             $module = $temp;
             unset($temp);
         }
+        $cacheHash = $title . '|' . $module . '|' . $pid;
+        if (isset(static::$folderIds[$cacheHash])) {
+            return static::$folderIds[$cacheHash];
+        }
 
         $folder = self::getFolder($module, $pid, $title);
         if (empty($folder)) {
@@ -73,6 +84,7 @@ class FolderRepository
             $folder = self::getFolder($module, $pid, $title);
         }
 
+        static::$folderIds[$cacheHash] = (int)$folder['uid'];
         return (int)$folder['uid'];
     }
 

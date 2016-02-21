@@ -21,8 +21,6 @@ class BackendHooks
     public function addJsFiles(array $configuration, &$parent)
     {
         $extensionPath = '../typo3conf/ext/commerce/';
-        $parent->addJavascriptFile(
-            $extensionPath . 'Resources/Public/JavaScript/extjs/components/systemdatanavframe/javascript/tree.js'
-        );
+        $parent->addJavascriptFile($extensionPath . 'components/systemdatanavframe/javascript/tree.js');
     }
 }

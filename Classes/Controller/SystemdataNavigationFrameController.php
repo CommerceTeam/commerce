@@ -95,14 +95,6 @@ class SystemdataNavigationFrameController extends BaseScriptClass
                 return false;
             }
         ');
-
-        $this->moduleTemplate->addJavaScriptCode('mainJsFunctions', '
-            if (top.fsMod) {
-                top.fsMod.recentIds["web"] = ' . (int)$this->id . ';
-                top.fsMod.navFrameHighlightedID["web"] = "pages' . (int)$this->id .
-            '_"+top.fsMod.currentBank; ' . (int)$this->id . ';
-            }
-        ');
     }
 
     /**

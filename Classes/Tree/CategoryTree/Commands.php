@@ -524,7 +524,7 @@ class Commands
         $subNode = GeneralUtility::makeInstance(ArticleNode::class);
         $subNode->setRecord($record);
         $subNode->setCls($record['_CSSCLASS']);
-        $subNode->setType('pages');
+        $subNode->setType('tx_commerce_articles');
         $subNode->setId($record['uid']);
         $subNode->setWorkspaceId($record['_ORIG_uid'] ?: $record['uid']);
         $subNode->setBackgroundColor(self::$backgroundColors[$record['uid']]);

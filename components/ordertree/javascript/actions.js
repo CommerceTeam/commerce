@@ -711,7 +711,7 @@ TYPO3.Components.OrderTree.Actions = {
 			);
 		}
 
-		fsMod.recentIds['web'] = node.attributes.nodeData.id;
+		fsMod.recentIds['commerce_order'] = node.attributes.nodeData.id;
 
 		TYPO3.Backend.ContentContainer.setUrl(
 			currentSubScript + separator + 'id=' + node.attributes.nodeData.id

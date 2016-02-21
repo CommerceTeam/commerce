@@ -312,13 +312,13 @@ TYPO3.Components.OrderTree.App = Ext.extend(Ext.Panel, {
 	},
 
 	/**
-	 * Refreshes the tree and selects the node defined by fsMod.recentIds['web']
+	 * Refreshes the tree and selects the node defined by fsMod.recentIds['commerce_order']
 	 *
 	 * @return {void}
 	 */
 	refreshTree: function() {
-		if (!isNaN(fsMod.recentIds['web']) && fsMod.recentIds['web'] !== '') {
-			this.select(fsMod.recentIds['web'], true);
+		if (!isNaN(fsMod.recentIds['commerce_order']) && fsMod.recentIds['commerce_order'] !== '') {
+			this.select(fsMod.recentIds['commerce_order'], true);
 		}
 
 		TYPO3.Components.OrderTree.DataProvider.getIndicators(function(response) {
