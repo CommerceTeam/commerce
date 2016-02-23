@@ -34,12 +34,7 @@ class PermissionModuleController extends ActionController
     /**
      * @var string prefix for session
      */
-    const SESSION_PREFIX = 'tx_Beuser_';
-
-    /**
-     * @var int the current page id
-     */
-    protected $id;
+    const SESSION_PREFIX = 'tx_Commerce_';
 
     /**
      * @var int
@@ -96,12 +91,6 @@ class PermissionModuleController extends ActionController
      */
     protected function initializeAction()
     {
-        // determine id parameter
-        $this->id = (int)GeneralUtility::_GP('id');
-        if ($this->request->hasArgument('id')) {
-            $this->id = (int)$this->request->getArgument('id');
-        }
-
         // determine depth parameter
         $this->depth = ((int)GeneralUtility::_GP('depth') > 0)
             ? (int) GeneralUtility::_GP('depth')
@@ -117,13 +106,11 @@ class PermissionModuleController extends ActionController
         $controlFromGetPost = GeneralUtility::_GP('control');
         if (is_array($controlFromGetPost) && isset($controlFromGetPost['categoryUid'])) {
             $this->categoryUid = (int) $controlFromGetPost['categoryUid'];
+        } elseif ($this->request->hasArgument('categoryUid')) {
+            $this->categoryUid = (int)$this->request->getArgument('categoryUid');
         }
-        // Loading current category/page record and checking access:
-        if ($this->categoryUid) {
-            $this->pageInfo = CommerceBackendUtility::readCategoryAccess($this->categoryUid, ' 1=1');
-        } else {
-            $this->pageInfo = BackendUtility::readPageAccess($this->id, ' 1=1');
-        }
+        // Loading current category record and checking access:
+        $this->pageInfo = CommerceBackendUtility::readCategoryAccess($this->categoryUid, ' 1=1');
     }
 
     /**
@@ -146,7 +133,7 @@ class PermissionModuleController extends ActionController
 
         // the view of the update action has a different view class
         if ($view instanceof BackendTemplateView) {
-            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Beuser/Permissions');
+            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Commerce/Permissions');
             $view->getModuleTemplate()->addJavaScriptCode(
                 'jumpToUrl',
                 '
@@ -208,7 +195,7 @@ class PermissionModuleController extends ActionController
      */
     public function indexAction()
     {
-        if (!$this->id) {
+        if (!$this->categoryUid) {
             $this->pageInfo = array('title' => '[root-level]', 'uid' => 0, 'pid' => 0);
         }
 
@@ -232,7 +219,7 @@ class PermissionModuleController extends ActionController
         $url = $this->uriBuilder->reset()->setArguments(array(
             'action' => 'index',
             'depth' => '__DEPTH__',
-            'id' => $this->id
+            'categoryUid' => $this->categoryUid
         ))->buildBackendUri();
         foreach (array(1, 2, 3, 4, 10) as $depthLevel) {
             $depthOptions[$depthLevel] = $depthLevel . ' ' . LocalizationUtility::translate(
@@ -263,9 +250,9 @@ class PermissionModuleController extends ActionController
         $tree->addField('endtime');
         $tree->addField('editlock');
 
-        // Create the tree from $this->id
-        if ($this->id) {
-            $tree->tree[] = array('row' => $this->pageInfo, 'HTML' => $tree->getIcon($this->id));
+        // Create the tree from $this->categoryUid
+        if ($this->categoryUid) {
+            $tree->tree[] = array('row' => $this->pageInfo, 'HTML' => $tree->getIcon($this->categoryUid));
         } else {
             $tree->tree[] = array('row' => $this->pageInfo, 'HTML' => $tree->getRootIcon($this->pageInfo));
         }
@@ -289,10 +276,10 @@ class PermissionModuleController extends ActionController
      */
     public function editAction()
     {
-        $this->view->assign('id', $this->id);
+        $this->view->assign('categoryUid', $this->categoryUid);
         $this->view->assign('depth', $this->depth);
 
-        if (!$this->id) {
+        if (!$this->categoryUid) {
             $this->pageInfo = array('title' => '[root-level]', 'uid' => 0, 'pid' => 0);
         }
         if ($this->getBackendUserAuthentication()->workspace != 0) {
@@ -362,7 +349,7 @@ class PermissionModuleController extends ActionController
         $tree->makeHTML = 0;
         $tree->setRecs = 1;
         // Make tree:
-        $tree->getTree($this->id, $this->getLevels, '');
+        $tree->getTree($this->categoryUid, $this->getLevels, '');
         $options = array();
         $options[''] = '';
         // If there are a hierarchy of page ids, then...
@@ -433,7 +420,7 @@ class PermissionModuleController extends ActionController
                 }
             }
         }
-        $this->redirect('index', null, null, array('id' => $this->returnId, 'depth' => $this->depth));
+        $this->redirect('index', null, null, array('categoryUid' => $this->returnId, 'depth' => $this->depth));
     }
 
 

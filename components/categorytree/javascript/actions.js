@@ -694,7 +694,10 @@ TYPO3.Components.CategoryTree.Actions = {
 		tree.currentSelectedNode = node;
 
 		var url = '';
-		if (node.attributes.type === 'tx_commerce_categories') {
+
+		if (node.id === 'pc0') {
+			url = currentSubScript + node.attributes.jumpUrl;
+		} else if (node.attributes.type === 'tx_commerce_categories') {
 			// get category list
 			url = currentSubScript + node.attributes.jumpUrl;
 		} else {

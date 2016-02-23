@@ -15,14 +15,14 @@
 
 		<div class="form-group">
 			<label><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:Owner" /></label>
-			<f:form.select name="data[categories][{id}][perms_userid]" options="{beUserData}" value="{currentBeUser}" class="form-control" />
+			<f:form.select name="data[categories][{categoryUid}][perms_userid]" options="{beUserData}" value="{currentBeUser}" class="form-control" />
 		</div>
 
 		<div class="form-group">
 			<label><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:Group" /></label>
 			<f:if condition="{f:count(subject:beGroupData)} > 1">
 				<f:then>
-					<f:form.select name="data[categories][{id}][perms_groupid]" options="{beGroupData}" value="{currentBeGroup}" class="form-control" />
+					<f:form.select name="data[categories][{categoryUid}][perms_groupid]" options="{beGroupData}" value="{currentBeGroup}" class="form-control" />
 				</f:then>
 				<f:else>
 					<div class="alert alert-notice"><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:noGroups" /></div>
@@ -46,27 +46,27 @@
 					<tbody>
 						<tr>
 							<td><strong><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:Owner" /></strong></td>
-							<td><input type="checkbox" name="check[perms_user][1]" onclick="TYPO3.Permissions.checkChange('check[perms_user]', 'tx_beuser_system_beusertxpermission[data][categories][{id}][perms_user]')" /></td>
-							<td><input type="checkbox" name="check[perms_user][5]" onclick="TYPO3.Permissions.checkChange('check[perms_user]', 'tx_beuser_system_beusertxpermission[data][categories][{id}][perms_user]')" /></td>
-							<td><input type="checkbox" name="check[perms_user][2]" onclick="TYPO3.Permissions.checkChange('check[perms_user]', 'tx_beuser_system_beusertxpermission[data][categories][{id}][perms_user]')" /></td>
-							<td><input type="checkbox" name="check[perms_user][3]" onclick="TYPO3.Permissions.checkChange('check[perms_user]', 'tx_beuser_system_beusertxpermission[data][categories][{id}][perms_user]')" /></td>
-							<td><input type="checkbox" name="check[perms_user][4]" onclick="TYPO3.Permissions.checkChange('check[perms_user]', 'tx_beuser_system_beusertxpermission[data][categories][{id}][perms_user]')" /></td>
+							<td><input type="checkbox" name="check[perms_user][1]" onclick="TYPO3.Permissions.checkChange('check[perms_user]', 'tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_user]')" /></td>
+							<td><input type="checkbox" name="check[perms_user][5]" onclick="TYPO3.Permissions.checkChange('check[perms_user]', 'tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_user]')" /></td>
+							<td><input type="checkbox" name="check[perms_user][2]" onclick="TYPO3.Permissions.checkChange('check[perms_user]', 'tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_user]')" /></td>
+							<td><input type="checkbox" name="check[perms_user][3]" onclick="TYPO3.Permissions.checkChange('check[perms_user]', 'tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_user]')" /></td>
+							<td><input type="checkbox" name="check[perms_user][4]" onclick="TYPO3.Permissions.checkChange('check[perms_user]', 'tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_user]')" /></td>
 						</tr>
 						<tr>
 							<td><strong><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:Group" /></strong></td>
-							<td><input type="checkbox" name="check[perms_group][1]" onclick="TYPO3.Permissions.checkChange('check[perms_group]', 'tx_beuser_system_beusertxpermission[data][categories][{id}][perms_group]')" /></td>
-							<td><input type="checkbox" name="check[perms_group][5]" onclick="TYPO3.Permissions.checkChange('check[perms_group]', 'tx_beuser_system_beusertxpermission[data][categories][{id}][perms_group]')" /></td>
-							<td><input type="checkbox" name="check[perms_group][2]" onclick="TYPO3.Permissions.checkChange('check[perms_group]', 'tx_beuser_system_beusertxpermission[data][categories][{id}][perms_group]')" /></td>
-							<td><input type="checkbox" name="check[perms_group][3]" onclick="TYPO3.Permissions.checkChange('check[perms_group]', 'tx_beuser_system_beusertxpermission[data][categories][{id}][perms_group]')" /></td>
-							<td><input type="checkbox" name="check[perms_group][4]" onclick="TYPO3.Permissions.checkChange('check[perms_group]', 'tx_beuser_system_beusertxpermission[data][categories][{id}][perms_group]')" /></td>
+							<td><input type="checkbox" name="check[perms_group][1]" onclick="TYPO3.Permissions.checkChange('check[perms_group]', 'tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_group]')" /></td>
+							<td><input type="checkbox" name="check[perms_group][5]" onclick="TYPO3.Permissions.checkChange('check[perms_group]', 'tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_group]')" /></td>
+							<td><input type="checkbox" name="check[perms_group][2]" onclick="TYPO3.Permissions.checkChange('check[perms_group]', 'tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_group]')" /></td>
+							<td><input type="checkbox" name="check[perms_group][3]" onclick="TYPO3.Permissions.checkChange('check[perms_group]', 'tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_group]')" /></td>
+							<td><input type="checkbox" name="check[perms_group][4]" onclick="TYPO3.Permissions.checkChange('check[perms_group]', 'tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_group]')" /></td>
 						</tr>
 						<tr>
 							<td><strong><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:Everybody" /></strong></td>
-							<td><input type="checkbox" name="check[perms_everybody][1]" onclick="TYPO3.Permissions.checkChange('check[perms_everybody]', 'tx_beuser_system_beusertxpermission[data][categories][{id}][perms_everybody]')" /></td>
-							<td><input type="checkbox" name="check[perms_everybody][5]" onclick="TYPO3.Permissions.checkChange('check[perms_everybody]', 'tx_beuser_system_beusertxpermission[data][categories][{id}][perms_everybody]')" /></td>
-							<td><input type="checkbox" name="check[perms_everybody][2]" onclick="TYPO3.Permissions.checkChange('check[perms_everybody]', 'tx_beuser_system_beusertxpermission[data][categories][{id}][perms_everybody]')" /></td>
-							<td><input type="checkbox" name="check[perms_everybody][3]" onclick="TYPO3.Permissions.checkChange('check[perms_everybody]', 'tx_beuser_system_beusertxpermission[data][categories][{id}][perms_everybody]')" /></td>
-							<td><input type="checkbox" name="check[perms_everybody][4]" onclick="TYPO3.Permissions.checkChange('check[perms_everybody]', 'tx_beuser_system_beusertxpermission[data][categories][{id}][perms_everybody]')" /></td>
+							<td><input type="checkbox" name="check[perms_everybody][1]" onclick="TYPO3.Permissions.checkChange('check[perms_everybody]', 'tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_everybody]')" /></td>
+							<td><input type="checkbox" name="check[perms_everybody][5]" onclick="TYPO3.Permissions.checkChange('check[perms_everybody]', 'tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_everybody]')" /></td>
+							<td><input type="checkbox" name="check[perms_everybody][2]" onclick="TYPO3.Permissions.checkChange('check[perms_everybody]', 'tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_everybody]')" /></td>
+							<td><input type="checkbox" name="check[perms_everybody][3]" onclick="TYPO3.Permissions.checkChange('check[perms_everybody]', 'tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_everybody]')" /></td>
+							<td><input type="checkbox" name="check[perms_everybody][4]" onclick="TYPO3.Permissions.checkChange('check[perms_everybody]', 'tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_everybody]')" /></td>
 						</tr>
 					</tbody>
 				</table>
@@ -75,17 +75,17 @@
 
 		<div class="form-group">
 			<label for="recursionLevel"><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:Depth" /></label>
-			<f:form.select id="recursionLevel" name="mirror[categories][{id}]" options="{recursiveSelectOptions}" class="form-control" />
+			<f:form.select id="recursionLevel" name="mirror[categories][{categoryUid}]" options="{recursiveSelectOptions}" class="form-control" />
 		</div>
 
 		<f:form.submit class="btn btn-default" name="submit" value="{f:translate(key: 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:Save')}" />
-		<f:link.action class="btn btn-default" action="index" arguments="{id: id}"><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:Abort" /></f:link.action>
+		<f:link.action class="btn btn-default" action="index" arguments="{categoryUid: categoryUid}"><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:Abort" /></f:link.action>
 
-		<f:form.hidden name="data[categories][{id}][perms_user]" value="{pageInfo.perms_user}" />
-		<f:form.hidden name="data[categories][{id}][perms_group]" value="{pageInfo.perms_group}" />
-		<f:form.hidden name="data[categories][{id}][perms_everybody]" value="{pageInfo.perms_everybody}" />
+		<f:form.hidden name="data[categories][{categoryUid}][perms_user]" value="{pageInfo.perms_user}" />
+		<f:form.hidden name="data[categories][{categoryUid}][perms_group]" value="{pageInfo.perms_group}" />
+		<f:form.hidden name="data[categories][{categoryUid}][perms_everybody]" value="{pageInfo.perms_everybody}" />
 		<f:form.hidden name="depth" value="{depth}" />
-		<f:form.hidden name="redirect" value="{f:uri.action(action: 'index', arguments: {lastEdited: id, id: returnId})}" />
+		<f:form.hidden name="redirect" value="{f:uri.action(action: 'index', arguments: {lastEdited: id, categoryUid: returnId})}" />
 
 	</f:form>
 
@@ -101,10 +101,10 @@
 	<p><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:def" /></p>
 
 	<script type="text/javascript">
-		require(["jquery", "TYPO3/CMS/Beuser/Permissions"], function($, Permissions) {
-			Permissions.setCheck("check[perms_user]", "tx_beuser_system_beusertxpermission[data][categories][{id}][perms_user]");
-			Permissions.setCheck("check[perms_group]", "tx_beuser_system_beusertxpermission[data][categories][{id}][perms_group]");
-			Permissions.setCheck("check[perms_everybody]", "tx_beuser_system_beusertxpermission[data][categories][{id}][perms_everybody]");
+		require(["jquery", "TYPO3/CMS/Commerce/Permissions"], function($, Permissions) {
+			Permissions.setCheck("check[perms_user]", "tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_user]");
+			Permissions.setCheck("check[perms_group]", "tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_group]");
+			Permissions.setCheck("check[perms_everybody]", "tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_everybody]");
 		});
 	</script>
 

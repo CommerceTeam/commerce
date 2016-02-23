@@ -17,7 +17,7 @@
 
 	<div class="panel panel-default panel-space">
 		<div class="table-fit">
-			<table class="table table-striped table-hover" id="typo3-permissionList">
+			<table class="table table-striped table-hover" id="commerce-permissionList">
 				<thead>
 				<tr>
 					<th colspan="2">&nbsp;</th>
@@ -32,13 +32,13 @@
 						<f:if condition="{data.row.uid}">
 							<f:then>
 								<f:comment>
-									A "normal" page row is rendered, not the root page
+									A "normal" category row is rendered, not the root category
 								</f:comment>
 
 								<td align="left" nowrap="nowrap">
 									<f:link.action
 										action="edit"
-										arguments="{id: '{f:if(condition: data.row._ORIG_uid, then: data.row._ORIG_uid, else: data.row.uid)}', depth: depth}"
+										arguments="{categoryUid: '{f:if(condition: data.row._ORIG_uid, then: data.row._ORIG_uid, else: data.row.uid)}', depth: depth}"
 										title="{f:translate(key: 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:ch_permissions')}"
 									>
 										<f:format.raw>{data.depthData}{data.HTML}</f:format.raw>
@@ -52,7 +52,7 @@
 									</f:comment>
 									<f:link.action
 										action="edit"
-										arguments="{id: '{f:if(condition: data.row._ORIG_uid, then: data.row._ORIG_uid, else: data.row.uid)}', depth: depth}"
+										arguments="{categoryUid: '{f:if(condition: data.row._ORIG_uid, then: data.row._ORIG_uid, else: data.row.uid)}', depth: depth}"
 										class="btn btn-default"
 										title="{f:translate(key: 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:ch_permissions')}"
 									>
