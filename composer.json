@@ -7,7 +7,7 @@
 	"version": "5.0.0",
 
 	"support" : {
-		"issues" : "https://forge.typo3.org/projects/extension-commerce/issues"
+		"issues" : "https://github.com/CommerceTeam/Commerce/issues"
 	},
 	"keywords": [
 		"TYPO3 CMS",

@@ -98,7 +98,6 @@ call_user_func(function ($packageKey) {
                 ],
             ]
         );
-
         // Category navigation frame
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent(
             'commerce_category',
@@ -111,24 +110,21 @@ call_user_func(function ($packageKey) {
         );
 
         // Permission Module
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-            $packageKey,
-            'permission',
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+            'CommerceTeam.Commerce',
+            'commerce',
+            'commerce_permission',
             '',
-            '',
-            [
-                'routeTarget' => \CommerceTeam\Commerce\Controller\PermissionModuleController::class . '::mainAction',
+            array(
+                'PermissionModule' => 'index, edit, update'
+            ),
+            array(
                 'access' => 'user,group',
-                'name' => 'commerce_permission',
-                'labels' => [
-                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_access.xlf',
-                    'tabs_images' => [
-                        'tab' => 'EXT:beuser/Resources/Public/Icons/module-permission.svg'
-                    ],
-                ],
-            ]
+                'icon' => 'EXT:beuser/Resources/Public/Icons/module-permission.svg',
+                'labels' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf',
+                'navigationComponentId' => 'commerce-permissiontree'
+            )
         );
-
         // Permission navigation frame
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent(
             'commerce_permission',
@@ -185,7 +181,7 @@ call_user_func(function ($packageKey) {
                         'tab' => 'EXT:commerce/Resources/Public/Icons/mod_systemdata.gif'
                     ],
                 ],
-                'navigationFrameModule' => 'CommerceTeam_commerce_SystemdataNavigation',
+                'navigationFrameModule' => 'CommerceTeam_Commerce_SystemdataNavigation',
             ]
         );
 

@@ -2,7 +2,7 @@
 use \CommerceTeam\Commerce\Controller;
 
 return [
-    'CommerceTeam_commerce_SystemdataNavigation' => [
+    'CommerceTeam_Commerce_SystemdataNavigation' => [
         'path' => '/commerceteam/commerce/systemdatanavigation',
         'target' => Controller\SystemdataNavigationFrameController::class . '::mainAction'
     ],

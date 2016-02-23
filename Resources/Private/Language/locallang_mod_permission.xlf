@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0" xmlns:t3="http://typo3.org/schemas/xliff">
+	<file t3:id="1415814882" source-language="en" datatype="plaintext" original="messages" date="2011-10-17T20:22:34Z" product-name="lang">
+	<header/>
+		<body>
+			<trans-unit id="permissions">
+				<source>Permissions</source>
+			</trans-unit>
+			<trans-unit id="ch_permissions">
+				<source>Change permissions</source>
+			</trans-unit>
+			<trans-unit id="Legend">
+				<source>Legend</source>
+			</trans-unit>
+			<trans-unit id="Owner">
+				<source>Owner</source>
+			</trans-unit>
+			<trans-unit id="Group">
+				<source>Group</source>
+			</trans-unit>
+			<trans-unit id="Everybody">
+				<source>Everybody</source>
+			</trans-unit>
+			<trans-unit id="EditLock">
+				<source>Lock</source>
+			</trans-unit>
+			<trans-unit id="EditLock_descr">
+				<source>Disable the »Admin-only« edit lock for this category. Currently this category and all product is locked for editing by all non-Admin users.</source>
+			</trans-unit>
+			<trans-unit id="EditLock_descr2">
+				<source>Enable the »Admin-only« edit lock for this category</source>
+			</trans-unit>
+			<trans-unit id="Save">
+				<source>Save</source>
+			</trans-unit>
+			<trans-unit id="Abort">
+				<source>Abort</source>
+			</trans-unit>
+			<trans-unit id="Edit">
+				<source>EDIT</source>
+			</trans-unit>
+			<trans-unit id="recursive">
+				<source>Set recursively</source>
+			</trans-unit>
+			<trans-unit id="categories_affected">
+				<source>categories affected</source>
+			</trans-unit>
+			<trans-unit id="user_overview">
+				<source>User overview</source>
+			</trans-unit>
+			<trans-unit id="Mode">
+				<source>Mode</source>
+			</trans-unit>
+			<trans-unit id="Depth">
+				<source>Depth</source>
+			</trans-unit>
+			<trans-unit id="levels">
+				<source>levels</source>
+			</trans-unit>
+			<trans-unit id="User">
+				<source>User</source>
+			</trans-unit>
+			<trans-unit id="def">
+				<source>Definition: 'product' is records from all tables on a category - except from records from the table 'tx_commerce_categories' (Categories).</source>
+			</trans-unit>
+			<trans-unit id="A_Granted">
+				<source>Access Granted</source>
+			</trans-unit>
+			<trans-unit id="A_Denied">
+				<source>Access Denied</source>
+			</trans-unit>
+			<trans-unit id="1">
+				<source>Show category</source>
+			</trans-unit>
+			<trans-unit id="16">
+				<source>Edit products</source>
+			</trans-unit>
+			<trans-unit id="2">
+				<source>Edit category</source>
+			</trans-unit>
+			<trans-unit id="4">
+				<source>Delete category</source>
+			</trans-unit>
+			<trans-unit id="8">
+				<source>New categories</source>
+			</trans-unit>
+			<trans-unit id="1_t">
+				<source>Show/Copy category and product.</source>
+			</trans-unit>
+			<trans-unit id="16_t">
+				<source>Change/Add/Delete/Move product.</source>
+			</trans-unit>
+			<trans-unit id="2_t">
+				<source>Change/Move category, eg. change categorytitle etc.</source>
+			</trans-unit>
+			<trans-unit id="4_t">
+				<source>Delete category and product.</source>
+			</trans-unit>
+			<trans-unit id="8_t">
+				<source>Create new categories under this category.</source>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tablabel">
+				<source>Category editing permissions</source>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tabdescr">
+				<source>Setting of category permissions is vital for controlling backend user access to categories. You can assign a user and a group as owners of a category and set access permissions for each.</source>
+			</trans-unit>
+			<trans-unit id="mlang_tabs_tab">
+				<source>Access</source>
+			</trans-unit>
+			<trans-unit id="WorkspaceWarning">
+				<source>Workspace Warning</source>
+			</trans-unit>
+			<trans-unit id="WorkspaceWarningText">
+				<source>Permissions you set in the workspace are effective on the elements only &lt;em&gt;after&lt;/em&gt; they are published! If you need to set permissions which are effective right now, you must do so in the Live workspace. (Permissions are always evaluated on the Live workspace record/placeholder of a draft version)</source>
+			</trans-unit>
+			<trans-unit id="notSet">
+				<source>not set</source>
+			</trans-unit>
+			<trans-unit id="deleted">
+				<source>deleted</source>
+			</trans-unit>
+			<trans-unit id="noGroups">
+				<source>No user groups exist.</source>
+			</trans-unit>
+			<trans-unit id="selectNone">
+				<source>   - none -   </source>
+			</trans-unit>
+			<trans-unit id="selectUnchanged">
+				<source>   - leave unchanged -   </source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
