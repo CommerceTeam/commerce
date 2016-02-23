@@ -147,13 +147,6 @@ return array(
 
             ),
         ),
-        'extendToSubpages' => array(
-            'exclude' => 1,
-            'label' => $languageFile . 'tx_commerce_categories.extendToSubpages',
-            'config' => array(
-                'type' => 'check',
-            ),
-        ),
         'title' => array(
             'exclude' => 0,
             'label' => $languageFile . 'tx_commerce_categories.title',
@@ -325,6 +318,6 @@ return array(
         ),
     ),
     'palettes' => array(
-        '1' => array('showitem' => 'starttime, endtime, fe_group, extendToSubpages'),
+        '1' => array('showitem' => 'starttime, endtime, fe_group'),
     ),
 );

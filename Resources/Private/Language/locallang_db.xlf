@@ -354,9 +354,6 @@
 			<trans-unit id="tx_commerce_categories.select_attributes" xml:space="preserve">
 				<source>Select attributes</source>
 			</trans-unit>
-			<trans-unit id="tx_commerce_categories.extendToSubpages" xml:space="preserve">
-				<source>Include subpages:</source>
-			</trans-unit>
 			<trans-unit id="tx_commerce_categories.ts_config" xml:space="preserve">
 				<source>Category TypoScript</source>
 			</trans-unit>

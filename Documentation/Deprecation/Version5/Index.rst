@@ -43,3 +43,5 @@ Removed methods since 5.x
 
 	\CommerceTeam\Commerce\Hook\DataMapHooks, moveOrders_preMoveOrder, moveOrdersPreMoveOrder
 	, moveOrders_postMoveOrder, moveOrdersPostMoveOrder
+
+The tx_graytree_foldername field was deprecated and is now removed.

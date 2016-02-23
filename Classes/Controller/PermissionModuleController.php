@@ -269,7 +269,7 @@ class PermissionModuleController extends ActionController
         } else {
             $tree->tree[] = array('row' => $this->pageInfo, 'HTML' => $tree->getRootIcon($this->pageInfo));
         }
-        $tree->getTree($this->id, $this->depth);
+        $tree->getTree($this->categoryUid, $this->depth);
         $this->view->assign('viewTree', $tree->tree);
 
         // CSH for permissions setting

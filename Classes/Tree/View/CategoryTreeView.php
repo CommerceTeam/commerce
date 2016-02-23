@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\Tree\View;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -28,31 +29,28 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
         'uid',
         'pid',
         'title',
-        'doktype',
-        'nav_title',
-        'mount_pid',
+        'navtitle',
         't3ver_id',
         't3ver_state',
         'hidden',
         'starttime',
         'endtime',
         'fe_group',
-        'module',
-        'extendToSubpages',
-        'nav_hide'
     );
 
     /**
      * override to use this treeName
      * @var string
      */
-    public $treeName = 'pages';
+    public $treeName = 'categories';
 
     /**
      * override to use this table
      * @var string
      */
-    public $table = 'pages';
+    public $table = 'tx_commerce_categories';
+
+    public $parentField = 'tx_commerce_categories_parent_category_mm.uid_foreign';
 
     /**
      * @var bool
@@ -69,7 +67,7 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
      */
     public function init($clause = '', $orderByFields = '')
     {
-        parent::init(' AND deleted=0 ' . $clause, 'sorting');
+        parent::init(' AND deleted=0 ' . $clause, $this->table . '.sorting');
     }
 
     /**
@@ -124,17 +122,17 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
     public function getTitleStr($row, $titleLen = 30)
     {
         $lang = $this->getLanguageService();
-        if ($this->ext_showNavTitle && isset($row['nav_title']) && trim($row['nav_title']) !== '') {
+        if ($this->ext_showNavTitle && isset($row['navtitle']) && trim($row['navtitle']) !== '') {
             $title = '<span title="' . $lang->sL('LLL:EXT:lang/locallang_tca.xlf:title', true) . ' '
                      . htmlspecialchars(trim($row['title'])) . '">'
-                     . htmlspecialchars(GeneralUtility::fixed_lgd_cs($row['nav_title'], $titleLen))
+                     . htmlspecialchars(GeneralUtility::fixed_lgd_cs($row['navtitle'], $titleLen))
                      . '</span>';
         } else {
             $title = htmlspecialchars(GeneralUtility::fixed_lgd_cs($row['title'], $titleLen));
-            if (isset($row['nav_title']) && trim($row['nav_title']) !== '') {
+            if (isset($row['navtitle']) && trim($row['navtitle']) !== '') {
                 $title = '<span title="'
                      . $lang->sL('LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.nav_title', true)
-                     . ' ' . htmlspecialchars(trim($row['nav_title'])) . '">' . $title
+                     . ' ' . htmlspecialchars(trim($row['navtitle'])) . '">' . $title
                      . '</span>';
             }
             $title = trim($row['title']) === ''
@@ -142,5 +140,72 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
                 : $title;
         }
         return $title;
+    }
+
+
+    /**
+     * Getting the tree data: Selecting/Initializing data pointer to items for a certain parent id.
+     * For tables: This will make a database query to select all children to "parent"
+     * For arrays: This will return key to the ->dataLookup array
+     *
+     * @param int $parentId parent item id
+     *
+     * @return mixed Data handle (
+     *  Tables: An sql-resource,
+     *  arrays: A parentId integer. -1 is returned if there were NO subLevel.
+     * )
+     * @access private
+     */
+    public function getDataInit($parentId)
+    {
+        if (is_array($this->data)) {
+            if (!is_array($this->dataLookup[$parentId][$this->subLevelID])) {
+                $parentId = -1;
+            } else {
+                reset($this->dataLookup[$parentId][$this->subLevelID]);
+            }
+            return $parentId;
+        } else {
+            $db = $this->getDatabaseConnection();
+            $where = $this->parentField . '=' . $db->fullQuoteStr($parentId, $this->table)
+                . BackendUtility::deleteClause($this->table)
+                . BackendUtility::versioningPlaceholderClause($this->table) . $this->clause;
+            return $db->exec_SELECTquery(
+                $this->table . '.' . implode(', ' . $this->table . '.', $this->fieldArray),
+                $this->table
+                . ' INNER JOIN tx_commerce_categories_parent_category_mm ON ' . $this->table . '.uid = 
+                    tx_commerce_categories_parent_category_mm.uid_local',
+                $where,
+                '',
+                $this->orderByFields
+            );
+        }
+    }
+
+    /**
+     * Returns the number of records having the parent id, $uid
+     *
+     * @param int $uid Id to count subitems for
+     * @return int
+     * @access private
+     */
+    public function getCount($uid)
+    {
+        if (is_array($this->data)) {
+            $res = $this->getDataInit($uid);
+            return $this->getDataCount($res);
+        } else {
+            $db = $this->getDatabaseConnection();
+            $where = $this->parentField . '=' . $db->fullQuoteStr($uid, $this->table)
+                . BackendUtility::deleteClause($this->table)
+                . BackendUtility::versioningPlaceholderClause($this->table) . $this->clause;
+            return $db->exec_SELECTcountRows(
+                'uid',
+                $this->table
+                . ' INNER JOIN tx_commerce_categories_parent_category_mm ON ' . $this->table . '.uid = 
+                    tx_commerce_categories_parent_category_mm.uid_local',
+                $where
+            );
+        }
     }
 }

@@ -62,14 +62,6 @@ class UpdateUtility
             }
         }
 
-        if ($this->isGreytreeFolder()) {
-            $updatedFolders = $this->updateFolders();
-            if ($updatedFolders) {
-                $htmlCode[] = '<li>' . $updatedFolders .
-                    ' updated commerce foldernames that were graytree foldernames before</li>';
-            }
-        }
-
         $htmlCode[] = '</ul>';
 
         return implode(LF, $htmlCode);
@@ -178,30 +170,6 @@ class UpdateUtility
     }
 
     /**
-     * Update pages to set empty tx_commerce_foldername with
-     * tx_graytree_foldername if tx_graytree_foldername is not empty.
-     *
-     * @return int
-     */
-    public function updateFolders()
-    {
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'COUNT(uid) AS count',
-            'pages',
-            'tx_commerce_foldername = \'\' AND tx_graytree_foldername != \'\''
-        );
-
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            'pages',
-            'tx_commerce_foldername = \'\' AND tx_graytree_foldername != \'\'',
-            array('tx_commerce_foldername' => 'tx_graytree_foldername'),
-            array('tx_commerce_foldername')
-        );
-
-        return $row['count'];
-    }
-
-    /**
      * Check if the Ipdate is necessary.
      *
      * @return bool True if update should be perfomed
@@ -219,9 +187,6 @@ class UpdateUtility
             return true;
         }
         if (!$this->isBackendUserSet()) {
-            return true;
-        }
-        if ($this->isGreytreeFolder()) {
             return true;
         }
 
@@ -274,22 +239,6 @@ class UpdateUtility
             'be_users',
             'username = \'_fe_commerce\''
         ));
-    }
-
-    /**
-     * Check if graytree_foldername is set but commerce_foldername is not.
-     *
-     * @return bool
-     */
-    protected function isGreytreeFolder()
-    {
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'COUNT(uid) AS count',
-            'pages',
-            'tx_commerce_foldername = \'\' AND tx_graytree_foldername != \'\''
-        );
-
-        return $row['count'] > 0;
     }
 
 

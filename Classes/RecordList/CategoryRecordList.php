@@ -344,9 +344,6 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         if ($thumbsCol) {
             $selectFields[] = $thumbsCol;
         }
-        if ($table == 'tx_commmerce_categories') {
-            $selectFields[] = 'extendToSubpages';
-        }
         if (is_array($tableConfig['ctrl']['enablecolumns'])) {
             $selectFields = array_merge($selectFields, $tableConfig['ctrl']['enablecolumns']);
         }

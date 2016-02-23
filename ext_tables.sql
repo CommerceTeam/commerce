@@ -30,12 +30,9 @@ CREATE TABLE fe_users (
 CREATE TABLE pages (
 	tx_commerce_foldereditorder tinyint(4) unsigned DEFAULT '0' NOT NULL,
 	tx_commerce_foldername varchar(30) DEFAULT '' NOT NULL,
-# @todo deprecated remove after June 2016
-	tx_graytree_foldername varchar(30) DEFAULT '' NOT NULL,
 
 	KEY tx_commerce_foldereditorder (tx_commerce_foldereditorder),
-	KEY tx_commerce_folder (tx_commerce_foldername),
-	KEY tx_gray_folder (tx_graytree_foldername)
+	KEY tx_commerce_folder (tx_commerce_foldername)
 );
 
 #
@@ -313,36 +310,38 @@ CREATE TABLE tx_commerce_categories (
 	t3ver_tstamp int(11) DEFAULT '0' NOT NULL,
 	t3ver_move_id int(11) DEFAULT '0' NOT NULL,
 	tstamp int(11) DEFAULT '0' NOT NULL,
-	crdate int(11) DEFAULT '0' NOT NULL,
 	sorting int(11) unsigned DEFAULT '0' NOT NULL,
-	cruser_id int(11) DEFAULT '0' NOT NULL,
+	deleted tinyint(4) DEFAULT '0' NOT NULL,
 	perms_userid int(11) DEFAULT '0' NOT NULL,
 	perms_groupid int(11) DEFAULT '0' NOT NULL,
 	perms_user int(11) DEFAULT '0' NOT NULL,
 	perms_group int(11) DEFAULT '0' NOT NULL,
 	perms_everybody int(11) DEFAULT '0' NOT NULL,
 	editlock int(11) DEFAULT '0' NOT NULL,
-	sys_language_uid int(11) DEFAULT '0' NOT NULL,
-	l18n_parent int(11) DEFAULT '0' NOT NULL,
-	l18n_diffsource mediumblob NOT NULL,
-	deleted tinyint(4) DEFAULT '0' NOT NULL,
+	crdate int(11) DEFAULT '0' NOT NULL,
+	cruser_id int(11) DEFAULT '0' NOT NULL,
 	hidden tinyint(4) DEFAULT '0' NOT NULL,
+	ts_config text NOT NULL,
 	starttime int(11) DEFAULT '0' NOT NULL,
 	endtime int(11) DEFAULT '0' NOT NULL,
 	fe_group varchar(100) DEFAULT '0' NOT NULL,
-	extendToSubpages tinyint(3) DEFAULT '0' NOT NULL,
+
+	sys_language_uid int(11) DEFAULT '0' NOT NULL,
+	l18n_parent int(11) DEFAULT '0' NOT NULL,
+	l18n_diffsource mediumblob NOT NULL,
+
 	title varchar(255) DEFAULT '' NOT NULL,
 	subtitle varchar(255) DEFAULT '' NOT NULL,
+	keywords text NOT NULL,
 	description text NOT NULL,
+	navtitle varchar(80) DEFAULT '' NOT NULL,
 	images blob NOT NULL,
 	teaser text NOT NULL,
 	teaserimages blob NOT NULL,
-	navtitle varchar(80) DEFAULT '' NOT NULL,
-	keywords text NOT NULL,
 	attributes mediumtext NOT NULL,
 	parent_category varchar(255) DEFAULT '' NOT NULL,
 	uname varchar(80) DEFAULT '' NOT NULL,
-	ts_config text NOT NULL,
+
 
 	PRIMARY KEY (uid),
 	KEY lang (sys_language_uid),

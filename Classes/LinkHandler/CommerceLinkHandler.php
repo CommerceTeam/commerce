@@ -206,13 +206,13 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
 
         $backendUser = $this->getBackendUser();
 
-        /** @var ElementBrowserCategoryTreeView $pageTree */
-        $pageTree = GeneralUtility::makeInstance(ElementBrowserCategoryTreeView::class);
-        $pageTree->setLinkParameterProvider($this);
-        $pageTree->ext_showPageId = (bool)$backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
-        $pageTree->ext_showNavTitle = (bool)$backendUser->getTSConfigVal('options.pageTree.showNavTitle');
-        $pageTree->addField('nav_title');
-        $tree = $pageTree->getBrowsableTree();
+        /** @var ElementBrowserCategoryTreeView $categoryTree */
+        $categoryTree = GeneralUtility::makeInstance(ElementBrowserCategoryTreeView::class);
+        $categoryTree->setLinkParameterProvider($this);
+        $categoryTree->ext_showPageId = (bool)$backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
+        $categoryTree->ext_showNavTitle = (bool)$backendUser->getTSConfigVal('options.pageTree.showNavTitle');
+        $categoryTree->addField('navtitle');
+        $tree = $categoryTree->getBrowsableTree();
 
         return '
 

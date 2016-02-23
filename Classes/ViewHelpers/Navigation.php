@@ -1355,7 +1355,6 @@ class Navigation
 
             /*
              * Currentyl no Navtitle in tx_commerce_products
-             * 'nav_title' => $ProductObject->get_navtitle(),
              */
             if ($product->getUid() == $this->gpVars['showUid']) {
                 $itemState = 'CUR';
