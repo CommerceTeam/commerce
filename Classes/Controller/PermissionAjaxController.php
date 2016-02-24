@@ -16,7 +16,11 @@ namespace CommerceTeam\Commerce\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * This class extends the commerce module in the TYPO3 Backend to provide
@@ -39,80 +43,78 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
      */
     public function dispatch(ServerRequestInterface $request, ResponseInterface $response)
     {
-        // @todo fix this
-        $content = '';
+        $extPath = ExtensionManagementUtility::extPath('beuser');
 
+        $view = GeneralUtility::makeInstance(StandaloneView::class);
+        $view->setPartialRootPaths(array('default' => $extPath . 'Resources/Private/Partials'));
+        $view->assign('pageId', $this->conf['page']);
+
+        $content = '';
         // Basic test for required value
         if ($this->conf['page'] > 0) {
             // Init TCE for execution of update
-            /**
-             * Data handler.
-             *
-             * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
-             */
-            $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-
+            /** @var $tce DataHandler */
+            $tce = GeneralUtility::makeInstance(DataHandler::class);
             // Determine the scripts to execute
             switch ($this->conf['action']) {
                 case 'show_change_owner_selector':
-                    // Return the select to change the owner (BE user) of the page
                     $content = $this->renderUserSelector(
-                        (int) $this->conf['page'],
-                        (int) $this->conf['ownerUid'],
+                        (int)$this->conf['page'],
+                        (int)$this->conf['ownerUid'],
                         $this->conf['username']
                     );
                     break;
 
                 case 'change_owner':
-                    // Change the owner and return the new owner HTML snippet
-                    if (is_int($this->conf['new_owner_uid'])) {
+                    $userId = $this->conf['new_owner_uid'];
+                    if (is_int($userId)) {
                         // Prepare data to change
                         $data = array();
-                        $data['tx_commerce_categories'][$this->conf['page']]['perms_userid'] =
-                            $this->conf['new_owner_uid'];
-
+                        $data['pages'][$this->conf['page']]['perms_userid'] = $userId;
                         // Execute TCE Update
                         $tce->start($data, array());
                         $tce->process_datamap();
-                        $content = $this->renderOwnername(
-                            (int) $this->conf['page'],
-                            (int) $this->conf['new_owner_uid'],
-                            $this->conf['new_owner_username']
+
+                        $view->setTemplatePathAndFilename(
+                            $extPath . 'Resources/Private/Templates/PermissionAjax/ChangeOwner.html'
                         );
+                        $view->assign('userId', $userId);
+                        $usernameArray = BackendUtility::getUserNames('username', ' AND uid = ' . $userId);
+                        $view->assign('username', $usernameArray[$userId]['username']);
+                        $content = $view->render();
                     } else {
-                        $response->getBody()->write('An error occured: No page owner uid specified.');
+                        $response->getBody()->write('An error occurred: No page owner uid specified');
                         $response = $response->withStatus(500);
                     }
                     break;
 
                 case 'show_change_group_selector':
-                    // Return the select to change the group (BE group) of the page
                     $content = $this->renderGroupSelector(
-                        (int) $this->conf['page'],
-                        (int) $this->conf['groupUid'],
+                        (int)$this->conf['page'],
+                        (int)$this->conf['groupUid'],
                         $this->conf['groupname']
                     );
                     break;
 
                 case 'change_group':
-                    // Change the group and return the new group HTML snippet
-                    if (is_int($this->conf['new_group_uid'])) {
+                    $groupId = $this->conf['new_group_uid'];
+                    if (is_int($groupId)) {
                         // Prepare data to change
                         $data = array();
-                        $data['tx_commerce_categories'][$this->conf['page']]['perms_groupid'] =
-                            $this->conf['new_group_uid'];
-
+                        $data['pages'][$this->conf['page']]['perms_groupid'] = $groupId;
                         // Execute TCE Update
                         $tce->start($data, array());
                         $tce->process_datamap();
 
-                        $content = $this->renderGroupname(
-                            (int) $this->conf['page'],
-                            (int) $this->conf['new_group_uid'],
-                            $this->conf['new_group_username']
+                        $view->setTemplatePathAndFilename(
+                            $extPath . 'Resources/Private/Templates/PermissionAjax/ChangeGroup.html'
                         );
+                        $view->assign('groupId', $groupId);
+                        $groupnameArray = BackendUtility::getGroupNames('title', ' AND uid = ' . $groupId);
+                        $view->assign('groupname', $groupnameArray[$groupId]['title']);
+                        $content = $view->render();
                     } else {
-                        $response->getBody()->write('An error occured: No page group uid specified.');
+                        $response->getBody()->write('An error occurred: No page group uid specified');
                         $response = $response->withStatus(500);
                     }
                     break;
@@ -121,43 +123,39 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
                     // Prepare data to change
                     $data = array();
                     $data['tx_commerce_categories'][$this->conf['page']]['editlock'] =
-                        ($this->conf['editLockState'] === 1 ? 0 : 1);
-
+                        $this->conf['editLockState'] === 1 ? 0 : 1;
                     // Execute TCE Update
                     $tce->start($data, array());
                     $tce->process_datamap();
-
                     $content = $this->renderToggleEditLock(
-                        (int) $this->conf['page'],
+                        (int)$this->conf['page'],
                         $data['tx_commerce_categories'][$this->conf['page']]['editlock']
                     );
                     break;
 
                 default:
-                    // The script defaults to change permissions
-                    if ($this->conf['mode'] == 'delete') {
-                        $this->conf['permissions'] = (int) ($this->conf['permissions'] - $this->conf['bits']);
+                    if ($this->conf['mode'] === 'delete') {
+                        $this->conf['permissions'] = (int)($this->conf['permissions'] - $this->conf['bits']);
                     } else {
-                        $this->conf['permissions'] = (int) ($this->conf['permissions'] + $this->conf['bits']);
+                        $this->conf['permissions'] = (int)($this->conf['permissions'] + $this->conf['bits']);
                     }
-
                     // Prepare data to change
                     $data = array();
                     $data['tx_commerce_categories'][$this->conf['page']]['perms_' . $this->conf['who']] =
                         $this->conf['permissions'];
-
                     // Execute TCE Update
                     $tce->start($data, array());
                     $tce->process_datamap();
 
-                    $content = $this->renderPermissions(
-                        (int) $this->conf['permissions'],
-                        $this->conf['page'],
-                        $this->conf['who']
+                    $view->setTemplatePathAndFilename(
+                        $extPath . 'Resources/Private/Templates/PermissionAjax/ChangePermission.html'
                     );
+                    $view->assign('permission', $this->conf['permissions']);
+                    $view->assign('scope', $this->conf['who']);
+                    $content = $view->render();
             }
         } else {
-            $response->getBody()->write('This script cannot be called directly.');
+            $response->getBody()->write('This script cannot be called directly');
             $response = $response->withStatus(500);
         }
         $response->getBody()->write($content);

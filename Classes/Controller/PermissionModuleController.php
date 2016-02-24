@@ -37,6 +37,13 @@ class PermissionModuleController extends ActionController
     const SESSION_PREFIX = 'tx_Commerce_';
 
     /**
+     * Category uid.
+     *
+     * @var int
+     */
+    public $categoryUid = 0;
+
+    /**
      * @var int
      */
     protected $returnId;
@@ -76,13 +83,6 @@ class PermissionModuleController extends ActionController
      * @var BackendTemplateView
      */
     protected $view;
-
-    /**
-     * Category uid.
-     *
-     * @var int
-     */
-    public $categoryUid = 0;
 
     /**
      * Initialize action
