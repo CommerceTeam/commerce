@@ -13,61 +13,66 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-return array(
-    'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_tracking',
+$languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
+
+return [
+    'ctrl' => [
+        'title' => $languageFile . 'tx_commerce_tracking',
         'label' => 'uid',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
         'versioning' => '1',
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'tracking.gif',
-    ),
-    'feInterface' => array(
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_tracking.gif',
+    ],
+    'feInterface' => [
         'fe_admin_fieldList' => 'orders_uid, trackingcodes_uid, msg',
-    ),
-    'interface' => array(
+    ],
+    'interface' => [
         'showRecordFieldList' => 'orders_uid,trackingcodes_uid,msg',
-    ),
-    'columns' => array(
-        'orders_uid' => array(
+    ],
+    'columns' => [
+        'orders_uid' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_tracking.orders_uid',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_tracking.orders_uid',
+            'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
                 'allowed' => 'tx_commerce_orders',
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
-            ),
-        ),
-        'trackingcodes_uid' => array(
+            ],
+        ],
+        'trackingcodes_uid' => [
             'exclude' => 1,
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_tracking.trackingcodes_uid',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_tracking.trackingcodes_uid',
+            'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
                 'allowed' => 'tx_commerce_trackingcodes',
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
-            ),
-        ),
-        'msg' => array(
+            ],
+        ],
+        'msg' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_tracking.msg',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_tracking.msg',
+            'config' => [
                 'type' => 'input',
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'required,trim',
-            ),
-        ),
-    ),
-    'types' => array(
-        '0' => array('showitem' => 'orders_uid, trackingcodes_uid, msg'),
-    ),
-);
+            ],
+        ],
+    ],
+    'types' => [
+        '0' => [
+            'showitem' => '
+                orders_uid, trackingcodes_uid, msg
+            '
+        ],
+    ],
+];

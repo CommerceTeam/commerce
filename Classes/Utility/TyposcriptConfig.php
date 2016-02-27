@@ -16,7 +16,6 @@ namespace CommerceTeam\Commerce\Utility;
 
 /**
  * Typoscript config functions.
- *
  * Class \CommerceTeam\Commerce\Utility\TyposcriptConfig
  *
  * @author 2014 Sebastian Fischer <typo3@marketing-factory.de>
@@ -31,18 +30,27 @@ class TyposcriptConfig extends \TYPO3\CMS\Core\Configuration\TypoScript\Conditio
      */
     public function matchCondition(array $conditionParameters)
     {
-        $module = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('M');
+        $moduleFound = $folderFound = false;
+
+        preg_match('|M=([^&]*)|i', \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('returnUrl'), $matches);
+        $module = is_array($matches) && !empty($matches) ? $matches[1] : '';
 
         if ($conditionParameters[0] == $module) {
-            $result = true;
-        } else {
-            $record = $this->getPageRecord();
-            $isCommerceModulePage = isset($record['module']) && $record['module'] == 'commerce';
-
-            $result = $isCommerceModulePage;
+            $moduleFound = true;
         }
 
-        return $result;
+        $record = $this->getPageRecord();
+        if (!empty($record)) {
+            $folderNames = explode(',', $conditionParameters[1]);
+            foreach ($folderNames as $folderName) {
+                if ($record['tx_commerce_foldername'] == $folderName) {
+                    $folderFound = true;
+                    break;
+                }
+            }
+        }
+
+        return $moduleFound && $folderFound;
     }
 
     /**
@@ -52,6 +60,6 @@ class TyposcriptConfig extends \TYPO3\CMS\Core\Configuration\TypoScript\Conditio
     {
         $pageId = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
 
-        return (array) \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL('pages', $pageId);
+        return (array)\TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL('pages', $pageId);
     }
 }

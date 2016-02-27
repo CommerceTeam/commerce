@@ -319,7 +319,7 @@
 				<source>Icon</source>
 			</trans-unit>
 			<trans-unit id="tx_commerce_attribute_values.showvalue" xml:space="preserve">
-				<source>Show Value in Article/ Product</source>
+				<source>Show Value in Article / Product</source>
 			</trans-unit>
 			<trans-unit id="tx_commerce_attribute_values.attributes_uid" xml:space="preserve">
 				<source>Attributes uid</source>

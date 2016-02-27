@@ -66,6 +66,9 @@ _______
 - Both the ClassAliasMap.php and LegacyClassesForIde.php. If you need still need to know which class was renamed into
 which need name, please copy it from the 4.0.0 tag.
 - PATH_TXCOMMERCE_ICON_TREE_REL as it was used only in one path.
+- PATH_TXCOMMERCE_ICON_TABLE_REL as it was replaced in the TCA with EXT:commerce... pathes
+- PATH_TXCOMMERCE as it was used only in 3 occasions
+- PATH_TXCOMMERCE_REL is not used anymore
 
 Changed
 _______

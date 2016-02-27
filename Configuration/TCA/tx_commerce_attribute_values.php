@@ -13,9 +13,11 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-return array(
-    'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_attribute_values',
+$languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
+
+return [
+    'ctrl' => [
+        'title' => $languageFile . 'tx_commerce_attribute_values',
         'label' => 'value',
         'label_alt' => 'attributes_uid',
         'label_alt_force' => 1,
@@ -30,106 +32,117 @@ return array(
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY attributes_uid,value',
         'delete' => 'deleted',
-        'enablecolumns' => array(
+        'enablecolumns' => [
             'disabled' => 'hidden',
             'starttime' => 'starttime',
             'endtime' => 'endtime',
-        ),
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'attribute_value.gif',
-    ),
-    'feInterface' => array(
+        ],
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_attribute_values.gif',
+    ],
+    'feInterface' => [
         'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, value,
             showvalue, attributes_uid',
-    ),
-    'interface' => array(
+    ],
+    'interface' => [
         'showRecordFieldList' =>
             'sys_language_uid,l18n_parent,l18n_diffsource,hidden,starttime,endtime,value,attributes_uid',
-    ),
-    'columns' => array(
-        'sys_language_uid' => array(
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.language',
-            'config' => array(
-                'type' => 'select',
-                'foreign_table' => 'sys_language',
-                'foreign_table_where' => 'ORDER BY sys_language.title',
-                'items' => array(
-                    array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages', -1),
-                    array('LLL:EXT:lang/locallang_general.php:LGL.default_value', 0),
-                ),
-            ),
-        ),
-        'l18n_parent' => array(
-            'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.l18n_parent',
-            'config' => array(
-                'type' => 'select',
-                'items' => array(
-                    array('', 0),
-                ),
-                'foreign_table' => 'tx_commerce_attribute_values',
-                'foreign_table_where' => ' AND tx_commerce_attribute_values.pid = ###CURRENT_PID###
-                    AND tx_commerce_attribute_values.sys_language_uid IN (-1,0)',
-            ),
-        ),
-        'l18n_diffsource' => array(
-            'config' => array(
-                'type' => 'passthrough',
-            ),
-        ),
-        'hidden' => array(
+    ],
+    'columns' => [
+        'hidden' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
-            'config' => array(
+            'config' => [
                 'type' => 'check',
-                'default' => '0',
-            ),
-        ),
-        'starttime' => array(
+                'items' => [
+                    '1' => [
+                        '0' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:hidden.I.0'
+                    ]
+                ]
+            ],
+        ],
+        'starttime' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.starttime',
-            'config' => array(
+            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
+            'config' => [
                 'type' => 'input',
-                'size' => '8',
-                'max' => '20',
-                'eval' => 'date',
-                'default' => '0',
-                'checkbox' => '0',
-            ),
-        ),
-        'endtime' => array(
+                'size' => '13',
+                'eval' => 'datetime',
+                'default' => 0
+            ],
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly'
+        ],
+        'endtime' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.endtime',
-            'config' => array(
+            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
+            'config' => [
                 'type' => 'input',
-                'size' => '8',
-                'max' => '20',
-                'eval' => 'date',
-                'checkbox' => '0',
-                'default' => '0',
-                'range' => array(
-                    'upper' => mktime(0, 0, 0, 12, 31, 2020),
-                    'lower' => mktime(0, 0, 0, date('m') - 1, date('d'), date('Y')),
-                ),
-            ),
-        ),
-        'value' => array(
+                'size' => '13',
+                'eval' => 'datetime',
+                'default' => 0,
+                'range' => [
+                    'upper' => mktime(0, 0, 0, 1, 1, 2038)
+                ]
+            ],
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly'
+        ],
+        'sys_language_uid' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.language',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'special' => 'languages',
+                'items' => [
+                    [
+                        'LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages',
+                        -1,
+                        'flags-multiple'
+                    ],
+                ],
+                'default' => 0,
+            ],
+        ],
+        'l18n_parent' => [
+            'exclude' => 1,
+            'displayCond' => 'FIELD:sys_language_uid:>:0',
+            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.l18n_parent',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'items' => [
+                    ['', 0],
+                ],
+                'foreign_table' => 'tx_commerce_attribute_values',
+                'foreign_table_where' => 'AND tx_commerce_attribute_values.pid = ###CURRENT_PID###
+                    AND tx_commerce_attribute_values.sys_language_uid IN (-1,0)',
+                'default' => 0
+            ],
+        ],
+        'l18n_diffsource' => [
+            'config' => [
+                'type' => 'passthrough',
+                'default' => ''
+            ],
+        ],
+
+        'value' => [
             'exclude' => 1,
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_attribute_values.value',
-            'config' => array(
+                $languageFile . 'tx_commerce_attribute_values.value',
+            'config' => [
                 'type' => 'input',
                 'size' => '40',
                 'max' => '255',
                 'eval' => 'required,trim',
-            ),
-        ),
-        'icon' => array(
+            ],
+        ],
+        'icon' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_attribute_values.icon',
+            'label' => $languageFile . 'tx_commerce_attribute_values.icon',
             'l10n_mode' => 'mergeIfNotBlank',
-            'config' => array(
+            'config' => [
                 'type' => 'group',
                 'internal_type' => 'file',
                 'allowed' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
@@ -139,41 +152,49 @@ return array(
                 'minitems' => 0,
                 'maxitems' => 1,
                 'show_thumbs' => 1,
-            ),
-        ),
-        'showvalue' => array(
+            ],
+        ],
+        'showvalue' => [
             'exclude' => 1,
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_attribute_values.showvalue',
+                $languageFile . 'tx_commerce_attribute_values.showvalue',
             'l10n_mode' => 'exclude',
-            'config' => array(
+            'config' => [
                 'type' => 'check',
                 'default' => '1',
-            ),
-        ),
-        'attributes_uid' => array(
+            ],
+        ],
+        'attributes_uid' => [
             'exclude' => 1,
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_attribute_values.attributes_uid',
+                $languageFile . 'tx_commerce_attribute_values.attributes_uid',
             'l10n_mode' => 'exclude',
-            'config' => array(
+            'config' => [
                 'type' => 'select',
                 'foreign_table' => 'tx_commerce_attributes',
                 'foreign_table_where' => 'AND tx_commerce_attributes.has_valuelist',
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
-            ),
-        ),
-    ),
-    'types' => array(
-        '0' => array(
+            ],
+        ],
+    ],
+    'types' => [
+        '0' => [
             'showitem' => '
-                sys_language_uid, l18n_parent, l18n_diffsource, hidden;;1, value, showvalue, icon, attributes_uid
+                --palette--;' . $languageFile . 'palette.general;general,
+                 value, showvalue, icon, attributes_uid,
+                hidden,
+                --palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access
             ',
-        ),
-    ),
-    'palettes' => array(
-        '1' => array('showitem' => 'starttime, endtime'),
-    ),
-);
+        ],
+    ],
+    'palettes' => [
+        'general' => [
+            'showitem' => 'sys_language_uid, --linebreak--, l18n_parent',
+        ],
+        'access' => [
+            'showitem' => 'starttime, endtime',
+        ],
+    ],
+];

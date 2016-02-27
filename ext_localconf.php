@@ -4,19 +4,6 @@ call_user_func(function ($packageKey) {
     $typo3ConfVars = &$GLOBALS['TYPO3_CONF_VARS'];
     $scOptions = &$typo3ConfVars['SC_OPTIONS'];
 
-    // Definition of some helpful constants
-    if (!defined('PATH_TXCOMMERCE')) {
-        define('PATH_TXCOMMERCE', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($packageKey));
-    }
-
-    if (!defined('PATH_TXCOMMERCE_REL')) {
-        define('PATH_TXCOMMERCE_REL', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($packageKey));
-    }
-
-    if (!defined('PATH_TXCOMMERCE_ICON_TABLE_REL')) {
-        define('PATH_TXCOMMERCE_ICON_TABLE_REL', PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/');
-    }
-
     // Define special article types
     define('NORMALARTICLETYPE', 1);
     define('PAYMENTARTICLETYPE', 2);
@@ -30,50 +17,51 @@ call_user_func(function ($packageKey) {
     }
 
     // Payment settings
-    $typo3ConfVars['EXT']['extConf'][$packageKey]['SYSPRODUCTS']['PAYMENT'] = array(
-        'tablefields' => array(
+    $typo3ConfVars['EXT']['extConf'][$packageKey]['SYSPRODUCTS']['PAYMENT'] = [
+        'tablefields' => [
             'title' => 'SYSTEMPRODUCT_PAYMENT',
             'description' => 'Products to manage payment',
-        ),
-        'types' => array(
-            'invoice' => array(
+        ],
+        'types' => [
+            'invoice' => [
                 'class' => \CommerceTeam\Commerce\Payment\Invoice::class,
                 'type' => PAYMENTARTICLETYPE,
-            ),
-            'prepayment' => array(
+            ],
+            'prepayment' => [
                 'class' => \CommerceTeam\Commerce\Payment\Prepayment::class,
                 'type' => PAYMENTARTICLETYPE,
-            ),
-            'cashondelivery' => array(
+            ],
+            'cashondelivery' => [
                 'class' => \CommerceTeam\Commerce\Payment\Cashondelivery::class,
                 'type' => PAYMENTARTICLETYPE,
-            ),
-            'creditcard' => array(
+            ],
+            'creditcard' => [
                 'class' => \CommerceTeam\Commerce\Payment\Creditcard::class,
                 'type' => PAYMENTARTICLETYPE,
                 // Language file for external credit card check
-                'ccvs_language_files' => PATH_TXCOMMERCE . 'payment/ccvs/language',
-                'provider' => array(
-                    'wirecard' => array(
+                'ccvs_language_files' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($packageKey)
+                    . 'payment/ccvs/language',
+                'provider' => [
+                    'wirecard' => [
                         'class' => \CommerceTeam\Commerce\Payment\Provider\Wirecard::class,
-                    ),
-                ),
-            ),
-        ),
-    );
+                    ],
+                ],
+            ],
+        ],
+    ];
 
     // Delivery settings
-    $typo3ConfVars['EXT']['extConf'][$packageKey]['SYSPRODUCTS']['DELIVERY'] = array(
-        'tablefields' => array(
+    $typo3ConfVars['EXT']['extConf'][$packageKey]['SYSPRODUCTS']['DELIVERY'] = [
+        'tablefields' => [
             'title' => 'SYSTEMPRODUCT_DELIVERY',
             'description' => 'product zum Verwalten der Lieferarten',
-        ),
-    );
-    $typo3ConfVars['EXT']['extConf'][$packageKey]['SYSPRODUCTS']['DELIVERY']['types'] = array(
-        'sysdelivery' => array(
+        ],
+    ];
+    $typo3ConfVars['EXT']['extConf'][$packageKey]['SYSPRODUCTS']['DELIVERY']['types'] = [
+        'sysdelivery' => [
             'type' => DELIVERYARTICLETYPE,
-        ),
-    );
+        ],
+    ];
 
     // Add frontend plugins to content.default static template
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
@@ -113,33 +101,33 @@ call_user_func(function ($packageKey) {
     );
 
     if (!is_array($typo3ConfVars['SYS']['caching']['cacheConfigurations']['commerce_navigation'])) {
-        $typo3ConfVars['SYS']['caching']['cacheConfigurations']['commerce_navigation'] = array();
+        $typo3ConfVars['SYS']['caching']['cacheConfigurations']['commerce_navigation'] = [];
     }
 
     if (TYPO3_MODE == 'BE') {
         // XCLASS for version preview
         // This XCLASS will create a link to singlePID / previewPageID
         // in version module for commerce products
-        $typo3ConfVars['SYS']['Objects'][\TYPO3\CMS\Version\Controller\VersionModuleController::class] = array(
+        $typo3ConfVars['SYS']['Objects'][\TYPO3\CMS\Version\Controller\VersionModuleController::class] = [
             'className' => \CommerceTeam\Commerce\Xclass\VersionModuleController::class,
-        );
+        ];
 
         // For TYPO3 6.2
-        $typo3ConfVars['SYS']['Objects'][\TYPO3\CMS\Backend\Controller\NewRecordController::class] = array(
+        $typo3ConfVars['SYS']['Objects'][\TYPO3\CMS\Backend\Controller\NewRecordController::class] = [
             'className' => \CommerceTeam\Commerce\Xclass\NewRecordController::class,
-        );
+        ];
 
         // CLI Script configuration
         // Add statistic task
         /* @noinspection PhpUndefinedVariableInspection */
-        $scOptions['scheduler']['tasks'][\CommerceTeam\Commerce\Task\StatisticTask::class] = array(
+        $scOptions['scheduler']['tasks'][\CommerceTeam\Commerce\Task\StatisticTask::class] = [
             'extension' => $packageKey,
             'title' => 'LLL:EXT:' . $packageKey
                 . '/Resources/Private/Language/locallang_be.xlf:tx_commerce_task_statistictask.name',
             'description' => 'LLL:EXT:' . $packageKey
                 . '/Resources/Private/Language/locallang_be.xlf:tx_commerce_task_statistictask.description',
             'additionalFields' => \CommerceTeam\Commerce\Task\StatisticTaskAdditionalFieldProvider::class,
-        );
+        ];
     }
 
     $scOptions['typo3/backend.php']['renderPreProcess']['commerce'] =

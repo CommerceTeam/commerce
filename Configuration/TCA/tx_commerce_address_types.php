@@ -13,84 +13,101 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-return array(
-    'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_address_types',
+$languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
+
+return [
+    'ctrl' => [
+        'title' => $languageFile . 'tx_commerce_address_types',
         'label' => 'title',
         'readOnly' => 1,
         'adminOnly' => 1,
         'rootLevel' => 1,
         'is_static' => 1,
-        'languageField' => 'sys_language_uid',
         'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
+        'languageField' => 'sys_language_uid',
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'address_types.gif',
-    ),
-    'feInterface' => array(
-        'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title',
-    ),
-    'interface' => array(
-        'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,title',
-    ),
-    'columns' => array(
-        'sys_language_uid' => array(
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_address_types.gif',
+    ],
+    'feInterface' => [
+        'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title, name',
+    ],
+    'interface' => [
+        'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title, name',
+    ],
+    'columns' => [
+        'sys_language_uid' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.php:LGL.language',
-            'config' => array(
+            'config' => [
                 'type' => 'select',
-                'foreign_table' => 'sys_language',
-                'foreign_table_where' => 'ORDER BY sys_language.title',
-                'items' => array(
-                    array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages', -1),
-                    array('LLL:EXT:lang/locallang_general.php:LGL.default_value', 0),
-                ),
-            ),
-        ),
-        'l18n_parent' => array(
+                'renderType' => 'selectSingle',
+                'special' => 'languages',
+                'items' => [
+                    [
+                        'LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages',
+                        -1,
+                        'flags-multiple'
+                    ],
+                ],
+                'default' => 0,
+            ],
+        ],
+        'l18n_parent' => [
+            'exclude' => 1,
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.php:LGL.l18n_parent',
-            'config' => array(
+            'config' => [
                 'type' => 'select',
-                'items' => array(
-                    array('', 0),
-                ),
+                'renderType' => 'selectSingle',
+                'items' => [
+                    ['', 0],
+                ],
                 'foreign_table' => 'tx_commerce_address_types',
-                'foreign_table_where' => ' AND tx_commerce_address_types.pid = ###CURRENT_PID###
+                'foreign_table_where' => 'AND tx_commerce_address_types.pid = ###CURRENT_PID###
                     AND tx_commerce_address_types.sys_language_uid IN (-1,0)',
-            ),
-        ),
-        'l18n_diffsource' => array(
-            'config' => array(
+                'default' => 0
+            ],
+        ],
+        'l18n_diffsource' => [
+            'config' => [
                 'type' => 'passthrough',
-            ),
-        ),
-        'title' => array(
+                'default' => ''
+            ],
+        ],
+
+        'title' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_address_types.title',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_address_types.title',
+            'config' => [
                 'type' => 'input',
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'required,trim',
-            ),
-        ),
-        'name' => array(
+            ],
+        ],
+        'name' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_address_types.name',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_address_types.name',
+            'config' => [
                 'type' => 'input',
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'required,trim',
-            ),
-        ),
-    ),
-    'types' => array(
-        '0' => array('showitem' => 'sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, title;;;;2-2-2'),
-    ),
-    'palettes' => array(
-        '1' => array('showitem' => ''),
-    ),
-);
+            ],
+        ],
+    ],
+    'types' => [
+        '0' => [
+            'showitem' => '
+                --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general;general,
+                title, name
+            '
+        ],
+    ],
+    'palettes' => [
+        'general' => [
+            'showitem' => 'sys_language_uid, --linebreak--, l18n_parent'
+        ],
+    ],
+];

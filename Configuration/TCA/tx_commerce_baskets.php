@@ -13,111 +13,112 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-return array(
-    'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_baskets',
+$languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
+
+return [
+    'ctrl' => [
+        'title' => $languageFile . 'tx_commerce_baskets',
         'label' => 'uid',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'baskets.gif',
-    ),
-    'feInterface' => array(
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_baskets.gif',
+    ],
+    'feInterface' => [
         'fe_admin_fieldList' => 'sid, finished_time, article_id,price_id, price_gross, price_net, quantity',
-    ),
-    'interface' => array(
-        'showRecordFieldList' => 'sid,article_id,price_gross,price_net,quantity',
-    ),
-    'columns' => array(
-        'sid' => array(
+    ],
+    'interface' => [
+        'showRecordFieldList' => 'sid, article_id, price_gross, price_net, quantity',
+    ],
+    'columns' => [
+        'sid' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_baskets.sid',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_baskets.sid',
+            'config' => [
                 'type' => 'input',
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'required,trim',
-            ),
-        ),
-        'article_id' => array(
+            ],
+        ],
+        'article_id' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_baskets.article_id',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_baskets.article_id',
+            'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
                 'allowed' => 'tx_commerce_articles',
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
-            ),
-        ),
-        'price_id' => array(
+            ],
+        ],
+        'price_id' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_baskets.price_id',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_baskets.price_id',
+            'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
                 'allowed' => 'tx_commerce_article_prices',
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
-            ),
-        ),
-        'price_gross' => array(
+            ],
+        ],
+        'price_gross' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_baskets.price_gross',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_baskets.price_gross',
+            'config' => [
                 'type' => 'input',
                 'size' => '30',
                 'eval' => 'double2,nospace',
-            ),
-        ),
-        'price_net' => array(
+            ],
+        ],
+        'price_net' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_baskets.price_net',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_baskets.price_net',
+            'config' => [
                 'type' => 'input',
                 'size' => '30',
                 'eval' => 'double2,nospace',
-            ),
-        ),
-        'quantity' => array(
+            ],
+        ],
+        'quantity' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_baskets.quantity',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_baskets.quantity',
+            'config' => [
                 'type' => 'input',
                 'size' => '4',
                 'max' => '4',
                 'eval' => 'int',
                 'checkbox' => '0',
-                'range' => array(
+                'range' => [
                     'upper' => '5000',
                     'lower' => '0',
-                ),
+                ],
                 'default' => 0,
-            ),
-        ),
-        'finished_time' => array(
+            ],
+        ],
+        'finished_time' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_basket.finished_time',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_basket.finished_time',
+            'config' => [
                 'type' => 'input',
                 'eval' => 'date',
-            ),
-        ),
-        'readonly' => array(
+            ],
+        ],
+        'readonly' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_basket.readonly',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_basket.readonly',
+            'config' => [
                 'type' => 'check',
-            ),
-        ),
-    ),
-    'types' => array(
-        '0' => array('showitem' => 'sid;;;;1-1-1, article_id,price_id, price_gross, price_net, quantity'),
-    ),
-    'palettes' => array(
-        '1' => array('showitem' => ''),
-    ),
-);
+            ],
+        ],
+    ],
+    'types' => [
+        '0' => [
+            'showitem' => 'sid, article_id, price_id, price_gross, price_net, quantity, finished_time, readonly'
+        ],
+    ],
+];

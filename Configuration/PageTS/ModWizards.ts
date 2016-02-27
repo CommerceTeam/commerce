@@ -1,14 +1,28 @@
-[CommerceTeam\Commerce\Utility\TyposcriptConfig]
+mod.web_list.deniedNewTables := addToList(tx_commerce_address_types, tx_commerce_attribute_correlationtypes, tx_commerce_attribute_values, tx_commerce_baskets, tx_commerce_orders, tx_commerce_order_articles, tx_commerce_order_types, tx_commerce_salesfigures, tx_commerce_supplier, tx_commerce_tracking, tx_commerce_trackingcodes, tx_commerce_user_states)
+
+# module and foldername to match
+[CommerceTeam\Commerce\Utility\TyposcriptConfig web_list, commerce]
+mod.web_list.allowedNewTables = tx_commerce_moveordermails, tx_commerce_newclients, tx_commerce_trackingcodes, tx_commerce_user_states, pages_language_overlay
+mod.web_list.deniedNewTables := removeFromList(tx_commerce_moveordermails, tx_commerce_newclients, tx_commerce_trackingcodes, tx_commerce_user_states)
+[end]
+
+[CommerceTeam\Commerce\Utility\TyposcriptConfig web_list, attributes]
+mod.web_list.allowedNewTables = tx_commerce_attributes, pages_language_overlay
+[products]
+
+[CommerceTeam\Commerce\Utility\TyposcriptConfig web_list, products]
+mod.web_list.allowedNewTables = pages_language_overlay
+[products]
+
+[CommerceTeam\Commerce\Utility\TyposcriptConfig web_list, 'orders,incoming,working,waiting,delivered']
+mod.web_list.allowedNewTables = pages_language_overlay
+[end]
+
+[CommerceTeam\Commerce\Utility\TyposcriptConfig commerce_category, products]
 mod.web_list.allowedNewTables = tx_commerce_products, tx_commerce_categories, pages_language_overlay
-[else]
-mod.web_list.deniedNewTables = tx_commerce_address_types, tx_commerce_article_prices, tx_commerce_article_types, tx_commerce_articles, tx_commerce_attribute_values, tx_commerce_attributes, tx_commerce_baskets, tx_commerce_categories, tx_commerce_manufacturer, tx_commerce_moveordermails, tx_commerce_newclients, tx_commerce_order_articles, tx_commerce_order_types, tx_commerce_orders, tx_commerce_products, tx_commerce_salesfigures, tx_commerce_supplier, tx_commerce_tracking, tx_commerce_trackingcodes, tx_commerce_user_states
 [end]
 
-[CommerceTeam\Commerce\Utility\TyposcriptConfig commerce_systemdata]
-mod.web_list.allowedNewTables = tx_commerce_attributes, tx_commerce_manufacturer, tx_commerce_supplier
-[end]
-
-[CommerceTeam\Commerce\Utility\TyposcriptConfig commerce_order]
+[CommerceTeam\Commerce\Utility\TyposcriptConfig commerce_order, 'orders,incoming,working,waiting,delivered']
 mod.web_list.allowedNewTables = tx_commerce_orders, tx_commerce_order_articles
 [end]
 

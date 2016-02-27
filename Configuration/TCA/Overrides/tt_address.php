@@ -13,69 +13,69 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-$tempColumns = array(
-    'surname' => array(
+$languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
+
+$tempColumns = [
+    'surname' => [
         'exclude' => 1,
-        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tt_address.surname',
-        'config' => array(
+        'label' => $languageFile . 'tt_address.surname',
+        'config' => [
             'type' => 'input',
             'size' => '40',
             'max' => '50',
-        ),
-    ),
-    'tx_commerce_default_values' => array(
+        ],
+    ],
+    'tx_commerce_default_values' => [
         'exclude' => 1,
-        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tt_address.tx_commerce_default_values',
-        'config' => array(
+        'label' => $languageFile . 'tt_address.tx_commerce_default_values',
+        'config' => [
             'type' => 'input',
             'size' => '4',
             'max' => '4',
             'eval' => 'int',
             'checkbox' => '0',
-            'range' => array(
+            'range' => [
                 'upper' => '1000',
                 'lower' => '10',
-            ),
+            ],
             'default' => 0,
-        ),
-    ),
-    'tx_commerce_fe_user_id' => array(
+        ],
+    ],
+    'tx_commerce_fe_user_id' => [
         'exclude' => 1,
-        'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tt_address.tx_commerce_fe_user_id',
-        'config' => array(
+        'label' => $languageFile . 'tt_address.tx_commerce_fe_user_id',
+        'config' => [
             'type' => 'group',
             'internal_type' => 'db',
             'allowed' => 'fe_users',
             'size' => 1,
             'minitems' => 0,
             'maxitems' => 1,
-        ),
-    ),
-    'tx_commerce_address_type_id' => array(
+        ],
+    ],
+    'tx_commerce_address_type_id' => [
         'exclude' => 1,
-        'label' =>
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tt_address.tx_commerce_address_type_id',
-        'config' => array(
+        'label' => $languageFile . 'tt_address.tx_commerce_address_type_id',
+        'config' => [
             'type' => 'select',
-            'item' => array(
-                array('', 0),
-            ),
+            'item' => [
+                ['', 0],
+            ],
             'foreign_table' => 'tx_commerce_address_types',
-            'foreign_table_where' => 'AND tx_commerce_address_types.pid=0',
+            'foreign_table_where' => 'AND tx_commerce_address_types.pid = 0',
             'size' => 1,
             'minitems' => 0,
             'maxitems' => 1,
-        ),
-    ),
-    'tx_commerce_is_main_address' => array(
+        ],
+    ],
+    'tx_commerce_is_main_address' => [
         'exclude' => 1,
-        'label' =>
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tt_address.tx_commerce_is_main_address',
-        'config' => array(
+        'label' => $languageFile . 'tt_address.tx_commerce_is_main_address',
+        'config' => [
             'type' => 'check',
-        ),
-    ),
-);
+        ],
+    ],
+];
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('tt_address', $tempColumns, 1);
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(

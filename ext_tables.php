@@ -38,13 +38,13 @@ call_user_func(function ($packageKey) {
         $iconRegistry->registerIcon(
             'extensions-commerce-globus',
             \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/commerce_globus.gif']
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/globus.gif']
         );
         // icon to show for system folders with contains commerce selected
         $iconRegistry->registerIcon(
             'apps-pagetree-folder-contains-commerce',
             \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/commerce_folder.gif']
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/folder.gif']
         );
         $GLOBALS['TCA']['pages']['ctrl']['typeicon_classes']['contains-commerce'] =
             'apps-pagetree-folder-contains-commerce';
@@ -66,7 +66,7 @@ call_user_func(function ($packageKey) {
             $packageKey,
             '',
             'after:file',
-            PATH_TXCOMMERCE . 'Modules/Main/',
+            '',
             [
                 'script' => '_DISPATCH',
                 'name' => $packageKey,
@@ -115,15 +115,15 @@ call_user_func(function ($packageKey) {
             'commerce',
             'commerce_permission',
             '',
-            array(
+            [
                 'PermissionModule' => 'index, edit, update'
-            ),
-            array(
+            ],
+            [
                 'access' => 'user,group',
                 'icon' => 'EXT:beuser/Resources/Public/Icons/module-permission.svg',
                 'labels' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf',
                 'navigationComponentId' => 'commerce-permissiontree'
-            )
+            ]
         );
         // Permission navigation frame
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent(
@@ -287,7 +287,8 @@ call_user_func(function ($packageKey) {
     // Add context menu for category trees in BE
     $GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = array(
         'name' => \CommerceTeam\Commerce\Utility\ClickmenuUtility::class,
-        'path' => PATH_TXCOMMERCE . 'Classes/Utility/ClickmenuUtility.php',
+        'path' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($packageKey)
+            . 'Classes/Utility/ClickmenuUtility.php',
     );
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToInsertRecords('tx_commerce_categories');

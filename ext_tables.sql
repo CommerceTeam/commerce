@@ -52,13 +52,12 @@ CREATE TABLE tt_address (
 CREATE TABLE tx_commerce_address_types (
 	uid int(11) DEFAULT '0' NOT NULL auto_increment,
 	pid int(11) DEFAULT '0' NOT NULL,
-	sys_language_uid int(11) DEFAULT '0' NOT NULL,
 	tstamp int(11) DEFAULT '0' NOT NULL,
 	crdate int(11) DEFAULT '0' NOT NULL,
-	deleted tinyint(3) DEFAULT '0' NOT NULL,
-	hidden tinyint(3) DEFAULT '0' NOT NULL,
+	sys_language_uid int(11) DEFAULT '0' NOT NULL,
 	l18n_parent int(11) DEFAULT '0' NOT NULL,
 	l18n_diffsource mediumblob NOT NULL,
+
 	title varchar(80) DEFAULT '' NOT NULL,
 	name varchar(80) DEFAULT '' NOT NULL,
 
@@ -113,9 +112,9 @@ CREATE TABLE tx_commerce_articles (
 	relatedpage int(11) DEFAULT '0' NOT NULL,
 
 	PRIMARY KEY (uid),
-	KEY parent (pid),
 	KEY lang (sys_language_uid),
 	KEY langpar (l18n_parent),
+	KEY parent (pid),
 	KEY uproduct (uid_product)
 );
 
@@ -145,6 +144,7 @@ CREATE TABLE tx_commerce_article_prices (
 	tstamp int(11) DEFAULT '0' NOT NULL,
 	crdate int(11) DEFAULT '0' NOT NULL,
 	cruser_id int(11) DEFAULT '0' NOT NULL,
+	# @todo check if the following 3 fields are needed
 	t3ver_oid int(11) DEFAULT '0' NOT NULL,
 	t3ver_id int(11) DEFAULT '0' NOT NULL,
 	t3ver_label varchar(30) DEFAULT '' NOT NULL,
@@ -153,6 +153,7 @@ CREATE TABLE tx_commerce_article_prices (
 	starttime int(11) DEFAULT '0' NOT NULL,
 	endtime int(11) DEFAULT '0' NOT NULL,
 	fe_group varchar(100) DEFAULT '0' NOT NULL,
+
 	uid_article int(11) DEFAULT '0' NOT NULL,
 	price_net int(11) DEFAULT '0',
 	price_gross int(11) DEFAULT '0',
@@ -184,10 +185,10 @@ CREATE TABLE tx_commerce_article_types (
 	hidden tinyint(3) DEFAULT '0' NOT NULL,
 	title varchar(255) DEFAULT '' NOT NULL,
 
+	PRIMARY KEY (uid),
 	KEY lang (sys_language_uid),
-	KEY parlang (l18n_parent),
-	KEY parent (pid),
-	PRIMARY KEY (uid)
+	KEY langpar (l18n_parent),
+	KEY parent (pid)
 );
 
 #
@@ -210,8 +211,9 @@ CREATE TABLE tx_commerce_attributes (
 	starttime int(11) DEFAULT '0' NOT NULL,
 	endtime int(11) DEFAULT '0' NOT NULL,
 	fe_group varchar(100) DEFAULT '0' NOT NULL,
-	parent int(11) DEFAULT '0' NOT NULL,
 	sorting int(11) DEFAULT '0' NOT NULL,
+
+	parent int(11) DEFAULT '0' NOT NULL,
 	has_valuelist tinyint(3) DEFAULT '0' NOT NULL,
 	multiple tinyint(3) DEFAULT '0' NOT NULL,
 	title varchar(80) DEFAULT '' NOT NULL,
@@ -263,9 +265,9 @@ CREATE TABLE tx_commerce_attribute_values (
 	icon blob NOT NULL,
 	showvalue tinyint(4) DEFAULT '0' NOT NULL,
 
+	PRIMARY KEY (uid),
 	KEY lang (sys_language_uid),
 	KEY langpar (l18n_parent),
-	PRIMARY KEY (uid),
 	KEY parent (pid)
 );
 
@@ -392,6 +394,7 @@ CREATE TABLE tx_commerce_manufacturer (
 	t3ver_label varchar(30) DEFAULT '' NOT NULL,
 	deleted tinyint(4) DEFAULT '0' NOT NULL,
 	hidden tinyint(4) DEFAULT '0' NOT NULL,
+
 	title varchar(80) DEFAULT '' NOT NULL,
 	street varchar(80) DEFAULT '' NOT NULL,
 	number varchar(80) DEFAULT '' NOT NULL,
@@ -584,9 +587,9 @@ CREATE TABLE tx_commerce_products (
 	relatedproducts blob NOT NULL,
 	articleslok tinyint(4) DEFAULT '0' NOT NULL,
 
+	PRIMARY KEY (uid),
 	KEY lang (sys_language_uid),
 	KEY langpar (l18n_parent),
-	PRIMARY KEY (uid),
 	KEY parent (pid)
 );
 

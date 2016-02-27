@@ -13,9 +13,11 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-return array(
-    'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures',
+$languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
+
+return [
+    'ctrl' => [
+        'title' => $languageFile . 'tx_commerce_salesfigures',
         'label' => 'uid',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -23,117 +25,121 @@ return array(
         'default_sortby' => 'ORDER BY crdate',
         'readOnly' => '1',
         'adminOnly' => '1',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'salesfigures.gif',
-    ),
-    'feInterface' => array(
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_salesfigures.gif',
+    ],
+    'feInterface' => [
         'fe_admin_fieldList' => 'year, month, day, dow, hour, pricegross, pricenet, amount, orders',
-    ),
-    'interface' => array(
-        'showRecordFieldList' => 'year,month,day,dow,hour,pricegross, pricenet,amount,orders',
-    ),
-    'columns' => array(
-        'year' => array(
+    ],
+    'interface' => [
+        'showRecordFieldList' => 'year, month, day, dow, hour, pricegross, pricenet, amount, orders',
+    ],
+    'columns' => [
+        'year' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.year',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_salesfigures.year',
+            'config' => [
                 'type' => 'input',
                 'size' => '11',
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ),
-        ),
-        'month' => array(
+            ],
+        ],
+        'month' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.month',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_salesfigures.month',
+            'config' => [
                 'type' => 'input',
                 'size' => '11',
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ),
-        ),
-        'day' => array(
+            ],
+        ],
+        'day' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.day',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_salesfigures.day',
+            'config' => [
                 'type' => 'input',
                 'size' => '11',
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ),
-        ),
-        'dow' => array(
+            ],
+        ],
+        'dow' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.dow',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_salesfigures.dow',
+            'config' => [
                 'type' => 'input',
                 'size' => '11',
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ),
-        ),
-        'hour' => array(
+            ],
+        ],
+        'hour' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.hour',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_salesfigures.hour',
+            'config' => [
                 'type' => 'input',
                 'size' => '11',
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ),
-        ),
-        'pricegross' => array(
+            ],
+        ],
+        'pricegross' => [
             'exclude' => 1,
             'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.pricegross',
-            'config' => array(
+                $languageFile . 'tx_commerce_salesfigures.pricegross',
+            'config' => [
                 'type' => 'input',
                 'size' => '11',
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ),
-        ),
-        'pricenet' => array(
+            ],
+        ],
+        'pricenet' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.pricenet',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_salesfigures.pricenet',
+            'config' => [
                 'type' => 'input',
                 'size' => '11',
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ),
-        ),
-        'amount' => array(
+            ],
+        ],
+        'amount' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.amount',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_salesfigures.amount',
+            'config' => [
                 'type' => 'input',
                 'size' => '11',
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ),
-        ),
-        'orders' => array(
+            ],
+        ],
+        'orders' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_salesfigures.orders',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_salesfigures.orders',
+            'config' => [
                 'type' => 'input',
                 'size' => '11',
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ),
-        ),
-    ),
-    'types' => array(
-        '0' => array('showitem' => 'year, month, day, dow, hour, pricegross, pricenet, amount, orders'),
-    ),
-);
+            ],
+        ],
+    ],
+    'types' => [
+        '0' => [
+            'showitem' => '
+                year, month, day, dow, hour, pricegross, pricenet, amount, orders
+            '
+        ],
+    ],
+];

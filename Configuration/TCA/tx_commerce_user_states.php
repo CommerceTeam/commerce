@@ -13,9 +13,11 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-return array(
-    'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_user_states',
+$languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
+
+return [
+    'ctrl' => [
+        'title' => $languageFile . 'tx_commerce_user_states',
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -25,62 +27,70 @@ return array(
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY crdate',
         'delete' => 'deleted',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'user_states.gif',
-    ),
-    'feInterface' => array(
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_user_states.gif',
+    ],
+    'feInterface' => [
         'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title',
-    ),
-    'interface' => array(
-        'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,title',
-    ),
-    'columns' => array(
-        'sys_language_uid' => array(
+    ],
+    'interface' => [
+        'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title',
+    ],
+    'columns' => [
+        'sys_language_uid' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.php:LGL.language',
-            'config' => array(
+            'config' => [
                 'type' => 'select',
-                'foreign_table' => 'sys_language',
-                'foreign_table_where' => 'ORDER BY sys_language.title',
-                'items' => array(
-                    array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages', -1),
-                    array('LLL:EXT:lang/locallang_general.php:LGL.default_value', 0),
-                ),
-            ),
-        ),
-        'l18n_parent' => array(
+                'renderType' => 'selectSingle',
+                'special' => 'languages',
+                'items' => [
+                    [
+                        'LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages',
+                        -1,
+                        'flags-multiple'
+                    ],
+                ],
+                'default' => 0,
+            ],
+        ],
+        'l18n_parent' => [
+            'exclude' => 1,
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.php:LGL.l18n_parent',
-            'config' => array(
+            'config' => [
                 'type' => 'select',
-                'items' => array(
-                    array('', 0),
-                ),
+                'renderType' => 'selectSingle',
+                'items' => [
+                    ['', 0],
+                ],
                 'foreign_table' => 'tx_commerce_user_states',
-                'foreign_table_where' => ' AND tx_commerce_user_states.pid = ###CURRENT_PID###
+                'foreign_table_where' => 'AND tx_commerce_user_states.pid = ###CURRENT_PID###
                     AND tx_commerce_user_states.sys_language_uid IN (-1,0)',
-            ),
-        ),
-        'l18n_diffsource' => array(
-            'config' => array(
+                'default' => 0
+            ],
+        ],
+        'l18n_diffsource' => [
+            'config' => [
                 'type' => 'passthrough',
-            ),
-        ),
-        'title' => array(
+                'default' => ''
+            ],
+        ],
+
+        'title' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_user_states.title',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_user_states.title',
+            'config' => [
                 'type' => 'input',
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'required,trim',
-            ),
-        ),
-        'icon' => array(
+            ],
+        ],
+        'icon' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_user_states.icon',
+            'label' => $languageFile . 'tx_commerce_user_states.icon',
             'l10n_mode' => 'mergeIfNotBlank',
-            'config' => array(
+            'config' => [
                 'type' => 'group',
                 'internal_type' => 'file',
                 'allowed' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
@@ -90,10 +100,20 @@ return array(
                 'minitems' => 0,
                 'maxitems' => 1,
                 'show_thumbs' => 1,
-            ),
-        ),
-    ),
-    'types' => array(
-        '0' => array('showitem' => 'sys_language_uid, l18n_parent, l18n_diffsource, title, icon'),
-    ),
-);
+            ],
+        ],
+    ],
+    'types' => [
+        '0' => [
+            'showitem' => '
+                --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general;general,
+                title, icon
+            '
+        ],
+    ],
+    'palettes' => [
+        'general' => [
+            'showitem' => 'sys_language_uid, --linebreak--, l18n_parent'
+        ],
+    ],
+];

@@ -18,6 +18,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
@@ -112,7 +113,6 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         // Page select clause:
         $this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);
 
-        $this->initPage();
         // Set up menus:
         $this->menuConfig();
     }
@@ -127,24 +127,11 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         if (GeneralUtility::_GP('clear_all_cache')) {
             /** @var DataHandler $tce */
             $tce = GeneralUtility::makeInstance(DataHandler::class);
-            $tce->stripslashes_values = false;
             $tce->start(array(), array());
             $tce->clear_cacheCmd('all');
         }
     }
 
-    /**
-     * Initializes the Page.
-     *
-     * @return void
-     */
-    public function initPage()
-    {
-        $this->doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
-        $this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
-
-        $this->doc->form = '<form action="" method="POST">';
-    }
 
     /**
      * Main function of the module. Write the content to $this->content.

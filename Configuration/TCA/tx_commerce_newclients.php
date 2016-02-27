@@ -13,9 +13,11 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-return array(
-    'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_newclients',
+$languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
+
+return [
+    'ctrl' => [
+        'title' => $languageFile . 'tx_commerce_newclients',
         'label' => 'uid',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -23,84 +25,85 @@ return array(
         'default_sortby' => 'ORDER BY crdate',
         'readOnly' => '1',
         'adminOnly' => '1',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'newclients.gif',
-    ),
-    'feInterface' => array(
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_newclients.gif',
+    ],
+    'feInterface' => [
         'fe_admin_fieldList' => 'year, month, day, dow, hour, registration',
-    ),
-    'interface' => array(
-        'showRecordFieldList' => 'year,month,day,dow,hour,registration',
-    ),
-    'columns' => array(
-        'year' => array(
+    ],
+    'interface' => [
+        'showRecordFieldList' => 'year, month, day, dow, hour, registration',
+    ],
+    'columns' => [
+        'year' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_newclients.year',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_newclients.year',
+            'config' => [
                 'type' => 'input',
                 'size' => '11',
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ),
-        ),
-        'month' => array(
+            ],
+        ],
+        'month' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_newclients.month',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_newclients.month',
+            'config' => [
                 'type' => 'input',
                 'size' => '11',
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ),
-        ),
-        'day' => array(
+            ],
+        ],
+        'day' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_newclients.day',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_newclients.day',
+            'config' => [
                 'type' => 'input',
                 'size' => '11',
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ),
-        ),
-        'dow' => array(
+            ],
+        ],
+        'dow' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_newclients.dow',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_newclients.dow',
+            'config' => [
                 'type' => 'input',
                 'size' => '11',
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ),
-        ),
-        'hour' => array(
+            ],
+        ],
+        'hour' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_newclients.hour',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_newclients.hour',
+            'config' => [
                 'type' => 'input',
                 'size' => '11',
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ),
-        ),
-        'registration' => array(
+            ],
+        ],
+        'registration' => [
             'exclude' => 1,
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_newclients.registration',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_newclients.registration',
+            'config' => [
                 'type' => 'input',
                 'size' => '11',
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ),
-        ),
-    ),
-    'types' => array(
-        '0' => array('showitem' => 'year, month, day, dow, hour, registration'),
-    ),
-);
+            ],
+        ],
+    ],
+    'types' => [
+        '0' => [
+            'showitem' => 'year, month, day, dow, hour, registration'
+        ],
+    ],
+];

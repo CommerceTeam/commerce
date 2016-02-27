@@ -14,28 +14,28 @@
  */
 
 // extend beusers/begroups for access control
-$tempColumns = array(
-    'tx_commerce_mountpoints' => array(
+$tempColumns = [
+    'tx_commerce_mountpoints' => [
         'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:label.tx_commerce_mountpoints',
-        'config' => array(
+        'config' => [
             'type' => 'select',
             'foreign_table' => 'tx_commerce_categories',
-            'foreign_table_where' => ' AND sys_language_uid = 0',
+            'foreign_table_where' => 'AND sys_language_uid = 0',
             'size' => 10,
             'minitems' => 0,
             'maxitems' => 20,
             // @todo provide alternative tree that can handle large category trees
             // 'renderMode' => 'tree',
-            'treeConfig' => array(
+            'treeConfig' => [
                 'expandAll' => true,
                 'parentField' => 'parent_category',
-                'appearance' => array(
+                'appearance' => [
                     'showHeader' => true,
-                ),
-            ),
-        ),
-    ),
-);
+                ],
+            ],
+        ],
+    ],
+];
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('be_groups', $tempColumns, 1);
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(

@@ -13,146 +13,144 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-return array(
-    'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles',
+$languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
+
+return [
+    'ctrl' => [
+        'title' => $languageFile . ':tx_commerce_order_articles',
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'order_articles.gif',
-    ),
-    'feInterface' => array(
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_order_articles.gif',
+    ],
+    'feInterface' => [
         'fe_admin_fieldList' => 'article_type_uid, article_uid, article_number,
             title, subtitle, price_net, price_gross, tax, amount, order_id',
-    ),
-    'interface' => array(
-        'showRecordFieldList' => 'amount, title, article_type_uid, article_uid, article_number, subtitle, price_net,
-            price_gross, tax, order_uid',
-    ),
-    'columns' => array(
-        'tstamp' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.tstamp',
-            'config' => array(
+    ],
+    'interface' => [
+        'showRecordFieldList' => 'amount, title, article_type_uid, article_uid,
+            article_number, subtitle, price_net, price_gross, tax, order_uid',
+    ],
+    'columns' => [
+        'tstamp' => [
+            'label' => $languageFile . ':tx_commerce_order_articles.tstamp',
+            'config' => [
                 'type' => 'input',
                 'readOnly' => true,
-            ),
-        ),
-        'crdate' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.crdate',
-            'config' => array(
+            ],
+        ],
+        'crdate' => [
+            'label' => $languageFile . ':tx_commerce_order_articles.crdate',
+            'config' => [
                 'type' => 'input',
                 'readOnly' => true,
                 'format' => 'date',
                 'eval' => 'date',
-            ),
-        ),
-        'article_uid' => array(
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.article_uid',
-            'config' => array(
+            ],
+        ],
+        'article_uid' => [
+            'label' => $languageFile . ':tx_commerce_order_articles.article_uid',
+            'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
                 'allowed' => 'tx_commerce_articles',
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
-            ),
-        ),
-        'article_type_uid' => array(
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.article_type_uid',
-            'config' => array(
+            ],
+        ],
+        'article_type_uid' => [
+            'label' => $languageFile . ':tx_commerce_order_articles.article_type_uid',
+            'config' => [
                 'type' => 'input',
                 'readOnly' => true,
-            ),
-        ),
-        'article_number' => array(
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.article_number',
-            'config' => array(
+            ],
+        ],
+        'article_number' => [
+            'label' => $languageFile . ':tx_commerce_order_articles.article_number',
+            'config' => [
                 'type' => 'input',
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'required,trim',
-            ),
-        ),
-        'title' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.title',
-            'config' => array(
+            ],
+        ],
+        'title' => [
+            'label' => $languageFile . ':tx_commerce_order_articles.title',
+            'config' => [
                 'type' => 'input',
                 'size' => '40',
                 'max' => '255',
                 'eval' => 'required,trim',
-            ),
-        ),
-        'subtitle' => array(
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.subtitle',
-            'config' => array(
+            ],
+        ],
+        'subtitle' => [
+            'label' => $languageFile . ':tx_commerce_order_articles.subtitle',
+            'config' => [
                 'type' => 'input',
                 'size' => '40',
                 'max' => '255',
                 'eval' => 'trim',
-            ),
-        ),
-        'price_net' => array(
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.price_net',
-            'config' => array(
+            ],
+        ],
+        'price_net' => [
+            'label' => $languageFile . ':tx_commerce_order_articles.price_net',
+            'config' => [
                 'type' => 'input',
                 'size' => '6',
                 'eval' => 'integer',
-            ),
-        ),
-        'price_gross' => array(
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.price_gross',
-            'config' => array(
+            ],
+        ],
+        'price_gross' => [
+            'label' => $languageFile . ':tx_commerce_order_articles.price_gross',
+            'config' => [
                 'type' => 'input',
                 'size' => '6',
                 'eval' => 'integer',
-            ),
-        ),
-        'tax' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.tax',
-            'config' => array(
+            ],
+        ],
+        'tax' => [
+            'label' => $languageFile . ':tx_commerce_order_articles.tax',
+            'config' => [
                 'type' => 'input',
                 'size' => '6',
                 'eval' => 'integer',
-            ),
-        ),
-        'amount' => array(
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.amount',
-            'config' => array(
+            ],
+        ],
+        'amount' => [
+            'label' => $languageFile . ':tx_commerce_order_articles.amount',
+            'config' => [
                 'type' => 'input',
                 'size' => '2',
                 'eval' => 'required,num',
-            ),
-        ),
-        'order_uid' => array(
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.order_uid',
-            'config' => array(
+            ],
+        ],
+        'order_uid' => [
+            'label' => $languageFile . ':tx_commerce_order_articles.order_uid',
+            'config' => [
                 'type' => 'select',
                 'foreign_table' => 'tx_commerce_orders',
                 'readOnly' => true,
-            ),
-        ),
+            ],
+        ],
         // @todo Declaration for iproc function for selecting right value
-        'order_id' => array(
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_order_articles.order_id',
-            'config' => array(
+        'order_id' => [
+            'label' => $languageFile . ':tx_commerce_order_articles.order_id',
+            'config' => [
                 'type' => 'user',
                 'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->articleOrderId',
                 'readOnly' => true,
-            ),
-        ),
-    ),
-    'types' => array(
-        '0' => array('showitem' => 'order_id, article_type_uid, article_uid, article_number, title,
-            subtitle, amount, price_net, price_gross, tax'),
-    ),
-);
+            ],
+        ],
+    ],
+    'types' => [
+        '0' => [
+            'showitem' => '
+                order_id, article_type_uid, article_uid, article_number,
+                title, subtitle, amount, price_net, price_gross, tax
+            '
+        ],
+    ],
+];

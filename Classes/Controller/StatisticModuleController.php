@@ -112,8 +112,6 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
         }
 
         $this->doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
-        $this->doc->setModuleTemplate(PATH_TXCOMMERCE . 'Resources/Private/Backend/mod_index.html');
-
         $this->doc->form = '<form action="" method="POST" name="editform">';
 
         // JavaScript

@@ -697,7 +697,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 $iconPath = 'orders_add.gif';
             } else {
                 $iconImg = '<img ' . IconUtility::skinImg(
-                    $this->backPath,
+                    '',
                     IconUtility::getIcon($table, $row),
                     $iconAttributes
                 ) . ' />';
@@ -706,8 +706,9 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 
         if ($iconPath != '') {
             $iconImg = '<img' . IconUtility::skinImg(
-                $this->backPath,
-                PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/' . $iconPath,
+                '',
+                \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('commerce')
+                . 'Resources/Public/Icons/Table/' . $iconPath,
                 $iconAttributes
             ) . '/>';
         }

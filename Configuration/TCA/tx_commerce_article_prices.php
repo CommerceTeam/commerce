@@ -13,9 +13,11 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-return array(
-    'ctrl' => array(
-        'title' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_article_prices',
+$languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
+
+return [
+    'ctrl' => [
+        'title' => $languageFile . 'tx_commerce_article_prices',
         'label' => 'price_net',
         'label_alt' => 'price_net,price_gross,purchase_price',
         'label_alt_force' => 1,
@@ -23,161 +25,161 @@ return array(
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
+        // @todo check if this works without further versioning configuration
         'versioning' => '1',
         'default_sortby' => 'ORDER BY crdate',
         'delete' => 'deleted',
-        'enablecolumns' => array(
+        'enablecolumns' => [
             'disabled' => 'hidden',
             'starttime' => 'starttime',
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
-        ),
-        'dividers2tabs' => '1',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'price.gif',
-    ),
-    'feInterface' => array(
-        'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime,
-            fe_group, price_gross, price_net, price_scale_amount, purchase_price',
-    ),
-    'interface' => array(
+        ],
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_article_prices.gif',
+    ],
+    'feInterface' => [
+        'fe_admin_fieldList' => 'hidden, starttime, endtime, fe_group, price_gross, price_net, purchase_price,
+            price_scale_amount_start, price_scale_amount_end',
+    ],
+    'interface' => [
         'showRecordFieldList' => 'hidden, starttime, endtime, fe_group, price_gross, price_net, purchase_price,
             price_scale_amount_start, price_scale_amount_end',
-    ),
-    'columns' => array(
-        'hidden' => array(
+    ],
+    'columns' => [
+        'hidden' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
-            'config' => array(
+            'config' => [
                 'type' => 'check',
-                'default' => '0',
-            ),
-        ),
-
-        'starttime' => array(
+                'items' => [
+                    '1' => [
+                        '0' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:hidden.I.0'
+                    ]
+                ]
+            ],
+        ],
+        'starttime' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.starttime',
-            'config' => array(
+            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
+            'config' => [
                 'type' => 'input',
-                'size' => '8',
-                'max' => '20',
-                'eval' => 'date',
-                'default' => '0',
-                'checkbox' => '0',
-            ),
-        ),
-
-        'endtime' => array(
+                'size' => '13',
+                'eval' => 'datetime',
+                'default' => 0
+            ],
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly'
+        ],
+        'endtime' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.endtime',
-            'config' => array(
+            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
+            'config' => [
                 'type' => 'input',
-                'size' => '8',
-                'max' => '20',
-                'eval' => 'date',
-                'checkbox' => '0',
-                'default' => '0',
-                'range' => array(
-                    'upper' => mktime(0, 0, 0, 12, 31, 2020),
-                    'lower' => mktime(0, 0, 0, date('m') - 1, date('d'), date('Y')),
-                ),
-            ),
-        ),
-
-        'fe_group' => array(
+                'size' => '13',
+                'eval' => 'datetime',
+                'default' => 0,
+                'range' => [
+                    'upper' => mktime(0, 0, 0, 1, 1, 2038)
+                ]
+            ],
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly'
+        ],
+        'fe_group' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.php:LGL.fe_group',
-            'config' => array(
+            'config' => [
                 'type' => 'select',
+                'renderType' => 'selectMultipleSideBySide',
                 'size' => 5,
                 'maxitems' => 50,
-                'items' => array(
-                    array('LLL:EXT:lang/locallang_general.xlf:LGL.hide_at_login', -1),
-                    array('LLL:EXT:lang/locallang_general.xlf:LGL.any_login', -2),
-                    array('LLL:EXT:lang/locallang_general.xlf:LGL.usergroups', '--div--'),
-                ),
+                'items' => [
+                    ['LLL:EXT:lang/locallang_general.xlf:LGL.hide_at_login', -1],
+                    ['LLL:EXT:lang/locallang_general.xlf:LGL.any_login', -2],
+                    ['LLL:EXT:lang/locallang_general.xlf:LGL.usergroups', '--div--'],
+                ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
                 'foreign_table_where' => 'ORDER BY fe_groups.title',
+            ],
+        ],
 
-            ),
-        ),
-
-        'price_gross' => array(
+        'price_gross' => [
             'exclude' => 1,
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_article_prices.price_gross',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_article_prices.price_gross',
+            'config' => [
                 'type' => 'input',
                 'size' => '30',
                 'eval' => 'nospace',
-            ),
-        ),
+            ],
+        ],
 
-        'price_net' => array(
+        'price_net' => [
             'exclude' => 1,
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_article_prices.price_net',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_article_prices.price_net',
+            'config' => [
                 'type' => 'input',
                 'size' => '30',
                 'eval' => 'nospace',
-            ),
-        ),
+            ],
+        ],
 
-        'purchase_price' => array(
+        'purchase_price' => [
             'exclude' => 1,
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_article_prices.purchase_price',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_article_prices.purchase_price',
+            'config' => [
                 'type' => 'input',
                 'size' => '30',
                 'eval' => 'nospace',
-            ),
-        ),
+            ],
+        ],
 
-        'price_scale_amount_start' => array(
+        'price_scale_amount_start' => [
             'exclude' => 1,
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_articles.price_scale_amount_start',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_articles.price_scale_amount_start',
+            'config' => [
                 'type' => 'input',
                 'size' => '10',
                 'eval' => 'int,nospace,required',
-                'range' => array('lower' => 1),
+                'range' => ['lower' => 1],
                 'default' => '1',
-            ),
-        ),
+            ],
+        ],
 
-        'price_scale_amount_end' => array(
+        'price_scale_amount_end' => [
             'exclude' => 1,
-            'label' =>
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_articles.price_scale_amount_end',
-            'config' => array(
+            'label' => $languageFile . 'tx_commerce_articles.price_scale_amount_end',
+            'config' => [
                 'type' => 'input',
                 'size' => '10',
                 'eval' => 'int,nospace,required',
-                'range' => array('lower' => 1),
+                'range' => ['lower' => 1],
                 'default' => '1',
-            ),
-        ),
+            ],
+        ],
 
-        'uid_article' => array(
+        'uid_article' => [
             'exclude' => 1,
             'label' => 'Article UID',
-            'config' => array(
+            'config' => [
                 'type' => 'user',
                 'userFunc' => \CommerceTeam\Commerce\Utility\ArticleCreatorUtility::class . '->articleUid',
-            ),
-        ),
-    ),
-    'types' => array(
-        '0' => array(
+            ],
+        ],
+    ],
+    'types' => [
+        '0' => [
             'showitem' => '
-                hidden;;1, price_gross, price_net, price_scale_amount_start,
-                price_scale_amount_end, purchase_price;;;;3-3-3, uid_article',
-        ),
-    ),
-    'palettes' => array(
-        '1' => array('showitem' => 'starttime, endtime, fe_group'),
-    ),
-);
+                price_gross, price_net, purchase_price, 
+                price_scale_amount_start, price_scale_amount_end, uid_article,
+                hidden,
+                --palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access
+            ',
+        ],
+    ],
+    'palettes' => [
+        'access' => [
+            'showitem' => 'starttime, endtime, --linebreak--, fe_group',
+        ],
+    ],
+];
