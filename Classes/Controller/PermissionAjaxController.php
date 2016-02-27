@@ -29,8 +29,6 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
  * \TYPO3\CMS\Core\Http\AjaxRequestHandler facility.
  *
  * Class \CommerceTeam\Commerce\Controller\PermissionAjaxController
- *
- * @author 2007-2008 mehrwert <typo3@mehrwert.de>
  */
 class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAjaxController
 {
@@ -43,15 +41,18 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
      */
     public function dispatch(ServerRequestInterface $request, ResponseInterface $response)
     {
+        // Why still use page? It keeps the controller in line with the parent controller
+        // this enables the usage of templates so there is no need to copy them into commerce
+        $categoryUid = (int)$this->conf['page'];
         $extPath = ExtensionManagementUtility::extPath('beuser');
 
         $view = GeneralUtility::makeInstance(StandaloneView::class);
         $view->setPartialRootPaths(array('default' => $extPath . 'Resources/Private/Partials'));
-        $view->assign('pageId', $this->conf['page']);
+        $view->assign('pageId', $categoryUid);
 
         $content = '';
         // Basic test for required value
-        if ($this->conf['page'] > 0) {
+        if ($categoryUid > 0) {
             // Init TCE for execution of update
             /** @var $tce DataHandler */
             $tce = GeneralUtility::makeInstance(DataHandler::class);
@@ -59,7 +60,7 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
             switch ($this->conf['action']) {
                 case 'show_change_owner_selector':
                     $content = $this->renderUserSelector(
-                        (int)$this->conf['page'],
+                        $categoryUid,
                         (int)$this->conf['ownerUid'],
                         $this->conf['username']
                     );
@@ -70,7 +71,7 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
                     if (is_int($userId)) {
                         // Prepare data to change
                         $data = array();
-                        $data['pages'][$this->conf['page']]['perms_userid'] = $userId;
+                        $data['tx_commerce_categories'][$categoryUid]['perms_userid'] = $userId;
                         // Execute TCE Update
                         $tce->start($data, array());
                         $tce->process_datamap();
@@ -83,14 +84,14 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
                         $view->assign('username', $usernameArray[$userId]['username']);
                         $content = $view->render();
                     } else {
-                        $response->getBody()->write('An error occurred: No page owner uid specified');
+                        $response->getBody()->write('An error occurred: No category owner uid specified');
                         $response = $response->withStatus(500);
                     }
                     break;
 
                 case 'show_change_group_selector':
                     $content = $this->renderGroupSelector(
-                        (int)$this->conf['page'],
+                        $categoryUid,
                         (int)$this->conf['groupUid'],
                         $this->conf['groupname']
                     );
@@ -101,7 +102,7 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
                     if (is_int($groupId)) {
                         // Prepare data to change
                         $data = array();
-                        $data['pages'][$this->conf['page']]['perms_groupid'] = $groupId;
+                        $data['tx_commerce_categories'][$categoryUid]['perms_groupid'] = $groupId;
                         // Execute TCE Update
                         $tce->start($data, array());
                         $tce->process_datamap();
@@ -114,7 +115,7 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
                         $view->assign('groupname', $groupnameArray[$groupId]['title']);
                         $content = $view->render();
                     } else {
-                        $response->getBody()->write('An error occurred: No page group uid specified');
+                        $response->getBody()->write('An error occurred: No category group uid specified');
                         $response = $response->withStatus(500);
                     }
                     break;
@@ -122,14 +123,14 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
                 case 'toggle_edit_lock':
                     // Prepare data to change
                     $data = array();
-                    $data['tx_commerce_categories'][$this->conf['page']]['editlock'] =
+                    $data['tx_commerce_categories'][$categoryUid]['editlock'] =
                         $this->conf['editLockState'] === 1 ? 0 : 1;
                     // Execute TCE Update
                     $tce->start($data, array());
                     $tce->process_datamap();
                     $content = $this->renderToggleEditLock(
-                        (int)$this->conf['page'],
-                        $data['tx_commerce_categories'][$this->conf['page']]['editlock']
+                        $categoryUid,
+                        $data['tx_commerce_categories'][$categoryUid]['editlock']
                     );
                     break;
 
@@ -141,7 +142,7 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
                     }
                     // Prepare data to change
                     $data = array();
-                    $data['tx_commerce_categories'][$this->conf['page']]['perms_' . $this->conf['who']] =
+                    $data['tx_commerce_categories'][$categoryUid]['perms_' . $this->conf['who']] =
                         $this->conf['permissions'];
                     // Execute TCE Update
                     $tce->start($data, array());
