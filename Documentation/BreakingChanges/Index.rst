@@ -18,20 +18,35 @@ Its not needed anymore and is discouraged due to reduce the entry points in tota
 Removed file
 ------------
 Classes/ViewHelpers/IframeTreeBrowser.php
-
-Removed properties
-------------------
-CommerceTeam\Commerce\ViewHelpers\TreelibTceforms::iframeContentRendering
-
-Removed methods
----------------
-CommerceTeam\Commerce\ViewHelpers\TreelibTceforms::setIframeContentRendering
-CommerceTeam\Commerce\ViewHelpers\TreelibTceforms::isIframeContentRendering
-CommerceTeam\Commerce\ViewHelpers\TreelibTceforms::isIframeRendering
-CommerceTeam\Commerce\ViewHelpers\TreelibTceforms::getTreeContent
-CommerceTeam\Commerce\ViewHelpers\TreelibTceforms::setIframeTreeBrowserScript
-CommerceTeam\Commerce\ViewHelpers\TreelibTceforms::renderIframe
-CommerceTeam\Commerce\ViewHelpers\TreelibTceforms::getIframeParameter
+Classes/ViewHelpers/TreelibBrowser.php
+Classes/ViewHelpers/TceFunc.php
+Classes/ViewHelpers/TreelibTceforms.php
+Classes/ViewHelpers/Browselinks/ProductView.php
+Classes/ViewHelpers/Browselinks/CategoryView.php
+Classes/ViewHelpers/Browselinks/CategoryTree.php
+Classes/Tree/Browsetree.php
+Classes/Tree/CategoryTree.php
+Classes/Tree/CategoryMounts.php
+Classes/Tree/OrderTree.php
+Classes/Tree/StatisticTree.php
+Classes/Tree/Leaf/Master.php
+Classes/Tree/Leaf/Leaf.php
+Classes/Tree/Leaf/Slave.php
+Classes/Tree/Leaf/Article.php
+Classes/Tree/Leaf/ArticleData.php
+Classes/Tree/Leaf/ArticleView.php
+Classes/Tree/Leaf/Base.php
+Classes/Tree/Leaf/Category.php
+Classes/Tree/Leaf/CategoryData.php
+Classes/Tree/Leaf/CategoryView.php
+Classes/Tree/Leaf/Data.php
+Classes/Tree/Leaf/MasterData.php
+Classes/Tree/Leaf/Mounts.php
+Classes/Tree/Leaf/Product.php
+Classes/Tree/Leaf/ProductData.php
+Classes/Tree/Leaf/ProductView.php
+Classes/Tree/Leaf/SlaveData.php
+Classes/Tree/Leaf/View.php
 
 Renamed module key
 ------------------

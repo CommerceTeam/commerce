@@ -68,7 +68,7 @@ class BackendUserUtility implements SingletonInterface
     }
 
     /**
-     * Checks if the page id, $id, is found within the webmounts set up for
+     * Checks if the category id, $id, is found within the webmounts set up for
      * the user. This should ALWAYS be checked for any page id a user works
      * with, whether it's about reading, writing or whatever. The point is
      * that this will add the security that a user can NEVER touch parts
@@ -81,8 +81,8 @@ class BackendUserUtility implements SingletonInterface
      * right away. Otherwise the function will return the uid of the webmount
      * which was first found in the rootline of the input page $id.
      *
-     * @param int $id Page ID to check
-     * @param string $readPerms Content of "getPagePermsClause(1)"
+     * @param int $id Category ID to check
+     * @param string $readPerms Content of "getCategoryPermsClause(1)"
      *      (read-permissions) If not set, they will be internally calculated
      *      (but if you have the correct value right away you can save that
      *      database lookup!)
@@ -91,7 +91,6 @@ class BackendUserUtility implements SingletonInterface
      *
      * @return int|NULL The page UID in the rootline that matched a mount point
      * @throws \RuntimeException If page is not in database mount
-     * @todo Define visibility
      */
     public function isInWebMount($id, $readPerms = '', $exitOnError = 0)
     {
@@ -104,17 +103,17 @@ class BackendUserUtility implements SingletonInterface
         $checkRec = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord(
             'tx_commerce_categories',
             $id,
-            'uid,t3ver_oid'
+            'pid,t3ver_oid'
         );
-        if ($checkRec['uid'] == -1) {
+        if ($checkRec['pid'] == -1) {
             $id = (int) $checkRec['t3ver_oid'];
         }
         if (!$readPerms) {
-            $readPerms = $this->getPagePermsClause(1);
+            $readPerms = $this->getCategoryPermsClause(1);
         }
         if ($id > 0) {
             $wM = $this->returnWebmounts();
-            $rL = $this->beGetRootLine($id, ' AND ' . $readPerms);
+            $rL = BackendUtility::BEgetRootLine($id, ' AND ' . $readPerms);
             foreach ($rL as $v) {
                 if ($v['uid'] && in_array($v['uid'], $wM)) {
                     return $v['uid'];
@@ -140,7 +139,7 @@ class BackendUserUtility implements SingletonInterface
      * If the user is 'admin' " 1=1" is returned (no effect)
      * If the user is not set at all (->user is not an array),
      * then " 1=0" is returned (will cause no selection results at all)
-     * The 95% use of this function is "->getPagePermsClause(1)" which will
+     * The 95% use of this function is "->getCategoryPermsClause(1)" which will
      * return WHERE clauses for *selecting* pages in backend listings
      * - in other words this will check read permissions.
      *
@@ -149,7 +148,7 @@ class BackendUserUtility implements SingletonInterface
      * @return string Part of where clause. Prefix " AND " to this.
      * @todo Define visibility
      */
-    public function getPagePermsClause($perms)
+    public function getCategoryPermsClause($perms)
     {
         if (is_array($this->getBackendUser()->user)) {
             $backenduser = $this->getBackendUser();
@@ -210,45 +209,6 @@ class BackendUserUtility implements SingletonInterface
         $mountPoints = array_unique($mountPoints);
 
         return $mountPoints;
-    }
-
-    /**
-     * Returns what is called the 'RootLine'. That is an array with information
-     * about the page records from a page id ($uid) and back to the root.
-     * By default deleted pages are filtered.
-     * This RootLine will follow the tree all the way to the root. This is
-     * opposite to another kind of root line known from the frontend where the
-     * rootline stops when a root-template is found.
-     *
-     * @param int $uid Page id for which to create the root line.
-     * @param string $clause Clause can be used to select other criteria. It
-     *     would typically be where-clauses that stops the process if we meet a
-     *     page, the user has no reading access to.
-     *
-     * @return array Root line array, all the way to the page tree root
-     *     (or as far as $clause allows!)
-     */
-    protected function beGetRootLine($uid, $clause = '')
-    {
-        static $categoryRootlineCache = array();
-
-        if (is_array($categoryRootlineCache[$uid])) {
-            $output = $categoryRootlineCache[$uid];
-        } else {
-            /**
-             * Category repository.
-             *
-             * @var \CommerceTeam\Commerce\Domain\Repository\CategoryRepository $repository
-             */
-            $repository = GeneralUtility::makeInstance(
-                \CommerceTeam\Commerce\Domain\Repository\CategoryRepository::class
-            );
-            $output = $repository->getCategoryRootline((int) $uid, $clause);
-
-            $categoryRootlineCache[$uid] = $output;
-        }
-
-        return $output;
     }
 
 

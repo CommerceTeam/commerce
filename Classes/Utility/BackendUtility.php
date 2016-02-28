@@ -2933,7 +2933,7 @@ class BackendUtility
             $loopCheck = 100;
             $theRowArray = array();
             while ($uid != 0 && $loopCheck) {
-                --$loopCheck;
+                $loopCheck--;
                 $row = self::getCategoryForRootline($uid, $clause, $workspaceOl);
                 if (is_array($row)) {
                     $uid = $row['pid'];
@@ -2955,6 +2955,9 @@ class BackendUtility
                     'title' => $val['title'],
                     'ts_config' => $val['ts_config'],
                     't3ver_oid' => $val['t3ver_oid'],
+                    't3ver_wsid' => $val['t3ver_wsid'],
+                    't3ver_state' => $val['t3ver_state'],
+                    't3ver_stage' => $val['t3ver_stage'],
                 );
                 if (isset($val['_ORIG_pid'])) {
                     $output[$c]['_ORIG_pid'] = $val['_ORIG_pid'];
@@ -3036,17 +3039,11 @@ class BackendUtility
             return true;
         }
 
-        /**
-         * Category mount.
-         *
-         * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
-         */
-        $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
-        $mount->init((int) $backendUser->user['uid']);
-
+        /** @var BackendUserUtility $backendUserUtility */
+        $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
         foreach ($categoryUids as $categoryUid) {
             // check if the category is in the commerce mounts
-            if (!$mount->isInCommerceMounts($categoryUid)) {
+            if (!$backendUserUtility->isInWebMount($categoryUid)) {
                 return false;
             }
 

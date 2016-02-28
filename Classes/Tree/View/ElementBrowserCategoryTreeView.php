@@ -10,6 +10,12 @@ use TYPO3\CMS\Recordlist\Tree\View\LinkParameterProviderInterface;
 class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
 {
     /**
+     * override to use this treeName
+     * @var string
+     */
+    public $treeName = 'browseLinkCategories';
+
+    /**
      * override to use this table
      * @var string
      */
@@ -242,7 +248,8 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
                 . CoreBackendUtility::versioningPlaceholderClause($this->table) . $this->clause;
             return $db->exec_SELECTcountRows(
                 'uid',
-                $this->table . ' INNER JOIN tx_commerce_categories_parent_category_mm AS mm
+                $this->table
+                . ' INNER JOIN tx_commerce_categories_parent_category_mm AS mm
                     ON ' . $this->table . '.uid = mm.uid_local',
                 $where
             );
@@ -277,7 +284,7 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
             }
 
             $selected = '';
-            if ($this->linkParameterProvider->isCurrentlySelectedItem(['pid' => (int)$treeItem['row']['uid']])) {
+            if ($this->linkParameterProvider->isCurrentlySelectedItem(['uid' => (int)$treeItem['row']['uid']])) {
                 $selected = ' bg-success';
                 $classAttr .= ' active';
             }

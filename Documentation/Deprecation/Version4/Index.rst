@@ -737,15 +737,6 @@ Removed hooks since 4.x
 	, , ['commerce/Classes/ViewHelpers/Navigation.php']['sortingOrder'], ['commerce/ViewHelpers/Navigation']['makeSubChildArrayPostRender']
 
 
-.. _\CommerceTeam\Commerce\ViewHelpers\TreelibTceforms_hooks:
-.. csv-table::
-	:header: Class, Method, Hook, Replacement
-	:widths: 25, 10, 35, 30
-
-	\CommerceTeam\Commerce\ViewHelpers\TreelibTceforms, processItemArrayForBrowseableTreeDefault, ['commerce/treelib/class.tx_commerce_treelib_tceforms.php']['processItemArrayForBrowseableTreeDefault'], ['commerce/ViewHelpers/TreelibTceforms']['processItemArrayForBrowseableTreeDefault']
-	, , ['commerce/Classes/ViewHelpers/TreelibTceforms.php']['processItemArrayForBrowseableTreeDefault'], ['commerce/ViewHelpers/TreelibTceforms']['processItemArrayForBrowseableTreeDefault']
-
-
 .. _\CommerceTeam\Commerce\Tree\Leaf\MasterData_hooks:
 .. csv-table::
 	:header: Class, Method, Hook, Replacement

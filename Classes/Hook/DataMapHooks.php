@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -615,17 +616,9 @@ class DataMapHooks
                     );
                 }
 
-                // check if the category is in mount
-                /**
-                 * Category mounts.
-                 *
-                 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
-                 */
-                $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
-                $mount->init((int) $backendUserData['uid']);
-
-                // check
-                if (!$category->isPermissionSet('edit') || !$mount->isInCommerceMounts($category->getUid())) {
+                /** @var BackendUserUtility $backendUserUtility */
+                $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
+                if (!$category->isPermissionSet('edit') || !$backendUserUtility->isInWebMount($category->getUid())) {
                     $pObj->newlog('You dont have the permissions to edit this category.', 1);
                     $fieldArray = array();
 
@@ -685,18 +678,14 @@ class DataMapHooks
                 foreach ($parentCategories as $category) {
                     $existingParents[] = $category->getUid();
 
-                    /**
-                     * Category mounts.
-                     *
-                     * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
-                     */
-                    $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
-                    $mount->init((int) $backendUserData['uid']);
-
                     // if the user has no right to see one of the parent categories or its not
                     // in the mounts it would miss afterwards
                     // by this its readded to the parent_category field
-                    if (!$category->isPermissionSet('show') || !$mount->isInCommerceMounts($category->getUid())) {
+                    /** @var BackendUserUtility $backendUserUtility */
+                    $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
+                    if (!$category->isPermissionSet('show')
+                        || !$backendUserUtility->isInWebMount($category->getUid())
+                    ) {
                         $fieldArray['parent_category'] .= ',' . $category->getUid();
                     }
                 }
@@ -707,15 +696,9 @@ class DataMapHooks
 
             // abort if the user didn't assign a category - rights need not be checked then
             if ($fieldArray['parent_category'] == '') {
-                /**
-                 * Category mounts.
-                 *
-                 * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
-                 */
-                $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
-                $mount->init((int) $backendUserData['uid']);
-
-                if ($mount->isInCommerceMounts(0)) {
+                /** @var BackendUserUtility $backendUserUtility */
+                $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
+                if ($backendUserUtility->isInWebMount(0)) {
                     // assign the root as the parent category if it is empty
                     $fieldArray['parent_category'] = 0;
                 } else {
@@ -750,16 +733,10 @@ class DataMapHooks
                      */
                     $category = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Category::class, $uid);
 
-                    /**
-                     * Category mounts.
-                     *
-                     * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
-                     */
-                    $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
-                    $mount->init((int) $backendUserData['uid']);
-
                     // abort if the parent category is not in the webmounts
-                    if (!$mount->isInCommerceMounts($uid)) {
+                    /** @var BackendUserUtility $backendUserUtility */
+                    $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
+                    if (!$backendUserUtility->isInWebMount($uid)) {
                         $fieldArray['parent_category'] = '';
                         break;
                     }

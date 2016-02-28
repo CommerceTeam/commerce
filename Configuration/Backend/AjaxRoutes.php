@@ -11,7 +11,7 @@ return [
     ],
     // Dispatch the category tree actions
     'commerce_category_tree' => [
-        'path' => '/category/category/tree',
+        'path' => '/commerce/category/tree',
         'target' => \CommerceTeam\Commerce\Controller\CategoryAjaxController::class . '::dispatch'
     ]
 ];

@@ -175,7 +175,6 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         $dblist->script = BackendUtility::getModuleUrl('commerce_orders', array(), '');
         $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
         $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
-        $dblist->returnUrl = $this->returnUrl;
         $dblist->allFields = ($this->MOD_SETTINGS['bigControlPanel'] || $this->table) ? 1 : 0;
         $dblist->localizationView = $this->MOD_SETTINGS['localization'];
         $dblist->showClipboard = 1;
@@ -304,64 +303,11 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
             $dblist->generateList();
             $listUrl = $dblist->listURL();
             // Add JavaScript functions to the page:
-            $this->doc->JScode = $this->doc->wrapScriptTags('
-                function jumpExt(URL,anchor) {	//
-                    var anc = anchor?anchor:"";
-                    window.location.href = URL+(T3_THIS_LOCATION?"&returnUrl="+T3_THIS_LOCATION:"")+anc;
-                    return false;
-                }
-                function jumpSelf(URL) {	//
-                    window.location.href = URL+(T3_RETURN_URL?"&returnUrl="+T3_RETURN_URL:"");
-                    return false;
-                }
-
-                function setHighlight(id) {	//
-                    top.fsMod.recentIds["web"]=id;
-                    top.fsMod.navFrameHighlightedID["web"]="pages"+id+"_"+top.fsMod.currentBank;	// For highlighting
-
-                    if (top.content && top.content.nav_frame && top.content.nav_frame.refresh_nav) {
-                        top.content.nav_frame.refresh_nav();
-                    }
-                }
-                ' . $this->doc->redirectUrls($listUrl) . '
-                ' . $dblist->CBfunctions() . '
-                function editRecords(table, idList, addParams, CBflag) {
-                    window.location.href = "alt_doc.php?returnUrl=' .
-                    rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI')) .
-                '&edit[" + table + "][" + idList + "]=edit" + addParams;
-                }
-                function editList(table,idList) {	//
-                    var list="";
-
-                        // Checking how many is checked, how many is not
-                    var pointer=0;
-                    var pos = idList.indexOf(",");
-                    while (pos!=-1) {
-                        if (cbValue(table+"|"+idList.substr(pointer,pos-pointer))) {
-                            list+=idList.substr(pointer,pos-pointer)+",";
-                        }
-                        pointer=pos+1;
-                        pos = idList.indexOf(",",pointer);
-                    }
-                    if (cbValue(table+"|"+idList.substr(pointer))) {
-                        list+=idList.substr(pointer)+",";
-                    }
-
-                    return list ? list : idList;
-                }
-
-                if (top.fsMod) {
-                    top.fsMod.recentIds["web"] = ' . $this->id . ';
-                }
-            ');
-
-                // Setting up the context sensitive menu:
-            $this->doc->getContextMenuCode();
         }
 
         // access
         // Begin to compile the whole page, starting out with page header:
-        $this->body = $this->doc->header($this->pageinfo['title']);
+        $this->body = '<h1>' . $this->pageinfo['title'] . '</h1>';
         $this->body .= '<form action="' . htmlspecialchars($dblist->listURL()) . '" method="post" name="dblistForm">';
         $this->body .= $dblist->HTMLcode;
         $this->body .= '<input type="hidden" name="cmd_table" /><input type="hidden" name="cmd" /></form>';

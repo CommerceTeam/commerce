@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\Hook;
  * The TYPO3 project - inspiring people to share!
  */
 
+use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -146,16 +147,9 @@ class CommandMapHooks
                 );
             }
 
-            // get mounted categories of user to check if current category is child of these
-            /**
-             * Category mounts.
-             *
-             * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
-             */
-            $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
-            $mount->init((int) $this->getBackendUser()->user['uid']);
-
-            if (!$category->isPermissionSet($command) || !$mount->isInCommerceMounts($category->getUid())) {
+            /** @var BackendUserUtility $backendUserUtility */
+            $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
+            if (!$category->isPermissionSet($command) || !$backendUserUtility->isInWebMount($category->getUid())) {
                 // Log the error
                 $this->pObj->log(
                     'tx_commerce_categories',

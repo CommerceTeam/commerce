@@ -389,14 +389,9 @@ class ClickmenuUtility extends ClickMenu
         $rights['editLock'] = ($backendUser->isAdmin()) ? false : $this->rec['editlock'];
 
         // check if the current item is a db mount
-        /**
-         * Category mounts.
-         *
-         * @var \CommerceTeam\Commerce\Tree\CategoryMounts $mount
-         */
-        $mount = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryMounts::class);
-        $mount->init((int) $backendUser->user['uid']);
-        $rights['DBmount'] = (in_array($uid, $mount->getMountData()));
+        // @todo find a solution as replacement for \CommerceTeam\Commerce\Tree\CategoryMounts
+        // $mount->getMountData()
+        $rights['DBmount'] = (in_array($uid, 1));
 
         // if the category has no parent categories treat as root
         /**

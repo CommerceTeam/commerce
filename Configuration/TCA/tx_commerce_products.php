@@ -269,20 +269,19 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
                 'autoSizeMax' => 40,
             ],
         ],
+
         'categories' => [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
             'label' => $languageFile . 'tx_commerce_products.categories',
             'config' => [
-                'type' => 'group',
-                'internal_type' => 'db',
-                'allowed' => 'tx_commerce_categories',
-                'form_type' => 'user',
-                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\TceFunc::class . '->getSingleField_selectCategories',
-                'treeView' => 1,
-                'treeClass' => \CommerceTeam\Commerce\ViewHelpers\Browselinks\CategoryTree::class,
-                'size' => 7,
-                'autoSizeMax' => 10,
+                'type' => 'select',
+                'renderType' => 'commerceCategoryTree',
+                'foreign_table' => 'tx_commerce_categories',
+                'foreign_table_where' => 'AND tx_commerce_categories.sys_language_uid IN (-1,0)
+                    ORDER BY tx_commerce_categories.sorting ASC',
+                'MM' => 'tx_commerce_products_categories_mm',
+                'size' => 10,
                 'minitems' => 1,
                 'maxitems' => 20,
             ],

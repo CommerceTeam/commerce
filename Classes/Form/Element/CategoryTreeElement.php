@@ -163,7 +163,7 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
 
         // Wizards:
         if (!$disabled) {
-            $html = $this->renderWizards(
+            $html = '<div class="commerce-categorytree-element">' . $this->renderWizards(
                 array($html),
                 $config['wizards'],
                 $table,
@@ -172,7 +172,7 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
                 $parameterArray,
                 $parameterArray['itemFormElName'],
                 BackendUtility::getSpecConfParts($parameterArray['fieldConf']['defaultExtras'])
-            );
+            ) . '</div>';
 
             $resultArray['requireJsModules'][] = 'TYPO3/CMS/Commerce/FormElementCategoryTree';
         }
@@ -205,7 +205,7 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
      */
     public function isCurrentlySelectedItem(array $values)
     {
-        return !empty($this->items) && isset($this->items[(int)$values['pid']]);
+        return !empty($this->items) && isset($this->items[(int)$values['uid']]);
     }
 
     /**

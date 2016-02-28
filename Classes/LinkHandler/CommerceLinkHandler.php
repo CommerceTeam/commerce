@@ -106,7 +106,7 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
      */
     public function isCurrentlySelectedItem(array $values)
     {
-        return !empty($this->linkParts) && (int)$this->linkParts['category'] === (int)$values['pid'];
+        return !empty($this->linkParts) && (int)$this->linkParts['category'] === (int)$values['uid'];
     }
 
     /**
