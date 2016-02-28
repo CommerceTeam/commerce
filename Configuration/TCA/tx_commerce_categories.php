@@ -240,18 +240,15 @@ return [
             'label' => $languageFile . 'tx_commerce_categories.parent_category',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'commerceCategoryTree',
                 'foreign_table' => 'tx_commerce_categories',
+                'foreign_table_where' => 'AND tx_commerce_categories.sys_language_uid IN (-1,0)
+                    AND tx_commerce_categories.uid != ###THIS_UID###
+                    ORDER BY tx_commerce_categories.sorting ASC',
+                'MM' => 'tx_commerce_categories_parent_category_mm',
                 'size' => 10,
                 'minitems' => 1,
                 'maxitems' => 20,
-                //'renderMode' => 'tree',
-                'treeConfig' => [
-                    'expandAll' => true,
-                    'parentField' => 'parent_category',
-                    'appearance' => [
-                        'showHeader' => true,
-                    ],
-                ],
             ],
         ],
         'ts_config' => [
@@ -313,18 +310,12 @@ return [
     'types' => [
         '0' => [
             'showitem' => '
-                sys_language_uid, l18n_parent, l18n_diffsource, hidden;;1, title, subtitle,
-                images, teaser, teaserimages, navtitle, keywords, parent_category,
-                relatedpage, ts_config',
-        ],
-        '1' => [
-            'showitem' => '
                 --palette--;' . $languageFile . 'palette.general;general,
                 title, subtitle,
                 description;;;richtext:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/],
-                images, teaser, teaserimages, navtitle, keywords, parent_category, relatedpage, ts_config,
+                teaser, navtitle, keywords, images, teaserimages, parent_category, relatedpage, ts_config,
             --div--;' . $languageFile . 'tx_commerce_categories.select_attributes,
-                attributes
+                attributes,
             --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,
                 hidden,
                 --palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access',

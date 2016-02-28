@@ -221,10 +221,10 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
 				-->
 				<table border="0" cellpadding="0" cellspacing="0" id="typo3-linkPages">
 					<tr>
-						<td class="c-wCell" valign="top"><h3>'
-            . $this->getLanguageService()->getLL('linkhandler.category_tree')
-            . ':</h3>'
-            . $tree . '</td>
+						<td class="c-wCell" valign="top">
+						    <h3>' . $this->getLanguageService()->getLL('linkhandler.category_tree') . ':</h3>'
+                            . $tree
+                    . '</td>
 						<td class="c-wCell" valign="top">' . $this->expandCategory($this->expandCategory) . '</td>
 					</tr>
 				</table>';

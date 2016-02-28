@@ -12,7 +12,7 @@
  */
 
 /**
- * Module: CommerceTeam/Commerce/Permissons
+ * Module: TYPO3/CMS/Commerce/Permissions
  * Javascript functions regarding the permissions module
  */
 define(['jquery'], function($) {
