@@ -331,6 +331,6 @@ class BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserH
      */
     protected function getLanguageService()
     {
-        $GLOBALS['LANG'];
+        return $GLOBALS['LANG'];
     }
 }
