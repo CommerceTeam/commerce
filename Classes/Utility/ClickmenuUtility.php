@@ -33,13 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ClickmenuUtility extends ClickMenu
 {
     /**
-     * Back path.
-     *
-     * @var string
-     */
-    public $backPath = '../../../../../../typo3/';
-
-    /**
      * Record.
      *
      * @var array
@@ -120,7 +113,6 @@ class ClickmenuUtility extends ClickMenu
         $this->alwaysContentFrame = $this->clickMenu->alwaysContentFrame;
         $this->clipObj = $this->clickMenu->clipObj;
         $this->disabledItems = $this->clickMenu->disabledItems;
-        $this->clickMenu->backPath = $this->backPath;
 
         $this->additionalParameter = GeneralUtility::explodeUrl2Array(urldecode(GeneralUtility::_GET('addParams')));
         $this->newWizardAddParams = '&parentCategory=' . $this->additionalParameter['parentCategory'];
@@ -256,10 +248,6 @@ class ClickmenuUtility extends ClickMenu
                 }
 
                 $elFromTable = count($this->clipObj->elFromTable($table));
-                if ($table == 'tx_commerce_products' && $rights['overwrite'] && $elFromTable) {
-                    // overwrite product with product
-                    $menuItems['overwrite'] = $this->DB_overwrite($table, $pasteUid, $elInfo);
-                }
 
                 if ($table == 'tx_commerce_categories') {
                     $pasteIntoUid = $this->rec['pid'];
@@ -391,7 +379,7 @@ class ClickmenuUtility extends ClickMenu
         // check if the current item is a db mount
         // @todo find a solution as replacement for \CommerceTeam\Commerce\Tree\CategoryMounts
         // $mount->getMountData()
-        $rights['DBmount'] = (in_array($uid, 1));
+        $rights['DBmount'] = (in_array($uid, [ 1 ]));
 
         // if the category has no parent categories treat as root
         /**
@@ -554,7 +542,7 @@ class ClickmenuUtility extends ClickMenu
 
         return $this->clickMenu->linkItem(
             $language->sL('LLL:EXT:version/Resources/Private/Language/locallang.xlf:title_review', 1),
-            $this->excludeIcon('<img src="' . $this->backPath . ExtensionManagementUtility::extRelPath('version') .
+            $this->excludeIcon('<img src="' . ExtensionManagementUtility::extRelPath('version') .
                 'cm1/cm_icon.gif" width="15" height="12" border="0" align="top" alt="" />'),
             $this->clickMenu->urlRefForCM($url),
             1

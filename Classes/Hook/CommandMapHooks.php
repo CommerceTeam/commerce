@@ -69,9 +69,8 @@ class CommandMapHooks
     protected $pObj;
 
     /**
-     * This is just a constructor to instanciate the backend library.
-     *
-     * @return self
+     * Constructor
+     * Just instantiates the backend library.
      */
     public function __construct()
     {

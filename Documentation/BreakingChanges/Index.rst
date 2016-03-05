@@ -54,15 +54,16 @@ Removed Files
 _____________
 - Both the ClassAliasMap.php and LegacyClassesForIde.php. If you need still need to know which class was renamed into
 which need name, please copy it from the 4.0.0 tag.
-Classes/ViewHelpers/TreelibBrowser.php
+Classes/ViewHelpers/FeuserRecordList.php
 Classes/ViewHelpers/TceFunc.php
+Classes/ViewHelpers/TreelibBrowser.php
 Classes/ViewHelpers/TreelibTceforms.php
 Classes/ViewHelpers/Browselinks/ProductView.php
-Classes/ViewHelpers/Browselinks/CategoryView.php
 Classes/ViewHelpers/Browselinks/CategoryTree.php
+Classes/ViewHelpers/Browselinks/CategoryView.php
 Classes/Tree/Browsetree.php
-Classes/Tree/CategoryTree.php
 Classes/Tree/CategoryMounts.php
+Classes/Tree/CategoryTree.php
 Classes/Tree/OrderTree.php
 Classes/Tree/StatisticTree.php
 Classes/Tree/Leaf/Master.php

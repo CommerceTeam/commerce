@@ -57,9 +57,7 @@ abstract class ProviderCriterionAbstract implements \CommerceTeam\Commerce\Payme
      * Constructor.
      *
      * @param ProviderInterface $providerObject Parent payment
-     * @param array             $options        Configuration array
-     *
-     * @return self
+     * @param array $options Configuration array
      */
     public function __construct(ProviderInterface $providerObject, array $options = array())
     {

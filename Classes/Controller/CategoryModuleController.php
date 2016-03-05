@@ -54,8 +54,6 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
 
     /**
      * Constructor
-     *
-     * @return self
      */
     public function __construct()
     {

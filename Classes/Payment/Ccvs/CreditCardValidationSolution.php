@@ -127,8 +127,6 @@ class CreditCardValidationSolution
 
     /**
      * Constructor.
-     *
-     * @return self
      */
     public function __construct()
     {
@@ -413,7 +411,6 @@ class CreditCardValidationSolution
         // Expiration date process...
 
         if ($RequireExp == 'Y') {
-
             if (empty($Month) || !is_string($Month)) {
                 $this->CCVSError = $this->language->getLL('ErrMonthString');
                 return false;

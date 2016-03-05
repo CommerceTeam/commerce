@@ -82,14 +82,11 @@ class SystemdataSupplierModuleFunctionController extends AbstractFunctionModule
             . $this->getDatabaseConnection()->sql_num_rows($result) . '</span>)</a>';
 
         if (!$supplierRows) {
-            $out = $flashMessage = GeneralUtility::makeInstance(
-                FlashMessage::class,
-                $this->getLanguageService()->sL(
+            $out = '<span class="label label-info">'
+                . htmlspecialchars($this->getLanguageService()->sL(
                     'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf:noSupplier'
-                ),
-                '',
-                FlashMessage::INFO
-            )->render();
+                ))
+                . '</span>';
         } else {
             $out = '
 

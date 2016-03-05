@@ -226,10 +226,8 @@ class Article extends AbstractEntity
     /**
      * Constructor Method, calles init method.
      *
-     * @param int $uid         Uid
+     * @param int $uid Article uid
      * @param int $languageUid Language uid
-     *
-     * @return self
      */
     public function __construct($uid, $languageUid = 0)
     {

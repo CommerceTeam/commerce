@@ -27,8 +27,6 @@ interface ProviderInterface
      * Constructor gets parent object.
      *
      * @param \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject Payment
-     *
-     * @return self
      */
     public function __construct(\CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject);
 

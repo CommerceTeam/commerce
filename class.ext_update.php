@@ -13,8 +13,6 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-require_once PATH_site . 'typo3conf/ext/commerce/Classes/Utility/UpdateUtility.php';
-
 /**
  * Update Class for DB Updates.
  *

@@ -54,8 +54,6 @@ class AddressDaoObject extends BasicDaoObject
 
     /**
      * Constructor.
-     *
-     * @return self
      */
     public function __construct()
     {

@@ -98,17 +98,13 @@ class AttributeEditFunc
             $iOut = '';
             foreach ($attributeValues as $row) {
                 ++$cc;
-                $rowBackgroundColor = (
-                    ($cc % 2) ? '' : ' bgcolor="' .
-                    GeneralUtility::modifyHTMLColor($this->getControllerDocumentTemplate()->bgColor4, 10, 10, 10) . '"'
-                );
 
                 /*
                  * Not very noice to render html_code directly
                  *
                  * @todo change rendering html code here
                  * */
-                $iOut .= '<tr ' . $rowBackgroundColor . '>';
+                $iOut .= '<tr>';
                 foreach ($rowFields as $field) {
                     $iOut .= '<td>';
                     $wrap = array('', '');
@@ -118,7 +114,7 @@ class AttributeEditFunc
                             $params = '&edit[' . $foreignTable . '][' . $row['uid'] . ']=edit';
                             $wrap = array(
                                 '<a href="#" onclick="' .
-                                htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) . '">',
+                                htmlspecialchars(BackendUtility::editOnClick($params)) . '">',
                                 '</a>',
                             );
                             break;
@@ -176,7 +172,7 @@ class AttributeEditFunc
          */
         $params = '&edit[' . $foreignTable . '][' . $attributeStoragePid . ']=new&defVals[' . $foreignTable .
             '][attributes_uid]=' . urlencode($attributeUid);
-        $onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) .
+        $onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params)) .
             '"';
 
         $content .= '<div id="typo3-newRecordLink">
@@ -198,16 +194,6 @@ class AttributeEditFunc
     protected function getLanguageService()
     {
         return $GLOBALS['LANG'];
-    }
-
-    /**
-     * Get back path.
-     *
-     * @return string
-     */
-    protected function getBackPath()
-    {
-        return $GLOBALS['BACK_PATH'];
     }
 
     /**

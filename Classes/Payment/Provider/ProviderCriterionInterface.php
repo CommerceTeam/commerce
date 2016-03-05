@@ -28,8 +28,6 @@ interface ProviderCriterionInterface
      *
      * @param ProviderInterface $providerObject Parent payment
      * @param array $options Configuration array
-     *
-     * @return self
      */
     public function __construct(ProviderInterface $providerObject, array $options = array());
 

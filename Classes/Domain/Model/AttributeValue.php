@@ -99,8 +99,6 @@ class AttributeValue extends AbstractEntity
      *
      * @param int $uid Attribute value uid
      * @param int $languageUid Language uid
-     *
-     * @return self
      */
     public function __construct($uid, $languageUid = 0)
     {

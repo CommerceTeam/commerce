@@ -87,7 +87,9 @@ class GeneralUtility
 
             $basketId = $feUser->getKey('ses', $commerceBasketIdKey);
 
-            $useCookieAsBasketIdFallback = ConfigurationUtility::getInstance()->getExtConf('useCookieAsBasketIdFallback');
+            $useCookieAsBasketIdFallback = ConfigurationUtility::getInstance()->getExtConf(
+                'useCookieAsBasketIdFallback'
+            );
             if (empty($basketId) && $useCookieAsBasketIdFallback && isset($_COOKIE[$commerceBasketIdKey])) {
                 $basketId = $_COOKIE[$commerceBasketIdKey];
             }

@@ -81,8 +81,6 @@ class ArticleCreatorUtility
 
     /**
      * Constructor.
-     *
-     * @return self
      */
     public function __construct()
     {

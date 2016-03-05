@@ -15,7 +15,6 @@ namespace CommerceTeam\Commerce\Utility;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
-use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**

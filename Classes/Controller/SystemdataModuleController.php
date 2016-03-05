@@ -91,8 +91,6 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
 
     /**
      * Constructor
-     *
-     * @return self
      */
     public function __construct()
     {

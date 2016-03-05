@@ -121,7 +121,6 @@ class OrderEditFunc
          * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
          */
         $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
-        $doc->backPath = $this->getBackPath();
 
         /*
          * GET Storage PID and order_id from Data
@@ -221,19 +220,11 @@ class OrderEditFunc
                 $row['price_net'] = Money::format($row['price_net'] / 100, '');
                 $row['price_gross'] = Money::format($row['price_gross'] / 100, '');
 
-                $rowBgColor = (
-                    $cc % 2 ?
-                    '' :
-                    ' bgcolor="' .
-                    GeneralUtility::modifyHTMLColor($this->getControllerDocumentTemplate()->bgColor4, +10, +10, +10) .
-                    '"'
-                );
-
                 /*
                  * Not very nice to render html_code directly
                  * @todo change rendering html code here
                  */
-                $iOut .= '<tr ' . $rowBgColor . '>';
+                $iOut .= '<tr>';
                 foreach ($fieldRows as $field) {
                     $wrap = array('', '');
                     switch ($field) {
@@ -243,7 +234,7 @@ class OrderEditFunc
                                 $params = '&edit[' . $orderArticleTable . '][' . $row['uid'] . ']=edit';
                                 $wrap = array(
                                     '<a href="#" onclick="' .
-                                    htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) . '">',
+                                    htmlspecialchars(BackendUtility::editOnClick($params)) . '">',
                                     '</a>',
                                 );
                             }
@@ -255,7 +246,7 @@ class OrderEditFunc
                                 $params = '&edit[' . $orderArticleTable . '][' . $row['uid'] .
                                     ']=edit&columnsOnly=amount';
                                 $onclickAction = 'onclick="' .
-                                    htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) .
+                                    htmlspecialchars(BackendUtility::editOnClick($params)) .
                                     '"';
                                 $wrap = array(
                                     '<b><a href="#" ' . $onclickAction . '>' .
@@ -478,7 +469,6 @@ class OrderEditFunc
          * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
          */
         $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
-        $doc->backPath = $this->getBackPath();
 
         $content = '';
 
@@ -496,24 +486,18 @@ class OrderEditFunc
              */
 
             /*
-             * Better formating via template class
-             */
-            $content .= $doc->spacer(10);
-
-            /*
              * TYPO3 Core API's Page 63
              */
             $params = '&edit[' . $table . '][' . $uid . ']=edit';
 
             $onclickAction = 'onclick="' .
-                htmlspecialchars(BackendUtility::editOnClick($params, $this->getBackPath())) .
+                htmlspecialchars(BackendUtility::editOnClick($params)) .
                 '"';
             $headerWrap = array(
                 '<b><a href="#" ' . $onclickAction . '>',
                 '</a></b>',
             );
             $content .= $doc->getHeader($table, $data, 'Local Lang definition is missing', 1, $headerWrap);
-            $content .= $doc->spacer(10);
 
             $display = array();
             $showRecordFieldList = ConfigurationUtility::getInstance()
@@ -536,10 +520,10 @@ class OrderEditFunc
             $tableLayout = array(
                 'table' => array('<table>', '</table>'),
                 'defRowEven' => array(
-                    'defCol' => array('<td class="bgColor5">', '</td>'),
+                    'defCol' => array('<td>', '</td>'),
                 ),
                 'defRowOdd' => array(
-                    'defCol' => array('<td class="bgColor4">', '</td>'),
+                    'defCol' => array('<td>', '</td>'),
                 ),
             );
             $content .= $doc->table($display, $tableLayout);
@@ -561,11 +545,9 @@ class OrderEditFunc
         /**
          * Order record list.
          *
-         * @var \CommerceTeam\Commerce\ViewHelpers\OrderRecordlist $dblist
+         * @var \CommerceTeam\Commerce\RecordList\OrderRecordList $dblist
          */
-        $dblist = GeneralUtility::makeInstance(\CommerceTeam\Commerce\ViewHelpers\OrderRecordlist::class);
-        $dblist->backPath = $this->getBackPath();
-        $dblist->script = 'index.php';
+        $dblist = GeneralUtility::makeInstance(\CommerceTeam\Commerce\RecordList\OrderRecordList::class);
         $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
         $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
         $dblist->returnUrl = $this->returnUrl;
@@ -622,16 +604,6 @@ class OrderEditFunc
     protected function getLanguageService()
     {
         return $GLOBALS['LANG'];
-    }
-
-    /**
-     * Get back path.
-     *
-     * @return string
-     */
-    protected function getBackPath()
-    {
-        return $GLOBALS['BACK_PATH'];
     }
 
     /**

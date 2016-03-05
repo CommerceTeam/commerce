@@ -30,13 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Navigation
 {
     /**
-     * Navigation ident.
-     *
-     * @var string
-     */
-    const navigationIdent = 'COMMERCE_MENU_NAV';
-
-    /**
      * Commerce plugin id.
      *
      * @var string
@@ -1154,7 +1147,7 @@ class Navigation
              *
              * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
-            $category = GeneralUtility::makeinstance(
+            $category = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $row['uid'],
                 $row['sys_language_uid']
@@ -1189,7 +1182,7 @@ class Navigation
 
         $row = $this->getRepository($this->repositoryNames[$tableMm])->findRelationByForeignUid($uid);
 
-        $hasSubChild = $this->hasSubchild($uid, $subTableMm);
+        $hasSubChild = $this->hasSubChild($uid, $subTableMm);
         if (!empty($row) || $hasSubChild == 1) {
             return 0;
         }

@@ -57,8 +57,6 @@ abstract class ProviderAbstract implements ProviderInterface
      * Construct this payment provider.
      *
      * @param \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject Payment
-     *
-     * @return self
      */
     public function __construct(\CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject)
     {

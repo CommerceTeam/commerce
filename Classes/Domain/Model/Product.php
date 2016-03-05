@@ -271,8 +271,6 @@ class Product extends AbstractEntity
      *
      * @param int $uid Product uid
      * @param int $languageUid Language uid
-     *
-     * @return self
      */
     public function __construct($uid, $languageUid = 0)
     {

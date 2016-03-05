@@ -237,12 +237,12 @@ class Commands
      *
      * @param int $nodeId
      * @param bool $unsetMovePointers
-     * @return \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode
+     * @return CategoryNode
      */
     public static function getNode($nodeId, $unsetMovePointers = true)
     {
         $record = self::getNodeRecord($nodeId, $unsetMovePointers);
-        return self::getNewNode($record);
+        return self::getCategoryNode($record);
     }
 
     /**
@@ -316,7 +316,7 @@ class Commands
      *
      * @param array $record
      * @param int $mountPoint
-     * @return \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode
+     * @return CategoryNode
      */
     public static function getCategoryNode($record, $mountPoint = 0)
     {
@@ -409,7 +409,7 @@ class Commands
      *
      * @param array $record
      * @param int $mountPoint
-     * @return \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode
+     * @return ProductNode
      */
     public static function getProductNode($record, $mountPoint = 0)
     {

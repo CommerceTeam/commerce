@@ -108,7 +108,9 @@ class FolderUtility
     {
         $productUid = self::makeProduct($catUid, $type, $addArray);
         // create some articles, depending on the PAYMENT types
-        $sysProductTypes = (array) ConfigurationUtility::getInstance()->getConfiguration('SYSPRODUCTS.' . $type . '.types');
+        $sysProductTypes = (array) ConfigurationUtility::getInstance()->getConfiguration(
+            'SYSPRODUCTS.' . $type . '.types'
+        );
         foreach ($sysProductTypes as $key => $value) {
             self::makeArticle($productUid, $key, $value, $addArray);
         }

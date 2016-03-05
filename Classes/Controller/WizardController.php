@@ -153,8 +153,6 @@ class WizardController
 
     /**
      * WizardController constructor.
-     *
-     * @return self
      */
     public function __construct()
     {
@@ -323,7 +321,7 @@ class WizardController
                         $tRows[] = '
                 <tr>
                     <td nowrap="nowrap">' . $rowContent . '</td>
-                    <td>' . \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem($table, '', $this->getBackPath(), '')
+                    <td>' . \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem($table, '')
                             . '</td>
                 </tr>
                 ';
@@ -353,7 +351,7 @@ class WizardController
         $this->code .= \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem(
             'xMOD_csh_corebe',
             'new_regular',
-            $this->getBackPath(),
+            '',
             '<br/>'
         );
     }
@@ -374,7 +372,7 @@ class WizardController
         $params = '&edit[' . $table . '][' . $pid . ']=new' . $this->compileDefVals($table);
         $onClick = \TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick(
             $params,
-            $this->getBackPath(),
+            '',
             $this->returnUrl
         );
 
@@ -480,15 +478,5 @@ class WizardController
     protected function getLanguageService()
     {
         return $GLOBALS['LANG'];
-    }
-
-    /**
-     * Get back path.
-     *
-     * @return string
-     */
-    protected function getBackPath()
-    {
-        return $GLOBALS['BACK_PATH'];
     }
 }

@@ -51,8 +51,6 @@ class FeuserAddressFieldmapper
 
     /**
      * Constructor.
-     *
-     * @return self
      */
     public function __construct()
     {

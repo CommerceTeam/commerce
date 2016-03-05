@@ -14,8 +14,6 @@ namespace CommerceTeam\Commerce\Dao;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /**
  * This class handles basic object persistence using the Dao design pattern.
  * It defines parsing and database storage of an object.
@@ -29,7 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author 2006-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
-class BasicDao
+abstract class BasicDao
 {
     /**
      * Dao object.
@@ -56,8 +54,6 @@ class BasicDao
      * Constructor.
      *
      * @param int $id Id
-     *
-     * @return self
      */
     public function __construct($id = null)
     {
@@ -73,12 +69,7 @@ class BasicDao
      *
      * @return void
      */
-    protected function init()
-    {
-        $this->parser = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\BasicDaoParser::class);
-        $this->mapper = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\BasicDaoMapper::class, $this->parser);
-        $this->object = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\BasicDaoObject::class);
-    }
+    abstract protected function init();
 
     /**
      * Getter.

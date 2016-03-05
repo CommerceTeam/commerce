@@ -68,8 +68,6 @@ class Basket extends BasicBasket implements SingletonInterface
     /**
      * Constructor for a commerce basket.
      * Loads configuration data.
-     *
-     * @return self
      */
     public function __construct()
     {

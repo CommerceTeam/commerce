@@ -58,8 +58,6 @@ class Payment extends Wirecard
 
     /**
      * Constructor.
-     *
-     * @return self
      */
     public function __construct()
     {

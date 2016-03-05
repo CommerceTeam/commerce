@@ -28,8 +28,6 @@ interface CriterionInterface
      *
      * @param \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject Parent
      * @param array $options Configuration array
-     *
-     * @return self
      */
     public function __construct(
         \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject,

@@ -36,8 +36,6 @@ class AttributeEditorUtility
 
     /**
      * Constructor.
-     *
-     * @return self
      */
     public function __construct()
     {

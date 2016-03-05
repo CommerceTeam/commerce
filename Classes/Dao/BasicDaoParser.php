@@ -28,8 +28,6 @@ class BasicDaoParser
 {
     /**
      * Constructor.
-     *
-     * @return self
      */
     public function __construct()
     {

@@ -42,8 +42,6 @@ class FeuserObserver
      * Not needed for typo3 hook concept.
      *
      * @param object $observable Observed object
-     *
-     * @return self
      */
     public function __construct(&$observable)
     {

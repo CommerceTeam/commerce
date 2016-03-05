@@ -72,14 +72,12 @@ abstract class PaymentAbstract implements PaymentInterface
      * Default constructor.
      *
      * @param \CommerceTeam\Commerce\Controller\BaseController $parentObject Parent
-     *
-     * @return self
      * @throws \Exception If type was not set or criteria are not valid
      */
     public function __construct(\CommerceTeam\Commerce\Controller\BaseController $parentObject)
     {
         if (!strlen($this->type)) {
-            throw new \Exception($this->type . ' not set.', 1306266978);
+            throw new \Exception('No type set.', 1306266978);
         }
 
         $this->parentObject = $parentObject;

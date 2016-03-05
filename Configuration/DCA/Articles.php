@@ -74,8 +74,7 @@ class Articles
                     'method' => 'add',
                     'type' => 'append',
                     'config' => array(
-                        'text' =>
-                            ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_articles.extras',
+                        'text' => ',--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_articles.extras',
                     ),
                 ),
             ),

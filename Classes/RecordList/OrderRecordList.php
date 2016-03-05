@@ -170,7 +170,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         if ($this->table && ExtensionManagementUtility::isLoaded('impexp')) {
             $buttons['export'] = '<a href="' .
                 htmlspecialchars(
-                    $this->backPath . ExtensionManagementUtility::extRelPath('impexp') .
+                    ExtensionManagementUtility::extRelPath('impexp') .
                     'app/index.php?tx_impexp[action]=export&tx_impexp[list][]=' .
                     rawurlencode($this->table . ':' . $this->id)
                 ) . '">' .
@@ -410,7 +410,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                         $theData['_CLIPBOARD_'] = '';
                     }
                 }
-                $out .= $this->addelement(0, '', $theData, 'class="c-table-row-spacer"', $this->leftMargin);
+                $out .= $this->addElement(0, '', $theData, 'class="c-table-row-spacer"', $this->leftMargin);
             }
 
             // Header line is drawn
@@ -583,7 +583,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                         $iOut .= '<tr><td colspan="' . count($this->fieldArray) . '" style="padding: 5px;">
                             <a href="' . htmlspecialchars($this->listURL() . '&table=' . rawurlencode($table)) .
                             '"><img' .
-                            IconUtility::skinImg($this->backPath, 'gfx/pildown.gif', 'width="14" height="14"') .
+                            IconUtility::skinImg('', 'gfx/pildown.gif', 'width="14" height="14"') .
                             ' alt="" /> <i>[1 - ' . $countOnFirstPage . ($hasMore ? '+' : '') . ']</i></a>
                             </td></tr>';
                     }
@@ -808,14 +808,12 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 );
                 while (($localRow = $database->sql_fetch_assoc($typesResult))) {
                     if ($localRow['icon']) {
-                        $filepath = $this->backPath .
-                            ConfigurationUtility::getInstance()->getTcaValue(
-                                'tx_commerce_order_types.columns.icon.config.uploadfolder'
-                            ) . '/' .
-                            $localRow['icon'];
+                        $filepath = ConfigurationUtility::getInstance()->getTcaValue(
+                            'tx_commerce_order_types.columns.icon.config.uploadfolder'
+                        ) . '/' . $localRow['icon'];
 
                         $theData[$fCol] = '<img ' . IconUtility::skinImg(
-                            $this->backPath,
+                            '',
                             $filepath,
                             ' title="' . htmlspecialchars($localRow['title']) . '"' . $indentStyle
                         );
@@ -869,10 +867,10 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         }
 
         // Create element in table cells:
-        $iOut .= $this->addelement(1, $theIcon, $theData, $rowBackgroundColor);
+        $iOut .= $this->addElement(1, $theIcon, $theData, $rowBackgroundColor);
         // Render thumbsnails if a thumbnail column exists and there is content in it:
         if ($this->thumbs && trim($row[$thumbsCol])) {
-            $iOut .= $this->addelement(
+            $iOut .= $this->addElement(
                 4,
                 '',
                 array($titleCol => $this->thumbCode($row, $table, $thumbsCol)),
@@ -1026,7 +1024,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         }
 
         // Create and return header table row:
-        return $this->addelement(1, '', $theData, '', '');
+        return $this->addElement(1, '', $theData, '', '');
     }
 
     /**

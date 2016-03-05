@@ -253,8 +253,6 @@ class Category extends AbstractEntity
      *
      * @param int $uid Category uid
      * @param int $languageUid Language uid
-     *
-     * @return self
      */
     public function __construct($uid, $languageUid = 0)
     {

@@ -48,8 +48,6 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
 
     /**
      * CommerceLinkHandler constructor.
-     *
-     * @return self
      */
     public function __construct()
     {
@@ -425,7 +423,7 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
         if (strpos($url, 'tx_commerce_categories') !== false
             || strpos($url, 'tx_commerce_products') !== false) {
             GeneralUtility::deprecationLog('
-                Commerce: deprecated parameter tx_commerce_categories or tx_commerce_products found while link "'
+                Commerce: deprecated parameter tx_commerce_categories or tx_commerce_products found in link "'
                 . $action . '". See documentation section Deprecation/Version5.
             ');
         }

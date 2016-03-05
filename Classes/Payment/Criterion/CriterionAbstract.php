@@ -48,9 +48,7 @@ abstract class CriterionAbstract implements \CommerceTeam\Commerce\Payment\Crite
      * Constructor.
      *
      * @param \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject Payment
-     * @param array                                           $options       Configuration array
-     *
-     * @return self
+     * @param array $options Configuration array
      */
     public function __construct(
         \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject,

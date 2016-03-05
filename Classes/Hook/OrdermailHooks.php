@@ -77,9 +77,8 @@ class OrdermailHooks
     protected $tablename = 'tx_commerce_moveordermails';
 
     /**
-     * This is just a constructor to instanciate the backend library.
-     *
-     * @return self
+     * Constructor
+     * Just instantiates the backend library.
      */
     public function __construct()
     {

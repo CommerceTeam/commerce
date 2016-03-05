@@ -85,8 +85,6 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
     /**
      * CategoryRecordList constructor.
-     *
-     * @return self
      */
     public function __construct()
     {
@@ -1981,16 +1979,6 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         return $editPermission;
     }
 
-
-    /**
-     * Get back path.
-     *
-     * @return string
-     */
-    protected function getBackPath()
-    {
-        return $GLOBALS['BACK_PATH'];
-    }
 
     /**
      * Get controller.

@@ -52,14 +52,11 @@ class SystemdataAttributesModuleFunctionController extends AbstractFunctionModul
             . $this->getDatabaseConnection()->sql_num_rows($result) . '</span>)</a>';
 
         if (!$attributeRows) {
-            $out = $flashMessage = GeneralUtility::makeInstance(
-                FlashMessage::class,
-                $this->getLanguageService()->sL(
-                    'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf:noManufacturer'
-                ),
-                '',
-                FlashMessage::INFO
-            )->render();
+            $out = '<span class="label label-info">'
+                . htmlspecialchars($this->getLanguageService()->sL(
+                    'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf:noAttribute'
+                ))
+                . '</span>';
         } else {
             $out = '
 

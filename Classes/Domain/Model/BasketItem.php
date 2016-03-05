@@ -109,10 +109,8 @@ class BasketItem
      *
      * @param int $uid Article uid
      * @param int $quantity Amount for this article
-     * @param int $priceid Id of the price to use
-     * @param int $languageUid Language id
-     *
-     * @return self
+     * @param int $priceid Price uid
+     * @param int $languageUid Language uid
      */
     public function __construct($uid, $quantity, $priceid, $languageUid = 0)
     {

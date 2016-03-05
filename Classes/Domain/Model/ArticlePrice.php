@@ -90,10 +90,8 @@ class ArticlePrice extends AbstractEntity
     /**
      * Constructor Method, calles init method.
      *
-     * @param int $uid         Uid
+     * @param int $uid Article price uid
      * @param int $languageUid Language uid
-     *
-     * @return self
      */
     public function __construct($uid = 0, $languageUid = 0)
     {

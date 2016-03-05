@@ -74,8 +74,6 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
     /**
      * Constructor
-     *
-     * @return self
      */
     public function __construct()
     {

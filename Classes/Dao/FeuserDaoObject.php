@@ -40,8 +40,6 @@ class FeuserDaoObject extends BasicDaoObject
 
     /**
      * Constructor.
-     *
-     * @return self
      */
     public function __construct()
     {

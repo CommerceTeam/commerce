@@ -219,8 +219,8 @@
 .commerce-ordertree-deletionDropZone-restore {
   background-color: #d5d5d5;
   background-image: url(../../../../../../typo3/sysext/t3skin/images/backgrounds/button.png);
-  background-repeat: repeat-x;
   background-image: linear-gradient(center top, #f6f6f6 10%, #d5d5d5 90%);
+  background-repeat: repeat-x;
   border: 1px solid #7c7c7c;
   border-radius: 1px;
   color: #434343;

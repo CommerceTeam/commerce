@@ -39,13 +39,6 @@ class BasicDaoMapper
     protected $dbTable = '';
 
     /**
-     * Database connection.
-     *
-     * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected $database;
-
-    /**
      * Parser.
      *
      * @var BasicDaoParser
@@ -72,8 +65,6 @@ class BasicDaoMapper
      * @param BasicDaoParser $parser Parser
      * @param int $createPid Create pid
      * @param string $dbTable Table
-     *
-     * @return self
      */
     public function __construct(BasicDaoParser $parser, $createPid = 0, $dbTable = null)
     {
