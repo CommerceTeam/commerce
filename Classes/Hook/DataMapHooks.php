@@ -53,8 +53,6 @@ class DataMapHooks
 
     /**
      * This is just a constructor to instanciate the backend library.
-     *
-     * @return self
      */
     public function __construct()
     {
@@ -81,7 +79,7 @@ class DataMapHooks
     public function processDatamap_preProcessFieldArray(array &$incomingFieldArray, $table, $id, DataHandler $pObj)
     {
         // check if we have to do something
-        if (!$this->isPreProcessAllowed($incomingFieldArray, $table, $id)) {
+        if ($this->preProcessIsNotAllowed($incomingFieldArray, $table, $id)) {
             return;
         }
 
@@ -103,7 +101,7 @@ class DataMapHooks
                 break;
 
             case 'tx_commerce_article_prices':
-                $incomingFieldArray = $this->preProcessArticlePrice($incomingFieldArray, $id);
+                $incomingFieldArray = $this->preProcessArticlePrice($incomingFieldArray);
                 break;
 
             case 'tx_commerce_orders':
@@ -129,29 +127,35 @@ class DataMapHooks
      *
      * @return bool
      */
-    protected function isPreProcessAllowed(array $incomingFieldArray, $table, $id)
+    protected function preProcessIsNotAllowed(array $incomingFieldArray, $table, $id)
     {
         // preprocess is not allowed if the dataset was just created
-        return !strtolower(substr($id, 0, 3)) == 'new'
-            || (
-                (
-                    // articles may get preprocessed if the attributesedit,
-                    // prices or create_new_price fields are set
-                    $table == 'tx_commerce_articles'
-                    && (
-                        isset($incomingFieldArray['attributesedit'])
-                        || isset($incomingFieldArray['prices'])
-                        || isset($incomingFieldArray['create_new_price'])
-                    )
-                )
-                || ($table == 'tx_commerce_article_prices')
-                || (
-                    // categories or products may get preprocessed if attributes are set
-                    ($table == 'tx_commerce_products' || $table == 'tx_commerce_categories')
-                    && isset($incomingFieldArray['attributes'])
-                )
-                // orders and order articles may get preprocessed
-                || ($table == 'tx_commerce_orders' || $table == 'tx_commerce_order_articles')
+        $idIsNew = strpos(strtolower($id), 'new') === 0;
+
+        // articles may get preprocessed if the attributesedit,
+        // prices or create_new_price fields are set
+        $articleEditPriceOrAttribute = $table == 'tx_commerce_articles' && (
+            isset($incomingFieldArray['attributesedit'])
+            || isset($incomingFieldArray['prices'])
+            || isset($incomingFieldArray['create_new_price'])
+        );
+
+        // categories or products may get preprocessed if attributes are set
+        $categoryEditAttribute = $table == 'tx_commerce_categories' && isset($incomingFieldArray['attributes']);
+        $productEditAttribute = $table == 'tx_commerce_products' && isset($incomingFieldArray['attributes']);
+
+        // prices, orders and order articles may get preprocessed
+        $allowedTables = in_array($table, [
+            'tx_commerce_article_prices',
+            'tx_commerce_orders',
+            'tx_commerce_order_articles'
+        ]);
+
+        return $idIsNew || !(
+                $articleEditPriceOrAttribute
+                || $categoryEditAttribute
+                || $productEditAttribute
+                || $allowedTables
             );
     }
 
@@ -173,6 +177,7 @@ class DataMapHooks
 
         $incomingFieldArray['parent_category'] = !empty($categories) ? implode(',', $categories) : null;
 
+        // @todo get category from dataHandler
         $this->catList = $this->belib->getUidListFromList($categories);
 
         return $incomingFieldArray;
@@ -188,6 +193,7 @@ class DataMapHooks
      */
     protected function preProcessProduct(array $incomingFieldArray, $id)
     {
+        // @todo get category from dataHandler
         $this->catList = $this->belib->getUidListFromList(
             GeneralUtility::trimExplode(',', $incomingFieldArray['categories'])
         );
@@ -293,11 +299,10 @@ class DataMapHooks
      * Preprocess article price.
      *
      * @param array $incomingFields Incoming field array
-     * @param int $id Id
      *
      * @return array
      */
-    protected function preProcessArticlePrice(array $incomingFields, $id)
+    protected function preProcessArticlePrice(array $incomingFields)
     {
         if (isset($incomingFields['price_gross']) && $incomingFields['price_gross']) {
             $incomingFields['price_gross'] = $this->centurionMultiplication($incomingFields['price_gross']);
@@ -536,6 +541,7 @@ class DataMapHooks
 
         return $incomingFieldArray;
     }
+
 
     /**
      * Change FieldArray after operations have been executed and just before
@@ -982,6 +988,7 @@ class DataMapHooks
         }
     }
 
+
     /**
      * When all operations in the database where made from TYPO3 side, we
      * have to make some special entries for the shop. Because we don't use
@@ -1015,7 +1022,7 @@ class DataMapHooks
 
         switch ($table) {
             case 'tx_commerce_categories':
-                $this->afterDatabaseCategory($fieldArray, $id);
+                $this->afterDatabaseCategory($table, $id, $fieldArray, $pObj);
                 break;
 
             case 'tx_commerce_products':
@@ -1039,18 +1046,20 @@ class DataMapHooks
     /**
      * After database category handling.
      *
+     * @param string $table Table
+     * @param string|int $id Id
      * @param array $fieldArray Field array
-     * @param int $id Id
+     * @param DataHandler $dataHandler Parent object
      *
      * @return void
      */
-    protected function afterDatabaseCategory(array $fieldArray, $id)
+    protected function afterDatabaseCategory($table, $id, array $fieldArray, DataHandler $dataHandler)
     {
         // if unset, do not save anything, but load the dynaflex
         if (!empty($fieldArray)) {
             if (isset($fieldArray['parent_category'])) {
                 // get the list of parent categories and save the relations in the database
-                $catList = explode(',', $fieldArray['parent_category']);
+                $catList = explode(',', $dataHandler->datamap[$table][$id]['parent_category']);
 
                 // preserve the 0 as root.
                 $preserve = array();
@@ -1060,7 +1069,6 @@ class DataMapHooks
                 }
 
                 // extract uids.
-                $catList = $this->belib->getUidListFromList($catList);
                 $catList = $this->belib->extractFieldArray($catList, 'uid_foreign', true);
 
                 // add preserved
@@ -1081,11 +1089,11 @@ class DataMapHooks
      * @param string $table Table
      * @param string|int $id Id
      * @param array $fieldArray Field array
-     * @param DataHandler $pObj Parent object
+     * @param DataHandler $dataHandler Parent object
      *
      * @return void
      */
-    protected function afterDatabaseProduct($status, $table, $id, array $fieldArray, DataHandler $pObj)
+    protected function afterDatabaseProduct($status, $table, $id, array $fieldArray, DataHandler $dataHandler)
     {
         // if fieldArray has been unset, do not save anything, but load dynaflex config
         if (!empty($fieldArray)) {
@@ -1098,7 +1106,7 @@ class DataMapHooks
             $product->loadData();
 
             if (isset($fieldArray['categories'])) {
-                $catList = $this->belib->getUidListFromList(explode(',', $fieldArray['categories']));
+                $catList = explode(',', $dataHandler->datamap[$table][$id]['categories']);
                 $catList = $this->belib->extractFieldArray($catList, 'uid_foreign', true);
 
                 // get id of the live placeholder instead if such exists
@@ -1113,6 +1121,7 @@ class DataMapHooks
                 ++$id;
             }
 
+            //@todo improve performance without this methodcall the request gets finished in 1/5 of the time
             $this->saveProductRelations($id, $fieldArray);
         }
 
@@ -1136,7 +1145,7 @@ class DataMapHooks
                 $parentCategories,
                 array('editcontent')
             )) {
-                $pObj->newlog('You dont have the permissions to create a new article.', 1);
+                $dataHandler->newlog('You dont have the permissions to create a new article.', 1);
             } else {
                 // init the article creator
                 /**
@@ -1149,7 +1158,7 @@ class DataMapHooks
                 );
                 $articleCreator->init($id, $this->belib->getProductFolderUid());
 
-                $datamap = $pObj->datamap[$table][$this->unsubstitutedId ? $this->unsubstitutedId : $id];
+                $datamap = $dataHandler->datamap[$table][$this->unsubstitutedId ? $this->unsubstitutedId : $id];
                 if (is_array($datamap) && !empty($datamap)) {
                     // create new articles
                     $articleCreator->createArticles($datamap);

@@ -1,46 +1,44 @@
 <?php
 
 call_user_func(function ($packageKey) {
-    $typo3ConfVars = &$GLOBALS['TYPO3_CONF_VARS'];
-    $scOptions = &$typo3ConfVars['SC_OPTIONS'];
-
     // Define special article types
     define('NORMALARTICLETYPE', 1);
     define('PAYMENTARTICLETYPE', 2);
     define('DELIVERYARTICLETYPE', 3);
 
+    $typo3ConfVars = &$GLOBALS['TYPO3_CONF_VARS'];
+    $scOptions = &$typo3ConfVars['SC_OPTIONS'];
+    $extConf = &$typo3ConfVars['EXT']['extConf'][$packageKey];
+
     // Unserialize the plugin configuration so we can use it
     // This array holds global definitions of arbitrary commerce settings
     // Add unserialized ext conf settings to global array for easy access
-    if (is_string($typo3ConfVars['EXT']['extConf'][$packageKey])) {
-        $typo3ConfVars['EXT']['extConf'][$packageKey] = unserialize($typo3ConfVars['EXT']['extConf'][$packageKey]);
+    if (is_string($extConf)) {
+        $extConf = unserialize($extConf);
     }
 
     // Payment settings
-    $typo3ConfVars['EXT']['extConf'][$packageKey]['SYSPRODUCTS']['PAYMENT'] = [
+    $extConf['SYSPRODUCTS']['PAYMENT'] = [
         'tablefields' => [
             'title' => 'SYSTEMPRODUCT_PAYMENT',
-            'description' => 'Products to manage payment',
+            'description' => 'Products to manage payment articles',
         ],
         'types' => [
             'invoice' => [
-                'class' => \CommerceTeam\Commerce\Payment\Invoice::class,
                 'type' => PAYMENTARTICLETYPE,
+                'class' => \CommerceTeam\Commerce\Payment\Invoice::class,
             ],
             'prepayment' => [
-                'class' => \CommerceTeam\Commerce\Payment\Prepayment::class,
                 'type' => PAYMENTARTICLETYPE,
+                'class' => \CommerceTeam\Commerce\Payment\Prepayment::class,
             ],
             'cashondelivery' => [
-                'class' => \CommerceTeam\Commerce\Payment\Cashondelivery::class,
                 'type' => PAYMENTARTICLETYPE,
+                'class' => \CommerceTeam\Commerce\Payment\Cashondelivery::class,
             ],
             'creditcard' => [
-                'class' => \CommerceTeam\Commerce\Payment\Creditcard::class,
                 'type' => PAYMENTARTICLETYPE,
-                // Language file for external credit card check
-                'ccvs_language_files' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($packageKey)
-                    . 'payment/ccvs/language',
+                'class' => \CommerceTeam\Commerce\Payment\Creditcard::class,
                 'provider' => [
                     'wirecard' => [
                         'class' => \CommerceTeam\Commerce\Payment\Provider\Wirecard::class,
@@ -51,17 +49,21 @@ call_user_func(function ($packageKey) {
     ];
 
     // Delivery settings
-    $typo3ConfVars['EXT']['extConf'][$packageKey]['SYSPRODUCTS']['DELIVERY'] = [
+    $extConf['SYSPRODUCTS']['DELIVERY'] = [
         'tablefields' => [
             'title' => 'SYSTEMPRODUCT_DELIVERY',
-            'description' => 'product zum Verwalten der Lieferarten',
+            'description' => 'Product to manage delivery articles',
         ],
+        'types' => [
+            'sysdelivery' => [
+                'type' => DELIVERYARTICLETYPE,
+            ],
+        ]
     ];
-    $typo3ConfVars['EXT']['extConf'][$packageKey]['SYSPRODUCTS']['DELIVERY']['types'] = [
-        'sysdelivery' => [
-            'type' => DELIVERYARTICLETYPE,
-        ],
-    ];
+
+    if (is_array($extConf)) {
+        $extConf = serialize($extConf);
+    }
 
     // Add frontend plugins to content.default static template
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
@@ -117,6 +119,23 @@ call_user_func(function ($packageKey) {
             'className' => \CommerceTeam\Commerce\Xclass\NewRecordController::class,
         ];
 
+        // Add category tree control with data provider
+        $typo3ConfVars['SYS']['formEngine']['nodeRegistry']['1456642633182'] = array(
+            'nodeName' => 'commerceCategoryTree',
+            'priority' => 100,
+            'class' => \CommerceTeam\Commerce\Form\Element\CategoryTreeElement::class
+        );
+        $typo3ConfVars['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord']
+            [\CommerceTeam\Commerce\Form\FormDataProvider\TcaSelectItems::class] =
+            array(
+                'depends' => array(
+                    \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems::class,
+                ),
+                'before' => array(
+                    \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectTreeItems::class,
+                ),
+            );
+
         // CLI Script configuration
         // Add statistic task
         /* @noinspection PhpUndefinedVariableInspection */
@@ -130,24 +149,6 @@ call_user_func(function ($packageKey) {
         ];
     }
 
-    $scOptions['typo3/backend.php']['renderPreProcess']['commerce'] =
-        \CommerceTeam\Commerce\Hook\BackendHooks::class . '->addJsFiles';
-
-    // Hooks for datamap procesing
-    // For processing the order sfe, when changing the pid
-    $scOptions['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['commerce'] =
-        \CommerceTeam\Commerce\Hook\DataMapHooks::class;
-
-    // Hooks for commandmap processing
-    // For new drawing of the category tree after having deleted a record
-    $scOptions['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['commerce'] =
-        \CommerceTeam\Commerce\Hook\CommandMapHooks::class;
-
-    // Hooks for version swap processing
-    // For processing the order sfe, when changing the pid
-    $scOptions['t3lib/class.t3lib_tcemain.php']['processVersionSwapClass']['commerce'] =
-        \CommerceTeam\Commerce\Hook\VersionHooks::class;
-
     // Adding some hooks for tx_commerce_article_processing
     // As basic hook for calculation the delivery_costs
     if (empty($typo3ConfVars['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost'])) {
@@ -155,40 +156,51 @@ call_user_func(function ($packageKey) {
             \CommerceTeam\Commerce\Hook\ArticleHooks::class;
     }
 
+    // Add hook to handle orders while moving them to a different state
     if (empty($typo3ConfVars['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'])) {
         $typo3ConfVars['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders']['commerce'] =
             \CommerceTeam\Commerce\Hook\OrdermailHooks::class;
     }
 
-    // Configuration to process the code selectConf
-    $scOptions['t3lib/class.t3lib_tceforms.php']['getSingleFieldClass']['commerce'] =
-        \CommerceTeam\Commerce\Hook\TcehooksHandlerHooks::class;
-    $scOptions['t3lib/class.t3lib_tceforms.php']['getSingleFieldClass']['commerce'] =
-        \CommerceTeam\Commerce\Hook\TceFormsHooks::class;
-
-    $scOptions['t3lib/class.t3lib_tceforms_inline.php']['tceformsInlineHook']['commerce'] =
-        \CommerceTeam\Commerce\Hook\IrreHooks::class;
-
-    // Hook to render recordlist parts differently
-    $scOptions['typo3/class.db_list_extra.inc']['actions']['commerce'] =
-        \CommerceTeam\Commerce\Hook\LocalRecordListHooks::class;
-
-    $typo3ConfVars['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess']['commerce'] =
-        \CommerceTeam\Commerce\Hook\SrfeuserregisterPi1Hook::class;
+    // Hook called while deleting an address in addresses controller
     $typo3ConfVars['EXTCONF']['commerce/Controller/AddressesController']['deleteAddress']['commerce'] =
         \CommerceTeam\Commerce\Hook\Pi4Hooks::class;
     $typo3ConfVars['EXTCONF']['commerce/Controller/AddressesController']['saveAddress']['commerce'] =
         \CommerceTeam\Commerce\Hook\Pi4Hooks::class;
+    // Add hook to create or update address data to sr_feuser_register create and edit feuser process
+    $typo3ConfVars['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess']['commerce'] =
+        \CommerceTeam\Commerce\Hook\SrfeuserregisterPi1Hook::class;
 
-    // Register dynaflex dca files
-    $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_categories']['commerce'] =
-        \CommerceTeam\Commerce\Configuration\Dca\Categories::class;
-    $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_products']['commerce'] =
-        \CommerceTeam\Commerce\Configuration\Dca\Products::class;
-    $GLOBALS['T3_VAR']['ext']['dynaflex']['tx_commerce_articles']['commerce'] =
-        \CommerceTeam\Commerce\Configuration\Dca\Articles::class;
 
-    if (is_array($typo3ConfVars['EXT']['extConf'][$packageKey])) {
-        $typo3ConfVars['EXT']['extConf'][$packageKey] = serialize($typo3ConfVars['EXT']['extConf'][$packageKey]);
-    }
+    // register for RteHtmlParser::TS_links_rte and ContentObjectRenderer::resolveMixedLinkParameter
+    $scOptions['tslib/class.tslib_content.php']['typolinkLinkHandler']['commerce'] =
+        \CommerceTeam\Commerce\LinkHandler\CommerceLinkHandler::class;
+
+
+    // Hooks for datamap processing
+    // For processing the order sfe, when changing the pid
+    $scOptions['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['commerce'] =
+        \CommerceTeam\Commerce\Hook\DataMapHooks::class;
+
+    // Hooks for commandmap processing
+    // For new drawing of the category tree after having deleted a record
+    //@todo check if needed
+    $scOptions['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['commerce'] =
+        \CommerceTeam\Commerce\Hook\CommandMapHooks::class;
+
+    // Hooks for version swap processing
+    // For processing the order sfe, when changing the pid
+    //@todo check if needed
+    $scOptions['t3lib/class.t3lib_tcemain.php']['processVersionSwapClass']['commerce'] =
+        \CommerceTeam\Commerce\Hook\VersionHooks::class;
+
+    //@todo check if needed
+    $scOptions['t3lib/class.t3lib_tceforms_inline.php']['tceformsInlineHook']['commerce'] =
+        \CommerceTeam\Commerce\Hook\IrreHooks::class;
+
+    // Hook to render recordlist parts differently
+    //@todo check if needed
+    $scOptions['typo3/class.db_list_extra.inc']['actions']['commerce'] =
+        \CommerceTeam\Commerce\Hook\LocalRecordListHooks::class;
+
 }, 'commerce');

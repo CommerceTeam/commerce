@@ -1,18 +1,11 @@
 <?php
 
 call_user_func(function ($packageKey) {
-    $typo3ConfVars = &$GLOBALS['TYPO3_CONF_VARS'];
-    $scOptions = &$typo3ConfVars['SC_OPTIONS'];
-
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
         $packageKey,
         'Configuration/TypoScript/',
         'COMMERCE'
     );
-
-    // register for RteHtmlParser::TS_links_rte and ContentObjectRenderer::resolveMixedLinkParameter
-    $scOptions['tslib/class.tslib_content.php']['typolinkLinkHandler']['commerce'] =
-        \CommerceTeam\Commerce\LinkHandler\CommerceLinkHandler::class;
 
     if (TYPO3_MODE == 'BE') {
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
@@ -284,23 +277,6 @@ call_user_func(function ($packageKey) {
             '
         );
     }
-
-    // Add category tree control with data provider
-    $typo3ConfVars['SYS']['formEngine']['nodeRegistry']['1456642633182'] = array(
-        'nodeName' => 'commerceCategoryTree',
-        'priority' => 100,
-        'class' => \CommerceTeam\Commerce\Form\Element\CategoryTreeElement::class
-    );
-    $typo3ConfVars['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord']
-        [\CommerceTeam\Commerce\Form\FormDataProvider\TcaSelectItems::class] =
-        array(
-            'depends' => array(
-                \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems::class,
-            ),
-            'before' => array(
-                \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectTreeItems::class,
-            ),
-        );
 
     // Add context menu for category trees in BE
     $GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = array(

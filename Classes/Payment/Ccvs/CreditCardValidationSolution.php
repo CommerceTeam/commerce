@@ -241,7 +241,6 @@ class CreditCardValidationSolution
         // Catch malformed input.
         if (empty($Number) || !is_string($Number)) {
             $this->CCVSError = $this->language->getLL('ErrNumberString');
-
             return false;
         }
 
@@ -268,12 +267,14 @@ class CreditCardValidationSolution
         } elseif (($this->CCVSNumberLeft >= 3800) && ($this->CCVSNumberLeft <= 3889)) {
             $this->CCVSType = 'Diners Club';
             $ShouldLength = 14;
+
         } elseif (($this->CCVSNumberLeft >= 3400) && ($this->CCVSNumberLeft <= 3499)) {
             $this->CCVSType = 'American Express';
             $ShouldLength = 15;
         } elseif (($this->CCVSNumberLeft >= 3700) && ($this->CCVSNumberLeft <= 3799)) {
             $this->CCVSType = 'American Express';
             $ShouldLength = 15;
+
         } elseif (($this->CCVSNumberLeft >= 3088) && ($this->CCVSNumberLeft <= 3094)) {
             $this->CCVSType = 'JCB';
             $ShouldLength = 16;
@@ -292,9 +293,11 @@ class CreditCardValidationSolution
         } elseif (($this->CCVSNumberLeft >= 3528) && ($this->CCVSNumberLeft <= 3589)) {
             $this->CCVSType = 'JCB';
             $ShouldLength = 16;
+
         } elseif (($this->CCVSNumberLeft >= 3890) && ($this->CCVSNumberLeft <= 3899)) {
             $this->CCVSType = 'Carte Blanche';
             $ShouldLength = 14;
+
         } elseif (($this->CCVSNumberLeft >= 4000) && ($this->CCVSNumberLeft <= 4999)) {
             $this->CCVSType = 'Visa';
             if ($NumberLength > 14) {
@@ -303,21 +306,23 @@ class CreditCardValidationSolution
                 $ShouldLength = 13;
             } else {
                 $this->CCVSError = $this->language->getLL('ErrVisa14');
-
                 return false;
             }
+
         } elseif (($this->CCVSNumberLeft >= 5100) && ($this->CCVSNumberLeft <= 5599)) {
             $this->CCVSType = 'MasterCard';
             $ShouldLength = 16;
+
         } elseif ($this->CCVSNumberLeft == 5610) {
             $this->CCVSType = 'Australian BankCard';
             $ShouldLength = 16;
+
         } elseif ($this->CCVSNumberLeft == 6011) {
             $this->CCVSType = 'Discover/Novus';
             $ShouldLength = 16;
+
         } else {
             $this->CCVSError = sprintf($this->language->getLL('ErrUnknown'), $this->CCVSNumberLeft);
-
             return false;
         }
 
@@ -325,12 +330,10 @@ class CreditCardValidationSolution
         if (!empty($Accepted)) {
             if (!is_array($Accepted)) {
                 $this->CCVSError = $this->language->getLL('ErrAccepted');
-
                 return false;
             }
             if (!in_array($this->CCVSType, $Accepted)) {
                 $this->CCVSError = sprintf($this->language->getLL('ErrNoAccept'), $this->CCVSType);
-
                 return false;
             }
         }
@@ -341,7 +344,6 @@ class CreditCardValidationSolution
                 case 'American Express':
                     if (strlen($this->CCVSCheckNumber) != 4) {
                         $this->CCVSError = sprintf($this->language->getLL('ErrCheckNumber'), $this->CCVSCheckNumber);
-
                         return false;
                     }
                     break;
@@ -349,7 +351,6 @@ class CreditCardValidationSolution
                 case 'MasterCard':
                     if (strlen($this->CCVSCheckNumber) != 3) {
                         $this->CCVSError = sprintf($this->language->getLL('ErrCheckNumber'), $this->CCVSCheckNumber);
-
                         return false;
                     }
                     break;
@@ -357,7 +358,6 @@ class CreditCardValidationSolution
                 case 'Visa':
                     if (strlen($this->CCVSCheckNumber) != 3) {
                         $this->CCVSError = sprintf($this->language->getLL('ErrCheckNumber'), $this->CCVSCheckNumber);
-
                         return false;
                     }
                     break;
@@ -365,18 +365,19 @@ class CreditCardValidationSolution
         }
 
         // Check length.
-        if ($NumberLength != $ShouldLength) {
+
+        if ($NumberLength <> $ShouldLength) {
             $Missing = $NumberLength - $ShouldLength;
             if ($Missing < 0) {
                 $this->CCVSError = sprintf($this->language->getLL('ErrShort'), abs($Missing));
             } else {
                 $this->CCVSError = sprintf($this->language->getLL('ErrLong'), $Missing);
             }
-
             return false;
         }
 
         // Mod10 checksum process...
+
         if ($DoChecksum == 'Y') {
             $Checksum = 0;
 
@@ -401,48 +402,44 @@ class CreditCardValidationSolution
                 }
             }
 
-                // Checksums not divisible by 10 are bad.
+            // Checksums not divisible by 10 are bad.
+
             if ($Checksum % 10 != 0) {
                 $this->CCVSError = $this->language->getLL('ErrChecksum');
-
                 return false;
             }
         }
 
         // Expiration date process...
+
         if ($RequireExp == 'Y') {
+
             if (empty($Month) || !is_string($Month)) {
                 $this->CCVSError = $this->language->getLL('ErrMonthString');
-
                 return false;
             }
 
             if (!preg_match('/^(0?[1-9]|1[0-2])$/', $Month)) {
                 $this->CCVSError = $this->language->getLL('ErrMonthFormat');
-
                 return false;
             }
 
             if (empty($Year) || !is_string($Year)) {
                 $this->CCVSError = $this->language->getLL('ErrYearString');
-
                 return false;
             }
 
             if (!preg_match('/^[0-9]{4}$/', $Year)) {
                 $this->CCVSError = $this->language->getLL('ErrYearFormat');
-
                 return false;
             }
 
             if ($Year < date('Y')) {
                 $this->CCVSError = $this->language->getLL('ErrExpired');
-
                 return false;
             } elseif ($Year == date('Y')) {
                 if ($Month < date('m')) {
                     $this->CCVSError = $this->language->getLL('ErrExpired');
-
                     return false;
                 }
             }

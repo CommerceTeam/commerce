@@ -161,23 +161,6 @@ define(['jquery'], function($) {
 	 * so AJAX reloads are no problem
 	 */
 	FormElementCategoryTree.initializeEvents = function() {
-		$(document).on('click', FormElementCategoryTree.options.containerSelector, function(evt) {
-			var $el = $(this),
-				fieldName = $el.data('relatedfieldname'),
-				fieldChangedValues = $el.data('fieldchanged-values');
-
-			if (fieldName) {
-				var $optionEl = $(evt.target);
-				TYPO3.FormEngine.setSelectOptionFromExternalSource(
-					fieldName,
-					$optionEl.data('value'),
-					$optionEl.text(),
-					$optionEl.attr('title'),
-					''
-				);
-				TBE_EDITOR.fieldChanged();
-			}
-		});
 		$(document).on(
 			'click',
 			FormElementCategoryTree.options.containerSelector,
