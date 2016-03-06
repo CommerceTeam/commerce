@@ -59,18 +59,31 @@ class TcaSelectItems extends AbstractItemProvider implements FormDataProviderInt
     {
         $fieldConfig = $result['processedTca']['columns'][$fieldName]['config'];
         $foreignTable = $fieldConfig['foreign_table'];
-        $mmTable = $fieldConfig['MM'];
+        $mmTable = isset($fieldConfig['MM']) ? $fieldConfig['MM'] : '';
 
-        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            $foreignTable . '.uid, CONCAT(' . $foreignTable . '.uid, \'|\', ' . $foreignTable . '.title) AS value',
-            $foreignTable . '
+        if ($mmTable !== '') {
+            $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
+                $foreignTable . '.uid, CONCAT(' . $foreignTable . '.uid, \'|\', ' . $foreignTable . '.title) AS value',
+                $foreignTable . '
                 INNER JOIN ' . $mmTable . ' ON ' . $foreignTable . '.uid = ' . $mmTable . '.uid_foreign',
-            $mmTable . '.uid_local = ' . $result['databaseRow']['uid'] . ' AND ' . $foreignTable . '.deleted = 0',
-            $foreignTable . '.uid',
-            '',
-            '',
-            'uid'
-        );
+                $mmTable . '.uid_local = ' . $result['databaseRow']['uid'] . ' AND ' . $foreignTable . '.deleted = 0',
+                $foreignTable . '.uid',
+                '',
+                '',
+                'uid'
+            );
+        } else {
+            // this is the case for be_user and be_group mounts where the selected categories are stored as uid list
+            $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
+                'uid, CONCAT(uid, \'|\', title) AS value',
+                $foreignTable,
+                'uid IN (' . $result['databaseRow']['tx_commerce_mountpoints'] . ') AND deleted = 0',
+                'uid',
+                '',
+                '',
+                'uid'
+            );
+        }
         return $rows;
     }
 

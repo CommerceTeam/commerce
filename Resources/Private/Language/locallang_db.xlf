@@ -87,9 +87,6 @@
 			<trans-unit id="tx_commerce_products.create_articles" xml:space="preserve">
 				<source>Articles</source>
 			</trans-unit>
-			<trans-unit id="tx_commerce_products.lokalise_articles" xml:space="preserve">
-				<source>Localise Articles</source>
-			</trans-unit>
 			<trans-unit id="tx_commerce_products.select_attributes" xml:space="preserve">
 				<source>Select attributes</source>
 			</trans-unit>

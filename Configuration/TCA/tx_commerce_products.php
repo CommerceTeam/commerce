@@ -376,86 +376,50 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
                 'ds' => [
                     'default' => '
 <T3DataStructure>
-	<meta>
-		<langDisable>1</langDisable>
-	</meta>
-	<sheets>
-		<sEXISTING>
-			<ROOT>
-				<TCEforms>
-					<sheetTitle>' . $languageFile . 'tx_commerce_products.existing_articles</sheetTitle>
-				</TCEforms>
-				<type>array</type>
-				<el>
-					<existingArticles>
-						<TCEforms>
-							<config>
-								<type>user</type>
-								<userFunc>' . \CommerceTeam\Commerce\Utility\ArticleCreatorUtility::class .
+    <meta>
+        <langDisable>1</langDisable>
+    </meta>
+    <sheets>
+        <sEXISTING>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>' . $languageFile . 'tx_commerce_products.existing_articles</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <existingArticles>
+                        <TCEforms>
+                            <config>
+                                <type>user</type>
+                                <userFunc>' . \CommerceTeam\Commerce\Form\Element\ArticleCreatorElement::class .
                         '->existingArticles</userFunc>
-							</config>
-						</TCEforms>
-					</existingArticles>
-				</el>
-			</ROOT>
-		</sEXISTING>
-		<sCREATE>
-			<ROOT>
-				<TCEforms>
-				<sheetTitle>' . $languageFile . 'tx_commerce_products.producible_articles</sheetTitle>
-				</TCEforms>
-				<type>array</type>
-				<el>
-					<producibleArticles>
-						<TCEforms>
-							<config>
-								<type>user</type>
-								<userFunc>' . \CommerceTeam\Commerce\Utility\ArticleCreatorUtility::class .
+                            </config>
+                        </TCEforms>
+                    </existingArticles>
+                </el>
+            </ROOT>
+        </sEXISTING>
+        <sCREATE>
+            <ROOT>
+                <displayCond>FIELD:parentRec.sys_language_uid:=:0</displayCond>
+                <TCEforms>
+                <sheetTitle>' . $languageFile . 'tx_commerce_products.producible_articles</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <producibleArticles>
+                        <TCEforms>
+                            <config>
+                                <type>user</type>
+                                <userFunc>' . \CommerceTeam\Commerce\Form\Element\ArticleCreatorElement::class .
                         '->producibleArticles</userFunc>
-							</config>
-						</TCEforms>
-					</producibleArticles>
-				</el>
-			</ROOT>
-		</sCREATE>
-	</sheets>
-</T3DataStructure>',
-                ],
-            ],
-        ],
-
-        'articleslok' => [
-            'exclude' => 1,
-            'label' => $languageFile . 'tx_commerce_products.articleslok',
-            'config' => [
-                'type' => 'flex',
-                'ds' => [
-                    'default' => '
-<T3DataStructure>
-	<meta>
-		<langDisable>1</langDisable>
-	</meta>
-	<sheets>
-		<sEXISTING>
-			<ROOT>
-				<TCEforms>
-					<sheetTitle>' . $languageFile . 'tx_commerce_products.existing_articles</sheetTitle>
-				</TCEforms>
-				<type>array</type>
-				<el>
-					<existingArticles>
-						<TCEforms>
-							<config>
-								<type>user</type>
-								<userFunc>' . \CommerceTeam\Commerce\Utility\ArticleCreatorUtility::class .
-                        '->existingArticles</userFunc>
-							</config>
-						</TCEforms>
-					</existingArticles>
-				</el>
-			</ROOT>
-		</sEXISTING>
-	</sheets>
+                            </config>
+                        </TCEforms>
+                    </producibleArticles>
+                </el>
+            </ROOT>
+        </sCREATE>
+    </sheets>
 </T3DataStructure>',
                 ],
             ],
@@ -469,11 +433,13 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
                     images, teaserimages,
                     description;;;richtext:rte_transform[fmode=ts_css|imgpath=uploads/tx_commerce/rte/],
                     teaser;;;richtext:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/],
-                --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tabs.references,
+                --div--;' . $languageFile . 'tabs.references,
                     categories, manufacturer_uid, relatedpage, relatedproducts,
                 --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,
                     hidden,
-                    --palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access',
+                    --palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access,
+                --div--;' . $languageFile . 'tx_commerce_products.create_articles,
+                    articles',
         ],
     ],
     'palettes' => [
@@ -488,6 +454,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
 
 if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']['simpleMode'])
     && $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']['simpleMode']) {
+    // In simple mode articles are created as inline element without article editor utility
     $GLOBALS['TCA']['tx_commerce_products']['columns']['articles'] = [
         'exclude' => 1,
         'label' => $languageFile . 'tx_commerce_products.articles',
@@ -498,11 +465,6 @@ if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']['simpleMode'
             'minitems' => 0,
         ],
     ];
-    $GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem'] = str_replace(
-        'articleslok',
-        'articles',
-        $GLOBALS['TCA']['tx_commerce_products']['types']['0']['showitem']
-    );
 }
 
 return $GLOBALS['TCA']['tx_commerce_products'];

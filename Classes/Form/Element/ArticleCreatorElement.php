@@ -1,5 +1,5 @@
 <?php
-namespace CommerceTeam\Commerce\Utility;
+namespace CommerceTeam\Commerce\Form\Element;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -17,6 +17,8 @@ namespace CommerceTeam\Commerce\Utility;
 use TYPO3\CMS\Backend\Form\FormEngine;
 use TYPO3\CMS\Backend\Utility\BackendUtility as CoreBackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -28,7 +30,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author 2005-2012 Thomas Hempel <thomas@work.de>
  */
-class ArticleCreatorUtility
+class ArticleCreatorElement
 {
     /**
      * Existing articles.
@@ -80,12 +82,18 @@ class ArticleCreatorUtility
     protected $returnUrl;
 
     /**
+     * @var IconFactory
+     */
+    protected $iconFactory;
+
+    /**
      * Constructor.
      */
     public function __construct()
     {
         $this->belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
         $this->returnUrl = htmlspecialchars(urlencode(GeneralUtility::_GP('returnUrl')));
+        $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
     }
 
     /**
@@ -102,8 +110,14 @@ class ArticleCreatorUtility
         $this->uid = (int) $uid;
         $this->pid = (int) $pid;
 
+        // get all attributes for this product, if they where not fetched yet
         if ($this->attributes == null) {
             $this->attributes = $this->belib->getAttributesForProduct($this->uid, true, true, true);
+        }
+
+        // get existing articles for this product, if they where not fetched yet
+        if ($this->existingArticles == null) {
+            $this->existingArticles = $this->belib->getArticlesOfProduct($this->uid);
         }
     }
 
@@ -116,20 +130,8 @@ class ArticleCreatorUtility
      */
     public function existingArticles(array $parameter)
     {
+        $this->init($parameter['row']['uid'], $parameter['row']['pid']);
         $database = $this->getDatabaseConnection();
-
-        $this->uid = (int) $parameter['row']['uid'];
-        $this->pid = (int) $parameter['row']['pid'];
-
-        // get all attributes for this product, if they where not fetched yet
-        if ($this->attributes == null) {
-            $this->attributes = $this->belib->getAttributesForProduct($this->uid, true, true, true);
-        }
-
-        // get existing articles for this product, if they where not fetched yet
-        if ($this->existingArticles == null) {
-            $this->existingArticles = $this->belib->getArticlesOfProduct($this->uid, '', 'sorting');
-        }
 
         if (empty($this->existingArticles) || $this->uid == 0 || $this->existingArticles === false) {
             return 'No articles existing for this product';
@@ -150,13 +152,13 @@ class ArticleCreatorUtility
 
         $result .= '<tr><td>&nbsp;</td>' . $headRow . '</td><td colspan="5">&nbsp;</td></tr>';
 
-        $buttonUp = IconUtility::getSpriteIcon('actions-move-up');
-        $buttonDown = IconUtility::getSpriteIcon('actions-move-down');
+        $buttonUp = $this->iconFactory->getIcon('actions-move-up', Icon::SIZE_SMALL);
+        $buttonDown = $this->iconFactory->getIcon('actions-move-down', Icon::SIZE_SMALL);
         $clear = '<span style="display: block; width: 11px; height: 10px"></span>';
-        $delete = IconUtility::getSpriteIcon('actions-edit-delete');
-        $edit = IconUtility::getSpriteIcon('actions-document-open');
-        $hide = IconUtility::getSpriteIcon('actions-edit-hide');
-        $unhide = IconUtility::getSpriteIcon('actions-edit-unhide');
+        $delete = $this->iconFactory->getIcon('actions-edit-delete', Icon::SIZE_SMALL);
+        $edit = $this->iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL);
+        $hide = $this->iconFactory->getIcon('actions-edit-hide', Icon::SIZE_SMALL);
+        $unhide = $this->iconFactory->getIcon('actions-edit-unhide', Icon::SIZE_SMALL);
 
         for ($i = 0, $articleCount = count($this->existingArticles); $i < $articleCount; ++$i) {
             $article = $this->existingArticles[$i];
@@ -271,60 +273,21 @@ class ArticleCreatorUtility
     }
 
     /**
-     * Returns JavaScript variables setting the returnUrl and thisScript
-     * location for use by JavaScript on the page.
-     * Used in fx. db_list.php (Web>List).
-     *
-     * @param string $thisLocation URL to "this location" / current script
-     *
-     * @return string Urls are returned as T3_RETURN_URL and T3_THIS_LOCATION
-     */
-    protected function redirectUrls($thisLocation = '')
-    {
-        $thisLocation = $thisLocation ? $thisLocation : GeneralUtility::linkThisScript([
-            'CB' => '',
-            'SET' => '',
-            'cmd' => '',
-            'popViewId' => '',
-        ]);
-
-        $out = '
-            var T3_RETURN_URL = \'' .
-            str_replace('%20', '', rawurlencode(GeneralUtility::sanitizeLocalUrl(GeneralUtility::_GP('returnUrl')))) .
-            '\';
-            var T3_THIS_LOCATION = \'' . str_replace('%20', '', rawurlencode($thisLocation)) . '\';
-        ';
-
-        return $out;
-    }
-
-    /**
      * Create a matrix of producible articles.
      *
      * @param array $parameter Parameter
-     * @param FormEngine $fObj Form engine
+     * @param \TYPO3\CMS\Backend\Form\Element\UserElement $userElement Form engine
      *
      * @return string A HTML-table with checkboxes and all needed stuff
      */
-    public function producibleArticles(array $parameter, FormEngine $fObj)
+    public function producibleArticles(array $parameter, $userElement)
     {
-        $this->uid = (int) $parameter['row']['uid'];
-        $this->pid = (int) $parameter['row']['pid'];
-
-            // get existing articles for this product, if they where not fetched yet
-        if ($this->existingArticles == null) {
-            $this->existingArticles = $this->belib->getArticlesOfProduct($this->uid);
-        }
-
-            // get all attributes for this product, if they where not fetched yet
-        if ($this->attributes == null) {
-            $this->attributes = $this->belib->getAttributesForProduct($this->uid, true, true, true);
-        }
+        $this->init($parameter['row']['uid'], $parameter['row']['pid']);
 
         $rowCount = $this->calculateRowCount();
         if ($rowCount > 1000) {
             return sprintf(
-                $fObj->sL(
+                $this->getLanguageService()->sL(
                     'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.to_many_articles'
                 ),
                 $rowCount
@@ -338,7 +301,7 @@ class ArticleCreatorUtility
 
         $valueMatrix = (array) $this->getValues();
         $counter = 0;
-        $resultRows = $fObj->sL(
+        $resultRows = $this->getLanguageService()->sL(
             'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.create_warning'
         );
 
@@ -346,7 +309,7 @@ class ArticleCreatorUtility
 
         $emptyRow = '<tr><td><input type="checkbox" name="createList[empty]" /></td>';
         $emptyRow .= '<td colspan="' . ($colCount - 1) . '">' .
-            $fObj->sL(
+            $this->getLanguageService()->sL(
                 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.empty_article'
             ) .
             '</td></tr>';
@@ -365,7 +328,7 @@ class ArticleCreatorUtility
         if (!empty($valueMatrix)) {
             $onClick = 'onclick="updateArticleList()"';
             $selectAllRow = '<tr><td><input type="checkbox" id="selectAllArticles" ' . $onClick . '/></td>';
-            $selectAllRow .= '<td colspan="' . ($colCount - 1) . '">' . $fObj->sL(
+            $selectAllRow .= '<td colspan="' . ($colCount - 1) . '">' . $this->getLanguageService()->sL(
                 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.select_all_articles'
             ) . '</td></tr>';
         }
@@ -891,6 +854,34 @@ class ArticleCreatorUtility
     {
         return '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' .
             htmlspecialchars($parameter['itemFormElValue']) . '">';
+    }
+
+    /**
+     * Returns JavaScript variables setting the returnUrl and thisScript
+     * location for use by JavaScript on the page.
+     * Used in fx. db_list.php (Web>List).
+     *
+     * @param string $thisLocation URL to "this location" / current script
+     *
+     * @return string Urls are returned as T3_RETURN_URL and T3_THIS_LOCATION
+     */
+    protected function redirectUrls($thisLocation = '')
+    {
+        $thisLocation = $thisLocation ? $thisLocation : GeneralUtility::linkThisScript([
+            'CB' => '',
+            'SET' => '',
+            'cmd' => '',
+            'popViewId' => '',
+        ]);
+
+        $out = '
+            var T3_RETURN_URL = \'' .
+            str_replace('%20', '', rawurlencode(GeneralUtility::sanitizeLocalUrl(GeneralUtility::_GP('returnUrl')))) .
+            '\';
+            var T3_THIS_LOCATION = \'' . str_replace('%20', '', rawurlencode($thisLocation)) . '\';
+        ';
+
+        return $out;
     }
 
 

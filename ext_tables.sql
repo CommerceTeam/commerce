@@ -585,7 +585,6 @@ CREATE TABLE tx_commerce_products (
 	uname varchar(80) DEFAULT '' NOT NULL,
 	relatedpage int(11) DEFAULT '0' NOT NULL,
 	relatedproducts blob NOT NULL,
-	articleslok tinyint(4) DEFAULT '0' NOT NULL,
 
 	PRIMARY KEY (uid),
 	KEY lang (sys_language_uid),

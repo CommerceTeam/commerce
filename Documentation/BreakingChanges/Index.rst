@@ -50,6 +50,10 @@ Replaced
 Since Version 5
 ---------------
 
+Removed database fields
+_______________________
+tx_commerce_products.articleslok This field is not used anywhere. It was replaced with article in case simplemode is set.
+
 Removed Files
 _____________
 - Both the ClassAliasMap.php and LegacyClassesForIde.php. If you need still need to know which class was renamed into
@@ -84,6 +88,9 @@ Classes/Tree/Leaf/ProductData.php
 Classes/Tree/Leaf/ProductView.php
 Classes/Tree/Leaf/SlaveData.php
 Classes/Tree/Leaf/View.php
+Configuration/DCA/Articles.php
+Configuration/DCA/Categories.php
+Configuration/DCA/Products.php
 
 Removed constansts
 __________________
