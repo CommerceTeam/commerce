@@ -112,21 +112,21 @@ class SystemdataNavigationFrameController extends BaseScriptClass
         $this->view->setTemplatePathAndFilename($templatePathAndFilename);
 
         $attributeUrl = BackendUtility::getModuleUrl(
-            'commerce_systemdata',
+            'commerce_systemdata_attribute',
             ['SET' => [
-                'function' => 'CommerceTeam\Commerce\Controller\SystemdataAttributesModuleFunctionController'
+                'function' => 'CommerceTeam\Commerce\Controller\SystemdataModuleAttributeController'
             ]]
         );
         $manufacturerUrl = BackendUtility::getModuleUrl(
-            'commerce_systemdata',
+            'commerce_systemdata_manufacturer',
             ['SET' => [
-                'function' => 'CommerceTeam\Commerce\Controller\SystemdataManufacturerModuleFunctionController'
+                'function' => 'CommerceTeam\Commerce\Controller\SystemdataModuleManufacturerController'
             ]]
         );
         $supplierUrl = BackendUtility::getModuleUrl(
-            'commerce_systemdata',
+            'commerce_systemdata_supplier',
             ['SET' => [
-                'function' => 'CommerceTeam\Commerce\Controller\SystemdataSupplierModuleFunctionController'
+                'function' => 'CommerceTeam\Commerce\Controller\SystemdataModuleSupplierController'
             ]]
         );
         $this->view->assign('attributeUrl', $attributeUrl);

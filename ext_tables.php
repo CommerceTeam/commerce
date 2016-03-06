@@ -166,7 +166,8 @@ call_user_func(function ($packageKey) {
             '',
             '',
             [
-                'routeTarget' => \CommerceTeam\Commerce\Controller\SystemdataModuleController::class . '::mainAction',
+                'routeTarget' => \CommerceTeam\Commerce\Controller\SystemdataModuleAttributeController::class
+                    . '::mainAction',
                 'access' => 'user,group',
                 'name' => 'commerce_systemdata',
                 'labels' => [
@@ -175,27 +176,27 @@ call_user_func(function ($packageKey) {
                         'tab' => 'EXT:commerce/Resources/Public/Icons/mod_systemdata.gif'
                     ],
                 ],
-                'navigationFrameModule' => 'CommerceTeam_Commerce_SystemdataNavigation',
+                'navigationFrameModule' => 'commerce_systemdata_navigation',
             ]
         );
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
             'commerce_systemdata',
-            \CommerceTeam\Commerce\Controller\SystemdataAttributesModuleFunctionController::class,
+            \CommerceTeam\Commerce\Controller\SystemdataModuleAttributeController::class,
             null,
             'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf:title_attributes'
         );
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
             'commerce_systemdata',
-            \CommerceTeam\Commerce\Controller\SystemdataManufacturerModuleFunctionController::class,
+            \CommerceTeam\Commerce\Controller\SystemdataModuleManufacturerController::class,
             null,
             'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf:title_manufacturer'
         );
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
             'commerce_systemdata',
-            \CommerceTeam\Commerce\Controller\SystemdataSupplierModuleFunctionController::class,
+            \CommerceTeam\Commerce\Controller\SystemdataModuleSupplierController::class,
             null,
             'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf:title_supplier'
         );
@@ -207,7 +208,8 @@ call_user_func(function ($packageKey) {
             '',
             '',
             [
-                'routeTarget' => \CommerceTeam\Commerce\Controller\StatisticModuleController::class . '::mainAction',
+                'routeTarget' => \CommerceTeam\Commerce\Controller\StatisticModuleShowStatisticsController::class
+                    . '::mainAction',
                 'access' => 'user,group',
                 'name' => 'commerce_statistic',
                 'labels' => [
@@ -221,7 +223,7 @@ call_user_func(function ($packageKey) {
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
             'commerce_statistic',
-            \CommerceTeam\Commerce\Controller\StatisticShowStatisticsModuleFunctionController::class,
+            \CommerceTeam\Commerce\Controller\StatisticModuleShowStatisticsController::class,
             null,
             'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf:statistics'
         );
@@ -229,14 +231,14 @@ call_user_func(function ($packageKey) {
         if (\CommerceTeam\Commerce\Utility\ConfigurationUtility::getInstance()->getExtConf('allowAggregation') == 1) {
             \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
                 'commerce_statistic',
-                \CommerceTeam\Commerce\Controller\StatisticIncrementalAggregationModuleFunctionController::class,
+                \CommerceTeam\Commerce\Controller\StatisticModuleIncrementalAggregationController::class,
                 null,
                 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf:incremental_aggregation'
             );
 
             \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
                 'commerce_statistic',
-                \CommerceTeam\Commerce\Controller\StatisticCompleteAggregationModuleFunctionController::class,
+                \CommerceTeam\Commerce\Controller\StatisticModuleCompleteAggregationController::class,
                 null,
                 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf:complete_aggregation'
             );

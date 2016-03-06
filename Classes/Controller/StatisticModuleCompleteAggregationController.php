@@ -1,20 +1,14 @@
 <?php
 namespace CommerceTeam\Commerce\Controller;
 
-use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class StatisticCompleteAggregationModuleFunctionController extends AbstractFunctionModule
+class StatisticModuleCompleteAggregationController extends StatisticModuleController
 {
-    /**
-     * @var StatisticModuleController
-     */
-    public $pObj;
-
     /**
      * @return string
      */
-    public function main()
+    public function getSubModuleContent()
     {
         $database = $this->getDatabaseConnection();
 
@@ -36,7 +30,7 @@ class StatisticCompleteAggregationModuleFunctionController extends AbstractFunct
             if ($startres and ($startrow = $database->sql_fetch_row($startres)) and $startrow[0] != null) {
                 $starttime = $startrow[0];
                 $database->sql_query('truncate tx_commerce_salesfigures');
-                $result .= $this->pObj->statistics->doSalesAggregation($starttime, $endtime);
+                $result .= $this->statistics->doSalesAggregation($starttime, $endtime);
             } else {
                 $result .= 'no sales data available';
             }
@@ -52,7 +46,7 @@ class StatisticCompleteAggregationModuleFunctionController extends AbstractFunct
             if ($startres and ($startrow = $database->sql_fetch_row($startres)) and $startrow[0] != null) {
                 $starttime = $startrow[0];
                 $database->sql_query('truncate tx_commerce_newclients');
-                $result = $this->pObj->statistics->doClientAggregation($starttime, $endtime);
+                $result = $this->statistics->doClientAggregation($starttime, $endtime);
             } else {
                 $result .= '<br />no client data available';
             }

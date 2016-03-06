@@ -32,7 +32,7 @@ use TYPO3\CMS\Backend\Template\ModuleTemplate;
  *
  * @author 2005-2013 Ingo Schmitt <is@marketing-factory.de>
  */
-class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
+abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 {
     /**
      * @var StandaloneView
@@ -59,7 +59,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
     public $moduleTemplate;
 
     /**
-     * @var SystemdataAttributesModuleFunctionController
+     * @var SystemdataModuleAttributesController
      */
     public $extObj;
 
@@ -81,6 +81,11 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
      * @var array
      */
     public $markers = [];
+
+    /**
+     * @var int
+     */
+    protected $fixedL = 30;
 
     /**
      * Reference count.
@@ -204,8 +209,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
                 '
             );
 
-            $this->content .= '<h1>' . $this->getLanguageService()->sL($this->extClassConf['title']) . '</h1>';
-            $this->extObjContent();
+            $this->content .= $this->getSubModuleContent();
             $this->getButtons();
         } else {
             $this->content = '<h1>' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] . '</h1>';
@@ -225,17 +229,29 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
      */
     public function mainAction(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $GLOBALS['SOBE'] = $this;
-        $this->init();
+        $functionClassname = $this->getFunctionClassname();
+        if ($functionClassname !== '' && $functionClassname != static::class) {
+            $function = GeneralUtility::makeInstance($functionClassname);
+        } else {
+            $function = $this;
+        }
 
-        // Checking for first level external objects
-        $this->checkExtObj();
-
-        $this->main();
-
-        $this->moduleTemplate->setContent($this->content);
-        $response->getBody()->write($this->moduleTemplate->renderContent());
+        $function->init();
+        $GLOBALS['SOBE'] = $function;
+        $function->main();
+        $function->moduleTemplate->setContent($function->content);
+        $response->getBody()->write($function->moduleTemplate->renderContent());
         return $response;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getFunctionClassname()
+    {
+        $this->menuConfig();
+        $this->handleExternalFunctionValue();
+        return isset($this->extClassConf['name']) ? $this->extClassConf['name'] : '';
     }
 
     /**
@@ -307,6 +323,11 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
     }
 
     /**
+     * @return mixed
+     */
+    abstract protected function getSubModuleContent();
+
+    /**
      * Gets the number of records referencing the record with the UID $uid in
      * the table $tableName.
      *
@@ -316,14 +337,14 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
      * @return int the number of references to record $uid in table
      *      $tableName, will be >= 0
      */
-    public function getReferenceCount($tableName, $uid)
+    protected function getReferenceCount($tableName, $uid)
     {
         if (!isset($this->referenceCount[$tableName][$uid])) {
             $numberOfReferences = $this->getDatabaseConnection()->exec_SELECTcountRows(
                 '*',
                 'sys_refindex',
-                'ref_table = ' . $this->getDatabaseConnection()->fullQuoteStr($tableName, 'sys_refindex') .
-                ' AND ref_uid = ' . (int) $uid . ' AND deleted = 0'
+                'ref_table = ' . $this->getDatabaseConnection()->fullQuoteStr($tableName, 'sys_refindex')
+                . ' AND ref_uid = ' . (int) $uid . ' AND deleted = 0'
             );
 
             $this->referenceCount[$tableName][$uid] = $numberOfReferences;

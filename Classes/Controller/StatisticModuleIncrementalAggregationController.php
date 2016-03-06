@@ -1,20 +1,14 @@
 <?php
 namespace CommerceTeam\Commerce\Controller;
 
-use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class StatisticIncrementalAggregationModuleFunctionController extends AbstractFunctionModule
+class StatisticModuleIncrementalAggregationController extends StatisticModuleController
 {
-    /**
-     * @var StatisticModuleController
-     */
-    public $pObj;
-
     /**
      * @return string
      */
-    public function main()
+    public function getSubModuleContent()
     {
         $database = $this->getDatabaseConnection();
 
@@ -34,29 +28,29 @@ class StatisticIncrementalAggregationModuleFunctionController extends AbstractFu
             if ($endres and ($endrow = $database->sql_fetch_row($endres))) {
                 $endtime2 = $endrow[0];
             }
-            $starttime = $this->pObj->statistics->firstSecondOfDay($lastAggregationTimeValue);
+            $starttime = $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
 
-            if ($starttime <= $this->pObj->statistics->firstSecondOfDay($endtime2) and $endtime2 != null) {
+            if ($starttime <= $this->statistics->firstSecondOfDay($endtime2) and $endtime2 != null) {
                 $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
                 echo 'Incremental Sales Agregation for sales for the period from ' . strftime('%d.%m.%Y', $starttime) .
                     ' to ' . strftime('%d.%m.%Y', $endtime) . ' (DD.MM.YYYY)<br />' . LF;
                 flush();
-                $result .= $this->pObj->statistics->doSalesAggregation($starttime, $endtime);
+                $result .= $this->statistics->doSalesAggregation($starttime, $endtime);
             } else {
                 $result .= 'No new Orders<br />';
             }
 
             $changeWhere = 'tstamp > ' . (
                 $lastAggregationTimeValue -
-                ($this->pObj->statistics->getDaysBack() * 24 * 60 * 60)
+                ($this->statistics->getDaysBack() * 24 * 60 * 60)
             );
             $changeres = $database->exec_SELECTquery('DISTINCT crdate', 'tx_commerce_order_articles', $changeWhere);
             $changeDaysArray = [];
             $changes = 0;
             while ($changeres and ($changerow = $database->sql_fetch_assoc($changeres))) {
-                $starttime = $this->pObj->statistics->firstSecondOfDay($changerow['crdate']);
-                $endtime = $this->pObj->statistics->lastSecondOfDay($changerow['crdate']);
+                $starttime = $this->statistics->firstSecondOfDay($changerow['crdate']);
+                $endtime = $this->statistics->lastSecondOfDay($changerow['crdate']);
 
                 if (!in_array($starttime, $changeDaysArray)) {
                     $changeDaysArray[] = $starttime;
@@ -64,7 +58,7 @@ class StatisticIncrementalAggregationModuleFunctionController extends AbstractFu
                     echo 'Incremental Sales Udpate Agregation for sales for the day ' .
                         strftime('%d.%m.%Y', $starttime) . ' <br />' . LF;
                     flush();
-                    $result .= $this->pObj->statistics->doSalesUpdateAggregation($starttime, $endtime);
+                    $result .= $this->statistics->doSalesUpdateAggregation($starttime, $endtime);
                     ++$changes;
                 }
             }
@@ -94,7 +88,7 @@ class StatisticIncrementalAggregationModuleFunctionController extends AbstractFu
                     strftime('%d.%m.%Y', $starttime) . ' to ' . strftime('%d.%m.%Y', $endtime) .
                     ' (DD.MM.YYYY)<br />' . LF;
                 flush();
-                $result .= $this->pObj->statistics->doClientAggregation($starttime, $endtime);
+                $result .= $this->statistics->doClientAggregation($starttime, $endtime);
             } else {
                 $result .= 'No new Customers<br />';
             }

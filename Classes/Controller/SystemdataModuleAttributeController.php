@@ -1,39 +1,28 @@
 <?php
 namespace CommerceTeam\Commerce\Controller;
 
-use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
-use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
-class SystemdataAttributesModuleFunctionController extends AbstractFunctionModule
+class SystemdataModuleAttributeController extends SystemdataModuleController
 {
-    /**
-     * @var SystemdataModuleController
-     */
-    public $pObj;
-
     /**
      * @var string
      */
     public $table = 'tx_commerce_attributes';
 
     /**
-     * @var IconFactory
-     */
-    protected $iconFactory;
-
-    /**
      * @return string
      */
-    public function main()
+    public function getSubModuleContent()
     {
         $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_list.xlf');
         $this->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/AjaxDataHandler');
 
-        $this->iconFactory = $this->pObj->moduleTemplate->getIconFactory();
+        $out = '<h1>' . $this->getLanguageService()->sL(
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf:title_attributes'
+        ) . '</h1>';
 
         $headerRow = '<tr>
             <td class="col-icon"></td>
@@ -52,13 +41,13 @@ class SystemdataAttributesModuleFunctionController extends AbstractFunctionModul
             . $this->getDatabaseConnection()->sql_num_rows($result) . '</span>)</a>';
 
         if (!$attributeRows) {
-            $out = '<span class="label label-info">'
+            $out .= '<span class="label label-info">'
                 . htmlspecialchars($this->getLanguageService()->sL(
                     'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf:noAttribute'
                 ))
                 . '</span>';
         } else {
-            $out = '
+            $out .= '
 
             <!--
                 DB listing of elements:	"' . htmlspecialchars($this->table) . '"
@@ -90,7 +79,7 @@ class SystemdataAttributesModuleFunctionController extends AbstractFunctionModul
         return $this->getDatabaseConnection()->exec_SELECTquery(
             '*',
             'tx_commerce_attributes',
-            'pid = ' . (int) $this->pObj->id .
+            'pid = ' . (int) $this->id .
             ' AND hidden = 0 AND deleted = 0 and (sys_language_uid = 0 OR sys_language_uid = -1)',
             '',
             'internal_title, title'
@@ -109,7 +98,7 @@ class SystemdataAttributesModuleFunctionController extends AbstractFunctionModul
         return $this->getDatabaseConnection()->exec_SELECTquery(
             '*',
             'tx_commerce_attributes',
-            'pid = ' . (int) $this->pObj->id .
+            'pid = ' . (int) $this->id .
             ' AND hidden = 0 AND deleted = 0 AND sys_language_uid != 0 and l18n_parent =' . (int) $uid,
             '',
             'sys_language_uid'
@@ -169,7 +158,7 @@ class SystemdataAttributesModuleFunctionController extends AbstractFunctionModul
                 $this->table,
                 $attribute['uid'],
                 ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.referencesToRecord'),
-                $this->pObj->getReferenceCount($this->table, $attribute['uid'])
+                $this->getReferenceCount($this->table, $attribute['uid'])
             ) . BackendUtility::translationCount(
                 $this->table,
                 $attribute['uid'],

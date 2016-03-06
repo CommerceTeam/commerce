@@ -1,19 +1,12 @@
 <?php
 namespace CommerceTeam\Commerce\Controller;
 
-use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
-
-class StatisticShowStatisticsModuleFunctionController extends AbstractFunctionModule
+class StatisticModuleShowStatisticsController extends StatisticModuleController
 {
-    /**
-     * @var StatisticModuleController
-     */
-    public $pObj;
-
     /**
      * @return string
      */
-    public function main()
+    public function getSubModuleContent()
     {
         $language = $this->getLanguageService();
         $database = $this->getDatabaseConnection();
@@ -21,8 +14,8 @@ class StatisticShowStatisticsModuleFunctionController extends AbstractFunctionMo
         $orderPageId = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid();
 
         $whereClause = '';
-        if ($this->pObj->id != $orderPageId) {
-            $whereClause = 'pid = ' . $this->pObj->id;
+        if ($this->id != $orderPageId) {
+            $whereClause = 'pid = ' . $this->id;
         }
         $weekdays = [
             $language->getLL('sunday'),
@@ -140,7 +133,7 @@ class StatisticShowStatisticsModuleFunctionController extends AbstractFunctionMo
             );
 
             while (($statRow = $database->sql_fetch_assoc($statResult))) {
-                $tablestemp = '<tr><td><a href="?id=' . $this->pObj->id . '&amp;month=' . $statRow['month'] .
+                $tablestemp = '<tr><td><a href="?id=' . $this->id . '&amp;month=' . $statRow['month'] .
                     '&amp;year=' . $statRow['year'] . '&amp;show=details">' . $statRow['month'] . '.' .
                     $statRow['year'] . '</a></td><td align="right">%01.2f</td><td align="right">' .
                     $statRow['salesfigures'] . '</td><td align="right">' . $statRow['sumorders'] . '</td></tr>';

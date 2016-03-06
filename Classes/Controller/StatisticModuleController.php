@@ -28,7 +28,7 @@ use TYPO3\CMS\Backend\Template\ModuleTemplate;
  *
  * @author 2004-2011 Joerg Sprung <jsp@marketing-factory.de>
  */
-class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
+abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 {
     /**
      * Document template.
@@ -149,7 +149,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
         if (($this->id && $access) || $backendUser->isAdmin()) {
             // Render content:
             $this->content .= '<h1>' . $this->getLanguageService()->sL($this->extClassConf['title']) . '</h1>';
-            $this->extObjContent();
+            $this->content .= $this->getSubModuleContent();
             $this->getButtons();
             $this->generateMenu();
         } else {
@@ -217,17 +217,29 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
      */
     public function mainAction(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $GLOBALS['SOBE'] = $this;
-        $this->init();
+        $functionClassname = $this->getFunctionClassname();
+        if ($functionClassname !== '' && $functionClassname != static::class) {
+            $function = GeneralUtility::makeInstance($functionClassname);
+        } else {
+            $function = $this;
+        }
 
-        // Checking for first level external objects
-        $this->checkExtObj();
-
-        $this->main();
-
-        $this->moduleTemplate->setContent($this->content);
-        $response->getBody()->write($this->moduleTemplate->renderContent());
+        $function->init();
+        $GLOBALS['SOBE'] = $function;
+        $function->main();
+        $function->moduleTemplate->setContent($function->content);
+        $response->getBody()->write($function->moduleTemplate->renderContent());
         return $response;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getFunctionClassname()
+    {
+        $this->menuConfig();
+        $this->handleExternalFunctionValue();
+        return isset($this->extClassConf['name']) ? $this->extClassConf['name'] : '';
     }
 
     /**
@@ -289,4 +301,9 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
         return $buttons;
     }
+
+    /**
+     * @return mixed
+     */
+    abstract protected function getSubModuleContent();
 }
