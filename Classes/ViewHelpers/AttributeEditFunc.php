@@ -50,7 +50,7 @@ class AttributeEditFunc
          */
 
         // @todo TS config of fields in list
-        $rowFields = array('attributes_uid', 'value');
+        $rowFields = ['attributes_uid', 'value'];
         $titleCol = ConfigurationUtility::getInstance()->getTcaValue($foreignTable . '.ctrl.label');
 
         /**
@@ -107,16 +107,16 @@ class AttributeEditFunc
                 $iOut .= '<tr>';
                 foreach ($rowFields as $field) {
                     $iOut .= '<td>';
-                    $wrap = array('', '');
+                    $wrap = ['', ''];
 
                     switch ($field) {
                         case $titleCol:
                             $params = '&edit[' . $foreignTable . '][' . $row['uid'] . ']=edit';
-                            $wrap = array(
+                            $wrap = [
                                 '<a href="#" onclick="' .
                                 htmlspecialchars(BackendUtility::editOnClick($params)) . '">',
                                 '</a>',
-                            );
+                            ];
                             break;
 
                         default:

@@ -80,14 +80,14 @@ class Attribute extends AbstractEntity
      *
      * @var array
      */
-    protected $attribute_value_uids = array();
+    protected $attribute_value_uids = [];
 
     /**
      * Attribute value object list.
      *
      * @var array
      */
-    protected $attribute_values = array();
+    protected $attribute_values = [];
 
     /**
      * Icon mode.
@@ -134,14 +134,14 @@ class Attribute extends AbstractEntity
     public function init($uid, $languageUid = 0)
     {
         $uid = (int) $uid;
-        $this->fieldlist = array(
+        $this->fieldlist = [
             'title',
             'unit',
             'iconmode',
             'has_valuelist',
             'l18n_parent',
             'parent',
-        );
+        ];
 
         if ($uid > 0) {
             $this->uid = $uid;
@@ -197,8 +197,8 @@ class Attribute extends AbstractEntity
         // if productObject is a productObject we have to remove the attribute
         // values wich are not possible at all for this product
         if (is_object($product)) {
-            $tAttributeValues = array();
-            $productSelectAttributeValues = $product->getSelectattributeMatrix(false, array($this->uid));
+            $tAttributeValues = [];
+            $productSelectAttributeValues = $product->getSelectattributeMatrix(false, [$this->uid]);
             /**
              * Attribute value.
              *
@@ -218,7 +218,7 @@ class Attribute extends AbstractEntity
             return $attributeValues;
         }
 
-        $return = array();
+        $return = [];
         foreach ($attributeValues as $valueUid => $attributeValue) {
             $return[$valueUid] = $attributeValue->getValue();
         }

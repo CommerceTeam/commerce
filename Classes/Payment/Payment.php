@@ -73,7 +73,7 @@ class Payment extends Wirecard
      */
     public function getPaymetmethods()
     {
-        return array();
+        return [];
     }
 
     /**

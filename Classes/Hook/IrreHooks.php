@@ -67,16 +67,16 @@ class IrreHooks implements \TYPO3\CMS\Backend\Form\Element\InlineElementHookInte
         $settingsFactory = ConfigurationUtility::getInstance();
 
         if (is_null($enabledControls)) {
-            $enabledControls = array('new' => true, 'hide' => true, 'delete' => true);
+            $enabledControls = ['new' => true, 'hide' => true, 'delete' => true];
         } elseif ($settingsFactory->getExtConf('simpleMode') == 1
             && $foreignTable == 'tx_commerce_articles'
             && $parentUid == $settingsFactory->getExtConf('deliveryID')
         ) {
-            $enabledControls = array('new' => true, 'hide' => true, 'delete' => true);
+            $enabledControls = ['new' => true, 'hide' => true, 'delete' => true];
         } elseif ($settingsFactory->getExtConf('simpleMode') == 1 && $foreignTable == 'tx_commerce_articles') {
-            $enabledControls = array('hide' => true);
+            $enabledControls = ['hide' => true];
         } elseif ($foreignTable == 'tx_commerce_article_prices') {
-            $enabledControls = array('new' => true, 'sort' => true, 'hide' => true, 'delete' => true);
+            $enabledControls = ['new' => true, 'sort' => true, 'hide' => true, 'delete' => true];
         }
     }
 

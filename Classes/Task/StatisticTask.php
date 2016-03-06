@@ -145,7 +145,7 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             'SELECT distinct crdate FROM tx_commerce_order_articles where tstamp > '.
             ($lastAggregationTimeValue - ($this->statistics->getDaysBack() * 24 * 60 * 60))
         );
-        $changeDaysArray = array();
+        $changeDaysArray = [];
         $changes = 0;
         $result = '';
         while ($changeres && ($changerow = $database->sql_fetch_assoc($changeres))) {
@@ -267,7 +267,7 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             $status,
             $code,
             '[commerce]: ' . $message,
-            array()
+            []
         );
     }
 

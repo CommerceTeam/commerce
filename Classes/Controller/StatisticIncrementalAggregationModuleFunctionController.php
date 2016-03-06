@@ -52,7 +52,7 @@ class StatisticIncrementalAggregationModuleFunctionController extends AbstractFu
                 ($this->pObj->statistics->getDaysBack() * 24 * 60 * 60)
             );
             $changeres = $database->exec_SELECTquery('DISTINCT crdate', 'tx_commerce_order_articles', $changeWhere);
-            $changeDaysArray = array();
+            $changeDaysArray = [];
             $changes = 0;
             while ($changeres and ($changerow = $database->sql_fetch_assoc($changeres))) {
                 $starttime = $this->pObj->statistics->firstSecondOfDay($changerow['crdate']);

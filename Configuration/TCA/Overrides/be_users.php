@@ -19,20 +19,12 @@ $tempColumns = [
         'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:label.tx_commerce_mountpoints',
         'config' => [
             'type' => 'select',
+            'renderType' => 'commerceCategoryTree',
             'foreign_table' => 'tx_commerce_categories',
             'foreign_table_where' => 'AND sys_language_uid = 0',
             'size' => 10,
             'minitems' => 0,
             'maxitems' => 20,
-            // @todo provide alternative tree that can handle large category trees
-            // 'renderMode' => 'tree',
-            'treeConfig' => [
-                'expandAll' => true,
-                'parentField' => 'parent_category',
-                'appearance' => [
-                    'showHeader' => true,
-                ],
-            ],
         ],
     ],
 ];

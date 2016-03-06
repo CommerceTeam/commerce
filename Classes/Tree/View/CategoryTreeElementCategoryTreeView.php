@@ -47,7 +47,7 @@ class CategoryTreeElementCategoryTreeView extends ElementBrowserCategoryTreeView
         $out = '';
         // We need to count the opened <ul>'s every time we dig into another level,
         // so we know how many we have to close when all children are done rendering
-        $closeDepth = array();
+        $closeDepth = [];
         foreach ($treeArr as $treeItem) {
             $classAttr = $treeItem['row']['_CSSCLASS'];
             if ($treeItem['isFirst']) {

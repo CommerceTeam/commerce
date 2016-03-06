@@ -197,7 +197,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $dbList->newWizards = $this->modTSconfig['properties']['newWizards'] ? 1 : 0;
         $dbList->pageRow = $this->pageinfo;
         $dbList->counter++;
-        $dbList->MOD_MENU = array('bigControlPanel' => '', 'clipBoard' => '', 'localization' => '');
+        $dbList->MOD_MENU = ['bigControlPanel' => '', 'clipBoard' => '', 'localization' => ''];
         $dbList->modTSconfig = $this->modTSconfig;
         $clickTitleMode = trim($this->modTSconfig['properties']['clickTitleMode']);
         $dbList->clickTitleMode = $clickTitleMode === '' ? 'edit' : $clickTitleMode;
@@ -262,7 +262,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             if ($this->cmd == 'delete') {
                 $items = $dbList->clipObj->cleanUpCBC(GeneralUtility::_POST('CBC'), $this->cmd_table, 1);
                 if (!empty($items)) {
-                    $cmd = array();
+                    $cmd = [];
                     foreach ($items as $iK => $_) {
                         $iKparts = explode('|', $iK);
                         $cmd[$iKparts[0]][$iKparts[1]]['delete'] = 1;
@@ -273,7 +273,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                      * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
                      */
                     $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-                    $tce->start(array(), $cmd);
+                    $tce->start([], $cmd);
                     $tce->process_cmdmap();
                     if (isset($cmd['tx_commerce_categories'])) {
                         BackendUtility::setUpdateSignal('updateFolderTree');
@@ -334,7 +334,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                     window.location.href = "'
                 . BackendUtility::getModuleUrl(
                     'record_edit',
-                    array('returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'))
+                    ['returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')]
                 )
                 . '&edit[" + table + "][" + idList + "]=edit" + addParams;
                 }
@@ -404,7 +404,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                         <form action="" method="post">';
 
             // add the page id and the current selected categor uid to the function links
-            $functionParameter = array('id' => $this->id);
+            $functionParameter = ['id' => $this->id];
             if ($this->categoryUid) {
                 $functionParameter['control']['categoryUid'] = $this->categoryUid;
             }
@@ -481,7 +481,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['recordlist/Modules/Recordlist/index.php']['drawFooterHook'];
         if (is_array($footerContentHook)) {
             foreach ($footerContentHook as $hook) {
-                $params = array();
+                $params = [];
                 $this->body .= GeneralUtility::callUserFunction($hook, $params, $this);
             }
         }

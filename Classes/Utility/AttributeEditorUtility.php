@@ -75,7 +75,7 @@ class AttributeEditorUtility
         }
 
         if ($aData['deleted'] == 1) {
-            return array();
+            return [];
         }
 
         /*
@@ -120,7 +120,7 @@ class AttributeEditorUtility
         $attrPid = FolderRepository::initFolders('Attributes', $modPid);
 
         if ($aData['has_valuelist'] == 1) {
-            $config['config'] = array(
+            $config['config'] = [
                 'type' => 'select',
                 'foreign_table' => 'tx_commerce_attribute_values',
                 'foreign_table_where' => ' AND attributes_uid = ' . (int) $aData['uid'] .
@@ -128,10 +128,10 @@ class AttributeEditorUtility
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
-                'items' => array(
-                    array('', 0),
-                ),
-            );
+                'items' => [
+                    ['', 0],
+                ],
+            ];
 
             if ((int) $aData['multiple'] == 1) {
                 // create a selectbox for multiple selection
@@ -145,7 +145,7 @@ class AttributeEditorUtility
             if ($aData['unit'] != '') {
                 $config['label'] .= ' (' . $aData['unit'] . ')';
             }
-            $config['config'] = array('type' => 'input');
+            $config['config'] = ['type' => 'input'];
         }
 
         // Dont display in lokalised version Attributes with valuelist
@@ -168,9 +168,9 @@ class AttributeEditorUtility
      */
     public function getAttributeEditFields(array $funcDataArray, array $baseConfig)
     {
-        $result = array();
+        $result = [];
 
-        $sortedAttributes = array();
+        $sortedAttributes = [];
         foreach ($funcDataArray as $funcData) {
             if ($funcData['row']['uid_foreign'] == 0) {
                 continue;

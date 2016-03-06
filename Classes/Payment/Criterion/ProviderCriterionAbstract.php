@@ -51,7 +51,7 @@ abstract class ProviderCriterionAbstract implements \CommerceTeam\Commerce\Payme
      *
      * @var array Option array from ext_localconf
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * Constructor.
@@ -59,7 +59,7 @@ abstract class ProviderCriterionAbstract implements \CommerceTeam\Commerce\Payme
      * @param ProviderInterface $providerObject Parent payment
      * @param array $options Configuration array
      */
-    public function __construct(ProviderInterface $providerObject, array $options = array())
+    public function __construct(ProviderInterface $providerObject, array $options = [])
     {
         $this->providerObject = $providerObject;
         $this->paymentObject = $this->providerObject->getPaymentObject();

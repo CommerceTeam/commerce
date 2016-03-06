@@ -124,7 +124,7 @@ abstract class BasicDao
     {
         $properties = get_object_vars($this->object);
         if (method_exists($this->object, 'get' . ucfirst($propertyName))) {
-            $value = call_user_func(array($this->object, 'get' . ucfirst($propertyName)), null);
+            $value = call_user_func([$this->object, 'get' . ucfirst($propertyName)], null);
         } else {
             $value = $properties[$propertyName];
         }
@@ -145,7 +145,7 @@ abstract class BasicDao
         $properties = get_object_vars($this->object);
         if (array_key_exists($propertyName, $properties)) {
             if (method_exists($this->object, 'set' . ucfirst($propertyName))) {
-                call_user_func(array($this->object, 'set' . ucfirst($propertyName)), $value);
+                call_user_func([$this->object, 'set' . ucfirst($propertyName)], $value);
             } else {
                 $this->object->$propertyName = $value;
             }

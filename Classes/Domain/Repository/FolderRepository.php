@@ -30,7 +30,7 @@ class FolderRepository
      *
      * @var array
      */
-    protected static $folderIds = array();
+    protected static $folderIds = [];
 
     /**
      * Find the extension folders.
@@ -102,7 +102,7 @@ class FolderRepository
     {
         GeneralUtility::logDeprecatedFunction();
         $row = self::getFolder($module, $pid, $title);
-        return isset($row['uid']) ? array($row['uid'] => $row) : array();
+        return isset($row['uid']) ? [$row['uid'] => $row] : [];
     }
 
     /**
@@ -150,7 +150,7 @@ class FolderRepository
 
         self::getDatabaseConnection()->exec_INSERTquery(
             'pages',
-            array(
+            [
                 'sorting' => $sorting ? $sorting + 1 : 10111,
                 'perms_user' => 31,
                 'perms_group' => 31,
@@ -162,7 +162,7 @@ class FolderRepository
                 'title' => $title,
                 'tx_commerce_foldername' => strtolower($title),
                 'module' => $module,
-            )
+            ]
         );
 
         return self::getDatabaseConnection()->sql_insert_id();

@@ -17,39 +17,39 @@ This prevents an extra .../product/...
 
 **ext_localconf.php**::
 
-	$TYPO3_CONF_VARS['EXTCONF']['realurl'] =  array(
-		'_DEFAULT' => array(
-			'init' => array(
+	$TYPO3_CONF_VARS['EXTCONF']['realurl'] =  [
+		'_DEFAULT' => [
+			'init' => [
 				'enableCHashCache' => 1,
 				'appendMissingSlash' => 'ifNotFile',
 				'enableUrlDecodeCache' => 1,
 				'enableUrlEncodeCache' => 1,
-			),
-			'fileName' => array(
+			],
+			'fileName' => [
 				'defaultToHTMLsuffixOnPrev' => 1,
-				'index' => array(
-					'index.html' => array(
-						'keyValues' => array(
-						),
-					),
-				),
-			),
-			'preVars' => array(
-				array(
+				'index' => [
+					'index.html' => [
+						'keyValues' => [
+						],
+					],
+				],
+			],
+			'preVars' => [
+				[
 					'GETvar' => 'L',
-					'valueMap' => array(
+					'valueMap' => [
 						'de' => '0',
 						'en-gb' => '1',
-					),
+					],
 					'valueDefault' => 'de',
-				),
-			),
+				],
+			],
 
-			'fixedPostVars' => array(
-				'txcommerceDetailConfiguration' => array(
-					array(
+			'fixedPostVars' => [
+				'txcommerceDetailConfiguration' => [
+					[
 						'GETvar' => 'tx_commerce_pi1[catUid]',
-						'lookUpTable' => array(
+						'lookUpTable' => [
 							'table' => 'tx_commerce_categories',
 							'id_field' => 'uid',
 							'alias_field' => 'title',
@@ -59,14 +59,14 @@ This prevents an extra .../product/...
 							'enable404forInvalidAlias' => 1,
 							'autoUpdate' => 1,
 							'expireDays' => 5,
-							'useUniqueCache_conf' => array(
+							'useUniqueCache_conf' => [
 								'spaceCharacter' => '-'
-							)
-						)
-					),
-					array(
+							]
+						]
+					],
+					[
 						'GETvar' => 'tx_commerce_pi1[showUid]',
-						'lookUpTable' => array(
+						'lookUpTable' => [
 							'table' => 'tx_commerce_products',
 							'id_field' => 'uid',
 							'alias_field' => 'title',
@@ -76,29 +76,29 @@ This prevents an extra .../product/...
 							'enable404forInvalidAlias' => 1,
 							'autoUpdate' => 1,
 							'expireDays' => 5,
-							'useUniqueCache_conf' => array(
+							'useUniqueCache_conf' => [
 								'spaceCharacter' => '-'
-							)
-						),
-					),
-				),
+							]
+						],
+					],
+				],
 				// uid of the detail commerce page on live
 				'62' => 'txcommerceDetailConfiguration',
 				'217' => 'txcommerceDetailConfiguration',
-			),
+			],
 
-			'postVarSets' => array (
-				'_DEFAULT' => array(
-					'plaintext' => array(
+			'postVarSets' => [
+				'_DEFAULT' => [
+					'plaintext' => [
 						'type' => 'single',
-						'keyValues' => array(
+						'keyValues' => [
 							'type' => 99
-						)
-					),
-				),
-			),
+						]
+					],
+				],
+			],
 
-			'pagePath' => array (
+			'pagePath' => [
 				'type' => 'user',
 				'userFunc' => 'EXT:realurl/class.tx_realurl_advanced.php:&tx_realurl_advanced->main',
 				'spaceCharacter' => '_',
@@ -106,6 +106,6 @@ This prevents an extra .../product/...
 				'expireDays' => 3,
 				'rootpage_id' => 1,
 				'segTitleFieldList' => 'tx_realurl_pathsegment,alias,nav_title,title',
-			),
-		),
-	);
+			],
+		],
+	];

@@ -73,7 +73,7 @@ class ProductRepository extends Repository
     public function getArticles($uid)
     {
         $uid = (int) $uid;
-        $articleUids = array();
+        $articleUids = [];
 
         $return = false;
         if ($uid) {
@@ -134,11 +134,11 @@ class ProductRepository extends Repository
         $return = false;
         if ((int) $uid) {
             if (!is_array($correlationtypes)) {
-                $correlationtypes = array($correlationtypes);
+                $correlationtypes = [$correlationtypes];
             }
 
             $database = $this->getDatabaseConnection();
-            $articleUids = array();
+            $articleUids = [];
             $result = $database->exec_SELECTquery(
                 'DISTINCT(uid_foreign) AS uid',
                 $this->databaseAttributeRelationTable,
@@ -236,7 +236,7 @@ class ProductRepository extends Repository
             return null;
         }
 
-        $uids = array();
+        $uids = [];
 
         // read from sql
         $rows = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(

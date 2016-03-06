@@ -73,7 +73,7 @@ class Category extends AbstractEntity
      *
      * @var array
      */
-    protected $images_array = array();
+    protected $images_array = [];
 
     /**
      * Title for navigation an Menu Rendering.
@@ -94,7 +94,7 @@ class Category extends AbstractEntity
      *
      * @var array
      */
-    protected $categories_uid = array();
+    protected $categories_uid = [];
 
     /**
      * Parent category uid.
@@ -115,7 +115,7 @@ class Category extends AbstractEntity
      *
      * @var array
      */
-    protected $products_uid = array();
+    protected $products_uid = [];
 
     /**
      * Array with category objects.
@@ -150,7 +150,7 @@ class Category extends AbstractEntity
      *
      * @var array
      */
-    protected $teaserImagesArray = array();
+    protected $teaserImagesArray = [];
 
     /**
      * Is true when data is loaded.
@@ -164,7 +164,7 @@ class Category extends AbstractEntity
      *
      * @var array
      */
-    public $perms_record = array();
+    public $perms_record = [];
 
     /**
      * The uid of the user owning the category.
@@ -220,21 +220,21 @@ class Category extends AbstractEntity
      *
      * @var array
      */
-    protected $categoryTSconfig = array();
+    protected $categoryTSconfig = [];
 
     /**
      * Typoscript config.
      *
      * @var array
      */
-    protected $tsConfig = array();
+    protected $tsConfig = [];
 
     /**
      * Field list.
      *
      * @var array
      */
-    protected $fieldlist = array(
+    protected $fieldlist = [
         'uid',
         'title',
         'subtitle',
@@ -246,7 +246,7 @@ class Category extends AbstractEntity
         'images',
         'ts_config',
         'l18n_parent',
-    );
+    ];
 
     /**
      * Constructor, basically calls init.
@@ -330,7 +330,7 @@ class Category extends AbstractEntity
     public function getChildCategories()
     {
         if (is_null($this->categories) && is_array($this->categories_uid)) {
-            $this->categories = array();
+            $this->categories = [];
             foreach ($this->categories_uid as $childCategoryUid) {
                 /**
                  * Child category.
@@ -375,7 +375,7 @@ class Category extends AbstractEntity
         $this->loadData();
         $this->getChildCategories();
 
-        $returnList = array();
+        $returnList = [];
         if (!empty($this->categories)) {
             if (($depth === false) || ($depth > 0)) {
                 /**
@@ -518,7 +518,7 @@ class Category extends AbstractEntity
     public function getParentCategories()
     {
         $parents = $this->getRepository()->getParentCategories($this->uid);
-        $parentCats = array();
+        $parentCats = [];
         foreach ($parents as $parent) {
             /**
              * Category.
@@ -539,12 +539,12 @@ class Category extends AbstractEntity
      */
     public function getParentCategoriesUidlist()
     {
-        $returnList = array();
+        $returnList = [];
         $this->loadData();
         if (($parentCategory = $this->getParentCategory())) {
             $returnList = $parentCategory->getParentCategoriesUidlist();
         }
-        $returnList = array_merge($returnList, array($this->uid));
+        $returnList = array_merge($returnList, [$this->uid]);
 
         return array_unique($returnList);
     }
@@ -900,10 +900,10 @@ class Category extends AbstractEntity
             return false;
         }
             // Update parent_category
-        $set = $this->getRepository()->updateRecord($this->uid, array('parent_category' => $parentUid));
+        $set = $this->getRepository()->updateRecord($this->uid, ['parent_category' => $parentUid]);
             // Only update relations if parent_category was successfully set
         if ($set) {
-            $catList = array($parentUid);
+            $catList = [$parentUid];
             $catList = \CommerceTeam\Commerce\Utility\BackendUtility::getUidListFromList($catList);
             $catList = \CommerceTeam\Commerce\Utility\BackendUtility::extractFieldArray($catList, 'uid_foreign', true);
 

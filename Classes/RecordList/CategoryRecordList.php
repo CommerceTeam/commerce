@@ -54,22 +54,22 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @var array
      */
-    protected $addWhere = array(
+    protected $addWhere = [
         'tx_commerce_products' => ' AND uid_foreign = %d',
         'tx_commerce_categories' => ' AND uid_foreign = %d',
-    );
+    ];
 
     /**
      * Join queries per table.
      *
      * @var array
      */
-    protected $joinTables = array(
+    protected $joinTables = [
         'tx_commerce_products' => ' LEFT JOIN tx_commerce_products_categories_mm
             ON tx_commerce_products.uid = tx_commerce_products_categories_mm.uid_local',
         'tx_commerce_categories' => ' LEFT JOIN tx_commerce_categories_parent_category_mm
             ON tx_commerce_categories.uid = tx_commerce_categories_parent_category_mm.uid_local',
-    );
+    ];
 
     /**
      * @var int
@@ -212,7 +212,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 $buttonBar->addButton($csvButton, ButtonBar::BUTTON_POSITION_LEFT, 40);
                 // Export
                 if (ExtensionManagementUtility::isLoaded('impexp')) {
-                    $url = BackendUtility::getModuleUrl('xMOD_tximpexp', array('tx_impexp[action]' => 'export'));
+                    $url = BackendUtility::getModuleUrl('xMOD_tximpexp', ['tx_impexp[action]' => 'export']);
                     $exportButton = $buttonBar->makeLinkButton()
                         ->setHref($url . '&tx_impexp[list][]=' . rawurlencode($this->table . ':' . $this->id))
                         ->setTitle($lang->sL('LLL:EXT:lang/locallang_core.xlf:rm.export'))
@@ -251,7 +251,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
             // Back
             if ($this->returnUrl) {
-                $href = htmlspecialchars(GeneralUtility::linkThisUrl($this->returnUrl, array('id' => $this->id)));
+                $href = htmlspecialchars(GeneralUtility::linkThisUrl($this->returnUrl, ['id' => $this->id]));
                 $buttons['back'] = '<a href="' . $href . '" class="typo3-goBack" title="'
                     . $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.goBack', true) . '">'
                     . $this->iconFactory->getIcon('actions-view-go-back', Icon::SIZE_SMALL) . '</a>';
@@ -296,7 +296,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         $this->spaceIcon = '<span class="btn btn-default disabled">'
             . $this->iconFactory->getIcon('empty-empty', Icon::SIZE_SMALL) . '</span>';
         // Cleaning rowlist for duplicates and place the $titleCol as the first column always!
-        $this->fieldArray = array();
+        $this->fieldArray = [];
         // title Column
         // Add title column
         $this->fieldArray[] = $titleCol;
@@ -345,7 +345,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         if (is_array($tableConfig['ctrl']['enablecolumns'])) {
             $selectFields = array_merge($selectFields, $tableConfig['ctrl']['enablecolumns']);
         }
-        foreach (array('type', 'typeicon_column', 'editlock') as $field) {
+        foreach (['type', 'typeicon_column', 'editlock'] as $field) {
             if ($tableConfig['ctrl'][$field]) {
                 $selectFields[] = $tableConfig['ctrl'][$field];
             }
@@ -458,7 +458,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 $tableTitle = $table;
             }
             // Header line is drawn
-            $theData = array();
+            $theData = [];
             if ($this->disableSingleTableView) {
                 $theData[$titleCol] = '<span class="c-table">' . BackendUtility::wrapInHelp($table, '', $tableTitle)
                     . '</span> (<span class="t3js-table-total-items">' . $this->totalItems . '</span>)';
@@ -500,8 +500,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             $rowOutput = '';
             if (!$listOnlyInSingleTableMode || $this->table) {
                 // Fixing an order table for sortby tables
-                $this->currentTable = array();
-                $currentIdList = array();
+                $this->currentTable = [];
+                $currentIdList = [];
                 $doSort = ($tableConfig['ctrl']['sortby'] && !$this->sortField);
                 $prevUid = 0;
                 $prevPrevUid = 0;
@@ -513,7 +513,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                     $prevUid = $row['uid'];
                 }
 
-                $accRows = array();
+                $accRows = [];
                 // Accumulate rows here
                 while (($row = $db->sql_fetch_assoc($result))) {
                     if (!$this->isRowListingConditionFulfilled($table, $row)) {
@@ -544,8 +544,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 }
 
                 // Render items:
-                $this->CBnames = array();
-                $this->duplicateStack = array();
+                $this->CBnames = [];
+                $this->duplicateStack = [];
                 $this->eCounter = $this->firstElementNumber;
                 $cc = 0;
                 foreach ($accRows as $row) {
@@ -674,7 +674,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
     {
         $tableControl = ConfigurationUtility::getInstance()->getTcaValue($table . '.ctrl');
 
-        $hookObjectsArr = array();
+        $hookObjectsArr = [];
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'] as
                      $classRef) {
@@ -707,7 +707,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         // Adding search constraints:
         $search = $this->makeSearchString($table, $id);
         // Compiling query array:
-        $queryParts = array(
+        $queryParts = [
             'SELECT' => $fieldList,
             'FROM' => $table . $this->joinTables[$table],
             'WHERE' => $this->pidSelect .
@@ -719,7 +719,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             'GROUPBY' => '',
             'ORDERBY' => $this->getDatabaseConnection()->stripOrderBy($orderBy),
             'LIMIT' => $limit,
-        );
+        ];
         // Filter out records that are translated, if TSconfig mod.web_list.hideTranslations is set
         if ((
                 in_array($table, GeneralUtility::trimExplode(',', $this->hideTranslations))
@@ -732,12 +732,12 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         // Apply hook as requested in http://forge.typo3.org/issues/16634
         foreach ($hookObjectsArr as $hookObj) {
             if (method_exists($hookObj, 'makeQueryArray_post')) {
-                $parameter = array(
+                $parameter = [
                     'orderBy' => $orderBy,
                     'limit' => $limit,
                     'pC' => $pC,
                     'search' => $search,
-                );
+                ];
                 $hookObj->makeQueryArray_post($queryParts, $this, $table, $id, $addWhere, $fieldList, $parameter);
             }
         }
@@ -811,7 +811,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                     if ($this->oddColumnsCssClass && $ccount % 2 == 0) {
                         $cssClass = implode(
                             ' ',
-                            array($this->addElement_tdCssClass[$lastKey], $this->oddColumnsCssClass)
+                            [$this->addElement_tdCssClass[$lastKey], $this->oddColumnsCssClass]
                         );
                     }
                     $out .= '
@@ -836,7 +836,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         if ($lastKey) {
             $cssClass = $this->addElement_tdCssClass[$lastKey];
             if ($this->oddColumnsCssClass) {
-                $cssClass = implode(' ', array($this->addElement_tdCssClass[$lastKey], $this->oddColumnsCssClass));
+                $cssClass = implode(' ', [$this->addElement_tdCssClass[$lastKey], $this->oddColumnsCssClass]);
             }
             $out .= '
 				<' . $colType . $noWrap . ' class="' . $cssClass . '"' . $colsp . $this->addElement_tdParams[$lastKey]
@@ -865,7 +865,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         $tableConfig = ConfigurationUtility::getInstance()->getTcaValue($table);
 
         // Init:
-        $theData = array();
+        $theData = [];
         $icon = '';
         // Traverse the fields:
         foreach ($this->fieldArray as $fCol) {
@@ -901,7 +901,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                         break;
                     }
                     // Clipboard:
-                    $cells = array();
+                    $cells = [];
                     // If there are elements on the clipboard for this table, and the parent page is not locked by
                     // editlock then display the "paste into" icon:
                     $elFromTable = $this->clipObj->elFromTable($table);
@@ -1000,7 +1000,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                                         'new_content_element';
                                 $newContentWizScriptPath = BackendUtility::getModuleUrl(
                                     $newContentElementWizard,
-                                    array('id' => $this->id)
+                                    ['id' => $this->id]
                                 );
 
                                 $onClick = 'return jumpExt(' . GeneralUtility::quoteJSvalue($newContentWizScriptPath)
@@ -1155,10 +1155,10 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         if (ExtensionManagementUtility::isLoaded('version') && isset($row['_ORIG_uid'])) {
             $rowUid = $row['_ORIG_uid'];
         }
-        $cells = array(
-            'primary' => array(),
-            'secondary' => array()
-        );
+        $cells = [
+            'primary' => [],
+            'secondary' => []
+        ];
 
         // If the listed table is 'tx_commerce_categories' we have to request the permission settings for each page:
         $localCalcPerms = 0;
@@ -1261,7 +1261,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         // If the table is NOT a read-only table, then show these links:
         if ($this->isEditable($table)) {
             // "Revert" link (history/undo)
-            $moduleUrl = BackendUtility::getModuleUrl('record_history', array('element' => $table . ':' . $row['uid']));
+            $moduleUrl = BackendUtility::getModuleUrl('record_history', ['element' => $table . ':' . $row['uid']]);
             $onClick = 'return jumpExt(' . GeneralUtility::quoteJSvalue($moduleUrl) . ',\'#latest\');';
             $historyAction = '<a class="btn btn-default" href="#" onclick="' . htmlspecialchars($onClick) . '" title="'
                 . $this->getLanguageService()->getLL('history', true) . '">'
@@ -1283,9 +1283,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 );
                 // If table can be versionized.
                 if (is_array($vers)) {
-                    $href = BackendUtility::getModuleUrl('web_txversionM1', array(
+                    $href = BackendUtility::getModuleUrl('web_txversionM1', [
                         'table' => $table, 'uid' => $row['uid']
-                    ));
+                    ]);
                     $versionAction = '<a class="btn btn-default" href="' . htmlspecialchars($href) . '" title="'
                         . $this->getLanguageService()->getLL('displayVersions', true) . '">'
                         . $this->iconFactory->getIcon('actions-version-page-open', Icon::SIZE_SMALL) . '</a>';
@@ -1506,7 +1506,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
          */
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks'])) {
             $stat = '';
-            $_params = array($table, $row['uid']);
+            $_params = [$table, $row['uid']];
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks'] as $_funcRef) {
                 $stat .= GeneralUtility::callUserFunction($_funcRef, $_params, $this);
             }
@@ -1588,7 +1588,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         if (!$this->getModule()->MOD_SETTINGS['clipBoard']) {
             return '';
         }
-        $cells = array();
+        $cells = [];
         $cells['pasteAfter'] = ($cells['pasteInto'] = $this->spaceIcon);
         //enables to hide the copy, cut and paste icons for localized records - doesn't make much sense to perform
         // these options for them
@@ -1614,7 +1614,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
                 $cells['copy'] = '<a class="btn btn-default" href="#" onclick="'
                     . htmlspecialchars('return jumpSelf(' . GeneralUtility::quoteJSvalue(
-                        $this->clipObj->selUrlDB($table, $row['uid'], 1, ($isSel === 'copy'), array('returnUrl' => ''))
+                        $this->clipObj->selUrlDB($table, $row['uid'], 1, ($isSel === 'copy'), ['returnUrl' => ''])
                     ) . ');')
                     . '" title="' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:cm.copy', true)
                     . '">'
@@ -1627,7 +1627,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                                 $row['uid'],
                                 0,
                                 ($isSel === 'cut'),
-                                array('returnUrl' => '')
+                                ['returnUrl' => '']
                             )
                         ) . ');')
                         . '" title="' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:cm.cut', true)
@@ -1723,12 +1723,12 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
     {
         // @todo check if still needed
         $tableControl = ConfigurationUtility::getInstance()->getTcaValue($table . '.ctrl');
-        $out = array(
+        $out = [
             0 => '',
             1 => ''
-        );
+        ];
         // Reset translations
-        $this->translations = array();
+        $this->translations = [];
 
         // Language title and icon:
         $out[0] = $this->languageFlag($row[$tableControl['languageField']]);
@@ -1799,7 +1799,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      */
     public function listURL($altId = '', $table = '-1', $exclList = '')
     {
-        $urlParameters = array();
+        $urlParameters = [];
         if (strcmp($altId, '')) {
             $urlParameters['id'] = $altId;
         } else {
@@ -1959,7 +1959,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      * @param bool $editPermission
      * @return bool
      */
-    protected function overlayEditLockPermissions($table, $row = array(), $editPermission = true)
+    protected function overlayEditLockPermissions($table, $row = [], $editPermission = true)
     {
         $tableControl = ConfigurationUtility::getInstance()->getTcaValue($table . '.ctrl');
         if ($editPermission && !$this->getBackendUserAuthentication()->isAdmin()) {

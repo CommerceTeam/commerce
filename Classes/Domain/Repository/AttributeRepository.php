@@ -58,7 +58,7 @@ class AttributeRepository extends Repository
             'sorting'
         );
 
-        $attributeValueList = array();
+        $attributeValueList = [];
         if ($database->sql_num_rows($result)) {
             while (($data = $database->sql_fetch_assoc($result))) {
                 $attributeValueList[] = (int) $data['uid'];
@@ -80,7 +80,7 @@ class AttributeRepository extends Repository
     {
         $database = $this->getDatabaseConnection();
 
-        $childAttributeList = array();
+        $childAttributeList = [];
         if ((int) $uid) {
             $result = $database->exec_SELECTquery(
                 'uid',

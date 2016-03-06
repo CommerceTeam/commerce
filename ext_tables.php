@@ -279,11 +279,9 @@ call_user_func(function ($packageKey) {
     }
 
     // Add context menu for category trees in BE
-    $GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = array(
+    $GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = [
         'name' => \CommerceTeam\Commerce\Utility\ClickmenuUtility::class,
-        'path' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($packageKey)
-            . 'Classes/Utility/ClickmenuUtility.php',
-    );
+    ];
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToInsertRecords('tx_commerce_categories');
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToInsertRecords('tx_commerce_products');

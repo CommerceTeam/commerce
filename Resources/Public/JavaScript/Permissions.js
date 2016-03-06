@@ -188,10 +188,10 @@ define(['jquery'], function($) {
 			username = username.text();
 		}
 
-		var html = $('<span/>', {
+		var html = $('<span></span>', {
 			'id': 'o_' + page
 		});
-		var aSelector = $('<a/>', {
+		var aSelector = $('<a></a>', {
 			'class': 'ug_selector changeowner',
 			'data-page': page,
 			'data-owner': $element.data('owner'),
@@ -264,17 +264,17 @@ define(['jquery'], function($) {
 		var groupname = $element.data('groupname');
 		var groupnameHtml = groupname;
 		if (typeof groupname === 'undefined') {
-			groupname = $('<span>', {
+			groupname = $('<span></span>', {
 				'class': 'not_set',
 				'text': '[not set]'
 			});
 			groupnameHtml = groupname.html();
 			groupname = groupname.text();
 		}
-		var html = $('<span/>', {
+		var html = $('<span></span>', {
 			'id': 'g_' + page
 		});
-		var aSelector = $('<a/>', {
+		var aSelector = $('<a></a>', {
 			'class': 'ug_selector changegroup',
 			'data-page': page,
 			'data-group': $element.data('group'),

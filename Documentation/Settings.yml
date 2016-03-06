@@ -4,10 +4,10 @@
 
 ---
 conf.py:
-  copyright: 2006-2015
+  copyright: 2006-2016
   project: commerce
-  version: 3.0
-  release: 3.0.0
+  version: 5.0
+  release: 5.0.0
   latex_documents:
   - - Index
     - commerce.tex

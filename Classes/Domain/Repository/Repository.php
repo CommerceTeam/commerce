@@ -284,7 +284,7 @@ class Repository
 
         $attributeUidList = false;
         if ($database->sql_num_rows($result)) {
-            $attributeUidList = array();
+            $attributeUidList = [];
             while (($returnData = $database->sql_fetch_assoc($result))) {
                 $attributeUidList[] = (int) $returnData['uid'];
             }

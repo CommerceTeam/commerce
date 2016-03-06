@@ -43,21 +43,21 @@ class ConfigurationUtility implements SingletonInterface
      *
      * @var array
      */
-    protected $extConfValueCache = array();
+    protected $extConfValueCache = [];
 
     /**
      * Values of path cache.
      *
      * @var array
      */
-    protected $configurationValueCache = array();
+    protected $configurationValueCache = [];
 
     /**
      * Values of path cache.
      *
      * @var array
      */
-    protected $tcaValueCache = array();
+    protected $tcaValueCache = [];
 
     /**
      * Instance.

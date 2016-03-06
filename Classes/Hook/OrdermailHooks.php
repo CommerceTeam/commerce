@@ -150,7 +150,7 @@ class OrdermailHooks
             \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($this->tablename)
         );
 
-        $templates = array();
+        $templates = [];
         foreach ($rows as $row) {
             $templates[] = $pageRepository->getRecordOverlay($this->tablename, $row, $orderSysLanguageUid);
         }
@@ -195,15 +195,15 @@ class OrdermailHooks
             $pluginConfig = $this->getTypoScriptFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi3'];
 
             // Mailconf for tx_commerce_div::sendMail($mailconf);
-            $mailconf = array(
-                'plain' => array(
+            $mailconf = [
+                'plain' => [
                     'content' => $this->generateMail($orderdata['order_id'], $detaildata, $this->templateCode),
-                ),
-                'html' => array(
+                ],
+                'html' => [
                     'content' => $this->generateMail($orderdata['order_id'], $detaildata, $this->templateCodeHtml),
                     'path' => '',
                     'useHtml' => ($this->templateCodeHtml) ? '1' : '',
-                ),
+                ],
                 'defaultCharset' => 'utf-8',
                 'encoding' => '8bit',
                 'attach' => '',
@@ -215,7 +215,7 @@ class OrdermailHooks
                 'replyTo' => $pluginConfig['usermail.']['from'],
                 'priority' => '3',
                 'callLocation' => 'processOrdermails',
-            );
+            ];
 
             if ($template['otherreceiver'] != '') {
                 $mailconf['recipient'] = $template['otherreceiver'];
@@ -293,9 +293,7 @@ class OrdermailHooks
     {
         $database = $this->getDatabaseConnection();
 
-        $markerArray = array(
-            '###ORDERID###' => $orderUid,
-        );
+        $markerArray = ['###ORDERID###' => $orderUid];
 
         $content = $this->cObj->getSubpart($templateCode, '###MAILCONTENT###');
 

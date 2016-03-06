@@ -191,7 +191,7 @@ class CreditCardValidationSolution
      *                                  not used in function call, all
      *                                  known cards are accepted.  Set
      *                                  it before calling the function: <br /><kbd>
-     *                                  $A = array('Visa', 'JCB');
+     *                                  $A = ['Visa', 'JCB'];
      *                                  </kbd><br />
      *                                  Known types:        <ul>
      *                                  <li> American Express    </li>

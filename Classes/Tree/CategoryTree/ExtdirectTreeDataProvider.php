@@ -105,7 +105,7 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
     public function getFilteredTree($nodeId, $nodeData, $searchFilter)
     {
         if (strval($searchFilter) === '') {
-            return array();
+            return [];
         }
         $this->initDataProvider();
         if ($nodeId === 'root') {
@@ -152,13 +152,13 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
                 true
             );
             $icon = $this->iconFactory->getIconForRecord($table, [], Icon::SIZE_SMALL)->render();
-            $output[] = array(
+            $output[] = [
                 'nodeType' => $table,
                 'cls' => 'commerce-categorytree-topPanel-button',
                 'html' => $icon,
                 'title' => $label,
                 'tooltip' => $label
-            );
+            ];
         }
         return $output;
     }
@@ -173,10 +173,10 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
         /** @var $indicatorProvider \TYPO3\CMS\Backend\Tree\Pagetree\Indicator */
         $indicatorProvider = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\Indicator::class);
         $indicatorHtmlArr = $indicatorProvider->getAllIndicators();
-        $indicator = array(
+        $indicator = [
             'html' => implode(' ', $indicatorHtmlArr),
             '_COUNT' => count($indicatorHtmlArr)
-        );
+        ];
         return $indicator;
     }
 
@@ -192,8 +192,8 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
         $file = 'LLL:EXT:lang/locallang_core.xlf:';
         $backendFile = 'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:';
         $indicators = $this->getIndicators();
-        $configuration = array(
-            'LLL' => array(
+        $configuration = [
+            'LLL' => [
                 'copyHint' => $lang->sL($file . 'tree.copyHint', true),
                 'fakeNodeHint' => $lang->sL($file . 'mess.please_wait', true),
                 'activeFilterMode' => $lang->sL($file . 'tree.activeFilterMode', true),
@@ -208,8 +208,8 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
                 'deleteDialogTitle' => $lang->sL($backendFile . 'deleteItem', true),
                 'deleteDialogMessage' => $lang->sL($backendFile . 'deleteWarning', true),
                 'recursiveDeleteDialogMessage' => $lang->sL($backendFile . 'recursiveDeleteWarning', true)
-            ),
-            'Configuration' => array(
+            ],
+            'Configuration' => [
                 'hideFilter' => $backendUser->getTSConfigVal('options.pageTree.hideFilter'),
                 'displayDeleteConfirmation' => $backendUser->jsConfirmation(JsConfirmation::DELETE),
                 'canDeleteRecursivly' => $backendUser->uc['recursiveDelete'] == true,
@@ -218,8 +218,8 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
                 ),
                 'indicator' => $indicators['html'],
                 'temporaryMountPoint' => Commands::getMountPointPath()
-            ),
-            'Icons' => array(
+            ],
+            'Icons' => [
                 'InputClear' => $this->iconFactory->getIcon('actions-input-clear', Icon::SIZE_SMALL)->render('inline'),
                 'Close' => $this->iconFactory->getIcon('actions-close', Icon::SIZE_SMALL)->render('inline'),
                 'TrashCan' => $this->iconFactory->getIcon('actions-edit-delete', Icon::SIZE_SMALL)->render('inline'),
@@ -231,8 +231,8 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
                 'NewNode' => $this->iconFactory->getIcon('actions-page-new', Icon::SIZE_SMALL)->render('inline'),
                 'Filter' => $this->iconFactory->getIcon('actions-filter', Icon::SIZE_SMALL)->render('inline'),
                 'Refresh' => $this->iconFactory->getIcon('actions-refresh', Icon::SIZE_SMALL)->render('inline')
-            )
-        );
+            ]
+        ];
         return $configuration;
     }
 

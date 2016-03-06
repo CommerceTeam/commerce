@@ -28,17 +28,17 @@ class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\Addit
      *
      * @var array
      */
-    protected $submittedData = array();
+    protected $submittedData = [];
 
     /**
      * Aggregation.
      *
      * @var array
      */
-    protected $aggregation = array(
+    protected $aggregation = [
         'completeAggregation' => 'tx_commerce_task_statistictask.completeAggregation',
         'incrementalAggregation' => 'tx_commerce_task_statistictask.incrementalAggregation',
-    );
+    ];
 
     /**
      * Add a multi select box with all available cache backends.
@@ -55,7 +55,7 @@ class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\Addit
         $this->submittedData = $taskInfo;
         $uid = $this->getTaskUid();
 
-        $additionalFields = array();
+        $additionalFields = [];
 
         // Initialize selected fields
         if (empty($taskInfo[$uid]['commerce_statisticTask_aggregation'])) {
@@ -77,14 +77,14 @@ class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\Addit
             $taskInfo[$uid]['commerce_statisticTask_aggregation']
         );
 
-        $additionalFields[$fieldId] = array(
+        $additionalFields[$fieldId] = [
             'code' => $fieldHtml,
             'label' =>
                 'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:'
                 . 'tx_commerce_task_statistictask.selectAggregation',
             'cshKey' => '_MOD_tools_commerce',
             'cshLabel' => $fieldId,
-        );
+        ];
 
         return $additionalFields;
     }
@@ -141,7 +141,7 @@ class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\Addit
      */
     protected function renderOptions($fieldName, $fieldId, array $valuesAndLabels, $selectedValue)
     {
-        $options = array();
+        $options = [];
 
         foreach ($valuesAndLabels as $value => $label) {
             $selected = $value == $selectedValue ? ' selected="selected"' : '';

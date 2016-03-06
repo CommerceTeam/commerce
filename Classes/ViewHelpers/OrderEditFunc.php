@@ -63,7 +63,7 @@ class OrderEditFunc
      *
      * @var array
      */
-    protected $MOD_SETTINGS = array();
+    protected $MOD_SETTINGS = [];
 
     /**
      * Article order_id
@@ -133,7 +133,7 @@ class OrderEditFunc
          */
 
         // @todo TS config of fields in list
-        $fieldRows = array('amount', 'title', 'article_number', 'price_net', 'price_gross');
+        $fieldRows = ['amount', 'title', 'article_number', 'price_net', 'price_gross'];
 
         /*
          * Taken from class.db_list_extra.php
@@ -159,7 +159,7 @@ class OrderEditFunc
         );
         $orderArticles = $orderArticleRepository->findByOrderIdInPage($orderId, $orderStoragePid);
 
-        $sum = array();
+        $sum = [];
         $out = '';
         if (!empty($orderArticles)) {
             /*
@@ -226,17 +226,17 @@ class OrderEditFunc
                  */
                 $iOut .= '<tr>';
                 foreach ($fieldRows as $field) {
-                    $wrap = array('', '');
+                    $wrap = ['', ''];
                     switch ($field) {
                         case $titleCol:
                             $iOut .= '<td>';
                             if ($orderEditable) {
                                 $params = '&edit[' . $orderArticleTable . '][' . $row['uid'] . ']=edit';
-                                $wrap = array(
+                                $wrap = [
                                     '<a href="#" onclick="' .
                                     htmlspecialchars(BackendUtility::editOnClick($params)) . '">',
                                     '</a>',
-                                );
+                                ];
                             }
                             break;
 
@@ -248,11 +248,11 @@ class OrderEditFunc
                                 $onclickAction = 'onclick="' .
                                     htmlspecialchars(BackendUtility::editOnClick($params)) .
                                     '"';
-                                $wrap = array(
+                                $wrap = [
                                     '<b><a href="#" ' . $onclickAction . '>' .
                                     IconUtility::getSpriteIcon('actions-document-open'),
                                     '</a></b>',
-                                );
+                                ];
                             }
                             break;
 
@@ -314,10 +314,10 @@ class OrderEditFunc
              * Update sum_price_net and sum_price_gross
              * To Be shure everything is ok
              */
-            $values = array(
+            $values = [
                 'sum_price_gross' => $sum['price_gross_value'] * 100,
                 'sum_price_net' => $sum['price_net_value'] * 100
-            );
+            ];
             /**
              * Order repository.
              *
@@ -359,7 +359,7 @@ class OrderEditFunc
         /*
          * Create a new data item array
          */
-        $data['items'] = array();
+        $data['items'] = [];
 
         // Find the right pid for the Ordersfolder
         $orderPid = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid();
@@ -377,7 +377,7 @@ class OrderEditFunc
         $localOrderPid = $data['row']['pid'];
 
         $rootline = BackendUtility::BEgetRootLine($localOrderPid);
-        $rootlinePids = array();
+        $rootlinePids = [];
         foreach ($rootline as $pages) {
             if (isset($pages['uid'])) {
                 $rootlinePids[] = $pages['uid'];
@@ -431,7 +431,7 @@ class OrderEditFunc
     {
         $parameter['itemFormElValue'] = date('d.m.y', $parameter['itemFormElValue']);
 
-        return $fObj->getSingleField_typeNone_render(array(), $parameter['itemFormElValue']);
+        return $fObj->getSingleField_typeNone_render([], $parameter['itemFormElValue']);
     }
 
     /**
@@ -493,13 +493,10 @@ class OrderEditFunc
             $onclickAction = 'onclick="' .
                 htmlspecialchars(BackendUtility::editOnClick($params)) .
                 '"';
-            $headerWrap = array(
-                '<b><a href="#" ' . $onclickAction . '>',
-                '</a></b>',
-            );
+            $headerWrap = ['<b><a href="#" ' . $onclickAction . '>', '</a></b>'];
             $content .= $doc->getHeader($table, $data, 'Local Lang definition is missing', 1, $headerWrap);
 
-            $display = array();
+            $display = [];
             $showRecordFieldList = ConfigurationUtility::getInstance()
                 ->getTcaValue($table . '.interface.showRecordFieldList');
             foreach ($data as $key => $value) {
@@ -513,19 +510,19 @@ class OrderEditFunc
                      * Get The label
                      */
                     $translatedLabel = $this->getLanguageService()->sL(BackendUtility::getItemLabel($table, $key));
-                    $display[$key] = array($translatedLabel, htmlspecialchars($value));
+                    $display[$key] = [$translatedLabel, htmlspecialchars($value)];
                 }
             }
 
-            $tableLayout = array(
-                'table' => array('<table>', '</table>'),
-                'defRowEven' => array(
-                    'defCol' => array('<td>', '</td>'),
-                ),
-                'defRowOdd' => array(
-                    'defCol' => array('<td>', '</td>'),
-                ),
-            );
+            $tableLayout = [
+                'table' => ['<table>', '</table>'],
+                'defRowEven' => [
+                    'defCol' => ['<td>', '</td>'],
+                ],
+                'defRowOdd' => [
+                    'defCol' => ['<td>', '</td>'],
+                ],
+            ];
             $content .= $doc->table($display, $tableLayout);
         }
 

@@ -40,14 +40,14 @@ class FeuserAddressFieldmapper
      *
      * @var array
      */
-    protected $feuserFields = array();
+    protected $feuserFields = [];
 
     /**
      * Address fields.
      *
      * @var array
      */
-    protected $addressFields = array();
+    protected $addressFields = [];
 
     /**
      * Constructor.

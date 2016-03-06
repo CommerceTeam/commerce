@@ -67,7 +67,7 @@ class ListController extends BaseController
      *
      * @var array
      */
-    public $category_array = array();
+    public $category_array = [];
 
     /**
      * Template folder.
@@ -81,7 +81,7 @@ class ListController extends BaseController
      *
      * @var array
      */
-    public $markerArray = array();
+    public $markerArray = [];
 
     /**
      * Do not make protected to be able to handle
@@ -96,7 +96,7 @@ class ListController extends BaseController
      *
      * @var array
      */
-    public $product_array = array();
+    public $product_array = [];
 
     /**
      * Inits the main params for using in the script.
@@ -105,7 +105,7 @@ class ListController extends BaseController
      *
      * @return void
      */
-    public function init(array $conf = array())
+    public function init(array $conf = [])
     {
         parent::init($conf);
 
@@ -449,8 +449,8 @@ class ListController extends BaseController
         // Get the template
         $this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 
-        $this->template = array();
-        $this->markerArray = array();
+        $this->template = [];
+        $this->markerArray = [];
 
         switch ($this->handle) {
             case 'singleView':
@@ -465,14 +465,14 @@ class ListController extends BaseController
                 $this->content = $this->cObj->substituteMarkerArray($this->content, $this->languageMarker);
                 $this->content = $this->cObj->substituteMarkerArray(
                     $this->content,
-                    $this->addFormMarker(array()),
+                    $this->addFormMarker([]),
                     '###|###',
                     1
                 );
                 $this->getFrontendUser()->setKey(
                     'ses',
                     'tx_commerce_lastproducturl',
-                    $this->pi_linkTP_keepPIvars_url(array(), 1)
+                    $this->pi_linkTP_keepPIvars_url([], 1)
                 );
                 break;
 
@@ -521,10 +521,10 @@ class ListController extends BaseController
             $this->product->loadData();
 
             if ($this->product->isAccessible()) {
-                $this->selectAttributes = $this->product->getAttributes(array(ATTRIB_SELECTOR));
-                $this->product_attributes = $this->product->getAttributes(array(ATTRIB_PRODUCT));
-                $this->can_attributes = $this->product->getAttributes(array(ATTRIB_CAN));
-                $this->shall_attributes = $this->product->getAttributes(array(ATTRIB_SHAL));
+                $this->selectAttributes = $this->product->getAttributes([ATTRIB_SELECTOR]);
+                $this->product_attributes = $this->product->getAttributes([ATTRIB_PRODUCT]);
+                $this->can_attributes = $this->product->getAttributes([ATTRIB_CAN]);
+                $this->shall_attributes = $this->product->getAttributes([ATTRIB_SHAL]);
                 $this->product_array = $this->product->returnAssocArray();
 
                 // Check if the product was inserted as plugin on a page,
@@ -543,7 +543,7 @@ class ListController extends BaseController
                 $this->getFrontendController()->fe_user->setKey(
                     'ses',
                     'tx_commerce_lastproducturl',
-                    $this->pi_linkTP_keepPIvars_url(array(), 1)
+                    $this->pi_linkTP_keepPIvars_url([], 1)
                 );
                 $result = true;
             } else {
@@ -622,7 +622,7 @@ class ListController extends BaseController
         if ($categoryLinkContent) {
             $link = $this->pi_linkTP(
                 $categoryLinkContent,
-                array('tx_commerce_pi1[catUid]' => $category->getUid()),
+                ['tx_commerce_pi1[catUid]' => $category->getUid()],
                 true
             );
         } else {
@@ -693,7 +693,7 @@ class ListController extends BaseController
             );
         }
 
-        $markerArray = array();
+        $markerArray = [];
         foreach ($hooks as $hookObj) {
             if (method_exists($hookObj, 'additionalMarker')) {
                 $markerArray = $hookObj->additionalMarker($markerArray, $this);
@@ -733,9 +733,9 @@ class ListController extends BaseController
             $template = $this->templateCode;
         }
 
-        $templateMarker = array();
-        $templateMarkerNostock = array();
-        $templateMarkerMoreThanMax = array();
+        $templateMarker = [];
+        $templateMarkerNostock = [];
+        $templateMarkerMoreThanMax = [];
         if (is_array($templateMarkerArray)) {
             foreach ($templateMarkerArray as $v) {
                 $templateMarker[] = '###' . strtoupper($v) . '###';
@@ -758,7 +758,7 @@ class ListController extends BaseController
         }
 
         $content = '';
-        $markerArray = array();
+        $markerArray = [];
         if ($product->getRenderMaxArticles() > $product->getArticlesCount()) {
             // Only if the number of articles is smaller than defined
             $templateAttrSelectorDropdown = $this->cObj->getSubpart(
@@ -780,7 +780,7 @@ class ListController extends BaseController
 
             $templateCount = count($templateMarker);
 
-            $templateAttr = array();
+            $templateAttr = [];
             if (is_array($this->conf['templateMarker.'][$viewKind . '_selectAttributes.'])) {
                 foreach ($this->conf['templateMarker.'][$viewKind . '_selectAttributes.'] as $oneMarker) {
                     $templateMarkerAttr = '###' . strtoupper($oneMarker) . '###';
@@ -805,7 +805,7 @@ class ListController extends BaseController
 
             // Parse piVars for values and names of selected attributes
             // define $arrAttSubmit for finding the right article later
-            $arrAttSubmit = array();
+            $arrAttSubmit = [];
             foreach ($this->piVars as $key => $val) {
                 if (strstr($key, 'attsel_') && $val) {
                     // set only if it is the selected product - for listing mode
@@ -827,7 +827,7 @@ class ListController extends BaseController
             if ($this->conf['allArticles'] || $count == 1) {
                 for ($i = 0; $i < $count; ++$i) {
                     $attributeArray = $product->getAttributeMatrix(
-                        array($product->getArticleUid($i)),
+                        [$product->getArticleUid($i)],
                         $this->selectAttributes,
                         $showHiddenValues
                     );
@@ -918,7 +918,7 @@ class ListController extends BaseController
                     $content .= $this->cObj->substituteMarkerArray($templateAttributes, $markerArray, '###|###', 1);
                 }
             } else {
-                $sortedAttributeArray = array();
+                $sortedAttributeArray = [];
                 $i = 0;
                 foreach ($arrAttSubmit as $attrUid => $attrValUid) {
                     $sortedAttributeArray[$i]['AttributeUid'] = $attrUid;
@@ -929,8 +929,8 @@ class ListController extends BaseController
                 $artId = array_shift($product->getArticlesByAttributeArray($sortedAttributeArray));
                 $attCode = '';
                 if (is_array($attributeMatrix)) {
-                    $getVarList = array('catUid', 'showUid', 'pointer');
-                    $getVars = array();
+                    $getVarList = ['catUid', 'showUid', 'pointer'];
+                    $getVars = [];
                     foreach ($getVarList as $getVar) {
                         if (isset($this->piVars[$getVar])) {
                             $getVars[$this->prefixId . '[' . $getVar . ']'] = $this->piVars[$getVar];
@@ -940,12 +940,12 @@ class ListController extends BaseController
                     $getVars['commerce_pi1_user_int'] = 1;
 
                     $actionUrl = $this->cObj->typoLink_URL(
-                        array(
+                        [
                             'parameter' => $GLOBALS['TSFE']->id,
                             'additionalParams' => GeneralUtility::implodeArrayForUrl('', $getVars),
                             'useCacheHash' => 1,
                             'section' => 'attList_' . $product->getUid(),
-                        )
+                        ]
                     );
 
                     $attCode = '<form name="attList_' . $product->getUid() . '" id="attList_' . $product->getUid() .
@@ -955,7 +955,7 @@ class ListController extends BaseController
                         '_changed]" id="attList_' . $product->getUid() . '_changed" value="1" />' .
                         '<input type="hidden" name="tx_commerce_pi1[catUid]" value="' . $this->piVars['catUid'] .
                         '" />';
-                    $markerArray = array();
+                    $markerArray = [];
                     foreach ($attributeMatrix as $attrUid => $values) {
                         /**
                          * Attribute.
@@ -1125,7 +1125,7 @@ class ListController extends BaseController
             $markerArray['LINKTOPRODUCT'] = $this->cObj->typoLink($this->pi_getLL('lang_toproduct'), $typoLinkConf);
             $content = $this->cObj->substituteMarkerArray($localContent, $markerArray, '###|###', 1);
 
-            $markerArray = array();
+            $markerArray = [];
             foreach ($hooks as $hookObj) {
                 if (method_exists($hookObj, 'additionalMarkerMakeArticleView')) {
                     $markerArray = (array) $hookObj->additionalMarkerMakeArticleView($markerArray, $product, $this);

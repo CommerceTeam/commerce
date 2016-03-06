@@ -34,7 +34,7 @@ class SystemdataSupplierModuleFunctionController extends AbstractFunctionModule
     /**
      * @var array
      */
-    protected $referenceCount = array();
+    protected $referenceCount = [];
 
     /**
      * Initialize the object

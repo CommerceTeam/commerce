@@ -34,7 +34,7 @@ class UpdateUtility
      */
     public function main()
     {
-        $htmlCode = array();
+        $htmlCode = [];
 
         $htmlCode[] = 'This updates were performed successfully:
 			<ul>';
@@ -86,12 +86,12 @@ class UpdateUtility
             ) AND tx_commerce_categories.deleted = 0'
         );
         while (($row = $database->sql_fetch_assoc($result))) {
-            $data = array(
+            $data = [
                 'uid_local' => $row['uid'],
                 'uid_foreign' => 0,
                 'tablenames' => '',
                 'sorting' => 99,
-            );
+            ];
 
             $database->exec_INSERTquery('tx_commerce_categories_parent_category_mm', $data);
             ++$countRecords;
@@ -146,22 +146,22 @@ class UpdateUtility
 
         $result = $database->exec_SELECTquery('uid', 'be_users', 'username = \'_fe_commerce\'');
         if (!$database->sql_num_rows($result)) {
-            $data = array(
+            $data = [
                 'pid' => 0,
                 'username' => '_fe_commerce',
                 'password' => 'MD5(RAND())',
                 'tstamp' => $GLOBALS['EXEC_TIME'],
                 'crdate' => $GLOBALS['EXEC_TIME'],
-            );
+            ];
 
             $database->exec_INSERTquery(
                 'be_users',
                 $data,
-                array(
+                [
                     'password',
                     'tstamp',
                     'crdate',
-                )
+                ]
             );
             $userId = $this->getDatabaseConnection()->sql_insert_id();
         }

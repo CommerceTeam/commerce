@@ -29,7 +29,7 @@ class TceformsUtility
      *
      * @param array $data Data
      */
-    public function productsSelector(array &$data = array())
+    public function productsSelector(array &$data = [])
     {
         $database = $this->getDatabaseConnection();
 
@@ -48,9 +48,9 @@ class TceformsUtility
             'tx_commerce_products.title,tx_commerce_products.uid, tx_commerce_products.sys_language_uid',
             'tx_commerce_products.title,tx_commerce_products.sys_language_uid'
         );
-        $data['items'] = array();
-        $items = array();
-        $items[] = array('', -1);
+        $data['items'] = [];
+        $items = [];
+        $items[] = ['', -1];
         while (($rowProducts = $database->sql_fetch_assoc($resProducts))) {
             // Select Languages
             $language = '';
@@ -83,8 +83,8 @@ class TceformsUtility
                 if ($resArticles) {
                     $rowCount = $database->sql_num_rows($resArticles);
                     $count = 0;
-                    $eancodes = array();
-                    $ordernumbers = array();
+                    $eancodes = [];
+                    $ordernumbers = [];
 
                     while (($rowArticles = $database->sql_fetch_assoc($resArticles))
                         && ($count < $numArticleNumbersShow)
@@ -136,7 +136,7 @@ class TceformsUtility
                 }
             }
 
-            $items[] = array($title, $rowProducts['uid']);
+            $items[] = [$title, $rowProducts['uid']];
         }
         $database->sql_free_result($resProducts);
 

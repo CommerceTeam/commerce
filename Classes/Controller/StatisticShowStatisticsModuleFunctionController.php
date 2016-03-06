@@ -24,7 +24,7 @@ class StatisticShowStatisticsModuleFunctionController extends AbstractFunctionMo
         if ($this->pObj->id != $orderPageId) {
             $whereClause = 'pid = ' . $this->pObj->id;
         }
-        $weekdays = array(
+        $weekdays = [
             $language->getLL('sunday'),
             $language->getLL('monday'),
             $language->getLL('tuesday'),
@@ -32,7 +32,7 @@ class StatisticShowStatisticsModuleFunctionController extends AbstractFunctionMo
             $language->getLL('thursday'),
             $language->getLL('friday'),
             $language->getLL('saturday'),
-        );
+        ];
 
         $tables = '';
         if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('show')) {
@@ -49,7 +49,7 @@ class StatisticShowStatisticsModuleFunctionController extends AbstractFunctionMo
                 $whereClause,
                 'day'
             );
-            $daystat = array();
+            $daystat = [];
             while (($statRow = $database->sql_fetch_assoc($statResult))) {
                 $daystat[$statRow['day']] = $statRow;
             }
@@ -86,7 +86,7 @@ class StatisticShowStatisticsModuleFunctionController extends AbstractFunctionMo
                 'dow'
             );
 
-            $daystat = array();
+            $daystat = [];
             while (($statRow = $database->sql_fetch_assoc($statResult))) {
                 $daystat[$statRow['dow']] = $statRow;
             }
@@ -112,7 +112,7 @@ class StatisticShowStatisticsModuleFunctionController extends AbstractFunctionMo
                 'hour'
             );
 
-            $daystat = array();
+            $daystat = [];
             while (($statRow = $database->sql_fetch_assoc($statResult))) {
                 $daystat[$statRow['hour']] = $statRow;
             }

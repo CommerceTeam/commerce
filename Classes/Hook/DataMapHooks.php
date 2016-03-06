@@ -42,7 +42,7 @@ class DataMapHooks
      *
      * @var array
      */
-    protected $catList = array();
+    protected $catList = [];
 
     /**
      * Unsubstituted id.
@@ -172,7 +172,7 @@ class DataMapHooks
     {
         $categories = array_diff(
             GeneralUtility::trimExplode(',', $incomingFieldArray['parent_category'], true),
-            array($id)
+            [$id]
         );
 
         $incomingFieldArray['parent_category'] = !empty($categories) ? implode(',', $categories) : null;
@@ -273,7 +273,7 @@ class DataMapHooks
 
             // create the different prices
             for ($myScaleCounter = 1; $myScaleCounter <= $pricesCount; ++$myScaleCounter) {
-                $insertArr = array(
+                $insertArr = [
                     'pid' => $productPid,
                     'tstamp' => $GLOBALS['EXEC_TIME'],
                     'crdate' => $GLOBALS['EXEC_TIME'],
@@ -281,7 +281,7 @@ class DataMapHooks
                     'fe_group' => $incomingFieldArray['create_new_scale_prices_fe_group'],
                     'price_scale_amount_start' => $myScaleAmountStart,
                     'price_scale_amount_end' => $myScaleAmountEnd,
-                );
+                ];
 
                 $this->getDatabaseConnection()->exec_INSERTquery('tx_commerce_article_prices', $insertArr);
 
@@ -396,10 +396,10 @@ class DataMapHooks
                             );
                         }
                     } else {
-                        $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array(
+                        $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, [
                             $database->sql_error(),
                             $table . ':' . $id
-                        ));
+                        ]);
                     }
                     $order['pid'] = $incomingFieldArray['newpid'];
                     $order['tstamp'] = $GLOBALS['EXEC_TIME'];
@@ -413,10 +413,10 @@ class DataMapHooks
                     }
                 }
             } else {
-                $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array(
+                $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, [
                     $database->sql_error(),
                     $table . ':' . $id
-                ));
+                ]);
             }
         }
 
@@ -440,7 +440,7 @@ class DataMapHooks
         $orderIdResult = $database->exec_SELECTquery('order_id', $table, 'uid = ' . (int) $id);
         if (!$database->sql_error()) {
             list($orderId) = $database->sql_fetch_row($orderIdResult);
-            $sum = array('sum_price_gross' => 0, 'sum_price_net' => 0);
+            $sum = ['sum_price_gross' => 0, 'sum_price_net' => 0];
 
             $orderArticles = $database->exec_SELECTquery(
                 '*',
@@ -456,10 +456,10 @@ class DataMapHooks
                     $sum['sum_price_net'] += $orderArticle['amount'] * $orderArticle['price_gross'];
                 }
             } else {
-                $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array(
+                $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, [
                     $database->sql_error(),
                     $table . ':' . $id
-                ));
+                ]);
             }
 
             $database->exec_UPDATEquery(
@@ -468,16 +468,16 @@ class DataMapHooks
                 $sum
             );
             if ($database->sql_error()) {
-                $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array(
+                $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, [
                     $database->sql_error(),
                     $table . ':' . $id
-                ));
+                ]);
             }
         } else {
-            $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, array(
+            $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, [
                 $database->sql_error(),
                 $table . ':' . $id
-            ));
+            ]);
         }
     }
 
@@ -495,7 +495,7 @@ class DataMapHooks
             // get all parent categories, excluding this
             $this->belib->getParentCategoriesFromList($this->catList);
 
-            $correlationTypes = array();
+            $correlationTypes = [];
             // get all correlation types from flexform thats was created by dynaflex!
             if (is_array($incomingFieldArray)
                 && isset($incomingFieldArray['attributes'])
@@ -510,16 +510,16 @@ class DataMapHooks
                 $correlationTypes = $incomingFieldArray['attributes']['data']['sDEF']['lDEF'];
             }
 
-            $usedAttributes = array();
+            $usedAttributes = [];
 
             foreach ($correlationTypes as $key => $data) {
-                $keyData = array();
+                $keyData = [];
                 $this->belib->getUidFromKey($key, $keyData);
                 if ($keyData[0] == 'ct') {
                     // get the attributes from the categories of this product
                     $localAttributes = explode(',', $data['vDEF']);
                     if (is_array($localAttributes)) {
-                        $validAttributes = array();
+                        $validAttributes = [];
                         foreach ($localAttributes as $localAttribute) {
                             if ($localAttribute == '') {
                                 continue;
@@ -527,7 +527,7 @@ class DataMapHooks
                             $attributeUid = $this->belib->getUidFromKey($localAttribute, $keyData);
                             if (!$this->belib->checkArray($attributeUid, $usedAttributes, 'uid_foreign')) {
                                 $validAttributes[] = $localAttribute;
-                                $usedAttributes[] = array('uid_foreign' => $attributeUid);
+                                $usedAttributes[] = ['uid_foreign' => $attributeUid];
                             }
                         }
                         $incomingFieldArray['attributes']['data']['sDEF']['lDEF'][$key]['vDEF'] = implode(
@@ -626,7 +626,7 @@ class DataMapHooks
                 $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
                 if (!$category->isPermissionSet('edit') || !$backendUserUtility->isInWebMount($category->getUid())) {
                     $pObj->newlog('You dont have the permissions to edit this category.', 1);
-                    $fieldArray = array();
+                    $fieldArray = [];
 
                     return;
                 }
@@ -668,7 +668,7 @@ class DataMapHooks
             // categories
             // check if we are allowed to remove this category from the parent categories
             // it was in before
-            $existingParents = array();
+            $existingParents = [];
 
             if ($status != 'new') {
                 // if category is existing, check if it has parent categories that were deleted
@@ -709,7 +709,7 @@ class DataMapHooks
                     $fieldArray['parent_category'] = 0;
                 } else {
                     $pObj->newlog('You have to assign a category as a parent category.', 1);
-                    $fieldArray = array();
+                    $fieldArray = [];
                 }
 
                 return;
@@ -786,7 +786,7 @@ class DataMapHooks
                     'You dont have the permissions to use any of the parent categories you chose as a parent.',
                     1
                 );
-                $fieldArray = array();
+                $fieldArray = [];
             }
 
             // make sure the category does not end up as its own parent - would lead
@@ -803,7 +803,7 @@ class DataMapHooks
                     // Make sure we did not assign self as parent category
                     if ($catUid == $id) {
                         $pObj->newlog('You cannot select this category itself as a parent category.', 1);
-                        $fieldArray = array();
+                        $fieldArray = [];
                     }
 
                     /**
@@ -830,7 +830,7 @@ class DataMapHooks
                                      Notify your admin if this error persists.',
                                 1
                             );
-                            $fieldArray = array();
+                            $fieldArray = [];
                         }
 
                         if ($cat->getUid() == $id) {
@@ -839,7 +839,7 @@ class DataMapHooks
                                     Selected Category in question: ' . $catDirect->getTitle(),
                                 1
                             );
-                            $fieldArray = array();
+                            $fieldArray = [];
                         }
 
                         $tmpParents = $cat->getParentCategories();
@@ -886,10 +886,10 @@ class DataMapHooks
             // check existing categories
             if (!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
                 $parentCategories,
-                array('editcontent')
+                ['editcontent']
             )) {
                 $pObj->newlog('You dont have the permissions to edit the product.', 1);
-                $fieldArray = array();
+                $fieldArray = [];
             }
         } else {
             // new products have to have a category
@@ -898,10 +898,10 @@ class DataMapHooks
             // remove this only if you decide to not define the l10n_mode of "categories"
             if (!trim($fieldArray['categories']) && !isset($backendUser->uc['txcommerce_copyProcess'])) {
                 $pObj->newlog('You have to specify at least 1 parent category for the product.', 1);
-                $fieldArray = array();
+                $fieldArray = [];
             }
 
-            $parentCategories = array();
+            $parentCategories = [];
         }
 
         // check new categories
@@ -913,11 +913,11 @@ class DataMapHooks
 
             if (!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
                 $newCats,
-                array('editcontent')
+                ['editcontent']
             )) {
                 $pObj->newlog('You do not have the permissions to add one or all categories you added.'.
                     GeneralUtility::uniqueList($data['categories']), 1);
-                $fieldArray = array();
+                $fieldArray = [];
             }
         }
 
@@ -942,7 +942,7 @@ class DataMapHooks
     {
         $backendUser = $this->getBackendUser();
 
-        $parentCategories = array();
+        $parentCategories = [];
 
         // Read the old parent product - skip this if we are copying or
         // overwriting an article
@@ -981,10 +981,10 @@ class DataMapHooks
         // read new assigned product
         if (!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
             $parentCategories,
-            array('editcontent')
+            ['editcontent']
         )) {
             $pObj->newlog('You dont have the permissions to edit the article.', 1);
-            $fieldArray = array();
+            $fieldArray = [];
         }
     }
 
@@ -1062,7 +1062,7 @@ class DataMapHooks
                 $catList = explode(',', $dataHandler->datamap[$table][$id]['parent_category']);
 
                 // preserve the 0 as root.
-                $preserve = array();
+                $preserve = [];
 
                 if (in_array(0, $catList)) {
                     $preserve[] = 0;
@@ -1143,7 +1143,7 @@ class DataMapHooks
             // check existing categories
             if (!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
                 $parentCategories,
-                array('editcontent')
+                ['editcontent']
             )) {
                 $dataHandler->newlog('You dont have the permissions to create a new article.', 1);
             } else {
@@ -1235,11 +1235,11 @@ class DataMapHooks
                         $database->exec_INSERTquery(
                             'tx_commerce_articles_article_attributes_mm',
                             array_merge(
-                                array(
+                                [
                                     'uid_local' => $id,
                                     'uid_foreign' => $attributeId,
                                     'sorting' => $attributeData['sorting'],
-                                ),
+                                ],
                                 $updateArrays[1]
                             )
                         );
@@ -1250,11 +1250,11 @@ class DataMapHooks
                     if (!$relCount) {
                         $database->exec_INSERTquery(
                             'tx_commerce_articles_article_attributes_mm',
-                            array(
+                            [
                                 'uid_local' => $id,
                                 'uid_foreign' => $attributeId,
                                 'sorting' => $attributeData['sorting'],
-                            )
+                            ]
                         );
                     }
                 } else {
@@ -1287,7 +1287,7 @@ class DataMapHooks
      */
     protected function saveCategoryRelations(
         $cUid,
-        array $fieldArray = array(),
+        array $fieldArray = [],
         $saveAnyway = false,
         $delete = true,
         $updateXml = true
@@ -1296,7 +1296,7 @@ class DataMapHooks
         // child categories  but only if the fieldArray has changed
         if (isset($fieldArray['attributes']) || $saveAnyway) {
             // get all parent categories ...
-            $catList = array();
+            $catList = [];
             $this->belib->getParentCategories($cUid, $catList, $cUid, 0, false);
 
             // get all correlation types
@@ -1310,10 +1310,10 @@ class DataMapHooks
             if (!empty($fieldArray['attributes'])) {
                 $ffData = (array) GeneralUtility::xml2array($fieldArray['attributes']);
             } else {
-                $ffData = array();
+                $ffData = [];
             }
             if (!is_array($ffData['data']) || !is_array($ffData['data']['sDEF'])) {
-                $ffData = array();
+                $ffData = [];
             }
 
             $this->belib->mergeAttributeListFromFFData(
@@ -1325,7 +1325,7 @@ class DataMapHooks
             );
 
             // get the list of uid_foreign and save relations for this category
-            $uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true, array('uid_correlationtype'));
+            $uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true, ['uid_correlationtype']);
             $this->belib->saveRelations($cUid, $uidList, 'tx_commerce_categories_attributes_mm', $delete, false);
 
             // update the XML structure if needed
@@ -1363,7 +1363,7 @@ class DataMapHooks
 
             // get children of this category after this operation the childList contains
             // all categories that are related to this category (recursively)
-            $childList = array();
+            $childList = [];
             $this->belib->getChildCategories($cUid, $childList, $cUid, 0, false);
 
             foreach ($childList as $childUid) {
@@ -1394,7 +1394,7 @@ class DataMapHooks
             // search for an article of this product
             $res = $database->exec_SELECTquery('*', 'tx_commerce_articles', 'uid_product = ' . $productId, '', '', 1);
 
-            $aRes = array();
+            $aRes = [];
             if ($database->sql_num_rows($res)) {
                 $aRes = $database->sql_fetch_assoc($res);
                 $aUid = $aRes['uid'];
@@ -1405,14 +1405,14 @@ class DataMapHooks
 
                 $database->exec_INSERTquery(
                     'tx_commerce_articles',
-                    array(
+                    [
                         'pid' => $fieldArray['pid'],
                         'tstamp' => $GLOBALS['EXEC_TIME'],
                         'crdate' => $GLOBALS['EXEC_TIME'],
                         'uid_product' => $productId,
                         'article_type_uid' => 1,
                         'title' => $productData['title'],
-                    )
+                    ]
                 );
                 $aUid = $database->sql_insert_id();
             }
@@ -1427,19 +1427,19 @@ class DataMapHooks
                 // create a new price if no one exists
                 $database->exec_INSERTquery(
                     'tx_commerce_article_prices',
-                    array(
+                    [
                         'pid' => $fieldArray['pid'],
                         'uid_article' => $aUid,
                         'tstamp' => $GLOBALS['EXEC_TIME'],
                         'crdate' => $GLOBALS['EXEC_TIME'],
-                    )
+                    ]
                 );
             }
         }
 
         $delete = true;
         if (isset($fieldArray['categories'])) {
-            $catList = array();
+            $catList = [];
             $res = $database->exec_SELECTquery(
                 'uid_foreign',
                 'tx_commerce_products_categories_mm',
@@ -1449,7 +1449,7 @@ class DataMapHooks
                 $catList[] = $sres['uid_foreign'];
             }
             $paList = $this->belib->getAttributesForCategoryList($catList);
-            $uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true, array('uid_correlationtype'));
+            $uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true, ['uid_correlationtype']);
 
             $this->belib->saveRelations($productId, $uidList, 'tx_commerce_products_attributes_mm', false, false);
             $this->belib->updateXML('attributes', 'tx_commerce_products', $productId, 'product', $catList);
@@ -1460,7 +1460,7 @@ class DataMapHooks
         if (isset($fieldArray['attributes'])) {
             // get all correlation types
             $correlationTypeList = $this->belib->getAllCorrelationTypes();
-            $paList = array();
+            $paList = [];
 
             // extract all attributes from FlexForm
             $ffData = GeneralUtility::xml2array($fieldArray['attributes']);
@@ -1474,10 +1474,10 @@ class DataMapHooks
                 );
             }
             // get the list of uid_foreign and save relations for this category
-            $uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true, array('uid_correlationtype'));
+            $uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true, ['uid_correlationtype']);
 
             // get all ct4 attributes
-            $ct4Attributes = array();
+            $ct4Attributes = [];
             if (is_array($uidList)) {
                 foreach ($uidList as $uidItem) {
                     if ($uidItem['uid_correlationtype'] == 4) {
@@ -1511,7 +1511,7 @@ class DataMapHooks
 
                 if (is_array($pXml['data']['sDEF']['lDEF'])) {
                     foreach (array_keys($pXml['data']['sDEF']['lDEF']) as $key) {
-                        $data = array();
+                        $data = [];
                         $uid = $this->belib->getUidFromKey($key, $data);
                         if (!in_array($uid, $ct4Attributes)) {
                             unset($pXml['data']['sDEF']['lDEF'][$key]);
@@ -1543,7 +1543,7 @@ class DataMapHooks
             }
         }
 
-        $updateArrays = array();
+        $updateArrays = [];
         // update all articles of this product
         if (!empty($fieldArray['attributesedit'])) {
             $ffData = (array) GeneralUtility::xml2array($fieldArray['attributesedit']);
@@ -1554,7 +1554,7 @@ class DataMapHooks
                 }
 
                 // update this product
-                $articleRelations = array();
+                $articleRelations = [];
                 $counter = 0;
                 foreach ($ffData['data']['sDEF']['lDEF'] as $ffDataItemKey => $ffDataItem) {
                     ++$counter;
@@ -1587,11 +1587,11 @@ class DataMapHooks
                             $database->exec_INSERTquery(
                                 'tx_commerce_products_attributes_mm',
                                 array_merge(
-                                    array(
+                                    [
                                         'uid_local' => $productId,
                                         'uid_foreign' => $attributeKey,
                                         'uid_correlationtype' => 4,
-                                    ),
+                                    ],
                                     $updateData[0]
                                 )
                             );
@@ -1636,12 +1636,12 @@ class DataMapHooks
                                     $database->exec_INSERTquery(
                                         'tx_commerce_articles_article_attributes_mm',
                                         array_merge(
-                                            array(
+                                            [
                                                 'uid_local' => $article['uid'],
                                                 'uid_foreign' => $attributeKey,
                                                 'uid_product' => $productId,
                                                 'sorting' => $counter,
-                                            ),
+                                            ],
                                             $updateData[1]
                                         )
                                     );
@@ -1649,16 +1649,16 @@ class DataMapHooks
 
                                 // create at least an empty relation if no attributes where set
                                 if ($attributeCount == 0) {
-                                    $updateData = $this->belib->getUpdateData(array(), $attributeValue, $productId);
+                                    $updateData = $this->belib->getUpdateData([], $attributeValue, $productId);
                                     $database->exec_INSERTquery(
                                         'tx_commerce_articles_article_attributes_mm',
                                         array_merge(
-                                            array(
+                                            [
                                                 'uid_local' => $article['uid'],
                                                 'uid_foreign' => $attributeKey,
                                                 'uid_product' => $productId,
                                                 'sorting' => $counter,
-                                            ),
+                                            ],
                                             $updateData[1]
                                         )
                                     );
@@ -1676,17 +1676,17 @@ class DataMapHooks
                                     $database->exec_UPDATEquery(
                                         'tx_commerce_articles_article_attributes_mm',
                                         'uid_local = ' . $article['uid'] . ' AND uid_foreign = ' . $attributeKey,
-                                        array_merge($updateArrays[1], array('sorting' => $counter))
+                                        array_merge($updateArrays[1], ['sorting' => $counter])
                                     );
                                 } else {
                                     $database->exec_INSERTquery(
                                         'tx_commerce_articles_article_attributes_mm',
-                                        array_merge($updateArrays[1], array(
+                                        array_merge($updateArrays[1], [
                                             'uid_local' => $article['uid'],
                                             'uid_product' => $productId,
                                             'uid_foreign' => $attributeKey,
                                             'sorting' => $counter,
-                                        ))
+                                        ])
                                     );
                                 }
                             }
@@ -1737,7 +1737,7 @@ class DataMapHooks
      */
     protected function singleDiffAssoc(array &$array1, array &$array2)
     {
-        $result = array();
+        $result = [];
 
         // check for each value if in array2 the index is not set or
         // the value is not equal

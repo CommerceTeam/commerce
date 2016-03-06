@@ -37,14 +37,14 @@ class WizardController
      *
      * @var array
      */
-    public $pageinfo = array();
+    public $pageinfo = [];
 
     /**
      * Pid info.
      *
      * @var array
      */
-    public $pidInfo = array();
+    public $pidInfo = [];
 
     /**
      * New content into.
@@ -58,28 +58,28 @@ class WizardController
      *
      * @var array
      */
-    public $web_list_modTSconfig = array();
+    public $web_list_modTSconfig = [];
 
     /**
      * Web list module configuration pid.
      *
      * @var array
      */
-    public $web_list_modTSconfig_pid = array();
+    public $web_list_modTSconfig_pid = [];
 
     /**
      * Allowed new tables.
      *
      * @var array
      */
-    public $allowedNewTables = array();
+    public $allowedNewTables = [];
 
     /**
      * Allowed new tables pid.
      *
      * @var array
      */
-    public $allowedNewTables_pid = array();
+    public $allowedNewTables_pid = [];
 
     /**
      * Code.
@@ -311,7 +311,7 @@ class WizardController
                         // Create new link for record:
                         $rowContent = '<span class="x-tree-ec-icon x-tree-elbow"></span>' .
                         $this->linkWrap(
-                            $this->iconFactory->getIconForRecord($table, array(), Icon::SIZE_SMALL) .
+                            $this->iconFactory->getIconForRecord($table, [], Icon::SIZE_SMALL) .
                             $language->sL(ConfigurationUtility::getInstance()->getTcaValue($table . '.ctrl.title'), 1),
                             $table,
                             $this->id
@@ -452,7 +452,7 @@ class WizardController
      * @return bool Returns true if the $table tablename is found in
      *      $allowedNewTables (or if $allowedNewTables is empty)
      */
-    protected function showNewRecLink($table, array $allowedNewTables = array())
+    protected function showNewRecLink($table, array $allowedNewTables = [])
     {
         $allowedNewTables = is_array($allowedNewTables) ? $allowedNewTables : $this->allowedNewTables;
 

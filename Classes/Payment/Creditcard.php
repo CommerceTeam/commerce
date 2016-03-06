@@ -30,7 +30,7 @@ class Creditcard extends PaymentAbstract
      *
      * @var array
      */
-    public $LOCAL_LANG = array();
+    public $LOCAL_LANG = [];
 
     /**
      * Payment type.
@@ -59,7 +59,7 @@ class Creditcard extends PaymentAbstract
 
         if ($this->parentObject->altLLkey) {
             $tempLocalLang = $languageFactory->getParsedData($basePath, $this->parentObject->altLLkey);
-            $this->LOCAL_LANG = array_merge(is_array($this->LOCAL_LANG) ? $this->LOCAL_LANG : array(), $tempLocalLang);
+            $this->LOCAL_LANG = array_merge(is_array($this->LOCAL_LANG) ? $this->LOCAL_LANG : [], $tempLocalLang);
         }
 
         if ($this->provider !== null) {
@@ -76,7 +76,7 @@ class Creditcard extends PaymentAbstract
      *
      * @return bool If data is ok true gets returned
      */
-    public function proofData(array $formData = array())
+    public function proofData(array $formData = [])
     {
         /**
          * Credit card validation service.

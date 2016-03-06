@@ -42,7 +42,7 @@ abstract class CriterionAbstract implements \CommerceTeam\Commerce\Payment\Crite
      *
      * @var array Option array from ext_localconf
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * Constructor.
@@ -52,7 +52,7 @@ abstract class CriterionAbstract implements \CommerceTeam\Commerce\Payment\Crite
      */
     public function __construct(
         \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject,
-        array $options = array()
+        array $options = []
     ) {
         $this->paymentObject = $paymentObject;
         $this->pibaseObject = $this->paymentObject->getParentObject();

@@ -50,9 +50,7 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
 
         // Perform modification of the selected items array:
         foreach ($itemsArray as $itemNumber => $itemValue) {
-            $itemArray = array(
-                0 => $itemValue['value'],
-            );
+            $itemArray = [0 => $itemValue['value']];
 
             if (isset($parameterArray['fieldTSConfig']['altIcons.'][$itemValue['uid']])) {
                 $itemArray[2] = $parameterArray['fieldTSConfig']['altIcons.'][$itemValue['uid']];
@@ -131,7 +129,7 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
         }
 
         // Pass to "dbFileIcons" function:
-        $params = array(
+        $params = [
             'size' => $size,
             'autoSizeMax' => MathUtility::forceIntegerInRange($config['autoSizeMax'], 0),
             'style' => isset($config['selectedListStyle'])
@@ -140,15 +138,15 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
             'dontShowMoveIcons' => $maxitems <= 1,
             'maxitems' => $maxitems,
             'info' => '',
-            'headers' => array(
+            'headers' => [
                 'selector' => $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.selected'),
                 'items' => $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.items'),
                 'selectorbox' => $selectBoxFilterContents,
-            ),
+            ],
             'noBrowser' => 1,
             'rightbox' => implode(LF, $itemsToSelect),
             'readOnly' => $disabled
-        );
+        ];
         $html .= $this->dbFileIcons(
             $parameterArray['itemFormElName'],
             '',
@@ -164,7 +162,7 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
         // Wizards:
         if (!$disabled) {
             $html = '<div class="commerce-categorytree-element">' . $this->renderWizards(
-                array($html),
+                [$html],
                 $config['wizards'],
                 $table,
                 $this->data['databaseRow'],

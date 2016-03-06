@@ -57,7 +57,7 @@ class BasicDaoMapper
      *
      * @var array
      */
-    protected $error = array();
+    protected $error = [];
 
     /**
      * Constructor.
@@ -155,11 +155,11 @@ class BasicDaoMapper
         // any errors
         $error = $database->sql_error();
         if (!empty($error)) {
-            $this->addError(array(
+            $this->addError([
                 $error,
                 $database->INSERTquery($this->dbTable, $dbModel),
                 '$dbModel' => $dbModel,
-            ));
+            ]);
         }
 
         // set object id
@@ -188,11 +188,11 @@ class BasicDaoMapper
         // any errors
         $error = $database->sql_error();
         if (!empty($error)) {
-            $this->addError(array(
+            $this->addError([
                 $error,
                 $database->UPDATEquery($this->dbTable, $dbWhere, $dbModel),
                 '$dbModel' => $dbModel,
-            ));
+            ]);
         }
     }
 
@@ -215,10 +215,10 @@ class BasicDaoMapper
         // any errors
         $error = $database->sql_error();
         if (!empty($error)) {
-            $this->addError(array(
+            $this->addError([
                 $error,
                 $database->DELETEquery($this->dbTable, 'uid = ' . (int) $uid),
-            ));
+            ]);
         }
 
         // remove object itself

@@ -106,21 +106,21 @@ class Wirecard
      *
      * @var array
      */
-    public $paymentData = array();
+    public $paymentData = [];
 
     /**
      * Transaction data.
      *
      * @var array
      */
-    public $transactionData = array();
+    public $transactionData = [];
 
     /**
      * User data.
      *
      * @var array
      */
-    public $userData = array();
+    public $userData = [];
 
     /**
      * Constructor.
@@ -169,10 +169,10 @@ class Wirecard
      */
     public function sendTransaction()
     {
-        $header = array(
+        $header = [
             'Authorization: Basic ' . base64_encode($this->merchantCode . ':' . $this->password . LF),
             'Content-Type: text/xml',
-        );
+        ];
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->url);
@@ -200,7 +200,7 @@ class Wirecard
         if ($this->isError()) {
             return false;
         } else {
-            return array(1);
+            return [1];
         }
     }
 

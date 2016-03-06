@@ -48,7 +48,7 @@ class Navigation
      *
      * @var array
      */
-    public $activeCats = array();
+    public $activeCats = [];
 
     /**
      * Configuration.
@@ -104,7 +104,7 @@ class Navigation
      *
      * @var array
      */
-    public $listNodes = array();
+    public $listNodes = [];
 
     /**
      * Manufacturer identifier.
@@ -125,7 +125,7 @@ class Navigation
      *
      * @var array pathParents
      */
-    public $pathParents = array();
+    public $pathParents = [];
 
     /**
      * Translation Mode for getRecordOverlay.
@@ -139,7 +139,7 @@ class Navigation
      *
      * @var array
      */
-    public $menueItemStates = array(
+    public $menueItemStates = [
         0 => 'USERDEF2',
         1 => 'USERDEF1',
         2 => 'SPC',
@@ -149,14 +149,14 @@ class Navigation
         6 => 'ACTIFSUB',
         7 => 'ACT',
         8 => 'IFSUB',
-    );
+    ];
 
     /**
      * Get and post variables.
      *
      * @var array
      */
-    public $gpVars = array();
+    public $gpVars = [];
 
     /**
      * Maximum Level for Menu, Default all PHP_INT_MAX.
@@ -261,20 +261,20 @@ class Navigation
      *
      * @var array
      */
-    protected $repositoryNames = array(
+    protected $repositoryNames = [
         'tx_commerce_categories' => \CommerceTeam\Commerce\Domain\Repository\CategoryRepository::class,
         'tx_commerce_products' => \CommerceTeam\Commerce\Domain\Repository\ProductRepository::class,
         'tx_commerce_categories_parent_category_mm' =>
             \CommerceTeam\Commerce\Domain\Repository\CategoryRepository::class,
         'tx_commerce_products_categories_mm' => \CommerceTeam\Commerce\Domain\Repository\ProductRepository::class,
-    );
+    ];
 
     /**
      * Repository stack.
      *
      * @var array
      */
-    protected $repositoryStack = array();
+    protected $repositoryStack = [];
 
     /**
      * Init Method for initialising the navigation.
@@ -331,7 +331,7 @@ class Navigation
         $this->path = $this->gpVars['path'] ? $this->gpVars['path'] : 0;
         $this->expandAll = $this->mConf['expandAll'] ? $this->mConf['expandAll'] : 0;
 
-        $menuErrorName = array();
+        $menuErrorName = [];
         if (!($this->cat > 0)) {
             $menuErrorName[] = 'No category defined in TypoScript: lib.tx_commerce.navigation.special.category';
         }
@@ -426,7 +426,7 @@ class Navigation
          * Detect rootline, necessary
          */
         if ($this->noAct === true) {
-            $this->pathParents = array();
+            $this->pathParents = [];
             $this->mDepth = 0;
         } elseif ($this->gpVars['catUid']) {
             $this->choosenCat = $this->gpVars['catUid'];
@@ -478,7 +478,7 @@ class Navigation
              * Strip the Staring point and the value 0
              */
             if (!is_array($tmpArray)) {
-                $tmpArray = array();
+                $tmpArray = [];
             }
 
             foreach ((array) $tmpArray as $value) {
@@ -503,7 +503,7 @@ class Navigation
              * If no Category is choosen by the user, so you just render the default menue
              * no rootline for the categories is needed and the depth is 0
              */
-            $this->pathParents = array();
+            $this->pathParents = [];
             $this->mDepth = 0;
         }
 
@@ -566,7 +566,7 @@ class Navigation
     {
         if ($this->mConf['groupOptions.']['onOptions'] == 1) {
             $catOptionsCount = count($this->mConf['groupOptions.']);
-            $chosenCatUid = array();
+            $chosenCatUid = [];
             for ($i = 1; $i <= $catOptionsCount; ++$i) {
                 $chosenGroups = GeneralUtility::trimExplode(',', $this->mConf['groupOptions.'][$i . '.']['group']);
                 if ($this->getFrontendUser()->user['usergroup'] == '') {
@@ -605,9 +605,9 @@ class Navigation
      */
     public function makeErrorMenu($max = 5, $mDepth = 1)
     {
-        $treeList = array();
+        $treeList = [];
         for ($i = 0; $i < $max; ++$i) {
-            $node = array(
+            $node = [
                 'pid' => $this->pid,
                 'uid' => $i,
                 'parent_id' => $i,
@@ -616,7 +616,7 @@ class Navigation
                 'hidden' => 0,
                 'title' => 'Error in the typoScript configuration.',
                 'nav_title' => 'Error in the typoScript configuration.',
-            );
+            ];
             $treeList[$i] = $node;
         }
 
@@ -674,11 +674,11 @@ class Navigation
     ) {
         $database = $this->getDatabaseConnection();
 
-        $treeList = array();
+        $treeList = [];
 
         --$maxLevel;
         if ($maxLevel < 0) {
-            return array();
+            return [];
         }
 
         $sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable .
@@ -703,7 +703,7 @@ class Navigation
         $res = $database->sql_query($sql);
 
         while (($row = $database->sql_fetch_assoc($res))) {
-            $nodeArray = array();
+            $nodeArray = [];
             $dataRow = $this->getDataRow($row['uid_local'], $mainTable);
 
             if ($dataRow['deleted'] == '0') {
@@ -746,7 +746,7 @@ class Navigation
                 }
 
                 if (in_array($row['uid_local'], $aCatToManu) || strtolower(trim($aCatToManu['0'])) == 'all') {
-                    $nodeArray['--subLevel--'] = array();
+                    $nodeArray['--subLevel--'] = [];
                     $this->arrayMerge(
                         $nodeArray['--subLevel--'],
                         $this->getManufacturerAsCategory(
@@ -764,7 +764,7 @@ class Navigation
 
                 if (!$nodeArray['leaf']) {
                     if (!is_array($nodeArray['--subLevel--'])) {
-                        $nodeArray['--subLevel--'] = array();
+                        $nodeArray['--subLevel--'] = [];
                     }
 
                     $this->arrayMerge(
@@ -892,7 +892,7 @@ class Navigation
     ) {
         $database = $this->getDatabaseConnection();
 
-        $treeList = array();
+        $treeList = [];
         $sqlManufacturer = '';
         if (is_numeric($manufacturerUid)) {
             $sqlManufacturer = ' AND ' . $mainTable . '.manufacturer_uid = ' . (int) $manufacturerUid;
@@ -918,7 +918,7 @@ class Navigation
 
         $res = $database->sql_query($sql);
         while (($row = $database->sql_fetch_assoc($res))) {
-            $nodeArray = array();
+            $nodeArray = [];
             $dataRow = $this->getDataRow($row['uid_local'], $mainTable);
             if ($dataRow['deleted'] == '0') {
                 $nodeArray['CommerceMenu'] = true;
@@ -998,7 +998,7 @@ class Navigation
      *
      * @return void
      */
-    public function processArrayPostRender(array &$treeArray, array $path = array(), $mDepth = 0)
+    public function processArrayPostRender(array &$treeArray, array $path = [], $mDepth = 0)
     {
         if ($this->gpVars['manufacturer']) {
             foreach ($treeArray as $val) {
@@ -1121,7 +1121,7 @@ class Navigation
     public function getDataRow($uid, $tableName)
     {
         if (!$uid || !$tableName) {
-            return array();
+            return [];
         }
 
         $row = $this->getRepository($this->repositoryNames[$tableName])->findByUid($uid);
@@ -1154,7 +1154,7 @@ class Navigation
             );
             $category->loadData();
             if (!$category->hasProductsInSubCategories()) {
-                return array();
+                return [];
             }
         }
 
@@ -1162,7 +1162,7 @@ class Navigation
             return $row;
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -1230,12 +1230,12 @@ class Navigation
     public function clear(array $menuArr, array $conf)
     {
         if ($menuArr[0]['CommerceMenu'] != true) {
-            $menuArr = array();
+            $menuArr = [];
         }
 
         foreach ($menuArr as $item) {
             if ($item['DO_NOT_RENDER'] == '1') {
-                $menuArr = array();
+                $menuArr = [];
             }
         }
 
@@ -1306,7 +1306,7 @@ class Navigation
             $this->category->loadData();
         }
 
-        $returnArray = array();
+        $returnArray = [];
         $returnArray = $this->getCategoryRootlineforTypoScript((int) $this->gpVars['catUid'], $returnArray);
 
         /*
@@ -1357,14 +1357,14 @@ class Navigation
                 $itemStateList = 'NO';
             }
 
-            $returnArray[] = array(
+            $returnArray[] = [
                 'uid' => $this->pid,
                 '_ADD_GETVARS' => $addGetvars . $this->separator . 'cHash=' . $cHash,
                 'ITEM_STATE' => $itemState,
                 'ITEM_STATES_LIST' => $itemStateList,
                 'title' => $product->getTitle(),
                 '_PAGES_OVERLAY' => $product->getTitle(),
-            );
+            ];
         }
 
         return $returnArray;
@@ -1379,7 +1379,7 @@ class Navigation
      *
      * @return array
      */
-    public function getCategoryRootlineforTypoScript($categoryUid, array $result = array())
+    public function getCategoryRootlineforTypoScript($categoryUid, array $result = [])
     {
         if ($categoryUid) {
             /**
@@ -1415,14 +1415,14 @@ class Navigation
                 $itemState = ($category->getUid() === $categoryUid ? 'CUR' : 'NO');
             }
 
-            $result[] = array(
+            $result[] = [
                 'uid' => $this->pid,
                 '_ADD_GETVARS' => $additionalParams . $this->separator . 'cHash=' . $cHash,
                 'ITEM_STATE' => $itemState,
                 'title' => $category->getTitle(),
                 'nav_title' => $category->getNavtitle(),
                 '_PAGES_OVERLAY' => $category->getTitle(),
-            );
+            ];
         }
 
         return $result;
@@ -1504,7 +1504,7 @@ class Navigation
      */
     public function getRootLine(array &$tree, $choosencat, $expand)
     {
-        $result = array();
+        $result = [];
 
         foreach ($tree as $key => $val) {
             if ($key == $choosencat) {
@@ -1572,7 +1572,7 @@ class Navigation
         $productRepository = $this->getRepository($this->repositoryNames[$tableSubMm]);
         $productRelations = $productRepository->findRelationByForeignUid($categoryUid);
 
-        $productUids = array();
+        $productUids = [];
         foreach ($productRelations as $mmRow) {
             $productUids[] = (int) $mmRow['uid_local'];
         }
@@ -1583,7 +1583,7 @@ class Navigation
 
         $products = $productRepository->findByUids($productUids);
 
-        $output = array();
+        $output = [];
         $firstPath = $path;
         foreach ($products as $productRow) {
             if ($productRow['manufacturer_uid'] != '0') {
@@ -1607,7 +1607,7 @@ class Navigation
                 $cHash = $this->generateChash($addGet . $this->getFrontendController()->linkVars);
                 $addGet .= $this->separator . 'cHash=' . $cHash;
 
-                $aLevel = array(
+                $aLevel = [
                     'pid' => $pid,
                     'uid' => $uidPage,
                     'title' => $manufacturerTitle,
@@ -1623,7 +1623,7 @@ class Navigation
                     '_ADD_GETVARS' => $addGet,
                     'ITEM_STATE' => 'NO',
                     'manu' => $productRow['manufacturer_uid'],
-                );
+                ];
 
                 if ($this->gpVars['manufacturer']) {
                     $this->choosenCat = $this->manufacturerIdentifier . $this->gpVars['manufacturer'];

@@ -82,9 +82,9 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
         $this->getLanguageService()->includeLLFile(
             'EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf'
         );
-        $this->MCONF = array(
+        $this->MCONF = [
             'name' => $this->moduleName,
-        );
+        ];
     }
 
     /**
@@ -159,10 +159,10 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
 
         $docHeaderButtons = $this->getButtons();
 
-        $markers = array(
+        $markers = [
             'CSH' => $docHeaderButtons['csh'],
             'CONTENT' => $this->content,
-        );
+        ];
         $markers['FUNC_MENU'] = $this->doc->funcMenu(
             '',
             \TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu(
@@ -241,7 +241,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
         $backendUser = $this->getBackendUser();
         $language = $this->getLanguageService();
 
-        $buttons = array(
+        $buttons = [
             'csh' => '',
             // group left 1
             'level_up' => '',
@@ -261,7 +261,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
             'cache' => '',
             'reload' => '',
             'shortcut' => '',
-        );
+        ];
 
         // CSH
         $buttons['csh'] = \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem('_MOD_commerce_statistic', '');
@@ -283,7 +283,7 @@ class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClas
             $buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' .
                 \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
                     'apps-filetree-folder-list',
-                    array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1))
+                    ['title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1)]
                 ) . '</a>';
         }
 

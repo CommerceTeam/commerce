@@ -48,7 +48,7 @@ class Wirecard extends ProviderAbstract
      *
      * @var string
      */
-    public $LOCAL_LANG = array();
+    public $LOCAL_LANG = [];
 
     /**
      * Payment reference id.
@@ -65,11 +65,11 @@ class Wirecard extends ProviderAbstract
      */
     public function getAdditionalFieldsConfig()
     {
-        return array(
-            'cc_type.' => array(
+        return [
+            'cc_type.' => [
                 'mandatory' => 1,
                 'type' => 'select',
-                'values.' => array(
+                'values.' => [
                     'Visa',
                     'Mastercard',
                     'Amercican Express',
@@ -79,24 +79,24 @@ class Wirecard extends ProviderAbstract
                     'VISA Carte Bancaire',
                     'Visa Electron',
                     'UATP',
-                ),
-            ),
-            'cc_number.' => array(
+                ],
+            ],
+            'cc_number.' => [
                 'mandatory' => 1,
-            ),
-            'cc_expirationYear.' => array(
+            ],
+            'cc_expirationYear.' => [
                 'mandatory' => 1,
-            ),
-            'cc_expirationMonth.' => array(
+            ],
+            'cc_expirationMonth.' => [
                 'mandatory' => 1,
-            ),
-            'cc_holder.' => array(
+            ],
+            'cc_holder.' => [
                 'mandatory' => 1,
-            ),
-            'cc_checksum.' => array(
+            ],
+            'cc_checksum.' => [
                 'mandatory' => 1,
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -112,8 +112,8 @@ class Wirecard extends ProviderAbstract
      * @return bool Check if everything was ok
      */
     public function finishingFunction(
-        array $config = array(),
-        array $session = array(),
+        array $config = [],
+        array $session = [],
         \CommerceTeam\Commerce\Domain\Model\Basket $basket = null
     ) {
         /**
@@ -131,21 +131,21 @@ class Wirecard extends ProviderAbstract
         $paymentLib->paymentmethod = 'creditcard';
         $paymentLib->paymenttype = 'cc';
 
-        $paymentLib->setPaymentData(array(
+        $paymentLib->setPaymentData([
             'kk_number' => $session['payment']['cc_number'],
             'exp_month' => $session['payment']['cc_expirationMonth'],
             'exp_year' => $session['payment']['cc_expirationYear'],
             'holder' => $session['payment']['cc_holder'],
             'cvc' => $session['payment']['cc_checksum'],
-        ));
+        ]);
 
         $parent = $this->paymentObject->getParentObject();
         $actCurrency = $parent->conf['currency'] != '' ? $parent->conf['currency'] : 'EUR';
 
-        $paymentLib->setTransactionData(array(
+        $paymentLib->setTransactionData([
             'amount' => $basket->getSumGross(),
             'currency' => $actCurrency,
-        ));
+        ]);
 
         $paymentLib->sendData = $paymentLib->getwirecardXML();
 
@@ -171,7 +171,7 @@ class Wirecard extends ProviderAbstract
      *
      * @return void
      */
-    public function updateOrder($orderUid, array $session = array())
+    public function updateOrder($orderUid, array $session = [])
     {
         // Update order that was created by checkout process
         // With credit card payment a reference ID has to be stored in field
@@ -189,7 +189,7 @@ class Wirecard extends ProviderAbstract
         );
         $orderRepository->updateByUid(
             $orderUid,
-            array('payment_ref_id' => $this->paymentRefId)
+            ['payment_ref_id' => $this->paymentRefId]
         );
     }
 }

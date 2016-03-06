@@ -80,14 +80,14 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
      *
      * @var array
      */
-    public $markers = array();
+    public $markers = [];
 
     /**
      * Reference count.
      *
      * @var array
      */
-    protected $referenceCount = array();
+    protected $referenceCount = [];
 
     /**
      * Constructor
@@ -103,9 +103,9 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
             'EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf'
         );
 
-        $this->MCONF = array(
+        $this->MCONF = [
             'name' => $this->moduleName,
-        );
+        ];
     }
 
     /**
@@ -162,7 +162,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
                     window.location.href = "'
                 . BackendUtility::getModuleUrl(
                     'record_edit',
-                    array('returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'))
+                    ['returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')]
                 )
                 . '&edit[" + table + "][" + idList + "]=edit" + addParams;
                 }

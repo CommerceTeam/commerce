@@ -37,29 +37,29 @@ class Debit extends PaymentAbstract
      *
      * @var array
      */
-    public $LOCAL_LANG = array(
-        'default' => array(
+    public $LOCAL_LANG = [
+        'default' => [
             'payment_debit_bic' => 'Bank Identification Number',
             'payment_debit_an' => 'Account number',
             'payment_debit_bn' => 'Bankname',
             'payment_debit_ah' => 'Account holder',
             'payment_debit_company' => 'Company',
-        ),
-        'de' => array(
+        ],
+        'de' => [
             'payment_debit_bic' => 'Bankleitzahl',
             'payment_debit_an' => 'Kontonummer',
             'payment_debit_bn' => 'Bankname',
             'payment_debit_ah' => 'Kontoinhaber',
             'payment_debit_company' => 'Firma',
-        ),
-        'fr' => array(
+        ],
+        'fr' => [
             'payment_debit_bic' => 'Code de banque',
             'payment_debit_an' => 'Num�ro de compte',
             'payment_debit_bn' => 'Nom bancaire',
             'payment_debit_ah' => 'D�tenteur de compte',
             'payment_debit_company' => 'Firme',
-        ),
-    );
+        ],
+    ];
 
     /**
      * Get configuration of additional fields.
@@ -70,23 +70,23 @@ class Debit extends PaymentAbstract
      */
     public function getAdditionalFieldsConfig()
     {
-        return array(
-            'debit_bic.' => array(
+        return [
+            'debit_bic.' => [
                 'mandatory' => 1,
-            ),
-            'debit_an.' => array(
+            ],
+            'debit_an.' => [
                 'mandatory' => 1,
-            ),
-            'debit_bn.' => array(
+            ],
+            'debit_bn.' => [
                 'mandatory' => 1,
-            ),
-            'debit_ah.' => array(
+            ],
+            'debit_ah.' => [
                 'mandatory' => 1,
-            ),
-            'debit_company.' => array(
+            ],
+            'debit_company.' => [
                 'mandatory' => 0,
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -96,7 +96,7 @@ class Debit extends PaymentAbstract
      *
      * @return bool Check if data is ok
      */
-    public function proofData(array $formData = array())
+    public function proofData(array $formData = [])
     {
         // If formData is empty we know that this is the very first call from
         // \CommerceTeam\Commerce\Controller\CheckoutController->handlePayment
@@ -130,7 +130,7 @@ class Debit extends PaymentAbstract
      *
      * @return void
      */
-    public function updateOrder($orderUid, array $session = array())
+    public function updateOrder($orderUid, array $session = [])
     {
         /**
          * Order repository.
@@ -142,13 +142,13 @@ class Debit extends PaymentAbstract
         );
         $orderRepository->updateByUid(
             $orderUid,
-            array(
+            [
                 'payment_debit_bic' => $session['payment']['debit_bic'],
                 'payment_debit_an' => $session['payment']['debit_an'],
                 'payment_debit_bn' => $session['payment']['debit_bn'],
                 'payment_debit_ah' => $session['payment']['debit_ah'],
                 'payment_debit_company' => $session['payment']['debit_company'],
-            )
+            ]
         );
     }
 }

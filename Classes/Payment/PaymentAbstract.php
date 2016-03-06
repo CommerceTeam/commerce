@@ -31,14 +31,14 @@ abstract class PaymentAbstract implements PaymentInterface
      *
      * @var array
      */
-    public $errorMessages = array();
+    public $errorMessages = [];
 
     /**
      * Form errors.
      *
      * @var array
      */
-    protected $formError = array();
+    protected $formError = [];
 
     /**
      * Parent object.
@@ -66,7 +66,7 @@ abstract class PaymentAbstract implements PaymentInterface
      *
      * @var array
      */
-    protected $criteria = array();
+    protected $criteria = [];
 
     /**
      * Default constructor.
@@ -162,7 +162,7 @@ abstract class PaymentAbstract implements PaymentInterface
         if (is_array($criteraConfigurations)) {
             foreach ($criteraConfigurations as $criterionConfiguration) {
                 if (!is_array($criterionConfiguration['options'])) {
-                    $criterionConfiguration['options'] = array();
+                    $criterionConfiguration['options'] = [];
                 }
 
                 /**
@@ -260,7 +260,7 @@ abstract class PaymentAbstract implements PaymentInterface
      *
      * @return bool TRUE if data is ok
      */
-    public function proofData(array $formData = array())
+    public function proofData(array $formData = [])
     {
         $result = true;
         if (is_object($this->provider)) {
@@ -280,8 +280,8 @@ abstract class PaymentAbstract implements PaymentInterface
      * @return bool True is finishing order is allowed
      */
     public function finishingFunction(
-        array $config = array(),
-        array $session = array(),
+        array $config = [],
+        array $session = [],
         \CommerceTeam\Commerce\Domain\Model\Basket $basket = null
     ) {
         $result = true;
@@ -300,7 +300,7 @@ abstract class PaymentAbstract implements PaymentInterface
      *
      * @return bool TRUE if data is ok
      */
-    public function checkExternalData(array $globalRequest = array(), array $session = array())
+    public function checkExternalData(array $globalRequest = [], array $session = [])
     {
         $result = true;
         if (is_object($this->provider)) {
@@ -318,7 +318,7 @@ abstract class PaymentAbstract implements PaymentInterface
      *
      * @return void
      */
-    public function updateOrder($orderUid, array $session = array())
+    public function updateOrder($orderUid, array $session = [])
     {
         if (is_object($this->provider)) {
             $this->provider->updateOrder($orderUid, $session);

@@ -88,7 +88,7 @@ class InvoiceController extends BaseController
      *
      * @return string Compiled content
      */
-    public function main($content, array $conf = array())
+    public function main($content, array $conf = [])
     {
         $frontend = $this->getFrontendController();
         $backendUser = $this->getBackendUser();
@@ -157,7 +157,7 @@ class InvoiceController extends BaseController
         $this->template['item'] = $this->cObj->getSubpart($this->template['invoice'], '###LISTING_ARTICLE###');
 
         // Markers and content, ready to be populated
-        $markerArray = array();
+        $markerArray = [];
         $this->content = '';
         $this->order = $this->getOrderData();
         if ($this->order) {
@@ -209,7 +209,7 @@ class InvoiceController extends BaseController
 
             // Hook to process new/changed marker
             $hooks = HookFactory::getHooks('Controller/InvoiceController', 'main');
-            $subpartArray = array();
+            $subpartArray = [];
             foreach ($hooks as $hook) {
                 if (method_exists($hook, 'additionalMarker')) {
                     $markerArray = $hook->additionalMarker($markerArray, $subpartArray, $this);
@@ -231,7 +231,7 @@ class InvoiceController extends BaseController
                 $this->conf['addressDelivery.'],
                 'ADDRESS_DELIVERY_'
             );
-            $this->content = $this->substituteMarkerArrayNoCached($this->template['invoice'], array(), $subpartArray);
+            $this->content = $this->substituteMarkerArrayNoCached($this->template['invoice'], [], $subpartArray);
 
             // Buid content from template + array
             $this->content = $this->cObj->substituteSubpart(
@@ -292,7 +292,7 @@ class InvoiceController extends BaseController
      *
      * @return string HTML-Output rendered
      */
-    protected function getOrderArticles($orderUid, array $typoScript = array(), $prefix = '')
+    protected function getOrderArticles($orderUid, array $typoScript = [], $prefix = '')
     {
         $database = $this->getDatabaseConnection();
 
@@ -360,7 +360,7 @@ class InvoiceController extends BaseController
      *
      * @return string HTML-Output rendert
      */
-    protected function getAddressData($addressUid = 0, array $typoScript = array(), $prefix = '')
+    protected function getAddressData($addressUid = 0, array $typoScript = [], $prefix = '')
     {
         $database = $this->getDatabaseConnection();
 

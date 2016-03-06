@@ -42,14 +42,14 @@ class BasicDaoParser
      */
     public function parseObjectToModel(BasicDaoObject $object)
     {
-        $model = array();
+        $model = [];
 
         // parse attribs
         $propertyNames = array_keys(get_object_vars($object));
         foreach ($propertyNames as $attrib) {
             if ($attrib != 'id') {
                 if (method_exists($object, 'get' . ucfirst($attrib))) {
-                    $model[$attrib] = call_user_func(array($object, 'get' . ucfirst($attrib)), null);
+                    $model[$attrib] = call_user_func([$object, 'get' . ucfirst($attrib)], null);
                 } else {
                     $model[$attrib] = $object->$attrib;
                 }
@@ -77,7 +77,7 @@ class BasicDaoParser
             if ($attrib != 'id') {
                 if (array_key_exists($attrib, $model)) {
                     if (method_exists($object, 'set' . ucfirst($attrib))) {
-                        call_user_func(array($object, 'set' . ucfirst($attrib)), $model[$attrib]);
+                        call_user_func([$object, 'set' . ucfirst($attrib)], $model[$attrib]);
                     } else {
                         $object->$attrib = $model[$attrib];
                     }

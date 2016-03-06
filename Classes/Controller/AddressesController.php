@@ -45,21 +45,21 @@ class AddressesController extends BaseController
      *
      * @var array
      */
-    public $addresses = array();
+    public $addresses = [];
 
     /**
      * Holds form error messages.
      *
      * @var array
      */
-    protected $formError = array();
+    protected $formError = [];
 
     /**
      * Field list.
      *
      * @var array
      */
-    public $fieldList = array();
+    public $fieldList = [];
 
     /**
      * System message.
@@ -90,7 +90,7 @@ class AddressesController extends BaseController
      *
      * @return string Compiled content
      */
-    public function main($content, array $conf = array())
+    public function main($content, array $conf = [])
     {
         $this->init($conf);
 
@@ -115,10 +115,10 @@ class AddressesController extends BaseController
                     $this->pi_getPageLink(
                         (int) $this->piVars['backpid'],
                         '',
-                        array(
+                        [
                             'tx_commerce_pi3[addressType]' => (int) $this->piVars['addressType'],
                             $this->prefixId . '[addressid]' => (int) $this->piVars['addressid'],
-                        )
+                        ]
                     )
                 )
             );
@@ -172,7 +172,7 @@ class AddressesController extends BaseController
         }
 
         // add removal of remaining empty markers
-        $content = $this->cObj->substituteMarkerArray($content, array(), '', true, true);
+        $content = $this->cObj->substituteMarkerArray($content, [], '', true, true);
 
         return $this->pi_wrapInBaseClass($content);
     }
@@ -249,9 +249,9 @@ class AddressesController extends BaseController
     {
         $template = $this->cObj->getSubpart($this->templateCode, '###NOT_LOGGED###');
 
-        $markerArray = array(
+        $markerArray = [
             '###NOT_LOGGED_IN###' => $this->pi_getLL('not_logged_in'),
-        );
+        ];
 
         return $this->cObj->substituteMarkerArray($template, $markerArray);
     }
@@ -326,7 +326,7 @@ class AddressesController extends BaseController
         $addressTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['selectAddressTypes']);
 
         // Count different address types
-        $addressTypeCounter = array();
+        $addressTypeCounter = [];
         foreach ($this->addresses as $address) {
             ++$addressTypeCounter[$address['tx_commerce_address_type_id']];
         }
@@ -339,8 +339,8 @@ class AddressesController extends BaseController
                 continue;
             }
 
-            $itemMarkerArray = array();
-            $linkMarkerArray = array();
+            $itemMarkerArray = [];
+            $linkMarkerArray = [];
 
             // Fill marker array
             $address = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($address);
@@ -402,10 +402,10 @@ class AddressesController extends BaseController
 
             // Create a pivars array for merging with link to edit page
             if ($this->conf['editAddressPid'] > 0) {
-                $piArray = array('backpid' => $this->getFrontendController()->id);
+                $piArray = ['backpid' => $this->getFrontendController()->id];
                 $linkTarget = $this->conf['editAddressPid'];
             } else {
-                $piArray = array('backpid' => $this->getFrontendController()->id);
+                $piArray = ['backpid' => $this->getFrontendController()->id];
                 $linkTarget = $this->conf['addressMgmPid'];
             }
 
@@ -414,7 +414,7 @@ class AddressesController extends BaseController
                 > (int) $this->conf['minAddressCount']) {
                 $linkMarkerArray['###LINK_DELETE###'] = explode(
                     '|',
-                    $this->pi_linkTP_keepPIvars('|', array('action' => 'delete', 'addressid' => $address['uid']))
+                    $this->pi_linkTP_keepPIvars('|', ['action' => 'delete', 'addressid' => $address['uid']])
                 );
                 $itemMarkerArray['###LABEL_LINK_DELETE###'] = $this->cObj->stdWrap(
                     $this->pi_getLL('label_link_delete'),
@@ -432,11 +432,11 @@ class AddressesController extends BaseController
                     '|',
                     array_merge(
                         $piArray,
-                        array(
+                        [
                             'action' => 'edit',
                             'addressid' => $address['uid'],
                             'addressType' => $address['tx_commerce_address_type_id'],
-                        )
+                        ]
                     ),
                     false,
                     false,
@@ -472,19 +472,19 @@ class AddressesController extends BaseController
             $addressItems[$address['tx_commerce_address_type_id']] .= $this->substituteMarkerArrayNoCached(
                 $tplItem,
                 $itemMarkerArray,
-                array(),
+                [],
                 $linkMarkerArray
             );
         }
 
-        $linkMarkerArray = array();
+        $linkMarkerArray = [];
 
         // Create a pivars array for merging with link to edit page
         if ($this->conf['editAddressPid'] > 0) {
-            $piArray = array('backpid' => $this->getFrontendController()->id);
+            $piArray = ['backpid' => $this->getFrontendController()->id];
             $linkTarget = $this->conf['editAddressPid'];
         } else {
-            $piArray = array();
+            $piArray = [];
             $linkTarget = $this->conf['addressMgmPid'];
         }
 
@@ -501,10 +501,10 @@ class AddressesController extends BaseController
                         '|',
                         array_merge(
                             $piArray,
-                            array(
+                            [
                                 'action' => 'new',
                                 'addressType' => $addressType,
-                            )
+                            ]
                         ),
                         false,
                         false,
@@ -525,7 +525,7 @@ class AddressesController extends BaseController
                     '|',
                     array_merge(
                         $piArray,
-                        array('action' => 'new', 'addressType' => $addressType)
+                        ['action' => 'new', 'addressType' => $addressType]
                     ),
                     false,
                     false,
@@ -571,7 +571,7 @@ class AddressesController extends BaseController
         }
 
         // Replace markers and return content
-        return $this->substituteMarkerArrayNoCached($tplBase, $baseMarkerArray, array(), $linkMarkerArray);
+        return $this->substituteMarkerArrayNoCached($tplBase, $baseMarkerArray, [], $linkMarkerArray);
     }
 
     /**
@@ -587,7 +587,7 @@ class AddressesController extends BaseController
     protected function getAddressForm(
         $action = 'new',
         $addressUid = null,
-        array $config = array()
+        array $config = []
     ) {
         $hooks = HookFactory::getHooks('Controller/AddressesController', 'getAddressForm');
 
@@ -606,7 +606,7 @@ class AddressesController extends BaseController
         }
 
         // Build query to select an address from the database if user is logged in
-        $addressData = ($addressUid != null) ? $this->addresses[$addressUid] : array();
+        $addressData = ($addressUid != null) ? $this->addresses[$addressUid] : [];
 
         foreach ($hooks as $hookObj) {
             if (method_exists($hookObj, 'preProcessAddress')) {
@@ -656,9 +656,9 @@ class AddressesController extends BaseController
         }
 
         // Create form fields
-        $fieldsMarkerArray = array();
+        $fieldsMarkerArray = [];
         foreach ($this->fieldList as $fieldName) {
-            $fieldMarkerArray = array();
+            $fieldMarkerArray = [];
             $lowerName = strtolower($fieldName);
 
             // Get field label
@@ -726,7 +726,7 @@ class AddressesController extends BaseController
         $isMainAddressCodeField .= ' />';
         $isMainAddressCodeLabel = $this->pi_getLL('label_is_main_address');
 
-        $baseMarkerArray = array();
+        $baseMarkerArray = [];
         // Fill additional information
         if ($addressData['tx_commerce_address_type_id'] == 1) {
             $baseMarkerArray['###MESSAGE_EDIT###'] = $this->pi_getLL('message_edit_billing');
@@ -757,14 +757,14 @@ class AddressesController extends BaseController
             $this->pi_getLL('label_form_back', 'back'),
             (int) $this->piVars['backpid'],
             '',
-            array(
-                'tx_commerce_pi3' => array(
+            [
+                'tx_commerce_pi3' => [
                     'step' => $this->getFrontendUser()->getKey(
                         'ses',
                         \CommerceTeam\Commerce\Utility\GeneralUtility::generateSessionKey('currentStep')
                     ),
-                ),
-            )
+                ],
+            ]
         );
 
         foreach ($hooks as $hookObj) {
@@ -808,16 +808,16 @@ class AddressesController extends BaseController
         $baseMarkerArray['NO'] = $this->cObj->stdWrap($this->pi_getLL('label_submit_no'), $this->conf['noLinkWrap.']);
         $linkMarkerArray['###LINK_YES###'] = explode(
             '|',
-            $this->pi_linkTP_keepPIvars('|', array('action' => 'delete', 'confirmed' => 'yes'))
+            $this->pi_linkTP_keepPIvars('|', ['action' => 'delete', 'confirmed' => 'yes'])
         );
         $linkMarkerArray['###LINK_NO###'] = explode(
             '|',
-            $this->pi_linkTP_keepPIvars('|', array('action' => 'listing'))
+            $this->pi_linkTP_keepPIvars('|', ['action' => 'listing'])
         );
 
         $content = $this->cObj->substituteMarkerArray($tplBase, $baseMarkerArray, '###|###', 1);
 
-        return $this->substituteMarkerArrayNoCached($content, array(), array(), $linkMarkerArray);
+        return $this->substituteMarkerArrayNoCached($content, [], [], $linkMarkerArray);
     }
 
     /**
@@ -851,7 +851,7 @@ class AddressesController extends BaseController
         }
 
         $database = $this->getDatabaseConnection();
-        $database->exec_UPDATEquery('tt_address', 'uid = ' . (int) $this->piVars['addressid'], array('deleted' => 1));
+        $database->exec_UPDATEquery('tt_address', 'uid = ' . (int) $this->piVars['addressid'], ['deleted' => 1]);
 
         unset($this->addresses[(int) $this->piVars['addressid']]);
         unset($this->piVars['confirmed']);
@@ -1052,7 +1052,7 @@ class AddressesController extends BaseController
                 $result = false;
             }
 
-            $eval = array();
+            $eval = [];
             if (isset($config[$name . '.']['eval']) && $config[$name . '.']['eval'] != '') {
                 $eval = explode(',', $config[$name . '.']['eval']);
             }
@@ -1132,7 +1132,7 @@ class AddressesController extends BaseController
         // Hooks to process new/changed address
         $hooks = HookFactory::getHooks('Controller/AddressesController', 'saveAddress');
         $database = $this->getDatabaseConnection();
-        $newData = array();
+        $newData = [];
 
         // Set basic data
         if (empty($addressType)) {
@@ -1147,7 +1147,7 @@ class AddressesController extends BaseController
                 'tt_address',
                 'pid = ' . $this->conf['addressPid'] . ' AND tx_commerce_fe_user_id = ' . $this->user['uid'] .
                 ' AND tx_commerce_address_type_id = ' . $addressType,
-                array('tx_commerce_is_main_address' => 0)
+                ['tx_commerce_is_main_address' => 0]
             );
         } else {
             $newData['tx_commerce_is_main_address'] = 0;
@@ -1212,7 +1212,7 @@ class AddressesController extends BaseController
      */
     protected function parseFieldList(array $dataArray)
     {
-        $result = array();
+        $result = [];
 
         if (!is_array($dataArray)) {
             return $result;
@@ -1244,9 +1244,9 @@ class AddressesController extends BaseController
         } elseif (isset($this->conf['selectAddressTypes'])) {
             $select .= ' AND tx_commerce_address_type_id IN (' . $this->conf['selectAddressTypes'] . ')';
         } else {
-            $this->addresses = array();
+            $this->addresses = [];
 
-            return array();
+            return [];
         }
 
         $select .= ' AND deleted=0 AND pid=' . $this->conf['addressPid'];
@@ -1269,7 +1269,7 @@ class AddressesController extends BaseController
             'tx_commerce_is_main_address desc'
         );
 
-        $result = array();
+        $result = [];
         foreach ($rows as $address) {
             $result[$address['uid']] = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($address);
         }

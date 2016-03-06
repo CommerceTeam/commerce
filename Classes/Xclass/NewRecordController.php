@@ -52,10 +52,10 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
             $this->web_list_modTSconfig = BackendUtility::getModTSconfig((int) $this->pageinfo['uid'], 'mod.web_list');
 
             // allow only commerce related tables
-            $this->allowedNewTables = array(
+            $this->allowedNewTables = [
                 'tx_commerce_categories',
                 'tx_commerce_products'
-            );
+            ];
 
             $this->deniedNewTables = GeneralUtility::trimExplode(
                 ',',

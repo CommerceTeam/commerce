@@ -51,13 +51,13 @@ class AttributeValue extends AbstractEntity
      *
      * @var array
      */
-    protected $fieldlist = array(
+    protected $fieldlist = [
         'title',
         'value',
         'showvalue',
         'icon',
         'l18n_parent',
-    );
+    ];
 
     /**
      * Title of Attribute (private).

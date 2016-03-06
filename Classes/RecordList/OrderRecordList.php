@@ -44,7 +44,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
      *
      * @var array
      */
-    protected $defaultFieldArray = array(
+    protected $defaultFieldArray = [
         'order_type_uid_noName',
         'tstamp',
         'numarticles',
@@ -54,14 +54,14 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         'name',
         'email',
         'phone_1',
-    );
+    ];
 
     /**
      * Additional fields.
      *
      * @var array
      */
-    protected $additionalFieldArray = array(
+    protected $additionalFieldArray = [
         'crdate',
         'article_number',
         'article_name',
@@ -74,14 +74,14 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         'phone_2',
         'uid',
         'pid',
-    );
+    ];
 
     /**
      * Csv fields.
      *
      * @var array
      */
-    protected $csvFieldArray = array(
+    protected $csvFieldArray = [
         'order_id',
         'crdate',
         'tstamp',
@@ -102,7 +102,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         'comment',
         'internalcomment',
         'articles',
-    );
+    ];
 
     /**
      * Disable single table view.
@@ -123,7 +123,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
     {
         $language = $this->getLanguageService();
 
-        $buttons = array(
+        $buttons = [
             'csh' => '',
             // group left 1
             'level_up' => '',
@@ -143,7 +143,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             'cache' => '',
             'reload' => '',
             'shortcut' => '',
-        );
+        ];
 
         if ($this->id) {
             // Setting title of page + the "Go up" link:
@@ -151,7 +151,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 '" onclick="setHighlight(' . $row['pid'] . ')">' .
                 IconUtility::getSpriteIcon(
                     'actions-view-go-up',
-                    array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', 1))
+                    ['title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.upOneLevel', 1)]
                 ) .
                 '</a>';
         }
@@ -161,7 +161,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             $buttons['csv'] = '<a href="' . htmlspecialchars($this->listURL() . '&csv=1') . '">' .
                 IconUtility::getSpriteIcon(
                     'mimetypes-text-csv',
-                    array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.csv', 1))
+                    ['title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.csv', 1)]
                 ) .
                 '</a>';
         }
@@ -176,7 +176,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 ) . '">' .
                 IconUtility::getSpriteIcon(
                     'actions-document-export-t3d',
-                    array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:rm.export', 1))
+                    ['title' => $language->sL('LLL:EXT:lang/locallang_core.php:rm.export', 1)]
                 ) .
                 '</a>';
         }
@@ -185,7 +185,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         $buttons['reload'] = '<a href="' . htmlspecialchars($this->listURL()) . '">' .
             IconUtility::getSpriteIcon(
                 'actions-system-refresh',
-                array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.reload', 1))
+                ['title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.reload', 1)]
             ) .
             '</a>';
 
@@ -220,11 +220,11 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         $tableCollapsed = (!$this->tablesCollapsed[$table]) ? false : true;
 
         // prepare space icon
-        $this->spaceIcon = IconUtility::getSpriteIcon('empty-empty', array('style' => 'background-position: 0 10px;'));
+        $this->spaceIcon = IconUtility::getSpriteIcon('empty-empty', ['style' => 'background-position: 0 10px;']);
 
         // Cleaning rowlist for duplicates and place
         // the $titleCol as the first column always!
-        $this->fieldArray = array();
+        $this->fieldArray = [];
         // Add title column
         $this->fieldArray[] = $titleCol;
 
@@ -398,7 +398,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         if ($dbCount) {
             // Half line is drawn between tables:
             if (!$listOnlyInSingleTableMode) {
-                $theData = array();
+                $theData = [];
                 if (!$this->table && !$rowlist) {
                     $theData[$titleCol] = '<span style="display: block; width: ' .
                         ($this->getController()->MOD_SETTINGS['bigControlPanel'] ? '230' : '350') .
@@ -414,13 +414,12 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             }
 
             // Header line is drawn
-            $theData = array();
+            $theData = [];
             if ($this->disableSingleTableView) {
                 $theData[$titleCol] = '<span class="c-table">' .
                         BackendUtility::wrapInHelp($table, '', $language->sL($tableConfig['ctrl']['title'], true)) .
                     '</span> (' . $this->totalItems . ')';
             } else {
-                $title = $language->getLL(($this->table ? 'contractView' : 'expandView'), true);
                 $theData[$titleCol] = $this->linkWrapTable(
                     $table,
                     '<span class="c-table">' .
@@ -428,7 +427,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                     '</span> (' . $this->totalItems . ') ' .
                     IconUtility::getSpriteIcon(
                         'actions-view-table-' . ($this->table ? 'collapse' : 'expand'),
-                        array('title' => $title)
+                        ['title' => $language->getLL(($this->table ? 'contractView' : 'expandView'), true)]
                     )
                 );
             }
@@ -453,7 +452,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                     );
                     $label = IconUtility::getSpriteIcon(
                         'actions-view-list-' . ($tableCollapsed ? 'expand' : 'collapse'),
-                        array('class' => 'collapseIcon')
+                        ['class' => 'collapseIcon']
                     );
 
                     $collapseIcon = '<a href="' . $href . '" title="' . $title . '">' . $label . '</a>';
@@ -466,8 +465,8 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             // not collapsed or if in single table view
             if (!$listOnlyInSingleTableMode && (!$tableCollapsed || $this->table)) {
                 // Fixing a order table for sortby tables
-                $this->currentTable = array();
-                $currentIdList = array();
+                $this->currentTable = [];
+                $currentIdList = [];
                 $doSort = ($tableConfig['ctrl']['sortby'] && !$this->sortField);
 
                 $prevUid = 0;
@@ -482,7 +481,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 }
 
                 // Accumulate rows here
-                $accRows = array();
+                $accRows = [];
                 while (($row = $database->sql_fetch_assoc($result))) {
                     // In offline workspace, look for alternative record:
                     BackendUtility::workspaceOL($table, $row, $this->getBackendUser()->workspace, true);
@@ -511,8 +510,8 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 }
 
                 // Render items:
-                $this->CBnames = array();
-                $this->duplicateStack = array();
+                $this->CBnames = [];
+                $this->duplicateStack = [];
                 $this->eCounter = $this->firstElementNumber;
 
                 $iOut = '';
@@ -720,7 +719,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         ) : $iconImg;
 
         // Preparing and getting the data-array
-        $theData = array();
+        $theData = [];
 
         foreach ($this->fieldArray as $fCol) {
             if ($fCol == 'pid') {
@@ -743,15 +742,15 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 $theData[$fCol] = BackendUtility::date($row[$fCol]);
                 $row[$fCol] = BackendUtility::date($row[$fCol]);
             } elseif ($fCol == 'articles') {
-                $articleNumber = array();
-                $articleName = array();
+                $articleNumber = [];
+                $articleName = [];
 
                 $resArticles = $database->exec_SELECTquery(
                     'article_number, title, order_uid',
                     'tx_commerce_order_articles',
                     'order_uid = ' . (int) $row['uid']
                 );
-                $articles = array();
+                $articles = [];
                 while (($lokalRow = $database->sql_fetch_assoc($resArticles))) {
                     $articles[] = $lokalRow['article_number'] . ':' . $lokalRow['title'];
                     $articleNumber[] = $lokalRow['article_number'];
@@ -775,7 +774,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                     $row[$fCol] = $lokalRow['amount'];
                 }
             } elseif ($fCol == 'article_number') {
-                $articleNumber = array();
+                $articleNumber = [];
 
                 $resArticles = $database->exec_SELECTquery(
                     'article_number',
@@ -789,7 +788,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 }
                 $theData[$fCol] = implode(',', $articleNumber);
             } elseif ($fCol == 'article_name') {
-                $articleName = array();
+                $articleName = [];
 
                 $resArticles = $database->exec_SELECTquery(
                     'title',
@@ -873,7 +872,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             $iOut .= $this->addElement(
                 4,
                 '',
-                array($titleCol => $this->thumbCode($row, $table, $thumbsCol)),
+                [$titleCol => $this->thumbCode($row, $table, $thumbsCol)],
                 $rowBackgroundColor
             );
         }
@@ -897,16 +896,16 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         $language = $this->getLanguageService();
 
         // Init:
-        $formElements = array('', '');
+        $formElements = ['', ''];
         if ($formFields) {
-            $formElements = array(
+            $formElements = [
                 '<form action="' . htmlspecialchars($this->listURL()) . '" method="post">',
                 '</form>'
-            );
+            ];
         }
 
         // Load already selected fields, if any:
-        $setFields = is_array($this->setFields[$table]) ? $this->setFields[$table] : array();
+        $setFields = is_array($this->setFields[$table]) ? $this->setFields[$table] : [];
 
         // Request fields from table:
         // $fields = $this->makeFieldList($table, FALSE, TRUE);
@@ -920,7 +919,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         $fields[] = '_CLIPBOARD_';
 
         // Create an option for each field:
-        $opt = array();
+        $opt = [];
         $opt[] = '<option value=""></option>';
         foreach ($fields as $fN) {
             $label = BackendUtility::getItemLabel(
@@ -976,7 +975,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         $tableReadOnly = ConfigurationUtility::getInstance()->getTcaValue($table . '.ctrl.readOnly');
 
         // Init:
-        $theData = array();
+        $theData = [];
 
         // Traverse the fields:
         foreach ($this->fieldArray as $fCol) {
@@ -1041,7 +1040,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
     {
         $database = $this->getDatabaseConnection();
 
-        $hookObjectsArr = array();
+        $hookObjectsArr = [];
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'] as
                      $classRef) {
@@ -1086,7 +1085,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 PHP_INT_MAX
             );
 
-            $list = array();
+            $list = [];
             foreach ($orderFolders as $orderFolder) {
                 $list[] = $orderFolder[1];
             }
@@ -1106,7 +1105,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             $search = implode(' OR ', $searchParts);
         }
 
-        $queryParts = array(
+        $queryParts = [
             'SELECT' => 'DISTINCT tx_commerce_order_articles.order_id, delivery_table.order_id AS order_number,
                 tx_commerce_order_articles.article_type_uid, tx_commerce_order_articles.title AS payment,
                 delivery_table.title AS delivery, tx_commerce_orders.uid, tx_commerce_orders.pid,
@@ -1132,7 +1131,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             'GROUPBY' => '',
             'ORDERBY' => $database->stripOrderBy($orderBy),
             'LIMIT' => $limit,
-        );
+        ];
 
         // get Module TSConfig
         $moduleConfig = BackendUtility::getModTSconfig($id, 'mod.commerce_orders');
@@ -1166,12 +1165,12 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         // Apply hook as requested in http://bugs.typo3.org/view.php?id=4361
         foreach ($hookObjectsArr as $hookObj) {
             if (method_exists($hookObj, 'makeQueryArray_post')) {
-                $parameter = array(
+                $parameter = [
                     'orderBy' => $orderBy,
                     'limit' => $limit,
                     'pC' => $pC,
                     'search' => $search,
-                );
+                ];
                 $hookObj->makeQueryArray_post($queryParts, $this, $table, $id, $addWhere, $fieldList, $parameter);
             }
         }
@@ -1243,7 +1242,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                     if ($this->oddColumnsCssClass && $ccount % 2 == 0) {
                         $cssClass = implode(
                             ' ',
-                            array($this->addElement_tdCssClass[$lastKey], $this->oddColumnsCssClass)
+                            [$this->addElement_tdCssClass[$lastKey], $this->oddColumnsCssClass]
                         );
                     }
 
@@ -1270,7 +1269,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         if ($lastKey) {
             $cssClass = $this->addElement_tdCssClass[$lastKey];
             if ($this->oddColumnsCssClass) {
-                $cssClass = implode(' ', array($this->addElement_tdCssClass[$lastKey], $this->oddColumnsCssClass));
+                $cssClass = implode(' ', [$this->addElement_tdCssClass[$lastKey], $this->oddColumnsCssClass]);
             }
 
             $out .= '
@@ -1305,7 +1304,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         $tableConfig = ConfigurationUtility::getInstance()->getTcaValue($table);
 
         // Init fieldlist array:
-        $fieldListArr = array();
+        $fieldListArr = [];
 
         // Check table:
         if (is_array($tableConfig)) {

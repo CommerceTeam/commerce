@@ -49,7 +49,7 @@ class ArticleCreatorUtility
      *
      * @var array
      */
-    protected $flattedAttributes = array();
+    protected $flattedAttributes = [];
 
     /**
      * Uid.
@@ -281,12 +281,12 @@ class ArticleCreatorUtility
      */
     protected function redirectUrls($thisLocation = '')
     {
-        $thisLocation = $thisLocation ? $thisLocation : GeneralUtility::linkThisScript(array(
+        $thisLocation = $thisLocation ? $thisLocation : GeneralUtility::linkThisScript([
             'CB' => '',
             'SET' => '',
             'cmd' => '',
             'popViewId' => '',
-        ));
+        ]);
 
         $out = '
             var T3_RETURN_URL = \'' .
@@ -334,7 +334,7 @@ class ArticleCreatorUtility
         // create the headrow from the product attributes, select attributes without
         // valuelist and normal select attributes
         $colCount = 0;
-        $headRow = $this->getHeadRow($colCount, array('&nbsp;'));
+        $headRow = $this->getHeadRow($colCount, ['&nbsp;']);
 
         $valueMatrix = (array) $this->getValues();
         $counter = 0;
@@ -384,7 +384,7 @@ class ArticleCreatorUtility
      */
     protected function getValues($index = 0)
     {
-        $result = array();
+        $result = [];
 
         if (count($this->attributes['ct1']) > $index) {
             if (is_array($this->attributes['ct1'])) {
@@ -425,9 +425,9 @@ class ArticleCreatorUtility
         &$resultRows,
         &$counter,
         $headRow,
-        array $extraRowData = array(),
+        array $extraRowData = [],
         $index = 1,
-        array $row = array()
+        array $row = []
     ) {
         if (is_array($data)) {
             foreach ($data as $dataItem) {
@@ -447,8 +447,8 @@ class ArticleCreatorUtility
                     );
                 } else {
                     // serialize data for formsaveing
-                    $labelData = array();
-                    $hashData = array();
+                    $labelData = [];
+                    $hashData = [];
 
                     foreach ($row as $rd) {
                         $hashData[$rd['aUid']] = $rd['vUid'];
@@ -605,7 +605,7 @@ class ArticleCreatorUtility
      */
     public function updateArticles()
     {
-        $fullAttributeList = array();
+        $fullAttributeList = [];
 
         if (!is_array($this->attributes['ct1'])) {
             return;
@@ -627,7 +627,7 @@ class ArticleCreatorUtility
                     $database->exec_UPDATEquery(
                         'tx_commerce_articles_article_attributes_mm',
                         'uid_local = ' . $articleUid . ' AND uid_foreign = ' . $attributeUid,
-                        array('uid_valuelist' => $attributeValueUid)
+                        ['uid_valuelist' => $attributeValueUid]
                     );
                 }
 
@@ -648,7 +648,7 @@ class ArticleCreatorUtility
     {
         $content = $parameter['title'];
         if (is_array($data) && !empty($data)) {
-            $selectedValues = array();
+            $selectedValues = [];
             foreach ($data as $value) {
                 if ($this->flattedAttributes[$value]) {
                     $selectedValues[] = $this->flattedAttributes[$value];
@@ -697,7 +697,7 @@ class ArticleCreatorUtility
         $sorting = (is_array($sorting) && isset($sorting['sorting'])) ? $sorting['sorting'] + 20 : 0;
 
         // create article data array
-        $articleData = array(
+        $articleData = [
             'pid' => $this->pid,
             'crdate' => time(),
             'title' => strip_tags($this->createArticleTitleFromAttributes($parameter, (array) $data)),
@@ -706,7 +706,7 @@ class ArticleCreatorUtility
             'article_attributes' => count($this->attributes['rest']) + count($data),
             'attribute_hash' => $hash,
             'article_type_uid' => 1,
-        );
+        ];
 
         $temp = CoreBackendUtility::getModTSconfig($this->pid, 'mod.commerce.category');
         if ($temp) {
@@ -732,20 +732,20 @@ class ArticleCreatorUtility
         // create a new price that is assigned to the new article
         $database->exec_INSERTquery(
             'tx_commerce_article_prices',
-            array(
+            [
                 'pid' => $this->pid,
                 'crdate' => time(),
                 'tstamp' => time(),
                 'uid_article' => $articleUid,
-            )
+            ]
         );
 
         // now write all relations between article and attributes into the database
-        $relationBaseData = array(
+        $relationBaseData = [
             'uid_local' => $articleUid,
-        );
+        ];
 
-        $createdArticleRelations = array();
+        $createdArticleRelations = [];
         $relationCreateData = $relationBaseData;
 
         $productsAttributesRes = $database->exec_SELECTquery(
@@ -753,7 +753,7 @@ class ArticleCreatorUtility
             'tx_commerce_products_attributes_mm',
             'uid_local = ' . (int) $this->uid
         );
-        $attributesSorting = array();
+        $attributesSorting = [];
         while (($productsAttributes = $database->sql_fetch_assoc($productsAttributesRes))) {
             $attributesSorting[$productsAttributes['uid_foreign']] = $productsAttributes['sorting'];
         }
@@ -839,7 +839,7 @@ class ArticleCreatorUtility
                 $langIdent = strtoupper($langIdent['lg_typo3']);
 
                 // create article data array
-                $articleData = array(
+                $articleData = [
                     'pid' => $this->pid,
                     'crdate' => time(),
                     'title' => $parameter['title'],
@@ -854,7 +854,7 @@ class ArticleCreatorUtility
                         $origArticle['attributesedit'],
                         $langIdent
                     ),
-                );
+                ];
 
                 // create the article
                 $database->exec_INSERTquery('tx_commerce_articles', $articleData);

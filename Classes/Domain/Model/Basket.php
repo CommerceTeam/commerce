@@ -127,9 +127,9 @@ class Basket extends BasicBasket implements SingletonInterface
      */
     protected function finishOrderInDatabase()
     {
-        $updateArray = array(
+        $updateArray = [
             'finished_time' => $GLOBALS['EXEC_TIME'],
-        );
+        ];
 
         $database = $this->getDatabaseConnection();
 
@@ -356,7 +356,7 @@ class Basket extends BasicBasket implements SingletonInterface
          * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
          */
         foreach ($this->basketItems as $oneuid => $basketItem) {
-            $insertData = array();
+            $insertData = [];
             $insertData['pid'] = $this->getBasketStoragePid();
             $insertData['pos'] = $arBasketItemsKeys[$oneuid];
             $insertData['sid'] = $this->sessionId;

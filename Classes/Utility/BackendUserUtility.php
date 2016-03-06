@@ -198,7 +198,7 @@ class BackendUserUtility implements SingletonInterface
             'uid IN (' . $this->getBackendUser()->groupList . ')'
         );
 
-        $mountPoints = array();
+        $mountPoints = [];
         foreach ($groups as $group) {
             $mount = current($group);
             if (!empty($mount)) {

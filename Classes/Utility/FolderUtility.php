@@ -57,7 +57,7 @@ class FolderUtility
 
         // Create System Product for payment and other things.
         $now = time();
-        $addArray = array('tstamp' => $now, 'crdate' => $now, 'pid' => $prodPid);
+        $addArray = ['tstamp' => $now, 'crdate' => $now, 'pid' => $prodPid];
 
         $database = self::getDatabaseConnection();
 
@@ -152,7 +152,7 @@ class FolderUtility
         // create relation between product and category
         $database->exec_INSERTquery(
             'tx_commerce_products_categories_mm',
-            array('uid_local' => $pUid, 'uid_foreign' => $catUid)
+            ['uid_local' => $pUid, 'uid_foreign' => $catUid]
         );
 
         return $pUid;
@@ -177,7 +177,7 @@ class FolderUtility
             'tx_commerce_products_categories_mm',
             'uid_foreign = ' . (int) $cUid
         );
-        $pList = array();
+        $pList = [];
         while (($pUid = $database->sql_fetch_assoc($res))) {
             $pList[] = (int) $pUid['uid_local'];
         }

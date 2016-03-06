@@ -53,14 +53,14 @@ class CheckoutController extends BaseController
      *
      * @var array
      */
-    public $dbFieldData = array();
+    public $dbFieldData = [];
 
     /**
      * Form errors.
      *
      * @var array
      */
-    public $formError = array();
+    public $formError = [];
 
     /**
      * Holding the Static_info object.
@@ -102,13 +102,13 @@ class CheckoutController extends BaseController
      *
      * @var array
      */
-    public $checkoutSteps = array(
+    public $checkoutSteps = [
         0 => 'billing',
         1 => 'delivery',
         2 => 'payment',
         3 => 'listing',
         4 => 'finish',
-    );
+    ];
 
     /**
      * String to clear session after checkout.
@@ -122,7 +122,7 @@ class CheckoutController extends BaseController
      *
      * @var array
      */
-    public $sessionData = array();
+    public $sessionData = [];
 
     /**
      * Order uid.
@@ -136,7 +136,7 @@ class CheckoutController extends BaseController
      *
      * @var array
      */
-    public $userData = array();
+    public $userData = [];
 
     /**
      * Step.
@@ -197,7 +197,7 @@ class CheckoutController extends BaseController
      *
      * @return string HTML-Content
      */
-    public function main($content, array $conf = array())
+    public function main($content, array $conf = [])
     {
         $this->debug(
             $this->getFrontendUser()->getKey(
@@ -463,11 +463,11 @@ class CheckoutController extends BaseController
                 $feUser->removeSessionData();
             } else {
                 // Write new session-data
-                $insertFields = array(
+                $insertFields = [
                     'hash' => $feUser->id,
                     'content' => serialize($feUser->sesData),
                     'tstamp' => $GLOBALS['EXEC_TIME'],
-                );
+                ];
                 $feUser->removeSessionData();
                 $database->exec_INSERTquery('fe_session_data', $insertFields);
             }
@@ -884,7 +884,7 @@ class CheckoutController extends BaseController
             // Merge local lang array with language information of payment object
             if (is_array($this->LOCAL_LANG) && isset($paymentObj->LOCAL_LANG)) {
                 foreach ($this->LOCAL_LANG as $llKey => $llData) {
-                    $newLlData = array();
+                    $newLlData = [];
                     if (isset($paymentObj->LOCAL_LANG[$llKey]) && is_array($paymentObj->LOCAL_LANG[$llKey])) {
                         $newLlData = array_merge($llData, $paymentObj->LOCAL_LANG[$llKey]);
                     }
@@ -977,10 +977,10 @@ class CheckoutController extends BaseController
             $basket,
             '###BASKET_VIEW###',
             GeneralUtility::intExplode(',', $this->conf['regularArticleTypes']),
-            array(
+            [
                 '###LISTING_ARTICLE###',
                 '###LISTING_ARTICLE2###',
-            )
+            ]
         );
         $markerArray['###BILLING_ADDRESS###'] = $this->cObj->stdWrap(
             $this->getAddress('billing'),
@@ -1141,7 +1141,7 @@ class CheckoutController extends BaseController
          * later.
          */
         if (isset($this->conf['lockOrderIdInGenerateOrderId']) && $this->conf['lockOrderIdInGenerateOrderId'] == 1) {
-            $orderData = array();
+            $orderData = [];
             $now = time();
             $orderData['crdate'] = $now;
             $orderData['tstamp'] = $now;
@@ -1185,10 +1185,10 @@ class CheckoutController extends BaseController
             $basket,
             '###BASKET_VIEW###',
             GeneralUtility::intExplode(',', $this->conf['regularArticleTypes']),
-            array(
+            [
                 '###LISTING_ARTICLE###',
                 '###LISTING_ARTICLE2###',
-            )
+            ]
         );
         $markerArray['###MESSAGE###'] = '';
         $markerArray['###LISTING_TITLE###'] = $this->pi_getLL('order_confirmation');
@@ -1428,7 +1428,7 @@ class CheckoutController extends BaseController
 
         $paymentTitle = $basket->getFirstArticleTypeTitle(PAYMENTARTICLETYPE);
 
-        $markerArray = array();
+        $markerArray = [];
         $markerArray['###LABEL_SUM_ARTICLE_NET###'] = $this->pi_getLL('listing_article_net');
         $markerArray['###LABEL_SUM_ARTICLE_GROSS###'] = $this->pi_getLL('listing_article_gross');
         $markerArray['###SUM_ARTICLE_NET###'] = Money::format($sumNet, $this->currency);
@@ -1478,7 +1478,7 @@ class CheckoutController extends BaseController
         );
 
         if (is_array($this->sessionData[$typeLower]) && !empty($this->sessionData[$typeLower]) && is_array($data)) {
-            $addressArray = array();
+            $addressArray = [];
 
             $addressArray['###HEADER###'] = $this->pi_getLL($addressType . '_title');
             foreach ($data as $key => $value) {
@@ -1618,12 +1618,12 @@ class CheckoutController extends BaseController
 
             foreach ($hooks as $hookObj) {
                 if (method_exists($hookObj, 'validateField')) {
-                    $params = array(
+                    $params = [
                         'fieldName' => $name,
                         'fieldValue' => $value,
                         'addressType' => $addressType,
                         'config' => $config['sourceFields.'][$name . '.'],
-                    );
+                    ];
                     if (!$hookObj->validateField($params, $this)) {
                         $returnVal = false;
                     }
@@ -1799,7 +1799,7 @@ class CheckoutController extends BaseController
 
         $fieldCode = '';
         foreach ($fieldList as $fieldName) {
-            $fieldMarkerArray = array();
+            $fieldMarkerArray = [];
             $fieldLabel = $this->pi_getLL($step . '_' . $fieldName, $this->pi_getLL('general_' . $fieldName));
             if ($config['sourceFields.'][$fieldName . '.']['mandatory'] == '1') {
                 $fieldLabel .= ' ' . $this->cObj->stdWrap($config['mandatorySign'], $config['mandatorySignStdWrap.']);
@@ -1828,10 +1828,10 @@ class CheckoutController extends BaseController
             $fieldMarkerArray['###FIELD_INPUTID###'] = $step . '-' . $fieldName;
 
             // Save some data for mails
-            $this->sessionData['mails'][$step][$fieldName] = array(
+            $this->sessionData['mails'][$step][$fieldName] = [
                 'data' => $this->sessionData[$step][$fieldName],
                 'label' => $fieldLabel,
-            );
+            ];
             if ($config['sourceFields.'][$arrayName]['type'] == 'check') {
                 $fieldCodeTemplate = $fieldTemplateCheckbox;
             } elseif ($config['sourceFields.'][$arrayName]['type'] == 'hidden') {
@@ -1888,11 +1888,11 @@ class CheckoutController extends BaseController
             $uid = $this->sessionData[$type]['uid'];
         } else {
             // Create
-            $dataArray = array(
+            $dataArray = [
                 'tstamp' => time(),
                 // First address should be main address by default
                 'tx_commerce_is_main_address' => 1,
-            );
+            ];
 
             // Address folder
             if (isset($this->conf['addressPid'])) {
@@ -1919,7 +1919,7 @@ class CheckoutController extends BaseController
                     // 2) fill in new fields in table
                     // 3) provide data for usermail
                     // 4) use billing as default type
-                    $feuData = array(
+                    $feuData = [
                         'pid' => $this->conf['userPID'],
                         'tstamp' => $GLOBALS['EXEC_TIME'],
                         'usergroup' => $this->conf['userGroup'],
@@ -1928,7 +1928,7 @@ class CheckoutController extends BaseController
                             $this->sessionData['billing']['surname'],
                         'first_name' => $this->sessionData['billing']['name'],
                         'last_name' => $this->sessionData['billing']['surname'],
-                    );
+                    ];
 
                     // Username
                     if ($this->conf['randomUser']) {
@@ -2090,19 +2090,19 @@ class CheckoutController extends BaseController
                     $fieldConfig['select']
                 );
                 asort($nameArray, SORT_LOCALE_STRING);
-                $countries = array();
+                $countries = [];
                 foreach ($nameArray as $itemKey => $itemName) {
-                    $countries[] = array('name' => $itemName, 'value' => $itemKey);
+                    $countries[] = ['name' => $itemName, 'value' => $itemKey];
                 }
 
                 $selected = $fieldValue != '' ? $fieldValue : $fieldConfig['default'];
 
                 $result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step .
                     '][' . $fieldName . ']" class="' . $fieldConfig['cssClass'] . '">' . LF;
-                $options = array();
+                $options = [];
                 $result .= \SJBR\StaticInfoTables\Utility\HtmlElementUtility::optionsConstructor(
                     $countries,
-                    array($selected),
+                    [$selected],
                     $options
                 );
                 $result .= implode(LF, $options) . '</select>' . LF;
@@ -2252,7 +2252,7 @@ class CheckoutController extends BaseController
      */
     protected function parseFieldList(array $fieldConfig)
     {
-        $result = array();
+        $result = [];
         if (!is_array($fieldConfig)) {
             return $result;
         }
@@ -2275,11 +2275,11 @@ class CheckoutController extends BaseController
      */
     protected function canMakeCheckout()
     {
-        $checks = array(
+        $checks = [
             'noarticles',
             'nopayment',
             'nobilling',
-        );
+        ];
 
         $myCheck = false;
 
@@ -2292,10 +2292,10 @@ class CheckoutController extends BaseController
 
         foreach ($hooks as $hookObj) {
             if (method_exists($hookObj, 'canMakeCheckoutOwnAdvancedTests')) {
-                $params = array(
+                $params = [
                     'checks' => &$checks,
                     'myCheck' => &$myCheck,
-                );
+                ];
                 $hookObj->canMakeCheckoutOwnAdvancedTests($params, $this);
             }
         }
@@ -2386,7 +2386,7 @@ class CheckoutController extends BaseController
                     }
                 }
 
-                $userMarker = array();
+                $userMarker = [];
                 $mailcontent = $userMailObj->generateMail($orderUid, $orderData, $userMarker);
 
                 $basket = $this->getBasket();
@@ -2448,23 +2448,23 @@ class CheckoutController extends BaseController
                 }
 
                 // Mailconf for  tx_commerce_div::sendMail($mailconf);
-                $recipient = array();
+                $recipient = [];
                 if ($this->conf['usermail.']['cc']) {
                     $recipient = GeneralUtility::trimExplode(',', $this->conf['usermail.']['cc']);
                 }
                 if (is_array($recipient)) {
                     array_push($recipient, $userMail);
                 }
-                $mailconf = array(
-                    'plain' => array(
+                $mailconf = [
+                    'plain' => [
                         'content' => $plainMessage,
                         'subject' => $subject,
-                    ),
-                    'html' => array(
+                    ],
+                    'html' => [
                         'content' => $htmlContent,
                         'path' => '',
                         'useHtml' => $this->conf['usermail.']['useHtml'],
-                    ),
+                    ],
                     'defaultCharset' => $this->conf['usermail.']['charset'],
                     'encoding' => $this->conf['usermail.']['encoding'],
                     'attach' => $this->conf['usermail.']['attach.'],
@@ -2477,7 +2477,7 @@ class CheckoutController extends BaseController
                     'priority' => $this->conf['usermail.']['priority'],
                     'callLocation' => 'sendUserMail',
                     'additionalData' => $this,
-                );
+                ];
 
                 \CommerceTeam\Commerce\Utility\GeneralUtility::sendMail($mailconf);
 
@@ -2550,7 +2550,7 @@ class CheckoutController extends BaseController
             $htmlContent = '';
             if ($this->conf['adminmail.']['useHtml'] == '1' && $this->conf['adminmail.']['templateFileHtml']) {
                 $adminMailObj->templateCode = $this->cObj->fileResource($this->conf['adminmail.']['templateFileHtml']);
-                $htmlContent = $adminMailObj->generateMail($orderUid, $orderData, array());
+                $htmlContent = $adminMailObj->generateMail($orderUid, $orderData, []);
                 $adminMailObj->isHtmlMail = true;
 
                 foreach ($hooks as $hookObj) {
@@ -2602,23 +2602,23 @@ class CheckoutController extends BaseController
             }
 
             // Mailconf for tx_commerce_div::sendMail($mailconf);
-            $recipient = array();
+            $recipient = [];
             if ($this->conf['adminmail.']['cc']) {
                 $recipient = GeneralUtility::trimExplode(',', $this->conf['adminmail.']['cc']);
             }
             if (is_array($recipient)) {
                 array_push($recipient, $this->conf['adminmail.']['mailto']);
             }
-            $mailconf = array(
-                'plain' => array(
+            $mailconf = [
+                'plain' => [
                     'content' => $plainMessage,
                     'subject' => $subject,
-                ),
-                'html' => array(
+                ],
+                'html' => [
                     'content' => $htmlContent,
                     'path' => '',
                     'useHtml' => $this->conf['adminmail.']['useHtml'],
-                ),
+                ],
                 'defaultCharset' => $this->conf['adminmail.']['charset'],
                 'encoding' => $this->conf['adminmail.']['encoding'],
                 'attach' => $this->conf['adminmail.']['attach.'],
@@ -2629,7 +2629,7 @@ class CheckoutController extends BaseController
                 'priority' => $this->conf['adminmail.']['priority'],
                 'callLocation' => 'sendAdminMail',
                 'additionalData' => $this,
-            );
+            ];
 
             // Check if user mail is set
             if (($userMail) && ($usernameMailencoded) && ($this->conf['adminmail.']['sendAsUser'] == 1)) {
@@ -2657,7 +2657,7 @@ class CheckoutController extends BaseController
      *
      * @return string MailContent
      */
-    public function generateMail($orderUid, array $orderData, array $userMarker = array())
+    public function generateMail($orderUid, array $orderData, array $userMarker = [])
     {
         $database = $this->getDatabaseConnection();
 
@@ -2686,10 +2686,10 @@ class CheckoutController extends BaseController
             $this->getBasket(),
             '###BASKET_VIEW###',
             GeneralUtility::intExplode(',', $this->conf['regularArticleTypes']),
-            array(
+            [
                 '###LISTING_ARTICLE###',
                 '###LISTING_ARTICLE2###',
-            )
+            ]
         );
 
         $content = $this->cObj->substituteSubpart($content, '###BASKET_VIEW###', $basketContent);
@@ -2748,23 +2748,23 @@ class CheckoutController extends BaseController
      *
      * @throws \Exception If configuration is not correct
      */
-    public function parseRawData(array $data = array(), array $typoScript = array())
+    public function parseRawData(array $data = [], array $typoScript = [])
     {
         if (!is_array($data)) {
-            return array();
+            return [];
         }
 
         $database = $this->getDatabaseConnection();
 
         $this->debug($typoScript, '$typoScript', __FILE__ . ' ' . __LINE__);
 
-        $newdata = array();
+        $newdata = [];
         foreach ($data as $key => $value) {
             $newdata[$key] = $value;
 
             $fieldConfig = $typoScript[$key . '.'];
             // Get the value from database if the field is a select box
-            if (in_array($fieldConfig['type'], array('select', 'static_info_country'))
+            if (in_array($fieldConfig['type'], ['select', 'static_info_country'])
                 && strlen($fieldConfig['table'])
             ) {
                 $table = $fieldConfig['table'];
@@ -2816,7 +2816,7 @@ class CheckoutController extends BaseController
         $database = $this->getDatabaseConnection();
 
         // Save addresses with reference to the pObj - which is an instance of pi3
-        $uids = array();
+        $uids = [];
         $types = $database->exec_SELECTgetRows('name', 'tx_commerce_address_types', '1');
         foreach ($types as $type) {
             $uids[$type['name']] = $this->handleAddress($type['name']);
@@ -2828,7 +2828,7 @@ class CheckoutController extends BaseController
         }
 
         // create backend user for inserting the order data
-        $orderData = array();
+        $orderData = [];
         if (isset($uids['delivery']) && !empty($uids['delivery'])) {
             $orderData['cust_deliveryaddress'] = $uids['delivery'];
         } else {
@@ -2851,7 +2851,7 @@ class CheckoutController extends BaseController
         }
 
         // Get hook objects
-        $hooks = array();
+        $hooks = [];
         if ($doHook) {
             $hooks = HookFactory::getHooks('Controller/CheckoutController', 'saveOrder');
             // Insert order
@@ -2865,15 +2865,15 @@ class CheckoutController extends BaseController
         $this->debug($orderData, '$orderData', __FILE__ . ' ' . __LINE__);
 
         $tceMain = $this->getInstanceOfTceMain($pid);
-        $data = array();
+        $data = [];
         if (isset($this->conf['lockOrderIdInGenerateOrderId']) && $this->conf['lockOrderIdInGenerateOrderId'] == 1) {
             $data['tx_commerce_orders'][(int) $this->orderUid] = $orderData;
-            $tceMain->start($data, array());
+            $tceMain->start($data, []);
             $tceMain->process_datamap();
         } else {
             $newUid = uniqid('NEW');
             $data['tx_commerce_orders'][$newUid] = $orderData;
-            $tceMain->start($data, array());
+            $tceMain->start($data, []);
             $tceMain->process_datamap();
 
             $this->orderUid = $tceMain->substNEWwithIDs[$newUid];
@@ -2909,7 +2909,7 @@ class CheckoutController extends BaseController
 
                 $this->debug($article, '$article', __FILE__ . ' ' . __LINE__);
 
-                $orderArticleData = array();
+                $orderArticleData = [];
                 $orderArticleData['pid'] = $orderData['pid'];
                 $orderArticleData['crdate'] = $GLOBALS['EXEC_TIME'];
                 $orderArticleData['tstamp'] = $GLOBALS['EXEC_TIME'];
@@ -2942,10 +2942,10 @@ class CheckoutController extends BaseController
                     $newUid = uniqid('NEW');
                 }
 
-                $data = array();
+                $data = [];
 
                 $data['tx_commerce_order_articles'][$newUid] = $orderArticleData;
-                $tceMain->start($data, array());
+                $tceMain->start($data, []);
                 $tceMain->process_datamap();
 
                 $newUid = $tceMain->substNEWwithIDs[$newUid];

@@ -101,7 +101,7 @@ class StatisticsUtility
             );
 
             while (($statrow = $database->sql_fetch_row($statres))) {
-                $insertStatArray = array(
+                $insertStatArray = [
                     'pid' => $statrow[3],
                     'year' => date('Y', $oldtimeend),
                     'month' => date('m', $oldtimeend),
@@ -114,7 +114,7 @@ class StatisticsUtility
                     'pricenet' => $statrow[4],
                     'crdate' => $GLOBALS['EXEC_TIME'],
                     'tstamp' => $GLOBALS['EXEC_TIME'],
-                );
+                ];
 
                 $res = $database->exec_INSERTquery('tx_commerce_salesfigures', $insertStatArray);
                 if (!$res) {
@@ -168,7 +168,7 @@ class StatisticsUtility
                 'toa.pid'
             );
             while (($statrow = $database->sql_fetch_row($statres))) {
-                $updateStatArray = array(
+                $updateStatArray = [
                     'pid' => $statrow[3],
                     'year' => date('Y', $oldtimeend),
                     'month' => date('m', $oldtimeend),
@@ -180,7 +180,7 @@ class StatisticsUtility
                     'orders' => $statrow[2],
                     'pricenet' => $statrow[4],
                     'tstamp' => $GLOBALS['EXEC_TIME'],
-                );
+                ];
                 $whereClause = 'year = ' . date('Y', $oldtimeend) . ' AND month = ' .
                     date('m', $oldtimeend) . ' AND day = ' . date('d', $oldtimeend) . ' AND hour = ' .
                     date('H', $oldtimeend);
@@ -231,7 +231,7 @@ class StatisticsUtility
                 'pid'
             );
             while (($statrow = $database->sql_fetch_row($statres))) {
-                $insertStatArray = array(
+                $insertStatArray = [
                     'pid' => $statrow[1],
                     'year' => date('Y', $oldtimeend),
                     'month' => date('m', $oldtimeend),
@@ -241,7 +241,7 @@ class StatisticsUtility
                     'registration' => $statrow[0],
                     'crdate' => $GLOBALS['EXEC_TIME'],
                     'tstamp' => $GLOBALS['EXEC_TIME'],
-                );
+                ];
 
                 $database->exec_INSERTquery('tx_commerce_newclients', $insertStatArray);
             }

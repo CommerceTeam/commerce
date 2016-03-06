@@ -47,7 +47,7 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
         $extPath = ExtensionManagementUtility::extPath('beuser');
 
         $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setPartialRootPaths(array('default' => $extPath . 'Resources/Private/Partials'));
+        $view->setPartialRootPaths(['default' => $extPath . 'Resources/Private/Partials']);
         $view->assign('pageId', $categoryUid);
 
         $content = '';
@@ -70,10 +70,10 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
                     $userId = $this->conf['new_owner_uid'];
                     if (is_int($userId)) {
                         // Prepare data to change
-                        $data = array();
+                        $data = [];
                         $data['tx_commerce_categories'][$categoryUid]['perms_userid'] = $userId;
                         // Execute TCE Update
-                        $tce->start($data, array());
+                        $tce->start($data, []);
                         $tce->process_datamap();
 
                         $view->setTemplatePathAndFilename(
@@ -101,10 +101,10 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
                     $groupId = $this->conf['new_group_uid'];
                     if (is_int($groupId)) {
                         // Prepare data to change
-                        $data = array();
+                        $data = [];
                         $data['tx_commerce_categories'][$categoryUid]['perms_groupid'] = $groupId;
                         // Execute TCE Update
-                        $tce->start($data, array());
+                        $tce->start($data, []);
                         $tce->process_datamap();
 
                         $view->setTemplatePathAndFilename(
@@ -122,11 +122,11 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
 
                 case 'toggle_edit_lock':
                     // Prepare data to change
-                    $data = array();
+                    $data = [];
                     $data['tx_commerce_categories'][$categoryUid]['editlock'] =
                         $this->conf['editLockState'] === 1 ? 0 : 1;
                     // Execute TCE Update
-                    $tce->start($data, array());
+                    $tce->start($data, []);
                     $tce->process_datamap();
                     $content = $this->renderToggleEditLock(
                         $categoryUid,
@@ -141,11 +141,11 @@ class PermissionAjaxController extends \TYPO3\CMS\Beuser\Controller\PermissionAj
                         $this->conf['permissions'] = (int)($this->conf['permissions'] + $this->conf['bits']);
                     }
                     // Prepare data to change
-                    $data = array();
+                    $data = [];
                     $data['tx_commerce_categories'][$categoryUid]['perms_' . $this->conf['who']] =
                         $this->conf['permissions'];
                     // Execute TCE Update
-                    $tce->start($data, array());
+                    $tce->start($data, []);
                     $tce->process_datamap();
 
                     $view->setTemplatePathAndFilename(

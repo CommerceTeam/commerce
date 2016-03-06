@@ -31,7 +31,7 @@ interface CriterionInterface
      */
     public function __construct(
         \CommerceTeam\Commerce\Payment\PaymentInterface $paymentObject,
-        array $options = array()
+        array $options = []
     );
 
     /**

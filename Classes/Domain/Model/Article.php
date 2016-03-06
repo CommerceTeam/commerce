@@ -48,7 +48,7 @@ class Article extends AbstractEntity
      *
      * @var array
      */
-    protected $fieldlist = array(
+    protected $fieldlist = [
         'uid',
         'title',
         'subtitle',
@@ -64,7 +64,7 @@ class Article extends AbstractEntity
         'relatedpage',
         'supplier_uid',
         'plain_text',
-    );
+    ];
 
     /**
      * Title of the article, e.g. articlename.
@@ -106,7 +106,7 @@ class Article extends AbstractEntity
      *
      * @var array
      */
-    protected $images_array = array();
+    protected $images_array = [];
 
     /**
      * Ordernumber.
@@ -186,7 +186,7 @@ class Article extends AbstractEntity
      *
      * @var array
      */
-    protected $prices_uids = array();
+    protected $prices_uids = [];
 
     /**
      * Price object.
@@ -308,12 +308,14 @@ class Article extends AbstractEntity
 
     /**
      * Returns the article attributes
-     * array ( attribut_uid =>
-     *   array ('title =>' $title,
-     *     'value' => $value,
-     *     'unit' => $unit),
-     *     ...
-     * ).
+     *  [ attribut_uid =>
+     *      [
+     *          'title =>' $title,
+     *          'value' => $value,
+     *          'unit' => $unit
+     *      ],
+     *      ...
+     *  ].
      *
      * @return array of arrays
      */
@@ -323,7 +325,7 @@ class Article extends AbstractEntity
         $mmTable = 'tx_commerce_articles_article_attributes_mm';
         $foreignTable = 'tx_commerce_attributes';
         $select = 'DISTINCT ' . $foreignTable . '.uid, ' . $foreignTable . '.title';
-        $ignore = array('fe_group' => 1);
+        $ignore = ['fe_group' => 1];
 
         /**
          * Page repository.
@@ -346,7 +348,7 @@ class Article extends AbstractEntity
             ''
         );
 
-        $attributesUidList = array();
+        $attributesUidList = [];
         while (($data = $database->sql_fetch_assoc($setArticleAttributesResult))) {
             if (!empty($data['uid'])) {
                 $attributesUidList[$data['uid']] = $data['title'];
@@ -354,14 +356,14 @@ class Article extends AbstractEntity
         }
         $database->sql_free_result($setArticleAttributesResult);
 
-        $values = array();
+        $values = [];
         foreach ($attributesUidList as $uid => $title) {
             $value = $this->getAttributeValue($uid);
             if (!empty($value)) {
-                $values[$uid] = array(
+                $values[$uid] = [
                     'title' => $title,
                     'value' => $this->getAttributeValue($uid),
-                );
+                ];
             }
         }
 
@@ -513,7 +515,7 @@ class Article extends AbstractEntity
      */
     public function getPriceScaleObjects($startCount = 1)
     {
-        $return = array();
+        $return = [];
         $arrayOfPricesUids = $this->getPriceScales($startCount);
 
         if (is_array($arrayOfPricesUids)) {
@@ -621,10 +623,10 @@ class Article extends AbstractEntity
     {
         $this->loadPrices();
 
-        $this->specialPrice = array(
+        $this->specialPrice = [
             'object' => $this->price,
             'uid' => $this->price_uid,
-        );
+        ];
 
         $hookObject = HookFactory::getHook('Domain/Model/Article', 'getSpecialPrice');
         if (is_object($hookObject) && method_exists($hookObject, 'specialPrice')) {
@@ -774,7 +776,7 @@ class Article extends AbstractEntity
      *
      * @return int amount of articles in stock
      */
-    public function getStock($subType = '', array $serviceChain = array())
+    public function getStock($subType = '', array $serviceChain = [])
     {
         $counter = 0;
         $articlesInStock = 0;
@@ -804,7 +806,7 @@ class Article extends AbstractEntity
      *
      * @return bool availability of wanted amount of articles
      */
-    public function hasStock($wantedArticles = 0, $subType = '', array $serviceChain = array())
+    public function hasStock($wantedArticles = 0, $subType = '', array $serviceChain = [])
     {
         $counter = 0;
         $available = false;
@@ -840,7 +842,7 @@ class Article extends AbstractEntity
      *
      * @return bool Describes the result of going through the chains
      */
-    public function reduceStock($wantedArticles = 0, $subType = '', array $serviceChain = array())
+    public function reduceStock($wantedArticles = 0, $subType = '', array $serviceChain = [])
     {
         $counter = 0;
 

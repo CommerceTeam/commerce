@@ -68,7 +68,7 @@ class PermissionModuleController extends ActionController
     /**
      * @var array
      */
-    protected $pageInfo = array();
+    protected $pageInfo = [];
 
     /**
      * Backend Template Container
@@ -165,7 +165,7 @@ class PermissionModuleController extends ActionController
         $extensionName = $currentRequest->getControllerExtensionName();
         if (empty($getVars)) {
             $modulePrefix = strtolower('tx_' . $extensionName . '_' . $moduleName);
-            $getVars = array('id', 'M', $modulePrefix);
+            $getVars = ['id', 'M', $modulePrefix];
         }
         $shortcutButton = $buttonBar->makeShortcutButton()
             ->setModuleName($moduleName)
@@ -196,7 +196,7 @@ class PermissionModuleController extends ActionController
     public function indexAction()
     {
         if (!$this->categoryUid) {
-            $this->pageInfo = array('title' => '[root-level]', 'uid' => 0, 'pid' => 0);
+            $this->pageInfo = ['title' => '[root-level]', 'uid' => 0, 'pid' => 0];
         }
 
         if ($this->getBackendUserAuthentication()->workspace != 0) {
@@ -215,13 +215,13 @@ class PermissionModuleController extends ActionController
         }
 
         // depth options
-        $depthOptions = array();
-        $url = $this->uriBuilder->reset()->setArguments(array(
+        $depthOptions = [];
+        $url = $this->uriBuilder->reset()->setArguments([
             'action' => 'index',
             'depth' => '__DEPTH__',
             'categoryUid' => $this->categoryUid
-        ))->buildBackendUri();
-        foreach (array(1, 2, 3, 4, 10) as $depthLevel) {
+        ])->buildBackendUri();
+        foreach ([1, 2, 3, 4, 10] as $depthLevel) {
             $depthOptions[$depthLevel] = $depthLevel . ' ' . LocalizationUtility::translate(
                 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:levels',
                 'beuser'
@@ -252,9 +252,9 @@ class PermissionModuleController extends ActionController
 
         // Create the tree from $this->categoryUid
         if ($this->categoryUid) {
-            $tree->tree[] = array('row' => $this->pageInfo, 'HTML' => $tree->getIcon($this->categoryUid));
+            $tree->tree[] = ['row' => $this->pageInfo, 'HTML' => $tree->getIcon($this->categoryUid)];
         } else {
-            $tree->tree[] = array('row' => $this->pageInfo, 'HTML' => $tree->getRootIcon($this->pageInfo));
+            $tree->tree[] = ['row' => $this->pageInfo, 'HTML' => $tree->getRootIcon($this->pageInfo)];
         }
         $tree->getTree($this->categoryUid, $this->depth);
         $this->view->assign('viewTree', $tree->tree);
@@ -280,7 +280,7 @@ class PermissionModuleController extends ActionController
         $this->view->assign('depth', $this->depth);
 
         if (!$this->categoryUid) {
-            $this->pageInfo = array('title' => '[root-level]', 'uid' => 0, 'pid' => 0);
+            $this->pageInfo = ['title' => '[root-level]', 'uid' => 0, 'pid' => 0];
         }
         if ($this->getBackendUserAuthentication()->workspace != 0) {
             // Adding FlashMessage with the permission setting matrix:
@@ -301,10 +301,10 @@ class PermissionModuleController extends ActionController
         $beUserArray  = BackendUtility::getUserNames();
 
         // Owner selector
-        $beUserDataArray = array(0 => LocalizationUtility::translate(
+        $beUserDataArray = [0 => LocalizationUtility::translate(
             'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:selectNone',
             'beuser'
-        ));
+        )];
         foreach ($beUserArray as $uid => &$row) {
             $beUserDataArray[$uid] = $row['username'];
         }
@@ -316,10 +316,10 @@ class PermissionModuleController extends ActionController
         $this->view->assign('beUserData', $beUserDataArray);
 
         // Group selector
-        $beGroupDataArray = array(0 => LocalizationUtility::translate(
+        $beGroupDataArray = [0 => LocalizationUtility::translate(
             'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:selectNone',
             'beuser'
-        ));
+        )];
         foreach ($beGroupArray as $uid => $row) {
             $beGroupDataArray[$uid] = $row['title'];
         }
@@ -350,7 +350,7 @@ class PermissionModuleController extends ActionController
         $tree->setRecs = 1;
         // Make tree:
         $tree->getTree($this->categoryUid, $this->getLevels, '');
-        $options = array();
+        $options = [];
         $options[''] = '';
         // If there are a hierarchy of page ids, then...
         if ($this->getBackendUserAuthentication()->user['uid'] && !empty($tree->orig_ids_hierarchy)) {
@@ -367,7 +367,7 @@ class PermissionModuleController extends ActionController
                 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:categories_affected',
                 'beuser'
             );
-            $theIdListArr = array();
+            $theIdListArr = [];
             // Traverse the number of levels we want to allow recursive
             // setting of permissions for:
             for ($a = $this->getLevels; $a > 0; $a--) {
@@ -420,7 +420,7 @@ class PermissionModuleController extends ActionController
                 }
             }
         }
-        $this->redirect('index', null, null, array('categoryUid' => $this->returnId, 'depth' => $this->depth));
+        $this->redirect('index', null, null, ['categoryUid' => $this->returnId, 'depth' => $this->depth]);
     }
 
 

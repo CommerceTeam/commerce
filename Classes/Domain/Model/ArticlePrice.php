@@ -44,13 +44,13 @@ class ArticlePrice extends AbstractEntity
      *
      * @var array
      */
-    protected $fieldlist = array(
+    protected $fieldlist = [
         'price_net',
         'price_gross',
         'fe_group',
         'price_scale_amount_start',
         'price_scale_amount_end',
-    );
+    ];
 
     /**
      * Currency for price.

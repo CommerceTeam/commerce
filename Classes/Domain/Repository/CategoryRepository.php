@@ -112,7 +112,7 @@ class CategoryRepository extends Repository
     {
         $database = $this->getDatabaseConnection();
 
-        $result = array();
+        $result = [];
         if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) && $uid) {
             $result = (array) $database->exec_SELECTgetSingleRow(
                 'perms_everybody, perms_user, perms_group, perms_userid, perms_groupid, editlock',
@@ -134,7 +134,7 @@ class CategoryRepository extends Repository
     public function getParentCategories($uid)
     {
         if (empty($uid) || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
-            return array();
+            return [];
         }
 
         $database = $this->getDatabaseConnection();
@@ -158,7 +158,7 @@ class CategoryRepository extends Repository
         );
 
         if ($result) {
-            $data = array();
+            $data = [];
             while (($row = $database->sql_fetch_assoc($result))) {
                 // @todo access_check for data sets
                 $data[] = $row['uid_foreign'];
@@ -168,7 +168,7 @@ class CategoryRepository extends Repository
             return $data;
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -182,7 +182,7 @@ class CategoryRepository extends Repository
     public function getL18nCategories($uid)
     {
         if (empty($uid) || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
-            return array();
+            return [];
         }
 
         $database = $this->getDatabaseConnection();
@@ -193,7 +193,7 @@ class CategoryRepository extends Repository
             'l18n_parent = ' . $uid . ' AND deleted = 0'
         );
 
-        $uids = array();
+        $uids = [];
         while (($row = $database->sql_fetch_assoc($res))) {
             $uids[] = $row;
         }
@@ -212,7 +212,7 @@ class CategoryRepository extends Repository
     public function getChildCategories($uid, $languageUid = -1)
     {
         if (empty($uid) || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
-            return array();
+            return [];
         }
 
         if ($languageUid == -1) {
@@ -253,9 +253,9 @@ class CategoryRepository extends Repository
             $localOrderField
         );
 
-        $return = array();
+        $return = [];
         if ($result) {
-            $data = array();
+            $data = [];
             while (($row = $database->sql_fetch_assoc($result))) {
                 // @todo access_check for datasets
                 if ($languageUid == 0) {
@@ -298,7 +298,7 @@ class CategoryRepository extends Repository
     public function getChildProducts($uid, $languageUid = -1)
     {
         if (empty($uid) || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
-            return array();
+            return [];
         }
 
         if ($languageUid == -1) {
@@ -336,7 +336,7 @@ class CategoryRepository extends Repository
         $whereClause .= ' AND tx_commerce_products.deleted = 0
             AND tx_commerce_products.pid != -1
             AND tx_commerce_products.t3ver_state != 1';
-        $queryArray = array(
+        $queryArray = [
             'SELECT' => 'tx_commerce_products.uid',
             'FROM' => 'tx_commerce_products, tx_commerce_products_categories_mm, tx_commerce_articles,
                 tx_commerce_article_prices',
@@ -344,7 +344,7 @@ class CategoryRepository extends Repository
             'GROUPBY' => 'tx_commerce_products.uid',
             'ORDERBY' => $localOrderField,
             'LIMIT' => '',
-        );
+        ];
 
         if (is_object($hookObject) && method_exists($hookObject, 'productQueryPreHook')) {
             $queryArray = $hookObject->productQueryPreHook($queryArray, $this);
@@ -352,7 +352,7 @@ class CategoryRepository extends Repository
 
         $database = $this->getDatabaseConnection();
 
-        $return = array();
+        $return = [];
         $result = $database->exec_SELECT_queryArray($queryArray);
         if ($result !== false) {
             while (($row = $database->sql_fetch_assoc($result))) {
@@ -392,7 +392,7 @@ class CategoryRepository extends Repository
      *
      * @return array
      */
-    public function getCategoryRootline($categoryUid, $clause = '', array $result = array())
+    public function getCategoryRootline($categoryUid, $clause = '', array $result = [])
     {
         if (!empty($categoryUid) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($categoryUid)) {
             $row = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
@@ -408,9 +408,9 @@ class CategoryRepository extends Repository
                 $result = $this->getCategoryRootline((int) $row['parent'], $clause, $result);
             }
 
-            $result[] = array(
+            $result[] = [
                 'uid' => $row['uid'],
-            );
+            ];
         }
 
         return $result;

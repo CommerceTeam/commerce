@@ -51,7 +51,7 @@ class GeneralUtility
         }
 
         if (is_array($input)) {
-            $returnValue = array();
+            $returnValue = [];
             foreach ($input as $key => $value) {
                 if (is_array($value)) {
                     $returnValue[$key] = self::removeXSSStripTagsArray($value);
@@ -144,7 +144,7 @@ class GeneralUtility
      *
      * @return array Cleaned up Product array
      */
-    public static function removeNoStockProducts(array $productUids = array(), $dontRemoveProducts = 1)
+    public static function removeNoStockProducts(array $productUids = [], $dontRemoveProducts = 1)
     {
         if ($dontRemoveProducts == 1) {
             return $productUids;
@@ -236,18 +236,18 @@ class GeneralUtility
      * Invokes the HTML mailing class
      * Example for $mailconf.
      *
-     * $mailconf = array(
-     *     'plain' => Array (
+     * $mailconf = [
+     *     'plain' => [
      *         'content'=> ''              // plain content as string
-     *     ),
-     *     'html' => Array (
+     *     ],
+     *     'html' => [
      *         'content'=> '',             // html content as string
      *         'path' => '',
      *         'useHtml' => ''             // is set mail is send as multipart
-     *     ),
+     *     ],
      *     'defaultCharset' => 'utf-8',    // your chartset
      *     'encoding' => '8-bit',          // your encoding
-     *     'attach' => Array (),           // your attachment as array
+     *     'attach' => [],                 // your attachment as array
      *     'alternateSubject' => '',       // is subject empty will be ste alternateSubject
      *     'recipient' => '',              // comma seperate list of recipient
      *     'recipient_copy' => '',         // bcc
@@ -258,7 +258,7 @@ class GeneralUtility
      *                                         1 = highest,
      *                                         5 = lowest,
      *                                         3 = normal
-     * );
+     * ];
      *
      * @param array $mailconf Configuration for the mailerengine
      *
@@ -268,7 +268,7 @@ class GeneralUtility
     {
         $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Utility/GeneralUtility', 'sendMail');
 
-        $additionalData = array();
+        $additionalData = [];
         if ($mailconf['additionalData']) {
             $additionalData = $mailconf['additionalData'];
         }
@@ -380,7 +380,7 @@ class GeneralUtility
     {
         $dataArray = CoreGeneralUtility::trimExplode(',', $list);
 
-        $returnArray = array();
+        $returnArray = [];
         foreach ($dataArray as $data) {
             if (CoreGeneralUtility::validEmail($data)) {
                 $returnArray[] = $data;

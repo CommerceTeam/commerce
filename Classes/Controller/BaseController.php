@@ -51,7 +51,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @param array
      */
-    public $conf = array();
+    public $conf = [];
 
     /**
      * If set to TRUE some debug message will be printed.
@@ -88,7 +88,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @var array
      */
-    public $languageMarker = array();
+    public $languageMarker = [];
 
     /**
      * Holds the basketItemHash for making the whole shop cachable.
@@ -187,28 +187,28 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @var array
      */
-    public $product_attributes = array();
+    public $product_attributes = [];
 
     /**
      * Can attributes.
      *
      * @var array
      */
-    public $can_attributes = array();
+    public $can_attributes = [];
 
     /**
      * Shall products.
      *
      * @var array
      */
-    public $shall_attributes = array();
+    public $shall_attributes = [];
 
     /**
      * Select attributes.
      *
      * @var array
      */
-    public $selectAttributes = array();
+    public $selectAttributes = [];
 
     /**
      * Path depth.
@@ -245,7 +245,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @return void
      */
-    protected function init(array $conf = array())
+    protected function init(array $conf = [])
     {
         if ($this->getFrontendController()->beUserLogin) {
             $this->workspace = $this->getBackendUser()->workspace;
@@ -377,20 +377,20 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     public function renderProductAttributeList(
         Product $product,
-        array $subpartNameArray = array(),
+        array $subpartNameArray = [],
         $typoScript = false
     ) {
         if ($typoScript == false) {
             $typoScript = $this->conf['singleView.']['attributes.'];
         }
 
-        $templateArray = array();
+        $templateArray = [];
         foreach ($subpartNameArray as $oneSubpartName) {
             $templateArray[] = $this->cObj->getSubpart($this->templateCode, $oneSubpartName);
         }
 
         if (!$this->product_attributes) {
-            $this->product_attributes = $product->getAttributes(array(ATTRIB_PRODUCT));
+            $this->product_attributes = $product->getAttributes([ATTRIB_PRODUCT]);
         }
 
         // not needed write now, lets see later
@@ -416,13 +416,13 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                     $i = 0;
                 }
 
-                $datas = array(
+                $datas = [
                     'title' => $matrix[$myAttributeUid]['title'],
                     'value' => $this->formatAttributeValue($matrix, $myAttributeUid),
                     'unit' => $matrix[$myAttributeUid]['unit'],
                     'icon' => $matrix[$myAttributeUid]['icon'],
                     'internal_title' => $matrix[$myAttributeUid]['internal_title'],
-                );
+                ];
 
                 $markerArray = $this->generateMarkerArray(
                     $datas,
@@ -458,10 +458,10 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     public function renderArticleAttributeList(
         Product $product,
-        array $articleId = array(),
-        array $subpartNameArray = array()
+        array $articleId = [],
+        array $subpartNameArray = []
     ) {
-        $templateArray = array();
+        $templateArray = [];
         foreach ($subpartNameArray as $oneSubpartName) {
             $tmpCode = $this->cObj->getSubpart($this->templateCode, $oneSubpartName);
             if (strlen($tmpCode) > 0) {
@@ -475,8 +475,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $showHiddenValues = false;
         }
 
-        $this->can_attributes = $product->getAttributes(array(ATTRIB_CAN));
-        $this->shall_attributes = $product->getAttributes(array(ATTRIB_SHAL));
+        $this->can_attributes = $product->getAttributes([ATTRIB_CAN]);
+        $this->shall_attributes = $product->getAttributes([ATTRIB_SHAL]);
 
         $matrix = $product->getAttributeMatrix($articleId, $this->shall_attributes, $showHiddenValues);
         $articleShallAttributesString = '';
@@ -493,13 +493,13 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                     $i = 0;
                 }
 
-                $datas = array(
+                $datas = [
                     'title' => $matrix[$myAttributeUid]['title'],
                     'value' => $this->formatAttributeValue($matrix, $myAttributeUid),
                     'unit' => $matrix[$myAttributeUid]['unit'],
                     'icon' => $matrix[$myAttributeUid]['icon'],
                     'internal_title' => $matrix[$myAttributeUid]['internal_title'],
-                );
+                ];
                 $markerArray = $this->generateMarkerArray(
                     $datas,
                     $this->conf['singleView.']['attributes.'],
@@ -538,13 +538,13 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                     $i = 0;
                 }
 
-                $datas = array(
+                $datas = [
                     'title' => $matrix[$myAttributeUid]['title'],
                     'value' => $this->formatAttributeValue($matrix, $myAttributeUid),
                     'unit' => $matrix[$myAttributeUid]['unit'],
                     'icon' => $matrix[$myAttributeUid]['icon'],
                     'internal_title' => $matrix[$myAttributeUid]['internal_title'],
-                );
+                ];
                 $markerArray = $this->generateMarkerArray(
                     $datas,
                     $this->conf['singleView.']['attributes.'],
@@ -618,7 +618,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                     }
                 }
 
-                $linkArray = array();
+                $linkArray = [];
                 $linkArray['catUid'] = $oneCategory->getUid();
                 $linkArray['showUid'] = '';
                 if ($this->useRootlineInformationToUrl == 1) {
@@ -773,7 +773,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $this->getFrontendUser()->setKey(
                 'ses',
                 'tx_commerce_lastproducturl',
-                $this->pi_linkTP_keepPIvars_url(array(), 1)
+                $this->pi_linkTP_keepPIvars_url([], 1)
             );
             $markerArray['SUBPART_CATEGORY_ITEMS_LISTVIEW'] = $this->renderProductsForList(
                 $this->category_products,
@@ -997,20 +997,20 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     public function makeBasketView(
         Basket $basketObj,
         $subpartTemplate,
-        array $articletypes = array(),
+        array $articletypes = [],
         $lineTemplate = '###LISTING_ARTICLE###'
     ) {
         $template = $this->cObj->getSubpart($this->templateCode, $subpartTemplate);
 
         if (!is_array($lineTemplate)) {
             $temp = $lineTemplate;
-            $lineTemplate = array();
+            $lineTemplate = [];
             $lineTemplate[] = $temp;
         } else {
             /*
              * Check if the subpart is existing, and if not, remove from array
              */
-            $tmpArray = array();
+            $tmpArray = [];
             foreach ($lineTemplate as $subpartMarker) {
                 $subpartContent = $this->cObj->getSubpart($template, $subpartMarker);
                 if (!empty($subpartContent)) {
@@ -1140,7 +1140,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $taxRates = $basket->getTaxRateSums();
         $taxRateRows = '';
         foreach ($taxRates as $taxRate => $taxRateSum) {
-            $taxRowArray = array();
+            $taxRowArray = [];
             $taxRowArray['###TAX_RATE###'] = $taxRate;
             $taxRowArray['###TAX_RATE_SUM###'] = Money::format($taxRateSum, $this->currency, $this->showCurrency);
 
@@ -1200,7 +1200,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     public function makeLineView(BasketItem $basketItem, $subpartTemplate)
     {
-        $markerArray = array();
+        $markerArray = [];
         $template = $this->cObj->getSubpart($this->templateCode, $subpartTemplate);
 
         /*
@@ -1237,10 +1237,10 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $markerArray['###BASKET_ITEM_COUNT###'] = $basketItem->getQuantity();
         $markerArray['###PRODUCT_LINK_DETAIL###'] = $this->pi_linkTP_keepPIvars(
             $this->pi_getLL('detaillink', 'details'),
-            array(
+            [
                 'catUid' => (int) $basketItem->getProductMasterparentCategorie(),
                 'showUid' => $basketItem->getProductUid(),
-            ),
+            ],
             true,
             true,
             $this->conf['listPid']
@@ -1317,7 +1317,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $typoscript['fields.'] = $typoscript;
         }
 
-        $markerArray = array();
+        $markerArray = [];
         if (is_array($data)) {
             $dataBackup = $this->cObj->data;
             $this->cObj->start($data, $table);
@@ -1494,14 +1494,14 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             if (method_exists($hook, 'postRenderValue')) {
                 $output = $hook->postRenderValue(
                     $output,
-                    array(
+                    [
                         $value,
                         $typoscriptType,
                         $typoscriptConfig,
                         $field,
                         $table,
                         $uid,
-                    )
+                    ]
                 );
             }
         }
@@ -1771,7 +1771,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $iterations,
         $typoscriptMarker = ''
     ) {
-        $markerArray = array();
+        $markerArray = [];
 
         $hooks = HookFactory::getHooks('Controller/BaseController', 'renderProductsForList');
         foreach ($hooks as $hook) {
@@ -1885,9 +1885,9 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
          */
         $localTs = $typoscript;
 
-        $typoLinkConf = array(
+        $typoLinkConf = [
             'useCacheHash' => 1,
-        );
+        ];
         /*
          * Generate TypoLink Configuration and ad to fields by addTypoLinkToTs
          */
@@ -1915,23 +1915,23 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             '',
             'tx_commerce_products'
         );
-        $markerArrayUp = array();
+        $markerArrayUp = [];
         foreach ($markerArray as $k => $v) {
             $markerArrayUp[strtoupper($k)] = $v;
         }
         $markerArray = $this->cObj->fillInMarkerArray(
-            array(),
+            [],
             $markerArrayUp,
             implode(',', array_keys($markerArrayUp)),
             false,
             'PRODUCT_'
         );
 
-        $this->can_attributes = $product->getAttributes(array(ATTRIB_CAN));
-        $this->selectAttributes = $product->getAttributes(array(ATTRIB_SELECTOR));
-        $this->shall_attributes = $product->getAttributes(array(ATTRIB_SHAL));
+        $this->can_attributes = $product->getAttributes([ATTRIB_CAN]);
+        $this->selectAttributes = $product->getAttributes([ATTRIB_SELECTOR]);
+        $this->shall_attributes = $product->getAttributes([ATTRIB_SHAL]);
 
-        $productAttributesSubpartArray = array();
+        $productAttributesSubpartArray = [];
         $productAttributesSubpartArray[] = '###' . strtoupper(
             $this->conf['templateMarker.']['productAttributes']
         ) . '###';
@@ -1948,7 +1948,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $typoscript['productAttributes.']
         );
 
-        $linkArray = array();
+        $linkArray = [];
         $linkArray['catUid'] = (int) $categoryUid;
 
         if ($this->basketHashValue) {
@@ -1983,7 +1983,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $product->setRenderMaxArticles($localTs['maxArticles']);
         }
 
-        $subpartArray = array();
+        $subpartArray = [];
         if ($this->conf['disableArticleViewForProductlist'] == 1
             && !$this->piVars['showUid']
             || $this->conf['disableArticleView'] == 1
@@ -1992,7 +1992,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         } else {
             $subpartArray['###' . strtoupper($articleSubpart) . '###'] = $this->makeArticleView(
                 'list',
-                array(),
+                [],
                 $product,
                 $articleMarker,
                 $articleTemplate
@@ -2165,22 +2165,22 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     public function substituteMarkerArrayNoCached(
         $content,
-        array $markContentArray = array(),
-        array $subpartContentArray = array(),
-        array $wrappedSubpartContentArray = array()
+        array $markContentArray = [],
+        array $subpartContentArray = [],
+        array $wrappedSubpartContentArray = []
     ) {
         $timeTrack = $this->getTimeTracker();
         $timeTrack->push('commerce: substituteMarkerArrayNoCache');
 
         // If not arrays then set them
         if (!is_array($markContentArray)) {
-            $markContentArray = array();
+            $markContentArray = [];
         }
         if (!is_array($subpartContentArray)) {
-            $subpartContentArray = array();
+            $subpartContentArray = [];
         }
         if (!is_array($wrappedSubpartContentArray)) {
-            $wrappedSubpartContentArray = array();
+            $wrappedSubpartContentArray = [];
         }
         // Finding keys and check hash:
         $sPkeys = array_keys($subpartContentArray);
@@ -2194,7 +2194,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         asort($aKeys);
 
         // Initialize storeArr
-        $storeArr = array();
+        $storeArr = [];
 
         // Finding subparts and substituting them with the subpart as a marker
         foreach ($sPkeys as $sPk) {
@@ -2203,7 +2203,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 
         // Finding subparts and wrapping them with markers
         foreach ($wPkeys as $wPk) {
-            $content = $this->cObj->substituteSubpart($content, $wPk, array($wPk, $wPk));
+            $content = $this->cObj->substituteSubpart($content, $wPk, [$wPk, $wPk]);
         }
 
         // traverse keys and quote them for reg ex.
@@ -2220,7 +2220,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         // Merging content types together, resetting
         $valueArr = array_merge($markContentArray, $subpartContentArray, $wrappedSubpartContentArray);
 
-        $wScaReg = array();
+        $wScaReg = [];
         $content = '';
         // traversing the keyList array and merging the static and dynamic content
         foreach ($storeArr['k'] as $n => $keyN) {

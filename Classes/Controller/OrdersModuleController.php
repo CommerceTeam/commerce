@@ -60,7 +60,7 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
     /**
      * @var array
      */
-    protected $pageinfo = array();
+    protected $pageinfo = [];
 
     /**
      * Constructor
@@ -69,9 +69,9 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
     {
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_orders.xlf');
-        $this->MCONF = array(
+        $this->MCONF = [
             'name' => $this->moduleName,
-        );
+        ];
     }
 
     /**
@@ -125,7 +125,7 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         if (GeneralUtility::_GP('clear_all_cache')) {
             /** @var DataHandler $tce */
             $tce = GeneralUtility::makeInstance(DataHandler::class);
-            $tce->start(array(), array());
+            $tce->start([], []);
             $tce->clear_cacheCmd('all');
         }
     }
@@ -170,7 +170,7 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
          * @var \CommerceTeam\Commerce\RecordList\OrderRecordList $dblist
          */
         $dblist = GeneralUtility::makeInstance(\CommerceTeam\Commerce\RecordList\OrderRecordList::class);
-        $dblist->script = BackendUtility::getModuleUrl('commerce_orders', array(), '');
+        $dblist->script = BackendUtility::getModuleUrl('commerce_orders', [], '');
         $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
         $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
         $dblist->allFields = ($this->MOD_SETTINGS['bigControlPanel'] || $this->table) ? 1 : 0;
@@ -257,7 +257,7 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
             if ($this->cmd == 'delete') {
                 $items = $dblist->clipObj->cleanUpCBC(GeneralUtility::_POST('CBC'), $this->cmd_table, 1);
                 if (!empty($items)) {
-                    $cmd = array();
+                    $cmd = [];
                     foreach (array_keys($items) as $iK) {
                         $iKparts = explode('|', $iK);
                         $cmd[$iKparts[0]][$iKparts[1]]['delete'] = 1;
@@ -269,7 +269,7 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
                      */
                     $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
                     $tce->stripslashes_values = 0;
-                    $tce->start(array(), $cmd);
+                    $tce->start([], $cmd);
                     $tce->process_cmdmap();
 
                     if (isset($cmd['pages'])) {
@@ -411,7 +411,7 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
             $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['recordlist/Modules/Recordlist/index.php']['drawFooterHook'];
         if (is_array($footerContentHook)) {
             foreach ($footerContentHook as $hook) {
-                $params = array();
+                $params = [];
                 $this->body .= GeneralUtility::callUserFunction($hook, $params, $this);
             }
         }
@@ -419,12 +419,6 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         // @todo replace with getDocHeaderButtons
         $buttons = $dblist->getButtons($this->pageinfo);
         $docHeaderButtons = $this->getButtons($buttons);
-
-        $markers = array(
-            'CSH' => $docHeaderButtons['csh'],
-            'CONTENT' => $this->body,
-            'EXTRACONTAINERCLASS' => $this->table ? 'singletable' : '',
-        );
 
         // Build the <body> for the module
         $this->content = $this->body;
@@ -463,7 +457,7 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
             $buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' .
                 \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
                     'apps-filetree-folder-list',
-                    array('title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1))
+                    ['title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1)]
                 ) . '</a>';
         }
 

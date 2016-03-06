@@ -214,10 +214,10 @@ class BasketItem
      */
     public function getArrayOfAssocArray($prefix = '')
     {
-        return array(
+        return [
             'article' => $this->getArticleAssocArray($prefix),
             'product' => $this->getProductAssocArray($prefix),
-        );
+        ];
     }
 
     /**

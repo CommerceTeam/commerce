@@ -58,7 +58,7 @@ class ClickmenuUtility extends ClickMenu
      *
      * @var array
      */
-    protected $additionalParameter = array();
+    protected $additionalParameter = [];
 
     /**
      * New wizard parameters.
@@ -72,11 +72,11 @@ class ClickmenuUtility extends ClickMenu
      *
      * @var array
      */
-    protected $commerceTables = array(
+    protected $commerceTables = [
         'tx_commerce_articles',
         'tx_commerce_categories',
         'tx_commerce_products',
-    );
+    ];
 
     /**
      * Changes the clickmenu Items for the Commerce Records.
@@ -120,7 +120,7 @@ class ClickmenuUtility extends ClickMenu
         $this->rec = BackendUtility::getRecordWSOL($table, $this->additionalParameter['control[' . $table . '][uid]']);
 
         // Initialize the rights-variables
-        $rights = array(
+        $rights = [
             'delete' => false,
             'edit' => false,
             'new' => false,
@@ -136,7 +136,7 @@ class ClickmenuUtility extends ClickMenu
             // not realy rights but needed for correct rights handling
             'root' => 0,
             'copyType' => 'after',
-        );
+        ];
 
         $settingsFactory = ConfigurationUtility::getInstance();
 
@@ -167,7 +167,7 @@ class ClickmenuUtility extends ClickMenu
             default:
         }
 
-        $menuItems = array();
+        $menuItems = [];
 
         // If record found, go ahead and fill the $menuItems array which will contain
         // data for the elements to render.
@@ -231,7 +231,7 @@ class ClickmenuUtility extends ClickMenu
             $elFromAllTables = count($this->clickMenu->clipObj->elFromTable(''));
             if (!in_array('paste', $this->disabledItems) && $elFromAllTables && $rights['paste']) {
                 $selItem = $this->clipObj->getSelectedRecord();
-                $elInfo = array(
+                $elInfo = [
                     GeneralUtility::fixed_lgd_cs($selItem['_RECORD_TITLE'], (int) $backendUser->uc['titleLen']),
                     (
                         $rights['root'] ? $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] : GeneralUtility::fixed_lgd_cs(
@@ -240,7 +240,7 @@ class ClickmenuUtility extends ClickMenu
                         )
                     ),
                     $this->clipObj->currentMode(),
-                );
+                ];
 
                 $pasteUid = $uid;
                 if ($this->additionalParameter['category']) {
@@ -270,10 +270,10 @@ class ClickmenuUtility extends ClickMenu
             }
 
             // Delete:
-            $elInfo = array(GeneralUtility::fixed_lgd_cs(
+            $elInfo = [GeneralUtility::fixed_lgd_cs(
                 BackendUtility::getRecordTitle($table, $this->rec),
                 (int) $backendUser->uc['titleLen']
-            ));
+            )];
 
             if (!$rights['editLock']
                 && !in_array('delete', $this->disabledItems)
@@ -291,7 +291,7 @@ class ClickmenuUtility extends ClickMenu
         } else {
             // if no item was found we clicked the top most node
             if (!in_array('new', $this->disabledItems) && $rights['new']) {
-                $menuItems = array();
+                $menuItems = [];
                 $menuItems['new'] = $this->DB_new($table, $uid);
             }
         }
@@ -322,16 +322,16 @@ class ClickmenuUtility extends ClickMenu
 
         // get the rights for this category
         $rights['delete'] = CommerceBackendUtility::checkPermissionsOnCategoryContent(
-            array($categoryToCheckRightsOn),
-            array('delete')
+            [$categoryToCheckRightsOn],
+            ['delete']
         );
         $rights['edit'] = CommerceBackendUtility::checkPermissionsOnCategoryContent(
-            array($categoryToCheckRightsOn),
-            array('edit')
+            [$categoryToCheckRightsOn],
+            ['edit']
         );
         $rights['new'] = CommerceBackendUtility::checkPermissionsOnCategoryContent(
-            array($categoryToCheckRightsOn),
-            array('new')
+            [$categoryToCheckRightsOn],
+            ['new']
         );
 
         // check if we may paste into this category
@@ -369,8 +369,8 @@ class ClickmenuUtility extends ClickMenu
         } elseif (!empty($this->clickMenu->clipObj->elFromTable('tx_commerce_products'))) {
             // if product is in clipboard, check editcontent right
             $rights['paste'] = CommerceBackendUtility::checkPermissionsOnCategoryContent(
-                array($uid),
-                array('editcontent')
+                [$uid],
+                ['editcontent']
             );
         }
 
@@ -435,7 +435,7 @@ class ClickmenuUtility extends ClickMenu
             // store the rights in the flags
         $rights['delete'] = CommerceBackendUtility::checkPermissionsOnCategoryContent(
             $parentCategories,
-            array('editcontent')
+            ['editcontent']
         );
         $rights['edit'] = $rights['delete'];
         $rights['new'] = $rights['delete'];
@@ -492,7 +492,7 @@ class ClickmenuUtility extends ClickMenu
         // store the rights in the flags
         $rights['edit'] = $rights['delete'] = CommerceBackendUtility::checkPermissionsOnCategoryContent(
             $parentCategories,
-            array('editcontent')
+            ['editcontent']
         );
 
         return $rights;

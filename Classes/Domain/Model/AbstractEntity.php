@@ -106,24 +106,24 @@ class AbstractEntity
      *
      * @var array
      */
-    protected $fieldlist = array(
+    protected $fieldlist = [
         'title',
         'lang_uid',
         'l18n_parent',
         '_LOCALIZED_UID',
-    );
+    ];
 
     /**
      * Changes hier must be made, if a new correewlation_type is invented.
      *
      * @var array of possible attribute correlation_types
      */
-    public $correlation_types = array(
+    public $correlation_types = [
         ATTRIB_SELECTOR,
         ATTRIB_SHAL,
         ATTRIB_CAN,
         ATTRIB_PRODUCT,
-    );
+    ];
 
     /**
      * Default add where for deleted hidden and more.
@@ -137,14 +137,14 @@ class AbstractEntity
      *
      * @var array
      */
-    protected $attributes_uids = array();
+    protected $attributes_uids = [];
 
     /**
      * Attributes.
      *
      * @var array
      */
-    protected $attribute = array();
+    protected $attribute = [];
 
     /**
      * Translation Mode for getRecordOverlay.
@@ -166,7 +166,7 @@ class AbstractEntity
      *
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * Possible attributes.
@@ -175,9 +175,9 @@ class AbstractEntity
      *
      * @return array
      */
-    public function getAttributes(array $attributeCorelationTypeList = array())
+    public function getAttributes(array $attributeCorelationTypeList = [])
     {
-        $result = array();
+        $result = [];
         if (($this->attributes_uids = $this->databaseConnection->getAttributes(
             $this->uid,
             $attributeCorelationTypeList
@@ -324,7 +324,7 @@ class AbstractEntity
      */
     public function addFieldToFieldlist($fieldname)
     {
-        $this->addFieldsToFieldlist(array(trim($fieldname)));
+        $this->addFieldsToFieldlist([trim($fieldname)]);
     }
 
     /**
@@ -380,7 +380,7 @@ class AbstractEntity
      */
     public function returnAssocArray($prefix = '')
     {
-        $data = array();
+        $data = [];
 
         foreach ($this->fieldlist as $field) {
             $data[$prefix . $field] = $this->$field;

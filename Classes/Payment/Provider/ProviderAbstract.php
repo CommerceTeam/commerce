@@ -30,7 +30,7 @@ abstract class ProviderAbstract implements ProviderInterface
      *
      * @var array
      */
-    public $errorMessages = array();
+    public $errorMessages = [];
 
     /**
      * Payment object.
@@ -51,7 +51,7 @@ abstract class ProviderAbstract implements ProviderInterface
      *
      * @var array
      */
-    protected $criteria = array();
+    protected $criteria = [];
 
     /**
      * Construct this payment provider.
@@ -80,7 +80,7 @@ abstract class ProviderAbstract implements ProviderInterface
         if (is_array($criteraConfigurations)) {
             foreach ($criteraConfigurations as $criterionConfiguration) {
                 if (!is_array($criterionConfiguration['options'])) {
-                    $criterionConfiguration['options'] = array();
+                    $criterionConfiguration['options'] = [];
                 }
                 /**
                  * Criterion.
@@ -178,7 +178,7 @@ abstract class ProviderAbstract implements ProviderInterface
      *
      * @return bool TRUE if data is ok
      */
-    public function proofData(array $formData = array(), $parentResult = true)
+    public function proofData(array $formData = [], $parentResult = true)
     {
         return $parentResult;
     }
@@ -193,8 +193,8 @@ abstract class ProviderAbstract implements ProviderInterface
      * @return bool TRUE if finishing order is allowed
      */
     public function finishingFunction(
-        array $config = array(),
-        array $session = array(),
+        array $config = [],
+        array $session = [],
         \CommerceTeam\Commerce\Domain\Model\Basket $basket = null
     ) {
         return true;
@@ -208,7 +208,7 @@ abstract class ProviderAbstract implements ProviderInterface
      *
      * @return bool TRUE if data is ok
      */
-    public function checkExternalData(array $globalRequest = array(), array $session = array())
+    public function checkExternalData(array $globalRequest = [], array $session = [])
     {
         return true;
     }
@@ -221,7 +221,7 @@ abstract class ProviderAbstract implements ProviderInterface
      *
      * @return void
      */
-    public function updateOrder($orderUid, array $session = array())
+    public function updateOrder($orderUid, array $session = [])
     {
     }
 

@@ -215,7 +215,7 @@ class CommandMapHooks
             // check existing categories
             if (!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
                 $product->getParentCategories(),
-                array('editcontent')
+                ['editcontent']
             )) {
                 // Log the error
                 $this->pObj->log(
@@ -274,7 +274,7 @@ class CommandMapHooks
 
             if (!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
                 $product->getParentCategories(),
-                array('editcontent')
+                ['editcontent']
             )) {
                 // Log the error
                 $this->pObj->log(
@@ -357,7 +357,7 @@ class CommandMapHooks
             $this->translateArticlesAndAttributesOfProduct($productUid, $value);
         } elseif ($command == 'delete') {
             $this->deleteArticlesAndPricesOfProduct($productUid);
-            $this->deleteProductTranslationsByProductList(array($productUid));
+            $this->deleteProductTranslationsByProductList([$productUid]);
         } elseif ($command == 'copy') {
             $newProductUid = $this->pObj->copyMappingArray['tx_commerce_products'][$productUid];
 
@@ -619,10 +619,10 @@ class CommandMapHooks
             );
             $database->exec_INSERTquery(
                 'tx_commerce_products_categories_mm',
-                array(
+                [
                     'uid_local' => $productUid,
                     'uid_foreign' => $toData,
-                )
+                ]
             );
         }
     }
@@ -659,9 +659,9 @@ class CommandMapHooks
             }
 
             // start
-            $tce->start(array(), array());
+            $tce->start([], []);
 
-            $overrideArray = array('l18n_parent' => $newProductUid);
+            $overrideArray = ['l18n_parent' => $newProductUid];
 
             $newTranslationProductUid = $tce->copyRecord(
                 'tx_commerce_products',
@@ -692,7 +692,7 @@ class CommandMapHooks
         // \CommerceTeam\Commerce\Domain\Model\Category::getChildCategoriesUidlist
         // because of performance issues
         // @todo is there realy a performance issue?
-        $childCategories = array();
+        $childCategories = [];
         $this->belib->getChildCategories($categoryUid, $childCategories, 0, 0, true);
 
         if (!empty($childCategories)) {
@@ -700,13 +700,13 @@ class CommandMapHooks
                 $products = $this->belib->getProductsOfCategory($childCategoryUid);
 
                 if (!empty($products)) {
-                    $productList = array();
+                    $productList = [];
                     foreach ($products as $product) {
                         $productList[] = $product['uid_local'];
 
                         $articles = $this->belib->getArticlesOfProduct($product['uid_local']);
                         if (!empty($articles)) {
-                            $articleList = array();
+                            $articleList = [];
                             foreach ($articles as $article) {
                                 $articleList[] = $article['uid'];
                             }
@@ -738,7 +738,7 @@ class CommandMapHooks
         $articles = $this->belib->getArticlesOfProduct($productUid);
 
         if (!empty($articles)) {
-            $articleList = array();
+            $articleList = [];
             foreach ($articles as $article) {
                 $articleList[] = $article['uid'];
             }
@@ -757,10 +757,10 @@ class CommandMapHooks
      */
     protected function deleteCategoriesByCategoryList(array $categoryList)
     {
-        $updateValues = array(
+        $updateValues = [
             'tstamp' => $GLOBALS['EXEC_TIME'],
             'deleted' => 1,
-        );
+        ];
 
         $this->getDatabaseConnection()->exec_UPDATEquery(
             'tx_commerce_categories',
@@ -778,10 +778,10 @@ class CommandMapHooks
      */
     protected function deleteCategoryTranslationsByCategoryList(array $categoryList)
     {
-        $updateValues = array(
+        $updateValues = [
             'tstamp' => $GLOBALS['EXEC_TIME'],
             'deleted' => 1,
-        );
+        ];
 
         $this->getDatabaseConnection()->exec_UPDATEquery(
             'tx_commerce_categories',
@@ -799,10 +799,10 @@ class CommandMapHooks
      */
     protected function deleteProductsByProductList(array $productList)
     {
-        $updateValues = array(
+        $updateValues = [
             'tstamp' => $GLOBALS['EXEC_TIME'],
             'deleted' => 1,
-        );
+        ];
 
         $this->getDatabaseConnection()->exec_UPDATEquery(
             'tx_commerce_products',
@@ -820,10 +820,10 @@ class CommandMapHooks
      */
     protected function deleteProductTranslationsByProductList(array $productList)
     {
-        $updateValues = array(
+        $updateValues = [
             'tstamp' => $GLOBALS['EXEC_TIME'],
             'deleted' => 1,
-        );
+        ];
 
         $this->getDatabaseConnection()->exec_UPDATEquery(
             'tx_commerce_products',
@@ -831,7 +831,7 @@ class CommandMapHooks
             $updateValues
         );
 
-        $translatedArticles = array();
+        $translatedArticles = [];
         foreach ($productList as $productId) {
             $articlesOfProduct = $this->belib->getArticlesOfProductAsUidList($productId);
             if (is_array($articlesOfProduct) && !empty($articlesOfProduct)) {
@@ -855,10 +855,10 @@ class CommandMapHooks
      */
     protected function deleteArticlesByArticleList(array $articleList)
     {
-        $updateValues = array(
+        $updateValues = [
             'tstamp' => $GLOBALS['EXEC_TIME'],
             'deleted' => 1,
-        );
+        ];
 
         $this->getDatabaseConnection()->exec_UPDATEquery(
             'tx_commerce_articles',
@@ -876,10 +876,10 @@ class CommandMapHooks
      */
     protected function deletePricesByArticleList(array $articleList)
     {
-        $updateValues = array(
+        $updateValues = [
             'tstamp' => $GLOBALS['EXEC_TIME'],
             'deleted' => 1,
-        );
+        ];
 
         $this->getDatabaseConnection()->exec_UPDATEquery(
             'tx_commerce_article_prices',

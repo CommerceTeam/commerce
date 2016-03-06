@@ -111,7 +111,7 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
     public function getTree($uid, $depth = 999, $depthData = '')
     {
         // Buffer for id hierarchy is reset:
-        $this->buffer_idH = array();
+        $this->buffer_idH = [];
         // Init vars
         $depth = (int)$depth;
         $HTML = '';
@@ -119,7 +119,7 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
         $res = $this->getDataInit($uid);
         $c = $this->getDataCount($res);
         $crazyRecursionLimiter = 999;
-        $idH = array();
+        $idH = [];
         $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
         // Traverse the records:
         while ($crazyRecursionLimiter > 0 && ($row = $this->getDataNext($res))) {
@@ -139,7 +139,7 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
                     possible cause.', 1294586383);
             }
             // Reserve space.
-            $this->tree[] = array();
+            $this->tree[] = [];
             end($this->tree);
             // Get the key for this space
             $treeKey = key($this->tree);
@@ -173,7 +173,7 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
                 $HTML = $this->PMicon($row, $a, $c, $nextCount, $isOpen) . $this->wrapStop($this->getIcon($row), $row);
             }
             // Finally, add the row/HTML content to the ->tree array in the reserved key.
-            $this->tree[$treeKey] = array(
+            $this->tree[$treeKey] = [
                 'row' => $row,
                 'HTML' => $HTML,
                 'invertedDepth' => $depth,
@@ -182,7 +182,7 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
                 'hasSub' => $nextCount && $hasSub,
                 'isFirst' => $a === 1,
                 'isLast' => $a === $c,
-            );
+            ];
         }
 
         $this->getDataFree($res);
@@ -271,7 +271,7 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
         $out = '';
         // We need to count the opened <ul>'s every time we dig into another level,
         // so we know how many we have to close when all children are done rendering
-        $closeDepth = array();
+        $closeDepth = [];
         foreach ($treeArr as $treeItem) {
             $classAttr = $treeItem['row']['_CSSCLASS'];
             if ($treeItem['isFirst']) {

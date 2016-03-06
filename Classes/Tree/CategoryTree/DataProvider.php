@@ -51,14 +51,14 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      *
      * @var array<string>
      */
-    protected $hiddenRecords = array();
+    protected $hiddenRecords = [];
 
     /**
      * Process collection hook objects
      *
      * @var array<\TYPO3\CMS\Backend\Tree\Pagetree\CollectionProcessorInterface>
      */
-    protected $processCollectionHookObjects = array();
+    protected $processCollectionHookObjects = [];
 
     /**
      * Constructor
@@ -135,12 +135,12 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                     // using a virtual root node
                     // so then return the mount points here as "subpages" of the first node
                     $isVirtualRootNode = true;
-                    $subCategories = array();
+                    $subCategories = [];
                     foreach ($mountPoints as $webMountPoint) {
-                        $subCategories[] = array(
+                        $subCategories[] = [
                             'uid' => $webMountPoint,
                             'isMountPoint' => true
-                        );
+                        ];
                     }
                 }
             }
@@ -319,12 +319,12 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             $mountPoints = array_map('intval', $this->getBackendUserAuthentication()->returnWebmounts());
             $mountPoints = array_unique($mountPoints);
         } else {
-            $mountPoints = array($mountPoints);
+            $mountPoints = [$mountPoints];
         }
         $isNumericSearchFilter = is_numeric($searchFilter) && $searchFilter > 0;
         $searchFilterQuoted = preg_quote($searchFilter, '/');
         $nodeId = (int)$node->getId();
-        $processedRecordIds = array();
+        $processedRecordIds = [];
         foreach ($records as $record) {
             if ((int)$record['t3ver_wsid'] !== (int)$this->getBackendUserAuthentication()->workspace
                 && (int)$record['t3ver_wsid'] !== 0
@@ -467,10 +467,10 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         foreach ($mountPoints as $mountPoint) {
             if ($mountPoint === 0) {
                 $sitename = 'Commerce';
-                $record = array(
+                $record = [
                     'uid' => 0,
                     'title' => $sitename
-                );
+                ];
                 $subNode = Commands::getCategoryNode($record);
                 $subNode->setLabelIsEditable(false);
                 if ($rootNodeIsVirtual) {

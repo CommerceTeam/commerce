@@ -73,7 +73,7 @@ interface ProviderInterface
      *
      * @return bool TRUE if data is ok
      */
-    public function proofData(array $formData = array(), $parentResult = true);
+    public function proofData(array $formData = [], $parentResult = true);
 
     /**
      * Wether or not finishing an order is allowed.
@@ -85,8 +85,8 @@ interface ProviderInterface
      * @return bool True is finishing order is allowed
      */
     public function finishingFunction(
-        array $config = array(),
-        array $session = array(),
+        array $config = [],
+        array $session = [],
         \CommerceTeam\Commerce\Domain\Model\Basket $basket = null
     );
 
@@ -98,7 +98,7 @@ interface ProviderInterface
      *
      * @return bool TRUE if data is ok
      */
-    public function checkExternalData(array $globalRequest = array(), array $session = array());
+    public function checkExternalData(array $globalRequest = [], array $session = []);
 
     /**
      * Update order data after order has been finished.
@@ -108,7 +108,7 @@ interface ProviderInterface
      *
      * @return void
      */
-    public function updateOrder($orderUid, array $session = array());
+    public function updateOrder($orderUid, array $session = []);
 
     /**
      * Get error message if form data was not ok.

@@ -94,7 +94,7 @@ class BasketController extends BaseController
      *
      * @var array
      */
-    protected $markerArray = array();
+    protected $markerArray = [];
 
     /**
      * Compiled content.
@@ -117,7 +117,7 @@ class BasketController extends BaseController
      *
      * @return void
      */
-    protected function init(array $conf = array())
+    protected function init(array $conf = [])
     {
         parent::init($conf);
 
@@ -170,7 +170,7 @@ class BasketController extends BaseController
      *
      * @return string HTML-Content
      */
-    public function main($content = '', array $conf = array())
+    public function main($content = '', array $conf = [])
     {
         $this->init($conf);
 
@@ -223,9 +223,9 @@ class BasketController extends BaseController
                 $this->conf['emptyContent.']
             );
             $markerArray['###NO_STOCK MESSAGE###'] = $this->noStock;
-            $this->pi_linkTP('', array(), 0, $this->conf['basketPid']);
+            $this->pi_linkTP('', [], 0, $this->conf['basketPid']);
             $basketArray['###BASKETURL###'] = $this->cObj->lastTypoLinkUrl;
-            $this->pi_linkTP('', array(), 0, $this->conf['checkoutPid']);
+            $this->pi_linkTP('', [], 0, $this->conf['checkoutPid']);
             $basketArray['###URL_CHECKOUT###'] = $this->cObj->lastTypoLinkUrl;
 
             // Hook for additional markers in empty quick view basket template
@@ -513,9 +513,9 @@ class BasketController extends BaseController
         $basketArray['###PRICE_NET###'] = Money::format($this->basket->getSumNet(), $this->currency);
 
         $basketArray['###BASKET_ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
-        $this->pi_linkTP('', array(), 0, $this->conf['basketPid']);
+        $this->pi_linkTP('', [], 0, $this->conf['basketPid']);
         $basketArray['###BASKETURL###'] = $this->cObj->lastTypoLinkUrl;
-        $this->pi_linkTP('', array(), 0, $this->conf['checkoutPid']);
+        $this->pi_linkTP('', [], 0, $this->conf['checkoutPid']);
         $basketArray['###URL_CHECKOUT###'] = $this->cObj->lastTypoLinkUrl;
 
         // Hook for additional markers in quick view basket template
@@ -579,7 +579,7 @@ class BasketController extends BaseController
         $taxRates = $this->basket->getTaxRateSums();
         $taxRateRows = '';
         foreach ($taxRates as $taxRate => $taxRateSum) {
-            $taxRowArray = array();
+            $taxRowArray = [];
             $taxRowArray['###TAX_RATE###'] = $taxRate;
             $taxRowArray['###TAX_RATE_SUM###'] = Money::format($taxRateSum, $this->currency);
             $taxRateRows .= $this->cObj->substituteMarkerArray($taxRateTemplate, $taxRowArray);
@@ -600,7 +600,7 @@ class BasketController extends BaseController
         $basketArray['###BASKET_ITEMS###'] = $this->basket->getItemsCount();
         $basketArray['###DELBASKET###'] = $this->pi_linkTP_keepPIvars(
             $this->pi_getLL('delete_basket', 'delete basket'),
-            array('delBasket' => 1),
+            ['delBasket' => 1],
             0,
             1
         );
@@ -635,9 +635,9 @@ class BasketController extends BaseController
         $basketArray['###BASKET_PAYMENT_ITEMS###'] = $this->basket->getArticleTypeCount(PAYMENTARTICLETYPE);
         $basketArray['###BASKET_DELIVERY_ITEMS###'] = $this->basket->getArticleTypeCount(DELIVERYARTICLETYPE);
         $basketArray['###BASKET_ARTICLES_ITEMS###'] = $this->basket->getArticleTypeCount(NORMALARTICLETYPE);
-        $this->pi_linkTP('', array(), 0, $this->conf['basketPid']);
+        $this->pi_linkTP('', [], 0, $this->conf['basketPid']);
         $basketArray['###BASKETURL###'] = $this->cObj->lastTypoLinkUrl;
-        $this->pi_linkTP('', array(), 0, $this->conf['checkoutPid']);
+        $this->pi_linkTP('', [], 0, $this->conf['checkoutPid']);
         $basketArray['###URL_CHECKOUT###'] = $this->cObj->lastTypoLinkUrl;
         $basketArray['###NO_STOCK_MESSAGE###'] = $this->noStock;
         $basketArray['###BASKET_LASTPRODUCTURL###'] = $this->cObj->stdWrap(
@@ -665,7 +665,7 @@ class BasketController extends BaseController
 
         $this->setContent($this->cObj->substituteMarkerArray($template, $basketArray));
 
-        $markerArrayGlobal = $this->addFormMarker(array());
+        $markerArrayGlobal = $this->addFormMarker([]);
 
         $this->setContent($this->cObj->substituteMarkerArray($this->getContent(), $markerArrayGlobal, '###|###'));
     }
@@ -677,7 +677,7 @@ class BasketController extends BaseController
      *
      * @return array Markers
      */
-    public function makeDelivery(array $basketArray = array())
+    public function makeDelivery(array $basketArray = [])
     {
         $this->deliveryProduct = GeneralUtility::makeInstance(
             \CommerceTeam\Commerce\Domain\Model\Product::class,
@@ -691,7 +691,7 @@ class BasketController extends BaseController
 
         $this->basketDeliveryArticles = $this->basket->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
 
-        $allowedArticles = array();
+        $allowedArticles = [];
         if ($this->conf['delivery.']['allowedArticles']) {
             $allowedArticles = explode(',', $this->conf['delivery.']['allowedArticles']);
         }
@@ -738,7 +738,7 @@ class BasketController extends BaseController
                     }
                 }
 
-                $markerArray = array(
+                $markerArray = [
                     'value' => $deliveryArticle->getUid(),
                     'label' => $deliveryArticle->getTitle(),
                     'selected' => $selected,
@@ -746,7 +746,7 @@ class BasketController extends BaseController
                         $deliveryArticle->getDescriptionExtra(),
                         $this->conf['fields.']['articles.']['fields.']['description_extra.']
                     ),
-                );
+                ];
                 $options .= $this->cObj->substituteMarkerArray($deliveryOptionTemplate, $markerArray, '###|###', true);
 
                 $first = true;
@@ -771,7 +771,7 @@ class BasketController extends BaseController
      *
      * @return array Template marker
      */
-    public function makePayment(array $basketArray = array())
+    public function makePayment(array $basketArray = [])
     {
         $this->paymentProduct = GeneralUtility::makeInstance(
             \CommerceTeam\Commerce\Domain\Model\Product::class,
@@ -800,13 +800,13 @@ class BasketController extends BaseController
             }
         }
 
-        $allowedArticles = array();
+        $allowedArticles = [];
         if ($this->conf['payment.']['allowedArticles']) {
             $allowedArticles = explode(',', $this->conf['payment.']['allowedArticles']);
         }
 
         // Check if payment articles are allowed
-        $newAllowedArticles = array();
+        $newAllowedArticles = [];
         /**
          * Article.
          *
@@ -913,7 +913,7 @@ class BasketController extends BaseController
         // Getting the select attributes for view
         $attCode = '';
         if (is_object($product)) {
-            $attributeArray = $product->getAttributeMatrix(array($article->getUid()), $this->selectAttributes);
+            $attributeArray = $product->getAttributeMatrix([$article->getUid()], $this->selectAttributes);
 
             if (is_array($attributeArray)) {
                 $templateAttr = $this->cObj->getSubpart($this->getTemplateCode(), '###BASKET_SELECT_ATTRIBUTES###');
@@ -954,7 +954,7 @@ class BasketController extends BaseController
             'article_',
             'tx_commerce_articles'
         );
-        $markerArray = array();
+        $markerArray = [];
         foreach ($tmpArray as $key => $value) {
             if (strpos($key, '#') === false) {
                 $markerArray['###' . $key . '###'] = $value;
@@ -1006,7 +1006,7 @@ class BasketController extends BaseController
         if (is_array($this->conf['deleteItem.'])) {
             $typoLinkConf = $this->conf['deleteItem.'];
         } else {
-            $typoLinkConf = array();
+            $typoLinkConf = [];
         }
         $typoLinkConf['parameter'] = $this->conf['basketPid'];
         $typoLinkConf['useCacheHash'] = 1;
@@ -1062,7 +1062,7 @@ class BasketController extends BaseController
             $altPrefixSingle = $this->prefixId;
         }
 
-        $list = array();
+        $list = [];
         $articleTypes = GeneralUtility::trimExplode(',', $this->conf['regularArticleTypes'], true);
         foreach ($articleTypes as $articleType) {
             $list = array_merge($list, $this->basket->getArticlesByArticleTypeUidAsUidlist($articleType));
@@ -1098,7 +1098,7 @@ class BasketController extends BaseController
             if ($stockOk && $access) {
                 $safePrefix = $this->prefixId;
 
-                $typoLinkConf = array();
+                $typoLinkConf = [];
                 $typoLinkConf['parameter'] = $this->conf['listPid'];
                 $typoLinkConf['useCacheHash'] = 1;
                 $typoLinkConf['additionalParams'] .= $this->argSeparator . $this->prefixId . '[catUid]=' .
@@ -1123,7 +1123,7 @@ class BasketController extends BaseController
                         '|',
                         $basketItem->getProduct()->getUid(),
                         1,
-                        array('catUid' => (int) $basketItem->getProduct()->getMasterparentCategory()),
+                        ['catUid' => (int) $basketItem->getProduct()->getMasterparentCategory()],
                         false,
                         $this->conf['listPid']
                     )
@@ -1143,7 +1143,7 @@ class BasketController extends BaseController
                     'article_',
                     'tx_commerce_articles'
                 );
-                $this->selectAttributes = $basketItem->getProduct()->getAttributes(array(ATTRIB_SELECTOR));
+                $this->selectAttributes = $basketItem->getProduct()->getAttributes([ATTRIB_SELECTOR]);
                 $productMarkerArray['PRODUCT_BASKET_FOR_LISTVIEW'] = $this->makeArticleView(
                     $basketItem->getArticle(),
                     $basketItem->getProduct()
@@ -1172,7 +1172,7 @@ class BasketController extends BaseController
                 $content .= $this->substituteMarkerArrayNoCached(
                     $tempContent,
                     $this->languageMarker,
-                    array(),
+                    [],
                     $wrapMarkerArray
                 );
             } else {

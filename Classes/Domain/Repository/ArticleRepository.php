@@ -92,7 +92,7 @@ class ArticleRepository extends Repository
         }
 
         if ($uid > 0) {
-            $priceUidList = array();
+            $priceUidList = [];
             $proofSql = $this->enableFields(
                 'tx_commerce_article_prices',
                 $this->getFrontendController()->showHiddenRecords
@@ -148,7 +148,7 @@ class ArticleRepository extends Repository
         $uid = (int) $uid;
         $count = (int) $count;
         if ($uid > 0) {
-            $priceUidList = array();
+            $priceUidList = [];
             $proofSql = $this->enableFields(
                 'tx_commerce_article_prices',
                 $this->getFrontendController()->showHiddenRecords

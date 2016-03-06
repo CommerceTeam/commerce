@@ -27,7 +27,7 @@ class HookFactory
      *
      * @var array
      */
-    protected static $classNameMap = array();
+    protected static $classNameMap = [];
 
     /**
      * Hook name map.
@@ -35,7 +35,7 @@ class HookFactory
      *
      * @var array
      */
-    protected static $hookNameMap = array();
+    protected static $hookNameMap = [];
 
     /**
      * Get hook objects.
@@ -72,7 +72,7 @@ class HookFactory
     public static function getHooks($className, $hookName)
     {
         $className = 'commerce/' . $className;
-        $result = array();
+        $result = [];
 
         static::mapClassName($className);
         static::mapHookName($className, $hookName);

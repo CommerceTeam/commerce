@@ -113,21 +113,21 @@ class SystemdataNavigationFrameController extends BaseScriptClass
 
         $attributeUrl = BackendUtility::getModuleUrl(
             'commerce_systemdata',
-            array('SET' => array(
+            ['SET' => [
                 'function' => 'CommerceTeam\Commerce\Controller\SystemdataAttributesModuleFunctionController'
-            ))
+            ]]
         );
         $manufacturerUrl = BackendUtility::getModuleUrl(
             'commerce_systemdata',
-            array('SET' => array(
+            ['SET' => [
                 'function' => 'CommerceTeam\Commerce\Controller\SystemdataManufacturerModuleFunctionController'
-            ))
+            ]]
         );
         $supplierUrl = BackendUtility::getModuleUrl(
             'commerce_systemdata',
-            array('SET' => array(
+            ['SET' => [
                 'function' => 'CommerceTeam\Commerce\Controller\SystemdataSupplierModuleFunctionController'
-            ))
+            ]]
         );
         $this->view->assign('attributeUrl', $attributeUrl);
         $this->view->assign('manufacturerUrl', $manufacturerUrl);

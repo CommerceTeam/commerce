@@ -52,7 +52,7 @@ class Product extends AbstractEntity
      *
      * @var array
      */
-    protected $fieldlist = array(
+    protected $fieldlist = [
         'uid',
         'pid',
         'title',
@@ -71,7 +71,7 @@ class Product extends AbstractEntity
         't3ver_stage',
         't3ver_state',
         't3ver_tstamp',
-    );
+    ];
 
     /* Data Variables */
 
@@ -115,7 +115,7 @@ class Product extends AbstractEntity
      *
      * @var array
      */
-    protected $images_array = array();
+    protected $images_array = [];
 
     /**
      * Teaser.
@@ -136,7 +136,7 @@ class Product extends AbstractEntity
      *
      * @var array
      */
-    protected $teaserImagesArray = array();
+    protected $teaserImagesArray = [];
 
     /**
      * Related page
@@ -171,35 +171,35 @@ class Product extends AbstractEntity
      *
      * @var array
      */
-    protected $articles_uids = array();
+    protected $articles_uids = [];
 
     /**
      * Attributes.
      *
      * @var array
      */
-    public $attributes = array();
+    public $attributes = [];
 
     /**
      * Attribute uids.
      *
      * @var array
      */
-    public $attributes_uids = array();
+    public $attributes_uids = [];
 
     /**
      * Related products.
      *
      * @var array
      */
-    public $relatedProducts = array();
+    public $relatedProducts = [];
 
     /**
      * Related product uids.
      *
      * @var array
      */
-    public $relatedProduct_uids = array();
+    public $relatedProduct_uids = [];
 
     /**
      * Related products loaded.
@@ -385,12 +385,12 @@ class Product extends AbstractEntity
     public function getArticlesByAttribute($attributeUid, $attributeValue)
     {
         return $this->getArticlesByAttributeArray(
-            array(
-                array(
+            [
+                [
                     'AttributeUid' => $attributeUid,
                     'AttributeValue' => $attributeValue,
-                ),
-            )
+                ],
+            ]
         );
     }
 
@@ -398,11 +398,11 @@ class Product extends AbstractEntity
      * Get list of articles of this product filtered by given attribute UID
      * and attribute value.
      *
-     * @param array $attributes Attributes array(
-     *     array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
-     *     array('AttributeUid'=>$attributeUID, 'AttributeValue'=>$attributeValue),
+     * @param array $attributes Attributes [
+     *     ['AttributeUid' => $attributeUID, 'AttributeValue' => $attributeValue],
+     *     ['AttributeUid' => $attributeUID, 'AttributeValue' => $attributeValue],
      *     ...
-     * )
+     * ]
      * @param bool|int $proofUid Proof if script is running without instance
      *     and so without a single product
      *
@@ -415,10 +415,10 @@ class Product extends AbstractEntity
         $first = 1;
         if (is_array($attributes)) {
             $database = $this->getDatabaseConnection();
-            $attributeUids = array();
+            $attributeUids = [];
             foreach ($attributes as $uidValuePair) {
                 // Initialize arrays to prevent warningn in array_intersect()
-                $next = array();
+                $next = [];
                 $addwheretmp = '';
 
                 // attribute char is not used, thats why we check for id
@@ -484,7 +484,7 @@ class Product extends AbstractEntity
             }
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -522,13 +522,13 @@ class Product extends AbstractEntity
         $database = $this->getDatabaseConnection();
 
         $rows = $database->exec_SELECTgetRows('uid', $table, $where, $groupBy, $orderBy, $limit);
-        $rawArticleUidList = array();
+        $rawArticleUidList = [];
         foreach ($rows as $row) {
             $rawArticleUidList[] = $row['uid'];
         }
 
         // Run price test
-        $articleUidList = array();
+        $articleUidList = [];
         foreach ($rawArticleUidList as $rawArticleUid) {
             /**
              * Article.
@@ -547,7 +547,7 @@ class Product extends AbstractEntity
             }
         }
 
-        return !empty($articleUidList) ? $articleUidList : array();
+        return !empty($articleUidList) ? $articleUidList : [];
     }
 
     /**
@@ -603,12 +603,12 @@ class Product extends AbstractEntity
         );
 
         // Accumulated result array
-        $targetData = array();
+        $targetData = [];
 
         // Attributes uids are added to this array if there is no language overlay for
         // an attribute to prevent fetching of non-existing language overlays in
         // subsequent rows for the same attribute
-        $attributeLanguageOverlayBlacklist = array();
+        $attributeLanguageOverlayBlacklist = [];
 
         // Compile target data array
         while (($attributeDataRow = $database->sql_fetch_assoc($attributeDataArrayRessource))) {
@@ -618,7 +618,7 @@ class Product extends AbstractEntity
             // Don't handle this row if a prior row was already unable to fetch a language
             // overlay of the attribute
             if ($this->lang_uid > 0
-                && !empty(array_intersect(array($currentUid), $attributeLanguageOverlayBlacklist))
+                && !empty(array_intersect([$currentUid], $attributeLanguageOverlayBlacklist))
             ) {
                 continue;
             }
@@ -629,8 +629,8 @@ class Product extends AbstractEntity
                 // Initialize target row and fill in attribute values
                 $targetData[$currentUid]['title'] = $attributeDataRow['attributes_title'];
                 $targetData[$currentUid]['unit'] = $attributeDataRow['attributes_unit'];
-                $targetData[$currentUid]['values'] = array();
-                $targetData[$currentUid]['valueuidlist'] = array();
+                $targetData[$currentUid]['values'] = [];
+                $targetData[$currentUid]['valueuidlist'] = [];
                 $targetData[$currentUid]['valueformat'] = $attributeDataRow['attributes_valueformat'];
                 $targetData[$currentUid]['Internal_title'] = $attributeDataRow['attributes_internal_title'];
                 $targetData[$currentUid]['icon'] = $attributeDataRow['attributes_icon'];
@@ -638,7 +638,7 @@ class Product extends AbstractEntity
                 // Fetch language overlay of attribute if given
                 // Overwrite title, unit and Internal_title (sic!) of attribute
                 if ($this->lang_uid > 0) {
-                    $overwriteValues = array();
+                    $overwriteValues = [];
                     $overwriteValues['uid'] = $currentUid;
                     $overwriteValues['pid'] = $attributeDataRow['attributes_pid'];
                     $overwriteValues['sys_language_uid'] = $attributeDataRow['attritubes_sys_language_uid'];
@@ -702,7 +702,7 @@ class Product extends AbstractEntity
                     // and current attribute
                     $localizedArticleUid = (int) $localizedArticleUid[0]['uid'];
                     if ($localizedArticleUid > 0) {
-                        $selectFields = array();
+                        $selectFields = [];
                         $selectFields[] = 'default_value';
                         // Again difference between product->attribute and article->attribute
                         if ($parentTable == 'tx_commerce_articles') {
@@ -746,7 +746,7 @@ class Product extends AbstractEntity
                     // Ignore row if this value list has already been calculated
                     // This might happen if method is called with multiple article uid's
                     if (!empty(
-                        array_intersect(array($valueListArrayRow['uid']), $targetData[$currentUid]['valueuidlist'])
+                        array_intersect([$valueListArrayRow['uid']], $targetData[$currentUid]['valueuidlist'])
                     )) {
                         continue;
                     }
@@ -790,10 +790,10 @@ class Product extends AbstractEntity
                 // the array by its sorting value
                 usort(
                     $targetData[$attributeUid]['values'],
-                    array(
+                    [
                         \CommerceTeam\Commerce\Domain\Model\Product::class,
                         'compareBySorting',
-                    )
+                    ]
                 );
 
                 // Sort valuelist as well to get deterministic array output
@@ -836,8 +836,8 @@ class Product extends AbstractEntity
     ) {
         $database = $this->getDatabaseConnection();
 
-        $selectFields = array();
-        $selectWhere = array();
+        $selectFields = [];
+        $selectWhere = [];
 
         // Distinguish differences between product->attribute
         // and article->attribute query
@@ -872,7 +872,7 @@ class Product extends AbstractEntity
         $selectFields[] = $mmTable . '.uid_valuelist';
         $selectFields[] = $sortingTable . '.sorting';
 
-        $selectFrom = array();
+        $selectFrom = [];
         $selectFrom[] = $parentTable;
         $selectFrom[] = $mmTable;
         $selectFrom[] = 'tx_commerce_attributes';
@@ -925,7 +925,7 @@ class Product extends AbstractEntity
             return false;
         }
 
-        $priceArr = array();
+        $priceArr = [];
         $articleCount = count($this->articles_uids);
         for ($j = 0; $j < $articleCount; ++$j) {
             $article = &$this->articles[$this->articles_uids[$j]];
@@ -1111,7 +1111,7 @@ class Product extends AbstractEntity
         $showHiddenValues = true,
         $sortingTable = 'tx_commerce_articles_article_attributes_mm'
     ) {
-        $return = array();
+        $return = [];
 
         // If no list is given, take complate arctile-list from product
         if ($this->uid > 0) {
@@ -1193,7 +1193,7 @@ class Product extends AbstractEntity
                     // Only get select attributs, since we don't need any other in selectattribut
                     // Matrix and we need the arrayKeys in this case. Get the localized values
                     // from tx_commerce_articles_article_attributes_mm
-                    $valuelist = array();
+                    $valuelist = [];
                     $attributeUid = $data['uid'];
 
                     $attributeValueResult = $database->exec_SELECT_mm_query(
@@ -1235,15 +1235,15 @@ class Product extends AbstractEntity
                         }
                         usort(
                             $valuelist,
-                            array(
+                            [
                                 \CommerceTeam\Commerce\Domain\Model\Product::class,
                                 'compareBySorting',
-                            )
+                            ]
                         );
                     }
 
                     if ($valueshown == true) {
-                        $return[$attributeUid] = array(
+                        $return[$attributeUid] = [
                             'title' => $data['title'],
                             'unit' => $data['unit'],
                             'values' => $valuelist,
@@ -1251,7 +1251,7 @@ class Product extends AbstractEntity
                             'Internal_title' => $data['internal_title'],
                             'icon' => $data['icon'],
                             'iconmode' => $data['iconmode'],
-                        );
+                        ];
                     }
                 }
 
@@ -1271,10 +1271,10 @@ class Product extends AbstractEntity
      *
      * @return array Values
      */
-    public function getSelectAttributeValueMatrix(array &$attributeValues = array())
+    public function getSelectAttributeValueMatrix(array &$attributeValues = [])
     {
-        $values = array();
-        $levelAttributes = array();
+        $values = [];
+        $levelAttributes = [];
 
         $database = $this->getDatabaseConnection();
 
@@ -1295,10 +1295,10 @@ class Product extends AbstractEntity
                 'uid_local, sorting'
             );
 
-            $levels = array();
+            $levels = [];
             $article = false;
-            $attributeValuesList = array();
-            $attributeValueSortIndex = array();
+            $attributeValuesList = [];
+            $attributeValueSortIndex = [];
 
             foreach ($articleAttributes as $articleAttribute) {
                 $attributeValuesList[] = $articleAttribute['uid_valuelist'];
@@ -1306,13 +1306,13 @@ class Product extends AbstractEntity
                     $current = &$values;
                     foreach ($levels as $level) {
                         if (!isset($current[$level])) {
-                            $current[$level] = array();
+                            $current[$level] = [];
                         }
                         $current = &$current[$level];
                     }
 
-                    $levels = array();
-                    $levelAttributes = array();
+                    $levels = [];
+                    $levelAttributes = [];
                     $article = $articleAttribute['uid_local'];
                 }
                 $levels[] = $articleAttribute['uid_valuelist'];
@@ -1322,7 +1322,7 @@ class Product extends AbstractEntity
             $current = &$values;
             foreach ($levels as $level) {
                 if (!isset($current[$level])) {
-                    $current[$level] = array();
+                    $current[$level] = [];
                 }
                 $current = &$current[$level];
             }
@@ -1342,13 +1342,13 @@ class Product extends AbstractEntity
             }
         }
 
-        $selectMatrix = array();
+        $selectMatrix = [];
         $possible = $values;
-        $impossible = array();
+        $impossible = [];
 
         foreach ($levelAttributes as $attributeUid) {
-            $tImpossible = array();
-            $tPossible = array();
+            $tImpossible = [];
+            $tPossible = [];
             $selected = $attributeValues[$attributeUid];
             if (!$selected) {
                 /**
@@ -1459,7 +1459,7 @@ class Product extends AbstractEntity
                 $uidToLoadFrom = $this->getT3verOid();
             }
 
-            $this->articles = array();
+            $this->articles = [];
             if (($this->articles_uids = $this->getRepository()->getArticles($uidToLoadFrom))) {
                 foreach ($this->articles_uids as $articleUid) {
                     /**
@@ -1548,11 +1548,11 @@ class Product extends AbstractEntity
         }
 
         // Update parent_category
-        $set = $this->getRepository()->updateRecord($this->uid, array('categories' => $parentUid));
+        $set = $this->getRepository()->updateRecord($this->uid, ['categories' => $parentUid]);
 
         // Update relations only, if parent_category was successfully set
         if ($set) {
-            $catList = array($parentUid);
+            $catList = [$parentUid];
             $catList = BackendUtility::getUidListFromList($catList);
             $catList = BackendUtility::extractFieldArray($catList, 'uid_foreign', true);
             BackendUtility::saveRelations($this->uid, $catList, 'tx_commerce_products_categories_mm', true);

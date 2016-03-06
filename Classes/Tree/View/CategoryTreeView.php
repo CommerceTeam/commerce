@@ -25,7 +25,7 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
     /**
      * @var array
      */
-    public $fieldArray = array(
+    public $fieldArray = [
         'uid',
         'pid',
         'title',
@@ -36,7 +36,7 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
         'starttime',
         'endtime',
         'fe_group',
-    );
+    ];
 
     /**
      * override to use this treeName
@@ -108,14 +108,14 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
      */
     public function initializePositionSaving()
     {
-        $this->stored = array();
+        $this->stored = [];
     }
 
     /**
      * Returns the title for the input record. If blank, a "no title" label (localized) will be returned.
      * Do NOT htmlspecialchar the string from this function - has already been done.
      *
-     * @param array $row The input row array (where the key "title" is used for the title)
+     * @param array $row The input row (where the key "title" is used for the title)
      * @param int $titleLen Title length (30)
      * @return string The title.
      */

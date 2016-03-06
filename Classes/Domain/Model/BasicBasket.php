@@ -33,7 +33,7 @@ class BasicBasket
      *
      * @var array
      */
-    protected $basketItems = array();
+    protected $basketItems = [];
 
     /**
      * Net basket sum.
@@ -82,7 +82,7 @@ class BasicBasket
      *
      * @var array
      */
-    public $conf = array();
+    public $conf = [];
 
     /**
      * Get count of all articles of this type
@@ -161,7 +161,7 @@ class BasicBasket
          * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
          */
         if ($this->pricefromnet == 0) {
-            $grossSumArray = array();
+            $grossSumArray = [];
             foreach ($this->basketItems as $oneItem) {
                 if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
                     $grossSumArray[(string) $oneItem->getTax()] += $oneItem->getItemSumGross();
@@ -203,7 +203,7 @@ class BasicBasket
          * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
          */
         if ($this->pricefromnet == 1) {
-            $netSumArray = array();
+            $netSumArray = [];
             foreach ($this->basketItems as $oneItem) {
                 if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
                     $netSumArray[(string) $oneItem->getTax()] += $oneItem->getItemSumNet();
@@ -232,7 +232,7 @@ class BasicBasket
      */
     public function getArticlesByArticleTypeUidAsUidlist($articleTypeUid)
     {
-        $result = array();
+        $result = [];
 
         /**
          * Basket item.
@@ -251,16 +251,16 @@ class BasicBasket
     /**
      * Create an array of assoc arrays from the basket articles.
      *
-     * Array(
-     *     uid => array(
+     * [
+     *     uid => [
      *         'article' => result form tx_commerce_article->return_assoc_array(),
      *         'product' => result form tx_commerce_product->return_assoc_array(),
-     *     ),
-     *     uid2 =>array(
+     *     ],
+     *     uid2 => [
      *         'article' => result form tx_commerce_article->return_assoc_array();
      *         'product' => result form tx_commerce_product->return_assoc_array();
-     *     ),
-     * )
+     *     ],
+     * ]
      *
      * @param string $prefix Prefix for the keys
      *
@@ -268,7 +268,7 @@ class BasicBasket
      */
     public function getAssocArrays($prefix = '')
     {
-        $result = array();
+        $result = [];
 
         /**
          * Basket item.
@@ -523,7 +523,7 @@ class BasicBasket
          * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
          */
         if ($this->pricefromnet == 1) {
-            $netSumArray = array();
+            $netSumArray = [];
 
             foreach ($this->basketItems as $oneItem) {
                 $netSumArray[(string) $oneItem->getTax()] += $oneItem->getItemSumNet();
@@ -557,7 +557,7 @@ class BasicBasket
          * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
          */
         if ($this->pricefromnet == 0) {
-            $grossSumArray = array();
+            $grossSumArray = [];
             foreach ($this->basketItems as $oneItem) {
                 $grossSumArray[(string) $oneItem->getTax()] += $oneItem->getItemSumGross();
             }
@@ -599,7 +599,7 @@ class BasicBasket
      */
     public function getTaxRateSums()
     {
-        $taxes = array();
+        $taxes = [];
 
         /**
          * Basket item.
@@ -850,7 +850,7 @@ class BasicBasket
         $result = false;
 
         if ($this->isChangeable()) {
-            $this->basketItems = array();
+            $this->basketItems = [];
             $this->recalculateSums();
             $result = true;
         }

@@ -48,7 +48,7 @@ class BackendUtility
             'uid_local = ' . (int) $pUid
         );
 
-        $result = array();
+        $result = [];
         while (($categoryReference = $database->sql_fetch_assoc($pCategories))) {
             $this->getParentCategories($categoryReference['uid_foreign'], $result);
         }
@@ -73,7 +73,7 @@ class BackendUtility
             'uid_local = ' . (int) $uid
         );
 
-        $result = array();
+        $result = [];
         while (($categoryReference = $database->sql_fetch_assoc($pCategories))) {
             $result[] = $categoryReference['uid_foreign'];
         }
@@ -104,7 +104,7 @@ class BackendUtility
         $getValueListData = false
     ) {
         if (!$pUid) {
-            return array();
+            return [];
         }
 
         $database = self::getDatabaseConnection();
@@ -118,7 +118,7 @@ class BackendUtility
             'sorting, uid_foreign DESC, uid_correlationtype ASC'
         );
 
-        $result = array();
+        $result = [];
         while (($relData = $database->sql_fetch_assoc($res))) {
             if ($addAttributeData) {
                 // fetch the data from the attribute table
@@ -140,7 +140,7 @@ class BackendUtility
                         '',
                         'uid'
                     );
-                    $vlData = array();
+                    $vlData = [];
                     while (($vlEntry = $database->sql_fetch_assoc($vlRes))) {
                         $vlData[$vlEntry['uid']] = $vlEntry;
                     }
@@ -328,9 +328,9 @@ class BackendUtility
         array $catList,
         $ct = null,
         $uidField = 'uid',
-        array $excludeAttributes = array()
+        array $excludeAttributes = []
     ) {
-        $result = array();
+        $result = [];
         if (!is_array($catList)) {
             return $result;
         }
@@ -372,7 +372,7 @@ class BackendUtility
 
         // should we exclude some attributes
         if (is_array($excludeAttributes) && !empty($excludeAttributes)) {
-            $eAttributes = array();
+            $eAttributes = [];
             foreach ($excludeAttributes as $eAttribute) {
                 $eAttributes[] = (int) $eAttribute['uid_foreign'];
             }
@@ -389,7 +389,7 @@ class BackendUtility
         );
 
         // build the result and return it...
-        $result = array();
+        $result = [];
         while (($attribute = $database->sql_fetch_assoc($res))) {
             $result[] = $attribute;
         }
@@ -425,7 +425,7 @@ class BackendUtility
      */
     public function getAttributeTitles(array $attributeList, $uidField = 'uid')
     {
-        $result = array();
+        $result = [];
         if (is_array($attributeList) && !empty($attributeList)) {
             foreach ($attributeList as $attribute) {
                 $result[] = $this->getAttributeTitle($attribute[$uidField]);
@@ -498,7 +498,7 @@ class BackendUtility
 
         if ($attributeData['has_valuelist'] == '1') {
             if ($attributeData['multiple'] == 1) {
-                $result = array();
+                $result = [];
                 if (is_array($relationData)) {
                     foreach ($relationData as $relation) {
                         $valueRes = $database->exec_SELECTquery(
@@ -600,7 +600,7 @@ class BackendUtility
 
         $res = $database->exec_SELECTquery('uid', 'tx_commerce_articles', $where, '', $orderBy);
         if ($database->sql_num_rows($res)) {
-            $result = array();
+            $result = [];
             while (($article = $database->sql_fetch_assoc($res))) {
                 $result[] = $article['uid'];
             }
@@ -652,7 +652,7 @@ class BackendUtility
      *
      * @return array of attributes
      */
-    public function getAttributesForArticle($aUid, $ct = null, array $excludeAttributes = array())
+    public function getAttributesForArticle($aUid, $ct = null, array $excludeAttributes = [])
     {
         // build the basic query
         $where = 'uid_local = ' . $aUid;
@@ -661,7 +661,7 @@ class BackendUtility
             $pUid = $this->getProductOfArticle($aUid, 'uid');
 
             $productAttributes = $this->getAttributesForProduct($pUid['uid']);
-            $ctAttributes = array();
+            $ctAttributes = [];
             if (is_array($productAttributes)) {
                 foreach ($productAttributes as $productAttribute) {
                     if ($productAttribute['uid_correlationtype'] == $ct) {
@@ -676,7 +676,7 @@ class BackendUtility
 
         // should we exclude some attributes
         if (is_array($excludeAttributes) && !empty($excludeAttributes)) {
-            $eAttributes = array();
+            $eAttributes = [];
             foreach ($excludeAttributes as $eAttribute) {
                 $eAttributes[] = (int) $eAttribute['uid_foreign'];
             }
@@ -708,7 +708,7 @@ class BackendUtility
     {
         $database = self::getDatabaseConnection();
 
-        $hashData = array();
+        $hashData = [];
 
         if (!empty($fullAttributeList)) {
             $res = $database->exec_SELECTquery(
@@ -738,10 +738,10 @@ class BackendUtility
      *
      * @return void
      */
-    public function updateArticleHash($aUid, array $fullAttributeList = array())
+    public function updateArticleHash($aUid, array $fullAttributeList = [])
     {
         if ($fullAttributeList == null) {
-            $fullAttributeList = array();
+            $fullAttributeList = [];
             $articleAttributes = $this->getAttributesForArticle($aUid, 1);
             if (!empty($articleAttributes)) {
                 foreach ($articleAttributes as $articleAttribute) {
@@ -756,7 +756,7 @@ class BackendUtility
         self::getDatabaseConnection()->exec_UPDATEquery(
             'tx_commerce_articles',
             'uid = ' . (int) $aUid,
-            array('attribute_hash' => $hash)
+            ['attribute_hash' => $hash]
         );
     }
 
@@ -853,8 +853,8 @@ class BackendUtility
      */
     public static function getUidListFromList(array $list)
     {
-        $keyData = array();
-        $result = array();
+        $keyData = [];
+        $result = [];
         if (is_array($list)) {
             foreach ($list as $item) {
                 $uid = self::getUidFromKey($item, $keyData);
@@ -888,7 +888,7 @@ class BackendUtility
         $delete = false,
         $withReference = true
     ) {
-        $delWhere = array();
+        $delWhere = [];
         $counter = 1;
 
         $database = self::getDatabaseConnection();
@@ -896,7 +896,7 @@ class BackendUtility
         if (is_array($relationData)) {
             foreach ($relationData as $relation) {
                 $where = 'uid_local = ' . (int) $uidLocal;
-                $dataArray = array('uid_local' => (int) $uidLocal);
+                $dataArray = ['uid_local' => (int) $uidLocal];
 
                 if (is_array($relation)) {
                     foreach ($relation as $key => $data) {
@@ -918,7 +918,7 @@ class BackendUtility
                 if (!$exists) {
                     $database->exec_INSERTquery($relationTable, $dataArray);
                 } else {
-                    $database->exec_UPDATEquery($relationTable, $where, array('sorting' => $counter));
+                    $database->exec_UPDATEquery($relationTable, $where, ['sorting' => $counter]);
                 }
 
                 if (isset($relation['uid_foreign'])) {
@@ -947,7 +947,7 @@ class BackendUtility
         $database = self::getDatabaseConnection();
 
         $ctRes = $database->exec_SELECTquery('uid', 'tx_commerce_attribute_correlationtypes', '1');
-        $result = array();
+        $result = [];
         while (($correlationType = $database->sql_fetch_assoc($ctRes))) {
             $result[] = $correlationType;
         }
@@ -974,14 +974,14 @@ class BackendUtility
     {
         $database = self::getDatabaseConnection();
 
-        $xmlData = array();
+        $xmlData = [];
         if ($add && is_numeric($articleUid)) {
             $result = $database->exec_SELECTquery('attributesedit', 'tx_commerce_articles', 'uid=' . (int) $articleUid);
             $xmlData = $database->sql_fetch_assoc($result);
             $xmlData = GeneralUtility::xml2array($xmlData['attributesedit']);
         }
 
-        $relationData = array();
+        $relationData = [];
         /*
          * Build Relation Data
          */
@@ -1024,8 +1024,7 @@ class BackendUtility
                     }
                 }
 
-                $xmlData['data']['sDEF']['lDEF']['attribute_' . $articleRelation['uid_foreign']] =
-                    array('vDEF' => $value);
+                $xmlData['data']['sDEF']['lDEF']['attribute_' . $articleRelation['uid_foreign']] = ['vDEF' => $value];
             }
         }
 
@@ -1035,13 +1034,13 @@ class BackendUtility
             $database->exec_UPDATEquery(
                 'tx_commerce_articles',
                 'uid = ' . $articleUid . ' AND deleted = 0',
-                array('attributesedit' => $xmlData)
+                ['attributesedit' => $xmlData]
             );
         } elseif ($productUid) {
             $database->exec_UPDATEquery(
                 'tx_commerce_articles',
                 'uid_product = ' . $productUid . ' AND deleted = 0',
-                array('attributesedit' => $xmlData)
+                ['attributesedit' => $xmlData]
             );
         }
     }
@@ -1067,7 +1066,7 @@ class BackendUtility
         $xmlData = $database->sql_fetch_assoc($xmlDataResult);
         $xmlData = GeneralUtility::xml2array($xmlData[$xmlField]);
         if (!is_array($xmlData)) {
-            $xmlData = array();
+            $xmlData = [];
         }
 
         $relList = null;
@@ -1083,12 +1082,12 @@ class BackendUtility
             default:
         }
 
-        $cTypes = array();
+        $cTypes = [];
 
         // write the data
         if (is_array($ctList)) {
             foreach ($ctList as $ct) {
-                $value = array();
+                $value = [];
                 if (is_array($relList)) {
                     foreach ($relList as $relation) {
                         if (isset($ct['uid']) && $relation['uid_correlationtype'] == (int) $ct['uid']) {
@@ -1104,7 +1103,7 @@ class BackendUtility
 
                 if (!empty($value)) {
                     $xmlData['data']['sDEF']['lDEF']['ct_' . (string) $ct['uid']] =
-                        array('vDEF' => (string) implode(',', $value));
+                        ['vDEF' => (string) implode(',', $value)];
                 }
             }
         }
@@ -1113,7 +1112,7 @@ class BackendUtility
         if ($rebuild && !empty($cTypes) && is_array($ctList)) {
             foreach ($ctList as $ct) {
                 if (!in_array($ct['uid'], $cTypes)) {
-                    $xmlData['data']['sDEF']['lDEF']['ct_' . (string) $ct['uid']] = array('vDEF' => '');
+                    $xmlData['data']['sDEF']['lDEF']['ct_' . (string) $ct['uid']] = ['vDEF' => ''];
                 }
             }
         }
@@ -1127,9 +1126,9 @@ class BackendUtility
         }
 
         // update database entry
-        $database->exec_UPDATEquery($table, 'uid = ' . $uid, array($xmlField => $xmlData));
+        $database->exec_UPDATEquery($table, 'uid = ' . $uid, [$xmlField => $xmlData]);
 
-        return array($xmlField => $xmlData);
+        return [$xmlField => $xmlData];
     }
 
     /**
@@ -1157,11 +1156,11 @@ class BackendUtility
                         && $this->checkArray($ctUid['uid'], $paList, 'uid_correlationtype')
                     )) {
                         if ($aUid != '') {
-                            $newRel = array(
+                            $newRel = [
                                 'uid_local' => $uidLocal,
                                 'uid_foreign' => $aUid,
                                 'uid_correlationtype' => $ctUid['uid'],
-                            );
+                            ];
 
                             $paList[] = $newRel;
                         }
@@ -1182,9 +1181,9 @@ class BackendUtility
      *
      * @return array with fieldnames
      */
-    public static function extractFieldArray(array $array, $field, $makeArray = false, array $extraFields = array())
+    public static function extractFieldArray(array $array, $field, $makeArray = false, array $extraFields = [])
     {
-        $result = array();
+        $result = [];
         if (is_array($array)) {
             foreach ($array as $data) {
                 if (!is_array($data) || (is_array($data) && !array_key_exists($field, $data))) {
@@ -1193,7 +1192,7 @@ class BackendUtility
                     $item = $data;
                 }
                 if ($makeArray) {
-                    $newItem = array($field => $item[$field]);
+                    $newItem = [$field => $item[$field]];
                     if (!empty($extraFields)) {
                         foreach ($extraFields as $extraFieldName) {
                             $newItem[$extraFieldName] = $item[$extraFieldName];
@@ -1241,7 +1240,7 @@ class BackendUtility
      */
     public function getUpdateData(array $attributeData, $data, $productUid = 0)
     {
-        $updateArray = array();
+        $updateArray = [];
         $updateArray['uid_valuelist'] = '';
         $updateArray['default_value'] = '';
         $updateArray2 = $updateArray;
@@ -1261,7 +1260,7 @@ class BackendUtility
             }
         }
 
-        return array($updateArray, $updateArray2);
+        return [$updateArray, $updateArray2];
     }
 
     /**
@@ -1336,35 +1335,35 @@ class BackendUtility
         if (strlen($prices['prices']) > 0) {
             $data = GeneralUtility::xml2array($prices['prices']);
         } else {
-            $data = array('data' => array('sDEF' => array('lDEF')));
+            $data = ['data' => ['sDEF' => ['lDEF']]];
         }
 
-        $data['data']['sDEF']['lDEF']['price_net_' . $priceUid] = array(
+        $data['data']['sDEF']['lDEF']['price_net_' . $priceUid] = [
             'vDEF' => sprintf('%.2f', ($priceDataArray['price_net'] /100))
-        );
-        $data['data']['sDEF']['lDEF']['price_gross_' . $priceUid] = array(
+        ];
+        $data['data']['sDEF']['lDEF']['price_gross_' . $priceUid] = [
             'vDEF' => sprintf('%.2f', ($priceDataArray['price_gross'] /100))
-        );
-        $data['data']['sDEF']['lDEF']['hidden_' . $priceUid] = array('vDEF' => $priceDataArray['hidden']);
-        $data['data']['sDEF']['lDEF']['starttime_' . $priceUid] = array('vDEF' => $priceDataArray['starttime']);
-        $data['data']['sDEF']['lDEF']['endtime_' . $priceUid] = array('vDEF' => $priceDataArray['endtime']);
-        $data['data']['sDEF']['lDEF']['fe_group_' . $priceUid] = array('vDEF' => $priceDataArray['fe_group']);
-        $data['data']['sDEF']['lDEF']['purchase_price_' . $priceUid] = array(
+        ];
+        $data['data']['sDEF']['lDEF']['hidden_' . $priceUid] = ['vDEF' => $priceDataArray['hidden']];
+        $data['data']['sDEF']['lDEF']['starttime_' . $priceUid] = ['vDEF' => $priceDataArray['starttime']];
+        $data['data']['sDEF']['lDEF']['endtime_' . $priceUid] = ['vDEF' => $priceDataArray['endtime']];
+        $data['data']['sDEF']['lDEF']['fe_group_' . $priceUid] = ['vDEF' => $priceDataArray['fe_group']];
+        $data['data']['sDEF']['lDEF']['purchase_price_' . $priceUid] = [
             'vDEF' => sprintf('%.2f', ($priceDataArray['purchase_price'] /100))
-        );
-        $data['data']['sDEF']['lDEF']['price_scale_amount_start_' . $priceUid] = array(
+        ];
+        $data['data']['sDEF']['lDEF']['price_scale_amount_start_' . $priceUid] = [
             'vDEF' => $priceDataArray['price_scale_amount_start']
-        );
-        $data['data']['sDEF']['lDEF']['price_scale_amount_end_' . $priceUid] = array(
+        ];
+        $data['data']['sDEF']['lDEF']['price_scale_amount_end_' . $priceUid] = [
             'vDEF' => $priceDataArray['price_scale_amount_end']
-        );
+        ];
 
         $xml = GeneralUtility::array2xml($data, '', 0, 'T3FlexForms');
 
         $res = $this->getDatabaseConnection()->exec_UPDATEquery(
             'tx_commerce_articles',
             'uid = ' . (int) $articleUid,
-            array('prices' => $xml)
+            ['prices' => $xml]
         );
 
         return (bool)$res;
@@ -1381,7 +1380,7 @@ class BackendUtility
      */
     public static function getOrderFolderSelector($pid, $levels, $aktLevel = 0)
     {
-        $returnArray = array();
+        $returnArray = [];
         /*
          * Query the table to build dropdown list
          */
@@ -1405,7 +1404,7 @@ class BackendUtility
             while (($returnData = $database->sql_fetch_assoc($result))) {
                 $returnData['title'] = $prep . $returnData['title'];
 
-                $returnArray[] = array($returnData['title'], $returnData['uid']);
+                $returnArray[] = [$returnData['title'], $returnData['uid']];
                 $tmparray = self::getOrderFolderSelector($returnData['uid'], $levels - 1, $aktLevel + 1);
                 if (is_array($tmparray)) {
                     $returnArray = array_merge($returnArray, $tmparray);
@@ -1437,20 +1436,20 @@ class BackendUtility
             'deleted = 0 AND uid_article = ' . (int) $articleUid
         );
 
-        $data = array('data' => array('sDEF' => array('lDEF')));
+        $data = ['data' => ['sDEF' => ['lDEF']]];
         $lDef = &$data['data']['sDEF']['lDEF'];
         while (($price = $database->sql_fetch_assoc($res))) {
             $priceUid = $price['uid'];
 
-            $lDef['price_net_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($price['price_net'] / 100)));
-            $lDef['price_gross_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($price['price_gross'] / 100)));
-            $lDef['purchase_price_' . $priceUid] = array('vDEF' => sprintf('%.2f', ($price['purchase_price'] / 100)));
-            $lDef['hidden_' . $priceUid] = array('vDEF' => $price['hidden']);
-            $lDef['starttime_' . $priceUid] = array('vDEF' => $price['starttime']);
-            $lDef['endtime_' . $priceUid] = array('vDEF' => $price['endtime']);
-            $lDef['fe_group_' . $priceUid] = array('vDEF' => $price['fe_group']);
-            $lDef['price_scale_amount_start_' . $priceUid] = array('vDEF' => $price['price_scale_amount_start']);
-            $lDef['price_scale_amount_end_' . $priceUid] = array('vDEF' => $price['price_scale_amount_end']);
+            $lDef['price_net_' . $priceUid] = ['vDEF' => sprintf('%.2f', ($price['price_net'] / 100))];
+            $lDef['price_gross_' . $priceUid] = ['vDEF' => sprintf('%.2f', ($price['price_gross'] / 100))];
+            $lDef['purchase_price_' . $priceUid] = ['vDEF' => sprintf('%.2f', ($price['purchase_price'] / 100))];
+            $lDef['hidden_' . $priceUid] = ['vDEF' => $price['hidden']];
+            $lDef['starttime_' . $priceUid] = ['vDEF' => $price['starttime']];
+            $lDef['endtime_' . $priceUid] = ['vDEF' => $price['endtime']];
+            $lDef['fe_group_' . $priceUid] = ['vDEF' => $price['fe_group']];
+            $lDef['price_scale_amount_start_' . $priceUid] = ['vDEF' => $price['price_scale_amount_start']];
+            $lDef['price_scale_amount_end_' . $priceUid] = ['vDEF' => $price['price_scale_amount_end']];
         }
 
         $xml = GeneralUtility::array2xml($data, '', 0, 'T3FlexForms');
@@ -1458,7 +1457,7 @@ class BackendUtility
         $res = $database->exec_UPDATEquery(
             'tx_commerce_articles',
             'uid = ' . $articleUid,
-            array('prices' => $xml)
+            ['prices' => $xml]
         );
 
         return (bool) $res;
@@ -1506,7 +1505,7 @@ class BackendUtility
             $database->exec_UPDATEquery(
                 'tx_commerce_products_attributes_mm',
                 'uid_local = ' . (int) $pUidFrom,
-                array('uid_local' => (int) $pUidTo)
+                ['uid_local' => (int) $pUidTo]
             );
 
             $success = $database->sql_error() == '';
@@ -1573,7 +1572,7 @@ class BackendUtility
             $database->exec_UPDATEquery(
                 'tx_commerce_articles',
                 'uid_product = ' . $pUidFrom,
-                array('uid_product' => $pUidTo)
+                ['uid_product' => $pUidTo]
             );
 
             $success = $database->sql_error() == '';
@@ -1605,7 +1604,7 @@ class BackendUtility
      *
      * @return int UID of the new article or false on error
      */
-    public function copyArticle($uid, $uidProduct, array $locale = array())
+    public function copyArticle($uid, $uidProduct, array $locale = [])
     {
         $backendUser = self::getBackendUserAuthentication();
         $database = self::getDatabaseConnection();
@@ -1659,10 +1658,10 @@ class BackendUtility
         }
 
         // start
-        $tce->start(array(), array());
+        $tce->start([], []);
 
         // invoke the copy manually so we can actually override the uid_product field
-        $overrideArray = array('uid_product' => $uidProduct);
+        $overrideArray = ['uid_product' => $uidProduct];
 
         // Write to session that we copy
         // this is used by the hook to the datamap class
@@ -1745,10 +1744,10 @@ class BackendUtility
             }
 
             // start
-            $tce->start(array(), array());
+            $tce->start([], []);
 
             // invoke the copy manually so we can actually override the uid_product field
-            $overrideArray = array('uid_article' => $uidTo);
+            $overrideArray = ['uid_article' => $uidTo];
 
             $backendUser->uc['txcommerce_copyProcess'] = 1;
             $backendUser->writeUC();
@@ -1926,10 +1925,10 @@ class BackendUtility
         }
 
         // start
-        $tce->start(array(), array());
+        $tce->start([], []);
 
         // invoke the copy manually so we can actually override the categories field
-        $overrideArray = array('categories' => $categoryUid);
+        $overrideArray = ['categories' => $categoryUid];
 
         // Hook: beforeCopy
         foreach ($hooks as $hookObj) {
@@ -2042,7 +2041,7 @@ class BackendUtility
                 $rec[0]['uid_product'] = $row['uid'];
             }
 
-            $data = array();
+            $data = [];
 
             $newUid = uniqid('NEW');
             $data[$table][$newUid] = $rec[0];
@@ -2064,7 +2063,7 @@ class BackendUtility
             }
 
             // start
-            $tce->start($data, array());
+            $tce->start($data, []);
 
             // Write to session that we copy
             // this is used by the hook to the datamap class to figure out if
@@ -2163,7 +2162,7 @@ class BackendUtility
                 }
             }
 
-            $data = array();
+            $data = [];
             $data[$table][$recTo[0]['uid']] = $recFrom[0];
 
             // init tce
@@ -2180,7 +2179,7 @@ class BackendUtility
             }
 
             // start
-            $tce->start($data, array());
+            $tce->start($data, []);
 
             // Write to session that we copy
             // this is used by the hook to the datamap class to figure out if
@@ -2232,7 +2231,7 @@ class BackendUtility
 
         // delete them
         while (($row = $database->sql_fetch_assoc($res))) {
-            $database->exec_UPDATEquery($table, 'uid = ' . $row['uid'], array('deleted' => 1));
+            $database->exec_UPDATEquery($table, 'uid = ' . $row['uid'], ['deleted' => 1]);
         }
 
         return true;
@@ -2313,12 +2312,10 @@ class BackendUtility
         }
 
         // start
-        $tce->start(array(), array());
+        $tce->start([], []);
 
         // invoke the copy manually so we can actually override the categories field
-        $overrideArray = array(
-            'parent_category' => $parentUid,
-        );
+        $overrideArray = ['parent_category' => $parentUid];
 
         // Hook: beforeCopy
         foreach ($hooks as $hookObj) {
@@ -2395,13 +2392,13 @@ class BackendUtility
 
         while (($row = $database->sql_fetch_assoc($res))) {
             // apply the permissions
-            $updateFields = array(
+            $updateFields = [
                 'perms_everybody' => $row['perms_everybody'],
                 'perms_group' => $row['perms_group'],
                 'perms_user' => $row['perms_user'],
                 'perms_userid' => $row['perms_userid'],
                 'perms_groupid' => $row['perms_groupid'],
-            );
+            ];
 
             $res2 = $database->exec_UPDATEquery('tx_commerce_categories', 'uid = ' . $uidToChmod, $updateFields);
         }
@@ -2892,7 +2889,7 @@ class BackendUtility
         }
 
         if ($fullTitleLimit) {
-            return array($output, $fullOutput);
+            return [$output, $fullOutput];
         } else {
             return $output;
         }
@@ -2920,9 +2917,9 @@ class BackendUtility
      */
     public static function BEgetRootLine($uid, $clause = '', $workspaceOl = false)
     {
-        static $backendGetRootLineCache = array();
+        static $backendGetRootLineCache = [];
 
-        $output = array();
+        $output = [];
         $pid = $uid;
         $ident = $pid . '-' . $clause . '-' . $workspaceOl;
 
@@ -2930,7 +2927,7 @@ class BackendUtility
             $output = $backendGetRootLineCache[$ident];
         } else {
             $loopCheck = 100;
-            $theRowArray = array();
+            $theRowArray = [];
             while ($uid != 0 && $loopCheck) {
                 $loopCheck--;
                 $row = self::getCategoryForRootline($uid, $clause, $workspaceOl);
@@ -2942,13 +2939,13 @@ class BackendUtility
                 }
             }
             if ($uid == 0) {
-                $theRowArray[] = array('uid' => 0, 'title' => '');
+                $theRowArray[] = ['uid' => 0, 'title' => ''];
             }
             $c = count($theRowArray);
 
             foreach ($theRowArray as $val) {
                 --$c;
-                $output[$c] = array(
+                $output[$c] = [
                     'uid' => $val['uid'],
                     'pid' => $val['pid'],
                     'title' => $val['title'],
@@ -2957,7 +2954,7 @@ class BackendUtility
                     't3ver_wsid' => $val['t3ver_wsid'],
                     't3ver_state' => $val['t3ver_state'],
                     't3ver_stage' => $val['t3ver_stage'],
-                );
+                ];
                 if (isset($val['_ORIG_pid'])) {
                     $output[$c]['_ORIG_pid'] = $val['_ORIG_pid'];
                 }
@@ -2984,7 +2981,7 @@ class BackendUtility
      */
     protected static function getCategoryForRootline($uid, $clause, $workspaceOl)
     {
-        static $getCategoryForRootlineCache = array();
+        static $getCategoryForRootlineCache = [];
         $ident = $uid . '-' . $clause . '-' . $workspaceOl;
 
         if (is_array($getCategoryForRootlineCache[$ident])) {
@@ -3115,7 +3112,7 @@ class BackendUtility
      *
      * @return bool
      */
-    public static function overwriteProduct($uidFrom, $uidTo, array $locale = array())
+    public static function overwriteProduct($uidFrom, $uidTo, array $locale = [])
     {
         $table = 'tx_commerce_products';
 
@@ -3199,7 +3196,7 @@ class BackendUtility
             }
         }
 
-        $tce->start($datamap, array());
+        $tce->start($datamap, []);
         $tce->process_datamap();
 
         // Hook: afterOverwrite
@@ -3285,7 +3282,7 @@ class BackendUtility
             $tce->setDefaultsFromUserTS($tcaDefaultOverride);
         }
 
-        $tce->start(array(), array());
+        $tce->start([], []);
 
         $first = 0;
         $language = 0;
@@ -3296,7 +3293,7 @@ class BackendUtility
         if ($tableConfig && $uid) {
             // This checks if the record can be selected
             // which is all that a copy action requires.
-            $data = array();
+            $data = [];
 
             $nonFields = array_unique(GeneralUtility::trimExplode(
                 ',',
@@ -3319,7 +3316,7 @@ class BackendUtility
                 $defaultData = $tce->newFieldArray($table);
 
                 // Getting "copy-after" fields if applicable:
-                $copyAfterFields = array();
+                $copyAfterFields = [];
 
                 // Page TSconfig related:
                 // NOT using BackendUtility::getTSCpid() because we need the
@@ -3409,7 +3406,7 @@ class BackendUtility
             }
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -3481,7 +3478,7 @@ class BackendUtility
         if (is_array($tcaDefaultOverride)) {
             $tce->setDefaultsFromUserTS($tcaDefaultOverride);
         }
-        $tce->start($datamap, array());
+        $tce->start($datamap, []);
 
         // Write to session that we copy
         // this is used by the hook to the datamap class

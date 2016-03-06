@@ -120,21 +120,21 @@ call_user_func(function ($packageKey) {
         ];
 
         // Add category tree control with data provider
-        $typo3ConfVars['SYS']['formEngine']['nodeRegistry']['1456642633182'] = array(
+        $typo3ConfVars['SYS']['formEngine']['nodeRegistry']['1456642633182'] = [
             'nodeName' => 'commerceCategoryTree',
             'priority' => 100,
             'class' => \CommerceTeam\Commerce\Form\Element\CategoryTreeElement::class
-        );
+        ];
         $typo3ConfVars['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord']
             [\CommerceTeam\Commerce\Form\FormDataProvider\TcaSelectItems::class] =
-            array(
-                'depends' => array(
-                    \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems::class,
-                ),
-                'before' => array(
-                    \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectTreeItems::class,
-                ),
-            );
+        [
+            'depends' => [
+                \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems::class,
+            ],
+            'before' => [
+                \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectTreeItems::class,
+            ],
+        ];
 
         // CLI Script configuration
         // Add statistic task
