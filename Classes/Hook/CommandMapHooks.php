@@ -895,7 +895,7 @@ class CommandMapHooks
 
         $this->getDatabaseConnection()->exec_UPDATEquery(
             'tx_commerce_article_prices',
-            'uid IN (' . implode(',', $articleList) . ')',
+            'uid_article IN (' . implode(',', $articleList) . ')',
             $updateValues
         );
     }
