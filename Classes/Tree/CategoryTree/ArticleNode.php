@@ -47,7 +47,7 @@ class ArticleNode extends CategoryNode
     {
         $params = '&edit[' . $this->getType() . '][' . $this->getId() . ']=edit';
         $id = FolderRepository::initFolders('Products');
-
+// @todo change returnUrl
         return BackendUtility::getModuleUrl('record_edit') . '&id=' . $id . $params . '&returnUrl=T3_THIS_LOCATION';
     }
 }

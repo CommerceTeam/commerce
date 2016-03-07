@@ -370,7 +370,7 @@ class Commands
         if (is_array($lockInfo)) {
             $qtip .= '<br />' . htmlspecialchars($lockInfo['msg']);
             $prefix .= '<span class="commerce-categorytree-status">'
-                . (string)$iconFactory->getIcon('status-warning-in-use', Icon::SIZE_SMALL) . '</span>';
+                . (string)$iconFactory->getIcon('status-warning-in-use', Icon::SIZE_SMALL)->render() . '</span>';
         }
         // Call stats information hook
         $stat = '';
@@ -388,7 +388,7 @@ class Commands
         if ((int)$record['uid'] !== 0) {
             $spriteIconCode = $iconFactory->getIconForRecord('tx_commerce_categories', $record, Icon::SIZE_SMALL);
         } else {
-            $spriteIconCode = $iconFactory->getIcon('apps-pagetree-root', Icon::SIZE_SMALL);
+            $spriteIconCode = $iconFactory->getIcon('apps-pagetree-root', Icon::SIZE_SMALL)->render();
         }
         $subNode->setSpriteIconCode((string)$spriteIconCode);
         if (!$subNode->canCreateNewPages()
@@ -463,7 +463,7 @@ class Commands
         if (is_array($lockInfo)) {
             $qtip .= '<br />' . htmlspecialchars($lockInfo['msg']);
             $prefix .= '<span class="commerce-categorytree-status">'
-                . (string)$iconFactory->getIcon('status-warning-in-use', Icon::SIZE_SMALL) . '</span>';
+                . (string)$iconFactory->getIcon('status-warning-in-use', Icon::SIZE_SMALL)->render() . '</span>';
         }
         // Call stats information hook
         $stat = '';
@@ -479,9 +479,13 @@ class Commands
         $subNode->setText(htmlspecialchars($visibleText), $field, $prefix, htmlspecialchars($suffix) . $stat);
         $subNode->setQTip($qtip);
         if ((int)$record['uid'] !== 0) {
-            $spriteIconCode = $iconFactory->getIconForRecord('tx_commerce_products', $record, Icon::SIZE_SMALL);
+            $spriteIconCode = $iconFactory->getIconForRecord(
+                'tx_commerce_products',
+                $record,
+                Icon::SIZE_SMALL
+            )->render();
         } else {
-            $spriteIconCode = $iconFactory->getIcon('apps-pagetree-root', Icon::SIZE_SMALL);
+            $spriteIconCode = $iconFactory->getIcon('apps-pagetree-root', Icon::SIZE_SMALL)->render();
         }
         $subNode->setSpriteIconCode((string)$spriteIconCode);
         if (!$subNode->canCreateNewPages()
@@ -554,7 +558,7 @@ class Commands
         if (is_array($lockInfo)) {
             $qtip .= '<br />' . htmlspecialchars($lockInfo['msg']);
             $prefix .= '<span class="commerce-categorytree-status">'
-                . (string)$iconFactory->getIcon('status-warning-in-use', Icon::SIZE_SMALL) . '</span>';
+                . (string)$iconFactory->getIcon('status-warning-in-use', Icon::SIZE_SMALL)->render() . '</span>';
         }
         // Call stats information hook
         $stat = '';
@@ -570,9 +574,13 @@ class Commands
         $subNode->setText(htmlspecialchars($visibleText), $field, $prefix, htmlspecialchars($suffix) . $stat);
         $subNode->setQTip($qtip);
         if ((int)$record['uid'] !== 0) {
-            $spriteIconCode = $iconFactory->getIconForRecord('tx_commerce_articles', $record, Icon::SIZE_SMALL);
+            $spriteIconCode = $iconFactory->getIconForRecord(
+                'tx_commerce_articles',
+                $record,
+                Icon::SIZE_SMALL
+            )->render();
         } else {
-            $spriteIconCode = $iconFactory->getIcon('apps-pagetree-root', Icon::SIZE_SMALL);
+            $spriteIconCode = $iconFactory->getIcon('apps-pagetree-root', Icon::SIZE_SMALL)->render();
         }
         $subNode->setSpriteIconCode((string)$spriteIconCode);
         if (!$subNode->canCreateNewPages()

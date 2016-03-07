@@ -519,7 +519,7 @@ class ClickmenuUtility extends ClickMenu
 
         return $this->linkItem(
             $this->label('new'),
-            $this->excludeIcon($this->iconFactory->getIcon('actions-document-new', Icon::SIZE_SMALL)),
+            $this->excludeIcon($this->iconFactory->getIcon('actions-document-new', Icon::SIZE_SMALL)->render()),
             $editOnClick . 'return hideCM();'
         );
     }

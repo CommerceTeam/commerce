@@ -409,7 +409,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode
     public function getJumpUrl()
     {
         $params = '&control[categoryUid]=' . $this->getId();
-
+// @todo change returnUrl
         return $params;
     }
 

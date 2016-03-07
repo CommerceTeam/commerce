@@ -391,8 +391,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
                         <TCEforms>
                             <config>
                                 <type>user</type>
-                                <userFunc>' . \CommerceTeam\Commerce\Form\Element\ArticleCreatorElement::class .
-                        '->existingArticles</userFunc>
+                                <renderType>commerceExistingArticles</renderType>
                             </config>
                         </TCEforms>
                     </existingArticles>
@@ -411,8 +410,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
                         <TCEforms>
                             <config>
                                 <type>user</type>
-                                <userFunc>' . \CommerceTeam\Commerce\Form\Element\ArticleCreatorElement::class .
-                        '->producibleArticles</userFunc>
+                                <renderType>commerceAvailableArticles</renderType>
                             </config>
                         </TCEforms>
                     </producibleArticles>

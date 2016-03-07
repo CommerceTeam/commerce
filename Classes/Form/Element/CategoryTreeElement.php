@@ -17,7 +17,7 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
     protected $items = [];
 
     /**
-     * Render side by side element.
+     * Render category tree element.
      *
      * @return array As defined in initializeResultArray() of AbstractNode
      */

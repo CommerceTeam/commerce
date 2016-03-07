@@ -136,6 +136,29 @@ call_user_func(function ($packageKey) {
             ],
         ];
 
+        // Add existing articles control for product
+        $typo3ConfVars['SYS']['formEngine']['nodeRegistry']['1456642633183'] = [
+            'nodeName' => 'commerceExistingArticles',
+            'priority' => 100,
+            'class' => \CommerceTeam\Commerce\Form\Element\ExistingArticlesElement::class
+        ];
+        // Add available articles control for product
+        $typo3ConfVars['SYS']['formEngine']['nodeRegistry']['1456642633184'] = [
+            'nodeName' => 'commerceAvailableArticles',
+            'priority' => 100,
+            'class' => \CommerceTeam\Commerce\Form\Element\AvailableArticlesElement::class
+        ];
+        $typo3ConfVars['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord']
+            [\CommerceTeam\Commerce\Form\FormDataProvider\DatabaseRowArticleData::class] =
+        [
+            'depends' => [
+                \CommerceTeam\Commerce\Form\FormDataProvider\TcaSelectItems::class,
+            ],
+            'before' => [
+                \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectTreeItems::class,
+            ],
+        ];
+
         // CLI Script configuration
         // Add statistic task
         /* @noinspection PhpUndefinedVariableInspection */
@@ -184,7 +207,6 @@ call_user_func(function ($packageKey) {
 
     // Hooks for commandmap processing
     // For new drawing of the category tree after having deleted a record
-    //@todo check if needed
     $scOptions['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['commerce'] =
         \CommerceTeam\Commerce\Hook\CommandMapHooks::class;
 

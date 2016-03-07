@@ -52,7 +52,7 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
                     BackendUtility::editOnClick('&edit[' . $table . '][' . $row['uid'] . ']=edit')
                 )
                 . '" title="' . $language->sL('LLL:EXT:lang/locallang_core.xlf:cm.edit') . '">'
-                . $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL) . '</a>';
+                . $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render() . '</a>';
 
             // Delete link:
             $adminLink .= '<a href="' .
@@ -60,7 +60,7 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
                     '&cmd[' . $table . '][' . $row['uid'] . '][delete]=1'
                 ))
                 . '" title="' . $language->sL('LLL:EXT:lang/locallang_core.xlf:cm.delete', true) . '">'
-                . $iconFactory->getIcon('actions-edit-delete', Icon::SIZE_SMALL) . '</a>';
+                . $iconFactory->getIcon('actions-edit-delete', Icon::SIZE_SMALL)->render() . '</a>';
 
             if ($row['pid'] == -1) {
                 // get page TSconfig
@@ -101,7 +101,7 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
                             $getVars
                         )
                     ) .
-                    '">' . $iconFactory->getIcon('actions-document-view', Icon::SIZE_SMALL) . '</a>';
+                    '">' . $iconFactory->getIcon('actions-document-view', Icon::SIZE_SMALL)->render() . '</a>';
             }
 
             return $adminLink;

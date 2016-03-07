@@ -264,7 +264,7 @@ class WizardController
                 $this->code .= '<br />
                     <a href="' . htmlspecialchars($this->returnUrl) . '" class="typo3-goBack" title="' .
                         $language->getLL('goBack', 1) . '">'.
-                        $this->iconFactory->getIcon('actions-view-go-back', Icon::SIZE_SMALL) .
+                        $this->iconFactory->getIcon('actions-view-go-back', Icon::SIZE_SMALL)->render() .
                     '</a>';
             }
                 // Add all the content to an output section

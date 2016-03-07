@@ -119,7 +119,7 @@ class SystemdataModuleManufacturerController extends SystemdataModuleController
             $editAction = '<a class="btn btn-default" href="#" onclick="'
                 . htmlspecialchars(BackendUtility::editOnClick($params, '', -1))
                 . '" title="' . $this->getLanguageService()->getLL('edit', true) . '">'
-                . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL) . '</a>';
+                . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render() . '</a>';
 
             // hide action
             $hiddenField = $GLOBALS['TCA'][$this->table]['ctrl']['enablecolumns']['disabled'];
@@ -138,7 +138,7 @@ class SystemdataModuleManufacturerController extends SystemdataModuleController
                 . ' data-params="' . htmlspecialchars($params) . '"'
                 . ' title="' . $unhideTitle . '"'
                 . ' data-toggle-title="' . $hideTitle . '">'
-                . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL) . '</a>';
+                . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render() . '</a>';
 
             // delete action
             $actionName = 'delete';
@@ -158,7 +158,7 @@ class SystemdataModuleManufacturerController extends SystemdataModuleController
                 . '[' . $this->table . ':' . $row['uid'] . ']' . $refCountMsg;
 
             $params = 'cmd[' . $this->table . '][' . $row['uid'] . '][delete]=1';
-            $icon = $this->iconFactory->getIcon('actions-edit-' . $actionName, Icon::SIZE_SMALL);
+            $icon = $this->iconFactory->getIcon('actions-edit-' . $actionName, Icon::SIZE_SMALL)->render();
             $linkTitle = $this->getLanguageService()->getLL($actionName, true);
             $deleteAction = '<a class="btn btn-default t3js-record-delete" href="#" '
                 . ' data-l10parent="' . htmlspecialchars($row['l10n_parent']) . '"'

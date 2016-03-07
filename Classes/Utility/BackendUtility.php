@@ -558,7 +558,7 @@ class BackendUtility
     /* ARTICLES */
 
     /**
-     * Return all articles that where created from a given product.
+     * Return all articles that were created for a given product.
      *
      * @param int $pUid UID of the product
      * @param string $additionalWhere Additional where string

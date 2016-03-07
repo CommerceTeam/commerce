@@ -150,7 +150,7 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
             $editAction = '<a class="btn btn-default" href="#" onclick="'
                 . htmlspecialchars(BackendUtility::editOnClick($params, '', -1))
                 . '" title="' . $this->getLanguageService()->getLL('edit', true) . '">'
-                . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL) . '</a>';
+                . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render() . '</a>';
 
             // Delete link
             $actionName = 'delete';
@@ -170,7 +170,7 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
                 . '[' . $this->table . ':' . $attribute['uid'] . ']' . $refCountMsg;
 
             $params = 'cmd[' . $this->table . '][' . $attribute['uid'] . '][delete]=1';
-            $icon = $this->iconFactory->getIcon('actions-edit-' . $actionName, Icon::SIZE_SMALL);
+            $icon = $this->iconFactory->getIcon('actions-edit-' . $actionName, Icon::SIZE_SMALL)->render();
             $linkTitle = $this->getLanguageService()->getLL($actionName, true);
             $deleteAction = '<a class="btn btn-default t3js-record-delete" href="#" '
                 . ' data-l10parent="' . htmlspecialchars($attribute['l10n_parent']) . '"'

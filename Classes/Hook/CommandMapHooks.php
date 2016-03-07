@@ -883,7 +883,7 @@ class CommandMapHooks
 
         $this->getDatabaseConnection()->exec_UPDATEquery(
             'tx_commerce_article_prices',
-            'uid IN (' . implode(',', $articleList) . ')',
+            'uid_article IN (' . implode(',', $articleList) . ')',
             $updateValues
         );
     }
@@ -922,7 +922,8 @@ class CommandMapHooks
 					<td colspan="2" align="center"><strong>' . $errorHeadline . '</strong></td>
 				</tr>
 				<tr class="bgColor4">
-					<td valign="top">' . $iconFactory->getIcon('status-dialog-error', Icon::SIZE_SMALL) . '</td>
+					<td valign="top">' . $iconFactory->getIcon('status-dialog-error', Icon::SIZE_SMALL)->render()
+            . '</td>
 					<td>' . $language->sL($error, 0) . '</td>
 				</tr>
 				<tr>

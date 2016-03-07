@@ -254,7 +254,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 $href = htmlspecialchars(GeneralUtility::linkThisUrl($this->returnUrl, ['id' => $this->id]));
                 $buttons['back'] = '<a href="' . $href . '" class="typo3-goBack" title="'
                     . $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.goBack', true) . '">'
-                    . $this->iconFactory->getIcon('actions-view-go-back', Icon::SIZE_SMALL) . '</a>';
+                    . $this->iconFactory->getIcon('actions-view-go-back', Icon::SIZE_SMALL)->render() . '</a>';
             }
         }
     }
@@ -294,7 +294,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         $tableCollapsed = (!$this->tablesCollapsed[$table]) ? false : true;
         // prepare space icon
         $this->spaceIcon = '<span class="btn btn-default disabled">'
-            . $this->iconFactory->getIcon('empty-empty', Icon::SIZE_SMALL) . '</span>';
+            . $this->iconFactory->getIcon('empty-empty', Icon::SIZE_SMALL)->render() . '</span>';
         // Cleaning rowlist for duplicates and place the $titleCol as the first column always!
         $this->fieldArray = [];
         // title Column
@@ -488,7 +488,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                     $icon = '<span class="collapseIcon">' . $this->iconFactory->getIcon(
                         ($tableCollapsed ? 'actions-view-list-expand' : 'actions-view-list-collapse'),
                         Icon::SIZE_SMALL
-                    ) . '</span>';
+                    )->render() . '</span>';
                     $collapseIcon = '<a href="' . $href . '" title="' . $title
                         . '" class="pull-right t3js-toggle-recordlist" data-table="' . htmlspecialchars($table)
                         . '" data-toggle="collapse" data-target="#recordlist-' . htmlspecialchars($table)
@@ -913,13 +913,14 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                         );
                         $cells['pasteAfter'] = '<a class="btn btn-default" href="' . $href . '" onclick="' . $onClick
                             . '" title="' . $lang->getLL('clip_paste', true) . '">'
-                            . $this->iconFactory->getIcon('actions-document-paste-after', Icon::SIZE_SMALL) . '</a>';
+                            . $this->iconFactory->getIcon('actions-document-paste-after', Icon::SIZE_SMALL)->render()
+                            . '</a>';
                     }
                     // If the numeric clipboard pads are enabled, display the control icons for that:
                     if ($this->clipObj->current != 'normal') {
                         // The "select" link:
                         $spriteIcon = '<span title="' . $lang->getLL('clip_selectMarked', true) . '">'
-                            . $this->iconFactory->getIcon('actions-edit-copy', Icon::SIZE_SMALL)
+                            . $this->iconFactory->getIcon('actions-edit-copy', Icon::SIZE_SMALL)->render()
                             . '</span>';
                         $cells['copyMarked'] = $this->linkClipboardHeaderIcon($spriteIcon, $table, 'setCB');
 
@@ -936,12 +937,13 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                         $cells['edit'] = '<a class="btn btn-default" href="#" onclick="' . htmlspecialchars($onClick)
                             . '" title="'
                             . $lang->getLL('clip_editMarked', true) . '">'
-                            . $this->iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL) . '</a>';
+                            . $this->iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render() . '</a>';
 
                         // The "Delete marked" link:
                         $cells['delete'] = $this->linkClipboardHeaderIcon(
                             '<span title="' . $lang->getLL('clip_deleteMarked', true) . '">'
-                            . $this->iconFactory->getIcon('actions-edit-delete', Icon::SIZE_SMALL) . '</span>',
+                            . $this->iconFactory->getIcon('actions-edit-delete', Icon::SIZE_SMALL)->render()
+                            . '</span>',
                             $table,
                             'delete',
                             sprintf($lang->getLL('clip_deleteMarkedWarning'), $lang->sL($tableConfig['ctrl']['title']))
@@ -952,7 +954,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                             . GeneralUtility::quoteJSvalue(implode(',', $this->CBnames)) . ', this); return false;'));
                         $cells['markAll'] = '<a class="btn btn-default" rel="" href="#" onclick="' . $onClick
                             . '" title="' . $lang->getLL('clip_markRecords', true) . '">'
-                            . $this->iconFactory->getIcon('actions-document-select', Icon::SIZE_SMALL) . '</a>';
+                            . $this->iconFactory->getIcon('actions-document-select', Icon::SIZE_SMALL)->render()
+                            . '</a>';
                     } else {
                         $cells['empty'] = '';
                     }
@@ -989,8 +992,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                         $permsAdditional = ($table === 'tx_commerce_categories' ? 8 : 16);
                         if ($this->calcPerms & $permsAdditional && $this->showNewRecLink($table)) {
                             $spriteIcon = $table === 'tx_commerce_categories'
-                                ? $this->iconFactory->getIcon('actions-page-new', Icon::SIZE_SMALL)
-                                : $this->iconFactory->getIcon('actions-add', Icon::SIZE_SMALL);
+                                ? $this->iconFactory->getIcon('actions-page-new', Icon::SIZE_SMALL)->render()
+                                : $this->iconFactory->getIcon('actions-add', Icon::SIZE_SMALL)->render();
                             if ($table === 'tt_content' && $this->newWizards) {
                                 // If mod.newContentElementWizard.override is set, use that extension's create new
                                 // content wizard instead:
@@ -1007,7 +1010,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                                     . ');';
                                 $icon = '<a class="btn btn-default" href="#" onclick="' . htmlspecialchars($onClick)
                                     . '" title="'
-                                    . $lang->getLL('new', true) . '">' . $spriteIcon->render() . '</a>';
+                                    . $lang->getLL('new', true) . '">' . $spriteIcon . '</a>';
                             } elseif ($table == 'tx_commerce_categories' && $this->newWizards) {
                                 $parameters = [
                                     'id' => $this->id,
@@ -1016,12 +1019,12 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                                 $href = BackendUtility::getModuleUrl('db_new', $parameters);
                                 $icon = '<a class="btn btn-default" href="' . htmlspecialchars($href) . '" title="'
                                     . $lang->getLL('new', true) . '">'
-                                    . $spriteIcon->render() . '</a>';
+                                    . $spriteIcon . '</a>';
                             } else {
                                 $params = '&edit[' . $table . '][' . $this->id . ']=new';
                                 $icon = '<a class="btn btn-default" href="#" onclick="'
                                     . htmlspecialchars(BackendUtility::editOnClick($params, '', -1))
-                                    . '" title="' . $lang->getLL('new', true) . '">' . $spriteIcon->render() . '</a>';
+                                    . '" title="' . $lang->getLL('new', true) . '">' . $spriteIcon . '</a>';
                             }
                         }
 
@@ -1043,7 +1046,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                             $onClick = implode('?', $onClickArray);
                             $icon .= '<a class="btn btn-default" href="#" onclick="' . htmlspecialchars($onClick)
                                 . '" title="' . $lang->getLL('editShownColumns', true) . '">'
-                                . $this->iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL) . '</a>';
+                                . $this->iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render()
+                                . '</a>';
                             $icon = '<div class="btn-group" role="group">' . $icon . '</div>';
                         }
                         // Add an empty entry, so column count fits again after moving this into $icon
@@ -1073,7 +1077,10 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                             $theData[$fCol] .= '<a class="btn btn-default" href="'
                                 . htmlspecialchars($this->listURL('', '-1') . '&duplicateField=' . $fCol)
                                 . '" title="' . $lang->getLL('clip_duplicates', true) . '">'
-                                . $this->iconFactory->getIcon('actions-document-duplicates-select', Icon::SIZE_SMALL)
+                                . $this->iconFactory->getIcon(
+                                    'actions-document-duplicates-select',
+                                    Icon::SIZE_SMALL
+                                )->render()
                                 . '</a>';
                         }
 
@@ -1096,7 +1103,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                             $iTitle = sprintf($lang->getLL('editThisColumn'), $sortLabel);
                             $theData[$fCol] .= '<a class="btn btn-default" href="#" onclick="'
                                 . htmlspecialchars($onClick) . '" title="' . htmlspecialchars($iTitle) . '">'
-                                . $this->iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL) . '</a>';
+                                . $this->iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render()
+                                . '</a>';
                         }
 
                         if (strlen($theData[$fCol]) > 0) {
@@ -1225,7 +1233,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             $editAction = '<a class="btn btn-default" href="#" onclick="'
                 . htmlspecialchars(BackendUtility::editOnClick($params, '', -1))
                 . '" title="' . $this->getLanguageService()->getLL('edit', true) . '">'
-                . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL, $overlayIdentifier) . '</a>';
+                . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL, $overlayIdentifier)->render() . '</a>';
         } else {
             $editAction = $this->spaceIcon;
         }
@@ -1250,11 +1258,11 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 true
             );
             $icon = ($table == 'tx_commerce_categories' ?
-                $this->iconFactory->getIcon('actions-page-move', Icon::SIZE_SMALL) :
-                $this->iconFactory->getIcon('actions-document-move', Icon::SIZE_SMALL)
+                $this->iconFactory->getIcon('actions-page-move', Icon::SIZE_SMALL)->render() :
+                $this->iconFactory->getIcon('actions-document-move', Icon::SIZE_SMALL)->render()
             );
             $moveAction = '<a class="btn btn-default" href="#" onclick="' . htmlspecialchars($onClick) . '" title="'
-                . $linkTitleLL . '">' . $icon->render() . '</a>';
+                . $linkTitleLL . '">' . $icon . '</a>';
             $this->addActionToCellGroup($cells, $moveAction, 'move');
         }
 
@@ -1288,7 +1296,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                     ]);
                     $versionAction = '<a class="btn btn-default" href="' . htmlspecialchars($href) . '" title="'
                         . $this->getLanguageService()->getLL('displayVersions', true) . '">'
-                        . $this->iconFactory->getIcon('actions-version-page-open', Icon::SIZE_SMALL) . '</a>';
+                        . $this->iconFactory->getIcon('actions-version-page-open', Icon::SIZE_SMALL)->render() . '</a>';
                     $this->addActionToCellGroup($cells, $versionAction, 'version');
                 }
             }
@@ -1323,8 +1331,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                         $params .= '&defVals[' . $table . '][' . $categoryField . '] = ' . $this->categoryUid;
 
                         $icon = ($table == 'tx_commerce_categories' ?
-                            $this->iconFactory->getIcon('actions-page-new', Icon::SIZE_SMALL) :
-                            $this->iconFactory->getIcon('actions-add', Icon::SIZE_SMALL)
+                            $this->iconFactory->getIcon('actions-page-new', Icon::SIZE_SMALL)->render() :
+                            $this->iconFactory->getIcon('actions-add', Icon::SIZE_SMALL)->render()
                         );
                         $titleLabel = 'new';
                         if ($tableConfig['ctrl']['sortby']) {
@@ -1333,7 +1341,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                         $newAction = '<a class="btn btn-default" href="#" onclick="'
                             . htmlspecialchars(BackendUtility::editOnClick($params, '', -1))
                             . '" title="' . htmlspecialchars($this->getLanguageService()->getLL($titleLabel)) . '">'
-                            . $icon->render() . '</a>';
+                            . $icon . '</a>';
                         $this->addActionToCellGroup($cells, $newAction, 'new');
                     }
                 }
@@ -1350,7 +1358,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                             'return jumpToUrl(' . BackendUtility::getLinkToDataHandlerAction($params, -1) . ');'
                         )
                         . '" title="' . $this->getLanguageService()->getLL('moveUp', true) . '">'
-                        . $this->iconFactory->getIcon('actions-move-up', Icon::SIZE_SMALL) . '</a>';
+                        . $this->iconFactory->getIcon('actions-move-up', Icon::SIZE_SMALL)->render() . '</a>';
                 } else {
                     $moveUpAction = $this->spaceIcon;
                 }
@@ -1365,7 +1373,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                             'return jumpToUrl(' . BackendUtility::getLinkToDataHandlerAction($params, -1) . ');'
                         )
                         . '" title="' . $this->getLanguageService()->getLL('moveDown', true) . '">'
-                        . $this->iconFactory->getIcon('actions-move-down', Icon::SIZE_SMALL) . '</a>';
+                        . $this->iconFactory->getIcon('actions-move-down', Icon::SIZE_SMALL)->render() . '</a>';
                 } else {
                     $moveDownAction = $this->spaceIcon;
                 }
@@ -1395,14 +1403,14 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                             . ' data-params="' . htmlspecialchars($params) . '"'
                             . ' title="' . $unhideTitle . '"'
                             . ' data-toggle-title="' . $hideTitle . '">'
-                            . $this->iconFactory->getIcon('actions-edit-unhide', Icon::SIZE_SMALL) . '</a>';
+                            . $this->iconFactory->getIcon('actions-edit-unhide', Icon::SIZE_SMALL)->render() . '</a>';
                     } else {
                         $params = 'data[' . $table . '][' . $rowUid . '][' . $hiddenField . ']=1';
                         $hideAction = '<a class="btn btn-default t3js-record-hide" data-state="visible" href="#"'
                             . ' data-params="' . htmlspecialchars($params) . '"'
                             . ' title="' . $hideTitle . '"'
                             . ' data-toggle-title="' . $unhideTitle . '">'
-                            . $this->iconFactory->getIcon('actions-edit-hide', Icon::SIZE_SMALL) . '</a>';
+                            . $this->iconFactory->getIcon('actions-edit-hide', Icon::SIZE_SMALL)->render() . '</a>';
                     }
                 }
                 $this->addActionToCellGroup($cells, $hideAction, 'hide');
@@ -1603,13 +1611,13 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 $cells['copy'] = $this->spaceIcon;
                 $cells['cut'] = $this->spaceIcon;
             } else {
-                $copyIcon = $this->iconFactory->getIcon('actions-edit-copy', Icon::SIZE_SMALL);
-                $cutIcon = $this->iconFactory->getIcon('actions-edit-cut', Icon::SIZE_SMALL);
+                $copyIcon = $this->iconFactory->getIcon('actions-edit-copy', Icon::SIZE_SMALL)->render();
+                $cutIcon = $this->iconFactory->getIcon('actions-edit-cut', Icon::SIZE_SMALL)->render();
 
                 if ($isSel === 'copy') {
-                    $copyIcon = $this->iconFactory->getIcon('actions-edit-copy-release', Icon::SIZE_SMALL);
+                    $copyIcon = $this->iconFactory->getIcon('actions-edit-copy-release', Icon::SIZE_SMALL)->render();
                 } elseif ($isSel === 'cut') {
-                    $cutIcon = $this->iconFactory->getIcon('actions-edit-cut-release', Icon::SIZE_SMALL);
+                    $cutIcon = $this->iconFactory->getIcon('actions-edit-cut-release', Icon::SIZE_SMALL)->render();
                 }
 
                 $cells['copy'] = '<a class="btn btn-default" href="#" onclick="'
@@ -1618,7 +1626,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                     ) . ');')
                     . '" title="' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:cm.copy', true)
                     . '">'
-                    . $copyIcon->render() . '</a>';
+                    . $copyIcon . '</a>';
                 if (true) {
                     $cells['cut'] = '<a class="btn btn-default" href="#" onclick="'
                         . htmlspecialchars('return jumpSelf(' . GeneralUtility::quoteJSvalue(
@@ -1632,7 +1640,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                         ) . ');')
                         . '" title="' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:cm.cut', true)
                         . '">'
-                        . $cutIcon->render() . '</a>';
+                        . $cutIcon . '</a>';
                 } else {
                     $cells['cut'] = $this->spaceIcon;
                 }

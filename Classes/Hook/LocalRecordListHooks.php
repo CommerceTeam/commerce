@@ -134,9 +134,9 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
                                 && $parentObject->showNewRecLink($table)
                             ) {
                                 if ($table == 'pages') {
-                                    $sprite = $iconFactory->getIcon('actions-page-new', Icon::SIZE_SMALL);
+                                    $sprite = $iconFactory->getIcon('actions-page-new', Icon::SIZE_SMALL)->render();
                                 } else {
-                                    $sprite = $iconFactory->getIcon('actions-document-new', Icon::SIZE_SMALL);
+                                    $sprite = $iconFactory->getIcon('actions-document-new', Icon::SIZE_SMALL)->render();
                                 }
 
                                 if ($table == 'tt_content' && $parentObject->newWizards) {
@@ -186,7 +186,7 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
                                 $icon .= '<a href="#" onclick="' . htmlspecialchars(
                                     BackendUtility::editOnClick($params, '', -1)
                                 ) . '" title="' . $language->getLL('editShownColumns', true) . '">' .
-                                    $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL) . '</a>';
+                                    $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render() . '</a>';
                             }
                             // add an empty entry, so column count fits again after moving this into $icon
                             $headerColumns[$fCol] = '&nbsp;';
@@ -210,7 +210,10 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
                                     $parentObject->listURL('', -1) . '&duplicateField=' . $fCol
                                 ) . '" title="' . $language->getLL('clip_duplicates', true)
                                     . '">'
-                                    .  $iconFactory->getIcon('actions-document-duplicates-select', Icon::SIZE_SMALL)
+                                    .  $iconFactory->getIcon(
+                                        'actions-document-duplicates-select',
+                                        Icon::SIZE_SMALL
+                                    )->render()
                                     . '</a>';
                             }
 
@@ -233,7 +236,7 @@ class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordLis
                                 $headerColumns[$fCol] .= '<a href="#" onclick="' . htmlspecialchars(
                                     BackendUtility::editOnClick($params, '', -1)
                                 ) . '" title="' . htmlspecialchars($iTitle) . '">' .
-                                    $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL) . '</a>';
+                                    $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render() . '</a>';
                             }
                         }
                         $headerColumns[$fCol] .= $parentObject->addSortLink(
