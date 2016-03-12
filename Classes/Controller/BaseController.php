@@ -22,7 +22,7 @@ use CommerceTeam\Commerce\Domain\Model\Category;
 use CommerceTeam\Commerce\Domain\Model\Product;
 use CommerceTeam\Commerce\Factory\HookFactory;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
-use CommerceTeam\Commerce\ViewHelpers\Money;
+use CommerceTeam\Commerce\ViewHelpers\MoneyViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -944,10 +944,13 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $markerArray['ARTICLE_NUMBER'] = $article->getOrdernumber();
         $markerArray['ARTICLE_ORDERNUMBER'] = $article->getOrdernumber();
 
-        $markerArray['ARTICLE_PRICE_NET'] = Money::format($article->getPriceNet(), $this->currency);
-        $markerArray['ARTICLE_PRICE_GROSS'] = Money::format($article->getPriceGross(), $this->currency);
-        $markerArray['DELIVERY_PRICE_NET'] = Money::format($article->getDeliveryCostNet(), $this->currency);
-        $markerArray['DELIVERY_PRICE_GROSS'] = Money::format($article->getDeliveryCostGross(), $this->currency);
+        $markerArray['ARTICLE_PRICE_NET'] = MoneyViewHelper::format($article->getPriceNet(), $this->currency);
+        $markerArray['ARTICLE_PRICE_GROSS'] = MoneyViewHelper::format($article->getPriceGross(), $this->currency);
+        $markerArray['DELIVERY_PRICE_NET'] = MoneyViewHelper::format($article->getDeliveryCostNet(), $this->currency);
+        $markerArray['DELIVERY_PRICE_GROSS'] = MoneyViewHelper::format(
+            $article->getDeliveryCostGross(),
+            $this->currency
+        );
 
         $hooks = HookFactory::getHooks('Controller/BaseController', 'getArticleMarker');
         foreach ($hooks as $hook) {
@@ -1096,8 +1099,16 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     {
         $template = $this->cObj->getSubpart($this->templateCode, $subpartTemplate);
         $basket->recalculateSums();
-        $markerArray['###SUM_NET###'] = Money::format($basket->getSumNet(), $this->currency, $this->showCurrency);
-        $markerArray['###SUM_GROSS###'] = Money::format($basket->getSumGross(), $this->currency, $this->showCurrency);
+        $markerArray['###SUM_NET###'] = MoneyViewHelper::format(
+            $basket->getSumNet(),
+            $this->currency,
+            $this->showCurrency
+        );
+        $markerArray['###SUM_GROSS###'] = MoneyViewHelper::format(
+            $basket->getSumGross(),
+            $this->currency,
+            $this->showCurrency
+        );
 
         $sumArticleNet = 0;
         $sumArticleGross = 0;
@@ -1107,32 +1118,44 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $sumArticleGross += $basket->getArticleTypeSumGross($regularArticleType);
         }
 
-        $markerArray['###SUM_ARTICLE_NET###'] = Money::format($sumArticleNet, $this->currency, $this->showCurrency);
-        $markerArray['###SUM_ARTICLE_GROSS###'] = Money::format($sumArticleGross, $this->currency, $this->showCurrency);
-        $markerArray['###SUM_SHIPPING_NET###'] = Money::format(
+        $markerArray['###SUM_ARTICLE_NET###'] = MoneyViewHelper::format(
+            $sumArticleNet,
+            $this->currency,
+            $this->showCurrency
+        );
+        $markerArray['###SUM_ARTICLE_GROSS###'] = MoneyViewHelper::format(
+            $sumArticleGross,
+            $this->currency,
+            $this->showCurrency
+        );
+        $markerArray['###SUM_SHIPPING_NET###'] = MoneyViewHelper::format(
             $basket->getArticleTypeSumNet(DELIVERYARTICLETYPE),
             $this->currency,
             $this->showCurrency
         );
-        $markerArray['###SUM_SHIPPING_GROSS###'] = Money::format(
+        $markerArray['###SUM_SHIPPING_GROSS###'] = MoneyViewHelper::format(
             $basket->getArticleTypeSumGross(DELIVERYARTICLETYPE),
             $this->currency,
             $this->showCurrency
         );
         $markerArray['###SHIPPING_TITLE###'] = $basket->getFirstArticleTypeTitle(DELIVERYARTICLETYPE);
-        $markerArray['###SUM_PAYMENT_NET###'] = Money::format(
+        $markerArray['###SUM_PAYMENT_NET###'] = MoneyViewHelper::format(
             $basket->getArticleTypeSumNet(PAYMENTARTICLETYPE),
             $this->currency,
             $this->showCurrency
         );
-        $markerArray['###SUM_PAYMENT_GROSS###'] = Money::format(
+        $markerArray['###SUM_PAYMENT_GROSS###'] = MoneyViewHelper::format(
             $basket->getArticleTypeSumGross(PAYMENTARTICLETYPE),
             $this->currency,
             $this->showCurrency
         );
         $markerArray['###PAYMENT_TITLE###'] = $basket->getFirstArticleTypeTitle(PAYMENTARTICLETYPE);
         $markerArray['###PAYMENT_DESCRIPTION###'] = $basket->getFirstArticleTypeDescription(PAYMENTARTICLETYPE);
-        $markerArray['###SUM_TAX###'] = Money::format($basket->getTaxSum(), $this->currency, $this->showCurrency);
+        $markerArray['###SUM_TAX###'] = MoneyViewHelper::format(
+            $basket->getTaxSum(),
+            $this->currency,
+            $this->showCurrency
+        );
 
         $taxRateTemplate = $this->cObj->getSubpart($template, '###TAX_RATE_SUMS###');
         $taxRates = $basket->getTaxRateSums();
@@ -1140,7 +1163,11 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         foreach ($taxRates as $taxRate => $taxRateSum) {
             $taxRowArray = [];
             $taxRowArray['###TAX_RATE###'] = $taxRate;
-            $taxRowArray['###TAX_RATE_SUM###'] = Money::format($taxRateSum, $this->currency, $this->showCurrency);
+            $taxRowArray['###TAX_RATE_SUM###'] = MoneyViewHelper::format(
+                $taxRateSum,
+                $this->currency,
+                $this->showCurrency
+            );
 
             $taxRateRows .= $this->cObj->substituteMarkerArray($taxRateTemplate, $taxRowArray);
         }
@@ -1204,22 +1231,22 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         /*
          * Basket Item Elements
          */
-        $markerArray['###BASKET_ITEM_PRICENET###'] = Money::format(
+        $markerArray['###BASKET_ITEM_PRICENET###'] = MoneyViewHelper::format(
             $basketItem->getPriceNet(),
             $this->currency,
             $this->showCurrency
         );
-        $markerArray['###BASKET_ITEM_PRICEGROSS###'] = Money::format(
+        $markerArray['###BASKET_ITEM_PRICEGROSS###'] = MoneyViewHelper::format(
             $basketItem->getPriceGross(),
             $this->currency,
             $this->showCurrency
         );
-        $markerArray['###BASKET_ITEM_PRICESUM_NET###'] = Money::format(
+        $markerArray['###BASKET_ITEM_PRICESUM_NET###'] = MoneyViewHelper::format(
             $basketItem->getItemSumNet(),
             $this->currency,
             $this->showCurrency
         );
-        $markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] = Money::format(
+        $markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] = MoneyViewHelper::format(
             $basketItem->getItemSumGross(),
             $this->currency,
             $this->showCurrency
@@ -1227,7 +1254,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $markerArray['###BASKET_ITEM_ORDERNUMBER###'] = $basketItem->getOrderNumber();
 
         $markerArray['###BASKET_ITEM_TAX_PERCENT###'] = $basketItem->getTax();
-        $markerArray['###BASKET_ITEM_TAX_VALUE###'] = Money::format(
+        $markerArray['###BASKET_ITEM_TAX_VALUE###'] = MoneyViewHelper::format(
             (int) $basketItem->getItemSumTax(),
             $this->currency,
             $this->showCurrency
@@ -2013,7 +2040,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $cheapestArticle->loadData();
         $cheapestArticle->loadPrices();
 
-        $markerArray['###PRODUCT_CHEAPEST_PRICE_GROSS###'] = Money::format(
+        $markerArray['###PRODUCT_CHEAPEST_PRICE_GROSS###'] = MoneyViewHelper::format(
             $cheapestArticle->getPriceGross(),
             $this->currency
         );
@@ -2031,7 +2058,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $cheapestArticle->loadData();
         $cheapestArticle->loadPrices();
 
-        $markerArray['###PRODUCT_CHEAPEST_PRICE_NET###'] = Money::format(
+        $markerArray['###PRODUCT_CHEAPEST_PRICE_NET###'] = MoneyViewHelper::format(
             $cheapestArticle->getPriceNet(),
             $this->currency
         );

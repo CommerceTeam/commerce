@@ -728,7 +728,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 if ($this->csvOutput) {
                     $row[$fCol] = $row[$fCol] / 100;
                 } else {
-                    $theData[$fCol] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+                    $theData[$fCol] = \CommerceTeam\Commerce\ViewHelpers\MoneyViewHelper::format(
                         $row[$fCol],
                         $row['cu_iso_3'],
                         false

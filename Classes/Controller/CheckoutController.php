@@ -17,7 +17,7 @@ namespace CommerceTeam\Commerce\Controller;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Factory\HookFactory;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
-use CommerceTeam\Commerce\ViewHelpers\Money;
+use CommerceTeam\Commerce\ViewHelpers\MoneyViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -1429,21 +1429,21 @@ class CheckoutController extends BaseController
         $markerArray = [];
         $markerArray['###LABEL_SUM_ARTICLE_NET###'] = $this->pi_getLL('listing_article_net');
         $markerArray['###LABEL_SUM_ARTICLE_GROSS###'] = $this->pi_getLL('listing_article_gross');
-        $markerArray['###SUM_ARTICLE_NET###'] = Money::format($sumNet, $this->currency);
-        $markerArray['###SUM_ARTICLE_GROSS###'] = Money::format($sumGross, $this->currency);
+        $markerArray['###SUM_ARTICLE_NET###'] = MoneyViewHelper::format($sumNet, $this->currency);
+        $markerArray['###SUM_ARTICLE_GROSS###'] = MoneyViewHelper::format($sumGross, $this->currency);
         $markerArray['###LABEL_SUM_SHIPPING_NET###'] = $this->pi_getLL('listing_shipping_net');
         $markerArray['###LABEL_SUM_SHIPPING_GROSS##'] = $this->pi_getLL('listing_shipping_gross');
-        $markerArray['###SUM_SHIPPING_NET###'] = Money::format($sumShippingNet, $this->currency);
-        $markerArray['###SUM_SHIPPING_GROSS###'] = Money::format($sumShippingGross, $this->currency);
+        $markerArray['###SUM_SHIPPING_NET###'] = MoneyViewHelper::format($sumShippingNet, $this->currency);
+        $markerArray['###SUM_SHIPPING_GROSS###'] = MoneyViewHelper::format($sumShippingGross, $this->currency);
         $markerArray['###LABEL_SUM_NET###'] = $this->pi_getLL('listing_sum_net');
-        $markerArray['###SUM_NET###'] = Money::format($sumNet, $this->currency);
+        $markerArray['###SUM_NET###'] = MoneyViewHelper::format($sumNet, $this->currency);
         $markerArray['###LABEL_SUM_TAX###'] = $this->pi_getLL('listing_tax');
-        $markerArray['###SUM_TAX###'] = Money::format($sumTax, $this->currency);
+        $markerArray['###SUM_TAX###'] = MoneyViewHelper::format($sumTax, $this->currency);
 
         $markerArray['###LABEL_SUM_GROSS###'] = $this->pi_getLL('listing_sum_gross');
-        $markerArray['###SUM_GROSS###'] = Money::format($sumGross, $this->currency);
-        $markerArray['###SUM_PAYMENT_NET###'] = Money::format($sumPaymentNet, $this->currency);
-        $markerArray['###SUM_PAYMENT_GROSS###'] = Money::format($sumPaymentGross, $this->currency);
+        $markerArray['###SUM_GROSS###'] = MoneyViewHelper::format($sumGross, $this->currency);
+        $markerArray['###SUM_PAYMENT_NET###'] = MoneyViewHelper::format($sumPaymentNet, $this->currency);
+        $markerArray['###SUM_PAYMENT_GROSS###'] = MoneyViewHelper::format($sumPaymentGross, $this->currency);
         $markerArray['###LABEL_SUM_PAYMENT_GROSS###'] = $this->pi_getLL('label_sum_payment_gross');
         $markerArray['###LABEL_SUM_PAYMENT_NET###'] = $this->pi_getLL('label_sum_payment_net');
         $markerArray['###PAYMENT_TITLE###'] = $paymentTitle;

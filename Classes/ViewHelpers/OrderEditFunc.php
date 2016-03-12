@@ -17,6 +17,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
 use CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository;
 use CommerceTeam\Commerce\Domain\Repository\OrderRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
+use CommerceTeam\Commerce\ViewHelpers\MoneyViewHelper;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -91,7 +92,7 @@ class OrderEditFunc
     public function sumPriceGrossFormat(array $parameter)
     {
         $content = '<input type="text" disabled name="' . $parameter['itemFormElName'] . '" value="' .
-            \CommerceTeam\Commerce\ViewHelpers\Money::format($parameter['itemFormElValue'] / 100, '') . '">';
+            MoneyViewHelper::format($parameter['itemFormElValue'] / 100, '') . '">';
 
         return $content;
     }
@@ -215,8 +216,8 @@ class OrderEditFunc
                 $sum['price_net_value'] += $row['price_net'] / 100;
                 $sum['price_gross_value'] += $row['price_gross'] / 100;
 
-                $row['price_net'] = Money::format($row['price_net'] / 100, '');
-                $row['price_gross'] = Money::format($row['price_gross'] / 100, '');
+                $row['price_net'] = MoneyViewHelper::format($row['price_net'] / 100, '');
+                $row['price_gross'] = MoneyViewHelper::format($row['price_gross'] / 100, '');
 
                 /*
                  * Not very nice to render html_code directly
@@ -283,8 +284,8 @@ class OrderEditFunc
              * Cerate the summ row
              */
             $out .= '<tr>';
-            $sum['price_net'] = Money::format($sum['price_net_value'], '');
-            $sum['price_gross'] = Money::format($sum['price_gross_value'], '');
+            $sum['price_net'] = MoneyViewHelper::format($sum['price_net_value'], '');
+            $sum['price_gross'] = MoneyViewHelper::format($sum['price_gross_value'], '');
 
             foreach ($fieldRows as $field) {
                 switch ($field) {

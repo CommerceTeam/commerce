@@ -21,30 +21,29 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Code library for display of different currencies
  * widely used in EXT: commerce.
  *
- * Class \CommerceTeam\Commerce\ViewHelpers\Money
+ * Class \CommerceTeam\Commerce\ViewHelpers\MoneyViewHelper
  */
-class Money
+class MoneyViewHelper
 {
     /**
      * Use this function from TS, example:
-     * includeLibs.moneylib = EXT:commerce/Classes/ViewHelpers/Money.php
      * price_net = stdWrap
      * price_net {
-     *   postUserFunc = \CommerceTeam\Commerce\ViewHelpers\Money->user_tsFormat
-     *   postUserFunc.currency = EUR
-     *   postUserFunc.withSymbol = 0
-     * }.
+     *      postUserFunc = \CommerceTeam\Commerce\ViewHelpers\MoneyViewHelper->tsFormat
+     *      postUserFunc.currency = EUR
+     *      postUserFunc.withSymbol = 0
+     * }
      *
      * @param string $content Content
      * @param array $conf Config
      *
      * @return string representation of the amount including currency symbol(s)
      */
-    public function user_tsFormat($content, array $conf)
+    public function tsFormat($content, array $conf)
     {
-        $withSymbol = is_null($conf['withSymbol']) ? true : $conf['withSymbol'];
+        $withSymbol = is_null($conf['withSymbol']) ? true : (bool)$conf['withSymbol'];
 
-        return (string) self::format($content, $conf['currency'], $withSymbol);
+        return static::format($content, $conf['currency'], $withSymbol);
     }
 
     /**
@@ -106,6 +105,6 @@ class Money
             $wholeString = $formattedAmount;
         }
 
-        return $wholeString;
+        return (string)$wholeString;
     }
 }

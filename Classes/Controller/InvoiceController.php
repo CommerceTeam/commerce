@@ -16,6 +16,7 @@ namespace CommerceTeam\Commerce\Controller;
 
 use CommerceTeam\Commerce\Factory\HookFactory;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
+use CommerceTeam\Commerce\ViewHelpers\MoneyViewHelper;
 
 /**
  * Plugin 'commerce_invoice' for the 'commerce_invoice' extension.
@@ -169,22 +170,22 @@ class InvoiceController extends BaseController
             $this->orderPayment = $this->getOrderSystemArticles((int) $this->order['uid'], '2', 'PAYMENT_');
             $this->orderDelivery = $this->getOrderSystemArticles((int) $this->order['uid'], '3', 'SHIPPING_');
 
-            $markerArray['###ORDER_TAX###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+            $markerArray['###ORDER_TAX###'] = MoneyViewHelper::format(
                 $this->order['sum_price_gross'] - $this->order['sum_price_net'],
                 $this->conf['currency'],
                 (bool) $this->conf['showCurrencySign']
             );
-            $markerArray['###ORDER_TOTAL###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+            $markerArray['###ORDER_TOTAL###'] = MoneyViewHelper::format(
                 $this->order['sum_price_gross'],
                 $this->conf['currency'],
                 (bool) $this->conf['showCurrencySign']
             );
-            $markerArray['###ORDER_NET_TOTAL###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+            $markerArray['###ORDER_NET_TOTAL###'] = MoneyViewHelper::format(
                 $this->order['sum_price_net'],
                 $this->conf['currency'],
                 (bool) $this->conf['showCurrencySign']
             );
-            $markerArray['###ORDER_GROSS_TOTAL###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+            $markerArray['###ORDER_GROSS_TOTAL###'] = MoneyViewHelper::format(
                 $this->order['sum_price_gross'],
                 $this->conf['currency'],
                 (bool) $this->conf['showCurrencySign']
@@ -312,32 +313,32 @@ class InvoiceController extends BaseController
         $out = '';
         while (($row = $database->sql_fetch_assoc($res))) {
             $markerArray = $this->generateMarkerArray($row, $typoScript, $prefix, 'tx_commerce_order_articles');
-            $markerArray['ARTICLE_PRICE'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+            $markerArray['ARTICLE_PRICE'] = MoneyViewHelper::format(
                 $row['price_gross'],
                 $this->conf['currency'],
                 (bool) $this->conf['showCurrencySign']
             );
-            $markerArray['ARTICLE_PRICE_GROSS'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+            $markerArray['ARTICLE_PRICE_GROSS'] = MoneyViewHelper::format(
                 $row['price_gross'],
                 $this->conf['currency'],
                 (bool) $this->conf['showCurrencySign']
             );
-            $markerArray['ARTICLE_PRICE_NET'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+            $markerArray['ARTICLE_PRICE_NET'] = MoneyViewHelper::format(
                 $row['price_net'],
                 $this->conf['currency'],
                 (bool) $this->conf['showCurrencySign']
             );
-            $markerArray['ARTICLE_TOTAL'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+            $markerArray['ARTICLE_TOTAL'] = MoneyViewHelper::format(
                 ($row['amount'] * $row['price_gross']),
                 $this->conf['currency'],
                 (bool) $this->conf['showCurrencySign']
             );
-            $markerArray['ARTICLE_TOTAL_GROSS'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+            $markerArray['ARTICLE_TOTAL_GROSS'] = MoneyViewHelper::format(
                 ($row['amount'] * $row['price_gross']),
                 $this->conf['currency'],
                 (bool) $this->conf['showCurrencySign']
             );
-            $markerArray['ARTICLE_TOTAL_NET'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+            $markerArray['ARTICLE_TOTAL_NET'] = MoneyViewHelper::format(
                 ($row['amount'] * $row['price_net']),
                 $this->conf['currency'],
                 (bool) $this->conf['showCurrencySign']
@@ -463,7 +464,7 @@ class InvoiceController extends BaseController
             // @todo Use $markerArray = $this->generateMarkerArray($row, '', $prefix);
             $markerArray['###' . $prefix . 'AMOUNT###'] = $row['amount'];
             $markerArray['###' . $prefix . 'METHOD###'] = $row['title'];
-            $markerArray['###' . $prefix . 'COST###'] = \CommerceTeam\Commerce\ViewHelpers\Money::format(
+            $markerArray['###' . $prefix . 'COST###'] = MoneyViewHelper::format(
                 ($row['amount'] * $row['price_gross']),
                 $this->conf['currency'],
                 (bool) $this->conf['showCurrencySign']

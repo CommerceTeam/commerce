@@ -16,7 +16,7 @@ namespace CommerceTeam\Commerce\Controller;
 
 use CommerceTeam\Commerce\Domain\Model\Article;
 use CommerceTeam\Commerce\Domain\Model\Product;
-use CommerceTeam\Commerce\ViewHelpers\Money;
+use CommerceTeam\Commerce\ViewHelpers\MoneyViewHelper;
 use CommerceTeam\Commerce\Factory\HookFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -507,8 +507,8 @@ class BasketController extends BaseController
         $template = $this->cObj->getSubpart($this->getTemplateCode(), $templateMarker);
 
         $basketArray = $this->languageMarker;
-        $basketArray['###PRICE_GROSS###'] = Money::format($this->basket->getSumGross(), $this->currency);
-        $basketArray['###PRICE_NET###'] = Money::format($this->basket->getSumNet(), $this->currency);
+        $basketArray['###PRICE_GROSS###'] = MoneyViewHelper::format($this->basket->getSumGross(), $this->currency);
+        $basketArray['###PRICE_NET###'] = MoneyViewHelper::format($this->basket->getSumNet(), $this->currency);
 
         $basketArray['###BASKET_ITEMS###'] = $this->basket->getArticleTypeCountFromList($articleTypes);
         $this->pi_linkTP('', [], 0, $this->conf['basketPid']);
@@ -579,19 +579,22 @@ class BasketController extends BaseController
         foreach ($taxRates as $taxRate => $taxRateSum) {
             $taxRowArray = [];
             $taxRowArray['###TAX_RATE###'] = $taxRate;
-            $taxRowArray['###TAX_RATE_SUM###'] = Money::format($taxRateSum, $this->currency);
+            $taxRowArray['###TAX_RATE_SUM###'] = MoneyViewHelper::format($taxRateSum, $this->currency);
             $taxRateRows .= $this->cObj->substituteMarkerArray($taxRateTemplate, $taxRowArray);
         }
 
         $template = $this->cObj->substituteSubpart($template, '###TAX_RATE_SUMS###', $taxRateRows);
 
-        $basketArray['###BASKET_NET_PRICE###'] = Money::format($this->basket->getSumNet(), $this->currency);
-        $basketArray['###BASKET_GROSS_PRICE###'] = Money::format($this->basket->getSumGross(), $this->currency);
-        $basketArray['###BASKET_TAX_PRICE###'] = Money::format(
+        $basketArray['###BASKET_NET_PRICE###'] = MoneyViewHelper::format($this->basket->getSumNet(), $this->currency);
+        $basketArray['###BASKET_GROSS_PRICE###'] = MoneyViewHelper::format(
+            $this->basket->getSumGross(),
+            $this->currency
+        );
+        $basketArray['###BASKET_TAX_PRICE###'] = MoneyViewHelper::format(
             $this->basket->getSumGross() - $this->basket->getSumNet(),
             $this->currency
         );
-        $basketArray['###BASKET_VALUE_ADDED_TAX###'] = Money::format(
+        $basketArray['###BASKET_VALUE_ADDED_TAX###'] = MoneyViewHelper::format(
             $this->basket->getSumGross() - $this->basket->getSumNet(),
             $this->currency
         );
@@ -606,27 +609,27 @@ class BasketController extends BaseController
             $this->makeCheckOutLink(),
             $this->conf['nextbutton.']
         );
-        $basketArray['###BASKET_ARTICLES_NET_SUM###'] = Money::format(
+        $basketArray['###BASKET_ARTICLES_NET_SUM###'] = MoneyViewHelper::format(
             $this->basket->getArticleTypeSumNet(NORMALARTICLETYPE),
             $this->currency
         );
-        $basketArray['###BASKET_ARTICLES_GROSS_SUM###'] = Money::format(
+        $basketArray['###BASKET_ARTICLES_GROSS_SUM###'] = MoneyViewHelper::format(
             $this->basket->getArticleTypeSumGross(NORMALARTICLETYPE),
             $this->currency
         );
-        $basketArray['###BASKET_DELIVERY_NET_SUM###'] = Money::format(
+        $basketArray['###BASKET_DELIVERY_NET_SUM###'] = MoneyViewHelper::format(
             $this->basket->getArticleTypeSumNet(DELIVERYARTICLETYPE),
             $this->currency
         );
-        $basketArray['###BASKET_DELIVERY_GROSS_SUM###'] = Money::format(
+        $basketArray['###BASKET_DELIVERY_GROSS_SUM###'] = MoneyViewHelper::format(
             $this->basket->getArticleTypeSumGross(DELIVERYARTICLETYPE),
             $this->currency
         );
-        $basketArray['###BASKET_PAYMENT_NET_SUM###'] = Money::format(
+        $basketArray['###BASKET_PAYMENT_NET_SUM###'] = MoneyViewHelper::format(
             $this->basket->getArticleTypeSumNet(PAYMENTARTICLETYPE),
             $this->currency
         );
-        $basketArray['###BASKET_PAYMENT_GROSS_SUM###'] = Money::format(
+        $basketArray['###BASKET_PAYMENT_GROSS_SUM###'] = MoneyViewHelper::format(
             $this->basket->getArticleTypeSumGross(PAYMENTARTICLETYPE),
             $this->currency
         );
@@ -721,15 +724,15 @@ class BasketController extends BaseController
 
                 if ($deliveryArticle->getUid() == $this->basketDeliveryArticles[0]) {
                     $selected = $activeFlag;
-                    $priceNet = Money::format($deliveryArticle->getPriceNet(), $this->currency);
-                    $priceGross = Money::format($deliveryArticle->getPriceGross(), $this->currency);
+                    $priceNet = MoneyViewHelper::format($deliveryArticle->getPriceNet(), $this->currency);
+                    $priceGross = MoneyViewHelper::format($deliveryArticle->getPriceGross(), $this->currency);
                 } elseif (!$first) {
                     if (empty($this->basketDeliveryArticles[0])) {
                         $selected = $activeFlag;
                     }
 
-                    $priceNet = Money::format($deliveryArticle->getPriceNet(), $this->currency);
-                    $priceGross = Money::format($deliveryArticle->getPriceGross(), $this->currency);
+                    $priceNet = MoneyViewHelper::format($deliveryArticle->getPriceNet(), $this->currency);
+                    $priceGross = MoneyViewHelper::format($deliveryArticle->getPriceGross(), $this->currency);
                     if (!is_array($this->basketDeliveryArticles) || empty($this->basketDeliveryArticles)) {
                         $this->getBasket()->addArticle($deliveryArticle->getUid());
                         $this->getBasket()->storeData();
@@ -860,11 +863,11 @@ class BasketController extends BaseController
                     $first = true;
                     $select .= ' selected="selected"';
                     $this->basket->addArticle($articleUid);
-                    $priceNet = Money::format($article->getPriceNet(), $this->currency);
-                    $priceGross = Money::format($article->getPriceGross(), $this->currency);
+                    $priceNet = MoneyViewHelper::format($article->getPriceNet(), $this->currency);
+                    $priceGross = MoneyViewHelper::format($article->getPriceGross(), $this->currency);
                 } elseif (!$first) {
-                    $priceNet = Money::format($article->getPriceNet(), $this->currency);
-                    $priceGross = Money::format($article->getPriceGross(), $this->currency);
+                    $priceNet = MoneyViewHelper::format($article->getPriceNet(), $this->currency);
+                    $priceGross = MoneyViewHelper::format($article->getPriceGross(), $this->currency);
                     $this->basket->deleteArticle($articleUid);
                 }
                 $select .= '>' . $article->getTitle() . '</option>';
@@ -875,8 +878,8 @@ class BasketController extends BaseController
 
         // Set Prices to 0, if "please select " is shown
         if ($addPleaseSelect) {
-            $priceGross = Money::format(0, $this->currency);
-            $priceNet = Money::format(0, $this->currency);
+            $priceGross = MoneyViewHelper::format(0, $this->currency);
+            $priceNet = MoneyViewHelper::format(0, $this->currency);
         }
 
         $basketArray['###PAYMENT_SELECT_BOX###'] = $select;
@@ -974,28 +977,28 @@ class BasketController extends BaseController
             '[artAddUid][' . $article->getUid() . '][price_id]" value="' . $basketItem->getPriceUid() . '" />';
         $markerArray['###QTY_INPUT_VALUE###'] = $basketItem->getQuantity();
         $markerArray['###QTY_INPUT_NAME###'] = $this->prefixId . '[artAddUid][' . $article->getUid() . '][count]';
-        $markerArray['###BASKET_ITEM_PRICENET###'] = Money::format(
+        $markerArray['###BASKET_ITEM_PRICENET###'] = MoneyViewHelper::format(
             $basketItem->getPriceNet(),
             $this->currency
         );
-        $markerArray['###BASKET_ITEM_PRICEGROSS###'] = Money::format(
+        $markerArray['###BASKET_ITEM_PRICEGROSS###'] = MoneyViewHelper::format(
             $basketItem->getPriceGross(),
             $this->currency
         );
-        $markerArray['###BASKET_ITEM_PRICENETNOSCALE###'] = Money::format(
+        $markerArray['###BASKET_ITEM_PRICENETNOSCALE###'] = MoneyViewHelper::format(
             $basketItem->getNoScalePriceNet(),
             $this->currency
         );
-        $markerArray['###BASKET_ITEM_PRICEGROSSNOSCALE###'] = Money::format(
+        $markerArray['###BASKET_ITEM_PRICEGROSSNOSCALE###'] = MoneyViewHelper::format(
             $basketItem->getNoScalePriceGross(),
             $this->currency
         );
         $markerArray['###BASKET_ITEM_COUNT###'] = $basketItem->getQuantity();
-        $markerArray['###BASKET_ITEM_PRICESUM_NET###'] = Money::format(
+        $markerArray['###BASKET_ITEM_PRICESUM_NET###'] = MoneyViewHelper::format(
             $basketItem->getItemSumNet(),
             $this->currency
         );
-        $markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] = Money::format(
+        $markerArray['###BASKET_ITEM_PRICESUM_GROSS###'] = MoneyViewHelper::format(
             $basketItem->getItemSumGross(),
             $this->currency
         );

@@ -33,49 +33,46 @@ class TceformsUtility
 
         $numArticleNumbersShow = 3;
 
-        $addWhere = ' AND tx_commerce_articles.article_type_uid = ' . NORMALARTICLETYPE . ' ';
+        $addWhere = 'tx_commerce_articles.article_type_uid = ' . NORMALARTICLETYPE;
+        $addWhere .= ' AND tx_commerce_products.deleted = 0 AND tx_commerce_articles.deleted = 0';
         if ($data['row']['sys_language_uid'] > 0) {
-            $addWhere .= ' and tx_commerce_products.sys_language_uid = ' . $data['row']['sys_language_uid'] . ' ';
+            $addWhere .= ' AND tx_commerce_products.sys_language_uid = ' . $data['row']['sys_language_uid'] . ' ';
         }
-        $addWhere .= ' and tx_commerce_products.deleted = 0 and tx_commerce_articles.deleted =0 ';
         $resProducts = $database->exec_SELECTquery(
             'DISTINCT tx_commerce_products.title, tx_commerce_products.uid, tx_commerce_products.sys_language_uid,
                 count(tx_commerce_articles.uid) as anzahl',
-            'tx_commerce_products,tx_commerce_articles',
-            'tx_commerce_products.uid=tx_commerce_articles.uid_product ' . $addWhere,
-            'tx_commerce_products.title,tx_commerce_products.uid, tx_commerce_products.sys_language_uid',
-            'tx_commerce_products.title,tx_commerce_products.sys_language_uid'
+            'tx_commerce_products
+                INNER JOIN tx_commerce_articles ON tx_commerce_products.uid = tx_commerce_articles.uid_product',
+            $addWhere,
+            'tx_commerce_products.title, tx_commerce_products.uid, tx_commerce_products.sys_language_uid',
+            'tx_commerce_products.title, tx_commerce_products.sys_language_uid'
         );
         $data['items'] = [];
         $items = [];
         $items[] = ['', -1];
-        while (($rowProducts = $database->sql_fetch_assoc($resProducts))) {
+        while (($product = $database->sql_fetch_assoc($resProducts))) {
             // Select Languages
             $language = '';
 
-            if ($rowProducts['sys_language_uid'] > 0) {
-                $resLanguage = $database->exec_SELECTquery(
+            if ($product['sys_language_uid'] > 0) {
+                $rowLanguage = $database->exec_SELECTgetSingleRow(
                     'title',
                     'sys_language',
-                    'uid = ' . $rowProducts['sys_language_uid']
+                    'uid = ' . $product['sys_language_uid']
                 );
-                if (($rowLanguage = $database->sql_fetch_assoc($resLanguage))) {
+                if (!empty($rowLanguage)) {
                     $language = $rowLanguage['title'];
                 }
             }
 
-            if ($language) {
-                $title = $rowProducts['title'] . ' [' . $language . '] ';
-            } else {
-                $title = $rowProducts['title'];
-            }
+            $title = $product['title'] . ($language ? ' [' . $language . '] ' : '');
 
-            if ($rowProducts['anzahl'] > 0) {
+            if ($product['anzahl'] > 0) {
                 $resArticles = $database->exec_SELECTquery(
                     'eancode, l18n_parent, ordernumber',
                     'tx_commerce_articles',
-                    'tx_commerce_articles.uid_product = ' . $rowProducts['uid'] .
-                    ' and tx_commerce_articles.deleted = 0'
+                    'tx_commerce_articles.uid_product = ' . $product['uid'] .
+                    ' AND tx_commerce_articles.deleted = 0'
                 );
 
                 if ($resArticles) {
@@ -88,35 +85,21 @@ class TceformsUtility
                         && ($count < $numArticleNumbersShow)
                     ) {
                         if ($rowArticles['l18n_parent'] > 0) {
-                            $resL18nParent = $database->exec_SELECTquery(
-                                'eancode,ordernumber',
+                            $articleTranslationParent = $database->exec_SELECTgetSingleRow(
+                                'eancode, ordernumber',
                                 'tx_commerce_articles',
-                                'tx_commerce_articles.uid=' . $rowArticles['l18n_parent']
+                                'tx_commerce_articles.uid = ' . $rowArticles['l18n_parent']
                             );
 
-                            if ($resL18nParent) {
-                                $rowL18nParents = $database->sql_fetch_assoc($resL18nParent);
-                                if ($rowL18nParents['eancode'] != '') {
-                                    $eancodes[] = $rowL18nParents['eancode'];
-                                }
-                                if ($rowL18nParents['ordernumber'] != '') {
-                                    $ordernumbers[] = $rowL18nParents['ordernumber'];
-                                }
-                            } else {
-                                if ($rowArticles['eancode'] != '') {
-                                    $eancodes[] = $rowArticles['eancode'];
-                                }
-                                if ($rowArticles['ordernumber'] != '') {
-                                    $ordernumbers[] = $rowArticles['ordernumber'];
-                                }
+                            if (!empty($articleTranslationParent)) {
+                                $rowArticles = $articleTranslationParent;
                             }
-                        } else {
-                            if ($rowArticles['eancode'] != '') {
-                                $eancodes[] = $rowArticles['eancode'];
-                            }
-                            if ($rowArticles['ordernumber'] != '') {
-                                $ordernumbers[] = $rowArticles['ordernumber'];
-                            }
+                        }
+                        if ($rowArticles['eancode'] != '') {
+                            $eancodes[] = $rowArticles['eancode'];
+                        }
+                        if ($rowArticles['ordernumber'] != '') {
+                            $ordernumbers[] = $rowArticles['ordernumber'];
                         }
                         ++$count;
                     }
@@ -134,7 +117,7 @@ class TceformsUtility
                 }
             }
 
-            $items[] = [$title, $rowProducts['uid']];
+            $items[] = [$title, $product['uid']];
         }
         $database->sql_free_result($resProducts);
 
