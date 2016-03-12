@@ -176,23 +176,23 @@ call_user_func(function ($packageKey) {
     // As basic hook for calculation the delivery_costs
     if (empty($typo3ConfVars['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost'])) {
         $typo3ConfVars['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost'] =
-            \CommerceTeam\Commerce\Hook\ArticleHooks::class;
+            \CommerceTeam\Commerce\Hooks\ArticleHook::class;
     }
 
     // Add hook to handle orders while moving them to a different state
     if (empty($typo3ConfVars['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'])) {
         $typo3ConfVars['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders']['commerce'] =
-            \CommerceTeam\Commerce\Hook\OrdermailHooks::class;
+            \CommerceTeam\Commerce\Hooks\OrdermailHook::class;
     }
 
     // Hook called while deleting an address in addresses controller
     $typo3ConfVars['EXTCONF']['commerce/Controller/AddressesController']['deleteAddress']['commerce'] =
-        \CommerceTeam\Commerce\Hook\Pi4Hooks::class;
+        \CommerceTeam\Commerce\Hooks\Pi4Hook::class;
     $typo3ConfVars['EXTCONF']['commerce/Controller/AddressesController']['saveAddress']['commerce'] =
-        \CommerceTeam\Commerce\Hook\Pi4Hooks::class;
+        \CommerceTeam\Commerce\Hooks\Pi4Hook::class;
     // Add hook to create or update address data to sr_feuser_register create and edit feuser process
     $typo3ConfVars['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess']['commerce'] =
-        \CommerceTeam\Commerce\Hook\SrfeuserregisterPi1Hook::class;
+        \CommerceTeam\Commerce\Hooks\SrfeuserregisterPi1Hook::class;
 
 
     // register for RteHtmlParser::TS_links_rte and ContentObjectRenderer::resolveMixedLinkParameter
@@ -203,26 +203,30 @@ call_user_func(function ($packageKey) {
     // Hooks for datamap processing
     // For processing the order sfe, when changing the pid
     $scOptions['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['commerce'] =
-        \CommerceTeam\Commerce\Hook\DataMapHooks::class;
+        \CommerceTeam\Commerce\Hooks\DataMapHook::class;
 
     // Hooks for commandmap processing
     // For new drawing of the category tree after having deleted a record
     $scOptions['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['commerce'] =
-        \CommerceTeam\Commerce\Hook\CommandMapHooks::class;
+        \CommerceTeam\Commerce\Hooks\CommandMapHook::class;
+
+    // Tree update javascript rendering hooks
+    $scOptions['t3lib/class.t3lib_befunc.php']['updateSignalHook']['updateCategoryTree'] =
+        \CommerceTeam\Commerce\Hooks\UpdateSignalHook::class . '->updateCategoryTree';
 
     // Hooks for version swap processing
     // For processing the order sfe, when changing the pid
     //@todo check if needed
     $scOptions['t3lib/class.t3lib_tcemain.php']['processVersionSwapClass']['commerce'] =
-        \CommerceTeam\Commerce\Hook\VersionHooks::class;
+        \CommerceTeam\Commerce\Hooks\VersionHook::class;
 
     //@todo check if needed
     $scOptions['t3lib/class.t3lib_tceforms_inline.php']['tceformsInlineHook']['commerce'] =
-        \CommerceTeam\Commerce\Hook\IrreHooks::class;
+        \CommerceTeam\Commerce\Hooks\IrreHook::class;
 
     // Hook to render recordlist parts differently
     //@todo check if needed
     $scOptions['typo3/class.db_list_extra.inc']['actions']['commerce'] =
-        \CommerceTeam\Commerce\Hook\LocalRecordListHooks::class;
+        \CommerceTeam\Commerce\Hooks\LocalRecordListHook::class;
 
 }, 'commerce');

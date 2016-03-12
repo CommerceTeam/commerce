@@ -383,7 +383,7 @@ TYPO3.Components.CategoryTree.App = Ext.extend(Ext.Panel, {
 TYPO3.ModuleMenu.App.registerNavigationComponent('commerce-categorytree', function() {
 	TYPO3.Backend.NavigationContainer.CategoryTree = new TYPO3.Components.CategoryTree.App();
 
-		// compatibility code
+	// compatibility code
     top.nav = TYPO3.Backend.NavigationContainer.CategoryTree;
     top.nav_frame = TYPO3.Backend.NavigationContainer.CategoryTree;
     top.content.nav_frame = TYPO3.Backend.NavigationContainer.CategoryTree;

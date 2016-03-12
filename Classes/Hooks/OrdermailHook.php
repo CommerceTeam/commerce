@@ -1,5 +1,5 @@
 <?php
-namespace CommerceTeam\Commerce\Hook;
+namespace CommerceTeam\Commerce\Hooks;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author 2006-2011 Joerg Sprung <jsp@marketing-factory.de>
  */
-class OrdermailHooks
+class OrdermailHook
 {
     /**
      * Content object.

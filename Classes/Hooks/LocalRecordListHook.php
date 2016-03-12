@@ -1,5 +1,5 @@
 <?php
-namespace CommerceTeam\Commerce\Hook;
+namespace CommerceTeam\Commerce\Hooks;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author 2014 Sebastian Fischer <typo3@evoweb.de>
  */
-class LocalRecordListHooks implements \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface
+class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface
 {
     /**
      * Modifies Web>List clip icons (copy, cut, paste, etc.) of a displayed row.

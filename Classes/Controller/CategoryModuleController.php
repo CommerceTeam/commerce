@@ -267,6 +267,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                         $iKparts = explode('|', $iK);
                         $cmd[$iKparts[0]][$iKparts[1]]['delete'] = 1;
                     }
+
                     /**
                      * Data handler.
                      *
@@ -275,9 +276,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                     $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
                     $tce->start([], $cmd);
                     $tce->process_cmdmap();
-                    if (isset($cmd['tx_commerce_categories'])) {
-                        BackendUtility::setUpdateSignal('updateFolderTree');
-                    }
+
                     $tce->printLogErrorMessages(GeneralUtility::getIndpEnv('REQUEST_URI'));
                 }
             }

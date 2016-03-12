@@ -1,5 +1,5 @@
 <?php
-namespace CommerceTeam\Commerce\Hook;
+namespace CommerceTeam\Commerce\Hooks;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -24,7 +24,7 @@ use CommerceTeam\Commerce\Controller\AddressesController;
  *
  * @author 2006-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
-class Pi4Hooks
+class Pi4Hook
 {
     /**
      * This function is called by the Hook in

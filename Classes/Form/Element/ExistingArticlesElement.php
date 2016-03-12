@@ -55,7 +55,6 @@ class ExistingArticlesElement extends AbstractFormElement
         foreach ($articles as $article) {
             $articleUid = (int) $article['uid'];
 
-// @todo trigger BackendUtility::setUpdateSignal('updateCategoryTree'); for delete, hide, up and down
             $editAction = $this->getEditAction($article);
             $deleteAction = $this->getDeleteAction($article);
             $hideAction = $this->getHideAction($article, $articleUid);

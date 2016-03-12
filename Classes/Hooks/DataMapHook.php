@@ -1,5 +1,5 @@
 <?php
-namespace CommerceTeam\Commerce\Hook;
+namespace CommerceTeam\Commerce\Hooks;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author 2005-2013 Thomas Hempel <thomas@work.de>
  */
-class DataMapHooks
+class DataMapHook
 {
     /**
      * Backend utility.
@@ -1036,10 +1036,6 @@ class DataMapHooks
             default:
         }
 
-        if (TYPO3_MODE == 'BE') {
-            BackendUtility::setUpdateSignal('updateFolderTree');
-        }
-
         // @todo dynaflex special handling removed what was dropped by that?
     }
 
@@ -1756,6 +1752,23 @@ class DataMapHooks
         }
 
         return $result;
+    }
+
+
+    /**
+     * @param DataHandler $dataHandler
+     */
+    public function processDatamap_afterAllOperations($dataHandler)
+    {
+        if (TYPO3_MODE == 'BE'
+            && (
+                isset($dataHandler->datamap['tx_commerce_categories'])
+                || isset($dataHandler->datamap['tx_commerce_products'])
+                || isset($dataHandler->datamap['tx_commerce_articles'])
+            )
+        ) {
+            BackendUtility::setUpdateSignal('updateCategoryTree');
+        }
     }
 
 

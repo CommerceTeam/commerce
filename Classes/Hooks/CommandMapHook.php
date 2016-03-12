@@ -1,5 +1,5 @@
 <?php
-namespace CommerceTeam\Commerce\Hook;
+namespace CommerceTeam\Commerce\Hooks;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -31,7 +31,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author 2005-2011 Franz Holzinger <kontakt@fholzinger.com>
  */
-class CommandMapHooks
+class CommandMapHook
 {
     /**
      * Attribute without localized title.
@@ -939,6 +939,23 @@ class CommandMapHooks
         $content .= $errorDocument->endPage();
         echo $content;
         exit;
+    }
+
+
+    /**
+     * @param DataHandler $dataHandler
+     */
+    public function processCmdmap_afterFinish($dataHandler)
+    {
+        if (TYPO3_MODE == 'BE'
+            && (
+                isset($dataHandler->cmdmap['tx_commerce_categories'])
+                || isset($dataHandler->cmdmap['tx_commerce_products'])
+                || isset($dataHandler->cmdmap['tx_commerce_articles'])
+            )
+        ) {
+            BackendUtility::setUpdateSignal('updateCategoryTree');
+        }
     }
 
 

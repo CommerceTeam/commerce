@@ -1,5 +1,5 @@
 <?php
-namespace CommerceTeam\Commerce\Hook;
+namespace CommerceTeam\Commerce\Hooks;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -21,7 +21,7 @@ namespace CommerceTeam\Commerce\Hook;
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class VersionHooks
+class VersionHook
 {
     /**
      * After versioning for tx_commerce_products, this also

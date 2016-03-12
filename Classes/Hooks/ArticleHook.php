@@ -1,5 +1,5 @@
 <?php
-namespace CommerceTeam\Commerce\Hook;
+namespace CommerceTeam\Commerce\Hooks;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -29,7 +29,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
-class ArticleHooks
+class ArticleHook
 {
     /**
      * Basic Method to calculate the delivereycost (net)

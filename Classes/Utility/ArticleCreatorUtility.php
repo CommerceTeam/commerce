@@ -58,6 +58,8 @@ class ArticleCreatorUtility
         $this->uid = (int) $uid;
         $this->pid = (int) $pid;
 
+        $this->belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
+
         // get all attributes for this product, if they where not fetched yet
         if ($this->attributes == null) {
             $this->attributes = $this->belib->getAttributesForProduct($this->uid, true, true, true);
@@ -94,8 +96,6 @@ class ArticleCreatorUtility
             foreach (array_keys($createList) as $key) {
                 $this->createArticle($parameter, $key);
             }
-
-            BackendUtility::setUpdateSignal('updateCategoryTree');
         }
     }
 
@@ -183,14 +183,14 @@ class ArticleCreatorUtility
         $createdArticleRelations = [];
         $relationCreateData = $relationBaseData;
 
-        $productsAttributesRes = $database->exec_SELECTquery(
+        $productsAttributes = $database->exec_SELECTgetRows(
             'sorting, uid_local, uid_foreign',
             'tx_commerce_products_attributes_mm',
             'uid_local = ' . (int) $this->uid
         );
         $attributesSorting = [];
-        while (($productsAttributes = $database->sql_fetch_assoc($productsAttributesRes))) {
-            $attributesSorting[$productsAttributes['uid_foreign']] = $productsAttributes['sorting'];
+        foreach ($productsAttributes as $productsAttribute) {
+            $attributesSorting[$productsAttribute['uid_foreign']] = $productsAttribute['sorting'];
         }
 
         if (is_array($data)) {
@@ -223,7 +223,7 @@ class ArticleCreatorUtility
                 $relationCreateData['value_char'] = '';
                 $relationCreateData['uid_valuelist'] = $attribute['uid_valuelist'];
 
-                if (!$this->belib->isNumber($attribute['default_value'])) {
+                if (!is_int($attribute['default_value'])) {
                     $relationCreateData['default_value'] = $attribute['default_value'];
                 } else {
                     $relationCreateData['value_char'] = $attribute['default_value'];
@@ -242,74 +242,70 @@ class ArticleCreatorUtility
 
         // Now check, if the parent Product is already lokalised, so creat Article in
         // the lokalised version Select from Database different localisations
-        $resOricArticle = $database->exec_SELECTquery(
+        $origArticle = $database->exec_SELECTgetSingleRow(
             '*',
             'tx_commerce_articles',
             'uid = ' . (int) $articleUid . ' AND deleted = 0'
         );
-        $origArticle = $database->sql_fetch_assoc($resOricArticle);
 
-        $result = $database->exec_SELECTquery(
+        $localizedProducts = (array)$database->exec_SELECTgetRows(
             '*',
             'tx_commerce_products',
             'l18n_parent = ' . (int) $this->uid . ' AND deleted = 0'
         );
+        // Only if there are products
+        foreach ($localizedProducts as $localizedProduct) {
+            // walk thru and create articles
+            $destLanguage = $localizedProduct['sys_language_uid'];
+            // get the highest sorting
+            $langIsoCode = BackendUtility::getRecord(
+                'sys_language',
+                (int) $destLanguage,
+                'static_lang_isocode'
+            );
+            $langIdent = BackendUtility::getRecord(
+                'static_languages',
+                (int) $langIsoCode['static_lang_isocode'],
+                'lg_typo3'
+            );
+            $langIdent = strtoupper($langIdent['lg_typo3']);
 
-        if ($database->sql_num_rows($result)) {
-            // Only if there are products
-            while (($localizedProducts = $database->sql_fetch_assoc($result))) {
-                // walk thru and create articles
-                $destLanguage = $localizedProducts['sys_language_uid'];
-                // get the highest sorting
-                $langIsoCode = BackendUtility::getRecord(
-                    'sys_language',
-                    (int) $destLanguage,
-                    'static_lang_isocode'
-                );
-                $langIdent = BackendUtility::getRecord(
-                    'static_languages',
-                    (int) $langIsoCode['static_lang_isocode'],
-                    'lg_typo3'
-                );
-                $langIdent = strtoupper($langIdent['lg_typo3']);
+            // create article data array
+            $articleData = [
+                'pid' => $this->pid,
+                'crdate' => time(),
+                'title' => $parameter['title'],
+                'uid_product' => $localizedProduct['uid'],
+                'sys_language_uid' => $localizedProduct['sys_language_uid'],
+                'l18n_parent' => $articleUid,
+                'sorting' => $sorting['sorting'] + 20,
+                'article_attributes' => count($this->attributes['rest']) + count($data),
+                'attribute_hash' => $hash,
+                'article_type_uid' => 1,
+                'attributesedit' => $this->belib->buildLocalisedAttributeValues(
+                    $origArticle['attributesedit'],
+                    $langIdent
+                ),
+            ];
 
-                // create article data array
-                $articleData = [
-                    'pid' => $this->pid,
-                    'crdate' => time(),
-                    'title' => $parameter['title'],
-                    'uid_product' => $localizedProducts['uid'],
-                    'sys_language_uid' => $localizedProducts['sys_language_uid'],
-                    'l18n_parent' => $articleUid,
-                    'sorting' => $sorting['sorting'] + 20,
-                    'article_attributes' => count($this->attributes['rest']) + count($data),
-                    'attribute_hash' => $hash,
-                    'article_type_uid' => 1,
-                    'attributesedit' => $this->belib->buildLocalisedAttributeValues(
-                        $origArticle['attributesedit'],
-                        $langIdent
-                    ),
-                ];
+            // create the article
+            $database->exec_INSERTquery('tx_commerce_articles', $articleData);
+            $localizedArticleUid = $database->sql_insert_id();
 
-                // create the article
-                $database->exec_INSERTquery('tx_commerce_articles', $articleData);
-                $localizedArticleUid = $database->sql_insert_id();
+            // get all relations to attributes from the old article and copy them
+            // to new article
+            $origRelations = $database->exec_SELECTgetRows(
+                '*',
+                'tx_commerce_articles_article_attributes_mm',
+                'uid_local = ' . (int) $origArticle['uid'] . ' AND uid_valuelist = 0'
+            );
+            foreach ($origRelations as $origRelation) {
+                $origRelation['uid_local'] = $localizedArticleUid;
 
-                // get all relations to attributes from the old article and copy them
-                // to new article
-                $res = $database->exec_SELECTquery(
-                    '*',
-                    'tx_commerce_articles_article_attributes_mm',
-                    'uid_local = ' . (int) $origArticle['uid'] . ' AND uid_valuelist = 0'
-                );
-
-                while (($origRelation = $database->sql_fetch_assoc($res))) {
-                    $origRelation['uid_local'] = $localizedArticleUid;
-
-                    $database->exec_INSERTquery('tx_commerce_articles_article_attributes_mm', $origRelation);
-                }
-                $this->belib->updateArticleXML($createdArticleRelations, false, $localizedArticleUid);
+                $database->exec_INSERTquery('tx_commerce_articles_article_attributes_mm', $origRelation);
             }
+
+            $this->belib->updateArticleXML($createdArticleRelations, false, $localizedArticleUid);
         }
 
         return $articleUid;

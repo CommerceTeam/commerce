@@ -262,19 +262,15 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
                         $iKparts = explode('|', $iK);
                         $cmd[$iKparts[0]][$iKparts[1]]['delete'] = 1;
                     }
+
                     /**
                      * Data handler.
                      *
                      * @var \TYPO3\CMS\Core\DataHandling\DataHandler
                      */
                     $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-                    $tce->stripslashes_values = 0;
                     $tce->start([], $cmd);
                     $tce->process_cmdmap();
-
-                    if (isset($cmd['pages'])) {
-                        BackendUtility::setUpdateSignal('updateFolderTree');
-                    }
 
                     $tce->printLogErrorMessages(GeneralUtility::getIndpEnv('REQUEST_URI'));
                 }
