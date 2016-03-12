@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Definitions for routes provided by EXT:beuser
+ * Definitions for routes provided by EXT:commerce
  */
 return [
     // Dispatch the permissions actions

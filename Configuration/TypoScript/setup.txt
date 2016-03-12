@@ -17,7 +17,7 @@ plugin.tx_commerce_pi1 = USER_INT
 
 
 page.includeCSS {
-	commerce = EXT:commerce/Resources/Public/Stylesheets/commerce.css
+	commerce = EXT:commerce/Resources/Public/CSS/commerce.css
 	commerce.media = all
 }
 
