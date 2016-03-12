@@ -25,8 +25,6 @@ use TYPO3\CMS\Backend\Template\ModuleTemplate;
  * Module 'Statistics' for the commerce extension.
  *
  * Class \CommerceTeam\Commerce\Controller\StatisticModuleController
- *
- * @author 2004-2011 Joerg Sprung <jsp@marketing-factory.de>
  */
 abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 {

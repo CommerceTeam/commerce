@@ -27,9 +27,7 @@ use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Extbase\Service\TypoScriptService;
 
 /**
- * Class \CommerceTeam\Commerce\Controller\CategoryModuleController.
- *
- * @author Sebastian Fischer <typo3@marketing-factory.de>
+ * Class \CommerceTeam\Commerce\Controller\CategoryModuleController
  */
 class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
 {

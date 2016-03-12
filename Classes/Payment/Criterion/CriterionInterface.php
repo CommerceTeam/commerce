@@ -18,8 +18,6 @@ namespace CommerceTeam\Commerce\Payment\Criterion;
  * Payment criterion interface.
  *
  * Class \CommerceTeam\Commerce\Payment\Criterion\CriterionInterface
- *
- * @author 2011 Christian Kuhn <lolli@schwarzbu.ch>
  */
 interface CriterionInterface
 {

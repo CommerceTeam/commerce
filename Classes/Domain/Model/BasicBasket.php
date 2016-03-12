@@ -23,8 +23,6 @@ namespace CommerceTeam\Commerce\Domain\Model;
  * variables will be changed in php5 to private
  *
  * Class \CommerceTeam\Commerce\Domain\Model\BasicBasket
- *
- * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class BasicBasket
 {

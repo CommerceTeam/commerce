@@ -15,9 +15,7 @@ namespace CommerceTeam\Commerce\Payment;
  */
 
 /**
- * Class \CommerceTeam\Commerce\Payment\Ccvs.
- *
- * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
+ * Class \CommerceTeam\Commerce\Payment\Ccvs
  */
 class Ccvs extends \CommerceTeam\Commerce\Payment\Ccvs\CreditCardValidationSolution
 {

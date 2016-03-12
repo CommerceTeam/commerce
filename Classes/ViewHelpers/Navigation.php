@@ -24,8 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * the basic for this class.
  *
  * Class \CommerceTeam\Commerce\ViewHelpers\Navigation
- *
- * @author 2005-2013 Volker Graubaum <vg_typo3@e-netconsulting.de>
  */
 class Navigation
 {

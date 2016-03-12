@@ -24,8 +24,6 @@ namespace CommerceTeam\Commerce\Dao;
  * The class needs a parser for object <-> model (transfer object) mapping.
  *
  * Class \CommerceTeam\Commerce\Dao\BasicDao
- *
- * @author 2006-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
 abstract class BasicDao
 {

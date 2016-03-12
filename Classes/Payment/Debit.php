@@ -20,8 +20,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Debit payment implementation.
  *
  * Class \CommerceTeam\Commerce\Payment\Debit
- *
- * @author 2005-2011 Thomas Hempel <thomas@work.de>
  */
 class Debit extends PaymentAbstract
 {

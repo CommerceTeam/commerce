@@ -32,8 +32,6 @@ use TYPO3\CMS\Core\SingletonInterface;
  * Basic class for basket_handling inherited from tx_commerce_basic_basket
  *
  * Class \CommerceTeam\Commerce\Domain\Model\Basket
- *
- * @author 2005-2013 Ingo Schmitt <is@marketing-factory.de>
  */
 class Basket extends BasicBasket implements SingletonInterface
 {

@@ -29,8 +29,6 @@ use TYPO3\CMS\Backend\Template\ModuleTemplate;
  * Module 'Systemdata' for the 'commerce' extension.
  *
  * Class \CommerceTeam\Commerce\Controller\SystemdataModuleController
- *
- * @author 2005-2013 Ingo Schmitt <is@marketing-factory.de>
  */
 abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 {

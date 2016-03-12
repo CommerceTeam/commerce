@@ -21,9 +21,7 @@ use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class \CommerceTeam\Commerce\Controller\WizardController.
- *
- * @author 2008-2011 Ingo Schmitt <is@marketing-factory.de>
+ * Class \CommerceTeam\Commerce\Controller\WizardController
  */
 class WizardController
 {

@@ -19,8 +19,6 @@ namespace CommerceTeam\Commerce\Dao;
  * It extends the basic Dao parser.
  *
  * Class \CommerceTeam\Commerce\Dao\FeuserDaoParser
- *
- * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
 class FeuserDaoParser extends BasicDaoParser
 {

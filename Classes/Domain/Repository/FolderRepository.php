@@ -20,8 +20,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Misc commerce db functions.
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\FolderRepository
- *
- * @author 2008-2011 Eric Frister <ef@marketing-factory.de>
  */
 class FolderRepository
 {

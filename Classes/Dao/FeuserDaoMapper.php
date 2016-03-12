@@ -21,8 +21,6 @@ use CommerceTeam\Commerce\Utility\ConfigurationUtility;
  * It extends the basic Dao mapper.
  *
  * Class \CommerceTeam\Commerce\Dao\FeuserDaoMapper
- *
- * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
 class FeuserDaoMapper extends BasicDaoMapper
 {

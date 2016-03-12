@@ -19,8 +19,6 @@ namespace CommerceTeam\Commerce\Dao;
  * These classes handle tt_address objects.
  *
  * Class \CommerceTeam\Commerce\Dao\AddressDaoObject
- *
- * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
 class AddressDaoObject extends BasicDaoObject
 {

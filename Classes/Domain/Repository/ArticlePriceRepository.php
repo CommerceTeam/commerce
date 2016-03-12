@@ -18,15 +18,11 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  * Database Class for tx_commerce_article_prices. All database calle should
  * be made by this class. In most cases you should use the methodes
  * provided by tx_commerce_article_price to get informations for articles.
- * Inherited from \CommerceTeam\Commerce\Domain\Repository\Repository.
  *
  * Basic abtract Class for Database Query for
  * Database retrival class fro product
- * inherited from \CommerceTeam\Commerce\Domain\Repository\Repository
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\ArticlePriceRepository
- *
- * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class ArticlePriceRepository extends Repository
 {

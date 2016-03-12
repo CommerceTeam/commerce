@@ -17,9 +17,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
- * Class \CommerceTeam\Commerce\Domain\Repository\PageRepository.
- *
- * @author Sebastian Fischer <typo3@evoweb.de>
+ * Class \CommerceTeam\Commerce\Domain\Repository\PageRepository
  */
 class PageRepository extends Repository
 {

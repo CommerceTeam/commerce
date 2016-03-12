@@ -24,8 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Inherited from \CommerceTeam\Commerce\Domain\Model\AbstractEntity.
  *
  * Class \CommerceTeam\Commerce\Domain\Model\Article
- *
- * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class Article extends AbstractEntity
 {

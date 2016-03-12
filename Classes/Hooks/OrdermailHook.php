@@ -22,8 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Hook for saving order data and order_articles.
  *
  * Class \CommerceTeam\Commerce\Hook\OrdermailHooks
- *
- * @author 2006-2011 Joerg Sprung <jsp@marketing-factory.de>
  */
 class OrdermailHook
 {

@@ -16,9 +16,8 @@ namespace CommerceTeam\Commerce\Utility;
 
 /**
  * Typoscript config functions.
- * Class \CommerceTeam\Commerce\Utility\TyposcriptConfig
  *
- * @author 2014 Sebastian Fischer <typo3@marketing-factory.de>
+ * Class \CommerceTeam\Commerce\Utility\TyposcriptConfig
  */
 class TyposcriptConfig extends \TYPO3\CMS\Core\Configuration\TypoScript\ConditionMatching\AbstractCondition
 {

@@ -20,8 +20,6 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  * provided by tx_commerce_category to get informations for articles.
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\CategoryRepository
- *
- * @author 2005-2012 Ingo Schmitt <is@marketing-factory.de>
  */
 class CategoryRepository extends Repository
 {

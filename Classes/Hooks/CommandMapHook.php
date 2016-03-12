@@ -28,8 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Hook for saving order data and order_articles.
  *
  * Class \CommerceTeam\Commerce\Hook\CommandMapHooks
- *
- * @author 2005-2011 Franz Holzinger <kontakt@fholzinger.com>
  */
 class CommandMapHook
 {

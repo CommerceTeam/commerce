@@ -19,8 +19,6 @@ use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 
 /**
  * Plugin 'commerce_invoice' for the 'commerce_invoice' extension.
- *
- * @author 2005-2011 Franz Ripfel <fr@abezet.de>
  */
 class InvoiceController extends BaseController
 {

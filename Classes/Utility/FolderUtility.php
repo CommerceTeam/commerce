@@ -28,8 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Creation of tx_commerce_basic folders
  *
  * Class \CommerceTeam\Commerce\Utility\FolderUtility
- *
- * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class FolderUtility
 {

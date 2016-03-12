@@ -26,8 +26,6 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  * tx_commerce_attribute
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\Repository
- *
- * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class Repository
 {

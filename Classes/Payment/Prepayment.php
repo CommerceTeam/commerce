@@ -18,8 +18,6 @@ namespace CommerceTeam\Commerce\Payment;
  * Pre payment payment implementaton.
  *
  * Class \CommerceTeam\Commerce\Payment\Prepayment
- *
- * @author 2005-2011 Thomas Hempel <thomas@work.de>
  */
 class Prepayment extends PaymentAbstract
 {

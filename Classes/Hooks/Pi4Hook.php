@@ -21,8 +21,6 @@ use CommerceTeam\Commerce\Controller\AddressesController;
  * This class handles backend updates.
  *
  * Class \CommerceTeam\Commerce\Hook\Pi4Hooks
- *
- * @author 2006-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
 class Pi4Hook
 {

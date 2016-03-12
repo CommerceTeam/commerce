@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * JCB                  3088 0000 0000 0009
  *
  * Class \CommerceTeam\Commerce\Payment\Provider\Wirecard
- *
- * @author 2009-2011 Volker Graubaum <vg@e-netconsulting.de>
  */
 class Wirecard extends ProviderAbstract
 {

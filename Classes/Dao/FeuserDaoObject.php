@@ -19,8 +19,6 @@ namespace CommerceTeam\Commerce\Dao;
  * These classes handle feuser objects.
  *
  * Class \CommerceTeam\Commerce\Dao\FeuserDaoObject
- *
- * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
 class FeuserDaoObject extends BasicDaoObject
 {

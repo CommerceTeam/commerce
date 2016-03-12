@@ -19,9 +19,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class NewRecordController.
- *
- * @author Sebastian Fischer <typo3@marketing-factory.de>
+ * Class NewRecordController
  */
 class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordController
 {

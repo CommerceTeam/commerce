@@ -19,8 +19,6 @@ namespace CommerceTeam\Commerce\Utility;
  * used for the statistics module and for the cli script.
  *
  * Class \CommerceTeam\Commerce\Utility\StatisticsUtility
- *
- * @author 2008-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class StatisticsUtility
 {

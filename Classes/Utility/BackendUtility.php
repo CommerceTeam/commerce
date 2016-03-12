@@ -24,8 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * categories and a category can have a lot of parent categories.
  *
  * Class \CommerceTeam\Commerce\Utility\BackendUtility
- *
- * @author Thomas Hempel <thomas@work.de>
  */
 class BackendUtility
 {

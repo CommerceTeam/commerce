@@ -23,8 +23,6 @@ use CommerceTeam\Commerce\Utility\ConfigurationUtility;
  * The class needs a parser for object <-> model (transfer object) mapping.
  *
  * Class \CommerceTeam\Commerce\Dao\FeuserAddressFieldmapper
- *
- * @author 2005-2012 Carsten Lausen <cl@e-netconsulting.de>
  */
 class FeuserAddressFieldmapper
 {

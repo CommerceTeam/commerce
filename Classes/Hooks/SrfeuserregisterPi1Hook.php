@@ -22,8 +22,6 @@ namespace CommerceTeam\Commerce\Hooks;
  * This class handles frontend feuser updates
  *
  * Class \CommerceTeam\Commerce\Hook\SrfeuserregisterPi1Hook
- *
- * @author 2005-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
 class SrfeuserregisterPi1Hook
 {

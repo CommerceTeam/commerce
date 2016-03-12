@@ -18,11 +18,8 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  * Database Class for tx_commerce_articles. All database calle should
  * be made by this class. In most cases you should use the methodes
  * provided by tx_commerce_article to get informations for articles.
- * Inherited from \CommerceTeam\Commerce\Domain\Repository\Repository.
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\ArticleRepository
- *
- * @author 2005-2012 Ingo Schmitt <is@marketing-factory.de>
  */
 class ArticleRepository extends Repository
 {

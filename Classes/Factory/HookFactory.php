@@ -15,9 +15,7 @@ namespace CommerceTeam\Commerce\Factory;
  */
 
 /**
- * Class \CommerceTeam\Commerce\Factory\.
- *
- * @author Sebastian Fischer <typo3@marketing-factory.de>
+ * Class \CommerceTeam\Commerce\Factory\HookFactory
  */
 class HookFactory
 {

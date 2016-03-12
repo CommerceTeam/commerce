@@ -21,8 +21,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * It extends the basic Dao.
  *
  * Class \CommerceTeam\Commerce\Dao\FeuserDao
- *
- * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
 class FeuserDao extends BasicDao
 {

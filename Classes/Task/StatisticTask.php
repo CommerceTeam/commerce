@@ -18,9 +18,7 @@ use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class \CommerceTeam\Commerce\Task\StatisticTask.
- *
- * @author 2013 Sebastian Fischer <typo3@marketing-factory.de>
+ * Class \CommerceTeam\Commerce\Task\StatisticTask
  */
 class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 {

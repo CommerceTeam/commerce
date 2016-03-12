@@ -28,8 +28,6 @@ use CommerceTeam\Commerce\Utility\BackendUtility;
  * variables will be changed in php5 to private.
  *
  * Class \CommerceTeam\Commerce\Domain\Model\Product
- *
- * @author 2005-2012 Ingo Schmitt <is@marketing-factory.de>
  */
 class Product extends AbstractEntity
 {

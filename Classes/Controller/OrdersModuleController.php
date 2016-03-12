@@ -23,9 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 /**
- * Class \CommerceTeam\Commerce\Controller\OrdersModuleController.
- *
- * @author Sebastian Fischer <typo3@marketing-factory.de>
+ * Class \CommerceTeam\Commerce\Controller\OrdersModuleController
  */
 class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 {

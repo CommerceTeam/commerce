@@ -22,8 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * It extends the basic Dao object.
  *
  * Class \CommerceTeam\Commerce\Dao\AddressDao
- *
- * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
 class AddressDao extends BasicDao
 {

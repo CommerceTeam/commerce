@@ -18,8 +18,6 @@ namespace CommerceTeam\Commerce\Payment\Provider;
  * Payment provider criterion interface.
  *
  * Class \CommerceTeam\Commerce\Payment\Provider\ProviderCriterionInterface
- *
- * @author 2011 Christian Kuhn <lolli@schwarzbu.ch>
  */
 interface ProviderCriterionInterface
 {

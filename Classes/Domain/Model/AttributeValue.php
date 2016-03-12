@@ -27,8 +27,6 @@ namespace CommerceTeam\Commerce\Domain\Model;
  * variables will be changed in php5 to private.
  *
  * Class \CommerceTeam\Commerce\Domain\Model\AttributeValue
- *
- * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class AttributeValue extends AbstractEntity
 {

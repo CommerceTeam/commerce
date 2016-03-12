@@ -20,8 +20,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Credit card payment implementation.
  *
  * Class \CommerceTeam\Commerce\Payment\Creditcard
- *
- * @author 2005-2011 Thomas Hempel <thomas@work.de>
  */
 class Creditcard extends PaymentAbstract
 {

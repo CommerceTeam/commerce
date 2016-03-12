@@ -20,11 +20,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Database Class for tx_commerce_products. All database calle should
  * be made by this class. In most cases you should use the methodes
  * provided by tx_commerce_product to get informations for articles.
- * Inherited from \CommerceTeam\Commerce\Domain\Repository\Repository.
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\ProductRepository
- *
- * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class ProductRepository extends Repository
 {

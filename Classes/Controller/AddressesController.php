@@ -21,8 +21,6 @@ use CommerceTeam\Commerce\Factory\HookFactory;
  * This class handles all the address stuff, like creating, editing and deleting.
  *
  * Class \CommerceTeam\Commerce\Controller\AddressesController
- *
- * @author 2006-2011 Thomas Hempel <thomas@work.de>
  */
 class AddressesController extends BaseController
 {

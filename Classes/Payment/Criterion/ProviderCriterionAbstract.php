@@ -20,8 +20,6 @@ use CommerceTeam\Commerce\Payment\Provider\ProviderInterface;
  * Abstract payment criterion implementation.
  *
  * Class \CommerceTeam\Commerce\Payment\Criterion\ProviderCriterionAbstract
- *
- * @author 2009-2011 Volker Graubaum <vg@e-netconsulting.de>
  */
 abstract class ProviderCriterionAbstract implements \CommerceTeam\Commerce\Payment\Provider\ProviderCriterionInterface
 {

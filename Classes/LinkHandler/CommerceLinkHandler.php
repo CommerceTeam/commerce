@@ -28,9 +28,7 @@ use TYPO3\CMS\Recordlist\LinkHandler\LinkHandlerInterface;
 use TYPO3\CMS\Recordlist\Tree\View\LinkParameterProviderInterface;
 
 /**
- * Class \CommerceTeam\Commerce\Hook\LinkhandlerHooks.
- *
- * @author 2008-2009 Ingo Schmitt <is@marketing-factory.de>
+ * Class \CommerceTeam\Commerce\Hook\LinkhandlerHooks
  */
 class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInterface, LinkParameterProviderInterface
 {

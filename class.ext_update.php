@@ -20,8 +20,6 @@
  * relation to Record UID 0 if not, these records are created
  *
  * Class ext_update
- *
- * @author 2008 - 2009 Ingo Schmitt <is@marketing-factory.de>
  */
 class ext_update extends \CommerceTeam\Commerce\Utility\UpdateUtility
 {

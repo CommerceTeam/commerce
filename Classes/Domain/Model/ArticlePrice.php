@@ -20,8 +20,6 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
  * Libary for frontend rendering of article prices.
  *
  * Class \CommerceTeam\Commerce\Domain\Model\ArticlePrice
- *
- * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class ArticlePrice extends AbstractEntity
 {

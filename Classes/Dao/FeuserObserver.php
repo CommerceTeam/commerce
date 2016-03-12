@@ -24,8 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * This class handles feuser updates.
  *
  * Class \CommerceTeam\Commerce\Dao\FeuserObserver
- *
- * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
 class FeuserObserver
 {

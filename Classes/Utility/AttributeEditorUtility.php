@@ -22,8 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * A metaclass for creating inputfield fields in the backend.
  *
  * Class \CommerceTeam\Commerce\Utility\AttributeEditorUtility
- *
- * @author 2005-2012 Thomas Hempel <thomas@work.de>
  */
 class AttributeEditorUtility
 {

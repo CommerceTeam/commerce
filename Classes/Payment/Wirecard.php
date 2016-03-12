@@ -32,8 +32,6 @@ namespace CommerceTeam\Commerce\Payment;
  * getErrortype         - Warning, schwer, unbekannt, usw.
  *
  * Class \CommerceTeam\Commerce\Payment\Wirecard
- *
- * @author 2005-2011 Marco Klawonn <info@webprog.de>
  */
 class Wirecard
 {

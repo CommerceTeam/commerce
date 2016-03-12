@@ -18,8 +18,6 @@ namespace CommerceTeam\Commerce\Payment\Provider;
  * Payment provider interface.
  *
  * Class \CommerceTeam\Commerce\Payment\Provider\ProviderInterface
- *
- * @author 2011 Christian Kuhn <lolli@schwarzbu.ch>
  */
 interface ProviderInterface
 {

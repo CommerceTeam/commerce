@@ -21,8 +21,6 @@ namespace CommerceTeam\Commerce\Utility;
  * relation to Record UID 0 if not, these records are created
  *
  * Class \CommerceTeam\Commerce\Utility\UpdateUtility
- *
- * @author 2008-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class UpdateUtility
 {

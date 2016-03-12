@@ -21,8 +21,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Abstract payment implementation.
  *
  * Class \CommerceTeam\Commerce\Payment\PaymentAbstract
- *
- * @author 2011-2012 Volker Graubaum <vg@e-netconsulting.com>
  */
 abstract class PaymentAbstract implements PaymentInterface
 {

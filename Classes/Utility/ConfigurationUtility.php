@@ -18,9 +18,7 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class \CommerceTeam\Commerce\Factory\SettingsFactory.
- *
- * @author Sebastian Fischer <typo3@marketing-factory.de>
+ * Class \CommerceTeam\Commerce\Factory\SettingsFactory
  */
 class ConfigurationUtility implements SingletonInterface
 {

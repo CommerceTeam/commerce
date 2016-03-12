@@ -22,10 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * widely used in EXT: commerce.
  *
  * Class \CommerceTeam\Commerce\ViewHelpers\Money
- *
- * @author Robert Lemke <robert@typo3.org>
- * @author Franz Ripfel <typo3@abezet.de>
- * @author Ingo Schmitt <is@marketing-factory.de>
  */
 class Money
 {

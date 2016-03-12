@@ -18,9 +18,7 @@ use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Form\Element\InlineElement;
 
 /**
- * Class \CommerceTeam\Commerce\Hook\IrreHooks.
- *
- * @author 2008-2011 Ingo Schmitt <is@marketing-factory.de>
+ * Class \CommerceTeam\Commerce\Hook\IrreHooks
  */
 class IrreHook implements \TYPO3\CMS\Backend\Form\Element\InlineElementHookInterface
 {

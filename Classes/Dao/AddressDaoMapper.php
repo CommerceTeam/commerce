@@ -22,8 +22,6 @@ use CommerceTeam\Commerce\Utility\ConfigurationUtility;
  * It extends the basic Dao mapper.
  *
  * Class \CommerceTeam\Commerce\Dao\AddressDaoMapper
- *
- * @author 2006-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
 class AddressDaoMapper extends BasicDaoMapper
 {

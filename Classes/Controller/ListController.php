@@ -21,8 +21,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Product list and single view.
- *
- * @author 2005-2012 Volker Graubaum <vg@e-netconsulting.de>
  */
 class ListController extends BaseController
 {

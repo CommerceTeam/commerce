@@ -15,9 +15,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  */
 
 /**
- * Class \CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository.
- *
- * @author Sebastian Fischer <typo3@evoweb.de>
+ * Class \CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository
  */
 class FrontendUserRepository extends Repository
 {

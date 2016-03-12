@@ -26,8 +26,6 @@ namespace CommerceTeam\Commerce\Dao;
  * The class needs a parser for object <-> model (transfer object) mapping.
  *
  * Class \CommerceTeam\Commerce\Dao\BasicDaoMapper
- *
- * @author 2006-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
 class BasicDaoMapper
 {

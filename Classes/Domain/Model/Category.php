@@ -21,8 +21,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * categories (Reverse data structure) and products.
  *
  * Class \CommerceTeam\Commerce\Domain\Model\Category
- *
- * @author 2005-2012 Ingo Schmitt <is@marketing-factory.de>
  */
 class Category extends AbstractEntity
 {

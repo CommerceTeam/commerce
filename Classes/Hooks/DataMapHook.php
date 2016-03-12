@@ -25,8 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Hook for saving order data and order_articles.
  *
  * Class \CommerceTeam\Commerce\Hook\DataMapHooks
- *
- * @author 2005-2013 Thomas Hempel <thomas@work.de>
  */
 class DataMapHook
 {

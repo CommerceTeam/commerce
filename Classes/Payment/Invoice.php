@@ -18,8 +18,6 @@ namespace CommerceTeam\Commerce\Payment;
  * Invoice payment implementation.
  *
  * Class \CommerceTeam\Commerce\Payment\Invoice
- *
- * @author 2005-2011 Thomas Hempel <thomas@work.de>
  */
 class Invoice extends PaymentAbstract
 {

@@ -18,8 +18,6 @@ namespace CommerceTeam\Commerce\Payment;
  * Cash on delivery payment implementation.
  *
  * Class \CommerceTeam\Commerce\Payment\Cashondelivery
- *
- * @author 2005-2011 Thomas Hempel <thomas@work.de>
  */
 class Cashondelivery extends PaymentAbstract
 {

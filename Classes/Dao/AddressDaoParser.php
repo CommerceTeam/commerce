@@ -20,8 +20,6 @@ namespace CommerceTeam\Commerce\Dao;
  * It extends the basic Dao parser.
  *
  * Class \CommerceTeam\Commerce\Dao\AddressDaoParser
- *
- * @author 2006-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
 class AddressDaoParser extends BasicDaoParser
 {

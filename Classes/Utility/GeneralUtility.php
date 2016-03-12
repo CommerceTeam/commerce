@@ -20,8 +20,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility as CoreGeneralUtility;
  * Misc COMMERCE functions.
  *
  * Class \CommerceTeam\Commerce\Utility\GeneralUtility
- *
- * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class GeneralUtility
 {

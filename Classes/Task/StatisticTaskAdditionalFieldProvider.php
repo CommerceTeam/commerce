@@ -17,9 +17,7 @@ namespace CommerceTeam\Commerce\Task;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 
 /**
- * Class \CommerceTeam\Commerce\Task\StatisticTaskAdditionalFieldProvider.
- *
- * @author 2013 Sebastian Fischer <typo3@marketing-factory.de>
+ * Class \CommerceTeam\Commerce\Task\StatisticTaskAdditionalFieldProvider
  */
 class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface
 {

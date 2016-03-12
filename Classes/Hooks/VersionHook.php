@@ -18,8 +18,6 @@ namespace CommerceTeam\Commerce\Hooks;
  * Implements the hooks for versioning and swapping.
  *
  * Class \CommerceTeam\Commerce\Hook\VersionHooks
- *
- * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
 class VersionHook
 {

@@ -29,8 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * storing data.
  *
  * Class \CommerceTeam\Commerce\Controller\CheckoutController
- *
- * @author Ingo Schmitt <is@marketing-factory.de>
  */
 class CheckoutController extends BaseController
 {

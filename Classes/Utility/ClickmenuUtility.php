@@ -27,8 +27,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * the output needs to be overridden depending on the rights.
  *
  * Class \CommerceTeam\Commerce\Utility\ClickmenuUtility
- *
- * @author 2008-2012 Erik Frister <typo3@marketing-factory.de>
  */
 class ClickmenuUtility extends ClickMenu
 {

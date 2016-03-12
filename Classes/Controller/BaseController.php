@@ -26,9 +26,7 @@ use CommerceTeam\Commerce\ViewHelpers\Money;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class \CommerceTeam\Commerce\Controller\BaseController.
- *
- * @author 2005-2013 Volker Graubaum <vg@e-netconsulting.de>
+ * Class \CommerceTeam\Commerce\Controller\BaseController
  */
 abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 {

@@ -20,8 +20,6 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  * provided by tx_commerce_attribute to get informations for articles.
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\AttributeRepository
- *
- * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class AttributeRepository extends Repository
 {

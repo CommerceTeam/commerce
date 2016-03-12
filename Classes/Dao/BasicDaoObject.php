@@ -20,8 +20,6 @@ namespace CommerceTeam\Commerce\Dao;
  * Extend this class to fit specific needs.
  *
  * Class \CommerceTeam\Commerce\Dao\BasicDaoObject
- *
- * @author 2006-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
 class BasicDaoObject
 {

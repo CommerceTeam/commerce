@@ -61,8 +61,6 @@ define('ATTRIB_PRODUCT', 4);
  * tx_commerce_attribute.
  *
  * Class \CommerceTeam\Commerce\Domain\Model\AbstractEntity
- *
- * @author 2005-2012 Ingo Schmitt <is@marketing-factory.de>
  */
 class AbstractEntity
 {

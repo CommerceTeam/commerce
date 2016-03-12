@@ -18,8 +18,6 @@ namespace CommerceTeam\Commerce\Payment\Criterion;
  * Abstract payment criterion implementation.
  *
  * Class \CommerceTeam\Commerce\Payment\Criterion\CriterionAbstract
- *
- * @author 2009-2011 Volker Graubaum <vg@e-netconsulting.com>
  */
 abstract class CriterionAbstract implements \CommerceTeam\Commerce\Payment\Criterion\CriterionInterface
 {

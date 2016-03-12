@@ -22,9 +22,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class \CommerceTeam\Commerce\Hook\LocalRecordListHooks.
- *
- * @author 2014 Sebastian Fischer <typo3@evoweb.de>
+ * Class \CommerceTeam\Commerce\Hook\LocalRecordListHooks
  */
 class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface
 {

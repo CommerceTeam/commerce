@@ -18,8 +18,6 @@ namespace CommerceTeam\Commerce\Utility;
  * ItemProc Methods for flexforms.
  *
  * Class \CommerceTeam\Commerce\Utility\TceformsUtility
- *
- * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class TceformsUtility
 {

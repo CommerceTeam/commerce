@@ -27,8 +27,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * This class handles tt_address updates.
  *
  * Class \CommerceTeam\Commerce\Dao\AddressObserver
- *
- * @author 2005-2011 Carsten Lausen <cl@e-netconsulting.de>
  */
 class AddressObserver
 {

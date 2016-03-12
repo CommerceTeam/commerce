@@ -28,8 +28,6 @@ namespace CommerceTeam\Commerce\Domain\Model;
  * Basic class for handleing attributes.
  *
  * Class \CommerceTeam\Commerce\Domain\Model\Attribute
- *
- * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class Attribute extends AbstractEntity
 {

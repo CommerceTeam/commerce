@@ -28,8 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * frontend user basket
  *
  * Class \CommerceTeam\Commerce\Controller\BasketController
- *
- * @author Volker Graubaum <vg@e-netconsulting.de>
  */
 class BasketController extends BaseController
 {

@@ -20,8 +20,6 @@ use CommerceTeam\Commerce\Utility\ConfigurationUtility;
  * Abstract payment provider implementation.
  *
  * Class \CommerceTeam\Commerce\Payment\Provider\ProviderAbstract
- *
- * @author 2009-2011 Volker Graubaum <vg@e-netconsulting.de>
  */
 abstract class ProviderAbstract implements ProviderInterface
 {

@@ -26,8 +26,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * for programming hooks for delivery_costs
  *
  * Class \CommerceTeam\Commerce\Hook\ArticleHooks
- *
- * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class ArticleHook
 {

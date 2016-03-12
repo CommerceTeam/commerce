@@ -21,8 +21,6 @@ namespace CommerceTeam\Commerce\Dao;
  * Extend this class to fit specific needs.
  *
  * Class \CommerceTeam\Commerce\Dao\BasicDaoParser
- *
- * @author 2005-2008 Carsten Lausen <cl@e-netconsulting.de>
  */
 class BasicDaoParser
 {

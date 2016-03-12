@@ -18,8 +18,6 @@ namespace CommerceTeam\Commerce\Payment;
  * Payment interface.
  *
  * Class \CommerceTeam\Commerce\Payment\PaymentInterface
- *
- * @author 2011 Christian Kuhn <lolli@schwarzbu.ch>
  */
 interface PaymentInterface
 {

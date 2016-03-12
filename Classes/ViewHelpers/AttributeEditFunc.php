@@ -23,8 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * User Class for displaying Orders.
  *
  * Class \CommerceTeam\Commerce\ViewHelpers\AttributeEditFunc
- *
- * @author 2005-2011 Ingo Schmitt <is@marketing-factory.de>
  */
 class AttributeEditFunc
 {

@@ -23,9 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * This class replaces the version preview of version index.php.
  *
- * Class ux_tx_version_cm1
- *
- * @author 2008-2013 Ingo Schmitt <is@marketing-factory.de>
+ * Class VersionModuleController
  */
 class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModuleController
 {
