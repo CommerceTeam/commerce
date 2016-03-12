@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -23,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * Class \CommerceTeam\Commerce\ViewHelpers\Navigation
  */
-class Navigation
+class NavigationViewHelper
 {
     /**
      * Commerce plugin id.
@@ -309,9 +310,9 @@ class Navigation
         }
 
         /*
-         * Detect if a user is logged in and if he or she has usergroups
-         * as we have to take in accout, that different usergroups may have different
-         * rights on the commerce tree, so consider this whe calculation the cache hash.
+         * Detect if a user is logged in and if he has usergroups as we have to take in
+         * accout, that different usergroups may have different rights on the commerce
+         * tree, so consider this we calculation the cache hash.
          */
         $usergroups = '';
         if (is_array($this->getFrontendUser()->user)) {
@@ -322,10 +323,10 @@ class Navigation
         // Define a default
         $this->choosenCat = $this->mConf['category'];
 
-        $this->showUid = $this->gpVars['showUid'] ? $this->gpVars['showUid'] : 0;
-        $this->mDepth = $this->gpVars['mDepth'] ? $this->gpVars['mDepth'] : 0;
+        $this->showUid = $this->gpVars['showUid'] ? (int)$this->gpVars['showUid'] : 0;
+        $this->mDepth = $this->gpVars['mDepth'] ? (int)$this->gpVars['mDepth'] : 0;
         $this->path = $this->gpVars['path'] ? $this->gpVars['path'] : 0;
-        $this->expandAll = $this->mConf['expandAll'] ? $this->mConf['expandAll'] : 0;
+        $this->expandAll = $this->mConf['expandAll'] ? (int)$this->mConf['expandAll'] : 0;
 
         $menuErrorName = [];
         if (!($this->cat > 0)) {
@@ -425,8 +426,8 @@ class Navigation
             $this->pathParents = [];
             $this->mDepth = 0;
         } elseif ($this->gpVars['catUid']) {
-            $this->choosenCat = $this->gpVars['catUid'];
-        } elseif ($this->gpVars['showUid']) {
+            $this->choosenCat = (int)$this->gpVars['catUid'];
+        } elseif ($this->showUid) {
             /*
              * If a product is shown, we have to detect the parent category as well
              * even if wo haven't walked thrue the categories
@@ -438,7 +439,7 @@ class Navigation
              */
             $product = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Product::class,
-                $this->gpVars['showUid']
+                $this->showUid
             );
             $product->loadData();
             $this->choosenCat = $product->getMasterparentCategory();
@@ -668,23 +669,16 @@ class Navigation
         $path = 0,
         $maxLevel = PHP_INT_MAX
     ) {
-        $database = $this->getDatabaseConnection();
-
         $treeList = [];
-
         --$maxLevel;
         if ($maxLevel < 0) {
             return [];
         }
 
-        $sql = 'SELECT ' . $tableMm . '.* FROM ' . $tableMm . ',' . $mainTable . ' WHERE ' . $mainTable .
-            '.deleted = 0 AND '. $mainTable . '.uid = ' . $tableMm . '.uid_local AND ' . $tableMm .
-            '.uid_local <> "" AND ' . $tableMm . '.uid_foreign = ' . $uidRoot;
-
         $sorting = ' ORDER BY ' . $mainTable . '.sorting';
 
         /*
-         * Add some hooks for custom sorting
+         * Add hook for custom sorting
          */
         $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook(
             'ViewHelpers/Navigation',
@@ -694,11 +688,18 @@ class Navigation
             $sorting = $hookObject->sortingOrder($sorting, $uidRoot, $mainTable, $tableMm, $mDepth, $path, $this);
         }
 
-        $sql .= $sorting;
+        $sorting = str_replace('ORDER BY', '', $sorting);
 
-        $res = $database->sql_query($sql);
+        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
+            $tableMm . '.*',
+            $tableMm . ',' . $mainTable,
+            $mainTable . '.deleted = 0 AND '. $mainTable . '.uid = ' . $tableMm . '.uid_local AND '
+            . $tableMm . '.uid_local <> "" AND ' . $tableMm . '.uid_foreign = ' . $uidRoot,
+            '',
+            $sorting
+        );
 
-        while (($row = $database->sql_fetch_assoc($res))) {
+        foreach ($rows as $row) {
             $nodeArray = [];
             $dataRow = $this->getDataRow($row['uid_local'], $mainTable);
 
@@ -886,16 +887,11 @@ class Navigation
         $path = 0,
         $manufacturerUid = false
     ) {
-        $database = $this->getDatabaseConnection();
-
         $treeList = [];
         $sqlManufacturer = '';
         if (is_numeric($manufacturerUid)) {
             $sqlManufacturer = ' AND ' . $mainTable . '.manufacturer_uid = ' . (int) $manufacturerUid;
         }
-        $sql = 'SELECT ' . $mmTable . '.* FROM ' . $mmTable . ',' . $mainTable . ' WHERE ' . $mainTable .
-            '.deleted = 0 AND ' . $mainTable . '.uid = ' . $mmTable . '.uid_local AND ' . $mmTable .
-            '.uid_local <> "" AND ' . $mmTable . '.uid_foreign = ' . (int) $categoryUid . $sqlManufacturer;
 
         $sorting = ' ORDER BY ' . $mainTable . '.sorting ';
 
@@ -910,10 +906,18 @@ class Navigation
             $sorting = $hookObject->sortingOrder($sorting, $categoryUid, $mainTable, $mmTable, $mDepth, $path, $this);
         }
 
-        $sql .= $sorting;
+        $sorting = str_replace('ORDER BY', '', $sorting);
 
-        $res = $database->sql_query($sql);
-        while (($row = $database->sql_fetch_assoc($res))) {
+        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
+            $mmTable . '.*',
+            $mmTable . ',' . $mainTable,
+            $mainTable . '.deleted = 0 AND ' . $mainTable . '.uid = ' . $mmTable . '.uid_local AND '
+            . $mmTable . '.uid_local <> "" AND ' . $mmTable . '.uid_foreign = ' . (int) $categoryUid . $sqlManufacturer,
+            '',
+            $sorting
+        );
+
+        foreach ($rows as $row) {
             $nodeArray = [];
             $dataRow = $this->getDataRow($row['uid_local'], $mainTable);
             if ($dataRow['deleted'] == '0') {
@@ -1283,11 +1287,9 @@ class Navigation
     public function renderRootline($content, array $conf)
     {
         $this->mConf = $this->processConf($conf);
-        $this->pid = (int) (
-            $this->mConf['overridePid'] ?
-            $this->mConf['overridePid'] :
-            $this->getFrontendController()->id
-        );
+        $this->pid = $this->mConf['overridePid'] ?
+            (int)$this->mConf['overridePid'] :
+            $this->getFrontendController()->id;
         $this->gpVars = GeneralUtility::_GPmerged($this->prefixId);
 
         \CommerceTeam\Commerce\Utility\GeneralUtility::initializeFeUserBasket();
@@ -1296,14 +1298,14 @@ class Navigation
         if (!is_object($this->category)) {
             $this->category = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Category::class,
-                $this->mConf['category'],
+                (int)$this->mConf['category'],
                 $this->getFrontendController()->sys_language_uid
             );
             $this->category->loadData();
         }
 
         $returnArray = [];
-        $returnArray = $this->getCategoryRootlineforTypoScript((int) $this->gpVars['catUid'], $returnArray);
+        $returnArray = $this->getCategoryRootlineforTypoScript((int)$this->gpVars['catUid'], $returnArray);
 
         /*
          * Add product to rootline, if a product is displayed and showProducts
@@ -1317,7 +1319,7 @@ class Navigation
              */
             $product = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Product::class,
-                $this->gpVars['showUid'],
+                (int)$this->gpVars['showUid'],
                 $this->getFrontendController()->sys_language_uid
             );
             $product->loadData();
@@ -1329,7 +1331,7 @@ class Navigation
              */
             $category = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Category::class,
-                $this->gpVars['catUid'],
+                (int)$this->gpVars['catUid'],
                 $this->getFrontendController()->sys_language_uid
             );
             $category->loadData();
@@ -1385,7 +1387,7 @@ class Navigation
              */
             $category = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Category::class,
-                $categoryUid,
+                (int)$categoryUid,
                 $this->getFrontendController()->sys_language_uid
             );
             $category->loadData();
@@ -1444,8 +1446,7 @@ class Navigation
          *
          * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend $navigationCache
          */
-        $navigationCache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)
-            ->getCache('commerce_navigation');
+        $navigationCache = GeneralUtility::makeInstance(CacheManager::class)->getCache('commerce_navigation');
         $navigationCache->set($hash, $data);
     }
 
@@ -1465,8 +1466,7 @@ class Navigation
          *
          * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend $navigationCache
          */
-        $navigationCache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)
-            ->getCache('commerce_navigation');
+        $navigationCache = GeneralUtility::makeInstance(CacheManager::class)->getCache('commerce_navigation');
 
         return $navigationCache->get($hash);
     }
@@ -1563,14 +1563,14 @@ class Navigation
         /**
          * Category repository.
          *
-         * @var ProductRepository
+         * @var ProductRepository $productRepository
          */
         $productRepository = $this->getRepository($this->repositoryNames[$tableSubMm]);
         $productRelations = $productRepository->findRelationByForeignUid($categoryUid);
 
         $productUids = [];
         foreach ($productRelations as $mmRow) {
-            $productUids[] = (int) $mmRow['uid_local'];
+            $productUids[] = $mmRow['uid_local'];
         }
 
         if (empty($productUids)) {
@@ -1582,7 +1582,7 @@ class Navigation
         $output = [];
         $firstPath = $path;
         foreach ($products as $productRow) {
-            if ($productRow['manufacturer_uid'] != '0') {
+            if ($productRow['manufacturer_uid']) {
                 // @todo not a realy good solution
                 $path = $this->manufacturerIdentifier . $productRow['manufacturer_uid'] . ',' . $firstPath;
 

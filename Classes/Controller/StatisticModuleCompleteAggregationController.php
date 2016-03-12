@@ -25,38 +25,38 @@ class StatisticModuleCompleteAggregationController extends StatisticModuleContro
 
         $result = '';
         if (GeneralUtility::_POST('fullaggregation')) {
-            $endres = $database->exec_SELECTquery('MAX(crdate)', 'tx_commerce_order_articles', '1=1');
+            $endrow = $database->exec_SELECTgetSingleRow('MAX(crdate)', 'tx_commerce_order_articles', '1');
             $endtime2 = 0;
-            if ($endres && ($endrow = $database->sql_fetch_row($endres))) {
+            if ($endrow && $endrow[0] != null) {
                 $endtime2 = $endrow[0];
             }
 
             $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
-            $startres = $database->exec_SELECTquery(
+            $startrow = $database->exec_SELECTgetSingleRow(
                 'MIN(crdate)',
                 'tx_commerce_order_articles',
                 'crdate > 0 AND deleted = 0'
             );
-            if ($startres and ($startrow = $database->sql_fetch_row($startres)) and $startrow[0] != null) {
+            if ($startrow && $startrow[0] != null) {
                 $starttime = $startrow[0];
-                $database->sql_query('truncate tx_commerce_salesfigures');
+                $database->sql_query('TRUNCATE tx_commerce_salesfigures');
                 $result .= $this->statistics->doSalesAggregation($starttime, $endtime);
             } else {
                 $result .= 'no sales data available';
             }
 
-            $endres = $database->exec_SELECTquery('MAX(crdate)', 'fe_users', '1=1');
-            if ($endres and ($endrow = $database->sql_fetch_row($endres))) {
+            $endrow = $database->exec_SELECTgetSingleRow('MAX(crdate)', 'fe_users', '1');
+            if ($endrow && $endrow[0] != null) {
                 $endtime2 = $endrow[0];
             }
 
             $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
-            $startres = $database->exec_SELECTquery('MIN(crdate)', 'fe_users', 'crdate > 0 AND deleted = 0');
-            if ($startres and ($startrow = $database->sql_fetch_row($startres)) and $startrow[0] != null) {
+            $startrow = $database->exec_SELECTgetSingleRow('MIN(crdate)', 'fe_users', 'crdate > 0 AND deleted = 0');
+            if ($startrow && $startrow[0] != null) {
                 $starttime = $startrow[0];
-                $database->sql_query('truncate tx_commerce_newclients');
+                $database->sql_query('TRUNCATE tx_commerce_newclients');
                 $result = $this->statistics->doClientAggregation($starttime, $endtime);
             } else {
                 $result .= '<br />no client data available';

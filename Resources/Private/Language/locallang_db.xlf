@@ -48,6 +48,9 @@
 			<trans-unit id="tx_commerce.ct_filter_attributes" xml:space="preserve">
 				<source>Filter attributes</source>
 			</trans-unit>
+			<trans-unit id="tx_commerce.no_attributes_available" xml:space="preserve">
+				<source>No attributes available</source>
+			</trans-unit>
 			<trans-unit id="tx_commerce_products" xml:space="preserve">
 				<source>Products</source>
 			</trans-unit>
@@ -86,6 +89,9 @@
 			</trans-unit>
 			<trans-unit id="tx_commerce_products.create_articles" xml:space="preserve">
 				<source>Articles</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_products.lokalise_articles" xml:space="preserve">
+				<source>Localise Articles</source>
 			</trans-unit>
 			<trans-unit id="tx_commerce_products.select_attributes" xml:space="preserve">
 				<source>Select attributes</source>

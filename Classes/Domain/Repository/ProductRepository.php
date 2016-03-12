@@ -67,10 +67,8 @@ class ProductRepository extends Repository
      */
     public function getArticles($uid)
     {
-        $uid = (int) $uid;
-        $articleUids = [];
-
         $return = false;
+        $uid = (int) $uid;
         if ($uid) {
             $localOrderField = $this->orderField;
             $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook(
@@ -81,33 +79,30 @@ class ProductRepository extends Repository
                 $localOrderField = $hookObject->articleOrder($this->orderField);
             }
 
-            $where = 'uid_product = ' . $uid . $this->enableFields(
-                'tx_commerce_articles',
-                $this->getFrontendController()->showHiddenRecords
-            );
+            $where = 'uid_product = ' . $uid . $this->enableFields('tx_commerce_articles');
             $additionalWhere = '';
 
             if (is_object($hookObject) && method_exists($hookObject, 'additionalWhere')) {
                 $additionalWhere = $hookObject->additionalWhere($where);
             }
 
-            $database = $this->getDatabaseConnection();
-            $result = $database->exec_SELECTquery(
+            $articleUids = [];
+            $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
                 'uid',
                 'tx_commerce_articles',
                 $where . ' ' . $additionalWhere,
                 '',
                 $localOrderField
             );
-            if ($database->sql_num_rows($result)) {
-                while (($data = $database->sql_fetch_assoc($result))) {
+            if (!empty($rows)) {
+                foreach ($rows as $data) {
                     $articleUids[] = $data['uid'];
                 }
-                $database->sql_free_result($result);
                 $return = $articleUids;
             } else {
                 $this->error(
-                    'exec_SELECTquery("uid", "tx_commerce_articles", "uid_product = ' . $uid . '"); returns no Result'
+                    'exec_SELECTquery(\'uid\', \'tx_commerce_articles\', \'uid_product = '
+                    . $uid . '\'); returns no Result'
                 );
             }
         }
@@ -127,31 +122,29 @@ class ProductRepository extends Repository
     public function getAttributes($uid, $correlationtypes)
     {
         $return = false;
+        $uid = (int) $uid;
         if ((int) $uid) {
             if (!is_array($correlationtypes)) {
                 $correlationtypes = [$correlationtypes];
             }
 
-            $database = $this->getDatabaseConnection();
-            $articleUids = [];
-            $result = $database->exec_SELECTquery(
+            $attributeUids = [];
+            $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
                 'DISTINCT(uid_foreign) AS uid',
                 $this->databaseAttributeRelationTable,
                 'uid_local = ' . (int) $uid . ' AND uid_correlationtype IN (' . implode(',', $correlationtypes) . ')',
                 '',
                 $this->databaseAttributeRelationTable . '.sorting'
             );
-
-            if ($database->sql_num_rows($result)) {
-                while (($data = $database->sql_fetch_assoc($result))) {
-                    $articleUids[] = (int) $data['uid'];
+            if (!empty($rows)) {
+                foreach ($rows as $data) {
+                    $attributeUids[] = (int) $data['uid'];
                 }
-                $database->sql_free_result($result);
-                $return = $articleUids;
+                $return = $attributeUids;
             } else {
                 $this->error(
-                    'exec_SELECTquery(\'DISTINCT(uid_foreign)\', ' . $this->databaseAttributeRelationTable .
-                    ', \'uid_local = ' . (int) $uid . '\'); returns no Result'
+                    'exec_SELECTquery(\'DISTINCT(uid_foreign)\', ' . $this->databaseAttributeRelationTable
+                    . ', \'uid_local = ' . (int) $uid . '\'); returns no Result'
                 );
             }
         }

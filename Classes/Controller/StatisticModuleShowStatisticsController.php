@@ -47,14 +47,14 @@ class StatisticModuleShowStatisticsController extends StatisticModuleController
             $tables .= '<h2>' . \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('month') . ' - ' .
                 \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('year') .
                 '</h2><table><tr><th>Days</th><th>turnover</th><th>amount</th><th>orders</th></tr>';
-            $statResult = $database->exec_SELECTquery(
+            $statRows = $database->exec_SELECTgetRows(
                 'SUM(pricegross) AS turnover, SUM(amount) AS salesfigures, SUM(orders) AS sumorders, day',
                 'tx_commerce_salesfigures',
                 $whereClause,
                 'day'
             );
             $daystat = [];
-            while (($statRow = $database->sql_fetch_assoc($statResult))) {
+            foreach ($statRows as $statRow) {
                 $daystat[$statRow['day']] = $statRow;
             }
             $lastday = date(
@@ -83,7 +83,7 @@ class StatisticModuleShowStatisticsController extends StatisticModuleController
             $tables .= '</table>';
 
             $tables .= '<table><tr><th>Weekday</th><th>turnover</th><th>amount</th><th>orders</th></tr>';
-            $statResult = $database->exec_SELECTquery(
+            $statRows = $database->exec_SELECTgetRows(
                 'SUM(pricegross) AS turnover, SUM(amount) AS salesfigures, SUM(orders) AS sumorders, dow',
                 'tx_commerce_salesfigures',
                 $whereClause,
@@ -91,7 +91,7 @@ class StatisticModuleShowStatisticsController extends StatisticModuleController
             );
 
             $daystat = [];
-            while (($statRow = $database->sql_fetch_assoc($statResult))) {
+            foreach ($statRows as $statRow) {
                 $daystat[$statRow['dow']] = $statRow;
             }
             for ($i = 0; $i <= 6; ++$i) {
@@ -109,7 +109,7 @@ class StatisticModuleShowStatisticsController extends StatisticModuleController
             $tables .= '</table>';
 
             $tables .= '<table><tr><th>Hour</th><th>turnover</th><th>amount</th><th>orders</th></tr>';
-            $statResult = $database->exec_SELECTquery(
+            $statRows = $database->exec_SELECTgetRows(
                 'SUM(pricegross) AS turnover, SUM(amount) AS salesfigures, SUM(orders) AS sumorders, hour',
                 'tx_commerce_salesfigures',
                 $whereClause,
@@ -117,7 +117,7 @@ class StatisticModuleShowStatisticsController extends StatisticModuleController
             );
 
             $daystat = [];
-            while (($statRow = $database->sql_fetch_assoc($statResult))) {
+            foreach ($statRows as $statRow) {
                 $daystat[$statRow['hour']] = $statRow;
             }
             for ($i = 0; $i <= 23; ++$i) {

@@ -25,6 +25,20 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface
 {
     /**
+     * @var IconFactory
+     */
+    protected $iconFactory;
+
+    /**
+     * LocalRecordListHook constructor.
+     */
+    public function __construct()
+    {
+        /** @var IconFactory $iconFactory */
+        $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+    }
+
+    /**
      * Modifies Web>List clip icons (copy, cut, paste, etc.) of a displayed row.
      *
      * @param string $table Database table
@@ -37,9 +51,9 @@ class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordList
     public function makeClip($table, $row, $cells, &$parentObject)
     {
         if ($parentObject->id
+            && $table == 'tx_commerce_orders'
             && !ConfigurationUtility::getInstance()->getTcaValue($table . '.ctrl.readOnly')
             && $this->getController()->MOD_SETTINGS['bigControlPanel']
-            && $table == 'tx_commerce_orders'
         ) {
             $cells['moveOrder'] = '<input type="checkbox" name="orderUid[]" value="' . $row['uid'] .
                 '" class="smallCheckboxes">';
@@ -76,11 +90,11 @@ class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordList
      */
     public function renderListHeader($table, $currentIdList, $headerColumns, &$parentObject)
     {
-        /** @var IconFactory $iconFactory */
-        $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $language = $this->getLanguageService();
 
-        if (get_class($parentObject) == \CommerceTeam\Commerce\RecordList\OrderRecordList::class) {
+        if ($table == 'tx_commerce_orders'
+            && get_class($parentObject) == \CommerceTeam\Commerce\RecordList\OrderRecordList::class
+        ) {
             $icon = '';
             foreach ($parentObject->fieldArray as $fCol) {
                 // Calculate users permissions to edit records in the table:
@@ -130,9 +144,15 @@ class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordList
                                 && $parentObject->showNewRecLink($table)
                             ) {
                                 if ($table == 'pages') {
-                                    $sprite = $iconFactory->getIcon('actions-page-new', Icon::SIZE_SMALL)->render();
+                                    $sprite = $this->iconFactory->getIcon(
+                                        'actions-page-new',
+                                        Icon::SIZE_SMALL
+                                    )->render();
                                 } else {
-                                    $sprite = $iconFactory->getIcon('actions-document-new', Icon::SIZE_SMALL)->render();
+                                    $sprite = $this->iconFactory->getIcon(
+                                        'actions-document-new',
+                                        Icon::SIZE_SMALL
+                                    )->render();
                                 }
 
                                 if ($table == 'tt_content' && $parentObject->newWizards) {
@@ -181,8 +201,9 @@ class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordList
                                     implode(',', $parentObject->fieldArray) . '&disHelp=1';
                                 $icon .= '<a href="#" onclick="' . htmlspecialchars(
                                     BackendUtility::editOnClick($params, '', -1)
-                                ) . '" title="' . $language->getLL('editShownColumns', true) . '">' .
-                                    $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render() . '</a>';
+                                ) . '" title="' . $language->getLL('editShownColumns', true) . '">'
+                                    . $this->iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render()
+                                    . '</a>';
                             }
                             // add an empty entry, so column count fits again after moving this into $icon
                             $headerColumns[$fCol] = '&nbsp;';
@@ -206,7 +227,7 @@ class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordList
                                     $parentObject->listURL('', -1) . '&duplicateField=' . $fCol
                                 ) . '" title="' . $language->getLL('clip_duplicates', true)
                                     . '">'
-                                    .  $iconFactory->getIcon(
+                                    .  $this->iconFactory->getIcon(
                                         'actions-document-duplicates-select',
                                         Icon::SIZE_SMALL
                                     )->render()
@@ -231,8 +252,9 @@ class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordList
                                 );
                                 $headerColumns[$fCol] .= '<a href="#" onclick="' . htmlspecialchars(
                                     BackendUtility::editOnClick($params, '', -1)
-                                ) . '" title="' . htmlspecialchars($iTitle) . '">' .
-                                    $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render() . '</a>';
+                                ) . '" title="' . htmlspecialchars($iTitle) . '">'
+                                    . $this->iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render()
+                                    . '</a>';
                             }
                         }
                         $headerColumns[$fCol] .= $parentObject->addSortLink(

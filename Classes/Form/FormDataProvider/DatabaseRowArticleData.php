@@ -32,6 +32,55 @@ class DatabaseRowArticleData implements FormDataProviderInterface
             return $result;
         }
 
+        switch ($result['tableName']) {
+            case 'tx_commerce_categories':
+                $result = $this->addCategoryData($result);
+                break;
+
+            case 'tx_commerce_products':
+                $result = $this->addProductData($result);
+                break;
+
+            case 'tx_commerce_articles':
+                break;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array $result
+     * @return array
+     */
+    protected function addCategoryData(array $result)
+    {
+        $belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
+        $attributes = $belib->getAttributesForCategory($result['vanillaUid']);
+
+        $correlationTypes = $this->getDatabaseConnection()->exec_SELECTgetRows(
+            '*',
+            'tx_commerce_attribute_correlationtypes',
+            ''
+        );
+
+        $root = [];
+        foreach ($correlationTypes as $correlationType) {
+            $root['ct_' . $correlationType['uid']] = ['vDEF' => []];
+        }
+        foreach ($attributes as $attribute) {
+            $root['ct_' . $attribute['uid_correlationtype']]['vDEF'][] = $attribute['uid_foreign'];
+        }
+        $result['databaseRow']['attributes']['data']['sDEF']['lDEF'] = $root;
+
+        return $result;
+    }
+
+    /**
+     * @param array $result
+     * @return array
+     */
+    protected function addProductData(array $result)
+    {
         $belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
         $attributes = $belib->getAttributesForProduct($result['vanillaUid'], true, true, true);
         $articles = $belib->getArticlesOfProduct($result['vanillaUid'], '', 'sorting');
@@ -44,14 +93,27 @@ class DatabaseRowArticleData implements FormDataProviderInterface
                     // get all article attribute relations
                     $attribute['values'] = $this->getDatabaseConnection()->exec_SELECTgetRows(
                         'uid_valuelist, default_value, value_char',
-                        'tx_commerce_articles_article_attributes_mm',
+                        'tx_commerce_articles_attributes_mm',
                         'uid_local = ' . $article['uid'] . ' AND uid_foreign = ' . $attribute['uid_foreign']
                     );
                 }
             }
         }
 
-        $result['databaseRow']['attributes'] = $attributes;
+        $root = [];
+        foreach ($attributes['grouped'] as $correlationType => $attributes) {
+            if (!empty($attributes)) {
+                if (!isset($root[$correlationType])) {
+                    $root[$correlationType] = ['vDEF' => []];
+                }
+                foreach ($attributes as $attribute) {
+                    $root[$correlationType]['vDEF'][] = $attribute['uid_foreign'];
+                }
+            }
+        }
+        if (!empty($root)) {
+            $result['databaseRow']['attributes']['data']['sDEF']['lDEF'] = $root;
+        }
         $result['databaseRow']['articles'] = $articles;
 
         return $result;
@@ -64,7 +126,10 @@ class DatabaseRowArticleData implements FormDataProviderInterface
      */
     protected function isValidRecord($result)
     {
-        return $result['tableName'] == 'tx_commerce_products';
+        return in_array(
+            $result['tableName'],
+            ['tx_commerce_categories', 'tx_commerce_products', 'tx_commerce_articles']
+        );
     }
 
     /**

@@ -232,13 +232,12 @@ class BasicDaoMapper
     protected function dbSelectById($uid, BasicDaoObject $object)
     {
         // @todo extract db action into repository
-        $database = $this->getDatabaseConnection();
-
-        // execute query
-        $res = $database->exec_SELECTquery('*', $this->dbTable, 'uid = ' . (int) $uid . 'AND deleted = 0');
-
         // insert into object
-        $model = $database->sql_fetch_assoc($res);
+        $model = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            '*',
+            $this->dbTable,
+            'uid = ' . (int) $uid . 'AND deleted = 0'
+        );
         if ($model) {
             // parse into object
             $this->parser->parseModelToObject($model, $object);
@@ -246,9 +245,6 @@ class BasicDaoMapper
             // no object found, empty obj and id
             $object->clear();
         }
-
-        // free results
-        $database->sql_free_result($res);
     }
 
     /**

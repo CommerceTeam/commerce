@@ -119,9 +119,9 @@ CREATE TABLE tx_commerce_articles (
 );
 
 #
-# Table structure for table 'tx_commerce_articles_article_attributes_mm'
+# Table structure for table 'tx_commerce_articles_attributes_mm'
 #
-CREATE TABLE tx_commerce_articles_article_attributes_mm (
+CREATE TABLE tx_commerce_articles_attributes_mm (
 	uid_local int(11) DEFAULT '0' NOT NULL,
 	uid_foreign int(11) DEFAULT '0' NOT NULL,
 	tablenames varchar(30) DEFAULT '' NOT NULL,

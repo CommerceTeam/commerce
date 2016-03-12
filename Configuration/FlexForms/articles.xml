@@ -1,0 +1,49 @@
+<T3DataStructure>
+    <meta>
+        <langDisable>1</langDisable>
+    </meta>
+    <sheets>
+        <sEXISTING>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.existing_articles</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <existingArticles>
+                        <TCEforms>
+                            <config>
+                                <type>user</type>
+                                <renderType>commerceExistingArticles</renderType>
+                            </config>
+                        </TCEforms>
+                    </existingArticles>
+                </el>
+            </ROOT>
+        </sEXISTING>
+        <sCREATE>
+            <ROOT>
+                <!--
+                    Show produce articles if l18n_parent < 1.
+                    This is true if sys_language_uid is 0 so its a translation parent or
+                    if its a translated record without translation parent.
+                -->
+                <displayCond>FIELD:parentRec.l18n_parent:=:0</displayCond>
+                <TCEforms>
+                <sheetTitle>LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_products.producible_articles</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <producibleArticles>
+                        <TCEforms>
+                            <config>
+                                <type>user</type>
+                                <renderType>commerceProducibleArticles</renderType>
+                            </config>
+                        </TCEforms>
+                    </producibleArticles>
+                </el>
+            </ROOT>
+        </sCREATE>
+    </sheets>
+</T3DataStructure>

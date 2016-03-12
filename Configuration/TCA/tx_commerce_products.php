@@ -319,15 +319,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
             'config' => [
                 'type' => 'flex',
                 'ds' => [
-                    'default' => '
-<T3DataStructure>
-	<meta>
-		<langDisable>1</langDisable>
-	</meta>
-	<ROOT>
-		<type>array</type>
-	</ROOT>
-</T3DataStructure>',
+                    'default' => 'FILE:EXT:commerce/Configuration/FlexForms/attributes.xml',
                 ],
             ],
         ],
@@ -335,18 +327,12 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
             'exclude' => 1,
             'l10n_display' => 'hideDiff',
             'label' => $languageFile . 'tx_commerce_products.attributes',
+            'displayCond' => 'USER:' . \CommerceTeam\Commerce\Utility\DisplayConditionUtility::class
+            . '->checkCorrelationType',
             'config' => [
                 'type' => 'flex',
                 'ds' => [
-                    'default' => '
-<T3DataStructure>
-	<meta>
-		<langDisable>1</langDisable>
-	</meta>
-	<ROOT>
-		<type>array</type>
-	</ROOT>
-</T3DataStructure>',
+                    'default' => 'FILE:EXT:commerce/Configuration/FlexForms/attributes.xml',
                 ],
             ],
         ],
@@ -356,51 +342,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
             'config' => [
                 'type' => 'flex',
                 'ds' => [
-                    'default' => '
-<T3DataStructure>
-    <meta>
-        <langDisable>1</langDisable>
-    </meta>
-    <sheets>
-        <sEXISTING>
-            <ROOT>
-                <TCEforms>
-                    <sheetTitle>' . $languageFile . 'tx_commerce_products.existing_articles</sheetTitle>
-                </TCEforms>
-                <type>array</type>
-                <el>
-                    <existingArticles>
-                        <TCEforms>
-                            <config>
-                                <type>user</type>
-                                <renderType>commerceExistingArticles</renderType>
-                            </config>
-                        </TCEforms>
-                    </existingArticles>
-                </el>
-            </ROOT>
-        </sEXISTING>
-        <sCREATE>
-            <ROOT>
-                <displayCond>FIELD:parentRec.sys_language_uid:=:0</displayCond>
-                <TCEforms>
-                <sheetTitle>' . $languageFile . 'tx_commerce_products.producible_articles</sheetTitle>
-                </TCEforms>
-                <type>array</type>
-                <el>
-                    <producibleArticles>
-                        <TCEforms>
-                            <config>
-                                <type>user</type>
-                                <renderType>commerceAvailableArticles</renderType>
-                            </config>
-                        </TCEforms>
-                    </producibleArticles>
-                </el>
-            </ROOT>
-        </sCREATE>
-    </sheets>
-</T3DataStructure>',
+                    'default' => 'FILE:EXT:commerce/Configuration/FlexForms/articles.xml',
                 ],
             ],
         ],
@@ -418,6 +360,10 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
                 --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,
                     hidden,
                     --palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access,
+                --div--;' . $languageFile . 'tx_commerce_products.select_attributes,
+                    attributes,
+                --div--;' . $languageFile . 'tx_commerce_products.edit_attributes,
+                    attributesedit,
                 --div--;' . $languageFile . 'tx_commerce_products.create_articles,
                     articles',
         ],

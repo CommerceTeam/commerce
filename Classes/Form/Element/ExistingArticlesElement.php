@@ -68,7 +68,7 @@ class ExistingArticlesElement extends AbstractFormElement
             $fields = htmlspecialchars($article['title']);
 
             $valueList = '';
-            if (is_array($attributes['ct1'])) {
+            if (isset($attributes['ct1']) && is_array($attributes['ct1'])) {
                 foreach ($attributes['ct1'] as $attribute) {
                     foreach ($attribute['values'] as $attributeData) {
                         if ($attribute['attributeData']['has_valuelist'] == 1) {

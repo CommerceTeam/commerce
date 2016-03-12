@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Domain\Model;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -800,7 +801,7 @@ class Category extends AbstractEntity
         }
         $this->loadPermissions();
 
-        return \CommerceTeam\Commerce\Utility\BackendUtility::isPermissionSet($perm, $this->perms_record);
+        return BackendUtility::isPermissionSet($perm, $this->perms_record);
     }
 
     /**
@@ -900,10 +901,10 @@ class Category extends AbstractEntity
             // Only update relations if parent_category was successfully set
         if ($set) {
             $catList = [$parentUid];
-            $catList = \CommerceTeam\Commerce\Utility\BackendUtility::getUidListFromList($catList);
-            $catList = \CommerceTeam\Commerce\Utility\BackendUtility::extractFieldArray($catList, 'uid_foreign', true);
+            $catList = BackendUtility::getUidListFromList($catList);
+            $catList = BackendUtility::extractFieldArray($catList, 'uid_foreign', true);
 
-            \CommerceTeam\Commerce\Utility\BackendUtility::saveRelations(
+            BackendUtility::saveRelations(
                 $this->uid,
                 $catList,
                 'tx_commerce_categories_parent_category_mm',

@@ -80,18 +80,17 @@ class StatisticsUtility
 
         while ($oldtimeend <= $endtime) {
             $statres = $database->exec_SELECTquery(
-                'sum(toa.amount),
-                    sum(toa.amount * toa.price_gross),
-                    count(distinct toa.order_id),
+                'SUM(toa.amount),
+                    SUM(toa.amount * toa.price_gross),
+                    COUNT(distinct toa.order_id),
                     toa.pid,
-                    sum(toa.amount * toa.price_net)',
-                'tx_commerce_order_articles AS toa,
-                    tx_commerce_orders AS tco',
+                    SUM(toa.amount * toa.price_net)',
+                'tx_commerce_order_articles AS toa 
+                    INNER JOIN tx_commerce_orders AS tco ON toa.order_id = tco.order_id',
                 'toa.article_type_uid <= 1
                     AND toa.crdate >= ' . $oldtimestart . '
                     AND toa.crdate <= ' . $oldtimeend . '
-                    AND toa.pid not in(' . $this->excludePids . ')
-                    AND toa.order_id = tco.order_id
+                    AND toa.pid NOT IN (' . $this->excludePids . ')
                     AND tco.deleted = 0',
                 'toa.pid'
             );
@@ -148,18 +147,17 @@ class StatisticsUtility
 
         while ($oldtimeend <= $endtime) {
             $statres = $database->exec_SELECTquery(
-                'sum(toa.amount),
-                    sum(toa.amount * toa.price_gross),
-                    count(distinct toa.order_id),
+                'SUM(toa.amount),
+                    SUM(toa.amount * toa.price_gross),
+                    COUNT(distinct toa.order_id),
                     toa.pid,
-                    sum(toa.amount * toa.price_net)',
-                'tx_commerce_order_articles AS toa,
-                    tx_commerce_orders AS tco',
+                    SUM(toa.amount * toa.price_net)',
+                'tx_commerce_order_articles AS toa 
+                    INNER JOIN tx_commerce_orders AS tco ON toa.order_id = tco.order_id',
                 'toa.article_type_uid <= 1
                     AND toa.crdate >= ' . $oldtimestart . '
                     AND toa.crdate <= ' . $oldtimeend . '
-                    AND toa.pid not in(' . $this->excludePids . ')
-                    AND toa.order_id = tco.order_id
+                    AND toa.pid NOT IN (' . $this->excludePids . ')
                     AND tco.deleted = 0',
                 'toa.pid'
             );
@@ -221,7 +219,7 @@ class StatisticsUtility
 
         while ($oldtimeend < $endtime) {
             $statres = $database->exec_SELECTquery(
-                'count(*), pid',
+                'COUNT(*), pid',
                 'fe_users',
                 'crdate >= ' . $oldtimestart . ' AND crdate <= ' . $oldtimeend,
                 'pid'

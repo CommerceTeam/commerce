@@ -318,7 +318,7 @@ class Article extends AbstractEntity
     public function getArticleAttributes()
     {
         $localTable = 'tx_commerce_articles';
-        $mmTable = 'tx_commerce_articles_article_attributes_mm';
+        $mmTable = 'tx_commerce_articles_attributes_mm';
         $foreignTable = 'tx_commerce_attributes';
         $select = 'DISTINCT ' . $foreignTable . '.uid, ' . $foreignTable . '.title';
         $ignore = ['fe_group' => 1];

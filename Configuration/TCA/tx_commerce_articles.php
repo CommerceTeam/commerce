@@ -316,24 +316,7 @@ return [
             'config' => [
                 'type' => 'flex',
                 'ds' => [
-                    'default' => '
-<T3DataStructure>
-	<meta>
-		<langDisable>1</langDisable>
-	</meta>
-	<ROOT>
-		<type>array</type>
-		<el>
-			<dummy>
-				<TCEforms>
-					<config>
-						<type>input</type>
-					</config>
-				</TCEforms>
-			</dummy>
-		</el>
-	</ROOT>
-</T3DataStructure>',
+                    'default' => 'FILE:EXT:commerce/Configuration/FlexForms/attributes.xml',
                 ],
             ],
         ],

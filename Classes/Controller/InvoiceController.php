@@ -291,15 +291,13 @@ class InvoiceController extends BaseController
      */
     protected function getOrderArticles($orderUid, array $typoScript = [], $prefix = '')
     {
-        $database = $this->getDatabaseConnection();
-
         if (empty($typoScript)) {
             $typoScript = $this->conf['OrderArticles.'];
         }
 
         $queryString = 'order_uid=' . (int) $orderUid . ' AND article_type_uid < 2 ';
         $queryString .= $this->cObj->enableFields('tx_commerce_order_articles');
-        $res = $database->exec_SELECTquery(
+        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             'tx_commerce_order_articles',
             $queryString,
@@ -309,7 +307,7 @@ class InvoiceController extends BaseController
 
         $orderpos = 1;
         $out = '';
-        while (($row = $database->sql_fetch_assoc($res))) {
+        foreach ($rows as $row) {
             $markerArray = $this->generateMarkerArray($row, $typoScript, $prefix, 'tx_commerce_order_articles');
             $markerArray['ARTICLE_PRICE'] = MoneyViewHelper::format(
                 $row['price_gross'],
@@ -371,33 +369,27 @@ class InvoiceController extends BaseController
             if ($addressUid) {
                 $queryString .= ' AND tt_address.uid = ' . (int) $addressUid;
             } else {
-                $queryString .= ' AND tt_address.tx_commerce_address_type_id=1';
+                $queryString .= ' AND tt_address.tx_commerce_address_type_id = 1';
             }
-            $res = $database->exec_SELECTquery(
+            $row = $database->exec_SELECTgetSingleRow(
                 'tt_address.* ',
                 'tt_address, fe_users',
-                $queryString,
-                '',
-                '',
-                '1'
+                $queryString
             );
         } else {
             $queryString = ' 1 = 1 ';
             if ($addressUid) {
                 $queryString .= ' AND tt_address.uid = ' . $addressUid;
             } else {
-                $queryString .= ' AND tt_address.tx_commerce_address_type_id=1';
+                $queryString .= ' AND tt_address.tx_commerce_address_type_id = 1';
             }
-            $res = $database->exec_SELECTquery(
-                'tt_address.* ',
+            $row = $database->exec_SELECTgetSingleRow(
+                'tt_address.*',
                 'tt_address',
-                $queryString,
-                '',
-                '',
-                '1'
+                $queryString
             );
         }
-        $markerArray = $this->generateMarkerArray($database->sql_fetch_assoc($res), $typoScript, $prefix, 'tt_address');
+        $markerArray = $this->generateMarkerArray($row, $typoScript, $prefix, 'tt_address');
         $template = $this->cObj->getSubpart($this->templateCode, '###' . $prefix . 'DATA###');
         $content = $this->cObj->substituteMarkerArray($template, $markerArray, '###|###', 1);
         $content = $this->cObj->substituteMarkerArray($content, $this->languageMarker);
@@ -419,15 +411,11 @@ class InvoiceController extends BaseController
         if ($this->user) {
             $queryString .= ' AND cust_fe_user = ' . (int) $this->user['uid'];
         }
-        $res = $database->exec_SELECTquery(
+        $row = $database->exec_SELECTgetSingleRow(
             '*',
             'tx_commerce_orders',
-            $queryString,
-            '',
-            '',
-            '1'
+            $queryString
         );
-        $row = $database->sql_fetch_assoc($res);
 
         return $row;
     }
@@ -445,19 +433,19 @@ class InvoiceController extends BaseController
     {
         $database = $this->getDatabaseConnection();
 
-        $queryString = 'order_uid=' . $orderUid . ' ';
+        $queryString = 'order_uid = ' . $orderUid . ' ';
         if ($articleType) {
             $queryString .= ' AND article_type_uid = ' . $articleType . ' ';
         }
 
         $queryString .= $this->cObj->enableFields('tx_commerce_order_articles');
-        $res = $database->exec_SELECTquery(
+        $rows = $database->exec_SELECTgetRows(
             '*',
             'tx_commerce_order_articles',
             $queryString
         );
         $content = '';
-        while (($row = $database->sql_fetch_assoc($res))) {
+        foreach ($rows as $row) {
             $subpart = $this->cObj->getSubpart($this->templateCode, '###LISTING_' . $prefix . 'ROW###');
             // @todo Use $markerArray = $this->generateMarkerArray($row, '', $prefix);
             $markerArray['###' . $prefix . 'AMOUNT###'] = $row['amount'];

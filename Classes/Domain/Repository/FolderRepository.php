@@ -69,19 +69,18 @@ class FolderRepository
             $module = $temp;
             unset($temp);
         }
+
         $cacheHash = $title . '|' . $module . '|' . $pid;
-        if (isset(static::$folderIds[$cacheHash])) {
-            return static::$folderIds[$cacheHash];
+        if (!isset(static::$folderIds[$cacheHash])) {
+            $folder = self::getFolder($title, $pid, $module);
+            if (empty($folder)) {
+                static::$folderIds[$cacheHash] = self::createFolder($title, $pid, $module);
+            } else {
+                static::$folderIds[$cacheHash] = (int)$folder['uid'];
+            }
         }
 
-        $folder = self::getFolder($module, $pid, $title);
-        if (empty($folder)) {
-            self::createFolder($title, $module, $pid);
-            $folder = self::getFolder($module, $pid, $title);
-        }
-
-        static::$folderIds[$cacheHash] = (int)$folder['uid'];
-        return (int)$folder['uid'];
+        return static::$folderIds[$cacheHash];
     }
 
     /**
@@ -97,29 +96,29 @@ class FolderRepository
     public static function getFolders($module = 'commerce', $pid = 0, $title = '')
     {
         GeneralUtility::logDeprecatedFunction();
-        $row = self::getFolder($module, $pid, $title);
+        $row = self::getFolder($title, $pid, $module);
         return isset($row['uid']) ? [$row['uid'] => $row] : [];
     }
 
     /**
      * Find folder by module and title takes pid into account.
      *
-     * @param string $module Module
-     * @param int $pid Page id
      * @param string $title Title
+     * @param int $pid Page id
+     * @param string $module Module
      *
      * @return array rows of found extension folders
      */
-    public static function getFolder($module = 'commerce', $pid = 0, $title = '')
+    public static function getFolder($title, $pid = 0, $module = 'commerce')
     {
         $row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
             'uid, pid, title',
             'pages',
             'doktype = 254 AND tx_commerce_foldername = \'' . strtolower($title) . '\' AND pid = ' . (int) $pid .
-            ' AND module=\'' . $module . '\' ' . \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('pages')
+            ' AND module = \'' . $module . '\' ' . \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('pages')
         );
 
-        return (array) $row;
+        return $row;
     }
 
     /**
@@ -127,27 +126,25 @@ class FolderRepository
      * overwrite this if wanted.
      *
      * @param string $title Title
-     * @param string $module Module
      * @param int $pid Page id
+     * @param string $module Module
      *
      * @return int
      */
-    protected function createFolder($title = 'Commerce', $module = 'commerce', $pid = 0)
+    protected function createFolder($title, $pid = 0, $module = 'commerce')
     {
-        $sorting = self::getDatabaseConnection()->exec_SELECTgetRows(
+        $sorting = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
             'sorting',
             'pages',
             'pid = ' . $pid,
             '',
-            'sorting DESC',
-            1,
-            'sorting'
+            'sorting DESC'
         );
 
         self::getDatabaseConnection()->exec_INSERTquery(
             'pages',
             [
-                'sorting' => $sorting ? $sorting + 1 : 10111,
+                'sorting' => $sorting['sorting'] ? $sorting['sorting'] + 1 : 10111,
                 'perms_user' => 31,
                 'perms_group' => 31,
                 'perms_everybody' => 31,

@@ -352,14 +352,12 @@ class DataMapHook
             $incomingFieldArray['pid'] = $incomingFieldArray['newpid'];
 
             // Move Order articles
-            $orders = $database->exec_SELECTquery(
+            $order = $database->exec_SELECTgetSingleRow(
                 'order_id, pid, uid, order_sys_language_uid',
                 $table,
                 'uid = ' . (int) $id
             );
             if (!$database->sql_error()) {
-                $order = $database->sql_fetch_assoc($orders);
-
                 if ($order['pid'] != $incomingFieldArray['newpid']) {
                     // order_sys_language_uid is not always set in fieldArray so we overwrite
                     // it with our order data
@@ -374,14 +372,14 @@ class DataMapHook
                     }
 
                     $orderId = $order['order_id'];
-                    $resultOrderArticles = $database->exec_SELECTquery(
+                    $orderArtikelRows = $database->exec_SELECTgetRows(
                         '*',
                         'tx_commerce_order_articles',
                         'order_id = ' . $database->fullQuoteStr($orderId, 'tx_commerce_order_articles')
                     );
                     if (!$database->sql_error()) {
                         // Run trough all articles from this order and move it to other storage folder
-                        while (($orderArtikelRow = $database->sql_fetch_assoc($resultOrderArticles))) {
+                        foreach ($orderArtikelRows as $orderArtikelRow) {
                             $orderArtikelRow['pid'] = $incomingFieldArray['newpid'];
                             $orderArtikelRow['tstamp'] = $GLOBALS['EXEC_TIME'];
 
@@ -433,18 +431,18 @@ class DataMapHook
     {
         $database = $this->getDatabaseConnection();
 
-        $orderIdResult = $database->exec_SELECTquery('order_id', $table, 'uid = ' . (int) $id);
+        $orderRow = $database->exec_SELECTgetSingleRow('order_id', $table, 'uid = ' . (int) $id);
         if (!$database->sql_error()) {
-            list($orderId) = $database->sql_fetch_row($orderIdResult);
+            $orderId = $orderRow['order_id'];
             $sum = ['sum_price_gross' => 0, 'sum_price_net' => 0];
 
-            $orderArticles = $database->exec_SELECTquery(
+            $orderArticles = $database->exec_SELECTgetRows(
                 '*',
                 $table,
                 'order_id = ' . $database->fullQuoteStr($orderId, $table)
             );
             if (!$database->sql_error()) {
-                while (($orderArticle = $database->sql_fetch_assoc($orderArticles))) {
+                foreach ($orderArticles as $orderArticle) {
                     /*
                      * Calculate Sums
                      */
@@ -487,51 +485,46 @@ class DataMapHook
      */
     protected function preProcessAttributes(array $incomingFieldArray, $handleAttributes)
     {
-        if ($handleAttributes) {
-            // get all parent categories, excluding this
-            $this->belib->getParentCategoriesFromList($this->catList);
+        if (!$handleAttributes) {
+            return $incomingFieldArray;
+        }
 
-            $correlationTypes = [];
-            // get all correlation types from flexform thats was created by dynaflex!
-            if (is_array($incomingFieldArray)
-                && isset($incomingFieldArray['attributes'])
-                && is_array($incomingFieldArray['attributes'])
-                && isset($incomingFieldArray['attributes']['data'])
-                && is_array($incomingFieldArray['attributes']['data'])
-                && isset($incomingFieldArray['attributes']['data']['sDEF'])
-                && is_array($incomingFieldArray['attributes']['data']['sDEF'])
-                && isset($incomingFieldArray['attributes']['data']['sDEF']['lDEF'])
-                && is_array($incomingFieldArray['attributes']['data']['sDEF']['lDEF'])
-            ) {
-                $correlationTypes = $incomingFieldArray['attributes']['data']['sDEF']['lDEF'];
-            }
+        // get all parent categories, excluding this
+        $this->belib->getParentCategoriesFromList($this->catList);
 
-            $usedAttributes = [];
+        $correlationTypes = [];
+        // get all correlation types from flexform thats was created by dynaflex!
+        if (isset($incomingFieldArray['attributes'])
+            && is_array($incomingFieldArray['attributes'])
+            && isset($incomingFieldArray['attributes']['data'])
+            && is_array($incomingFieldArray['attributes']['data'])
+            && isset($incomingFieldArray['attributes']['data']['sDEF'])
+            && is_array($incomingFieldArray['attributes']['data']['sDEF'])
+            && isset($incomingFieldArray['attributes']['data']['sDEF']['lDEF'])
+            && is_array($incomingFieldArray['attributes']['data']['sDEF']['lDEF'])
+        ) {
+            $correlationTypes = &$incomingFieldArray['attributes']['data']['sDEF']['lDEF'];
+        }
 
-            foreach ($correlationTypes as $key => $data) {
-                $keyData = [];
-                $this->belib->getUidFromKey($key, $keyData);
-                if ($keyData[0] == 'ct') {
-                    // get the attributes from the categories of this product
-                    $localAttributes = explode(',', $data['vDEF']);
-                    if (is_array($localAttributes)) {
-                        $validAttributes = [];
-                        foreach ($localAttributes as $localAttribute) {
-                            if ($localAttribute == '') {
-                                continue;
-                            }
-                            $attributeUid = $this->belib->getUidFromKey($localAttribute, $keyData);
-                            if (!$this->belib->checkArray($attributeUid, $usedAttributes, 'uid_foreign')) {
-                                $validAttributes[] = $localAttribute;
-                                $usedAttributes[] = ['uid_foreign' => $attributeUid];
-                            }
-                        }
-                        $incomingFieldArray['attributes']['data']['sDEF']['lDEF'][$key]['vDEF'] = implode(
-                            ',',
-                            $validAttributes
-                        );
+        $usedAttributes = [];
+
+        foreach ($correlationTypes as $key => $data) {
+            $keyData = [];
+            $validAttributes = [];
+            $this->belib->getUidFromKey($key, $keyData);
+            if ($keyData[0] == 'ct' && is_array($data['vDEF']) && !empty($data['vDEF'])) {
+                // get the attributes from the category or product
+                foreach ($data['vDEF'] as $localAttribute) {
+                    if ($localAttribute == '') {
+                        continue;
+                    }
+                    $attributeUid = $this->belib->getUidFromKey($localAttribute, $keyData);
+                    if (!$this->belib->checkArray($attributeUid, $usedAttributes, 'uid_foreign')) {
+                        $validAttributes[] = $localAttribute;
+                        $usedAttributes[] = ['uid_foreign' => $attributeUid];
                     }
                 }
+                $correlationTypes[$key]['vDEF'] = $validAttributes;
             }
         }
 
@@ -1004,25 +997,30 @@ class DataMapHook
      * @param string $table Table
      * @param int $id Id
      * @param array $fieldArray Field array
-     * @param DataHandler $pObj Parent object
+     * @param DataHandler $dataHandler Parent object
      *
      * @return void
      */
-    public function processDatamap_afterDatabaseOperations($status, $table, $id, array $fieldArray, DataHandler $pObj)
-    {
+    public function processDatamap_afterDatabaseOperations(
+        $status,
+        $table,
+        $id,
+        array $fieldArray,
+        DataHandler $dataHandler
+    ) {
         // get the UID of the created record if it was just created
         if ($status == 'new' && !empty($fieldArray)) {
             $this->unsubstitutedId = $id;
-            $id = $pObj->substNEWwithIDs[$id];
+            $id = $dataHandler->substNEWwithIDs[$id];
         }
 
         switch ($table) {
             case 'tx_commerce_categories':
-                $this->afterDatabaseCategory($table, $id, $fieldArray, $pObj);
+                $this->afterDatabaseCategory($table, $id, $fieldArray, $dataHandler);
                 break;
 
             case 'tx_commerce_products':
-                $this->afterDatabaseProduct($status, $table, $id, $fieldArray, $pObj);
+                $this->afterDatabaseProduct($status, $table, $id, $fieldArray, $dataHandler);
                 break;
 
             case 'tx_commerce_article_prices':
@@ -1032,7 +1030,9 @@ class DataMapHook
             default:
         }
 
-        // @todo dynaflex special handling removed what was dropped by that?
+        if (TYPO3_MODE == 'BE' && $this->isUpdateSignalAllowed($table, $fieldArray)) {
+            BackendUtility::setUpdateSignal('updateCategoryTree');
+        }
     }
 
     /**
@@ -1113,7 +1113,7 @@ class DataMapHook
                 ++$id;
             }
 
-            //@todo improve performance without this methodcall the request gets finished in 1/5 of the time
+            // @todo improve performance without this methodcall the request gets finished in 1/5 of the time
             $this->saveProductRelations($id, $fieldArray);
         }
 
@@ -1214,7 +1214,7 @@ class DataMapHook
                     // remove relations before creating new relations this is needed because we dont
                     // know which attribute were removed
                     $database->exec_DELETEquery(
-                        'tx_commerce_articles_article_attributes_mm',
+                        'tx_commerce_articles_attributes_mm',
                         'uid_local = ' . $id . ' AND uid_foreign = ' . $attributeId
                     );
 
@@ -1225,7 +1225,7 @@ class DataMapHook
 
                         // create relations for current saved attributes
                         $database->exec_INSERTquery(
-                            'tx_commerce_articles_article_attributes_mm',
+                            'tx_commerce_articles_attributes_mm',
                             array_merge(
                                 [
                                     'uid_local' => $id,
@@ -1241,7 +1241,7 @@ class DataMapHook
                     // insert at least one relation
                     if (!$relCount) {
                         $database->exec_INSERTquery(
-                            'tx_commerce_articles_article_attributes_mm',
+                            'tx_commerce_articles_attributes_mm',
                             [
                                 'uid_local' => $id,
                                 'uid_foreign' => $attributeId,
@@ -1254,7 +1254,7 @@ class DataMapHook
 
                     // update article attribute relation
                     $database->exec_UPDATEquery(
-                        'tx_commerce_articles_article_attributes_mm',
+                        'tx_commerce_articles_attributes_mm',
                         'uid_local = ' . $id . ' AND uid_foreign = ' . $attributeId,
                         $updateArrays[1]
                     );
@@ -1268,17 +1268,18 @@ class DataMapHook
 
     /**
      * Save category relations.
+
      *
-     * @param int $cUid Categor uid
+*@param int $categoryUid Categor uid
      * @param array $fieldArray Field array
      * @param bool $saveAnyway Save anyway
      * @param bool $delete Delete
      * @param bool $updateXml Update xml
-     *
+
      * @return void
      */
     protected function saveCategoryRelations(
-        $cUid,
+        $categoryUid,
         array $fieldArray = [],
         $saveAnyway = false,
         $delete = true,
@@ -1289,7 +1290,7 @@ class DataMapHook
         if (isset($fieldArray['attributes']) || $saveAnyway) {
             // get all parent categories ...
             $catList = [];
-            $this->belib->getParentCategories($cUid, $catList, $cUid, 0, false);
+            $this->belib->getParentCategories($categoryUid, $catList, $categoryUid, 0, false);
 
             // get all correlation types
             $correlationTypeList = $this->belib->getAllCorrelationTypes();
@@ -1308,24 +1309,24 @@ class DataMapHook
                 $ffData = [];
             }
 
-            $this->belib->mergeAttributeListFromFFData(
+            $this->belib->mergeAttributeListFromFlexFormData(
                 (array) $ffData['data']['sDEF']['lDEF'],
                 'ct_',
                 $correlationTypeList,
-                $cUid,
+                $categoryUid,
                 $paList
             );
 
             // get the list of uid_foreign and save relations for this category
             $uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true, ['uid_correlationtype']);
-            $this->belib->saveRelations($cUid, $uidList, 'tx_commerce_categories_attributes_mm', $delete, false);
+            $this->belib->saveRelations($categoryUid, $uidList, 'tx_commerce_categories_attributes_mm', $delete, false);
 
             // update the XML structure if needed
             if ($updateXml) {
                 $this->belib->updateXML(
                     'attributes',
                     'tx_commerce_categories',
-                    $cUid,
+                    $categoryUid,
                     'category',
                     $correlationTypeList
                 );
@@ -1333,7 +1334,7 @@ class DataMapHook
 
             // save all attributes of this category into all poroducts,
             // that are related to it
-            $products = $this->belib->getProductsOfCategory($cUid);
+            $products = $this->belib->getProductsOfCategory($categoryUid);
             if (!empty($products)) {
                 foreach ($products as $product) {
                     $this->belib->saveRelations(
@@ -1356,7 +1357,7 @@ class DataMapHook
             // get children of this category after this operation the childList contains
             // all categories that are related to this category (recursively)
             $childList = [];
-            $this->belib->getChildCategories($cUid, $childList, $cUid, 0, false);
+            $this->belib->getChildCategories($categoryUid, $childList, $categoryUid, 0, false);
 
             foreach ($childList as $childUid) {
                 $this->saveCategoryRelations($childUid, null, true, false);
@@ -1384,17 +1385,13 @@ class DataMapHook
         // create an article and a new price for a new product
         if (ConfigurationUtility::getInstance()->getExtConf('simpleMode') && $productId != null) {
             // search for an article of this product
-            $res = $database->exec_SELECTquery('*', 'tx_commerce_articles', 'uid_product = ' . $productId, '', '', 1);
+            $article = $database->exec_SELECTgetSingleRow('*', 'tx_commerce_articles', 'uid_product = ' . $productId);
 
-            $aRes = [];
-            if ($database->sql_num_rows($res)) {
-                $aRes = $database->sql_fetch_assoc($res);
-                $aUid = $aRes['uid'];
+            if (!empty($article)) {
+                $aUid = $article['uid'];
             } else {
                 // create a new article if no one exists
-                $pRes = $database->exec_SELECTquery('title', 'tx_commerce_products', 'uid = ' . $productId, '', '', 1);
-                $productData = $database->sql_fetch_assoc($pRes);
-
+                $product = $database->exec_SELECTgetSingleRow('title', 'tx_commerce_products', 'uid = ' . $productId);
                 $database->exec_INSERTquery(
                     'tx_commerce_articles',
                     [
@@ -1403,7 +1400,7 @@ class DataMapHook
                         'crdate' => $GLOBALS['EXEC_TIME'],
                         'uid_product' => $productId,
                         'article_type_uid' => 1,
-                        'title' => $productData['title'],
+                        'title' => $product['title'],
                     ]
                 );
                 $aUid = $database->sql_insert_id();
@@ -1415,7 +1412,7 @@ class DataMapHook
                 'tx_commerce_article_prices',
                 'uid_article = ' . $productId
             );
-            if (empty($row) && $aRes['sys_language_uid'] < 1) {
+            if (empty($row) && $article['sys_language_uid'] < 1) {
                 // create a new price if no one exists
                 $database->exec_INSERTquery(
                     'tx_commerce_article_prices',
@@ -1431,15 +1428,7 @@ class DataMapHook
 
         $delete = true;
         if (isset($fieldArray['categories'])) {
-            $catList = [];
-            $res = $database->exec_SELECTquery(
-                'uid_foreign',
-                'tx_commerce_products_categories_mm',
-                'uid_local = ' . $productId
-            );
-            while (($sres = $database->sql_fetch_assoc($res))) {
-                $catList[] = $sres['uid_foreign'];
-            }
+            $catList = $this->belib->getProductParentCategories($productId);
             $paList = $this->belib->getAttributesForCategoryList($catList);
             $uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true, ['uid_correlationtype']);
 
@@ -1457,7 +1446,7 @@ class DataMapHook
             // extract all attributes from FlexForm
             $ffData = GeneralUtility::xml2array($fieldArray['attributes']);
             if (is_array($ffData)) {
-                $this->belib->mergeAttributeListFromFFData(
+                $this->belib->mergeAttributeListFromFlexFormData(
                     $ffData['data']['sDEF']['lDEF'],
                     'ct_',
                     $correlationTypeList,
@@ -1495,9 +1484,7 @@ class DataMapHook
 
             // update the XML for this product, we remove everything that is not
             // set for current attributes
-            $pXml = $database->exec_SELECTquery('attributesedit', 'tx_commerce_products', 'uid = ' . $productId);
-            $pXml = $database->sql_fetch_assoc($pXml);
-
+            $pXml = $database->exec_SELECTgetSingleRow('attributesedit', 'tx_commerce_products', 'uid = ' . $productId);
             if (!empty($pXml['attributesedit'])) {
                 $pXml = GeneralUtility::xml2array($pXml['attributesedit']);
 
@@ -1525,9 +1512,9 @@ class DataMapHook
                 $uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true);
                 foreach ($articles as $article) {
                     $this->belib->saveRelations(
-                        $article['uid'],
+                        (int)$article['uid'],
                         $uidList,
-                        'tx_commerce_articles_article_attributes_mm',
+                        'tx_commerce_articles_attributes_mm',
                         true,
                         false
                     );
@@ -1551,6 +1538,7 @@ class DataMapHook
                 foreach ($ffData['data']['sDEF']['lDEF'] as $ffDataItemKey => $ffDataItem) {
                     ++$counter;
 
+                    $keyData = [];
                     $attributeKey = $this->belib->getUidFromKey($ffDataItemKey, $keyData);
                     $attributeData = $this->belib->getAttributeData($attributeKey, 'has_valuelist,multiple');
 
@@ -1605,7 +1593,7 @@ class DataMapHook
                                 // if we have a multiple valuelist we need to handle the attributes a little
                                 // bit different first we delete all existing attributes
                                 $database->exec_DELETEquery(
-                                    'tx_commerce_articles_article_attributes_mm',
+                                    'tx_commerce_articles_attributes_mm',
                                     'uid_local = ' . $article['uid'] . ' AND uid_foreign = ' . $attributeKey
                                 );
 
@@ -1626,7 +1614,7 @@ class DataMapHook
                                         $productId
                                     );
                                     $database->exec_INSERTquery(
-                                        'tx_commerce_articles_article_attributes_mm',
+                                        'tx_commerce_articles_attributes_mm',
                                         array_merge(
                                             [
                                                 'uid_local' => $article['uid'],
@@ -1643,7 +1631,7 @@ class DataMapHook
                                 if ($attributeCount == 0) {
                                     $updateData = $this->belib->getUpdateData([], $attributeValue, $productId);
                                     $database->exec_INSERTquery(
-                                        'tx_commerce_articles_article_attributes_mm',
+                                        'tx_commerce_articles_attributes_mm',
                                         array_merge(
                                             [
                                                 'uid_local' => $article['uid'],
@@ -1660,19 +1648,19 @@ class DataMapHook
                                 // to select this attribute for this article
                                 $res = $database->exec_SELECTquery(
                                     'uid_local, uid_foreign',
-                                    'tx_commerce_articles_article_attributes_mm',
+                                    'tx_commerce_articles_attributes_mm',
                                     'uid_local = ' . $article['uid'] . ' AND uid_foreign = ' . $attributeKey
                                 );
 
                                 if ($database->sql_num_rows($res)) {
                                     $database->exec_UPDATEquery(
-                                        'tx_commerce_articles_article_attributes_mm',
+                                        'tx_commerce_articles_attributes_mm',
                                         'uid_local = ' . $article['uid'] . ' AND uid_foreign = ' . $attributeKey,
                                         array_merge($updateArrays[1], ['sorting' => $counter])
                                     );
                                 } else {
                                     $database->exec_INSERTquery(
-                                        'tx_commerce_articles_article_attributes_mm',
+                                        'tx_commerce_articles_attributes_mm',
                                         array_merge($updateArrays[1], [
                                             'uid_local' => $article['uid'],
                                             'uid_product' => $productId,
@@ -1689,7 +1677,7 @@ class DataMapHook
                                 $articleRelations[] = $relArray;
                             }
 
-                            $this->belib->updateArticleHash($article['uid']);
+                            $this->belib->updateArticleHash((int)$article['uid']);
                         }
                     }
                 }
@@ -1700,7 +1688,7 @@ class DataMapHook
                 // And add those datas from the database to the articles
                 if (is_array($articles) && !empty($articles)) {
                     foreach ($articles as $article) {
-                        $thisArticleRelations = $this->belib->getAttributesForArticle($article['uid']);
+                        $thisArticleRelations = $this->belib->getAttributesForArticle((int)$article['uid']);
 
                         $this->belib->updateArticleXML($thisArticleRelations, false, $article['uid'], null);
                     }
@@ -1709,12 +1697,12 @@ class DataMapHook
         }
 
         // Check if we do have some localized products an call the method recursivly
-        $resLocalised = $database->exec_SELECTquery(
+        $resLocalised = $database->exec_SELECTgetRows(
             'uid',
             'tx_commerce_products',
             'deleted = 0 AND l18n_parent = ' . $productId
         );
-        while (($rowLocalised = $database->sql_fetch_assoc($resLocalised))) {
+        foreach ($resLocalised as $rowLocalised) {
             $this->saveProductRelations($rowLocalised['uid'], $fieldArray);
         }
     }
@@ -1750,21 +1738,28 @@ class DataMapHook
         return $result;
     }
 
-
     /**
-     * @param DataHandler $dataHandler
+     * @param string $table
+     * @param array $fieldArray
+     * @return bool
      */
-    public function processDatamap_afterAllOperations($dataHandler)
+    protected function isUpdateSignalAllowed($table, $fieldArray)
     {
-        if (TYPO3_MODE == 'BE'
-            && (
-                isset($dataHandler->datamap['tx_commerce_categories'])
-                || isset($dataHandler->datamap['tx_commerce_products'])
-                || isset($dataHandler->datamap['tx_commerce_articles'])
-            )
-        ) {
-            BackendUtility::setUpdateSignal('updateCategoryTree');
+        if (!in_array($table, ['tx_commerce_categories', 'tx_commerce_products', 'tx_commerce_articles'])) {
+            return false;
         }
+
+        $ctrl = $GLOBALS['TCA'][$table]['ctrl'];
+        $enableFields = array_merge([$ctrl['delete']], $ctrl['enablecolumns']);
+
+        $isEnableFieldSet = false;
+        foreach ($enableFields as $enableField) {
+            if ($enableField && isset($fieldArray[$enableField])) {
+                $isEnableFieldSet = true;
+                break;
+            }
+        }
+        return $isEnableFieldSet;
     }
 
 

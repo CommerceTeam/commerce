@@ -25,18 +25,15 @@ class StatisticModuleIncrementalAggregationController extends StatisticModuleCon
 
         $result = '';
         if (GeneralUtility::_POST('incrementalaggregation')) {
-            $lastAggregationTimeres = $database->exec_SELECTquery('MAX(tstamp)', 'tx_commerce_salesfigures', '1=1');
+            $lastAggregationRow = $database->exec_SELECTgetSingleRow('MAX(tstamp)', 'tx_commerce_salesfigures', '1');
             $lastAggregationTimeValue = 0;
-            if ($lastAggregationTimeres
-                and ($lastAggregationTimerow = $database->sql_fetch_row($lastAggregationTimeres))
-                and $lastAggregationTimerow[0] != null
-            ) {
-                $lastAggregationTimeValue = $lastAggregationTimerow[0];
+            if ($lastAggregationRow && $lastAggregationRow[0] != null) {
+                $lastAggregationTimeValue = $lastAggregationRow[0];
             }
 
-            $endres = $database->exec_SELECTquery('MAX(crdate)', 'tx_commerce_order_articles', '1=1');
+            $endrow = $database->exec_SELECTgetSingleRow('MAX(crdate)', 'tx_commerce_order_articles', '1');
             $endtime2 = 0;
-            if ($endres and ($endrow = $database->sql_fetch_row($endres))) {
+            if ($endrow && $endrow[0] != null) {
                 $endtime2 = $endrow[0];
             }
             $starttime = $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
@@ -59,7 +56,7 @@ class StatisticModuleIncrementalAggregationController extends StatisticModuleCon
             $changeres = $database->exec_SELECTquery('DISTINCT crdate', 'tx_commerce_order_articles', $changeWhere);
             $changeDaysArray = [];
             $changes = 0;
-            while ($changeres and ($changerow = $database->sql_fetch_assoc($changeres))) {
+            while ($changeres && ($changerow = $database->sql_fetch_assoc($changeres))) {
                 $starttime = $this->statistics->firstSecondOfDay($changerow['crdate']);
                 $endtime = $this->statistics->lastSecondOfDay($changerow['crdate']);
 
@@ -76,18 +73,16 @@ class StatisticModuleIncrementalAggregationController extends StatisticModuleCon
 
             $result .= $changes . ' Days changed<br />';
 
-            $lastAggregationTimeres = $database->exec_SELECTquery('MAX(tstamp)', 'tx_commerce_newclients', '1=1');
-            if ($lastAggregationTimeres
-                && ($lastAggregationTimerow = $database->sql_fetch_row($lastAggregationTimeres))
-            ) {
-                $lastAggregationTimeValue = $lastAggregationTimerow[0];
+            $lastAggregationRow = $database->exec_SELECTgetSingleRow('MAX(tstamp)', 'tx_commerce_newclients', '1');
+            if ($lastAggregationRow && $lastAggregationRow[0] != null) {
+                $lastAggregationTimeValue = $lastAggregationRow[0];
             }
 
-            $endres = $database->exec_SELECTquery('MAX(crdate)', 'fe_users', '1=1');
-            if ($endres and ($endrow = $database->sql_fetch_row($endres))) {
+            $endrow = $database->exec_SELECTgetSingleRow('MAX(crdate)', 'fe_users', '1');
+            if ($endrow && $endrow[0] != null) {
                 $endtime2 = $endrow[0];
             }
-            if ($lastAggregationTimeValue <= $endtime2 and $endtime2 != null and $lastAggregationTimeValue != null) {
+            if ($lastAggregationTimeValue <= $endtime2 && $endtime2 != null && $lastAggregationTimeValue != null) {
                 $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
                 $starttime = strtotime('0', $lastAggregationTimeValue);

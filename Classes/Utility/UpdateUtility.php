@@ -58,6 +58,16 @@ class UpdateUtility
             }
         }
 
+        if ($this->isOldRelationTable()) {
+            $this->renameRelationTable();
+            $htmlCode[] = '<li>Renamed article-attribute relation table</li>';
+        }
+
+        if ($this->isOldColumns()) {
+            $this->migrateOldColumn();
+            $htmlCode[] = '<li>Migrated foldername column to new name</li>';
+        }
+
         $htmlCode[] = '</ul>';
 
         return implode(LF, $htmlCode);
@@ -74,14 +84,14 @@ class UpdateUtility
         $database = $this->getDatabaseConnection();
         $countRecords = 0;
 
-        $result = $database->exec_SELECTquery(
+        $rows = $database->exec_SELECTgetRows(
             'uid',
             'tx_commerce_categories',
             'sys_language_uid = 0 AND l18n_parent = 0 AND uid NOT IN (
                 SELECT uid_local FROM tx_commerce_categories_parent_category_mm
             ) AND tx_commerce_categories.deleted = 0'
         );
-        while (($row = $database->sql_fetch_assoc($result))) {
+        foreach ($rows as $row) {
             $data = [
                 'uid_local' => $row['uid'],
                 'uid_foreign' => 0,
@@ -116,12 +126,12 @@ class UpdateUtility
             'uid = ' . BackendUtility::getProductFolderUid()
         );
 
-        $result = $database->exec_SELECTquery(
+        $rows = $database->exec_SELECTgetRows(
             'uid',
             'tx_commerce_categories',
             'perms_user = 0 OR perms_group = 0 OR perms_everybody = 0'
         );
-        while (($row = $database->sql_fetch_assoc($result))) {
+        foreach ($rows as $row) {
             $database->exec_UPDATEquery('tx_commerce_categories', 'uid = ' . $row['uid'], $data);
             ++$countRecords;
         }
@@ -140,8 +150,8 @@ class UpdateUtility
         $userId = 0;
         $database = $this->getDatabaseConnection();
 
-        $result = $database->exec_SELECTquery('uid', 'be_users', 'username = \'_fe_commerce\'');
-        if (!$database->sql_num_rows($result)) {
+        $row = $database->exec_SELECTgetSingleRow('uid', 'be_users', 'username = \'_fe_commerce\'');
+        if (empty($row)) {
             $data = [
                 'pid' => 0,
                 'username' => '_fe_commerce',
@@ -166,6 +176,31 @@ class UpdateUtility
     }
 
     /**
+     * Rename old article attribute relation table
+     *
+     * @return void
+     */
+    public function renameRelationTable()
+    {
+        $this->getDatabaseConnection()->sql_query('
+            ALTER TABLE tx_commerce_articles_article_attributes_mm RENAME tx_commerce_articles_attributes_mm;
+        ');
+    }
+
+    /**
+     * Update pages and set commerce_foldername to the same content as graytree_foldername
+     *
+     * @return void
+     */
+    public function migrateOldColumn()
+    {
+        $this->getDatabaseConnection()->sql_query('
+            UPDATE pages SET tx_commerce_foldername = tx_graytree_foldername WHERE tx_graytree_foldername != \'\'
+        ');
+    }
+
+
+    /**
      * Check if the Ipdate is necessary.
      *
      * @return bool True if update should be perfomed
@@ -183,6 +218,12 @@ class UpdateUtility
             return true;
         }
         if (!$this->isBackendUserSet()) {
+            return true;
+        }
+        if ($this->isOldRelationTable()) {
+            return true;
+        }
+        if ($this->isOldColumns()) {
             return true;
         }
 
@@ -235,6 +276,62 @@ class UpdateUtility
             'be_users',
             'username = \'_fe_commerce\''
         ));
+    }
+
+    /**
+     * Check if an article attribute relation table is present
+     *
+     * @return bool
+     */
+    protected function isOldRelationTable()
+    {
+        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'count(*) AS count',
+            'information_schema.tables',
+            'table_schema = \'' . $GLOBALS['TYPO3_CONF_VARS']['DB']['database']
+            . '\' AND table_name = \'tx_commerce_articles_article_attributes_mm\''
+        );
+
+        return $row['count'] > 0;
+    }
+
+    /**
+     * Check if old columns need to be migrated
+     *
+     * @return bool
+     */
+    protected function isOldColumns()
+    {
+        // Check if old column is present
+        $oldColumn = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'count(*) AS count',
+            'information_schema.columns',
+            'table_schema = \'' . $GLOBALS['TYPO3_CONF_VARS']['DB']['database']
+            . '\' AND table_name = \'pages\' AND column_name = \'tx_graytree_foldername\''
+        );
+
+        $newColumn = ['count' => 0];
+        // Old column is present so check if new column is present too
+        if ($oldColumn['count'] > 0) {
+            $newColumn = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+                'count(*) AS count',
+                'information_schema.columns',
+                'table_schema = \'' . $GLOBALS['TYPO3_CONF_VARS']['DB']['database']
+                . '\' AND table_name = \'pages\' AND column_name = \'tx_commerce_foldername\''
+            );
+        }
+
+        $differingColumns = ['count' => 0];
+        // Old and new column are present so check if they differ
+        if ($oldColumn['count'] > 0 && $newColumn['count'] > 0) {
+            $differingColumns = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+                'count(*) AS count',
+                'pages',
+                'tx_graytree_foldername != \'\' AND tx_commerce_foldername != tx_graytree_foldername'
+            );
+        }
+
+        return $differingColumns['count'] > 0;
     }
 
 

@@ -1155,10 +1155,9 @@ class CheckoutController extends BaseController
             $orderData['pid'] = $this->conf['newOrderPid'];
         }
         if (empty($orderData['pid']) || ($orderData['pid'] < 0)) {
-            $comPid = FolderRepository::getFolder($this->extKey, 0, 'COMMERCE')['uid'];
-            $ordPid = FolderRepository::getFolder($this->extKey, $comPid, 'Orders')['uid'];
-            $incPid = FolderRepository::getFolder($this->extKey, $ordPid, 'Incoming')['uid'];
-            $orderData['pid'] = $incPid['uid'];
+            $comPid = FolderRepository::getFolder('Commerce')['uid'];
+            $ordPid = FolderRepository::getFolder('Orders', $comPid)['uid'];
+            $orderData['pid'] = FolderRepository::getFolder('Incoming', $ordPid)['uid'];
         }
 
         // Save the order, execute the hooks and stock
@@ -2025,14 +2024,11 @@ class CheckoutController extends BaseController
      */
     public function getField($value, $type, $field)
     {
-        $database = $this->getDatabaseConnection();
-
         if ($this->conf[$type . '.']['sourceFields.'][$field . '.']['table']) {
             $table = $this->conf[$type . '.']['sourceFields.'][$field . '.']['table'];
             $select = $this->conf[$type . '.']['sourceFields.'][$field . '.']['value'] . ' = \'' . $value . '\'';
             $fields = $this->conf[$type . '.']['sourceFields.'][$field . '.']['label'];
-            $res = $database->exec_SELECTquery($fields, $table, $select);
-            $row = $database->sql_fetch_assoc($res);
+            $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow($fields, $table, $select);
 
             return $row[$fields];
         }
@@ -2750,8 +2746,6 @@ class CheckoutController extends BaseController
             return [];
         }
 
-        $database = $this->getDatabaseConnection();
-
         $this->debug($typoScript, '$typoScript', __FILE__ . ' ' . __LINE__);
 
         $newdata = [];
@@ -2764,12 +2758,11 @@ class CheckoutController extends BaseController
                 && strlen($fieldConfig['table'])
             ) {
                 $table = $fieldConfig['table'];
-                $select = $fieldConfig['value'] . ' = ' . $database->fullQuoteStr($value, $table) .
+                $select = $fieldConfig['value'] . ' = ' . $this->getDatabaseConnection()->fullQuoteStr($value, $table) .
                     $this->cObj->enableFields($table);
                 $fields = $fieldConfig['label'] . ' AS label,';
                 $fields .= $fieldConfig['value'] . ' AS value';
-                $res = $database->exec_SELECTquery($fields, $table, $select);
-                $value = $database->sql_fetch_assoc($res);
+                $value = $this->getDatabaseConnection()->exec_SELECTgetSingleRow($fields, $table, $select);
 
                 $newdata[$key] = $value['label'];
             } elseif ($fieldConfig['type'] == 'select' && is_array($fieldConfig['values.'])) {

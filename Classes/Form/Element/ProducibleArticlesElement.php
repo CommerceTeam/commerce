@@ -22,7 +22,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * Class \CommerceTeam\Commerce\Form\Element\ArticleCreatorElement
  */
-class AvailableArticlesElement extends AbstractFormElement
+class ProducibleArticlesElement extends AbstractFormElement
 {
     /**
      * @var string
@@ -74,7 +74,7 @@ class AvailableArticlesElement extends AbstractFormElement
         $rowCount = $this->calculateRowCount();
         if ($rowCount > 1000) {
             return sprintf(
-                $this->getLanguageService()->sL('tx_commerce_products.to_many_articles'),
+                $this->getLanguageService()->getLL('tx_commerce_products.to_many_articles'),
                 $rowCount
             );
         }
@@ -86,13 +86,13 @@ class AvailableArticlesElement extends AbstractFormElement
 
         $valueMatrix = (array) $this->getValues();
         $counter = 0;
-        $resultRows = $this->getLanguageService()->sL('tx_commerce_products.create_warning');
+        $resultRows = $this->getLanguageService()->getLL('tx_commerce_products.create_warning');
 
         $this->getRows($valueMatrix, $resultRows, $counter, $headRow);
 
         $emptyRow = '<tr><td><input type="checkbox" name="createList[empty]" /></td>';
         $emptyRow .= '<td colspan="' . ($colCount - 1) . '">' .
-            $this->getLanguageService()->sL('tx_commerce_products.empty_article') .
+            $this->getLanguageService()->getLL('tx_commerce_products.empty_article') .
             '</td></tr>';
 
         // create a checkbox for selecting all articles
@@ -110,7 +110,7 @@ class AvailableArticlesElement extends AbstractFormElement
             $onClick = 'onclick="updateArticleList()"';
             $selectAllRow = '<tr><td><input type="checkbox" id="selectAllArticles" ' . $onClick . '/></td>';
             $selectAllRow .= '<td colspan="' . ($colCount - 1) . '">'
-                . $this->getLanguageService()->sL('tx_commerce_products.select_all_articles')
+                . $this->getLanguageService()->getLL('tx_commerce_products.select_all_articles')
                 . '</td></tr>';
         }
 
@@ -133,7 +133,7 @@ class AvailableArticlesElement extends AbstractFormElement
     {
         $result = [];
 
-        if (count($this->attributes['ct1']) > $index) {
+        if (isset($this->attributes['ct1']) && count($this->attributes['ct1']) > $index) {
             if (is_array($this->attributes['ct1'])) {
                 foreach ($this->attributes['ct1'][$index]['valueList'] as $aValue) {
                     $data['aUid'] = (int) $this->attributes['ct1'][$index]['attributeData']['uid'];
@@ -255,7 +255,7 @@ class AvailableArticlesElement extends AbstractFormElement
     {
         $result = 1;
 
-        if (is_array($this->attributes['ct1'])) {
+        if (isset($this->attributes['ct1']) && is_array($this->attributes['ct1'])) {
             foreach ($this->attributes['ct1'] as $attribute) {
                 $valueCount = count($attribute['valueList']);
                 $result *= $valueCount;
@@ -290,7 +290,7 @@ class AvailableArticlesElement extends AbstractFormElement
             ) . '</th>';
         }
 
-        if (is_array($this->attributes['ct1'])) {
+        if (isset($this->attributes['ct1']) && is_array($this->attributes['ct1'])) {
             foreach ($this->attributes['ct1'] as $attribute) {
                 $result .= '<th>' . htmlspecialchars(strip_tags($attribute['attributeData']['title'])) . '</th>';
                 ++$colCount;

@@ -33,7 +33,7 @@ class ArticleRepository extends Repository
      *
      * @var string
      */
-    public $databaseAttributeRelationTable = 'tx_commerce_articles_article_attributes_mm';
+    public $databaseAttributeRelationTable = 'tx_commerce_articles_attributes_mm';
 
     /**
      * Returns the parent Product uid.
@@ -93,18 +93,17 @@ class ArticleRepository extends Repository
                 $this->getFrontendController()->showHiddenRecords
             );
 
-            $database = $this->getDatabaseConnection();
-
-            $result = $database->exec_SELECTquery(
+            $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
                 'uid,fe_group',
                 'tx_commerce_article_prices',
-                'uid_article = ' . $uid . ' AND price_scale_amount_start <= ' . $count .
-                ' AND price_scale_amount_end >= ' . $count . $proofSql . $additionalWhere,
+                'uid_article = ' . $uid . ' AND price_scale_amount_start <= ' . $count
+                . ' AND price_scale_amount_end >= ' . $count . $proofSql . $additionalWhere,
                 '',
                 $orderField
             );
-            if ($database->sql_num_rows($result)) {
-                while (($data = $database->sql_fetch_assoc($result))) {
+
+            if (!empty($rows)) {
+                foreach ($rows as $data) {
                     $feGroups = \TYPO3\CMS\Core\Utility\GeneralUtility::intExplode(',', $data['fe_group'], true);
                     if (!empty($feGroups)) {
                         foreach ($feGroups as $feGroup) {
@@ -114,7 +113,6 @@ class ArticleRepository extends Repository
                         $priceUidList[(string) $data['fe_group']][] = $data['uid'];
                     }
                 }
-                $database->sql_free_result($result);
 
                 return $priceUidList;
             } else {
@@ -149,18 +147,16 @@ class ArticleRepository extends Repository
                 $this->getFrontendController()->showHiddenRecords
             );
 
-            $database = $this->getDatabaseConnection();
-
-            $result = $database->exec_SELECTquery(
+            $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
                 'uid,price_scale_amount_start, price_scale_amount_end',
                 'tx_commerce_article_prices',
                 'uid_article = ' . $uid . ' AND price_scale_amount_start >= ' . $count . $proofSql
             );
-            if ($database->sql_num_rows($result)) {
-                while (($data = $database->sql_fetch_assoc($result))) {
+
+            if (!empty($rows)) {
+                foreach ($rows as $data) {
                     $priceUidList[$data['price_scale_amount_start']][$data['price_scale_amount_end']] = $data['uid'];
                 }
-                $database->sql_free_result($result);
 
                 return $priceUidList;
             } else {
@@ -212,24 +208,22 @@ class ArticleRepository extends Repository
 
             $database = $this->getDatabaseConnection();
 
-            $result = $database->exec_SELECTquery(
+            $returnData = $database->exec_SELECTgetSingleRow(
                 'DISTINCT uid, has_valuelist',
                 'tx_commerce_attributes',
                 'uid = ' . (int) $attributeUid . $proofSql
             );
-            if ($database->sql_num_rows($result) == 1) {
-                $returnData = $database->sql_fetch_assoc($result);
+            if (!empty($returnData)) {
                 if ($returnData['has_valuelist'] == 1) {
                     // Attribute has a valuelist, so do separate query
-                    $attributeResult = $database->exec_SELECTquery(
+                    $valueData = $database->exec_SELECTgetSingleRow(
                         'DISTINCT tx_commerce_attribute_values.value, tx_commerce_attribute_values.uid',
-                        'tx_commerce_articles_article_attributes_mm, tx_commerce_attribute_values',
-                        'tx_commerce_articles_article_attributes_mm.uid_valuelist = tx_commerce_attribute_values.uid'.
+                        'tx_commerce_articles_attributes_mm, tx_commerce_attribute_values',
+                        'tx_commerce_articles_attributes_mm.uid_valuelist = tx_commerce_attribute_values.uid'.
                         ' AND uid_local = ' . $uid .
                         ' AND uid_foreign = ' . $attributeUid
                     );
-                    if ($database->sql_num_rows($attributeResult) == 1) {
-                        $valueData = $database->sql_fetch_assoc($attributeResult);
+                    if (!empty($valueData)) {
                         if ($valueListAsUid == true) {
                             return $valueData['uid'];
                         } else {
@@ -238,13 +232,12 @@ class ArticleRepository extends Repository
                     }
                 } else {
                     // attribute has no valuelist, so do normal query
-                    $attributeResult = $database->exec_SELECTquery(
+                    $valueData = $database->exec_SELECTgetSingleRow(
                         'DISTINCT value_char, default_value',
-                        'tx_commerce_articles_article_attributes_mm',
+                        'tx_commerce_articles_attributes_mm',
                         'uid_local = ' . $uid . ' AND uid_foreign = ' . $attributeUid
                     );
-                    if ($database->sql_num_rows($attributeResult) == 1) {
-                        $valueData = $database->sql_fetch_assoc($attributeResult);
+                    if (!empty($valueData)) {
                         if ($valueData['value_char']) {
                             return $valueData['value_char'];
                         } else {
@@ -276,14 +269,12 @@ class ArticleRepository extends Repository
         $database = $this->getDatabaseConnection();
 
         if ($supplierUid > 0) {
-            $result = $database->exec_SELECTquery(
+            $returnData = $database->exec_SELECTgetSingleRow(
                 'title',
                 'tx_commerce_supplier',
                 'uid = ' . (int) $supplierUid
             );
-            if ($database->sql_num_rows($result) == 1) {
-                $returnData = $database->sql_fetch_assoc($result);
-
+            if (!empty($returnData)) {
                 return $returnData['title'];
             }
         }

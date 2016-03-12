@@ -103,18 +103,29 @@ call_user_func(function ($packageKey) {
     );
 
     if (!is_array($typo3ConfVars['SYS']['caching']['cacheConfigurations']['commerce_navigation'])) {
-        $typo3ConfVars['SYS']['caching']['cacheConfigurations']['commerce_navigation'] = [];
+        $typo3ConfVars['SYS']['caching']['cacheConfigurations']['commerce_navigation'] = [
+            'frontend' => \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class,
+            'backend' => \TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend::class,
+            'options' => array(
+                'compression' => true,
+                // 30 days; set this to a lower value in case your cache gets too big
+                'defaultLifetime' => 2592000,
+            ),
+            'groups' => array('pages', 'all')
+        ];
     }
 
     if (TYPO3_MODE == 'BE') {
         // XCLASS for version preview
         // This XCLASS will create a link to singlePID / previewPageID
         // in version module for commerce products
+        // @todo check if needed
         $typo3ConfVars['SYS']['Objects'][\TYPO3\CMS\Version\Controller\VersionModuleController::class] = [
             'className' => \CommerceTeam\Commerce\Xclass\VersionModuleController::class,
         ];
 
         // For TYPO3 6.2
+        // @todo check if needed
         $typo3ConfVars['SYS']['Objects'][\TYPO3\CMS\Backend\Controller\NewRecordController::class] = [
             'className' => \CommerceTeam\Commerce\Xclass\NewRecordController::class,
         ];
@@ -144,9 +155,9 @@ call_user_func(function ($packageKey) {
         ];
         // Add available articles control for product
         $typo3ConfVars['SYS']['formEngine']['nodeRegistry']['1456642633184'] = [
-            'nodeName' => 'commerceAvailableArticles',
+            'nodeName' => 'commerceProducibleArticles',
             'priority' => 100,
-            'class' => \CommerceTeam\Commerce\Form\Element\AvailableArticlesElement::class
+            'class' => \CommerceTeam\Commerce\Form\Element\ProducibleArticlesElement::class
         ];
         $typo3ConfVars['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord']
             [\CommerceTeam\Commerce\Form\FormDataProvider\DatabaseRowArticleData::class] =
@@ -158,6 +169,31 @@ call_user_func(function ($packageKey) {
                 \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectTreeItems::class,
             ],
         ];
+
+        // Add attribute select fields
+        $typo3ConfVars['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord']
+            [\CommerceTeam\Commerce\Form\FormDataProvider\TcaAttributeFields::class] =
+        [
+            'depends' => [
+                \TYPO3\CMS\Backend\Form\FormDataProvider\TcaFlexPrepare::class,
+            ],
+            'before' => [
+                \TYPO3\CMS\Backend\Form\FormDataProvider\TcaFlexProcess::class,
+            ],
+        ];
+
+        // Add attribute select values
+        $typo3ConfVars['SYS']['formEngine']['formDataGroup']['flexFormSegment']
+            [\CommerceTeam\Commerce\Form\FormDataProvider\DatabaseRowAttributeData::class] =
+        [
+            'depends' => [
+                \TYPO3\CMS\Backend\Form\FormDataProvider\DatabaseRowDefaultValues::class,
+            ],
+            'before' => [
+                \TYPO3\CMS\Backend\Form\FormDataProvider\TcaCheckboxItems::class,
+            ],
+        ];
+
 
         // CLI Script configuration
         // Add statistic task
@@ -214,19 +250,19 @@ call_user_func(function ($packageKey) {
     $scOptions['t3lib/class.t3lib_befunc.php']['updateSignalHook']['updateCategoryTree'] =
         \CommerceTeam\Commerce\Hooks\UpdateSignalHook::class . '->updateCategoryTree';
 
+    // Hook to render recordlist parts differently
+    // Used to change recordlist rendering for move orders in order record list
+    $scOptions['typo3/class.db_list_extra.inc']['actions']['commerce'] =
+        \CommerceTeam\Commerce\Hooks\LocalRecordListHook::class;
+
     // Hooks for version swap processing
     // For processing the order sfe, when changing the pid
-    //@todo check if needed
+    // @todo check if needed
     $scOptions['t3lib/class.t3lib_tcemain.php']['processVersionSwapClass']['commerce'] =
         \CommerceTeam\Commerce\Hooks\VersionHook::class;
 
-    //@todo check if needed
+    // @todo check if needed
     $scOptions['t3lib/class.t3lib_tceforms_inline.php']['tceformsInlineHook']['commerce'] =
         \CommerceTeam\Commerce\Hooks\IrreHook::class;
-
-    // Hook to render recordlist parts differently
-    //@todo check if needed
-    $scOptions['typo3/class.db_list_extra.inc']['actions']['commerce'] =
-        \CommerceTeam\Commerce\Hooks\LocalRecordListHook::class;
 
 }, 'commerce');

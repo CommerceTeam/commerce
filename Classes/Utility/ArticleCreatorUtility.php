@@ -212,7 +212,7 @@ class ArticleCreatorUtility
                 $relationCreateData['sorting'] = $attributesSorting[$selectAttributeUid];
 
                 $createdArticleRelations[] = $relationCreateData;
-                $database->exec_INSERTquery('tx_commerce_articles_article_attributes_mm', $relationCreateData);
+                $database->exec_INSERTquery('tx_commerce_articles_attributes_mm', $relationCreateData);
             }
         }
 
@@ -242,7 +242,7 @@ class ArticleCreatorUtility
 
                 $createdArticleRelations[] = $relationCreateData;
 
-                $database->exec_INSERTquery('tx_commerce_articles_article_attributes_mm', $relationCreateData);
+                $database->exec_INSERTquery('tx_commerce_articles_attributes_mm', $relationCreateData);
             }
         }
 
@@ -307,13 +307,13 @@ class ArticleCreatorUtility
             // to new article
             $origRelations = $database->exec_SELECTgetRows(
                 '*',
-                'tx_commerce_articles_article_attributes_mm',
+                'tx_commerce_articles_attributes_mm',
                 'uid_local = ' . (int) $origArticle['uid'] . ' AND uid_valuelist = 0'
             );
             foreach ($origRelations as $origRelation) {
                 $origRelation['uid_local'] = $localizedArticleUid;
 
-                $database->exec_INSERTquery('tx_commerce_articles_article_attributes_mm', $origRelation);
+                $database->exec_INSERTquery('tx_commerce_articles_attributes_mm', $origRelation);
             }
 
             $this->belib->updateArticleXML($createdArticleRelations, false, $localizedArticleUid);
@@ -378,7 +378,7 @@ class ArticleCreatorUtility
                     $database = $this->getDatabaseConnection();
 
                     $database->exec_UPDATEquery(
-                        'tx_commerce_articles_article_attributes_mm',
+                        'tx_commerce_articles_attributes_mm',
                         'uid_local = ' . $articleUid . ' AND uid_foreign = ' . $attributeUid,
                         ['uid_valuelist' => $attributeValueUid]
                     );

@@ -846,13 +846,16 @@ class AddressesController extends BaseController
             return true;
         }
 
-        $database = $this->getDatabaseConnection();
-        $database->exec_UPDATEquery('tt_address', 'uid = ' . (int) $this->piVars['addressid'], ['deleted' => 1]);
+        $this->getDatabaseConnection()->exec_UPDATEquery(
+            'tt_address',
+            'uid = ' . (int) $this->piVars['addressid'],
+            ['deleted' => 1]
+        );
 
         unset($this->addresses[(int) $this->piVars['addressid']]);
         unset($this->piVars['confirmed']);
 
-        return $database->sql_error() == '';
+        return $this->getDatabaseConnection()->sql_error() == '';
     }
 
     /**

@@ -211,7 +211,7 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
 
             $catCount = $this->fetchRelationCount('tx_commerce_categories_attributes_mm', $attribute['uid']);
             $proCount = $this->fetchRelationCount('tx_commerce_products_attributes_mm', $attribute['uid']);
-            $artCount = $this->fetchRelationCount('tx_commerce_articles_article_attributes_mm', $attribute['uid']);
+            $artCount = $this->fetchRelationCount('tx_commerce_articles_attributes_mm', $attribute['uid']);
 
             // Select language versions
             $resLocalVersion = $this->fetchAttributeTranslation($attribute['uid']);
@@ -240,16 +240,16 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
 
             $valueList = '';
             if ($attribute['has_valuelist'] == 1) {
-                $valueRes = $this->getDatabaseConnection()->exec_SELECTquery(
+                $values = $this->getDatabaseConnection()->exec_SELECTgetRows(
                     '*',
                     'tx_commerce_attribute_values',
                     'attributes_uid = ' . $attribute['uid'] . ' AND hidden = 0 AND deleted = 0',
                     '',
                     'sorting'
                 );
-                if ($this->getDatabaseConnection()->sql_num_rows($valueRes)) {
+                if (!empty($values)) {
                     $valueList .= '<table border="0">';
-                    while (($value = $this->getDatabaseConnection()->sql_fetch_assoc($valueRes))) {
+                    foreach ($values as $value) {
                         $valueList .= '<tr><td>' . htmlspecialchars($value['value']) . '</td></tr>';
                     }
                     $valueList .= '</table>';

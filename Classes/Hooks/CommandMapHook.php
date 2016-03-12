@@ -456,12 +456,12 @@ class CommandMapHook
             /*
              * Update the flexform
              */
-            $resProduct = $database->exec_SELECTquery(
+            $rowProduct = $database->exec_SELECTgetSingleRow(
                 'attributesedit, attributes',
                 'tx_commerce_products',
                 'uid = ' . $productUid
             );
-            if (($rowProduct = $database->sql_fetch_assoc($resProduct))) {
+            if (!empty($rowProduct)) {
                 $product['attributesedit'] = $this->belib->buildLocalisedAttributeValues(
                     $rowProduct['attributesedit'],
                     $langIdent
@@ -546,12 +546,12 @@ class CommandMapHook
                     // and copy them to new article
                     $res = $database->exec_SELECTquery(
                         '*',
-                        'tx_commerce_articles_article_attributes_mm',
+                        'tx_commerce_articles_attributes_mm',
                         'uid_local = ' . (int) $origArticle['uid'] . ' AND uid_valuelist = 0'
                     );
                     while (($origRelation = $database->sql_fetch_assoc($res))) {
                         $origRelation['uid_local'] = $locatedArticleUid;
-                        $database->exec_INSERTquery('tx_commerce_articles_article_attributes_mm', $origRelation);
+                        $database->exec_INSERTquery('tx_commerce_articles_attributes_mm', $origRelation);
                     }
                 }
             }
@@ -943,15 +943,47 @@ class CommandMapHook
      */
     public function processCmdmap_afterFinish($dataHandler)
     {
-        if (TYPO3_MODE == 'BE'
-            && (
-                isset($dataHandler->cmdmap['tx_commerce_categories'])
-                || isset($dataHandler->cmdmap['tx_commerce_products'])
-                || isset($dataHandler->cmdmap['tx_commerce_articles'])
-            )
-        ) {
+        if (TYPO3_MODE == 'BE' && $this->isUpdateSignalAllowed($dataHandler)) {
             BackendUtility::setUpdateSignal('updateCategoryTree');
         }
+    }
+
+    /**
+     * @param DataHandler $dataHandler
+     * @return bool
+     */
+    protected function isUpdateSignalAllowed($dataHandler)
+    {
+        if (!(
+            isset($dataHandler->cmdmap['tx_commerce_categories'])
+            || isset($dataHandler->cmdmap['tx_commerce_products'])
+            || isset($dataHandler->cmdmap['tx_commerce_articles'])
+        )) {
+            return false;
+        }
+
+        $isEnableFieldSet = false;
+        foreach ($dataHandler->cmdmap as $table) {
+            if (!in_array($table, ['tx_commerce_categories', 'tx_commerce_products', 'tx_commerce_articles'])) {
+                continue;
+            }
+
+            $ctrl = $GLOBALS['TCA'][$table]['ctrl'];
+            $enableFields = array_merge([$ctrl['delete']], $ctrl['enablecolumns']);
+
+            foreach ($enableFields as $enableField) {
+                if ($enableField && isset($fieldArray[$enableField])) {
+                    $isEnableFieldSet = true;
+                    break;
+                }
+            }
+
+            if ($isEnableFieldSet) {
+                break;
+            }
+        }
+
+        return $isEnableFieldSet;
     }
 
 

@@ -59,15 +59,14 @@ class FolderUtility
 
         // handle payment types
         // create the category if it not exists
-        $res = $database->exec_SELECTquery(
+        $catUid = $database->exec_SELECTgetSingleRow(
             'uid',
             'tx_commerce_categories',
             'uname = "SYSTEM" AND parent_category = "" AND deleted = 0'
         );
-        $catUid = $database->sql_fetch_assoc($res);
         $catUid = $catUid['uid'];
 
-        if (!$res || (int) $catUid == 0) {
+        if ((int) $catUid == 0) {
             $catArray = $addArray;
             $catArray['title'] = 'SYSTEM';
             $catArray['uname'] = 'SYSTEM';
@@ -168,13 +167,13 @@ class FolderUtility
         $database = self::getDatabaseConnection();
 
         // select all product from that category
-        $res = $database->exec_SELECTquery(
+        $rows = $database->exec_SELECTgetRows(
             'uid_local',
             'tx_commerce_products_categories_mm',
             'uid_foreign = ' . (int) $cUid
         );
         $pList = [];
-        while (($pUid = $database->sql_fetch_assoc($res))) {
+        foreach ($rows as $pUid) {
             $pList[] = (int) $pUid['uid_local'];
         }
         // if no products where found for this category, we can return false

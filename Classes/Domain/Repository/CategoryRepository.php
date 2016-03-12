@@ -181,16 +181,15 @@ class CategoryRepository extends Repository
             return [];
         }
 
-        $database = $this->getDatabaseConnection();
         $this->uid = $uid;
-        $res = $database->exec_SELECTquery(
+        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
             't1.title, t1.uid, t2.flag, t2.uid as sys_language',
             $this->databaseTable . ' AS t1 LEFT JOIN sys_language AS t2 ON t1.sys_language_uid = t2.uid',
             'l18n_parent = ' . $uid . ' AND deleted = 0'
         );
 
         $uids = [];
-        while (($row = $database->sql_fetch_assoc($res))) {
+        foreach ($rows as $row) {
             $uids[] = $row;
         }
 
@@ -349,9 +348,16 @@ class CategoryRepository extends Repository
         $database = $this->getDatabaseConnection();
 
         $return = [];
-        $result = $database->exec_SELECT_queryArray($queryArray);
-        if ($result !== false) {
-            while (($row = $database->sql_fetch_assoc($result))) {
+        $rows = $database->exec_SELECTgetRows(
+            $queryArray['SELECT'],
+            $queryArray['FROM'],
+            $queryArray['WHERE'],
+            $queryArray['GROUPBY'],
+            $queryArray['ORDERBY'],
+            $queryArray['LIMIT']
+        );
+        if (!empty($rows)) {
+            foreach ($rows as $row) {
                 if ($languageUid == 0) {
                     $return[] = (int) $row['uid'];
                 } else {
@@ -368,7 +374,6 @@ class CategoryRepository extends Repository
                     }
                 }
             }
-            $database->sql_free_result($result);
 
             if (is_object($hookObject) && method_exists($hookObject, 'productQueryPostHook')) {
                 $return = $hookObject->productQueryPostHook($return, $this);

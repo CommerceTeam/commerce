@@ -103,18 +103,15 @@ class Repository
             $proofSql = $this->enableFields($this->databaseTable, $frontend->showHiddenRecords);
         }
 
-        $result = $database->exec_SELECTquery(
+        $returnData = $database->exec_SELECTgetSingleRow(
             '*',
             $this->databaseTable,
             'uid = ' . $uid . $proofSql
         );
 
         // Result should contain only one Dataset
-        if ($database->sql_num_rows($result) == 1) {
-            $returnData = $database->sql_fetch_assoc($result);
-            $database->sql_free_result($result);
-
-            // @since 8.10.2008: get workspace version if available
+        if (!empty($returnData)) {
+            // get workspace version if available
             if (!empty($frontend->sys_page)) {
                 $frontend->sys_page->versionOL($this->databaseTable, $returnData);
             }
@@ -178,19 +175,17 @@ class Repository
      */
     public function isUid($uid)
     {
-        $database = $this->getDatabaseConnection();
-
         if (!$uid) {
             return false;
         }
 
-        $result = $database->exec_SELECTquery(
+        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             'uid',
             $this->databaseTable,
             'uid = ' . (int) $uid
         );
 
-        return $database->sql_num_rows($result) == 1;
+        return count($row) == 1;
     }
 
     /**
@@ -204,8 +199,6 @@ class Repository
      */
     public function isAccessible($uid)
     {
-        $database = $this->getDatabaseConnection();
-
         $return = false;
         $uid = (int) $uid;
         if ($uid) {
@@ -217,17 +210,15 @@ class Repository
                 );
             }
 
-            $result = $database->exec_SELECTquery(
+            $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
                 '*',
                 $this->databaseTable,
                 'uid = ' . $uid . $proofSql
             );
 
-            if ($database->sql_num_rows($result) == 1) {
+            if (count($row) == 1) {
                 $return = true;
             }
-
-            $database->sql_free_result($result);
         }
 
         return $return;
@@ -334,10 +325,11 @@ class Repository
      *
      * @param string $tableName Table name
      * @param bool|int $showHiddenRecords Show hidden records
+     * @param string $as Alias to use for the table name
      *
      * @return string
      */
-    public function enableFields($tableName, $showHiddenRecords = -1)
+    public function enableFields($tableName, $showHiddenRecords = -1, $as = '')
     {
         if (TYPO3_MODE === 'FE') {
             $showHiddenRecords = $showHiddenRecords ?
@@ -346,6 +338,10 @@ class Repository
             $result = $this->getFrontendController()->sys_page->enableFields($tableName, $showHiddenRecords);
         } else {
             $result = \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($tableName);
+        }
+
+        if ($as !== '') {
+            $result = str_replace($tableName, $as, $result);
         }
 
         return $result;

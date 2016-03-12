@@ -36,7 +36,7 @@ class TceformsUtility
         if ($data['row']['sys_language_uid'] > 0) {
             $addWhere .= ' AND tx_commerce_products.sys_language_uid = ' . $data['row']['sys_language_uid'] . ' ';
         }
-        $resProducts = $database->exec_SELECTquery(
+        $products = $database->exec_SELECTgetRows(
             'DISTINCT tx_commerce_products.title, tx_commerce_products.uid, tx_commerce_products.sys_language_uid,
                 count(tx_commerce_articles.uid) as anzahl',
             'tx_commerce_products
@@ -46,9 +46,8 @@ class TceformsUtility
             'tx_commerce_products.title, tx_commerce_products.sys_language_uid'
         );
         $data['items'] = [];
-        $items = [];
-        $items[] = ['', -1];
-        while (($product = $database->sql_fetch_assoc($resProducts))) {
+        $items = [['', -1]];
+        foreach ($products as $product) {
             // Select Languages
             $language = '';
 
@@ -66,38 +65,39 @@ class TceformsUtility
             $title = $product['title'] . ($language ? ' [' . $language . '] ' : '');
 
             if ($product['anzahl'] > 0) {
-                $resArticles = $database->exec_SELECTquery(
+                $articles = $database->exec_SELECTgetRows(
                     'eancode, l18n_parent, ordernumber',
                     'tx_commerce_articles',
                     'tx_commerce_articles.uid_product = ' . $product['uid'] .
                     ' AND tx_commerce_articles.deleted = 0'
                 );
 
-                if ($resArticles) {
-                    $rowCount = $database->sql_num_rows($resArticles);
+                if (!empty($articles)) {
+                    $rowCount = count($articles);
                     $count = 0;
                     $eancodes = [];
                     $ordernumbers = [];
 
-                    while (($rowArticles = $database->sql_fetch_assoc($resArticles))
-                        && ($count < $numArticleNumbersShow)
-                    ) {
-                        if ($rowArticles['l18n_parent'] > 0) {
+                    foreach ($articles as $article) {
+                        if (($count == $numArticleNumbersShow)) {
+                            break;
+                        }
+                        if ($article['l18n_parent'] > 0) {
                             $articleTranslationParent = $database->exec_SELECTgetSingleRow(
                                 'eancode, ordernumber',
                                 'tx_commerce_articles',
-                                'tx_commerce_articles.uid = ' . $rowArticles['l18n_parent']
+                                'tx_commerce_articles.uid = ' . $article['l18n_parent']
                             );
 
                             if (!empty($articleTranslationParent)) {
-                                $rowArticles = $articleTranslationParent;
+                                $article = $articleTranslationParent;
                             }
                         }
-                        if ($rowArticles['eancode'] != '') {
-                            $eancodes[] = $rowArticles['eancode'];
+                        if ($article['eancode'] != '') {
+                            $eancodes[] = $article['eancode'];
                         }
-                        if ($rowArticles['ordernumber'] != '') {
-                            $ordernumbers[] = $rowArticles['ordernumber'];
+                        if ($article['ordernumber'] != '') {
+                            $ordernumbers[] = $article['ordernumber'];
                         }
                         ++$count;
                     }
@@ -117,7 +117,6 @@ class TceformsUtility
 
             $items[] = [$title, $product['uid']];
         }
-        $database->sql_free_result($resProducts);
 
         $data['items'] = $items;
     }

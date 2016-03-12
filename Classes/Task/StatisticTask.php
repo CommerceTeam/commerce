@@ -102,23 +102,20 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     {
         $database = $this->getDatabaseConnection();
 
-        $lastAggregationTimeres = $database->sql_query('SELECT max(tstamp) FROM tx_commerce_salesfigures');
+        $lastAggregationTimerow = $database->exec_SELECTgetSingleRow('max(tstamp)', 'tx_commerce_salesfigures', '1');
         $lastAggregationTimeValue = 0;
-        if ($lastAggregationTimeres
-            && ($lastAggregationTimerow = $database->sql_fetch_row($lastAggregationTimeres))
-            && $lastAggregationTimerow[0] != null
-        ) {
+        if ($lastAggregationTimerow && $lastAggregationTimerow[0] != null) {
             $lastAggregationTimeValue = $lastAggregationTimerow[0];
         }
 
-        $endres = $database->sql_query('SELECT max(crdate) FROM tx_commerce_order_articles');
+        $endrow = $database->exec_SELECTgetSingleRow('max(crdate)', 'tx_commerce_order_articles', '1');
         $endtime2 = 0;
-        if ($endres && ($endrow = $database->sql_fetch_row($endres))) {
+        if ($endrow && $endrow[0] != null) {
             $endtime2 = $endrow[0];
         }
         $starttime = $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
 
-        if ($starttime <= $this->statistics->firstSecondOfDay($endtime2) and $endtime2 != null) {
+        if ($starttime <= $this->statistics->firstSecondOfDay($endtime2) && $endtime2 != null) {
             $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
             $this->log(
@@ -137,14 +134,15 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             $this->log('No new Orders');
         }
 
-        $changeres = $database->sql_query(
-            'SELECT distinct crdate FROM tx_commerce_order_articles where tstamp > '.
-            ($lastAggregationTimeValue - ($this->statistics->getDaysBack() * 24 * 60 * 60))
+        $changerows = $database->exec_SELECTgetRows(
+            'distinct crdate',
+            'tx_commerce_order_articles',
+            'tstamp > ' . ($lastAggregationTimeValue - ($this->statistics->getDaysBack() * 24 * 60 * 60))
         );
         $changeDaysArray = [];
         $changes = 0;
         $result = '';
-        while ($changeres && ($changerow = $database->sql_fetch_assoc($changeres))) {
+        foreach ($changerows as $changerow) {
             $starttime = $this->statistics->firstSecondOfDay($changerow['crdate']);
             $endtime = $this->statistics->lastSecondOfDay($changerow['crdate']);
 
@@ -166,16 +164,14 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
         $this->log($changes . ' Days changed');
 
-        $lastAggregationTimeres = $database->sql_query('SELECT max(tstamp) FROM tx_commerce_newclients');
-        if ($lastAggregationTimeres
-            && ($lastAggregationTimerow = $database->sql_fetch_row($lastAggregationTimeres))
-        ) {
+        $lastAggregationTimerow = $database->exec_SELECTgetSingleRow('max(tstamp)', 'tx_commerce_newclients', '1');
+        if ($lastAggregationTimerow && $lastAggregationTimerow[0] != null) {
             $lastAggregationTimeValue = $lastAggregationTimerow[0];
         }
         $lastAggregationTimeValue = $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
 
-        $endres = $database->sql_query('SELECT max(crdate) FROM fe_users');
-        if ($endres && ($endrow = $database->sql_fetch_row($endres))) {
+        $endrow = $database->exec_SELECTgetSingleRow('max(crdate)', 'fe_users', '1');
+        if ($endrow && $endrow[0] != null) {
             $endtime2 = $endrow[0];
         }
 
@@ -208,38 +204,38 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     {
         $database = $this->getDatabaseConnection();
 
-        $endres = $database->sql_query('SELECT max(crdate) FROM tx_commerce_order_articles');
+        $endrow = $database->exec_SELECTgetSingleRow('max(crdate)', 'tx_commerce_order_articles', '1');
         $endtime2 = 0;
-        if ($endres and ($endrow = $database->sql_fetch_row($endres))) {
+        if ($endrow && $endrow[0] != null) {
             $endtime2 = $endrow[0];
         }
 
         $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
-        $startres = $database->sql_query('SELECT min(crdate) FROM tx_commerce_order_articles WHERE crdate > 0');
-        if ($startres and ($startrow = $database->sql_fetch_row($startres)) and $startrow[0] != null) {
+        $startrow = $database->exec_SELECTgetSingleRow('min(crdate)', 'tx_commerce_order_articles', 'crdate > 0');
+        if ($startrow && $startrow[0] != null) {
             $starttime = $startrow[0];
-            $database->sql_query('truncate tx_commerce_salesfigures');
+            $database->sql_query('TRUNCATE tx_commerce_salesfigures');
             if (!$this->statistics->doSalesAggregation($starttime, $endtime)) {
-                $this->log('problems with completeAgregation of Sales');
+                $this->log('Problems with completeAggregation of Sales');
             }
         } else {
             $this->log('no sales data available');
         }
 
-        $endres = $database->sql_query('SELECT max(crdate) FROM fe_users');
-        if ($endres and ($endrow = $database->sql_fetch_row($endres))) {
+        $endrow = $database->exec_SELECTgetSingleRow('max(crdate)', 'fe_users', '1');
+        if ($endrow && $endrow[0] != null) {
             $endtime2 = $endrow[0];
         }
 
         $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
-        $startres = $database->sql_query('SELECT min(crdate) FROM fe_users WHERE crdate > 0 AND deleted = 0');
-        if ($startres and ($startrow = $database->sql_fetch_row($startres)) and $startrow[0] != null) {
+        $startrow = $database->exec_SELECTgetSingleRow('min(crdate)', 'fe_users', 'crdate > 0 AND deleted = 0');
+        if ($startrow && $startrow[0] != null) {
             $starttime = $startrow[0];
-            $database->sql_query('truncate tx_commerce_newclients');
+            $database->sql_query('TRUNCATE tx_commerce_newclients');
             if (!$this->statistics->doClientAggregation($starttime, $endtime)) {
-                $this->log('Probvlems with cle complete agregation Clients');
+                $this->log('Problems with completeAggregation of Clients');
             }
         } else {
             $this->log('no client data available');
