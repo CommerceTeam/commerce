@@ -237,15 +237,15 @@ class UpdateUtility
      */
     protected function isCategoryWithoutParentMm()
     {
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'COUNT(uid) AS count',
+        $count = $this->getDatabaseConnection()->exec_SELECTcountRows(
+            '*',
             'tx_commerce_categories',
             'uid NOT IN (
                 SELECT uid_local FROM tx_commerce_categories_parent_category_mm
             ) AND tx_commerce_categories.deleted = 0 AND sys_language_uid = 0 AND l18n_parent = 0'
         );
 
-        return $row['count'] > 0;
+        return $count > 0;
     }
 
     /**
@@ -255,13 +255,13 @@ class UpdateUtility
      */
     protected function isCategoryWithoutUserrights()
     {
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'COUNT(uid) AS count',
+        $count = $this->getDatabaseConnection()->exec_SELECTcountRows(
+            '*',
             'tx_commerce_categories',
             'perms_user = 0 AND perms_group = 0 AND perms_everybody = 0'
         );
 
-        return $row['count'] > 0;
+        return $count > 0;
     }
 
     /**
@@ -271,11 +271,13 @@ class UpdateUtility
      */
     protected function isBackendUserSet()
     {
-        return !empty($this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid',
+        $count = $this->getDatabaseConnection()->exec_SELECTcountRows(
+            '*',
             'be_users',
             'username = \'_fe_commerce\''
-        ));
+        );
+
+        return $count > 0;
     }
 
     /**
@@ -285,14 +287,14 @@ class UpdateUtility
      */
     protected function isOldRelationTable()
     {
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'count(*) AS count',
+        $count = $this->getDatabaseConnection()->exec_SELECTcountRows(
+            '*',
             'information_schema.tables',
             'table_schema = \'' . $GLOBALS['TYPO3_CONF_VARS']['DB']['database']
             . '\' AND table_name = \'tx_commerce_articles_article_attributes_mm\''
         );
 
-        return $row['count'] > 0;
+        return $count > 0;
     }
 
     /**
@@ -303,35 +305,35 @@ class UpdateUtility
     protected function isOldColumns()
     {
         // Check if old column is present
-        $oldColumn = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'count(*) AS count',
+        $oldColumn = $this->getDatabaseConnection()->exec_SELECTcountRows(
+            '*',
             'information_schema.columns',
             'table_schema = \'' . $GLOBALS['TYPO3_CONF_VARS']['DB']['database']
             . '\' AND table_name = \'pages\' AND column_name = \'tx_graytree_foldername\''
         );
 
-        $newColumn = ['count' => 0];
+        $newColumn = 0;
         // Old column is present so check if new column is present too
-        if ($oldColumn['count'] > 0) {
-            $newColumn = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                'count(*) AS count',
+        if ($oldColumn) {
+            $newColumn = $this->getDatabaseConnection()->exec_SELECTcountRows(
+                '*',
                 'information_schema.columns',
                 'table_schema = \'' . $GLOBALS['TYPO3_CONF_VARS']['DB']['database']
                 . '\' AND table_name = \'pages\' AND column_name = \'tx_commerce_foldername\''
             );
         }
 
-        $differingColumns = ['count' => 0];
+        $differingColumns = 0;
         // Old and new column are present so check if they differ
-        if ($oldColumn['count'] > 0 && $newColumn['count'] > 0) {
-            $differingColumns = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                'count(*) AS count',
+        if ($oldColumn && $newColumn) {
+            $differingColumns = $this->getDatabaseConnection()->exec_SELECTcountRows(
+                '*',
                 'pages',
                 'tx_graytree_foldername != \'\' AND tx_commerce_foldername != tx_graytree_foldername'
             );
         }
 
-        return $differingColumns['count'] > 0;
+        return $differingColumns > 0;
     }
 
 

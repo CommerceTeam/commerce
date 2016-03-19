@@ -15,7 +15,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
 /**
  * Class \CommerceTeam\Commerce\Domain\Repository\OrderRepository
  */
-class OrderRepository extends Repository
+class OrderRepository extends AbstractRepository
 {
     /**
      * Database table concerning the data.

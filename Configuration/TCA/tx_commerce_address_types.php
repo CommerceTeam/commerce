@@ -16,11 +16,8 @@ return [
         'default_sortby' => 'ORDER BY crdate',
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_address_types.gif',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title, name',
-    ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title, name',
+        'showRecordFieldList' => 'title, name, sys_language_uid, l18n_parent',
     ],
     'columns' => [
         'sys_language_uid' => [

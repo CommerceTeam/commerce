@@ -12,11 +12,8 @@ return [
         'default_sortby' => 'ORDER BY crdate',
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_baskets.gif',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'sid, finished_time, article_id,price_id, price_gross, price_net, quantity',
-    ],
     'interface' => [
-        'showRecordFieldList' => 'sid, article_id, price_gross, price_net, quantity',
+        'showRecordFieldList' => 'sid, article_id, price_id, price_gross, price_net, quantity, finished_time, readonly',
     ],
     'columns' => [
         'sid' => [

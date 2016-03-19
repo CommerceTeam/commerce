@@ -13,5 +13,10 @@ return [
     'commerce_category_tree' => [
         'path' => '/commerce/category/tree',
         'target' => \CommerceTeam\Commerce\Controller\CategoryAjaxController::class . '::dispatch'
-    ]
+    ],
+    // Dispatch the category tree actions
+    'user_article_create' => [
+        'path' => '/commerce/article/create',
+        'target' => \CommerceTeam\Commerce\Controller\ArticleAjaxController::class . '::dispatch'
+    ],
 ];

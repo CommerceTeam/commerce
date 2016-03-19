@@ -35,7 +35,8 @@ class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordList
     public function __construct()
     {
         /** @var IconFactory $iconFactory */
-        $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+        $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+        $this->iconFactory = $iconFactory;
     }
 
     /**

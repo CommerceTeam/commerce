@@ -13,6 +13,8 @@ namespace CommerceTeam\Commerce\Form\Element;
  */
 
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
+use TYPO3\CMS\Backend\Form\NodeFactory;
+use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,7 +36,7 @@ class ProducibleArticlesElement extends AbstractFormElement
      *
      * @var array
      */
-    protected $existingArticles = null;
+    protected $existingArticles = [];
 
     /**
      * Attributes.
@@ -58,191 +60,60 @@ class ProducibleArticlesElement extends AbstractFormElement
     protected $returnUrl;
 
     /**
+     * ProducibleArticlesElement constructor.
+     *
+     * @param NodeFactory $nodeFactory
+     * @param array $data
+     */
+    public function __construct(NodeFactory $nodeFactory, array $data)
+    {
+        parent::__construct($nodeFactory, $data);
+
+        $this->belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
+
+        $this->existingArticles = $this->data['databaseRow']['articles'];
+        $this->attributes = $this->belib->getAttributesForProduct((int)$this->data['vanillaUid'], true, true, true);
+
+        $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_db.xlf');
+    }
+
+    /**
      * Render available articles element.
      *
      * @return array As defined in initializeResultArray() of AbstractNode
      */
     public function render()
     {
-        $this->belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
-
-        $this->existingArticles = $this->data['databaseRow']['articles'];
-        $this->attributes = $this->data['databaseRow']['attributes'];
-
-        $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_db.xlf');
+        $resultArray = $this->initializeResultArray();
 
         $rowCount = $this->calculateRowCount();
         if ($rowCount > 1000) {
-            return sprintf(
+            $resultArray['html'] = sprintf(
                 $this->getLanguageService()->getLL('tx_commerce_products.to_many_articles'),
                 $rowCount
             );
+            return $resultArray;
         }
 
         // create the headrow from the product attributes, select attributes without
         // valuelist and normal select attributes
         $colCount = 0;
         $headRow = $this->getHeadRow($colCount, ['&nbsp;']);
+        $emptyRow = $this->getEmptyRow($colCount);
+        $resultRows = $this->getRows($this->getValues(), $counter = 0, $headRow);
 
-        $valueMatrix = (array) $this->getValues();
-        $counter = 0;
-        $resultRows = $this->getLanguageService()->getLL('tx_commerce_products.create_warning');
-
-        $this->getRows($valueMatrix, $resultRows, $counter, $headRow);
-
-        $emptyRow = '<tr><td><input type="checkbox" name="createList[empty]" /></td>';
-        $emptyRow .= '<td colspan="' . ($colCount - 1) . '">' .
-            $this->getLanguageService()->getLL('tx_commerce_products.empty_article') .
-            '</td></tr>';
-
-        // create a checkbox for selecting all articles
-        $selectJs = '<script language="JavaScript">
-            function updateArticleList() {
-                var sourceSB = document.getElementById("selectAllArticles");
-                for (var i = 1; i <= ' . $rowCount . '; i++) {
-                    document.getElementById("createRow_" + i).checked = sourceSB.checked;
-                }
-            }
-        </script>';
-
-        $selectAllRow = '';
-        if (!empty($valueMatrix)) {
-            $onClick = 'onclick="updateArticleList()"';
-            $selectAllRow = '<tr><td><input type="checkbox" id="selectAllArticles" ' . $onClick . '/></td>';
-            $selectAllRow .= '<td colspan="' . ($colCount - 1) . '">'
-                . $this->getLanguageService()->getLL('tx_commerce_products.select_all_articles')
-                . '</td></tr>';
-        }
-
-        $out = '<table>' . $selectJs . $headRow . $emptyRow . $selectAllRow . $resultRows . '</table>';
-
-        $resultArray = $this->initializeResultArray();
-        $resultArray['html'] = $out;
+        $resultArray['html'] = '
+            <div class="table-fit">
+                <table class="table table-striped table-hover">'
+            . $headRow
+            . $emptyRow
+            . $resultRows
+            . '
+                </table>
+            </div>';
+        $resultArray['requireJsModules'][] = 'TYPO3/CMS/Commerce/ProducibleArticles';
 
         return $resultArray;
-    }
-
-    /**
-     * This method builds up a matrix from the ct1 attributes with valuelist.
-     *
-     * @param int $index The index we're currently working on
-     *
-     * @return array
-     */
-    protected function getValues($index = 0)
-    {
-        $result = [];
-
-        if (isset($this->attributes['ct1']) && count($this->attributes['ct1']) > $index) {
-            if (is_array($this->attributes['ct1'])) {
-                foreach ($this->attributes['ct1'][$index]['valueList'] as $aValue) {
-                    $data['aUid'] = (int) $this->attributes['ct1'][$index]['attributeData']['uid'];
-                    $data['vUid'] = (int) $aValue['uid'];
-                    $data['vLabel'] = $aValue['value'];
-
-                    $newI = $index + 1;
-                    $other = $this->getValues($newI);
-                    if ($other) {
-                        $data['other'] = $other;
-                    }
-
-                    $result[] = $data;
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Returns the html table rows for the article matrix.
-     *
-     * @param array $data The data we should build the matrix from
-     * @param string $resultRows The rendered resulting rows
-     * @param int $counter The article counter
-     * @param string $headRow The header row for inserting after a number of articles
-     * @param array $extraRowData Some additional data like checkbox column
-     * @param int $index The level inside the matrix
-     * @param array $row The current row data
-     *
-     * @return void
-     */
-    protected function getRows(
-        array $data,
-        &$resultRows,
-        &$counter,
-        $headRow,
-        array $extraRowData = [],
-        $index = 1,
-        array $row = []
-    ) {
-        if (is_array($data)) {
-            foreach ($data as $dataItem) {
-                $dummyData = $dataItem;
-                unset($dummyData['other']);
-                $row[$index] = $dummyData;
-
-                if (is_array($dataItem['other'])) {
-                    $this->getRows(
-                        $dataItem['other'],
-                        $resultRows,
-                        $counter,
-                        $headRow,
-                        $extraRowData,
-                        ($index + 1),
-                        $row
-                    );
-                } else {
-                    // serialize data for formsaveing
-                    $labelData = [];
-                    $hashData = [];
-
-                    foreach ($row as $rd) {
-                        $hashData[$rd['aUid']] = $rd['vUid'];
-                        $labelData[] = $rd['vLabel'];
-                    }
-                    asort($hashData);
-
-                    // try to fetch an article with this special attribute values
-                    $hashData = serialize($hashData);
-                    $hash = md5($hashData);
-
-                    if ($this->belib->checkArray($hash, $this->existingArticles, 'attribute_hash')) {
-                        continue;
-                    }
-
-                    ++$counter;
-
-                    // select format and insert headrow if we are in the 20th row
-                    if (($counter % 20) == 0) {
-                        $resultRows .= $headRow;
-                    }
-                    $class = ($counter % 2 == 1) ? 'background-color: silver' : 'background: none';
-
-                    // create the row
-                    $resultRows .= '<tr><td style="' . $class . '">
-                        <input type="checkbox" name="createList[' . $counter . ']" id="createRow_' . $counter . '" />
-                        <input type="hidden" name="createData[' . $counter . ']" value="' .
-                        htmlspecialchars($hashData) . '" /></td>';
-
-                    $resultRows .= '<td style="' . $class . '">' .
-                        implode(
-                            '</td><td style="' . $class . '">',
-                            \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($labelData)
-                        ) .
-                        '</td>';
-                    if (!empty($extraRowData)) {
-                        $resultRows .= '<td style="' . $class . '">' .
-                            implode(
-                                '</td><td style="' . $class . '">',
-                                \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($extraRowData)
-                            ) .
-                            '</td>';
-                    }
-                    $resultRows .= '</tr>';
-                }
-            }
-        }
     }
 
     /**
@@ -267,49 +138,192 @@ class ProducibleArticlesElement extends AbstractFormElement
 
     /**
      * Returns the HTML code for the header row.
-     *
-     * @param int $colCount The number of columns we have
-     * @param array $acBefore The additional columns before the attribute columns
-     * @param array $acAfter The additional columns after the attribute columns
-     * @param bool $addTr Add table row
-     *
+
+*
+*@param int $columnCount The number of columns we have
+     * @param array $additionalColumnsBefore The additional columns before the attribute columns
+     * @param array $additionalColumnsAfter The additional columns after the attribute columns
+     * @param bool $addTableRow Add table row
      * @return string The HTML header code
      */
-    protected function getHeadRow(&$colCount, array $acBefore = null, array $acAfter = null, $addTr = true)
-    {
+    protected function getHeadRow(
+        &$columnCount,
+        array $additionalColumnsBefore = [],
+        array $additionalColumnsAfter = [],
+        $addTableRow = true
+    ) {
         $result = '';
 
-        if ($addTr) {
-            $result .= '<tr>';
-        }
-
-        if ($acBefore != null) {
-            $result .= '<th>' . implode(
-                '</th><th>',
-                \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($acBefore)
-            ) . '</th>';
+        if (!empty($additionalColumnsBefore)) {
+            $result .= '<th class="col-icon">' . implode('</th><th>', $additionalColumnsBefore) . '</th>';
         }
 
         if (isset($this->attributes['ct1']) && is_array($this->attributes['ct1'])) {
             foreach ($this->attributes['ct1'] as $attribute) {
-                $result .= '<th>' . htmlspecialchars(strip_tags($attribute['attributeData']['title'])) . '</th>';
-                ++$colCount;
+                $result .= '<th  style="width: {width}%">'
+                    . htmlspecialchars(strip_tags($attribute['attributeData']['title'])) . '</th>';
+                ++$columnCount;
             }
         }
 
-        if ($acAfter != null) {
-            $result .= '<th>' . implode(
-                '</th><th>',
-                \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($acAfter)
-            ) . '</th>';
+        if (!empty($additionalColumnsAfter)) {
+            $result .= '<th>' . implode('</th><th>', $additionalColumnsAfter) . '</th>';
         }
 
-        if ($addTr) {
-            $result .= '</tr>';
+        if ($addTableRow) {
+            $result = '<tr>' . $result . '</tr>';
         }
 
-        $colCount += count($acBefore) + count($acAfter);
+        $columnCount += count($additionalColumnsBefore) + count($additionalColumnsAfter);
+
+        return str_replace('{width}', (100 / ($columnCount - 1)), $result);
+    }
+
+    /**
+     * @param int $colCount
+     * @return string
+     */
+    protected function getEmptyRow($colCount)
+    {
+        $emptyRow = '<tr>
+                <td class="col-icon">' . $this->getCreateAction([]) . '</td>
+                <td colspan="' . ($colCount - 1) . '">' .
+                $this->getLanguageService()->getLL('tx_commerce_products.empty_article') .
+                '</td>
+            </tr>';
+
+        return $emptyRow;
+    }
+
+    /**
+     * This method builds up a matrix from the ct1 attributes with valuelist.
+     *
+     * Example:
+     *  Attribute 1 Value 1
+     *  Attribute 1 Value 1 - Attribute 2 Value 1
+     *  Attribute 1 Value 1 - Attribute 2 Value 2
+     *  Attribute 1 Value 2
+     *  Attribute 1 Value 2 - Attribute 2 Value 1
+     *  Attribute 1 Value 2 - Attribute 2 Value 2
+     *
+     * @param int $index The index we're currently working on
+     *
+     * @return array
+     */
+    protected function getValues($index = 0)
+    {
+        $result = [];
+
+        if (isset($this->attributes['ct1'])
+            && is_array($this->attributes['ct1'])
+            && count($this->attributes['ct1']) > $index
+        ) {
+            foreach ($this->attributes['ct1'][$index]['valueList'] as $aValue) {
+                $data['attributeUid'] = (int) $this->attributes['ct1'][$index]['attributeData']['uid'];
+                $data['attributeValueUid'] = (int) $aValue['uid'];
+                $data['attributeValueLabel'] = $aValue['value'];
+
+                $newI = $index + 1;
+                $other = $this->getValues($newI);
+                if ($other) {
+                    $data['other'] = $other;
+                }
+
+                $result[] = $data;
+            }
+        }
 
         return $result;
+    }
+
+    /**
+     * Returns the html table rows for the article matrix.
+     *
+     * @param array $data The data we should build the matrix from
+     * @param int $counter The article counter
+     * @param string $headRow The header row for inserting after a number of articles
+     * @param array $extraRowData Some additional data like checkbox column
+     * @param int $index The level inside the matrix
+     * @param array $row The current row data
+     *
+     * @return string
+     */
+    protected function getRows(
+        array $data,
+        &$counter,
+        $headRow,
+        array $extraRowData = [],
+        $index = 1,
+        array $row = []
+    ) {
+        $resultRows = '';
+
+        foreach ($data as $dataItem) {
+            $row[$index] = $dataItem;
+            unset($row[$index]['other']);
+
+            if (is_array($dataItem['other'])) {
+                $resultRows .= $this->getRows(
+                    $dataItem['other'],
+                    $counter,
+                    $headRow,
+                    $extraRowData,
+                    ($index + 1),
+                    $row
+                );
+            } else {
+                // serialize data for form saveing
+                $labelData = [];
+                $hashData = [];
+
+                foreach ($row as $rd) {
+                    $hashData[$rd['attributeUid']] = $rd['attributeValueUid'];
+                    $labelData[] = $rd['attributeValueLabel'];
+                }
+                asort($hashData);
+
+                // try to fetch an article with this special attribute values
+                $hash = md5(serialize($hashData));
+
+                if ($this->belib->checkArray($hash, $this->existingArticles, 'attribute_hash')) {
+                    // @todo fix existing attribute combination should not be displayed
+                    continue;
+                }
+
+                ++$counter;
+
+                // select format and insert headrow if we are in the 20th row
+                if (($counter % 20) == 0) {
+                    $resultRows .= $headRow;
+                }
+
+                // create the row
+                $resultRows .= '<tr>
+                    <td class="col-icon">' . $this->getCreateAction($hashData) . '</td>
+                    <td>' . GeneralUtility::removeXSS(implode('</td><td>', $labelData)) . '</td>';
+                if (!empty($extraRowData)) {
+                    $resultRows .= '<td>' . GeneralUtility::removeXSS(implode('</td><td>', $extraRowData)) . '</td>';
+                }
+                $resultRows .= '</tr>';
+            }
+        }
+
+        return $resultRows;
+    }
+
+    /**
+     * @param array $hashData
+     * @return string
+     */
+    protected function getCreateAction(array $hashData)
+    {
+        $icon = $this->iconFactory->getIcon('actions-add', Icon::SIZE_SMALL)->render();
+        $createAction = '<a class="btn btn-default t3js-article-create" href="#"
+            data-attribute-value=\'' . json_encode($hashData) . '\'
+            data-product="' . $this->data['vanillaUid'] . '"
+            title="' . htmlspecialchars($this->getLanguageService()->getLL('newRecordGeneral')) . '">'
+            . $icon . '</a>';
+
+        return $createAction;
     }
 }

@@ -44,7 +44,7 @@ class FolderRepository
         $pid = 0,
         $module = 'commerce',
         $parentTitle = false,
-        $executeUpdateUtility = true
+        $executeUpdateUtility = false
     ) {
         if ($parentTitle) {
             GeneralUtility::deprecationLog(

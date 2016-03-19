@@ -412,10 +412,10 @@ class CommandMapHook
         // avaliable for localized version
         if ($localizedProductAttributes == false && !empty($productAttributes)) {
             // if true
-            $langIsoCode = BackendUtility::getRecord('sys_language', (int) $value, 'static_lang_isocode');
+            $langIsoCode = BackendUtility::getRecord('sys_language', (int) $value, 'language_isocode');
             $langIdent = BackendUtility::getRecord(
                 'static_languages',
-                (int) $langIsoCode['static_lang_isocode'],
+                (int) $langIsoCode['language_isocode'],
                 'lg_typo3'
             );
             $langIdent = strtoupper($langIdent['lg_typo3']);
@@ -437,12 +437,10 @@ class CommandMapHook
                             break;
 
                         case self::ATTRIBUTE_LOCALIZATION_TITLE_PREPENDED:
-                            /*
-                             * Walk through the array and prepend text
-                             */
+                            // Walk through the array and prepend text
                             $prepend = '[Translate to ' . $langIdent . ':] ';
-                            $localizedProductAttribute['default_value'] = $prepend .
-                                $localizedProductAttribute['default_value'];
+                            $localizedProductAttribute['default_value'] = $prepend
+                                . $localizedProductAttribute['default_value'];
                             break;
 
                         default:
@@ -499,10 +497,10 @@ class CommandMapHook
         if (!empty($articles) && empty($localizedProductArticles)) {
             // determine language identifier
             // this is needed for updating the XML of the new created articles
-            $langIsoCode = BackendUtility::getRecord('sys_language', (int) $value, 'static_lang_isocode');
+            $langIsoCode = BackendUtility::getRecord('sys_language', (int) $value, 'language_isocode');
             $langIdent = BackendUtility::getRecord(
                 'static_languages',
-                (int) $langIsoCode['static_lang_isocode'],
+                (int) $langIsoCode['language_isocode'],
                 'lg_typo3'
             );
             $langIdent = strtoupper($langIdent['lg_typo3']);
@@ -519,9 +517,8 @@ class CommandMapHook
                     unset($locArticle['uid']);
 
                     // set new article values
-                    $now = time();
-                    $locArticle['tstamp'] = $now;
-                    $locArticle['crdate'] = $now;
+                    $locArticle['tstamp'] = $GLOBALS['EXEC_TIME'];
+                    $locArticle['crdate'] = $GLOBALS['EXEC_TIME'];
                     $locArticle['sys_language_uid'] = $value;
                     $locArticle['l18n_parent'] = $origArticle['uid'];
                     $locArticle['uid_product'] = $localizedProductUid;

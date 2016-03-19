@@ -102,13 +102,11 @@ class DatabaseRowArticleData implements FormDataProviderInterface
 
         $root = [];
         foreach ($attributes['grouped'] as $correlationType => $attributes) {
-            if (!empty($attributes)) {
-                if (!isset($root[$correlationType])) {
-                    $root[$correlationType] = ['vDEF' => []];
-                }
-                foreach ($attributes as $attribute) {
-                    $root[$correlationType]['vDEF'][] = $attribute['uid_foreign'];
-                }
+            if (!isset($root[$correlationType])) {
+                $root[$correlationType] = ['vDEF' => []];
+            }
+            foreach ($attributes as $attribute) {
+                $root[$correlationType]['vDEF'][] = $attribute['uid_foreign'];
             }
         }
         if (!empty($root)) {

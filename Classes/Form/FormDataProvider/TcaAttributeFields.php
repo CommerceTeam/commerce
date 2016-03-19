@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\Form\FormDataProvider;
 
 use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use CommerceTeam\Commerce\ViewHelpers\AttributeViewHelper;
 use TYPO3\CMS\Backend\Form\FormDataProvider\AbstractItemProvider;
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
@@ -100,12 +101,11 @@ class TcaAttributeFields extends AbstractItemProvider implements FormDataProvide
             'uid'
         );
 
-        $attributeCount = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'count(*) AS count',
+        $attributeCount = $this->getDatabaseConnection()->exec_SELECTcountRows(
+            '*',
             'tx_commerce_attributes',
             '1'
         );
-        $attributeCount = $attributeCount['count'];
 
         $root = &$result['processedTca']['columns']['attributes']['config']['ds']['sheets']['sDEF']['ROOT']['el'];
         if ($attributeCount) {
@@ -207,20 +207,19 @@ class TcaAttributeFields extends AbstractItemProvider implements FormDataProvide
     /**
      * @param array $attribute Attribute to get coonfig
      * @param int $attributePid Page id of the attribute folder
-     * @param bool $displayOnle Flag if the attribute value should be displayed only defaults to false
-     *
+     * @param bool $displayOnly Flag if the attribute value should be displayed only defaults to false
+
      * @return mixed
      */
-    protected function getAttributeEditFieldConfig(array $attribute, $attributePid, $displayOnle = false)
+    protected function getAttributeEditFieldConfig(array $attribute, $attributePid, $displayOnly = false)
     {
         // set label
         $config['label'] = $attribute['title'];
 
-        if ($displayOnle) {
+        if ($displayOnly) {
             $config['config'] = [
                 'type' => 'user',
-                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\AttributeViewHelper::class
-                    . '->displayAttributeValue',
+                'userFunc' => AttributeViewHelper::class . '->displayAttributeValue',
                 'aUid' => $attribute['uid'],
             ];
 
@@ -230,9 +229,11 @@ class TcaAttributeFields extends AbstractItemProvider implements FormDataProvide
         if ($attribute['has_valuelist'] == 1) {
             $config['config'] = [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_commerce_attribute_values',
-                'foreign_table_where' => ' AND attributes_uid = ' . $attribute['uid'] . ' AND pid = '
-                    . $attributePid . ' ORDER BY value',
+                'foreign_table_where' => ' AND tx_commerce_attribute_values.attributes_uid = ' . $attribute['uid']
+                    . ' AND tx_commerce_attribute_values.pid = ' . $attributePid
+                    . ' AND tx_commerce_attribute_values.showvalue = 1 ORDER BY tx_commerce_attribute_values.value',
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
@@ -266,7 +267,9 @@ class TcaAttributeFields extends AbstractItemProvider implements FormDataProvide
      */
     protected function setConfigEmptyAttributes($result, $fieldName)
     {
-        $result['processedTca']['columns'][$fieldName] = ['config' => ['type' => 'none']];
+        // only assign these two values to keep displayCond if set previously
+        $result['processedTca']['columns'][$fieldName]['label'] = '';
+        $result['processedTca']['columns'][$fieldName]['config'] = ['type' => 'none'];
         $result['databaseRow'][$fieldName] = $this->getLanguageService()->sL(
             'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.no_attributes_available'
         );

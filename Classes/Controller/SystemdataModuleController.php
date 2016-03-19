@@ -16,6 +16,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
+use TYPO3\CMS\Backend\Template\Components\Buttons\LinkButton;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
@@ -55,9 +56,9 @@ abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\Base
     public $moduleTemplate;
 
     /**
-     * @var SystemdataModuleAttributesController
+     * @var string
      */
-    public $extObj;
+    protected $table = '';
 
     /**
      * @var bool
@@ -295,11 +296,11 @@ abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\Base
 
         // New
         if ($this->access) {
-            $params = '&edit[' . $this->extObj->table . '][' . $this->id . ']=new';
+            $params = '&edit[' . $this->table . '][' . $this->id . ']=new';
             $onClick = htmlspecialchars(BackendUtility::editOnClick($params, '', -1));
-            $newRecordButton = $buttonBar->makeLinkButton()
-                ->setHref('#')
-                ->setOnClick($onClick)
+            /** @var LinkButton $newRecordButton */
+            $newRecordButton = $buttonBar->makeLinkButton();
+            $newRecordButton->setHref('#')->setOnClick($onClick)
                 ->setTitle(
                     $this->getLanguageService()->sL(
                         'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newRecordGeneral',

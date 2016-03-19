@@ -43,7 +43,8 @@ call_user_func(function ($packageKey) {
         $GLOBALS['TCA']['pages']['ctrl']['typeicon_classes']['contains-commerce'] =
             'apps-pagetree-folder-contains-commerce';
 
-        // add commerce main module after file module
+        // positioning of main module is not considered in the core
+        // that's why we need to use the following loop to add the main module
         if (!isset($GLOBALS['TBE_MODULES']['commerce'])) {
             $tbeModules = [];
             foreach ($GLOBALS['TBE_MODULES'] as $key => $val) {
@@ -59,10 +60,11 @@ call_user_func(function ($packageKey) {
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
             $packageKey,
             '',
-            'after:file',
+            '',
             '',
             [
                 'script' => '_DISPATCH',
+                'access' => 'user,group',
                 'name' => $packageKey,
                 'workspaces' => 'online',
                 'labels' => [

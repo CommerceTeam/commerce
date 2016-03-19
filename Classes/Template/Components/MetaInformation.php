@@ -33,6 +33,7 @@ class MetaInformation extends \TYPO3\CMS\Backend\Template\Components\MetaInforma
             return parent::getRecordInformation();
         }
 
+        /** @var IconFactory $iconFactory */
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $additionalInfo = (!empty($pageRecord['_additional_info']) ? $pageRecord['_additional_info'] : '');
         // Add icon with clickMenu, etc:

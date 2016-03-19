@@ -228,11 +228,14 @@ class ArticlePrice extends AbstractEntity
 
         $feGroup = '';
         if ($params['row']['fe_group']) {
+            $feGroups = is_array($params['row']['fe_group']) ?
+                implode(',', $params['row']['fe_group']) :
+                $params['row']['fe_group'];
             $feGroup = $languageService->sL(BackendUtility::getItemLabel('tx_commerce_article_prices', 'fe_group'), 1) .
                 BackendUtility::getProcessedValueExtra(
                     'tx_commerce_article_prices',
                     'fe_group',
-                    $params['row']['fe_group'],
+                    $feGroups,
                     100,
                     $params['row']['uid']
                 );

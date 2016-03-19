@@ -12,10 +12,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository;
-use CommerceTeam\Commerce\Domain\Repository\OrderRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
-use CommerceTeam\Commerce\ViewHelpers\MoneyViewHelper;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -112,13 +109,6 @@ class OrderEditFunc
         $orderArticleTable = 'tx_commerce_order_articles';
         $orderTable = 'tx_commerce_orders';
 
-        /**
-         * Document template.
-         *
-         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
-         */
-        $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
-
         /*
          * GET Storage PID and order_id from Data
          */
@@ -149,7 +139,7 @@ class OrderEditFunc
         /**
          * Order article repository.
          *
-         * @var OrderArticleRepository $orderArticleRepository
+         * @var \CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository $orderArticleRepository
          */
         $orderArticleRepository = GeneralUtility::makeInstance(
             \CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository::class
@@ -318,7 +308,7 @@ class OrderEditFunc
             /**
              * Order repository.
              *
-             * @var OrderRepository $orderRepository
+             * @var \CommerceTeam\Commerce\Domain\Repository\OrderRepository $orderRepository
              */
             $orderRepository = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Repository\OrderRepository::class
@@ -487,9 +477,7 @@ class OrderEditFunc
              */
             $params = '&edit[' . $table . '][' . $uid . ']=edit';
 
-            $onclickAction = 'onclick="' .
-                htmlspecialchars(BackendUtility::editOnClick($params)) .
-                '"';
+            $onclickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params)) . '"';
             $headerWrap = ['<b><a href="#" ' . $onclickAction . '>', '</a></b>'];
             $content .= $doc->getHeader($table, $data, 'Local Lang definition is missing', 1, $headerWrap);
 

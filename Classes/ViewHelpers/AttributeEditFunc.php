@@ -12,7 +12,6 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -52,7 +51,7 @@ class AttributeEditFunc
         /**
          * Attribute value repository.
          *
-         * @var AttributeValueRepository $attributeValueRepository
+         * @var \CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository $attributeValueRepository
          */
         $attributeValueRepository = GeneralUtility::makeInstance(
             \CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository::class

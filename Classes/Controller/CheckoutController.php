@@ -1138,9 +1138,8 @@ class CheckoutController extends BaseController
          */
         if (isset($this->conf['lockOrderIdInGenerateOrderId']) && $this->conf['lockOrderIdInGenerateOrderId'] == 1) {
             $orderData = [];
-            $now = time();
-            $orderData['crdate'] = $now;
-            $orderData['tstamp'] = $now;
+            $orderData['crdate'] = $GLOBALS['EXEC_TIME'];
+            $orderData['tstamp'] = $GLOBALS['EXEC_TIME'];
             $database->exec_INSERTquery('tx_commerce_orders', $orderData);
             $orderUid = $database->sql_insert_id();
             // make orderUid avaible in hookObjects
@@ -1884,7 +1883,7 @@ class CheckoutController extends BaseController
         } else {
             // Create
             $dataArray = [
-                'tstamp' => time(),
+                'tstamp' => $GLOBALS['EXEC_TIME'],
                 // First address should be main address by default
                 'tx_commerce_is_main_address' => 1,
             ];

@@ -104,7 +104,6 @@ class ClickmenuUtility extends ClickMenu
 
         // Configure the parent clickmenu
         $this->clickMenu = $clickMenu;
-        $this->ajax = $this->clickMenu->ajax;
         $this->listFrame = $this->clickMenu->listFrame;
         $this->alwaysContentFrame = $this->clickMenu->alwaysContentFrame;
         $this->clipObj = $this->clickMenu->clipObj;

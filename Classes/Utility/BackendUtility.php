@@ -879,7 +879,7 @@ class BackendUtility
                 }
                 if ($withReference && ($counter > 1)) {
                     $dataArray['is_reference'] = 1;
-                    $where .= ' AND is_reference=1';
+                    $where .= ' AND is_reference = 1';
                 }
 
                 $dataArray['sorting'] = $counter;
@@ -904,8 +904,11 @@ class BackendUtility
             }
         }
 
-        if ($delete && !empty($delWhere)) {
-            $where = ' AND NOT ((' . implode(') OR (', $delWhere) . '))';
+        if ($delete) {
+            $where = '';
+            if (!empty($delWhere)) {
+                $where = ' AND NOT ((' . implode(') OR (', $delWhere) . '))';
+            }
             $database->exec_DELETEquery($relationTable, 'uid_local = ' . $uidLocal . $where);
         }
     }
@@ -2975,11 +2978,10 @@ class BackendUtility
      * on the perms.
      *
      * @param array $categoryUids Uids of the categories
-     * @param array $perms String for permissions to check
-     *
+     * @param array $permissions String for permissions to check
      * @return bool
      */
-    public static function checkPermissionsOnCategoryContent(array $categoryUids, array $perms)
+    public static function checkPermissionsOnCategoryContent(array $categoryUids, array $permissions)
     {
         $backendUser = self::getBackendUserAuthentication();
 
@@ -3003,8 +3005,8 @@ class BackendUtility
              */
             $category = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Category::class, $categoryUid);
             // check perms
-            foreach ($perms as $perm) {
-                if (!$category->isPermissionSet($perm)) {
+            foreach ($permissions as $permission) {
+                if (!$category->isPermissionSet($permission)) {
                     // return false if perms are not granted
                     return false;
                 }
@@ -3317,16 +3319,15 @@ class BackendUtility
                                 && $tableConfig['ctrl']['prependAtCopy']
                                 && !$tE['disablePrependAtCopy']
                             ) {
-                                // @todo this can't work resolvePid and clearPrefixFromValue are not implement
-                                // wasn't present bevor 0.11.x and was broken from the beginning
                                 $value = $tce->getCopyHeader(
                                     $table,
-                                    $this->resolvePid($table, $destPid),
+                                    $tce->resolvePid($table, $destPid),
                                     $field,
-                                    $this->clearPrefixFromValue($table, $value),
+                                    $tce->clearPrefixFromValue($table, $value),
                                     0
                                 );
                             }
+
                             // Processing based on the TCA config field
                             // type (files, references, flexforms...)
                             $value = $tce->copyRecord_procBasedOnFieldType(

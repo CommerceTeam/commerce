@@ -59,6 +59,7 @@ class TcaSelectItems extends AbstractItemProvider implements FormDataProviderInt
         $foreignTable = $fieldConfig['foreign_table'];
         $mmTable = isset($fieldConfig['MM']) ? $fieldConfig['MM'] : '';
 
+        $rows = [];
         if ($mmTable !== '') {
             $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
                 $foreignTable . '.uid, CONCAT(' . $foreignTable . '.uid, \'|\', ' . $foreignTable . '.title) AS value',
@@ -70,7 +71,7 @@ class TcaSelectItems extends AbstractItemProvider implements FormDataProviderInt
                 '',
                 'uid'
             );
-        } else {
+        } elseif ($result['databaseRow']['tx_commerce_mountpoints']) {
             // this is the case for be_user and be_group mounts where the selected categories are stored as uid list
             $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
                 'uid, CONCAT(uid, \'|\', title) AS value',

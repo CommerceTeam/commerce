@@ -12,12 +12,10 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-
 /**
  * Class \CommerceTeam\Commerce\Domain\Repository\PageRepository
  */
-class PageRepository extends Repository
+class PageRepository extends AbstractRepository
 {
     /**
      * Database table concerning the data.
@@ -25,24 +23,6 @@ class PageRepository extends Repository
      * @var string
      */
     protected $databaseTable = 'pages';
-
-    /**
-     * Find by uid.
-     *
-     * @param int $uid Page id
-     *
-     * @return array
-     */
-    public function findByUid($uid)
-    {
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'pid ',
-            $this->databaseTable,
-            'uid = ' . (int) $uid . BackendUtility::deleteClause($this->databaseTable),
-            '',
-            'sorting'
-        );
-    }
 
     /**
      * Find folder by uid that is editable.

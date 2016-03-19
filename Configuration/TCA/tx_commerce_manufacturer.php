@@ -18,12 +18,8 @@ return [
         'dividers2tabs' => '1',
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_manufacturer.gif',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'hidden, title, street, number, zip, city, country, phone, fax, email, internet,
-            contactperson, logo',
-    ],
     'interface' => [
-        'showRecordFieldList' => 'hidden, title, street, number, zip, city, country, phone, fax, email, internet,
+        'showRecordFieldList' => 'title, street, number, zip, city, country, phone, fax, email, internet,
             contactperson, logo',
     ],
     'columns' => [

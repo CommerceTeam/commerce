@@ -12,12 +12,10 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-
 /**
  * Class \CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository
  */
-class OrderArticleRepository extends Repository
+class OrderArticleRepository extends AbstractRepository
 {
     /**
      * Database table concerning the data.
@@ -39,7 +37,7 @@ class OrderArticleRepository extends Repository
         return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             $this->databaseTable,
-            'pid = ' . $pageId . BackendUtility::deleteClause($this->databaseTable) .
+            'pid = ' . $pageId . $this->enableFields() .
             ' AND order_id = ' . $this->getDatabaseConnection()->fullQuoteStr($orderId, $this->databaseTable)
         );
     }

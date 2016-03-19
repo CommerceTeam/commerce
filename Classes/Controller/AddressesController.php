@@ -1152,7 +1152,8 @@ class AddressesController extends BaseController
             $newData['tx_commerce_is_main_address'] = 0;
         }
 
-        $newData['tstamp'] = time();
+        $newData['crdata'] = $GLOBALS['EXEC_TIME'];
+        $newData['tstamp'] = $GLOBALS['EXEC_TIME'];
 
         foreach ($this->fieldList as $name) {
             $newData[$name] = \TYPO3\CMS\Core\Utility\GeneralUtility::removeXSS(strip_tags($this->piVars[$name]));

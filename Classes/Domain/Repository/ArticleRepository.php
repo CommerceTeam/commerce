@@ -19,7 +19,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\ArticleRepository
  */
-class ArticleRepository extends Repository
+class ArticleRepository extends AbstractRepository
 {
     /**
      * Database table.
@@ -61,6 +61,25 @@ class ArticleRepository extends Repository
     }
 
     /**
+     * Get the highest sorting of all articles belonging to a product
+     *
+     * @param int $productUid
+     * @return int
+     */
+    public function getHighestSortingByProductUid($productUid)
+    {
+        $sorting = (array)$this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'uid, sorting',
+            $this->databaseTable,
+            'uid_product = ' . (int) $productUid . $this->enableFields(),
+            '',
+            'sorting DESC'
+        );
+
+        return isset($sorting['sorting']) ? $sorting['sorting'] : 0;
+    }
+
+    /**
      * Gets all prices form database related to this product.
      *
      * @param int $uid Article uid
@@ -88,16 +107,13 @@ class ArticleRepository extends Repository
 
         if ($uid > 0) {
             $priceUidList = [];
-            $proofSql = $this->enableFields(
-                'tx_commerce_article_prices',
-                $this->getFrontendController()->showHiddenRecords
-            );
 
             $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
                 'uid,fe_group',
                 'tx_commerce_article_prices',
                 'uid_article = ' . $uid . ' AND price_scale_amount_start <= ' . $count
-                . ' AND price_scale_amount_end >= ' . $count . $proofSql . $additionalWhere,
+                . ' AND price_scale_amount_end >= ' . $count . $additionalWhere
+                . $this->enableFields('tx_commerce_article_prices'),
                 '',
                 $orderField
             );
@@ -139,18 +155,14 @@ class ArticleRepository extends Repository
     public function getPriceScales($uid, $count = 1)
     {
         $uid = (int) $uid;
-        $count = (int) $count;
         if ($uid > 0) {
             $priceUidList = [];
-            $proofSql = $this->enableFields(
-                'tx_commerce_article_prices',
-                $this->getFrontendController()->showHiddenRecords
-            );
 
             $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
                 'uid,price_scale_amount_start, price_scale_amount_end',
                 'tx_commerce_article_prices',
-                'uid_article = ' . $uid . ' AND price_scale_amount_start >= ' . $count . $proofSql
+                'uid_article = ' . $uid . ' AND price_scale_amount_start >= ' . (int) $count
+                . $this->enableFields('tx_commerce_article_prices')
             );
 
             if (!empty($rows)) {
@@ -173,15 +185,41 @@ class ArticleRepository extends Repository
     }
 
     /**
-     * Gets all attributes from this product.
+     * Gets all attributes from this article.
      *
-     * @param int $uid Product uid
+     * @param int $uid Attribute uid
      *
-     * @return array of attribute UID
+     * @return array of attributes
      */
     public function getAttributes($uid)
     {
-        return parent::getAttributes($uid, '');
+        $attributes = $this->getDatabaseConnection()->exec_SELECTgetRows(
+            'tx_commerce_attributes.*',
+            $this->databaseTable
+            . ' INNER JOIN ' . $this->databaseAttributeRelationTable . ' ON ' . $this->databaseTable . '.uid = '
+            . $this->databaseAttributeRelationTable . '.uid_local'
+            . ' INNER JOIN tx_commerce_attributes ON ' . $this->databaseAttributeRelationTable
+            . '.uid_foreign = tx_commerce_attributes.uid',
+            $this->databaseTable . '.uid = ' . (int) $uid,
+            '',
+            $this->databaseAttributeRelationTable . '.sorting'
+        );
+
+        return $attributes;
+    }
+
+    /**
+     * @param int $uid
+     * @return array
+     */
+    public function getAttributeRelationsByArticleUid($uid)
+    {
+        $attributeRelations = (array)$this->getDatabaseConnection()->exec_SELECTgetRows(
+            '*',
+            $this->databaseAttributeRelationTable,
+            'uid_local = ' . (int) $uid
+        );
+        return $attributeRelations;
     }
 
     /**
@@ -201,17 +239,12 @@ class ArticleRepository extends Repository
 
         if ($uid > 0) {
             // First select attribute, to detecxt if is valuelist
-            $proofSql = $this->enableFields(
-                'tx_commerce_attributes',
-                $this->getFrontendController()->showHiddenRecords
-            );
-
             $database = $this->getDatabaseConnection();
 
             $returnData = $database->exec_SELECTgetSingleRow(
                 'DISTINCT uid, has_valuelist',
                 'tx_commerce_attributes',
-                'uid = ' . (int) $attributeUid . $proofSql
+                'uid = ' . (int) $attributeUid . $this->enableFields('tx_commerce_attributes')
             );
             if (!empty($returnData)) {
                 if ($returnData['has_valuelist'] == 1) {
@@ -255,6 +288,41 @@ class ArticleRepository extends Repository
         }
 
         return '';
+    }
+
+    /**
+     * No return value as the relation table has no primary key to use as identifier of the new record
+     *
+     * @param int $articleUid
+     * @param int $attributeUid
+     * @param int $productUid
+     * @param int $sorting
+     * @param int $valueList
+     * @param string $characterValue
+     * @param float $defaultValue
+     * @return void
+     */
+    public function addAttributeRelation(
+        $articleUid,
+        $attributeUid,
+        $productUid = 0,
+        $sorting = 0,
+        $valueList = 0,
+        $characterValue = '',
+        $defaultValue = 0.00
+    ) {
+        $data['uid_local'] = $articleUid;
+        $data['uid_foreign'] = $attributeUid;
+        $data['uid_product'] = $productUid;
+        $data['sorting'] = $sorting;
+        $data['uid_valuelist'] = $valueList;
+        $data['value_char'] = $characterValue;
+        $data['default_value'] = $defaultValue;
+
+        $this->getDatabaseConnection()->exec_INSERTquery(
+            $this->databaseAttributeRelationTable,
+            $data
+        );
     }
 
     /**

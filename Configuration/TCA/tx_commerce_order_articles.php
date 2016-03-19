@@ -12,13 +12,9 @@ return [
         'default_sortby' => 'ORDER BY crdate',
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_order_articles.gif',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'article_type_uid, article_uid, article_number,
-            title, subtitle, price_net, price_gross, tax, amount, order_id',
-    ],
     'interface' => [
-        'showRecordFieldList' => 'amount, title, article_type_uid, article_uid,
-            article_number, subtitle, price_net, price_gross, tax, order_uid',
+        'showRecordFieldList' => 'order_id, article_type_uid, article_uid, article_number, title, subtitle, amount,
+            price_net, price_gross, tax',
     ],
     'columns' => [
         'tstamp' => [

@@ -12,7 +12,6 @@ namespace CommerceTeam\Commerce\Hooks;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -80,7 +79,7 @@ class ArticleHook
         /**
          * Article repository.
          *
-         * @var ArticleRepository
+         * @var \CommerceTeam\Commerce\Domain\Repository\ArticleRepository
          */
         $articleRepository = GeneralUtility::makeInstance(
             \CommerceTeam\Commerce\Domain\Repository\ArticleRepository::class

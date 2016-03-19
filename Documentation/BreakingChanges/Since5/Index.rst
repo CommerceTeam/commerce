@@ -97,22 +97,37 @@ Product categories changed from type passthrough to select
 Categories parent_category changed from type passthrough to select
 
 
+Changed class
+-------------
+
+\CommerceTeam\Commerce\Domain\Repository\AbstractRepository is now abstract to make it impossible to instantiate this base
+repository class
+
+
 Changed methods
 ---------------
 
-BackendUtility::getAttributesForCategoryList had 3 parameters from which three were not used in commerce context. The
-not needed parameter are removed.
-BackendUtility::getProductOfArticle now only accepts the article uid as parameter and returns always the
-complete product with all fields
+- BackendUtility::getAttributesForCategoryList had 3 parameters from which three were not used in commerce context. The not needed parameter are removed.
 
-The following two changes enables making better use of default values
-\CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders changed the order of the parameters
-\CommerceTeam\Commerce\Domain\Repository\FolderRepository::createFolder changed the order of the parameters
+- BackendUtility::getProductOfArticle now only accepts the article uid as parameter and returns always thecomplete product with all fields
+
+- These two changes enables making better use of default values
+  \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders changed the order of the parameters
+  \CommerceTeam\Commerce\Domain\Repository\FolderRepository::createFolder changed the order of the parameters
+
+- Repository::enableFields made protected to only allow access from inside of an repository that extends this base repository
+  The showHiddenRecords was changed from -1 to 0 as -1 matches a boolean true which is not what was intended
+  In addition the parameter $showHiddenRecords and $ass where swapped to make better use of default values
+
+- Repository::getAttributes was moved to ArticleRepository and ProductRepository as they are only used in this context.
+  In ProductRepository it returns an array of uids.
+  In ArticleRepository it returns an array of attributes with all data.
 
 
 Renamed classes
 ---------------
 
+\CommerceTeam\Commerce\Domain\Repository\Repository to \CommerceTeam\Commerce\Domain\Repository\AbstractRepository
 \CommerceTeam\Commerce\ViewHelpers\Navigation to \CommerceTeam\Commerce\ViewHelpers\NavigationViewHelper
 
 

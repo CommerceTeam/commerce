@@ -126,13 +126,13 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
      */
     protected function fetchRelationCount($table, $uidForeign)
     {
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'COUNT(*) AS count',
+        $count = $this->getDatabaseConnection()->exec_SELECTcountRows(
+            '*',
             $table,
             'uid_foreign = ' . (int) $uidForeign
         );
 
-        return $row['count'];
+        return $count;
     }
 
     /**

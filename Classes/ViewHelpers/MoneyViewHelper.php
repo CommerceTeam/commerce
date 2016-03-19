@@ -12,7 +12,6 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use CommerceTeam\Commerce\Domain\Repository\CurrencyRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -73,7 +72,7 @@ class MoneyViewHelper
         /**
          * Currency repository.
          *
-         * @var CurrencyRepository
+         * @var \CommerceTeam\Commerce\Domain\Repository\CurrencyRepository
          */
         $currencyRepository = GeneralUtility::makeInstance(
             \CommerceTeam\Commerce\Domain\Repository\CurrencyRepository::class

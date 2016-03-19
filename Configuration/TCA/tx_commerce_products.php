@@ -28,13 +28,8 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
         'searchFields' => 'uid, title, subtitle, navtitle, description',
     ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
-            title, subtitle, navtitle, description, images, teaser, teaserimages, manufacturer_uid',
-    ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
-            title, subtitle, navtitle, description, images, teaser, teaserimages, categories, manufacturer_uid,
-            attributes',
+        'showRecordFieldList' => 'title, subtitle, navtitle, description, teaser, keywords, images, teaserimages,
+            manufacturer_uid, sys_language_uid, l18n_parent, starttime, endtime, fe_group,',
     ],
     'columns' => [
         'hidden' => [
@@ -328,7 +323,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
             'l10n_display' => 'hideDiff',
             'label' => $languageFile . 'tx_commerce_products.attributes',
             'displayCond' => 'USER:' . \CommerceTeam\Commerce\Utility\DisplayConditionUtility::class
-            . '->checkCorrelationType',
+            . '->checkProductCorrelationType',
             'config' => [
                 'type' => 'flex',
                 'ds' => [
@@ -349,23 +344,29 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
     ],
     'types' => [
         '0' => [
+            'columnsOverrides' => [
+                'description' => [
+                    'defaultExtras' => 'richtext:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/]'
+                ],
+                'teaser' => [
+                    'defaultExtras' => 'richtext:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/]'
+                ],
+            ],
             'showitem' => '
                     --palette--;' . $languageFile . 'palette.general;general,
-                    title, subtitle, navtitle, keywords,
-                    images, teaserimages,
-                    description;;;richtext:rte_transform[fmode=ts_css|imgpath=uploads/tx_commerce/rte/],
-                    teaser;;;richtext:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/],
+                    title, subtitle, navtitle, description, teaser, keywords, images, teaserimages,
                 --div--;' . $languageFile . 'tabs.references,
                     categories, manufacturer_uid, relatedpage, relatedproducts,
-                --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,
+                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,
                     hidden,
-                    --palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access,
+                    --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access,
                 --div--;' . $languageFile . 'tx_commerce_products.select_attributes,
                     attributes,
                 --div--;' . $languageFile . 'tx_commerce_products.edit_attributes,
                     attributesedit,
                 --div--;' . $languageFile . 'tx_commerce_products.create_articles,
-                    articles',
+                    articles
+            ',
         ],
     ],
     'palettes' => [

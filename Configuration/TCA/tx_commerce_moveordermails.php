@@ -22,13 +22,9 @@ return [
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_moveordermails.gif',
         'dividers2tabs' => '1',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
-            name, mailkind, mailtemplate, htmltemplate, mailcharset, sendername, senderemail, otherreceiver, BCC',
-    ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
-            name, mailkind, mailtemplate, htmltemplate, mailcharset, sendername, senderemail, otherreceiver, BCC',
+        'showRecordFieldList' => 'name, mailkind, mailtemplate, htmltemplate, mailcharset, sendername, senderemail,
+            otherreceiver, BCC, sys_language_uid, l18n_parent, starttime, endtime, fe_group',
     ],
     'columns' => [
         'hidden' => [
@@ -234,9 +230,9 @@ return [
                     --palette--;' . $languageFile . 'palette.general;general,
                     name, mailkind, mailtemplate, htmltemplate,
                     mailcharset, sendername, senderemail, otherreceiver, BCC,
-                --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,
+                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,
                     hidden,
-                    --palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access
+                    --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access
             '
         ],
     ],

@@ -1113,52 +1113,7 @@ class DataMapHook
                 ++$id;
             }
 
-            // @todo improve performance without this methodcall the request gets finished in 1/5 of the time
             $this->saveProductRelations($id, $fieldArray);
-        }
-
-        // sometimes the array is unset because only the checkbox "create new article"
-        // has been checked if that is the case and we have the rights, create the
-        // articles so we check if the product is already created and if we have edit
-        // rights on it
-        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($id)) {
-            // check permissions
-            /**
-             * Product.
-             *
-             * @var \CommerceTeam\Commerce\Domain\Model\Product $product
-             */
-            $product = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Product::class, $id);
-
-            $parentCategories = $product->getParentCategories();
-
-            // check existing categories
-            if (!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
-                $parentCategories,
-                ['editcontent']
-            )) {
-                $dataHandler->newlog('You dont have the permissions to create a new article.', 1);
-            } else {
-                // init the article creator
-                /**
-                 * Article creator.
-                 *
-                 * @var \CommerceTeam\Commerce\Utility\ArticleCreatorUtility $articleCreator
-                 */
-                $articleCreator = GeneralUtility::makeInstance(
-                    \CommerceTeam\Commerce\Utility\ArticleCreatorUtility::Class
-                );
-                $articleCreator->init($id, $this->belib->getProductFolderUid());
-
-                $datamap = $dataHandler->datamap[$table][$this->unsubstitutedId ? $this->unsubstitutedId : $id];
-                if (is_array($datamap) && !empty($datamap)) {
-                    // create new articles
-                    $articleCreator->createArticles($datamap);
-                }
-
-                // update articles if new attributes were added
-                $articleCreator->updateArticles();
-            }
         }
     }
 
@@ -1286,7 +1241,7 @@ class DataMapHook
         $updateXml = true
     ) {
         // now we have to save all attribute relations for this category and all their
-        // child categories  but only if the fieldArray has changed
+        // child categories but only if the fieldArray has changed
         if (isset($fieldArray['attributes']) || $saveAnyway) {
             // get all parent categories ...
             $catList = [];
@@ -1432,9 +1387,12 @@ class DataMapHook
             $paList = $this->belib->getAttributesForCategoryList($catList);
             $uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true, ['uid_correlationtype']);
 
-            $this->belib->saveRelations($productId, $uidList, 'tx_commerce_products_attributes_mm', false, false);
-            $this->belib->updateXML('attributes', 'tx_commerce_products', $productId, 'product', $catList);
-            $delete = false;
+            if (!empty($uidList)) {
+                // Insert/Update relations and remove all remaining
+                $this->belib->saveRelations($productId, $uidList, 'tx_commerce_products_attributes_mm', true, false);
+                $this->belib->updateXML('attributes', 'tx_commerce_products', $productId, 'product', $catList);
+                $delete = false;
+            }
         }
 
         $articles = false;
@@ -1467,6 +1425,7 @@ class DataMapHook
                 }
             }
 
+            // Insert/Update relations and remove only remaining relations if they were not added earlier in this method
             $this->belib->saveRelations($productId, $uidList, 'tx_commerce_products_attributes_mm', $delete, false);
 
             /*

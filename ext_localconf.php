@@ -240,6 +240,8 @@ call_user_func(function ($packageKey) {
     // For processing the order sfe, when changing the pid
     $scOptions['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['commerce'] =
         \CommerceTeam\Commerce\Hooks\DataMapHook::class;
+    $scOptions['t3lib/class.t3lib_tcemain.php']['checkFlexFormValue']['commerce'] =
+        \CommerceTeam\Commerce\Hooks\DataHandlerHook::class;
 
     // Hooks for commandmap processing
     // For new drawing of the category tree after having deleted a record

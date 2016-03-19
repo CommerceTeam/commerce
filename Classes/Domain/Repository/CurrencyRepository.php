@@ -15,7 +15,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
 /**
  * Class \CommerceTeam\Commerce\Domain\Repository\CurrencyRepository
  */
-class CurrencyRepository extends Repository
+class CurrencyRepository extends AbstractRepository
 {
     /**
      * Database table concerning the data.

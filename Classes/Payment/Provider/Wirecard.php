@@ -12,7 +12,6 @@ namespace CommerceTeam\Commerce\Payment\Provider;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use CommerceTeam\Commerce\Domain\Repository\OrderRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -178,7 +177,7 @@ class Wirecard extends ProviderAbstract
         /**
          * Order repository.
          *
-         * @var OrderRepository
+         * @var \CommerceTeam\Commerce\Domain\Repository\OrderRepository
          */
         $orderRepository = GeneralUtility::makeInstance(
             \CommerceTeam\Commerce\Domain\Repository\OrderRepository::class

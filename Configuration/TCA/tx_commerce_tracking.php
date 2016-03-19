@@ -13,11 +13,8 @@ return [
         'default_sortby' => 'ORDER BY crdate',
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_tracking.gif',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'orders_uid, trackingcodes_uid, msg',
-    ],
     'interface' => [
-        'showRecordFieldList' => 'orders_uid,trackingcodes_uid,msg',
+        'showRecordFieldList' => 'orders_uid, trackingcodes_uid, msg',
     ],
     'columns' => [
         'orders_uid' => [

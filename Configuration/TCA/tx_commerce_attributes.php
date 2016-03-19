@@ -33,13 +33,9 @@ return [
             '1' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_attributes_list.gif',
         ],
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
-            has_valuelist, title, internal_title, unit, valueformat, valuelist',
-    ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
-            has_valuelist, title, internal_title, unit, valuelist, icon',
+        'showRecordFieldList' => 'title, internal_title, unit, valueformat, icon, has_valuelist, valuelist, multiple,
+            sys_language_uid, l18n_parent, starttime, endtime, fe_group',
     ],
     'columns' => [
         'hidden' => [
@@ -262,11 +258,14 @@ return [
                 'foreign_label' => 'value',
 
                 'appearance' => [
-                    'showSynchronizationLink' => 1,
-                    'showAllLocalizationLink' => 1,
-                    'showPossibleLocalizationRecords' => 1,
-                    'showRemovedLocalizationRecords' => 1,
-                    'useSortable' => 1,
+                    'collapseAll' => true,
+                    'expandSingle' => true,
+                    'showSynchronizationLink' => true,
+                    'showAllLocalizationLink' => true,
+                    'showPossibleLocalizationRecords' => true,
+                    'showRemovedLocalizationRecords' => true,
+                    'useSortable' => true,
+                    'newRecordLinkTitle' => $languageFile . 'tx_commerce_attributes.add_value',
                 ],
                 'behaviour' => [
                     'localizationMode' => 'select',
@@ -279,10 +278,10 @@ return [
             'showitem' => '
                     --palette--;' . $languageFile . 'palette.general;general,
                     parent, multiple, valueformat, title, internal_title, unit, icon,
-                --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,
+                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,
                     hidden,
-                    --palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access,
-                --div--;' . $languageFile . 'tx_commerce_attributes.valuelistlist,
+                    --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access,
+                --div--;' . $languageFile . 'tx_commerce_attributes.valuelisttab,
                     --palette--;' . $languageFile . 'palette.valuechecks;valuechecks,
                     valuelist
             ',

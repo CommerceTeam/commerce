@@ -12,7 +12,6 @@ namespace CommerceTeam\Commerce\Tree\CategoryTree;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use CommerceTeam\Commerce\Tree\View\CategoryTreeView;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
@@ -146,11 +145,11 @@ class Commands
      *
      * Node: Use a negative target id to specify a sibling target else the parent is used
      *
-     * @param CategoryNode $sourceNode
+     * @param \TYPO3\CMS\Backend\Tree\ExtDirectNode $sourceNode
      * @param int $targetId
      * @return void
      */
-    public static function moveNode(CategoryNode $sourceNode, $targetId)
+    public static function moveNode(\TYPO3\CMS\Backend\Tree\ExtDirectNode $sourceNode, $targetId)
     {
         $cmd['pages'][$sourceNode->getId()]['move'] = $targetId;
         self::processTceCmdAndDataMap($cmd);
@@ -320,6 +319,7 @@ class Commands
     public static function getCategoryNode($record, $mountPoint = 0)
     {
         $backendUser = self::getBackendUserAuthentication();
+        /** @var IconFactory $iconFactory */
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         if (self::$titleLength === null) {
             self::$useNavTitle = $backendUser->getTSConfigVal('options.pageTree.showNavTitle');
@@ -413,6 +413,7 @@ class Commands
     public static function getProductNode($record, $mountPoint = 0)
     {
         $backendUser = self::getBackendUserAuthentication();
+        /** @var IconFactory $iconFactory */
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         if (self::$titleLength === null) {
             self::$useNavTitle = $backendUser->getTSConfigVal('options.pageTree.showNavTitle');
@@ -509,6 +510,7 @@ class Commands
     public static function getArticleNode($record)
     {
         $backendUser = self::getBackendUserAuthentication();
+        /** @var IconFactory $iconFactory */
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         if (self::$titleLength === null) {
             self::$useNavTitle = $backendUser->getTSConfigVal('options.pageTree.showNavTitle');

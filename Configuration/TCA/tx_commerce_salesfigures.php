@@ -14,9 +14,6 @@ return [
         'adminOnly' => '1',
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_salesfigures.gif',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'year, month, day, dow, hour, pricegross, pricenet, amount, orders',
-    ],
     'interface' => [
         'showRecordFieldList' => 'year, month, day, dow, hour, pricegross, pricenet, amount, orders',
     ],

@@ -303,13 +303,13 @@ class Attribute extends AbstractEntity
     }
 
     /**
-     * Overwrite get_attributes as attributes cant hav attributes.
+     * Overwrite getAttributes as attributes can't have attributes.
      *
-     * @return bool
+     * @return array empty
      */
     public function getAttributes()
     {
-        return false;
+        return [];
     }
 
     /**

@@ -26,13 +26,8 @@ return [
         ],
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_attribute_values.gif',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, value,
-            showvalue, attributes_uid',
-    ],
     'interface' => [
-        'showRecordFieldList' =>
-            'sys_language_uid,l18n_parent,l18n_diffsource,hidden,starttime,endtime,value,attributes_uid',
+        'showRecordFieldList' => 'value, showvalue, sys_language_uid, l18n_parent, starttime, endtime',
     ],
     'columns' => [
         'hidden' => [
@@ -116,8 +111,7 @@ return [
 
         'value' => [
             'exclude' => 1,
-            'label' =>
-                $languageFile . 'tx_commerce_attribute_values.value',
+            'label' => $languageFile . 'tx_commerce_attribute_values.value',
             'config' => [
                 'type' => 'input',
                 'size' => '40',
@@ -143,8 +137,7 @@ return [
         ],
         'showvalue' => [
             'exclude' => 1,
-            'label' =>
-                $languageFile . 'tx_commerce_attribute_values.showvalue',
+            'label' => $languageFile . 'tx_commerce_attribute_values.showvalue',
             'l10n_mode' => 'exclude',
             'config' => [
                 'type' => 'check',
@@ -153,11 +146,11 @@ return [
         ],
         'attributes_uid' => [
             'exclude' => 1,
-            'label' =>
-                $languageFile . 'tx_commerce_attribute_values.attributes_uid',
+            'label' => $languageFile . 'tx_commerce_attribute_values.attributes_uid',
             'l10n_mode' => 'exclude',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_commerce_attributes',
                 'foreign_table_where' => 'AND tx_commerce_attributes.has_valuelist',
                 'size' => 1,
@@ -169,10 +162,11 @@ return [
     'types' => [
         '0' => [
             'showitem' => '
-                --palette--;' . $languageFile . 'palette.general;general,
-                 value, showvalue, icon, attributes_uid,
-                hidden,
-                --palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access
+                    --palette--;' . $languageFile . 'palette.general;general,
+                    value, showvalue, icon, attributes_uid,
+                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,
+                    hidden,
+                    --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access
             ',
         ],
     ],

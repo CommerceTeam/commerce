@@ -2,6 +2,13 @@
 
 $languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
 
+$attributeField = '';
+if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']['simpleMode'])
+    && $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']['simpleMode']
+) {
+    $attributeField = '--div--;' . $languageFile . 'tx_commerce_products.edit_attributes, attributesedit,';
+}
+
 return [
     'ctrl' => [
         'title' => $languageFile . 'tx_commerce_articles',
@@ -26,14 +33,9 @@ return [
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_articles.gif',
     ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
-            title, subtitle, navtitle, description_extra, plain_text, price_gross, price_net, purchase_price, tax,
-            article_type_uid, products_uid',
-    ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime,
-            fe_group, title, subtitle, navtitle, images, ordernumber, eancode, description_extra,plain_text,
-            price_gross, price_net, purchase_price, tax, article_type_uid, products_uid, article_attributes',
+        'showRecordFieldList' => 'title, subtitle, navtitle, description_extra, plain_text, price_gross, price_net,
+            purchase_price, tax, article_type_uid, products_uid,
+            sys_language_uid, l18n_parent, starttime, endtime, fe_group',
     ],
     'columns' => [
         'hidden' => [
@@ -242,7 +244,7 @@ return [
                 'appearance' => [
                     'newRecordLinkAddTitle' => true,
                     'levelLinksPosition' => 'bottom',
-                            ],
+                ],
                 'foreign_table' => 'tx_commerce_article_prices',
                 'foreign_field' => 'uid_article',
             ],
@@ -323,23 +325,19 @@ return [
     ],
     'types' => [
         '0' => [
+            'columnsOverrides' => [
+                'description_extra' => [
+                    'defaultExtras' => 'richtext:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/]'
+                ],
+            ],
             'showitem' => '
-                title, subtitle, ordernumber, eancode,
-                description_extra;;;richtext:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/],
-                images, plain_text, tax, supplier_uid, article_type_uid, relatedpage, products_uid,
-                article_attributes, ' .
-                    (
-                        (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']['simpleMode'])
-                            && $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']['simpleMode']) ? '' : '
-                --div--;' . $languageFile . 'tx_commerce_products.edit_attributes,
-                attributesedit,
-                        '
-                    ) .
-                    '
+                    title, subtitle, ordernumber, eancode, description_extra,
+                    images, plain_text, tax, supplier_uid, article_type_uid, relatedpage, products_uid,
+                    article_attributes, ' . $attributeField . '
                 --div--;' . $languageFile . 'tx_commerce_articles.prices, prices,
-                --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,
+                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,
                     hidden,
-                    --palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access',
+                    --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access',
         ],
     ],
     'palettes' => [

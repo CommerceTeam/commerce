@@ -22,11 +22,8 @@ return [
         ],
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_article_types.gif',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, title',
-    ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,hidden,title',
+        'showRecordFieldList' => 'title, sys_language_uid, l18n_parent',
     ],
     'columns' => [
         'hidden' => [

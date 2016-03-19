@@ -21,7 +21,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository
  */
-class AttributeValueRepository extends Repository
+class AttributeValueRepository extends AbstractRepository
 {
     /**
      * Database table.

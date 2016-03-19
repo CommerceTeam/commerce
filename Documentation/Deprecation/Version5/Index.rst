@@ -45,3 +45,8 @@ Removed methods since 5.x
 	, moveOrders_postMoveOrder, moveOrdersPostMoveOrder
 
 The tx_graytree_foldername field was deprecated and is now removed.
+
+Renamed hooks
+=============
+
+Utility/ArticleCreatorUtility to Controller/ArticleAjaxController

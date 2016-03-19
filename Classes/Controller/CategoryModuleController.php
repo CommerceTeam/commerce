@@ -53,14 +53,11 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
      */
     public function __construct()
     {
+        parent::__construct();
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
-        $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_list.xlf');
         $this->getLanguageService()->includeLLFile(
             'EXT:commerce/Resources/Private/Language/locallang_mod_category.xlf'
         );
-        $this->moduleTemplate->getPageRenderer()->loadJquery();
-        $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Recordlist/FieldSelectBox');
-        $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Recordlist/Recordlist');
     }
 
     /**

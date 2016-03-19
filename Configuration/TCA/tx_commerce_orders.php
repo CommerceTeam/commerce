@@ -15,14 +15,10 @@ return [
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_orders.gif',
         'searchFields' => 'order_id, comment',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'cust_deliveryaddress, order_type_uid, order_id, cust_fe_user, cust_invoice,
-            paymenttype, sum_price_net, sum_price_gross,pid,cu_iso_3_uid,order_sys_language_uid,pricefromnet',
-    ],
     'interface' => [
         'showRecordFieldList' => 'cust_deliveryaddress, order_type_uid, order_id, cust_fe_user, cust_invoice,
-            paymenttype, sum_price_net, sum_price_gross, crdate, pid, payment_ref_id, cu_iso_3_uid,
-            order_sys_language_uid, pricefromnet',
+            paymenttype, sum_price_net, sum_price_gross, payment_ref_id, cu_iso_3_uid, order_sys_language_uid,
+            pricefromnet',
     ],
     'columns' => [
         'cust_deliveryaddress' => [

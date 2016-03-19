@@ -12,6 +12,8 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\SingletonInterface;
+
 /**
  * Abstract Class for handling almost all Database-Calls for all
  * FE Rendering processes. This Class is mostly extended by distinct
@@ -25,7 +27,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\Repository
  */
-class Repository
+abstract class AbstractRepository implements SingletonInterface
 {
     /**
      * Database table concerning the data.
@@ -100,7 +102,7 @@ class Repository
 
         $proofSql = '';
         if (is_object($frontend->sys_page)) {
-            $proofSql = $this->enableFields($this->databaseTable, $frontend->showHiddenRecords);
+            $proofSql = $this->enableFields();
         }
 
         $returnData = $database->exec_SELECTgetSingleRow(
@@ -166,12 +168,27 @@ class Repository
     }
 
     /**
-     * Checks if one given UID is availiabe.
+     * Find by uid.
+     *
+     * @param int $uid Product uid
+     *
+     * @return array
+     */
+    public function findByUid($uid)
+    {
+        return (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            '*',
+            $this->databaseTable,
+            'uid = ' . (int) $uid . $this->enableFields()
+        );
+    }
+
+    /**
+     * Checks if one given UID is available.
      *
      * @param int $uid Uid
      *
      * @return bool true id availiabe
-     * @todo implement access_check
      */
     public function isUid($uid)
     {
@@ -202,18 +219,10 @@ class Repository
         $return = false;
         $uid = (int) $uid;
         if ($uid) {
-            $proofSql = '';
-            if (is_object($this->getFrontendController()->sys_page)) {
-                $proofSql = $this->enableFields(
-                    $this->databaseTable,
-                    $this->getFrontendController()->showHiddenRecords
-                );
-            }
-
             $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
                 '*',
                 $this->databaseTable,
-                'uid = ' . $uid . $proofSql
+                'uid = ' . $uid . $this->enableFields()
             );
 
             if (count($row) == 1) {
@@ -242,43 +251,13 @@ class Repository
      * Gets all attributes from this product.
      *
      * @param int $uid Product uid
-     * @param array|NULL $attributeCorrelationTypeList Corelation types
+     * @param array|null $attributeCorrelationTypeList Corelation types
      *
      * @return array of attribute UID
      */
     public function getAttributes($uid, $attributeCorrelationTypeList = null)
     {
-        $database = $this->getDatabaseConnection();
-        $uid = (int) $uid;
-        if ($this->databaseAttributeRelationTable == '') {
-            return false;
-        }
-
-        $additionalWhere = '';
-        if (is_array($attributeCorrelationTypeList)) {
-            $additionalWhere = ' AND ' . $this->databaseAttributeRelationTable . '.uid_correlationtype IN (' .
-                implode(',', $attributeCorrelationTypeList) . ')';
-        }
-
-        $result = $database->exec_SELECT_mm_query(
-            'tx_commerce_attributes.uid',
-            $this->databaseTable,
-            $this->databaseAttributeRelationTable,
-            'tx_commerce_attributes',
-            ' AND ' . $this->databaseTable . '.uid = ' . (int) $uid . $additionalWhere . ' ORDER BY ' .
-            $this->databaseAttributeRelationTable . '.sorting'
-        );
-
-        $attributeUidList = false;
-        if ($database->sql_num_rows($result)) {
-            $attributeUidList = [];
-            while (($returnData = $database->sql_fetch_assoc($result))) {
-                $attributeUidList[] = (int) $returnData['uid'];
-            }
-            $database->sql_free_result($result);
-        }
-
-        return $attributeUidList;
+        return [];
     }
 
     /**
@@ -324,20 +303,24 @@ class Repository
      * Get enableFields.
      *
      * @param string $tableName Table name
-     * @param bool|int $showHiddenRecords Show hidden records
      * @param string $as Alias to use for the table name
+     * @param bool|int $showHiddenRecords Show hidden records
      *
      * @return string
      */
-    public function enableFields($tableName, $showHiddenRecords = -1, $as = '')
+    public function enableFields($tableName = '', $as = '', $showHiddenRecords = 0)
     {
+        if (empty($tableName)) {
+            $tableName = $this->databaseTable;
+        }
+
         if (TYPO3_MODE === 'FE') {
             $showHiddenRecords = $showHiddenRecords ?
                 $showHiddenRecords :
                 $this->getFrontendController()->showHiddenRecords;
             $result = $this->getFrontendController()->sys_page->enableFields($tableName, $showHiddenRecords);
         } else {
-            $result = \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($tableName);
+            $result = \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($tableName);
         }
 
         if ($as !== '') {
@@ -345,6 +328,17 @@ class Repository
         }
 
         return $result;
+    }
+
+    /**
+     * @param array $data field values for use for new record
+     * @return int uid of the new record
+     */
+    public function addRecord($data)
+    {
+        $databaseConnection = $this->getDatabaseConnection();
+        $databaseConnection->exec_INSERTquery($this->databaseTable, $data);
+        return $databaseConnection->sql_insert_id();
     }
 
 

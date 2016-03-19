@@ -23,6 +23,9 @@ namespace CommerceTeam\Commerce\Domain\Model;
  * @var int
  * @see sql tx_commerce_attribute_correlationtypes
  */
+use CommerceTeam\Commerce\Domain\Repository\AbstractRepository;
+use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 
 define('ATTRIB_SELECTOR', 1);
@@ -88,12 +91,12 @@ class AbstractEntity
      *
      * @var string
      */
-    protected $repositoryClass = \CommerceTeam\Commerce\Domain\Repository\Repository::class;
+    protected $repositoryClass = AbstractRepository::class;
 
     /**
      * Database connection.
      *
-     * @var \CommerceTeam\Commerce\Domain\Repository\Repository
+     * @var AbstractRepository
      */
     protected $databaseConnection;
 
@@ -173,30 +176,28 @@ class AbstractEntity
      */
     public function getAttributes(array $attributeCorelationTypeList = [])
     {
-        $result = [];
-        if (($this->attributes_uids = $this->databaseConnection->getAttributes(
+        $this->attributes_uids = $this->databaseConnection->getAttributes(
             $this->uid,
             $attributeCorelationTypeList
-        ))) {
-            foreach ($this->attributes_uids as $attributeUid) {
-                /**
-                 * Attribute.
-                 *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attribute
-                 */
-                $attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    \CommerceTeam\Commerce\Domain\Model\Attribute::class,
-                    $attributeUid,
-                    $this->lang_uid
-                );
-                $attribute->loadData();
+        );
 
-                $this->attribute[$attributeUid] = $attribute;
-            }
-            $result = $this->attributes_uids;
+        foreach ($this->attributes_uids as $attributeUid) {
+            /**
+             * Attribute.
+             *
+             * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attribute
+             */
+            $attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                \CommerceTeam\Commerce\Domain\Model\Attribute::class,
+                $attributeUid,
+                $this->lang_uid
+            );
+            $attribute->loadData();
+
+            $this->attribute[$attributeUid] = $attribute;
         }
 
-        return $result;
+        return $this->attributes_uids;
     }
 
     /**
@@ -402,7 +403,7 @@ class AbstractEntity
 
 
     /**
-     * @return \CommerceTeam\Commerce\Domain\Repository\Repository|object
+     * @return AbstractRepository|ProductRepository|ArticleRepository
      */
     protected function getRepository()
     {

@@ -24,13 +24,9 @@ return [
         ],
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_article_prices.gif',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'hidden, starttime, endtime, fe_group, price_gross, price_net, purchase_price,
-            price_scale_amount_start, price_scale_amount_end',
-    ],
     'interface' => [
-        'showRecordFieldList' => 'hidden, starttime, endtime, fe_group, price_gross, price_net, purchase_price,
-            price_scale_amount_start, price_scale_amount_end',
+        'showRecordFieldList' => 'price_gross, price_net, purchase_price,
+            price_scale_amount_start, price_scale_amount_end, starttime, endtime, fe_group',
     ],
     'columns' => [
         'hidden' => [
@@ -149,24 +145,33 @@ return [
             'exclude' => 1,
             'label' => 'Article UID',
             'config' => [
-                'type' => 'user',
-                'userFunc' => \CommerceTeam\Commerce\Utility\ArticleCreatorUtility::class . '->articleUid',
+                'readOnly' => 1,
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'foreign_table' => 'tx_commerce_articles',
             ],
         ],
     ],
     'types' => [
         '0' => [
             'showitem' => '
-                price_gross, price_net, purchase_price, 
-                price_scale_amount_start, price_scale_amount_end, uid_article,
+                --palette--;;price,
+                --palette--;;scale,
+                uid_article,
                 hidden,
-                --palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access
+                --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access
             ',
         ],
     ],
     'palettes' => [
         'access' => [
             'showitem' => 'starttime, endtime, --linebreak--, fe_group',
+        ],
+        'price' => [
+            'showitem' => 'price_gross, price_net, --linebreak--, purchase_price',
+        ],
+        'scale' => [
+            'showitem' => 'price_scale_amount_start, price_scale_amount_end',
         ],
     ],
 ];

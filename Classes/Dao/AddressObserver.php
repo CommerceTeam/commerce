@@ -13,7 +13,6 @@ namespace CommerceTeam\Commerce\Dao;
  */
 
 use CommerceTeam\Commerce\Controller\AddressesController;
-use CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -109,7 +108,7 @@ class AddressObserver
         /**
          * Frontend user repository.
          *
-         * @var FrontendUserRepository
+         * @var \CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository
          */
         $userRepository = GeneralUtility::makeInstance(
             \CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository::class

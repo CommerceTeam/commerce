@@ -15,7 +15,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
 /**
  * Class \CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository
  */
-class FrontendUserRepository extends Repository
+class FrontendUserRepository extends AbstractRepository
 {
     /**
      * Database table concerning the data.

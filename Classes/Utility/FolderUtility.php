@@ -41,19 +41,18 @@ class FolderUtility
          *
          * @todo Get list from Order folders from TS
          */
-        $modPid = FolderRepository::initFolders('Commerce');
-        $prodPid = FolderRepository::initFolders('Products', $modPid);
-        FolderRepository::initFolders('Attributes', $modPid);
+        $modulePid = FolderRepository::initFolders('Commerce');
+        $productPid = FolderRepository::initFolders('Products', $modulePid);
+        FolderRepository::initFolders('Attributes', $modulePid);
 
-        $orderPid = FolderRepository::initFolders('Orders', $modPid);
+        $orderPid = FolderRepository::initFolders('Orders', $modulePid);
         FolderRepository::initFolders('Incoming', $orderPid);
         FolderRepository::initFolders('Working', $orderPid);
         FolderRepository::initFolders('Waiting', $orderPid);
         FolderRepository::initFolders('Delivered', $orderPid);
 
         // Create System Product for payment and other things.
-        $now = time();
-        $addArray = ['tstamp' => $now, 'crdate' => $now, 'pid' => $prodPid];
+        $addArray = ['tstamp' => $GLOBALS['EXEC_TIME'], 'crdate' => $GLOBALS['EXEC_TIME'], 'pid' => $productPid];
 
         $database = self::getDatabaseConnection();
 

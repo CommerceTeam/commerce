@@ -19,7 +19,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\CategoryRepository
  */
-class CategoryRepository extends Repository
+class CategoryRepository extends AbstractRepository
 {
     /**
      * Database table.
@@ -234,7 +234,7 @@ class CategoryRepository extends Repository
             $localOrderField = $hookObject->categoryOrder($this->categoryOrderField, $this);
         }
 
-        $additionalWhere = $this->enableFields($this->databaseTable, $frontend->showHiddenRecords);
+        $additionalWhere = $this->enableFields();
 
         $database = $this->getDatabaseConnection();
 
@@ -261,8 +261,8 @@ class CategoryRepository extends Repository
                     $lresult = $database->exec_SELECTquery(
                         'uid',
                         $this->databaseTable,
-                        'l18n_parent = ' . (int) $row['uid_local'] . ' AND sys_language_uid = ' . $this->lang_uid .
-                        $this->enableFields($this->databaseTable, $frontend->showHiddenRecords)
+                        'l18n_parent = ' . (int) $row['uid_local'] . ' AND sys_language_uid = ' . $this->lang_uid
+                        . $this->enableFields()
                     );
 
                     if ($database->sql_num_rows($lresult)) {
@@ -322,9 +322,9 @@ class CategoryRepository extends Repository
         $whereClause .= ' AND tx_commerce_article_prices.price_gross > 0';
 
         if (is_object($frontend->sys_page)) {
-            $whereClause .= $this->enableFields('tx_commerce_products', $frontend->showHiddenRecords);
-            $whereClause .= $this->enableFields('tx_commerce_articles', $frontend->showHiddenRecords);
-            $whereClause .= $this->enableFields('tx_commerce_article_prices', $frontend->showHiddenRecords);
+            $whereClause .= $this->enableFields('tx_commerce_products');
+            $whereClause .= $this->enableFields('tx_commerce_articles');
+            $whereClause .= $this->enableFields('tx_commerce_article_prices');
         }
 
             // Versioning - no deleted or versioned records, nor live placeholders
@@ -366,8 +366,8 @@ class CategoryRepository extends Repository
                     $lresult = $database->exec_SELECTquery(
                         'uid',
                         'tx_commerce_products',
-                        'l18n_parent = ' . (int) $row['uid'] . ' AND sys_language_uid = ' . $this->lang_uid .
-                        $this->enableFields('tx_commerce_products', $frontend->showHiddenRecords)
+                        'l18n_parent = ' . (int) $row['uid'] . ' AND sys_language_uid = ' . $this->lang_uid
+                        . $this->enableFields('tx_commerce_products')
                     );
                     if ($database->sql_num_rows($lresult)) {
                         $return[] = (int) $row['uid'];
@@ -401,8 +401,7 @@ class CategoryRepository extends Repository
                 'tx_commerce_categories
                     INNER JOIN tx_commerce_categories_parent_category_mm AS mm
                         ON tx_commerce_categories.uid = mm.uid_local',
-                'tx_commerce_categories.uid = ' . $categoryUid .
-                $this->enableFields('tx_commerce_categories', $this->getFrontendController()->showHiddenRecords)
+                'tx_commerce_categories.uid = ' . $categoryUid . $this->enableFields()
             );
 
             if (!empty($row) && $row['parent'] != $categoryUid) {
@@ -430,22 +429,6 @@ class CategoryRepository extends Repository
             '*',
             $this->databaseParentCategoryRelationTable,
             'uid_foreign = ' . (int) $foreignUid
-        );
-    }
-
-    /**
-     * Find by uid.
-     *
-     * @param int $uid Product uid
-     *
-     * @return array
-     */
-    public function findByUid($uid)
-    {
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            $this->databaseTable,
-            'uid = ' . (int) $uid . $this->enableFields($this->databaseTable)
         );
     }
 }

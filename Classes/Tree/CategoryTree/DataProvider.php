@@ -596,7 +596,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function getArticleWhereClause($id, $searchFilter = '')
     {
-        $where = '1=1' . BackendUtility::deleteClause('tx_commerce_articles') .
+        $where = '1 = 1' . BackendUtility::deleteClause('tx_commerce_articles') .
             BackendUtility::versioningPlaceholderClause('tx_commerce_articles');
 
         if (is_numeric($id) && $id >= 0) {

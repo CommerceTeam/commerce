@@ -22,7 +22,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\ArticlePriceRepository
  */
-class ArticlePriceRepository extends Repository
+class ArticlePriceRepository extends AbstractRepository
 {
     /**
      * Table concerning the prices.
@@ -42,15 +42,10 @@ class ArticlePriceRepository extends Repository
      */
     public function getData($uid)
     {
-        $proofSql = '';
-        if (is_object($this->getFrontendController()->sys_page)) {
-            $proofSql = $this->enableFields($this->databaseTable, $this->getFrontendController()->showHiddenRecords);
-        }
-
         $returnData = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             '*',
             $this->databaseTable,
-            'uid = ' . (int)$uid . $proofSql
+            'uid = ' . (int)$uid . $this->enableFields()
         );
 
         // Result should contain only one Dataset
@@ -59,7 +54,7 @@ class ArticlePriceRepository extends Repository
         }
 
         $this->error(
-            'exec_SELECTquery(\'*\',' . $this->databaseTable . ',\'uid = '
+            'exec_SELECTquery(\'*\', \'' . $this->databaseTable . '\', \'uid = '
             . $uid . '\'); returns no or more than one Result'
         );
 

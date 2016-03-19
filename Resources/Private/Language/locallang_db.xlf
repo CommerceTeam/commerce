@@ -282,23 +282,26 @@
 			<trans-unit id="tx_commerce_attributes.valuelist" xml:space="preserve">
 				<source>Valuelist</source>
 			</trans-unit>
+			<trans-unit id="tx_commerce_attributes.add_value" xml:space="preserve">
+				<source>Add new value after this value</source>
+			</trans-unit>
 			<trans-unit id="tx_commerce_attributes.valueformat" xml:space="preserve">
 				<source>Outputformat of Value</source>
 			</trans-unit>
 			<trans-unit id="tx_commerce_attributes.valueformat.money" xml:space="preserve">
-				<source> Money (123.12) </source>
+				<source>Money (123.12)</source>
 			</trans-unit>
 			<trans-unit id="tx_commerce_attributes.valueformat.integer" xml:space="preserve">
-				<source> Integer (123) </source>
+				<source>Integer (123)</source>
 			</trans-unit>
 			<trans-unit id="tx_commerce_attributes.valueformat.float" xml:space="preserve">
-				<source> Float (123.1) </source>
+				<source>Float (123.1)</source>
 			</trans-unit>
 			<trans-unit id="tx_commerce_attributes.basis" xml:space="preserve">
-				<source> Basic Data </source>
+				<source>Basic Data</source>
 			</trans-unit>
-			<trans-unit id="tx_commerce_attributes.valuelistlist" xml:space="preserve">
-				<source> Related Values </source>
+			<trans-unit id="tx_commerce_attributes.valuelisttab" xml:space="preserve">
+				<source>Related Values</source>
 			</trans-unit>
 			<trans-unit id="tx_commerce_attributes.icon" xml:space="preserve">
 				<source>Icon</source>

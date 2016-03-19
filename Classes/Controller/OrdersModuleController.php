@@ -12,18 +12,15 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use CommerceTeam\Commerce\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 /**
  * Class \CommerceTeam\Commerce\Controller\OrdersModuleController
  */
-class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
+class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
 {
     /**
      * The name of the module
@@ -40,13 +37,6 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
     protected $moduleTemplate;
 
     /**
-     * Body content.
-     *
-     * @var string
-     */
-    public $body;
-
-    /**
      * Order pid.
      *
      * @var int
@@ -54,20 +44,15 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
     protected $orderPid;
 
     /**
-     * @var array
-     */
-    protected $pageinfo = [];
-
-    /**
      * Constructor
      */
     public function __construct()
     {
+        parent::__construct();
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
-        $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_mod_orders.xlf');
-        $this->MCONF = [
-            'name' => $this->moduleName,
-        ];
+        $this->getLanguageService()->includeLLFile(
+            'EXT:commerce/Resources/Private/Language/locallang_mod_category.xlf'
+        );
     }
 
     /**
@@ -89,8 +74,6 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
             $this->id = 0;
         }
 
-        $recordlist = GeneralUtility::makeInstance(\TYPO3\CMS\Recordlist\RecordList::class);
-
         // Initialize the listing object, dblist, for rendering the list:
         $this->pointer = max(min(GeneralUtility::_GP('pointer'), 100000), 0);
         $this->imagemode = GeneralUtility::_GP('imagemode');
@@ -105,7 +88,7 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         $this->cmd_table = GeneralUtility::_GP('cmd_table');
 
         // Page select clause:
-        $this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);
+        $this->perms_clause = $this->getBackendUserAuthentication()->getPagePermsClause(1);
 
         // Set up menus:
         $this->menuConfig();
@@ -167,8 +150,8 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
          */
         $dblist = GeneralUtility::makeInstance(\CommerceTeam\Commerce\RecordList\OrderRecordList::class);
         $dblist->script = BackendUtility::getModuleUrl('commerce_orders', [], '');
-        $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
-        $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
+        $dblist->calcPerms = $this->getBackendUserAuthentication()->calcPerms($this->pageinfo);
+        $dblist->thumbs = $this->getBackendUserAuthentication()->uc['thumbnailsByDefault'];
         $dblist->allFields = ($this->MOD_SETTINGS['bigControlPanel'] || $this->table) ? 1 : 0;
         $dblist->localizationView = $this->MOD_SETTINGS['localization'];
         $dblist->showClipboard = 1;
@@ -177,7 +160,6 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         $dblist->hideTables = $this->modTSconfig['properties']['hideTables'];
         $dblist->hideTranslations = $this->modTSconfig['properties']['hideTranslations'];
         $dblist->tableTSconfigOverTCA = $this->modTSconfig['properties']['table.'];
-        $dblist->alternateBgColors = $this->modTSconfig['properties']['alternateBgColors'] ? 1 : 0;
         $dblist->allowedNewTables = GeneralUtility::trimExplode(
             ',',
             $this->modTSconfig['properties']['allowedNewTables'],
@@ -291,7 +273,6 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 
             // Render the list of tables:
             $dblist->generateList();
-            $listUrl = $dblist->listURL();
             // Add JavaScript functions to the page:
         }
 
@@ -408,10 +389,6 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
             }
         }
 
-        // @todo replace with getDocHeaderButtons
-        $buttons = $dblist->getButtons($this->pageinfo);
-        $docHeaderButtons = $this->getButtons($buttons);
-
         // Build the <body> for the module
         $this->content = $this->body;
     }
@@ -426,7 +403,7 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
      */
     protected function getButtons(array $buttons)
     {
-        $backendUser = $this->getBackendUser();
+        $backendUser = $this->getBackendUserAuthentication();
         $language = $this->getLanguageService();
 
         // CSH
@@ -437,7 +414,7 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
             $buttons['shortcut'] = $this->doc->makeShortcutIcon(
                 'id, edit_record, pointer, new_unique_uid, search_field, search_levels, showLimit',
                 implode(',', array_keys($this->MOD_MENU)),
-                $this->MCONF['name']
+                $this->moduleName
             );
         }
 
@@ -446,37 +423,22 @@ class OrdersModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
             // @todo modify to use index.php entry
             $href = 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
                 rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
-            $buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' .
-                \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
-                    'apps-filetree-folder-list',
-                    ['title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1)]
-                ) . '</a>';
+            $buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '" title="'
+                . $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1) . '">' .
+                $this->iconFactory->getIcon('apps-filetree-folder-list')->render() . '</a>';
         }
 
         return $buttons;
     }
 
+
     /**
-     * Injects the request object for the current request or subrequest
-     * Simply calls main() and init() and outputs the content
+     * Get backend user authentication
      *
-     * @param ServerRequestInterface $request the current request
-     * @param ResponseInterface $response
-     * @return ResponseInterface the response with the content
+     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
      */
-    public function mainAction(ServerRequestInterface $request, ResponseInterface $response)
+    protected function getBackendUserAuthentication()
     {
-        $GLOBALS['SOBE'] = $this;
-        $this->init();
-
-        // Checking for first level external objects
-        $this->checkExtObj();
-
-        $this->clearCache();
-        $this->main();
-
-        $this->moduleTemplate->setContent($this->content);
-        $response->getBody()->write($this->moduleTemplate->renderContent());
-        return $response;
+        return $GLOBALS['BE_USER'];
     }
 }

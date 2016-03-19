@@ -11,7 +11,8 @@ namespace CommerceTeam\Commerce\Utility;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-use TYPO3\CMS\Backend\Form\FormDataProvider\EvaluateDisplayConditions;
+
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * Class DisplayConditionUtility
@@ -20,13 +21,44 @@ class DisplayConditionUtility
 {
     /**
      * @param array $parameter
-     * @param EvaluateDisplayConditions $conditionEvaluator
      * @return bool
      */
-    public function checkCorrelationType($parameter, $conditionEvaluator)
+    public function checkProductCorrelationType($parameter)
     {
-        // return true if attributes with correlationtype 4 exist
-        // for $parameter['record']['uid'] as uid_local or from parent category
-        return true;
+        $count = 0;
+        if (!empty($parameter['record']) && isset($parameter['record']['uid'])) {
+            $count = $this->getDatabaseConnection()->exec_SELECTcountRows(
+                '*',
+                'tx_commerce_products
+                INNER JOIN tx_commerce_products_attributes_mm AS mm ON tx_commerce_products.uid = mm.uid_local
+                INNER JOIN tx_commerce_attributes ON mm.uid_foreign = tx_commerce_attributes.uid',
+                'mm.uid_correlationtype = 4 AND tx_commerce_products.uid = ' . $parameter['record']['uid']
+                . BackendUtility::deleteClause('tx_commerce_products')
+                . BackendUtility::deleteClause('tx_commerce_attributes')
+            );
+
+            if (!$count) {
+                $count = $this->getDatabaseConnection()->exec_SELECTcountRows(
+                    '*',
+                    'tx_commerce_products_categories_mm AS cm
+                    INNER JOIN tx_commerce_categories ON cm.uid_foreign = tx_commerce_categories.uid
+                    INNER JOIN tx_commerce_categories_attributes_mm AS mm ON tx_commerce_categories.uid = mm.uid_local
+                    INNER JOIN tx_commerce_attributes ON mm.uid_foreign = tx_commerce_attributes.uid',
+                    'mm.uid_correlationtype = 4 AND cm.uid_local = ' . $parameter['record']['uid']
+                    . BackendUtility::deleteClause('tx_commerce_categories')
+                    . BackendUtility::deleteClause('tx_commerce_attributes')
+                );
+            }
+        }
+        return $count > 0;
+    }
+
+
+    /**
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
     }
 }

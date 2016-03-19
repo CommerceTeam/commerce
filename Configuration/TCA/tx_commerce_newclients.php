@@ -14,9 +14,6 @@ return [
         'adminOnly' => '1',
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_newclients.gif',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'year, month, day, dow, hour, registration',
-    ],
     'interface' => [
         'showRecordFieldList' => 'year, month, day, dow, hour, registration',
     ],

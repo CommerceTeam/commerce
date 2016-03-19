@@ -645,20 +645,6 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             BackendUtility::workspaceOL($table, $row, $this->getBackendUser()->workspace);
         }
 
-        // Background color, if any:
-        $rowBackgroundColor = '';
-        if ($this->alternateBgColors) {
-            $rowBackgroundColor = $cc % 2 ? '' : ' bgcolor="' . GeneralUtility::modifyHTMLColor(
-                $this->getControllerDocumentTemplate()->bgColor4,
-                10,
-                10,
-                10
-            ) . '"';
-        }
-
-        // Overriding with versions background color if any:
-        $rowBackgroundColor = $row['_CSSCLASS'] ? ' class="' . $row['_CSSCLASS'] . '"' : $rowBackgroundColor;
-
         // Initialization
         $alttext = BackendUtility::getRecordIconAltText($row, $table);
 
@@ -864,14 +850,13 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         }
 
         // Create element in table cells:
-        $iOut .= $this->addElement(1, $theIcon, $theData, $rowBackgroundColor);
+        $iOut .= $this->addElement(1, $theIcon, $theData);
         // Render thumbsnails if a thumbnail column exists and there is content in it:
         if ($this->thumbs && trim($row[$thumbsCol])) {
             $iOut .= $this->addElement(
                 4,
                 '',
-                [$titleCol => $this->thumbCode($row, $table, $thumbsCol)],
-                $rowBackgroundColor
+                [$titleCol => $this->thumbCode($row, $table, $thumbsCol)]
             );
         }
 

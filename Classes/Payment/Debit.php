@@ -11,7 +11,7 @@ namespace CommerceTeam\Commerce\Payment;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-use CommerceTeam\Commerce\Domain\Repository\OrderRepository;
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -50,9 +50,9 @@ class Debit extends PaymentAbstract
         ],
         'fr' => [
             'payment_debit_bic' => 'Code de banque',
-            'payment_debit_an' => 'Num�ro de compte',
+            'payment_debit_an' => 'Numéro de compte',
             'payment_debit_bn' => 'Nom bancaire',
-            'payment_debit_ah' => 'D�tenteur de compte',
+            'payment_debit_ah' => 'Détenteur de compte',
             'payment_debit_company' => 'Firme',
         ],
     ];
@@ -131,7 +131,7 @@ class Debit extends PaymentAbstract
         /**
          * Order repository.
          *
-         * @var OrderRepository
+         * @var \CommerceTeam\Commerce\Domain\Repository\OrderRepository
          */
         $orderRepository = GeneralUtility::makeInstance(
             \CommerceTeam\Commerce\Domain\Repository\OrderRepository::class

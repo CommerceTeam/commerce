@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\ProductRepository
  */
-class ProductRepository extends Repository
+class ProductRepository extends AbstractRepository
 {
     /**
      * Database table.
@@ -81,7 +81,6 @@ class ProductRepository extends Repository
 
             $where = 'uid_product = ' . $uid . $this->enableFields('tx_commerce_articles');
             $additionalWhere = '';
-
             if (is_object($hookObject) && method_exists($hookObject, 'additionalWhere')) {
                 $additionalWhere = $hookObject->additionalWhere($where);
             }
@@ -153,6 +152,21 @@ class ProductRepository extends Repository
     }
 
     /**
+     * @param int $uid
+     * @return array
+     */
+    public function getAttributeRelations($uid)
+    {
+        $productsAttributes = (array)$this->getDatabaseConnection()->exec_SELECTgetRows(
+            'sorting, uid_local, uid_foreign',
+            $this->databaseAttributeRelationTable,
+            'uid_local = ' . (int) $uid
+        );
+
+        return $productsAttributes;
+    }
+
+    /**
      * Returns a list of uid's that are related to this product.
      *
      * @param int $uid Product uid
@@ -186,12 +200,11 @@ class ProductRepository extends Repository
             return false;
         }
 
-        $this->uid = $uid;
-
         $rows = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            't1.title, t1.uid, t2.flag, t2.uid AS sys_language',
-            $this->databaseTable . ' AS t1 LEFT JOIN sys_language AS t2 ON t1.sys_language_uid = t2.uid',
-            'l18n_parent = ' . (int) $uid . ' AND deleted = 0'
+            't1.title, t1.uid, t2.flag, t2.uid AS sys_language_uid',
+            $this->databaseTable . ' AS t1
+            LEFT JOIN sys_language AS t2 ON t1.sys_language_uid = t2.uid',
+            't1.l18n_parent = ' . (int) $uid . ' AND t1.deleted = 0'
         );
 
         return $rows;
@@ -303,23 +316,7 @@ class ProductRepository extends Repository
         return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             'uid, manufacturer_uid',
             $this->databaseTable,
-            'uid IN (' . implode(',', $uids) . ')' . $this->enableFields($this->databaseTable)
-        );
-    }
-
-    /**
-     * Find by uid.
-     *
-     * @param int $uid Product uid
-     *
-     * @return array
-     */
-    public function findByUid($uid)
-    {
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            $this->databaseTable,
-            'uid = ' . (int) $uid . $this->enableFields($this->databaseTable)
+            'uid IN (' . implode(',', $uids) . ')' . $this->enableFields()
         );
     }
 }

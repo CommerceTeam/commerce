@@ -19,14 +19,14 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\AttributeRepository
  */
-class AttributeRepository extends Repository
+class AttributeRepository extends AbstractRepository
 {
     /**
      * Database table.
      *
      * @var string
      */
-    public $databaseTable = 'tx_commerce_attributes';
+    protected $databaseTable = 'tx_commerce_attributes';
 
     /**
      * Database value table.
@@ -47,7 +47,7 @@ class AttributeRepository extends Repository
             $this->databaseTable . ' AS at
             INNER JOIN tx_commerce_products_attributes_mm AS mm ON at.uid = mm.uid_foreign',
             'mm.uid_local = ' . $productUid . ' AND mm.uid_correlationtype = 4'
-            . $this->enableFields($this->databaseTable, -1, 'at')
+            . $this->enableFields($this->databaseTable, 'at')
         );
 
         return $attributes;
@@ -63,16 +63,16 @@ class AttributeRepository extends Repository
         // @todo fix this query to realy get attributes of article
         $attributes = (array)$this->getDatabaseConnection()->exec_SELECTgetRows(
             'at.*, pmm.uid_correlationtype',
-            $this->databaseTable . ' AS at ON mm.uid_foreign = at.uid
+            $this->databaseTable . ' AS at
             INNER JOIN tx_commerce_articles_attributes_mm AS amm ON at.uid = amm.uid_foreign
             INNER JOIN tx_commerce_articles AS a ON amm.uid_local = a.uid
             INNER JOIN tx_commerce_products AS p ON a.uid_product = p.uid
             INNER JOIN tx_commerce_products_attributes_mm AS pmm 
                 ON (p.uid = pmm.uid_local AND at.uid = pmm.uid_foreign)',
             'a.uid = ' . (int)$articleUid
-            . $this->enableFields($this->databaseTable, -1, 'at')
-            . $this->enableFields('tx_commerce_articles', -1, 'a')
-            . $this->enableFields('tx_commerce_products', -1, 'p')
+            . $this->enableFields($this->databaseTable, 'at')
+            . $this->enableFields('tx_commerce_articles', 'a')
+            . $this->enableFields('tx_commerce_products', 'p')
         );
 
         return $attributes;
@@ -90,7 +90,7 @@ class AttributeRepository extends Repository
         $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
             'uid',
             $this->childDatabaseTable,
-            'attributes_uid = ' . (int) $uid . $this->enableFields($this->childDatabaseTable),
+            'attributes_uid = ' . (int) $uid . $this->enableFields(),
             '',
             'sorting'
         );
@@ -115,11 +115,12 @@ class AttributeRepository extends Repository
     public function getChildAttributeUids($uid)
     {
         $childAttributeList = [];
-        if ((int) $uid) {
+        $uid = (int) $uid;
+        if ($uid) {
             $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
                 'uid',
                 $this->databaseTable,
-                'parent = ' . (int) $uid . $this->enableFields($this->databaseTable),
+                'parent = ' . $uid . $this->enableFields(),
                 '',
                 'sorting'
             );
