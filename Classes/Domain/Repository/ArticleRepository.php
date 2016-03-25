@@ -251,8 +251,8 @@ class ArticleRepository extends AbstractRepository
                     // Attribute has a valuelist, so do separate query
                     $valueData = $database->exec_SELECTgetSingleRow(
                         'DISTINCT tx_commerce_attribute_values.value, tx_commerce_attribute_values.uid',
-                        'tx_commerce_articles_attributes_mm, tx_commerce_attribute_values',
-                        'tx_commerce_articles_attributes_mm.uid_valuelist = tx_commerce_attribute_values.uid'.
+                        $this->databaseAttributeRelationTable . ', tx_commerce_attribute_values',
+                        $this->databaseAttributeRelationTable . '.uid_valuelist = tx_commerce_attribute_values.uid'.
                         ' AND uid_local = ' . $uid .
                         ' AND uid_foreign = ' . $attributeUid
                     );
@@ -267,7 +267,7 @@ class ArticleRepository extends AbstractRepository
                     // attribute has no valuelist, so do normal query
                     $valueData = $database->exec_SELECTgetSingleRow(
                         'DISTINCT value_char, default_value',
-                        'tx_commerce_articles_attributes_mm',
+                        $this->databaseAttributeRelationTable,
                         'uid_local = ' . $uid . ' AND uid_foreign = ' . $attributeUid
                     );
                     if (!empty($valueData)) {
@@ -360,9 +360,9 @@ class ArticleRepository extends AbstractRepository
     public function findByClassname($classname)
     {
         return (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid',
+            '*',
             'tx_commerce_articles',
-            'classname = \'' . $classname . '\''
+            'classname = \'' . $classname . '\'' . $this->enableFields()
         );
     }
 }

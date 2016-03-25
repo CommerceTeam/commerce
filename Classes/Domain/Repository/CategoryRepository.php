@@ -71,6 +71,19 @@ class CategoryRepository extends AbstractRepository
     protected $lang_uid;
 
     /**
+     * @return int
+     */
+    public function getSystemCategoryUid()
+    {
+        $category = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'uid',
+            $this->databaseTable,
+            'uname = \'SYSTEM\' AND parent_category = \'\' AND deleted = 0'
+        );
+        return isset($category['uid']) ? $category['uid'] : 0;
+    }
+
+    /**
      * Gets the "master" category from this category.
      *
      * @param int $uid Category uid

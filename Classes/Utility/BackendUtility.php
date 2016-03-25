@@ -78,7 +78,7 @@ class BackendUtility
      * product specified through pUid. It can also fetch information about the
      * attribute and a list of attribute values if the attribute has a valuelist.
      *
-     * @param int $pUid Uid of the product
+     * @param int $productUid Uid of the product
      * @param bool $separateCorrelationType1 If this is true, all attributes with ct1
      *      will be saved in a separated result section
      * @param bool $addAttributeData If true, all information about the
@@ -86,16 +86,16 @@ class BackendUtility
      * @param bool $getValueListData If this is true and additional data is
      *      fetched and an attribute has a valuelist, this gets the values for the
      *      list (default is false)
-     *
+
      * @return array of attributes
      */
     public function getAttributesForProduct(
-        $pUid,
+        $productUid,
         $separateCorrelationType1 = false,
         $addAttributeData = false,
         $getValueListData = false
     ) {
-        if (!$pUid) {
+        if (!$productUid) {
             return [];
         }
 
@@ -112,7 +112,7 @@ class BackendUtility
         $relations = $database->exec_SELECTgetRows(
             'distinct *',
             'tx_commerce_products_attributes_mm',
-            'uid_local = ' . (int) $pUid,
+            'uid_local = ' . (int) $productUid,
             '',
             'sorting, uid_foreign DESC, uid_correlationtype ASC'
         );
@@ -779,20 +779,18 @@ class BackendUtility
      * Searches for a string in an array of arrays.
      *
      * @param string $needle Search value
-     * @param array $array Data to search in
+     * @param array $rows Data to search in
      * @param string $field Fieldname of the inside arrays in the search array
-     *
+
      * @return bool if the needle was found, otherwise false
      */
-    public function checkArray($needle, array $array, $field)
+    public function checkArray($needle, array $rows, $field)
     {
         $result = false;
 
-        if (is_array($array)) {
-            foreach ($array as $entry) {
-                if ($needle == $entry[$field]) {
-                    $result = true;
-                }
+        foreach ($rows as $row) {
+            if ($needle == $row[$field]) {
+                $result = true;
             }
         }
 

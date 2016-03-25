@@ -12,7 +12,9 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\AddressRepository;
 use CommerceTeam\Commerce\Factory\HookFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Plugin 'addresses' for the 'commerce' extension.
@@ -846,16 +848,14 @@ class AddressesController extends BaseController
             return true;
         }
 
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            'tt_address',
-            'uid = ' . (int) $this->piVars['addressid'],
-            ['deleted' => 1]
-        );
+        /** @var AddressRepository $addressRepository */
+        $addressRepository = GeneralUtility::makeInstance(AddressRepository::class);
+        $error = $addressRepository->deleteAddress((int) $this->piVars['addressid']);
 
         unset($this->addresses[(int) $this->piVars['addressid']]);
         unset($this->piVars['confirmed']);
 
-        return $this->getDatabaseConnection()->sql_error() == '';
+        return $error == '';
     }
 
     /**
@@ -1128,32 +1128,21 @@ class AddressesController extends BaseController
      */
     protected function saveAddressData($new = false, $addressType = 0)
     {
+        $addressType = (int) $addressType;
+        $addressRepository = GeneralUtility::makeInstance(AddressRepository::class);
         // Hooks to process new/changed address
         $hooks = HookFactory::getHooks('Controller/AddressesController', 'saveAddress');
-        $database = $this->getDatabaseConnection();
-        $newData = [];
 
-        // Set basic data
-        if (empty($addressType)) {
-            $addressType = 0;
-        }
+        $newData = [
+            'crdata' => $GLOBALS['EXEC_TIME'],
+            'tstamp' => $GLOBALS['EXEC_TIME'],
+            'tx_commerce_is_main_address' => 0,
+        ];
 
         if ($this->piVars['ismainaddress'] == 'on') {
             $newData['tx_commerce_is_main_address'] = 1;
-            // Remove all "is main address" flags from addresses that
-            // are assigned to this user
-            $database->exec_UPDATEquery(
-                'tt_address',
-                'pid = ' . $this->conf['addressPid'] . ' AND tx_commerce_fe_user_id = ' . $this->user['uid'] .
-                ' AND tx_commerce_address_type_id = ' . $addressType,
-                ['tx_commerce_is_main_address' => 0]
-            );
-        } else {
-            $newData['tx_commerce_is_main_address'] = 0;
+            $addressRepository->removeIsMainAddress((int)$this->conf['addressPid'], $this->user['uid'], $addressType);
         }
-
-        $newData['crdata'] = $GLOBALS['EXEC_TIME'];
-        $newData['tstamp'] = $GLOBALS['EXEC_TIME'];
 
         foreach ($this->fieldList as $name) {
             $newData[$name] = \TYPO3\CMS\Core\Utility\GeneralUtility::removeXSS(strip_tags($this->piVars[$name]));
@@ -1173,12 +1162,11 @@ class AddressesController extends BaseController
                 }
             }
 
-            $database->exec_INSERTquery('tt_address', $newData);
-            $newUid = $database->sql_insert_id();
+            $newAddressUid = $addressRepository->addRecord($newData);
 
             foreach ($hooks as $hookObj) {
                 if (method_exists($hookObj, 'afterAddressSave')) {
-                    $hookObj->afterAddressSave($newUid, $newData, $this);
+                    $hookObj->afterAddressSave($newAddressUid, $newData, $this);
                 }
             }
 
@@ -1190,10 +1178,11 @@ class AddressesController extends BaseController
                 }
             }
 
-            $sWhere = 'uid = ' . (int) $this->piVars['addressid'] . ' AND tx_commerce_fe_user_id = '.
-                $this->getFrontendUser()->user['uid'];
-
-            $database->exec_UPDATEquery('tt_address', $sWhere, $newData);
+            $addressRepository->updateAddressOfUser(
+                (int) $this->piVars['addressid'],
+                (int) $this->getFrontendUser()->user['uid'],
+                $newData
+            );
 
             foreach ($hooks as $hookObj) {
                 if (method_exists($hookObj, 'afterAddressEdit')) {
@@ -1236,35 +1225,33 @@ class AddressesController extends BaseController
      */
     public function getAddresses($userId, $addressType = 0)
     {
-        $select = 'tx_commerce_fe_user_id = ' . (int) $userId .
+        $where = 'tx_commerce_fe_user_id = ' . (int) $userId .
             \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tt_address');
 
         if ($addressType > 0) {
-            $select .= ' AND tx_commerce_address_type_id=' . (int) $addressType;
+            $where .= ' AND tx_commerce_address_type_id=' . (int) $addressType;
         } elseif (isset($this->conf['selectAddressTypes'])) {
-            $select .= ' AND tx_commerce_address_type_id IN (' . $this->conf['selectAddressTypes'] . ')';
+            $where .= ' AND tx_commerce_address_type_id IN (' . $this->conf['selectAddressTypes'] . ')';
         } else {
             $this->addresses = [];
 
             return [];
         }
 
-        $select .= ' AND deleted=0 AND pid=' . $this->conf['addressPid'];
+        $where .= ' AND deleted = 0 AND pid = ' . $this->conf['addressPid'];
 
-        /*
-         * Hook for adding select statement
-         */
+        // Hook for adding select statement
         $hooks = HookFactory::getHooks('Controller/AddressesController', 'getAddresses');
         foreach ($hooks as $hook) {
             if (method_exists($hook, 'editSelectStatement')) {
-                $select = $hook->editSelectStatement($select, $userId, $addressType, $this);
+                $where = $hook->editSelectStatement($where, $userId, $addressType, $this);
             }
         }
 
         $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             'tt_address',
-            $select,
+            $where,
             '',
             'tx_commerce_is_main_address desc'
         );

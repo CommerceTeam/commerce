@@ -12,7 +12,10 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\AddressRepository;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository;
+use CommerceTeam\Commerce\Domain\Repository\OrderRepository;
 use CommerceTeam\Commerce\Factory\HookFactory;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use CommerceTeam\Commerce\ViewHelpers\MoneyViewHelper;
@@ -1137,11 +1140,14 @@ class CheckoutController extends BaseController
          * later.
          */
         if (isset($this->conf['lockOrderIdInGenerateOrderId']) && $this->conf['lockOrderIdInGenerateOrderId'] == 1) {
-            $orderData = [];
-            $orderData['crdate'] = $GLOBALS['EXEC_TIME'];
-            $orderData['tstamp'] = $GLOBALS['EXEC_TIME'];
-            $database->exec_INSERTquery('tx_commerce_orders', $orderData);
-            $orderUid = $database->sql_insert_id();
+            $orderData = [
+                'crdate' => $GLOBALS['EXEC_TIME'],
+                'tstamp' => $GLOBALS['EXEC_TIME'],
+            ];
+            /** @var OrderRepository $orderRepository */
+            $orderRepository = GeneralUtility::makeInstance(OrderRepository::class);
+            $orderUid = $orderRepository->addRecord($orderData);
+
             // make orderUid avaible in hookObjects
             $this->orderUid = $orderUid;
         }
@@ -1871,7 +1877,6 @@ class CheckoutController extends BaseController
             return 0;
         }
 
-        $database = $this->getDatabaseConnection();
         $hooks = HookFactory::getHooks('Controller/CheckoutController', 'handleAddress');
 
         $config = $this->conf[$type . '.'];
@@ -1951,9 +1956,9 @@ class CheckoutController extends BaseController
                         }
                     }
 
-                    $database->exec_INSERTquery('fe_users', $feuData);
-
-                    $dataArray[$config['userConnection']] = $database->sql_insert_id();
+                    /** @var FrontendUserRepository $frontendUserRepository */
+                    $frontendUserRepository = GeneralUtility::makeInstance(FrontendUserRepository::class);
+                    $dataArray[$config['userConnection']] = $frontendUserRepository->addRecord($feuData);
 
                     $this->getFrontendUser()->user['uid'] = $dataArray[$config['userConnection']];
 
@@ -1983,9 +1988,9 @@ class CheckoutController extends BaseController
                 }
             }
 
-            $database->exec_INSERTquery('tt_address', $dataArray);
-
-            $uid = $database->sql_insert_id();
+            /** @var AddressRepository $addressRepository */
+            $addressRepository = GeneralUtility::makeInstance(AddressRepository::class);
+            $uid = $addressRepository->addRecord($dataArray);
         }
 
         return $uid;

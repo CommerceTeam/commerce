@@ -50,7 +50,7 @@ class ProducibleArticlesElement extends AbstractFormElement
      *
      * @var \CommerceTeam\Commerce\Utility\BackendUtility
      */
-    protected $belib;
+    protected $backendUtility;
 
     /**
      * Return url.
@@ -69,10 +69,15 @@ class ProducibleArticlesElement extends AbstractFormElement
     {
         parent::__construct($nodeFactory, $data);
 
-        $this->belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
+        $this->backendUtility = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
 
         $this->existingArticles = $this->data['databaseRow']['articles'];
-        $this->attributes = $this->belib->getAttributesForProduct((int)$this->data['vanillaUid'], true, true, true);
+        $this->attributes = $this->backendUtility->getAttributesForProduct(
+            (int)$this->data['vanillaUid'],
+            true,
+            true,
+            true
+        );
 
         $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_db.xlf');
     }
@@ -159,6 +164,7 @@ class ProducibleArticlesElement extends AbstractFormElement
         }
 
         if (isset($this->attributes['ct1']) && is_array($this->attributes['ct1'])) {
+            //$attributes = array_reverse($this->attributes['ct1']);
             foreach ($this->attributes['ct1'] as $attribute) {
                 $result .= '<th  style="width: {width}%">'
                     . htmlspecialchars(strip_tags($attribute['attributeData']['title'])) . '</th>';
@@ -274,19 +280,23 @@ class ProducibleArticlesElement extends AbstractFormElement
             } else {
                 // serialize data for form saveing
                 $labelData = [];
-                $hashData = [];
+                $attributeValue = [];
+
+                //$row = array_reverse($row);
 
                 foreach ($row as $rd) {
-                    $hashData[$rd['attributeUid']] = $rd['attributeValueUid'];
+                    $attributeValue[$rd['attributeUid']] = $rd['attributeValueUid'];
                     $labelData[] = $rd['attributeValueLabel'];
                 }
-                asort($hashData);
+                asort($attributeValue);
 
-                // try to fetch an article with this special attribute values
-                $hash = md5(serialize($hashData));
-
-                if ($this->belib->checkArray($hash, $this->existingArticles, 'attribute_hash')) {
-                    // @todo fix existing attribute combination should not be displayed
+                // needs to use json_encode or the check against stored articles will result in a wrong result
+                // this is because ajax handed attribute data are objects due to associativ array usage
+                if ($this->backendUtility->checkArray(
+                    md5(json_encode($attributeValue)),
+                    $this->existingArticles,
+                    'attribute_hash'
+                )) {
                     continue;
                 }
 
@@ -299,7 +309,7 @@ class ProducibleArticlesElement extends AbstractFormElement
 
                 // create the row
                 $resultRows .= '<tr>
-                    <td class="col-icon">' . $this->getCreateAction($hashData) . '</td>
+                    <td class="col-icon">' . $this->getCreateAction($attributeValue) . '</td>
                     <td>' . GeneralUtility::removeXSS(implode('</td><td>', $labelData)) . '</td>';
                 if (!empty($extraRowData)) {
                     $resultRows .= '<td>' . GeneralUtility::removeXSS(implode('</td><td>', $extraRowData)) . '</td>';

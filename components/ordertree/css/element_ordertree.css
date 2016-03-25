@@ -216,28 +216,6 @@
   padding: 0 0 0 5px;
   display: inline;
 }
-.commerce-ordertree-deletionDropZone-restore {
-  background-color: #d5d5d5;
-  background-image: url(../../../../../../typo3/sysext/t3skin/images/backgrounds/button.png);
-  background-image: linear-gradient(center top, #f6f6f6 10%, #d5d5d5 90%);
-  background-repeat: repeat-x;
-  border: 1px solid #7c7c7c;
-  border-radius: 1px;
-  color: #434343;
-  cursor: pointer;
-  display: inline-block;
-  padding: 0 6px;
-  margin-left: 24px;
-}
-.commerce-ordertree-deletionDropZone-restore:hover {
-  background-color: #c8c8c8;
-  background-image: url(../../../../../../typo3/sysext/t3skin/images/backgrounds/button-hover.png);
-  background-image: linear-gradient(center top, #f6f6f6 10%, #c8c8c8 90%);
-  background-position: bottom;
-  background-repeat: repeat-x;
-  border: 1px solid #737f91;
-  color: #1e1e1e;
-}
 .commerce-ordertree-deletionDropZone-restoreText {
   display: inline-block;
   padding: 4px 4px 4px 18px;

@@ -12,7 +12,11 @@ namespace CommerceTeam\Commerce\Utility;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\ArticlePriceRepository;
+use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
+use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -39,7 +43,7 @@ class FolderUtility
         /*
          * Folder Creation
          *
-         * @todo Get list from Order folders from TS
+         * @todo Get list of order folders from TS
          */
         $modulePid = FolderRepository::initFolders('Commerce');
         $productPid = FolderRepository::initFolders('Products', $modulePid);
@@ -52,25 +56,22 @@ class FolderUtility
         FolderRepository::initFolders('Delivered', $orderPid);
 
         // Create System Product for payment and other things.
-        $addArray = ['tstamp' => $GLOBALS['EXEC_TIME'], 'crdate' => $GLOBALS['EXEC_TIME'], 'pid' => $productPid];
+        $addArray = [
+            'tstamp' => $GLOBALS['EXEC_TIME'],
+            'crdate' => $GLOBALS['EXEC_TIME'],
+            'pid' => $productPid
+        ];
 
-        $database = self::getDatabaseConnection();
+        /** @var CategoryRepository $categoryRepository */
+        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
 
-        // handle payment types
         // create the category if it not exists
-        $catUid = $database->exec_SELECTgetSingleRow(
-            'uid',
-            'tx_commerce_categories',
-            'uname = "SYSTEM" AND parent_category = "" AND deleted = 0'
-        );
-        $catUid = $catUid['uid'];
-
+        $catUid = $categoryRepository->getSystemCategoryUid();
         if ((int) $catUid == 0) {
-            $catArray = $addArray;
-            $catArray['title'] = 'SYSTEM';
-            $catArray['uname'] = 'SYSTEM';
-            $database->exec_INSERTquery('tx_commerce_categories', $catArray);
-            $catUid = $database->sql_insert_id();
+            $categoryData = $addArray;
+            $categoryData['title'] = 'SYSTEM';
+            $categoryData['uname'] = 'SYSTEM';
+            $catUid = $categoryRepository->addRecord($categoryData);
         }
 
         $sysProducts = ConfigurationUtility::getInstance()->getConfiguration('SYSPRODUCTS');
@@ -114,17 +115,17 @@ class FolderUtility
      * Creates a product with a special uname inside of a specific category.
      * If the product already exists, the method returns the UID of it.
      *
-     * @param int $catUid Category uid
+     * @param int $categoryUid Category uid
      * @param string $uname Unique name
      * @param array $addArray Additional values
-     *
+
      * @return bool
      */
-    public static function makeProduct($catUid, $uname, array $addArray)
+    public static function makeProduct($categoryUid, $uname, array $addArray)
     {
         // first of all, check if there is a product for this value
         // if the product already exists, exit
-        $pCheck = self::checkProd($catUid, $uname);
+        $pCheck = self::checkProd($categoryUid, $uname);
         if ($pCheck) {
             // the return value of the method above is the uid of the product
             // in the category
@@ -136,103 +137,70 @@ class FolderUtility
         $paArray = $addArray;
         $paArray['uname'] = $uname;
         $paArray['title'] = $uname;
-        $paArray['categories'] = $catUid;
+        $paArray['categories'] = $categoryUid;
 
-        $database = self::getDatabaseConnection();
+        /** @var ProductRepository $productRepository */
+        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        $productUid = $productRepository->addRecord($paArray);
+        $productRepository->addCategoryRelation($productUid, $categoryUid);
 
-        $database->exec_INSERTquery('tx_commerce_products', $paArray);
-        $pUid = $database->sql_insert_id();
-
-        // create relation between product and category
-        $database->exec_INSERTquery(
-            'tx_commerce_products_categories_mm',
-            ['uid_local' => $pUid, 'uid_foreign' => $catUid]
-        );
-
-        return $pUid;
+        return $productUid;
     }
 
     /**
      * Checks if a product is inside a category. The product is identified
      * by the uname field.
      *
-     * @param int $cUid The uid of the category we search in
+     * @param int $categoryUid The uid of the category we search in
      * @param string $uname The unique name by which the product should be identified
      *
      * @return bool|int false or UID of the found product
      */
-    public static function checkProd($cUid, $uname)
+    public static function checkProd($categoryUid, $uname)
     {
-        $database = self::getDatabaseConnection();
+        /** @var ProductRepository $productRepository */
+        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        $product = $productRepository->findByCategoryAndUname($categoryUid, $uname);
 
-        // select all product from that category
-        $rows = $database->exec_SELECTgetRows(
-            'uid_local',
-            'tx_commerce_products_categories_mm',
-            'uid_foreign = ' . (int) $cUid
-        );
-        $pList = [];
-        foreach ($rows as $pUid) {
-            $pList[] = (int) $pUid['uid_local'];
-        }
-        // if no products where found for this category, we can return false
-        if (empty($pList)) {
-            return false;
-        }
-
-        // else search the uid of the product with the classname within the product list
-        $pUid = (array) $database->exec_SELECTgetSingleRow(
-            'uid',
-            'tx_commerce_products',
-            'uname = \'' . $uname . '\' AND uid IN (' . implode(',', $pList) . ') AND deleted = 0 AND hidden = 0'
-        );
-
-        return isset($pUid['uid']) ? $pUid['uid'] : 0;
+        return isset($product['uid']) ? $product['uid'] : 0;
     }
 
     /**
      * Creates an article for the product. Used for sysarticles
      * (e.g. payment articles).
      *
-     * @param int $pUid Product Uid under wich the articles are created
-     * @param int $key Keyname for the sysarticle, used for classname and title
+     * @param int $productUid Product Uid under wich the articles are created
+     * @param int $classname Keyname for the sysarticle, used for classname and title
      * @param array $value Values for the article, only type is used
      * @param array $addArray Additional params for the inserts (like timestamp)
-     *
      * @return int
      */
-    public static function makeArticle($pUid, $key, array $value, array $addArray)
+    public static function makeArticle($productUid, $classname, array $value, array $addArray)
     {
-        $database = self::getDatabaseConnection();
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
 
-        // try to select an article that has a relation for this product
-        // and the correct classname
-        /**
-         * Backend library.
-         *
-         * @var BackendUtility $belib
-         */
-        $belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
-        $articles = $belib->getArticlesOfProduct($pUid, 'classname=\'' . $key . '\'');
-
-        if (is_array($articles) and !empty($articles)) {
-            return $articles[0]['uid'];
+        // try to select an article that has a relation for this product and the correct classname
+        $article = $articleRepository->findByClassname($classname);
+        if (!empty($article) && $article['uid_product'] == $productUid) {
+            return $article['uid'];
         }
 
-        $aArray = $addArray;
-        $aArray['classname'] = $key;
-        $aArray['title'] = !$value['title'] ? $key : $value['title'];
-        $aArray['uid_product'] = (int) $pUid;
-        $aArray['article_type_uid'] = (int) $value['type'];
-        $database->exec_INSERTquery('tx_commerce_articles', $aArray);
-        $aUid = $database->sql_insert_id();
+        /** @var ArticlePriceRepository $articlePriceRepository */
+        $articlePriceRepository = GeneralUtility::makeInstance(ArticlePriceRepository::class);
 
-        $pArray = $addArray;
-        $pArray['uid_article'] = $aUid;
-        // create a price
-        $database->exec_INSERTquery('tx_commerce_article_prices', $pArray);
+        $articleData = $addArray;
+        $articleData['classname'] = $classname;
+        $articleData['title'] = $value['title'] ? $value['title'] : $classname;
+        $articleData['uid_product'] = (int) $productUid;
+        $articleData['article_type_uid'] = (int) $value['type'];
+        $articleUid = $articleRepository->addRecord($articleData);
 
-        return $aUid;
+        $priceData = $addArray;
+        $priceData['uid_article'] = $articleUid;
+        $articlePriceRepository->addRecord($priceData);
+
+        return $articleUid;
     }
 
 

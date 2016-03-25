@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Hooks;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -480,10 +481,6 @@ class CommandMapHook
      */
     protected function translateArticlesOfProduct($productUid, $localizedProductUid, $value)
     {
-        $database = $this->getDatabaseConnection();
-
-        // get articles of localized Product
-        $localizedProductArticles = $this->belib->getArticlesOfProduct($localizedProductUid);
         // get all related articles
         $articles = $this->belib->getArticlesOfProduct($productUid);
         if (empty($articles)) {
@@ -492,6 +489,9 @@ class CommandMapHook
                 'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:product.localization_without_article'
             );
         }
+
+        // get articles of localized Product
+        $localizedProductArticles = $this->belib->getArticlesOfProduct($localizedProductUid);
 
         // Check if product has articles and localized product has no articles
         if (!empty($articles) && empty($localizedProductArticles)) {
@@ -508,48 +508,51 @@ class CommandMapHook
                 $langIdent = 'DEF';
             }
 
+            /** @var ArticleRepository $articleRepository */
+            $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+
             // process all existing articles and copy them
-            if (is_array($articles)) {
-                foreach ($articles as $origArticle) {
-                    // make a localization version
-                    $locArticle = $origArticle;
-                    // unset some values
-                    unset($locArticle['uid']);
+            foreach ($articles as $origArticle) {
+                // make a localization version
+                $locArticle = $origArticle;
+                // unset some values
+                unset($locArticle['uid']);
 
-                    // set new article values
-                    $locArticle['tstamp'] = $GLOBALS['EXEC_TIME'];
-                    $locArticle['crdate'] = $GLOBALS['EXEC_TIME'];
-                    $locArticle['sys_language_uid'] = $value;
-                    $locArticle['l18n_parent'] = $origArticle['uid'];
-                    $locArticle['uid_product'] = $localizedProductUid;
+                // set new article values
+                $locArticle['tstamp'] = $GLOBALS['EXEC_TIME'];
+                $locArticle['crdate'] = $GLOBALS['EXEC_TIME'];
+                $locArticle['sys_language_uid'] = $value;
+                $locArticle['l18n_parent'] = $origArticle['uid'];
+                $locArticle['uid_product'] = $localizedProductUid;
 
-                    // get XML for attributes
-                    // this has only to be changed if the language is something else than default.
-                    // The possibility that something else happens is very small but anyhow... ;-)
-                    if ($langIdent != 'DEF' && $origArticle['attributesedit']) {
-                        $locArticle['attributesedit'] = $this->belib->buildLocalisedAttributeValues(
-                            $origArticle['attributesedit'],
-                            $langIdent
-                        );
-                    }
-
-                    // create new article in DB
-                    $database->exec_INSERTquery('tx_commerce_articles', $locArticle);
-
-                    // get the uid of the localized article
-                    $locatedArticleUid = $database->sql_insert_id();
-
-                    // get all relations to attributes from the old article
-                    // and copy them to new article
-                    $res = $database->exec_SELECTquery(
-                        '*',
-                        'tx_commerce_articles_attributes_mm',
-                        'uid_local = ' . (int) $origArticle['uid'] . ' AND uid_valuelist = 0'
+                // get XML for attributes
+                // this has only to be changed if the language is something else than default.
+                // The possibility that something else happens is very small but anyhow... ;-)
+                if ($langIdent != 'DEF' && $origArticle['attributesedit']) {
+                    $locArticle['attributesedit'] = $this->belib->buildLocalisedAttributeValues(
+                        $origArticle['attributesedit'],
+                        $langIdent
                     );
-                    while (($origRelation = $database->sql_fetch_assoc($res))) {
-                        $origRelation['uid_local'] = $locatedArticleUid;
-                        $database->exec_INSERTquery('tx_commerce_articles_attributes_mm', $origRelation);
+                }
+
+                // create new article in DB
+                $locatedArticleUid = $articleRepository->addRecord($locArticle);
+
+                // get all relations to attributes from the old article and copy them to new article
+                $originalRelations = $articleRepository->getAttributeRelationsByArticleUid((int) $origArticle['uid']);
+                foreach ($originalRelations as $originalRelation) {
+                    if ($originalRelation['uid_valuelist'] > 0) {
+                        continue;
                     }
+                    $articleRepository->addAttributeRelation(
+                        $locatedArticleUid,
+                        $originalRelation['uid_foreign'],
+                        $originalRelation['uid_product'],
+                        $originalRelation['sorting'],
+                        $originalRelation['uid_valuelist'],
+                        $originalRelation['value_char'],
+                        $originalRelation['default_value']
+                    );
                 }
             }
         }

@@ -319,4 +319,38 @@ class ProductRepository extends AbstractRepository
             'uid IN (' . implode(',', $uids) . ')' . $this->enableFields()
         );
     }
+
+    /**
+     * @param int $categoryUid
+     * @param string $uname
+     * @return array
+     */
+    public function findByCategoryAndUname($categoryUid, $uname)
+    {
+        $product = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'tx_commerce_products.*',
+            $this->databaseCategoryRelationTable
+            . ' AS mm
+            INNER JOIN tx_commerce_products ON mm.uid_local = tx_commerce_products.uid',
+            'tx_commerce_products.deleted = 0 AND tx_commerce_products.hidden = 0 AND mm.uid_foreign = '
+            . (int) $categoryUid . ' AND uname = \'' . $uname . '\''
+        );
+
+        return $product;
+    }
+
+    /**
+     * @param int $productUid
+     * @param int $categorUid
+     */
+    public function addCategoryRelation($productUid, $categorUid)
+    {
+        $this->getDatabaseConnection()->exec_INSERTquery(
+            $this->databaseCategoryRelationTable,
+            [
+                'uid_local' => $productUid,
+                'uid_foreign' => $categorUid,
+            ]
+        );
+    }
 }

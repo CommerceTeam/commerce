@@ -79,7 +79,8 @@ class ArticleAjaxController
 
         $content = '';
         if (!empty($product->getData())) {
-            $this->init($product, (array)$this->conf['attributeValue']);
+            $attributeValue = array_map('intval', (array)$this->conf['attributeValue']);
+            $this->init($product, $attributeValue);
 
             if (!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
                 $product->getParentCategories(),
@@ -89,7 +90,7 @@ class ArticleAjaxController
             } else {
                 switch ($this->conf['action']) {
                     case 'createArticle':
-                        $content = $this->createArticle($product, (array)$this->conf['attributeValue']);
+                        $content = $this->createArticle($product, $attributeValue);
                         break;
                 }
             }
@@ -145,7 +146,9 @@ class ArticleAjaxController
      */
     protected function createArticle(Product $product, array $attributeValue)
     {
-        $attributeHash = md5(serialize($attributeValue));
+        // needs to use json_encode or the check against stored articles will result in a wrong result
+        // this is because ajax handed attribute data are objects due to associativ array usage
+        $attributeHash = md5(json_encode($attributeValue));
 
         $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
         $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);

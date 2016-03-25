@@ -1,3 +1,5 @@
+/* globals window */
+
 /*
  * This file is part of the TYPO3 Commerce project.
  *
@@ -26,7 +28,7 @@ define(['jquery'], function($) {
 			articleListSelector: '#recordlist-tx_commerce_articles'
 		}
 	};
-	var ajaxUrl = TYPO3.settings.ajaxUrls['user_article_create'],
+	var ajaxUrl = window.TYPO3.settings.ajaxUrls['user_article_create'],
 		$clickedCreateAction;
 
 	/**
@@ -47,9 +49,11 @@ define(['jquery'], function($) {
 				'attributeValue': attributeValue
 			}
 		}).done(function(response) {
-			ProducibleArticles.addArticleRowToList(response);
-			ProducibleArticles.removeLastCreatedAttributes();
-			ProducibleArticles.switchToExistingArticlesTab();
+			if (response) {
+				ProducibleArticles.addArticleRowToList(response);
+				ProducibleArticles.removeLastCreatedAttributes();
+				ProducibleArticles.switchToExistingArticlesTab();
+			}
 		});
 	};
 
@@ -109,7 +113,7 @@ define(['jquery'], function($) {
 	$(ProducibleArticles.initializeEvents);
 
 	// expose to global
-	TYPO3.ProducibleArticles = ProducibleArticles;
+	window.TYPO3.ProducibleArticles = ProducibleArticles;
 
 	return ProducibleArticles;
 });
