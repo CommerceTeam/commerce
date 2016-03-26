@@ -67,6 +67,25 @@ Removed constansts
 - PATH_TXCOMMERCE_REL is not used anymore
 
 
+Removed functions
+-----------------
+
+\CommerceTeam\Commerce\Utility\BackendUtility::deleteL18n
+\CommerceTeam\Commerce\Utility\BackendUtility::getAttributeData replaced with AttributeRepository::findByUid
+\CommerceTeam\Commerce\Utility\BackendUtility::getAttributesForCategory replaced with CategoryRepository::findAttributesByCategoryUid
+\CommerceTeam\Commerce\Utility\BackendUtility::getAttributeTitle
+\CommerceTeam\Commerce\Utility\BackendUtility::getAttributeTitles
+\CommerceTeam\Commerce\Utility\BackendUtility::getAttributeValue
+\CommerceTeam\Commerce\Utility\BackendUtility::getCategoryData replaced with CategoryRepository::findByUid
+\CommerceTeam\Commerce\Utility\BackendUtility::getCategoriesForProductFromDb
+\CommerceTeam\Commerce\Utility\BackendUtility::getOverwriteData
+\CommerceTeam\Commerce\Utility\BackendUtility::getProductParentCategories
+\CommerceTeam\Commerce\Utility\BackendUtility::isAjaxRequest
+\CommerceTeam\Commerce\Utility\BackendUtility::isNumber replaced with \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger
+\CommerceTeam\Commerce\Utility\BackendUtility::overwriteArticle
+\CommerceTeam\Commerce\Utility\BackendUtility::overwriteProduct
+
+
 Changed modules
 ---------------
 

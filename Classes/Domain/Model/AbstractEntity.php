@@ -12,9 +12,13 @@ namespace CommerceTeam\Commerce\Domain\Model;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\AbstractRepository;
+use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
+
 /*
  * Constants definition for Attribute correlation_types
- * Add new contants to array in alib class
+ * Add new contants to array in AbstractEntity class
  */
 
 /**
@@ -23,11 +27,6 @@ namespace CommerceTeam\Commerce\Domain\Model;
  * @var int
  * @see sql tx_commerce_attribute_correlationtypes
  */
-use CommerceTeam\Commerce\Domain\Repository\AbstractRepository;
-use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
-use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
-
 define('ATTRIB_SELECTOR', 1);
 
 /**
@@ -136,7 +135,7 @@ class AbstractEntity
      *
      * @var array
      */
-    protected $attributes_uids = [];
+    protected $attributes_uids = null;
 
     /**
      * Attributes.
@@ -176,25 +175,27 @@ class AbstractEntity
      */
     public function getAttributes(array $attributeCorelationTypeList = [])
     {
-        $this->attributes_uids = $this->databaseConnection->getAttributes(
-            $this->uid,
-            $attributeCorelationTypeList
-        );
-
-        foreach ($this->attributes_uids as $attributeUid) {
-            /**
-             * Attribute.
-             *
-             * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attribute
-             */
-            $attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                \CommerceTeam\Commerce\Domain\Model\Attribute::class,
-                $attributeUid,
-                $this->lang_uid
+        if ($this->attributes_uids == null) {
+            $this->attributes_uids = $this->getRepository()->getAttributes(
+                $this->uid,
+                $attributeCorelationTypeList
             );
-            $attribute->loadData();
 
-            $this->attribute[$attributeUid] = $attribute;
+            foreach ($this->attributes_uids as $attributeUid) {
+                /**
+                 * Attribute.
+                 *
+                 * @var \CommerceTeam\Commerce\Domain\Model\Attribute $attribute
+                 */
+                $attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                    \CommerceTeam\Commerce\Domain\Model\Attribute::class,
+                    $attributeUid,
+                    $this->lang_uid
+                );
+                $attribute->loadData();
+
+                $this->attribute[$attributeUid] = $attribute;
+            }
         }
 
         return $this->attributes_uids;
@@ -415,7 +416,7 @@ class AbstractEntity
     }
 
     /**
-     * @return DatabaseConnection
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
      */
     protected function getDatabaseConnection()
     {

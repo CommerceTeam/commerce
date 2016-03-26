@@ -700,8 +700,6 @@ Removed hooks since 4.x
 	, , ['commerce/Classes/Utility/BackendUtility.php']['copyProduct'], ['commerce/Utility/BackendUtility']['copyProduct']
 	, copyCategory, ['commerce/lib/class.tx_commerce_belib.php']['copyCategoryClass'], ['commerce/Utility/BackendUtility']['copyCategory']
 	, , ['commerce/Classes/Utility/BackendUtility.php']['copyCategory'], ['commerce/Utility/BackendUtility']['copyCategory']
-	, overwriteProduct, ['commerce/lib/class.tx_commerce_belib.php']['overwriteProductClass'], ['commerce/Utility/BackendUtility']['overwriteProduct']
-	, , ['commerce/Classes/Utility/BackendUtility.php']['overwriteProduct'], ['commerce/Utility/BackendUtility']['overwriteProduct']
 
 
 .. _\CommerceTeam\Commerce\Utility\FolderUtility_hooks:

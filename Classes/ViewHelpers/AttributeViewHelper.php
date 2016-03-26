@@ -11,7 +11,9 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-
+use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
+use CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -30,42 +32,52 @@ class AttributeViewHelper
      */
     public function displayAttributeValue(array $parameter)
     {
-        /** @var \CommerceTeam\Commerce\Utility\BackendUtility $belib */
-        $belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        /** @var AttributeRepository $attributeRepository */
+        $attributeRepository = GeneralUtility::makeInstance(AttributeRepository::class);
 
         // attribute value uid
-        $aUid = $parameter['fieldConf']['config']['aUid'];
+        $attributeUid = $parameter['fieldConf']['config']['aUid'];
+        $articleUid = $parameter['row']['uid'];
 
-        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid_valuelist, default_value, value_char',
-            'tx_commerce_articles_attributes_mm',
-            'uid_local = ' . (int) $parameter['row']['uid'] . ' AND uid_foreign = ' . (int) $aUid
-        );
 
-        $attributeData = $belib->getAttributeData($aUid, 'has_valuelist,multiple,unit');
-        if ($attributeData['multiple'] == 1) {
-            $relationData = $rows;
-        } else {
-            $relationData = reset($rows);
+        $relationData = $articleRepository->findAttributeRelationsByArticleAndAttribute($articleUid, $attributeUid);
+        $attributeData = $attributeRepository->findByUid($attributeUid);
+
+        if ($attributeData['multiple'] == 0) {
+            $relationData = reset($relationData);
         }
 
-        return htmlspecialchars(strip_tags($belib->getAttributeValue(
-            $parameter['row']['uid'],
-            $aUid,
-            'tx_commerce_articles_attributes_mm',
-            $relationData,
-            $attributeData
-        )));
-    }
+        if ($attributeData['has_valuelist'] == '1') {
+            /** @var AttributeValueRepository $attributeValueRepository */
+            $attributeValueRepository = GeneralUtility::makeInstance(AttributeValueRepository::class);
+            if ($attributeData['multiple'] == 1) {
+                $valueUids = [];
+                foreach ($relationData as $relation) {
+                    $valueUids[] = (int) $relation['uid_valuelist'];
+                }
 
+                $values = $attributeValueRepository->findByUids($valueUids);
 
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
+                $valueLabels = array_map(function ($value) {
+                    return $value['value'];
+                }, $values);
+
+                $result = '<ul><li>' . implode(
+                    '</li><li>',
+                    \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($valueLabels)
+                ) . '</li></ul>';
+            } else {
+                $value = $attributeValueRepository->findByUid((int) $relationData['uid_valuelist']);
+                $result = $value['value'];
+            }
+        } elseif (!empty($relationData['value_char'])) {
+            $result = $relationData['value_char'] . ' ' . $attributeData['unit'];
+        } else {
+            $result = $relationData['default_value'] . ' ' . $attributeData['unit'];
+        }
+
+        return htmlspecialchars(strip_tags($result));
     }
 }

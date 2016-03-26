@@ -47,4 +47,20 @@ class AttributeValueRepository extends AbstractRepository
             BackendUtility::deleteClause($this->databaseTable)
         );
     }
+
+    /**
+     * @param array $uids
+     * @return array
+     */
+    public function findByUids(array $uids)
+    {
+        $uids = array_map('intval', $uids);
+        $values = (array)$this->getDatabaseConnection()->exec_SELECTgetRows(
+            'uid, value',
+            $this->databaseTable,
+            'uid IN (' . implode(',', $uids) . ')' . $this->enableFields()
+        );
+
+        return $values;
+    }
 }

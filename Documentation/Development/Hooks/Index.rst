@@ -811,15 +811,6 @@ ______________________
 	                                                                                    | $uid                                 | Integer
 	                                                                                    | $overrideArray                       | Array
 	                                                                                    | **Result**                           | void
-	overwriteProduct                          | beforeOverwrite                         | $uidFrom                             | Integer
-	                                          |                                         | $uidTo                               | Integer
-	                                          |                                         | $datamap                             | Array
-	                                          |                                         | **Result**                           | void
-	                                          | beforeCopy                              | $uidFrom                             | Integer
-	                                                                                    | $uidTo                               | Integer
-	                                                                                    | $datamap                             | Array
-	                                                                                    | $tce                                 | \\TYPO3\\CMS\\Core\\DataHandling\\DataHandler
-	                                                                                    | **Result**                           | void
 	========================================= ========================================= ====================================== ===================================================================
 
 

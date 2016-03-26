@@ -36,6 +36,13 @@ class AttributeRepository extends AbstractRepository
     protected $childDatabaseTable = 'tx_commerce_attribute_values';
 
     /**
+     * Database value table.
+     *
+     * @var string Child database table
+     */
+    protected $correlationTypeDatabaseTable = 'tx_commerce_attribute_correlationtypes';
+
+    /**
      * @param int $productUid
      *
      * @return array
@@ -76,6 +83,20 @@ class AttributeRepository extends AbstractRepository
         );
 
         return $attributes;
+    }
+
+    /**
+     * @return array
+     */
+    public function findAllCorrelationTypes()
+    {
+        $correlationTypes = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            '*',
+            $this->correlationTypeDatabaseTable,
+            ''
+        );
+
+        return $correlationTypes;
     }
 
     /**

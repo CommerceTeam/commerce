@@ -245,7 +245,7 @@ class ProductRepository extends AbstractRepository
             $this->databaseCategoryRelationTable,
             'uid_local = ' . (int) $uid,
             '',
-            'sorting ASC'
+            'sorting'
         );
         foreach ($rows as $row) {
             $uids[] = $row['uid_foreign'];
@@ -253,12 +253,8 @@ class ProductRepository extends AbstractRepository
 
         // If $uids is empty, the record might be a localized product
         if (empty($uids)) {
-            $row = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                'l18n_parent',
-                $this->databaseTable,
-                'uid = ' . $uid
-            );
-            if (!empty($row)) {
+            $row = $this->findByUid($uid);
+            if (!empty($row) && isset($row['l18n_parent']) && $row['l18n_parent'] > 0) {
                 $uids = $this->getParentCategories($row['l18n_parent']);
             }
         }
@@ -287,11 +283,27 @@ class ProductRepository extends AbstractRepository
     /**
      * Get relation.
      *
+     * @param int $productUid Product uid
+     *
+     * @return array
+     */
+    public function findAttributeRelationByProductUid($productUid)
+    {
+        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            '*',
+            $this->databaseAttributeRelationTable,
+            'uid_local = ' . (int) $productUid
+        );
+    }
+
+    /**
+     * Get relation.
+     *
      * @param int $foreignUid Foreign uid
      *
      * @return array
      */
-    public function findRelationByForeignUid($foreignUid)
+    public function findRelationByCategoryUid($foreignUid)
     {
         return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
@@ -352,5 +364,38 @@ class ProductRepository extends AbstractRepository
                 'uid_foreign' => $categorUid,
             ]
         );
+    }
+
+    /**
+     * @param int $productUid
+     * @param array $data
+     * @return string
+     */
+    public function addAttributeRelation($productUid, $data)
+    {
+        $data['uid_local'] = (int) $productUid;
+
+        $this->getDatabaseConnection()->exec_INSERTquery(
+            $this->databaseAttributeRelationTable,
+            $data
+        );
+
+        return $this->getDatabaseConnection()->sql_error();
+    }
+
+    /**
+     * @param int $productUidFrom
+     * @param int $productUidTo
+     * @return string
+     */
+    public function updateAttributeRelation($productUidFrom, $productUidTo)
+    {
+        $this->getDatabaseConnection()->exec_UPDATEquery(
+            $this->databaseAttributeRelationTable,
+            'uid_local = ' . (int) $productUidFrom,
+            ['uid_local' => (int) $productUidTo]
+        );
+
+        return $this->getDatabaseConnection()->sql_error();
     }
 }

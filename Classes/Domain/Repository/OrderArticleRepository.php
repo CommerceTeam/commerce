@@ -28,6 +28,22 @@ class OrderArticleRepository extends AbstractRepository
      * Find order articles by order id in page.
      *
      * @param string $orderId Order Id
+     *
+     * @return array
+     */
+    public function findByOrderId($orderId)
+    {
+        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            '*',
+            $this->databaseTable,
+            'order_id = ' . $this->getDatabaseConnection()->fullQuoteStr($orderId, $this->databaseTable)
+        );
+    }
+
+    /**
+     * Find order articles by order id in page.
+     *
+     * @param string $orderId Order Id
      * @param int $pageId Page id
      *
      * @return array

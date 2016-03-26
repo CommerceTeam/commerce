@@ -303,16 +303,6 @@ class Attribute extends AbstractEntity
     }
 
     /**
-     * Overwrite getAttributes as attributes can't have attributes.
-     *
-     * @return array empty
-     */
-    public function getAttributes()
-    {
-        return [];
-    }
-
-    /**
      * Get parent.
      *
      * @param bool|string $translationMode Translation mode

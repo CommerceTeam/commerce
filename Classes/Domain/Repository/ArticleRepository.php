@@ -223,6 +223,22 @@ class ArticleRepository extends AbstractRepository
     }
 
     /**
+     * @param int $articleUid
+     * @param int $attributeUid
+     * @return array
+     */
+    public function findAttributeRelationsByArticleAndAttribute($articleUid, $attributeUid)
+    {
+        $relations = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            '*',
+            $this->databaseAttributeRelationTable,
+            'uid_local = ' . (int) $articleUid . ' AND uid_foreign = ' . (int) $attributeUid
+        );
+
+        return $relations;
+    }
+
+    /**
      * Returns the attribute Value from the given Article attribute pair.
      *
      * @param int $uid Article UID
@@ -363,6 +379,65 @@ class ArticleRepository extends AbstractRepository
             '*',
             'tx_commerce_articles',
             'classname = \'' . $classname . '\'' . $this->enableFields()
+        );
+    }
+
+    /**
+     * @param int $productUid
+     * @return array
+     */
+    public function findByProductUid($productUid)
+    {
+        $articles = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            '*',
+            $this->databaseTable,
+            'uid_product = ' . $productUid . $this->enableFields(),
+            '',
+            'sorting'
+        );
+
+        return $articles;
+    }
+
+    /**
+     * @param int $articleUid
+     * @param int $attributeUid
+     * @param array $data
+     */
+    public function updateRelation($articleUid, $attributeUid, array $data)
+    {
+        $this->getDatabaseConnection()->exec_UPDATEquery(
+            'tx_commerce_articles_attributes_mm',
+            'uid_local = ' . (int) $articleUid . ' AND uid_foreign = ' . (int) $attributeUid,
+            $data
+        );
+    }
+
+    /**
+     * @param int $productUidFrom
+     * @param int $productUidTo
+     * @return string
+     */
+    public function updateProductUid($productUidFrom, $productUidTo)
+    {
+        $this->getDatabaseConnection()->exec_UPDATEquery(
+            $this->databaseTable,
+            'uid_product = ' . (int) $productUidFrom,
+            ['uid_product' => (int) $productUidTo]
+        );
+
+        return $this->getDatabaseConnection()->sql_error();
+    }
+
+    /**
+     * @param int $articleUid
+     * @param int $attributeId
+     */
+    public function removeAttributeRelation($articleUid, $attributeId)
+    {
+        $this->getDatabaseConnection()->exec_DELETEquery(
+            $this->databaseAttributeRelationTable,
+            'uid_local = ' . (int) $articleUid . ' AND uid_foreign = ' . (int) $attributeId
         );
     }
 }

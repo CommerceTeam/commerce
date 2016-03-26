@@ -1566,7 +1566,7 @@ class NavigationViewHelper
          * @var ProductRepository $productRepository
          */
         $productRepository = $this->getRepository($this->repositoryNames[$tableSubMm]);
-        $productRelations = $productRepository->findRelationByForeignUid($categoryUid);
+        $productRelations = $productRepository->findRelationByCategoryUid($categoryUid);
 
         $productUids = [];
         foreach ($productRelations as $mmRow) {

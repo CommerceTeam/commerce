@@ -73,7 +73,7 @@ class ProducibleArticlesElement extends AbstractFormElement
 
         $this->existingArticles = $this->data['databaseRow']['articles'];
         $this->attributes = $this->backendUtility->getAttributesForProduct(
-            (int)$this->data['vanillaUid'],
+            (int) $this->data['vanillaUid'],
             true,
             true,
             true

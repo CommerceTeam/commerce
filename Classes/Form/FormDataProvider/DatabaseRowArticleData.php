@@ -12,6 +12,10 @@ namespace CommerceTeam\Commerce\Form\FormDataProvider;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
+use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
+use CommerceTeam\Commerce\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -54,14 +58,13 @@ class DatabaseRowArticleData implements FormDataProviderInterface
      */
     protected function addCategoryData(array $result)
     {
-        $belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
-        $attributes = $belib->getAttributesForCategory($result['vanillaUid']);
+        /** @var CategoryRepository $categoryRepository */
+        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+        $attributes = $categoryRepository->findAttributesByCategoryUid($result['vanillaUid']);
 
-        $correlationTypes = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            'tx_commerce_attribute_correlationtypes',
-            ''
-        );
+        /** @var AttributeRepository $attributeRepository */
+        $attributeRepository = GeneralUtility::makeInstance(AttributeRepository::class);
+        $correlationTypes = $attributeRepository->findAllCorrelationTypes();
 
         $root = [];
         foreach ($correlationTypes as $correlationType) {
@@ -81,9 +84,12 @@ class DatabaseRowArticleData implements FormDataProviderInterface
      */
     protected function addProductData(array $result)
     {
-        $belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $articles = $articleRepository->findByProductUid($result['vanillaUid']);
+        /** @var BackendUtility $belib */
+        $belib = GeneralUtility::makeInstance(BackendUtility::class);
         $attributes = $belib->getAttributesForProduct($result['vanillaUid'], true, true, true);
-        $articles = $belib->getArticlesOfProduct($result['vanillaUid'], '', 'sorting');
 
         if (is_array($attributes['ct1'])) {
             foreach ($articles as &$article) {
@@ -91,10 +97,9 @@ class DatabaseRowArticleData implements FormDataProviderInterface
 
                 foreach ($attributes['ct1'] as &$attribute) {
                     // get all article attribute relations
-                    $attribute['values'] = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                        'uid_valuelist, default_value, value_char',
-                        'tx_commerce_articles_attributes_mm',
-                        'uid_local = ' . $article['uid'] . ' AND uid_foreign = ' . $attribute['uid_foreign']
+                    $attribute['values'] = $articleRepository->findAttributeRelationsByArticleAndAttribute(
+                        $article['uid'],
+                        $attribute['uid_foreign']
                     );
                 }
             }

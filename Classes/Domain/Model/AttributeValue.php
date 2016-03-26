@@ -125,16 +125,6 @@ class AttributeValue extends AbstractEntity
     }
 
     /**
-     * Overwrite getAttributes as attribute_values can't have attributes.
-     *
-     * @return array empty array
-     */
-    public function getAttributes()
-    {
-        return [];
-    }
-
-    /**
      * Gets the icon for this value.
      *
      * @return string

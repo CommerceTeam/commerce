@@ -430,6 +430,22 @@ class CategoryRepository extends AbstractRepository
     }
 
     /**
+     * Find by uid.
+     *
+     * @param int $uid Product uid
+     * @param string $additionalWhere
+     * @return array
+     */
+    public function findByUid($uid, $additionalWhere = '')
+    {
+        return (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            '*',
+            $this->databaseTable,
+            'uid = ' . (int) $uid . $this->enableFields() . ($additionalWhere ? ' AND ' . $additionalWhere : '')
+        );
+    }
+
+    /**
      * Get relation.
      *
      * @param int $foreignUid Foreign uid
@@ -443,5 +459,38 @@ class CategoryRepository extends AbstractRepository
             $this->databaseParentCategoryRelationTable,
             'uid_foreign = ' . (int) $foreignUid
         );
+    }
+
+    /**
+     * This fetches all attributes that are assigned to a category.
+     *
+     * @param int $categoryUid Uid of the category
+     * @param array $excludeAttributes Excluded attribute uids
+     *
+     * @return array of attributes
+     */
+    public function findAttributesByCategoryUid($categoryUid, array $excludeAttributes = null)
+    {
+        // build the basic query
+        $where = 'uid_local = ' . $categoryUid;
+
+        // should we exclude some attributes
+        if (is_array($excludeAttributes) && !empty($excludeAttributes)) {
+            $excludeUids = [];
+            foreach ($excludeAttributes as $excludeAttribute) {
+                $excludeUids[] = (int) $excludeAttribute['uid_foreign'];
+            }
+            $where .= ' AND uid_foreign NOT IN (' . implode(',', $excludeUids) . ')';
+        }
+
+        // execute the query
+        $result = $this->getDatabaseConnection()->exec_SELECTgetRows(
+            '*',
+            $this->databaseAttributeRelationTable,
+            $where,
+            '',
+            'sorting'
+        );
+        return $result;
     }
 }

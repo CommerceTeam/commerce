@@ -60,4 +60,19 @@ class ArticlePriceRepository extends AbstractRepository
 
         return false;
     }
+
+    /**
+     * @param int $articleUid
+     * @return array
+     */
+    public function findByArticleUid($articleUid)
+    {
+        $prices = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            '*',
+            'tx_commerce_article_prices',
+            'uid_article = ' . (int) $articleUid
+        );
+
+        return $prices;
+    }
 }

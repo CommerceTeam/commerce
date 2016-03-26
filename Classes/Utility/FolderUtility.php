@@ -42,8 +42,6 @@ class FolderUtility
     {
         /*
          * Folder Creation
-         *
-         * @todo Get list of order folders from TS
          */
         $modulePid = FolderRepository::initFolders('Commerce');
         $productPid = FolderRepository::initFolders('Products', $modulePid);
@@ -166,8 +164,7 @@ class FolderUtility
     }
 
     /**
-     * Creates an article for the product. Used for sysarticles
-     * (e.g. payment articles).
+     * Creates an article for the product. Used for sysarticles (e.g. payment articles).
      *
      * @param int $productUid Product Uid under wich the articles are created
      * @param int $classname Keyname for the sysarticle, used for classname and title
@@ -201,16 +198,5 @@ class FolderUtility
         $articlePriceRepository->addRecord($priceData);
 
         return $articleUid;
-    }
-
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected static function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 }

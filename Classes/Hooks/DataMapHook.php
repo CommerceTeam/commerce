@@ -12,6 +12,12 @@ namespace CommerceTeam\Commerce\Hooks;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\ArticlePriceRepository;
+use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
+use CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\OrderRepository;
+use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -101,11 +107,11 @@ class DataMapHook
                 break;
 
             case 'tx_commerce_orders':
-                $incomingFieldArray = $this->preProcessOrder($incomingFieldArray, $table, $id, $pObj);
+                $incomingFieldArray = $this->preProcessOrder($incomingFieldArray, $id);
                 break;
 
             case 'tx_commerce_order_articles':
-                $this->preProcessOrderArticle($table, $id, $pObj);
+                $this->preProcessOrderArticle($id);
                 break;
 
             default:
@@ -333,31 +339,28 @@ class DataMapHook
      * As TYPO3 don't allows changing the PId directly.
      *
      * @param array $incomingFieldArray Incoming field array
-     * @param string $table Table
      * @param int $id Id
-     * @param DataHandler $pObj Parent object
      *
      * @return array
      */
-    protected function preProcessOrder(array $incomingFieldArray, $table, $id, DataHandler &$pObj)
+    protected function preProcessOrder(array $incomingFieldArray, $id)
     {
         $incomingFieldArray['crdate'] = null;
 
         if (isset($incomingFieldArray['newpid'])) {
-            $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Hook/DataMapHooks', 'preProcessOrder');
+            /** @var OrderRepository $orderRepository */
+            $orderRepository = GeneralUtility::makeInstance(OrderRepository::class);
+            /** @var OrderArticleRepository $orderArticleRepository */
+            $orderArticleRepository = GeneralUtility::makeInstance(OrderArticleRepository::class);
 
-            $database = $this->getDatabaseConnection();
+            $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Hook/DataMapHooks', 'preProcessOrder');
 
             // Add first the pid filled
             $incomingFieldArray['pid'] = $incomingFieldArray['newpid'];
 
             // Move Order articles
-            $order = $database->exec_SELECTgetSingleRow(
-                'order_id, pid, uid, order_sys_language_uid',
-                $table,
-                'uid = ' . (int) $id
-            );
-            if (!$database->sql_error()) {
+            $order = $orderRepository->findByUid($id);
+            if (!empty($order)) {
                 if ($order['pid'] != $incomingFieldArray['newpid']) {
                     // order_sys_language_uid is not always set in fieldArray so we overwrite
                     // it with our order data
@@ -371,34 +374,20 @@ class DataMapHook
                         }
                     }
 
-                    $orderId = $order['order_id'];
-                    $orderArtikelRows = $database->exec_SELECTgetRows(
-                        '*',
-                        'tx_commerce_order_articles',
-                        'order_id = ' . $database->fullQuoteStr($orderId, 'tx_commerce_order_articles')
-                    );
-                    if (!$database->sql_error()) {
+                    $orderArticelRows = $orderArticleRepository->findByOrderId($order['order_id']);
+                    if (!empty($orderArticelRows)) {
                         // Run trough all articles from this order and move it to other storage folder
-                        foreach ($orderArtikelRows as $orderArtikelRow) {
-                            $orderArtikelRow['pid'] = $incomingFieldArray['newpid'];
-                            $orderArtikelRow['tstamp'] = $GLOBALS['EXEC_TIME'];
+                        foreach ($orderArticelRows as $orderArticelRow) {
+                            $orderArticelRow['pid'] = $incomingFieldArray['newpid'];
+                            $orderArticelRow['tstamp'] = $GLOBALS['EXEC_TIME'];
 
-                            $database->exec_UPDATEquery(
-                                'tx_commerce_order_articles',
-                                'uid = ' . $orderArtikelRow['uid'],
-                                $orderArtikelRow
-                            );
+                            $orderArticleRepository->updateRecord($orderArticelRow['uid'], $orderArticelRow);
                         }
-                    } else {
-                        $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, [
-                            $database->sql_error(),
-                            $table . ':' . $id
-                        ]);
                     }
                     $order['pid'] = $incomingFieldArray['newpid'];
                     $order['tstamp'] = $GLOBALS['EXEC_TIME'];
 
-                    $database->exec_UPDATEquery('tx_commerce_orders', 'uid = ' . $order['uid'], $order);
+                    $orderRepository->updateRecord((int) $order['uid'], $order);
 
                     foreach ($hooks as $hookObj) {
                         if (method_exists($hookObj, 'moveOrdersPostMoveOrder')) {
@@ -406,11 +395,6 @@ class DataMapHook
                         }
                     }
                 }
-            } else {
-                $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, [
-                    $database->sql_error(),
-                    $table . ':' . $id
-                ]);
             }
         }
 
@@ -421,27 +405,27 @@ class DataMapHook
      * Process Data when saving ordered articles
      * Recalculate Order sum.
      *
-     * @param string $table Table
-     * @param int $id Id
-     * @param DataHandler $pObj Parent object
+     * @param int $orderArticleUid Order article id
      *
      * @return void
      */
-    protected function preProcessOrderArticle($table, $id, DataHandler $pObj)
+    protected function preProcessOrderArticle($orderArticleUid)
     {
-        $database = $this->getDatabaseConnection();
+        /** @var OrderArticleRepository $orderArticleRepository */
+        $orderArticleRepository = GeneralUtility::makeInstance(OrderArticleRepository::class);
+        /** @var OrderRepository $orderRepository */
+        $orderRepository = GeneralUtility::makeInstance(OrderRepository::class);
 
-        $orderRow = $database->exec_SELECTgetSingleRow('order_id', $table, 'uid = ' . (int) $id);
-        if (!$database->sql_error()) {
-            $orderId = $orderRow['order_id'];
-            $sum = ['sum_price_gross' => 0, 'sum_price_net' => 0];
+        $orderArticleRow = $orderArticleRepository->findByUid($orderArticleUid);
+        if (!empty($orderArticleRow)) {
+            $orderId = $orderArticleRow['order_id'];
+            $sum = [
+                'sum_price_gross' => 0,
+                'sum_price_net' => 0
+            ];
 
-            $orderArticles = $database->exec_SELECTgetRows(
-                '*',
-                $table,
-                'order_id = ' . $database->fullQuoteStr($orderId, $table)
-            );
-            if (!$database->sql_error()) {
+            $orderArticles = $orderArticleRepository->findByOrderId($orderId);
+            if (!empty($orderArticles)) {
                 foreach ($orderArticles as $orderArticle) {
                     /*
                      * Calculate Sums
@@ -449,29 +433,9 @@ class DataMapHook
                     $sum['sum_price_gross'] += $orderArticle['amount'] * $orderArticle['price_net'];
                     $sum['sum_price_net'] += $orderArticle['amount'] * $orderArticle['price_gross'];
                 }
-            } else {
-                $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, [
-                    $database->sql_error(),
-                    $table . ':' . $id
-                ]);
             }
 
-            $database->exec_UPDATEquery(
-                'tx_commerce_orders',
-                'order_id = ' . $database->fullQuoteStr($orderId, 'tx_commerce_orders'),
-                $sum
-            );
-            if ($database->sql_error()) {
-                $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, [
-                    $database->sql_error(),
-                    $table . ':' . $id
-                ]);
-            }
-        } else {
-            $pObj->log($table, $id, 2, 0, 2, 'SQL error: \'%s\' (%s)', 12, [
-                $database->sql_error(),
-                $table . ':' . $id
-            ]);
+            $orderRepository->updateByOrderId($orderId, $sum);
         }
     }
 
@@ -1155,7 +1119,10 @@ class DataMapHook
     protected function updateArticleAttributeRelations(array $incomingFieldArray, $id)
     {
         if (isset($incomingFieldArray['attributesedit'])) {
-            $database = $this->getDatabaseConnection();
+            /** @var ArticleRepository $articleRepository */
+            $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+            /** @var AttributeRepository $attributeRepository */
+            $attributeRepository = GeneralUtility::makeInstance(AttributeRepository::class);
 
             // get the data from the flexForm
             $attributes = $incomingFieldArray['attributesedit']['data']['sDEF']['lDEF'];
@@ -1163,56 +1130,43 @@ class DataMapHook
             foreach ($attributes as $aKey => $aValue) {
                 $value = $aValue['vDEF'];
                 $attributeId = $this->belib->getUidFromKey($aKey, $aValue);
-                $attributeData = $this->belib->getAttributeData($attributeId, 'has_valuelist,multiple,sorting');
+                $attributeData = $attributeRepository->findByUid($attributeId);
 
                 if ($attributeData['multiple'] == 1) {
                     // remove relations before creating new relations this is needed because we dont
                     // know which attribute were removed
-                    $database->exec_DELETEquery(
-                        'tx_commerce_articles_attributes_mm',
-                        'uid_local = ' . $id . ' AND uid_foreign = ' . $attributeId
-                    );
+                    $articleRepository->removeAttributeRelation($id, $attributeId);
 
                     $relCount = 0;
                     $relations = GeneralUtility::trimExplode(',', $value, true);
                     foreach ($relations as $relation) {
                         $updateArrays = $this->belib->getUpdateData($attributeData, $relation);
+                        $updateArrays = $updateArrays[1];
 
-                        // create relations for current saved attributes
-                        $database->exec_INSERTquery(
-                            'tx_commerce_articles_attributes_mm',
-                            array_merge(
-                                [
-                                    'uid_local' => $id,
-                                    'uid_foreign' => $attributeId,
-                                    'sorting' => $attributeData['sorting'],
-                                ],
-                                $updateArrays[1]
-                            )
+                        $articleRepository->addAttributeRelation(
+                            $id,
+                            $attributeId,
+                            $updateArrays['uid_product'],
+                            $attributeData['sorting'],
+                            $updateArrays['uid_valuelist'],
+                            $updateArrays['value_char'],
+                            $updateArrays['default_value']
                         );
                         ++$relCount;
                     }
 
                     // insert at least one relation
                     if (!$relCount) {
-                        $database->exec_INSERTquery(
-                            'tx_commerce_articles_attributes_mm',
-                            [
-                                'uid_local' => $id,
-                                'uid_foreign' => $attributeId,
-                                'sorting' => $attributeData['sorting'],
-                            ]
+                        $articleRepository->addAttributeRelation(
+                            $id,
+                            $attributeId,
+                            0,
+                            $attributeData['sorting']
                         );
                     }
                 } else {
                     $updateArrays = $this->belib->getUpdateData($attributeData, $value);
-
-                    // update article attribute relation
-                    $database->exec_UPDATEquery(
-                        'tx_commerce_articles_attributes_mm',
-                        'uid_local = ' . $id . ' AND uid_foreign = ' . $attributeId,
-                        $updateArrays[1]
-                    );
+                    $articleRepository->updateRelation($id, $attributeId, $updateArrays[1]);
                 }
 
                 // recalculate hash for this article
@@ -1243,12 +1197,15 @@ class DataMapHook
         // now we have to save all attribute relations for this category and all their
         // child categories but only if the fieldArray has changed
         if (isset($fieldArray['attributes']) || $saveAnyway) {
+            /** @var AttributeRepository $attributeRepository */
+            $attributeRepository = GeneralUtility::makeInstance(AttributeRepository::class);
+
             // get all parent categories ...
             $catList = [];
             $this->belib->getParentCategories($categoryUid, $catList, $categoryUid, 0, false);
 
             // get all correlation types
-            $correlationTypeList = $this->belib->getAllCorrelationTypes();
+            $correlationTypeList = $attributeRepository->findAllCorrelationTypes();
 
             // get their attributes
             $paList = $this->belib->getAttributesForCategoryList($catList);
@@ -1331,59 +1288,55 @@ class DataMapHook
     protected function saveProductRelations($productId, array $fieldArray = null)
     {
         $productId = (int) $productId;
-        // first step is to save all relations between this product and all attributes
-        // of this product.
+        // first step is to save all relations between this product and all attributes of this product.
         // We don't have to check for any parent categories, because the attributes
         // from them should already be saved for this product.
-        $database = $this->getDatabaseConnection();
 
         // create an article and a new price for a new product
         if (ConfigurationUtility::getInstance()->getExtConf('simpleMode') && $productId != null) {
-            // search for an article of this product
-            $article = $database->exec_SELECTgetSingleRow('*', 'tx_commerce_articles', 'uid_product = ' . $productId);
+            /** @var ArticleRepository $articleRepository */
+            $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+            /** @var ArticlePriceRepository $articlePriceRepository */
+            $articlePriceRepository = GeneralUtility::makeInstance(ArticlePriceRepository::class);
+            $article = $articleRepository->findByProductUid($productId);
 
             if (!empty($article)) {
-                $aUid = $article['uid'];
+                $articleUid = $article['uid'];
             } else {
                 // create a new article if no one exists
-                $product = $database->exec_SELECTgetSingleRow('title', 'tx_commerce_products', 'uid = ' . $productId);
-                $database->exec_INSERTquery(
-                    'tx_commerce_articles',
-                    [
-                        'pid' => $fieldArray['pid'],
-                        'tstamp' => $GLOBALS['EXEC_TIME'],
-                        'crdate' => $GLOBALS['EXEC_TIME'],
-                        'uid_product' => $productId,
-                        'article_type_uid' => 1,
-                        'title' => $product['title'],
-                    ]
-                );
-                $aUid = $database->sql_insert_id();
+                /** @var ProductRepository $productRepository */
+                $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+                $product = $productRepository->findByUid($productId);
+
+                $articleUid = $articleRepository->addRecord([
+                    'pid' => $fieldArray['pid'],
+                    'tstamp' => $GLOBALS['EXEC_TIME'],
+                    'crdate' => $GLOBALS['EXEC_TIME'],
+                    'uid_product' => $productId,
+                    'article_type_uid' => 1,
+                    'title' => $product['title'],
+                ]);
             }
 
             // check if the article has already a price
-            $row = $database->exec_SELECTgetSingleRow(
-                '*',
-                'tx_commerce_article_prices',
-                'uid_article = ' . $productId
-            );
+            $row = $articlePriceRepository->findByArticleUid($articleUid);
             if (empty($row) && $article['sys_language_uid'] < 1) {
                 // create a new price if no one exists
-                $database->exec_INSERTquery(
-                    'tx_commerce_article_prices',
-                    [
-                        'pid' => $fieldArray['pid'],
-                        'uid_article' => $aUid,
-                        'tstamp' => $GLOBALS['EXEC_TIME'],
-                        'crdate' => $GLOBALS['EXEC_TIME'],
-                    ]
-                );
+                $articlePriceRepository->addRecord([
+                    'pid' => $fieldArray['pid'],
+                    'tstamp' => $GLOBALS['EXEC_TIME'],
+                    'crdate' => $GLOBALS['EXEC_TIME'],
+                    'uid_article' => $articleUid,
+                ]);
             }
         }
 
         $delete = true;
         if (isset($fieldArray['categories'])) {
-            $catList = $this->belib->getProductParentCategories($productId);
+            /** @var ProductRepository $productRepository */
+            $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+
+            $catList = $productRepository->getParentCategories($productId);
             $paList = $this->belib->getAttributesForCategoryList($catList);
             $uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true, ['uid_correlationtype']);
 
@@ -1395,10 +1348,15 @@ class DataMapHook
             }
         }
 
+        $database = $this->getDatabaseConnection();
+
         $articles = false;
         if (isset($fieldArray['attributes'])) {
+            /** @var AttributeRepository $attributeRepository */
+            $attributeRepository = GeneralUtility::makeInstance(AttributeRepository::class);
+
             // get all correlation types
-            $correlationTypeList = $this->belib->getAllCorrelationTypes();
+            $correlationTypeList = $attributeRepository->findAllCorrelationTypes();
             $paList = [];
 
             // extract all attributes from FlexForm
@@ -1486,6 +1444,9 @@ class DataMapHook
         if (!empty($fieldArray['attributesedit'])) {
             $ffData = (array) GeneralUtility::xml2array($fieldArray['attributesedit']);
             if (is_array($ffData['data']) && is_array($ffData['data']['sDEF']['lDEF'])) {
+                /** @var AttributeRepository $attributeRepository */
+                $attributeRepository = GeneralUtility::makeInstance(AttributeRepository::class);
+
                 // get articles if they are not already there
                 if (!$articles) {
                     $articles = $this->belib->getArticlesOfProduct($productId);
@@ -1499,7 +1460,7 @@ class DataMapHook
 
                     $keyData = [];
                     $attributeKey = $this->belib->getUidFromKey($ffDataItemKey, $keyData);
-                    $attributeData = $this->belib->getAttributeData($attributeKey, 'has_valuelist,multiple');
+                    $attributeData = $attributeRepository->findByUid($attributeKey);
 
                     // check if the attribute has more than one value, if that is true,
                     // we have to create a relation for each value

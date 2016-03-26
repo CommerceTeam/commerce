@@ -69,7 +69,8 @@ class ExistingArticlesElement extends AbstractFormElement
             -->
                 <div class="panel panel-default">
                     <div class="panel-heading"></div>
-                    <div class="table-fit" id="recordlist-' . htmlspecialchars($this->table) . '" data-state="expanded">
+                    <div class="table-fit" id="recordlist-' . htmlspecialchars($this->table)
+            . '" data-state="expanded">
                         <table data-table="' . htmlspecialchars($this->table)
             . '" class="table table-striped table-hover">
                             <tbody>' . $output . '</tbody>
@@ -80,7 +81,7 @@ class ExistingArticlesElement extends AbstractFormElement
 
         $resultArray = $this->initializeResultArray();
         $resultArray['html'] = $out;
-        $resultArray['requireJsModules'][] = 'TYPO3/CMS/Backend/AjaxDataHandler';
+        $resultArray['requireJsModules'][] = 'TYPO3/CMS/Commerce/ExistingArticles';
 
         return $resultArray;
     }

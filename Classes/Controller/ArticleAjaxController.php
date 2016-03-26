@@ -15,6 +15,7 @@ namespace CommerceTeam\Commerce\Controller;
 use CommerceTeam\Commerce\Domain\Model\Product;
 use CommerceTeam\Commerce\Domain\Repository\ArticlePriceRepository;
 use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository;
 use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
 use CommerceTeam\Commerce\Factory\HookFactory;
 use CommerceTeam\Commerce\Form\Container\ExistingArticleContainer;
@@ -124,11 +125,9 @@ class ArticleAjaxController
             $this->existingArticles = $this->belib->getArticlesOfProduct($product->getUid(), '', 'sorting');
         }
 
-        $values = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid, value',
-            'tx_commerce_attribute_values',
-            'deleted = 0 AND uid IN (' . implode(',', array_values($attributeValue)) . ')'
-        );
+        /** @var AttributeValueRepository $attributeValueRepository */
+        $attributeValueRepository = GeneralUtility::makeInstance(AttributeValueRepository::class);
+        $values = $attributeValueRepository->findByUids(array_values($attributeValue));
 
         foreach ($values as $value) {
             $this->flattedAttributes[$value['uid']] = $value['value'];
@@ -454,6 +453,8 @@ class ArticleAjaxController
             $fullAttributeList[] = $attributeData['uid_foreign'];
         }
 
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
         if (is_array(GeneralUtility::_GP('updateData'))) {
             foreach (GeneralUtility::_GP('updateData') as $articleUid => $relData) {
                 foreach ($relData as $attributeUid => $attributeValueUid) {
@@ -461,26 +462,15 @@ class ArticleAjaxController
                         continue;
                     }
 
-                    $this->getDatabaseConnection()->exec_UPDATEquery(
-                        'tx_commerce_articles_attributes_mm',
-                        'uid_local = ' . $articleUid . ' AND uid_foreign = ' . $attributeUid,
-                        ['uid_valuelist' => $attributeValueUid]
+                    $articleRepository->updateRelation(
+                        $articleUid,
+                        $attributeUid,
+                        ['uid_valuelist' => (int) $attributeValueUid]
                     );
                 }
 
                 $this->belib->updateArticleHash($articleUid, $fullAttributeList);
             }
         }
-    }
-
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 }

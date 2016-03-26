@@ -83,7 +83,6 @@ abstract class AbstractRepository implements SingletonInterface
      */
     public function getData($uid, $langUid = -1, $translationMode = false)
     {
-        $database = $this->getDatabaseConnection();
         $frontend = $this->getFrontendController();
 
         if ($translationMode == false) {
@@ -100,15 +99,10 @@ abstract class AbstractRepository implements SingletonInterface
             $langUid = $frontend->sys_language_uid;
         }
 
-        $proofSql = '';
-        if (is_object($frontend->sys_page)) {
-            $proofSql = $this->enableFields();
-        }
-
-        $returnData = $database->exec_SELECTgetSingleRow(
+        $returnData = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             '*',
             $this->databaseTable,
-            'uid = ' . $uid . $proofSql
+            'uid = ' . $uid . $this->enableFields()
         );
 
         // Result should contain only one Dataset
@@ -248,32 +242,18 @@ abstract class AbstractRepository implements SingletonInterface
     }
 
     /**
-     * Gets all attributes from this product.
-     *
-     * @param int $uid Product uid
-     * @param array|null $attributeCorrelationTypeList Corelation types
-     *
-     * @return array of attribute UID
-     */
-    public function getAttributes($uid, $attributeCorrelationTypeList = null)
-    {
-        return [];
-    }
-
-    /**
      * Update record data.
      *
      * @param int $uid Uid of the item
-     * @param array $fields Assoc. array with update fields
-     *
+     * @param array $data Assoc. array with update fields
      * @return bool
      */
-    public function updateRecord($uid, array $fields)
+    public function updateRecord($uid, array $data)
     {
-        if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) || empty($fields)) {
+        if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) || empty($data)) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'updateRecord (db_alib) gets passed invalid parameters.',
+                    'updateRecord (AbstractRepository) gets passed invalid parameters.',
                     'commerce',
                     3
                 );
@@ -282,9 +262,9 @@ abstract class AbstractRepository implements SingletonInterface
             return false;
         }
 
-        $database = $this->getDatabaseConnection();
-        $database->exec_UPDATEquery($this->databaseTable, 'uid = ' . (int) $uid, $fields);
-        if ($database->sql_error()) {
+        $result = true;
+        $this->getDatabaseConnection()->exec_UPDATEquery($this->databaseTable, 'uid = ' . (int) $uid, $data);
+        if ($this->getDatabaseConnection()->sql_error()) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'updateRecord (db_alib): invalid sql.',
@@ -293,10 +273,10 @@ abstract class AbstractRepository implements SingletonInterface
                 );
             }
 
-            return false;
+            $result = false;
         }
 
-        return true;
+        return $result;
     }
 
     /**

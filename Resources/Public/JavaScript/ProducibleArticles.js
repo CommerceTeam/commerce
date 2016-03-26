@@ -18,9 +18,8 @@
 define(['jquery'], function($) {
 
 	/**
-	 *
 	 * @type {{options: {containerSelector: string}}}
-	 * @exports TYPO3/CMS/Beuser/Permissons
+	 * @exports TYPO3/CMS/Commerce/ProducibleArticles
 	 */
 	var ProducibleArticles = {
 		options: {
@@ -53,6 +52,7 @@ define(['jquery'], function($) {
 				ProducibleArticles.addArticleRowToList(response);
 				ProducibleArticles.removeLastCreatedAttributes();
 				ProducibleArticles.switchToExistingArticlesTab();
+				ProducibleArticles.refreshCategoryTree();
 			}
 		});
 	};
@@ -89,6 +89,13 @@ define(['jquery'], function($) {
 				.parent()
 					.find('.t3js-tabmenu-item:eq(0) a')
 					.click();
+	};
+
+	/**
+	 * Calls the refresh tree method of the category tree
+	 */
+	ProducibleArticles.refreshCategoryTree = function() {
+		top.TYPO3.Backend.NavigationContainer.CategoryTree.refreshTree();
 	};
 
 	/**
