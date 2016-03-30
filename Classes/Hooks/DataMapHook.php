@@ -15,6 +15,7 @@ namespace CommerceTeam\Commerce\Hooks;
 use CommerceTeam\Commerce\Domain\Repository\ArticlePriceRepository;
 use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
 use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository;
 use CommerceTeam\Commerce\Domain\Repository\OrderRepository;
 use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
@@ -267,7 +268,7 @@ class DataMapHook
             $incomingFieldArray['create_new_scale_prices_count'] = 0;
 
             // get pid
-            $productPid = \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid();
+            $productPid = FolderRepository::initFolders('Products', FolderRepository::initFolders());
 
             // set some status vars
             $myScaleAmountStart = $pricesStartamount;

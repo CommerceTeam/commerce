@@ -105,15 +105,30 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
     public function getFilteredTree($nodeId, $nodeData, $searchFilter)
     {
         if (strval($searchFilter) === '') {
-            return [];
+            return $this->getNextTreeLevel($nodeId, $nodeData);
         }
+
         $this->initDataProvider();
         if ($nodeId === 'root') {
             $nodeCollection = $this->dataProvider->getTreeMounts($searchFilter);
         } else {
-            /** @var $node CategoryNode */
-            $node = GeneralUtility::makeInstance(CategoryNode::class, (array)$nodeData);
-            $nodeCollection = $this->dataProvider->getFilteredNodes($node, $searchFilter, $node->getMountPoint());
+            if (strpos($nodeId, 'pp') === 0) {
+                /** @var $node ProductNode */
+                $node = GeneralUtility::makeInstance(ProductNode::class, (array)$nodeData);
+                $nodeCollection = $this->dataProvider->getFilteredArticleNodes(
+                    $node,
+                    $searchFilter,
+                    $node->getMountPoint()
+                );
+            } else {
+                /** @var $node CategoryNode */
+                $node = GeneralUtility::makeInstance(CategoryNode::class, (array)$nodeData);
+                $nodeCollection = $this->dataProvider->getFilteredCategoryNodes(
+                    $node,
+                    $searchFilter,
+                    $node->getMountPoint()
+                );
+            }
         }
         return $nodeCollection->toArray();
     }

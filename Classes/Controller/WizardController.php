@@ -12,8 +12,8 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
-use CommerceTeam\Commerce\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -172,7 +172,8 @@ class WizardController
 
         // Setting GPvars:
         // The page id to operate from
-        $this->id = GeneralUtility::_GP('id') ? (int) GeneralUtility::_GP('id') : BackendUtility::getProductFolderUid();
+        $productPid = FolderRepository::initFolders('Products', FolderRepository::initFolders());
+        $this->id = GeneralUtility::_GP('id') ? (int) GeneralUtility::_GP('id') : $productPid;
         $this->returnUrl = GeneralUtility::_GP('returnUrl');
 
         // this to be accomplished from the caller: &edit['.$table.'][-'.$uid.']=new&

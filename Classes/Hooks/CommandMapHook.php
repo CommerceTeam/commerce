@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\Hooks;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -565,11 +566,12 @@ class CommandMapHook
      */
     protected function getLocale()
     {
+        $productPid = FolderRepository::initFolders('Products', FolderRepository::initFolders());
         $locale = array_keys(
             (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
                 'sys_language_uid',
                 'pages_language_overlay',
-                'pid = ' . \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid(),
+                'pid = ' . $productPid,
                 '',
                 '',
                 '',

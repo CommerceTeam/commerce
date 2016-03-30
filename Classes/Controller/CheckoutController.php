@@ -1897,7 +1897,7 @@ class CheckoutController extends BaseController
             if (isset($this->conf['addressPid'])) {
                 $dataArray['pid'] = $this->conf['addressPid'];
             } else {
-                $dataArray['pid'] = FolderRepository::initFolders('Commerce');
+                $dataArray['pid'] = FolderRepository::initFolders();
             }
 
             // Address fields

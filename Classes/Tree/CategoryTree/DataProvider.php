@@ -124,22 +124,19 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         // check if fetching subpages the "root"-page
         // and in case of a virtual root return the mountpoints as virtual "subpages"
         if ((int)$node->getId() === 0) {
-            // check no temporary mountpoint is used
-            if (!(int)$this->getBackendUserAuthentication()->uc['pageTree_temporaryMountPoint']) {
-                $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
-                $mountPoints = array_map('intval', $backendUserUtility->returnWebmounts());
-                $mountPoints = array_unique($mountPoints);
-                if (!in_array(0, $mountPoints)) {
-                    // using a virtual root node
-                    // so then return the mount points here as "subpages" of the first node
-                    $isVirtualRootNode = true;
-                    $subCategories = [];
-                    foreach ($mountPoints as $webMountPoint) {
-                        $subCategories[] = [
-                            'uid' => $webMountPoint,
-                            'isMountPoint' => true
-                        ];
-                    }
+            $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
+            $mountPoints = array_map('intval', $backendUserUtility->returnWebmounts());
+            $mountPoints = array_unique($mountPoints);
+            if (!in_array(0, $mountPoints)) {
+                // using a virtual root node
+                // so then return the mount points here as "subpages" of the first node
+                $isVirtualRootNode = true;
+                $subCategories = [];
+                foreach ($mountPoints as $webMountPoint) {
+                    $subCategories[] = [
+                        'uid' => $webMountPoint,
+                        'isMountPoint' => true
+                    ];
                 }
             }
         }
@@ -155,14 +152,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                 if ($isVirtualRootNode) {
                     $mountPoint = (int)$subCategory['uid'];
                 }
-                $subCategory = BackendUtility::getRecordWSOL(
-                    'tx_commerce_categories',
-                    $subCategory['uid'],
-                    '*',
-                    '',
-                    true,
-                    true
-                );
+                $subCategory = Commands::getNodeRecord('tx_commerce_categories', $subCategory['uid']);
                 if (!$subCategory) {
                     continue;
                 }
@@ -301,50 +291,46 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      * @param int $mountPoint
      * @return PagetreeNodeCollection the filtered nodes
      */
-    public function getFilteredNodes(CategoryNode $node, $searchFilter, $mountPoint = 0)
+    public function getFilteredCategoryNodes(CategoryNode $node, $searchFilter, $mountPoint = 0)
     {
         /** @var $nodeCollection PagetreeNodeCollection */
         $nodeCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
-        $records = $this->getCategories(-1, $searchFilter);
-        if (!is_array($records) || empty($records)) {
+        $subCategories = $this->getCategories(-1, $searchFilter);
+        if (!is_array($subCategories) || empty($subCategories)) {
             return $nodeCollection;
-        } elseif (count($records) > 500) {
+        } elseif (count($subCategories) > 500) {
             return $nodeCollection;
         }
-        // check no temporary mountpoint is used
-        $mountPoints = (int)$this->getBackendUserAuthentication()->uc['pageTree_temporaryMountPoint'];
-        if (!$mountPoints) {
-            $mountPoints = array_map('intval', $this->getBackendUserAuthentication()->returnWebmounts());
-            $mountPoints = array_unique($mountPoints);
-        } else {
-            $mountPoints = [$mountPoints];
-        }
+        $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
+        $mountPoints = array_map('intval', $backendUserUtility->returnWebmounts());
+        $mountPoints = array_unique($mountPoints);
+
         $isNumericSearchFilter = is_numeric($searchFilter) && $searchFilter > 0;
         $searchFilterQuoted = preg_quote($searchFilter, '/');
         $nodeId = (int)$node->getId();
         $processedRecordIds = [];
-        foreach ($records as $record) {
-            if ((int)$record['t3ver_wsid'] !== (int)$this->getBackendUserAuthentication()->workspace
-                && (int)$record['t3ver_wsid'] !== 0
+        foreach ($subCategories as $subCategory) {
+            if ((int)$subCategory['t3ver_wsid'] !== (int)$this->getBackendUserAuthentication()->workspace
+                && (int)$subCategory['t3ver_wsid'] !== 0
             ) {
                 continue;
             }
-            $liveVersion = BackendUtility::getLiveVersionOfRecord('pages', $record['uid'], 'uid');
+            $liveVersion = BackendUtility::getLiveVersionOfRecord('pages', $subCategory['uid'], 'uid');
             if ($liveVersion !== null) {
-                $record = $liveVersion;
+                $subCategory = $liveVersion;
             }
 
-            $record = Commands::getNodeRecord($record['uid'], false);
-            if ((int)$record['pid'] === -1
-                || in_array($record['uid'], $this->hiddenRecords)
-                || in_array($record['uid'], $processedRecordIds)
+            $subCategory = Commands::getNodeRecord('tx_commerce_categories', $subCategory['uid'], false);
+            if ((int)$subCategory['pid'] === -1
+                || in_array($subCategory['uid'], $this->hiddenRecords)
+                || in_array($subCategory['uid'], $processedRecordIds)
             ) {
                 continue;
             }
-            $processedRecordIds[] = $record['uid'];
+            $processedRecordIds[] = $subCategory['uid'];
 
             $rootline = BackendUtility::BEgetRootLine(
-                $record['uid'],
+                $subCategory['uid'],
                 '',
                 $this->getBackendUserAuthentication()->workspace != 0
             );
@@ -384,7 +370,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                 if (!$inFilteredRootline || $rootlineElement['uid'] === $mountPoint) {
                     continue;
                 }
-                $rootlineElement = Commands::getNodeRecord($rootlineElement['uid'], false);
+                $rootlineElement = Commands::getNodeRecord('tx_commerce_categories', $rootlineElement['uid'], false);
                 $ident = (int)$rootlineElement['sorting'] . (int)$rootlineElement['uid'];
                 if ($reference && $reference->offsetExists($ident)) {
                     /** @var $refNode \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
@@ -437,6 +423,293 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     }
 
     /**
+     * Returns a node collection of filtered nodes
+     *
+     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode|CategoryNode $node
+     * @param string $searchFilter
+     * @param int $mountPoint
+     * @return PagetreeNodeCollection the filtered nodes
+     */
+    public function getFilteredProductNodes(CategoryNode $node, $searchFilter, $mountPoint = 0)
+    {
+        /** @var $nodeCollection PagetreeNodeCollection */
+        $nodeCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
+        $records = $this->getCategories(-1, $searchFilter);
+        if (!is_array($records) || empty($records)) {
+            return $nodeCollection;
+        } elseif (count($records) > 500) {
+            return $nodeCollection;
+        }
+        // check no temporary mountpoint is used
+        $mountPoints = 0;
+        if (!$mountPoints) {
+            $mountPoints = array_map('intval', $this->getBackendUserAuthentication()->returnWebmounts());
+            $mountPoints = array_unique($mountPoints);
+        } else {
+            $mountPoints = [$mountPoints];
+        }
+        $isNumericSearchFilter = is_numeric($searchFilter) && $searchFilter > 0;
+        $searchFilterQuoted = preg_quote($searchFilter, '/');
+        $nodeId = (int)$node->getId();
+        $processedRecordIds = [];
+        foreach ($records as $record) {
+            if ((int)$record['t3ver_wsid'] !== (int)$this->getBackendUserAuthentication()->workspace
+                && (int)$record['t3ver_wsid'] !== 0
+            ) {
+                continue;
+            }
+            $liveVersion = BackendUtility::getLiveVersionOfRecord('pages', $record['uid'], 'uid');
+            if ($liveVersion !== null) {
+                $record = $liveVersion;
+            }
+
+            $record = Commands::getNodeRecord('tx_commerce_products', $record['uid'], false);
+            if ((int)$record['pid'] === -1
+                || in_array($record['uid'], $this->hiddenRecords)
+                || in_array($record['uid'], $processedRecordIds)
+            ) {
+                continue;
+            }
+            $processedRecordIds[] = $record['uid'];
+
+            $rootline = BackendUtility::BEgetRootLine(
+                $record['uid'],
+                '',
+                $this->getBackendUserAuthentication()->workspace != 0
+            );
+            $rootline = array_reverse($rootline);
+            if (!in_array(0, $mountPoints, true)) {
+                $isInsideMountPoints = false;
+                foreach ($rootline as $rootlineElement) {
+                    if (in_array((int)$rootlineElement['uid'], $mountPoints, true)) {
+                        $isInsideMountPoints = true;
+                        break;
+                    }
+                }
+                if (!$isInsideMountPoints) {
+                    continue;
+                }
+            }
+            $reference = $nodeCollection;
+            $inFilteredRootline = false;
+            $amountOfRootlineElements = count($rootline);
+            for ($i = 0; $i < $amountOfRootlineElements; ++$i) {
+                $rootlineElement = $rootline[$i];
+                $rootlineElement['uid'] = (int)$rootlineElement['uid'];
+                $isInWebMount = (int)$this->getBackendUserAuthentication()->isInWebMount($rootlineElement['uid']);
+                if (!$isInWebMount
+                    || ($rootlineElement['uid'] === (int)$mountPoints[0]
+                        && $rootlineElement['uid'] !== $isInWebMount)
+                ) {
+                    continue;
+                }
+                if ((int)$rootlineElement['pid'] === $nodeId
+                    || $rootlineElement['uid'] === $nodeId
+                    || ($rootlineElement['uid'] === $isInWebMount
+                        && in_array($rootlineElement['uid'], $mountPoints, true))
+                ) {
+                    $inFilteredRootline = true;
+                }
+                if (!$inFilteredRootline || $rootlineElement['uid'] === $mountPoint) {
+                    continue;
+                }
+                $rootlineElement = Commands::getNodeRecord('tx_commerce_products', $rootlineElement['uid'], false);
+                $ident = (int)$rootlineElement['sorting'] . (int)$rootlineElement['uid'];
+                if ($reference && $reference->offsetExists($ident)) {
+                    /** @var $refNode \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
+                    $refNode = $reference->offsetGet($ident);
+                    $refNode->setExpanded(true);
+                    $refNode->setLeaf(false);
+                    $reference = $refNode->getChildNodes();
+                    if ($reference == null) {
+                        $reference = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
+                        $refNode->setChildNodes($reference);
+                    }
+                } else {
+                    $refNode = Commands::getCategoryNode($rootlineElement, $mountPoint);
+                    $replacement = '<span class="typo3-pagetree-filteringTree-highlight">$1</span>';
+                    if ($isNumericSearchFilter && (int)$rootlineElement['uid'] === (int)$searchFilter) {
+                        $text = str_replace('$1', $refNode->getText(), $replacement);
+                    } else {
+                        $text = preg_replace('/(' . $searchFilterQuoted . ')/i', $replacement, $refNode->getText());
+                    }
+                    $refNode->setText(
+                        $text,
+                        $refNode->getTextSourceField(),
+                        $refNode->getPrefix(),
+                        $refNode->getSuffix()
+                    );
+                    /** @var $childCollection PagetreeNodeCollection */
+                    $childCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
+                    if ($i + 1 >= $amountOfRootlineElements) {
+                        $childNodes = $this->getNodes($refNode, $mountPoint);
+                        foreach ($childNodes as $childNode) {
+                            /** @var $childNode \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
+                            $childRecord = $childNode->getRecord();
+                            $childIdent = (int)$childRecord['sorting'] . (int)$childRecord['uid'];
+                            $childCollection->offsetSet($childIdent, $childNode);
+                        }
+                        $refNode->setChildNodes($childNodes);
+                    }
+                    $refNode->setChildNodes($childCollection);
+                    $reference->offsetSet($ident, $refNode);
+                    $reference->ksort();
+                    $reference = $childCollection;
+                }
+            }
+        }
+        foreach ($this->processCollectionHookObjects as $hookObject) {
+            /** @var $hookObject \TYPO3\CMS\Backend\Tree\Pagetree\CollectionProcessorInterface */
+            $hookObject->postProcessFilteredNodes($node, $searchFilter, $mountPoint, $nodeCollection);
+        }
+        return $nodeCollection;
+    }
+
+    /**
+     * Returns a node collection of filtered nodes
+     *
+     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode|CategoryNode $node
+     * @param string $searchFilter
+     * @param int $mountPoint
+     * @return PagetreeNodeCollection the filtered nodes
+     */
+    public function getFilteredArticleNodes(CategoryNode $node, $searchFilter, $mountPoint = 0)
+    {
+        /** @var $nodeCollection PagetreeNodeCollection */
+        $nodeCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
+        $records = $this->getCategories(-1, $searchFilter);
+        if (!is_array($records) || empty($records)) {
+            return $nodeCollection;
+        } elseif (count($records) > 500) {
+            return $nodeCollection;
+        }
+        // check no temporary mountpoint is used
+        $mountPoints = 0;
+        if (!$mountPoints) {
+            $mountPoints = array_map('intval', $this->getBackendUserAuthentication()->returnWebmounts());
+            $mountPoints = array_unique($mountPoints);
+        } else {
+            $mountPoints = [$mountPoints];
+        }
+        $isNumericSearchFilter = is_numeric($searchFilter) && $searchFilter > 0;
+        $searchFilterQuoted = preg_quote($searchFilter, '/');
+        $nodeId = (int)$node->getId();
+        $processedRecordIds = [];
+        foreach ($records as $record) {
+            if ((int)$record['t3ver_wsid'] !== (int)$this->getBackendUserAuthentication()->workspace
+                && (int)$record['t3ver_wsid'] !== 0
+            ) {
+                continue;
+            }
+            $liveVersion = BackendUtility::getLiveVersionOfRecord('pages', $record['uid'], 'uid');
+            if ($liveVersion !== null) {
+                $record = $liveVersion;
+            }
+
+            $record = Commands::getNodeRecord('tx_commerce_articles', $record['uid'], false);
+            if ((int)$record['pid'] === -1
+                || in_array($record['uid'], $this->hiddenRecords)
+                || in_array($record['uid'], $processedRecordIds)
+            ) {
+                continue;
+            }
+            $processedRecordIds[] = $record['uid'];
+
+            $rootline = BackendUtility::BEgetRootLine(
+                $record['uid'],
+                '',
+                $this->getBackendUserAuthentication()->workspace != 0
+            );
+            $rootline = array_reverse($rootline);
+            if (!in_array(0, $mountPoints, true)) {
+                $isInsideMountPoints = false;
+                foreach ($rootline as $rootlineElement) {
+                    if (in_array((int)$rootlineElement['uid'], $mountPoints, true)) {
+                        $isInsideMountPoints = true;
+                        break;
+                    }
+                }
+                if (!$isInsideMountPoints) {
+                    continue;
+                }
+            }
+            $reference = $nodeCollection;
+            $inFilteredRootline = false;
+            $amountOfRootlineElements = count($rootline);
+            for ($i = 0; $i < $amountOfRootlineElements; ++$i) {
+                $rootlineElement = $rootline[$i];
+                $rootlineElement['uid'] = (int)$rootlineElement['uid'];
+                $isInWebMount = (int)$this->getBackendUserAuthentication()->isInWebMount($rootlineElement['uid']);
+                if (!$isInWebMount
+                    || ($rootlineElement['uid'] === (int)$mountPoints[0]
+                        && $rootlineElement['uid'] !== $isInWebMount)
+                ) {
+                    continue;
+                }
+                if ((int)$rootlineElement['pid'] === $nodeId
+                    || $rootlineElement['uid'] === $nodeId
+                    || ($rootlineElement['uid'] === $isInWebMount
+                        && in_array($rootlineElement['uid'], $mountPoints, true))
+                ) {
+                    $inFilteredRootline = true;
+                }
+                if (!$inFilteredRootline || $rootlineElement['uid'] === $mountPoint) {
+                    continue;
+                }
+                $rootlineElement = Commands::getNodeRecord('tx_commerce_articles', $rootlineElement['uid'], false);
+                $ident = (int)$rootlineElement['sorting'] . (int)$rootlineElement['uid'];
+                if ($reference && $reference->offsetExists($ident)) {
+                    /** @var $refNode \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
+                    $refNode = $reference->offsetGet($ident);
+                    $refNode->setExpanded(true);
+                    $refNode->setLeaf(false);
+                    $reference = $refNode->getChildNodes();
+                    if ($reference == null) {
+                        $reference = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
+                        $refNode->setChildNodes($reference);
+                    }
+                } else {
+                    $refNode = Commands::getCategoryNode($rootlineElement, $mountPoint);
+                    $replacement = '<span class="typo3-pagetree-filteringTree-highlight">$1</span>';
+                    if ($isNumericSearchFilter && (int)$rootlineElement['uid'] === (int)$searchFilter) {
+                        $text = str_replace('$1', $refNode->getText(), $replacement);
+                    } else {
+                        $text = preg_replace('/(' . $searchFilterQuoted . ')/i', $replacement, $refNode->getText());
+                    }
+                    $refNode->setText(
+                        $text,
+                        $refNode->getTextSourceField(),
+                        $refNode->getPrefix(),
+                        $refNode->getSuffix()
+                    );
+                    /** @var $childCollection PagetreeNodeCollection */
+                    $childCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
+                    if ($i + 1 >= $amountOfRootlineElements) {
+                        $childNodes = $this->getNodes($refNode, $mountPoint);
+                        foreach ($childNodes as $childNode) {
+                            /** @var $childNode \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
+                            $childRecord = $childNode->getRecord();
+                            $childIdent = (int)$childRecord['sorting'] . (int)$childRecord['uid'];
+                            $childCollection->offsetSet($childIdent, $childNode);
+                        }
+                        $refNode->setChildNodes($childNodes);
+                    }
+                    $refNode->setChildNodes($childCollection);
+                    $reference->offsetSet($ident, $refNode);
+                    $reference->ksort();
+                    $reference = $childCollection;
+                }
+            }
+        }
+        foreach ($this->processCollectionHookObjects as $hookObject) {
+            /** @var $hookObject \TYPO3\CMS\Backend\Tree\Pagetree\CollectionProcessorInterface */
+            $hookObject->postProcessFilteredNodes($node, $searchFilter, $mountPoint, $nodeCollection);
+        }
+        return $nodeCollection;
+    }
+
+
+    /**
      * Returns the page tree mounts for the current user
      *
      * Note: If you add the search filter parameter, the nodes will be filtered by this string.
@@ -450,13 +723,8 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         $nodeCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
         $isTemporaryMountPoint = false;
         $rootNodeIsVirtual = false;
-        $mountPoints = GeneralUtility::intExplode(
-            ',',
-            $this->getBackendUserAuthentication()->user['tx_commerce_mountpoints']
-        );
-        if ($this->getBackendUserAuthentication()->isAdmin()) {
-            $mountPoints = array_merge([0], $mountPoints);
-        }
+        $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
+        $mountPoints = array_map('intval', $backendUserUtility->returnWebmounts());
         $mountPoints = array_unique($mountPoints);
         if (empty($mountPoints)) {
             return $nodeCollection;
@@ -464,10 +732,9 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
 
         foreach ($mountPoints as $mountPoint) {
             if ($mountPoint === 0) {
-                $sitename = 'Commerce';
                 $record = [
                     'uid' => 0,
-                    'title' => $sitename
+                    'title' => 'Commerce'
                 ];
                 $subNode = Commands::getCategoryNode($record);
                 $subNode->setLabelIsEditable(false);
@@ -501,7 +768,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             if ($searchFilter === '') {
                 $childNodes = $this->getCategoryNodes($subNode, $mountPoint);
             } else {
-                $childNodes = $this->getFilteredNodes($subNode, $searchFilter, $mountPoint);
+                $childNodes = $this->getFilteredCategoryNodes($subNode, $searchFilter, $mountPoint);
                 $subNode->setExpanded(true);
             }
             $subNode->setChildNodes($childNodes);

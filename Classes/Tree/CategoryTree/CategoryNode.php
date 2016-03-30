@@ -17,7 +17,7 @@ namespace CommerceTeam\Commerce\Tree\CategoryTree;
  /**
  * Node designated for the page tree
  */
-class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode
+class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements NodeInterface
 {
     /**
      * Cached access rights to save some performance

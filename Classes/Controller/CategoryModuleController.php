@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Template\ModuleTemplate;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use TYPO3\CMS\Backend\Clipboard\Clipboard;
@@ -75,8 +76,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $this->search_field = !empty($sessionData['search_field']) ? $sessionData['search_field'] : '';
 
         // In commerce context all categories and products are stored in only one folder so no need to use get vars
-        \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
-        $this->id = \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid();
+        $this->id = FolderRepository::initFolders('Products', FolderRepository::initFolders());
 
         // GPvars:
         $this->pointer = max(GeneralUtility::_GP('pointer'), 0);
@@ -310,7 +310,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                 }
 
                 function setHighlight(id) {
-                    top.fsMod.recentIds["web"] = id;
+                    top.fsMod.recentIds["commerce_category"] = id;
                     // For highlighting
                     top.fsMod.navFrameHighlightedID["web"] = "pages" + id + "_" + top.fsMod.currentBank;
                     top.fsMod.navFrameHighlightedID["commerce_category"] = "tx_commerce_categories" + id + "_"

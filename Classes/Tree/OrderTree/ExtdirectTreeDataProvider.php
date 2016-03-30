@@ -12,7 +12,7 @@ namespace CommerceTeam\Commerce\Tree\OrderTree;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use CommerceTeam\Commerce\Utility\BackendUtility;
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -36,7 +36,10 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\Pagetree\Extdire
             $mountPoints = $backendUser->uc['pageTree_temporaryMountPoint'];
 
             // use temporary mount point to only show orders page and subpages
-            $backendUser->uc['pageTree_temporaryMountPoint'] = (int)BackendUtility::getOrderFolderUid();
+            $backendUser->uc['pageTree_temporaryMountPoint'] = FolderRepository::initFolders(
+                'Orders',
+                FolderRepository::initFolders()
+            );
             $nodeCollection = $this->dataProvider->getTreeMounts();
 
             $backendUser->uc['pageTree_temporaryMountPoint'] = $mountPoints;

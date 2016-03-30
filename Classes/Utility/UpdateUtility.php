@@ -11,6 +11,7 @@ namespace CommerceTeam\Commerce\Utility;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 
 /**
  * Update Class for DB Updates of version 0.11.0.
@@ -123,7 +124,7 @@ class UpdateUtility
         $data = $database->exec_SELECTgetSingleRow(
             'perms_userid, perms_groupid, perms_user, perms_group, perms_everybody',
             'pages',
-            'uid = ' . BackendUtility::getProductFolderUid()
+            'uid = ' . FolderRepository::initFolders('Products', FolderRepository::initFolders())
         );
 
         $rows = $database->exec_SELECTgetRows(

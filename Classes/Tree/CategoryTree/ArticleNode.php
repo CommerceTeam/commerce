@@ -18,7 +18,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 /**
  * Node designated for the page tree
  */
-class ArticleNode extends CategoryNode
+class ArticleNode extends CategoryNode implements NodeInterface
 {
     /**
      * Indicator if the node can have children's
@@ -44,7 +44,7 @@ class ArticleNode extends CategoryNode
     public function getJumpUrl()
     {
         $params = '&edit[' . $this->getType() . '][' . $this->getId() . ']=edit';
-        $id = FolderRepository::initFolders('Products');
+        $id = FolderRepository::initFolders('Products', FolderRepository::initFolders());
 // @todo change returnUrl
         return BackendUtility::getModuleUrl('record_edit') . '&id=' . $id . $params . '&returnUrl=T3_THIS_LOCATION';
     }

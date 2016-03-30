@@ -72,7 +72,11 @@ define(['jquery'], function($) {
 	 * @return {void}
 	 */
 	ProducibleArticles.removeLastCreatedAttributes = function() {
-		if (!$.isEmptyObject($clickedCreateAction.data('attribute-value'))) {
+		if ($.isEmptyObject($clickedCreateAction.data('attribute-value'))
+			|| $clickedCreateAction.data('attribute-value').length == 0
+		) {
+			return false;
+		} else {
 			$clickedCreateAction.closest('tr').remove();
 			$clickedCreateAction = null;
 		}

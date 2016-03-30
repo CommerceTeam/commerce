@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\RecordList;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
@@ -1058,10 +1059,8 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         if ($id > 0) {
             $pidWhere = ' AND tx_commerce_orders.pid = ' . $id;
         } else {
-            \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
-
             // Find the right pid for the Ordersfolder
-            $orderPid = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid();
+            $orderPid = FolderRepository::initFolders('Orders', FolderRepository::initFolders());
 
             $orderFolders = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderSelector(
                 $orderPid,

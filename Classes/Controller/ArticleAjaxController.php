@@ -125,12 +125,14 @@ class ArticleAjaxController
             $this->existingArticles = $this->belib->getArticlesOfProduct($product->getUid(), '', 'sorting');
         }
 
-        /** @var AttributeValueRepository $attributeValueRepository */
-        $attributeValueRepository = GeneralUtility::makeInstance(AttributeValueRepository::class);
-        $values = $attributeValueRepository->findByUids(array_values($attributeValue));
+        if (!empty($attributeValue)) {
+            /** @var AttributeValueRepository $attributeValueRepository */
+            $attributeValueRepository = GeneralUtility::makeInstance(AttributeValueRepository::class);
+            $values = $attributeValueRepository->findByUids(array_values($attributeValue));
 
-        foreach ($values as $value) {
-            $this->flattedAttributes[$value['uid']] = $value['value'];
+            foreach ($values as $value) {
+                $this->flattedAttributes[$value['uid']] = $value['value'];
+            }
         }
     }
 

@@ -74,7 +74,11 @@ class FolderRepository
         if (!isset(static::$folderIds[$cacheHash])) {
             $folder = self::getFolder($title, $pid, $module);
             if (empty($folder)) {
-                static::$folderIds[$cacheHash] = self::createFolder($title, $pid, $module);
+                if ($title == 'Commerce') {
+                    // If the first folder that gets fetched is empty try to create all default folders
+                    \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
+                }
+                static::$folderIds[$cacheHash] = self::getFolder($title, $pid, $module);
             } else {
                 static::$folderIds[$cacheHash] = (int)$folder['uid'];
             }

@@ -171,6 +171,9 @@ class ProducibleArticlesElement extends AbstractFormElement
                 ++$columnCount;
             }
         }
+        if ($columnCount == 0) {
+            $result .= '<th  style="width: 100%">&nbsp;</th>';
+        }
 
         if (!empty($additionalColumnsAfter)) {
             $result .= '<th>' . implode('</th><th>', $additionalColumnsAfter) . '</th>';
@@ -182,7 +185,7 @@ class ProducibleArticlesElement extends AbstractFormElement
 
         $columnCount += count($additionalColumnsBefore) + count($additionalColumnsAfter);
 
-        return str_replace('{width}', (100 / ($columnCount - 1)), $result);
+        return str_replace('{width}', (100 / max(1, $columnCount - 1)), $result);
     }
 
     /**

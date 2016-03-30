@@ -56,6 +56,8 @@ class ExistingArticleContainer
 
         $this->clear = '<span class="btn btn-default disabled">'
             . $this->iconFactory->getIcon('empty-empty', Icon::SIZE_SMALL)->render() . '</span>';
+
+        $this->backendUtility = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
     }
 
     /**
@@ -67,10 +69,8 @@ class ExistingArticleContainer
     public function renderArticleRow($articles, $article, $i)
     {
         $output = '';
-        $attributes = isset($this->data['databaseRow']) && isset($this->data['databaseRow']['attributes']) ?
-            $this->data['databaseRow']['attributes'] :
-            [];
         $articleUid = (int) $article['uid'];
+        $attributes = $this->backendUtility->getAttributesForArticle($articleUid, 1);
 
         $editAction = $this->getEditAction($article);
         $deleteAction = $this->getDeleteAction($article);
@@ -87,39 +87,33 @@ class ExistingArticleContainer
         $fields = htmlspecialchars($article['title']);
 
         $valueList = '';
-        if (isset($attributes['ct1']) && is_array($attributes['ct1'])) {
-            foreach ($attributes['ct1'] as $attribute) {
-                foreach ($attribute['values'] as $attributeData) {
-                    if ($attribute['attributeData']['has_valuelist'] == 1) {
-                        if ($attributeData['uid_valuelist'] == 0) {
-                            // if the attribute has no value, create a select box with valid values
-                            $valueList .= '<td><select name="updateData[' .
-                                $articleUid . '][' . (int) $attribute['uid_foreign'] . ']" />';
-                            $valueList .= '<option value="0" selected="selected"></option>';
-                            foreach ($attribute['valueList'] as $attrValueUid => $attrValueData) {
-                                $valueList .= '<option value="' . (int) $attrValueUid . '">'
-                                    . htmlspecialchars($attrValueData['value']) . '</option>';
-                            }
-                            $valueList .= '</select></td>';
-                        } else {
-                            $valueList .= '<td>'
-                                .htmlspecialchars($attribute['valueList'][$attributeData['uid_valuelist']]['value'])
-                                . '</td>';
-                        }
-                    } elseif (!empty($attributeData['value_char'])) {
-                        $valueList .= '<td>'
-                            . htmlspecialchars(strip_tags($attributeData['value_char'])) . '</td>';
-                    } else {
-                        $valueList .= '<td>'
-                            . htmlspecialchars(strip_tags($attributeData['default_value'])) . '</td>';
+        foreach ($attributes as $attribute) {
+            if ($attribute['has_valuelist'] == 1) {
+                if ($attribute['uid_valuelist'] == 0) {
+                    // if the attribute has no value, create a select box with valid values
+                    $valueList .= '<td><select name="updateData[' .
+                        $articleUid . '][' . (int) $attribute['uid_foreign'] . ']" class="form-control"/>';
+                    $valueList .= '<option value="0" selected="selected"></option>';
+                    foreach ($attribute['valueList'] as $attrValueUid => $attrValueData) {
+                        $valueList .= '<option value="' . (int) $attrValueUid . '">'
+                            . htmlspecialchars($attrValueData['value']) . '</option>';
                     }
+                    $valueList .= '</select></td>';
+                } else {
+                    $valueList .= '<td>' . htmlspecialchars(
+                        $attribute['valueList'][$attribute['uid_valuelist']]['value']
+                    ) . '</td>';
                 }
+            } elseif (!empty($attribute['value_char'])) {
+                $valueList .= '<td>' . htmlspecialchars($attribute['value_char']) . '</td>';
+            } else {
+                $valueList .= '<td>' . htmlspecialchars($attribute['default_value']) . '</td>';
             }
         }
 
         $output .= '<tr data-uid="' . $articleUid . '">
             <td class="col-icon">' . $iconImg . '</td>
-            <td nowrap="nowrap">' . $fields . '</td>
+            <td nowrap="nowrap" class="col-title">' . $fields . '</td>
             <td class="col-control">'
             . $editAction
             . $hideAction
@@ -127,9 +121,9 @@ class ExistingArticleContainer
             . $viewBigAction
             . $moveUpAction
             . $moveDownAction
-            . '</td>
-            <td>' . $valueList . '</td>
-        </tr>';
+            . '</td>'
+            . $valueList .
+        '</tr>';
 
         return $output;
     }

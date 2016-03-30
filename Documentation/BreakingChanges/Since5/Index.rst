@@ -78,7 +78,9 @@ Removed functions
 \CommerceTeam\Commerce\Utility\BackendUtility::getAttributeValue
 \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryData replaced with CategoryRepository::findByUid
 \CommerceTeam\Commerce\Utility\BackendUtility::getCategoriesForProductFromDb
+\CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid replaced with FolderRepository::initFolders('Orders', FolderRepository::initFolders())
 \CommerceTeam\Commerce\Utility\BackendUtility::getOverwriteData
+\CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid
 \CommerceTeam\Commerce\Utility\BackendUtility::getProductParentCategories
 \CommerceTeam\Commerce\Utility\BackendUtility::isAjaxRequest
 \CommerceTeam\Commerce\Utility\BackendUtility::isNumber replaced with \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger

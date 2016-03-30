@@ -118,8 +118,7 @@ abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\Base
     public function init()
     {
         parent::init();
-        $commercePid = FolderRepository::initFolders();
-        $this->id = FolderRepository::initFolders('Attributes', $commercePid);
+        $this->id = FolderRepository::initFolders('Attributes', FolderRepository::initFolders());
         $this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);
     }
 

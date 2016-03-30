@@ -50,51 +50,51 @@ class Commands
     protected static $titleLength = null;
 
     /**
-     * Visibly the page
+     * Visibly the record
      *
-     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $node
+     * @param NodeInterface $node
      * @return void
      */
-    public static function visiblyNode(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $node)
+    public static function visiblyNode(NodeInterface $node)
     {
-        $data['pages'][$node->getWorkspaceId()]['hidden'] = 0;
+        $data[$node->getType()][$node->getWorkspaceId()]['hidden'] = 0;
         self::processTceCmdAndDataMap([], $data);
     }
 
     /**
      * Hide the page
      *
-     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $node
+     * @param NodeInterface $node
      * @return void
      */
-    public static function disableNode(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $node)
+    public static function disableNode(NodeInterface $node)
     {
-        $data['pages'][$node->getWorkspaceId()]['hidden'] = 1;
+        $data[$node->getType()][$node->getWorkspaceId()]['hidden'] = 1;
         self::processTceCmdAndDataMap([], $data);
     }
 
     /**
      * Delete the page
      *
-     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $node
+     * @param NodeInterface $node
      * @return void
      */
-    public static function deleteNode(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $node)
+    public static function deleteNode(NodeInterface $node)
     {
-        $cmd['pages'][$node->getId()]['delete'] = 1;
+        $cmd[$node->getType()][$node->getId()]['delete'] = 1;
         self::processTceCmdAndDataMap($cmd);
     }
 
     /**
      * Restore the page
      *
-     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $node
+     * @param NodeInterface $node
      * @param int $targetId
      * @return void
      */
-    public static function restoreNode(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $node, $targetId)
+    public static function restoreNode(NodeInterface $node, $targetId)
     {
-        $cmd['pages'][$node->getId()]['undelete'] = 1;
+        $cmd[$node->getType()][$node->getId()]['undelete'] = 1;
         self::processTceCmdAndDataMap($cmd);
         if ($node->getId() !== $targetId) {
             self::moveNode($node, $targetId);
@@ -104,19 +104,20 @@ class Commands
     /**
      * Updates the node label
      *
-     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $node
+     * @param NodeInterface $node
      * @param string $updatedLabel
      * @return void
      */
-    public static function updateNodeLabel(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $node, $updatedLabel)
+    public static function updateNodeLabel(NodeInterface $node, $updatedLabel)
     {
+        $table = $node->getType();
         if (self::getBackendUserAuthentication()->checkLanguageAccess(0)) {
-            $data['pages'][$node->getWorkspaceId()][$node->getTextSourceField()] = $updatedLabel;
+            $data[$table][$node->getWorkspaceId()][$node->getTextSourceField()] = $updatedLabel;
             self::processTceCmdAndDataMap([], $data);
         } else {
             throw new \RuntimeException(
                 implode(LF, [
-                    'Editing title of page id \'' . $node->getWorkspaceId()
+                    'Editing title of ' . $table . ' id \'' . $node->getWorkspaceId()
                     . '\' failed. Editing default language is not allowed.'
                 ]),
                 1365513336
@@ -129,15 +130,16 @@ class Commands
      *
      * Node: Use a negative target id to specify a sibling target else the parent is used
      *
-     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $sourceNode
+     * @param NodeInterface $node
      * @param int $targetId
      * @return int
      */
-    public static function copyNode(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $sourceNode, $targetId)
+    public static function copyNode(NodeInterface $node, $targetId)
     {
-        $cmd['pages'][$sourceNode->getId()]['copy'] = $targetId;
+        $table = $node->getType();
+        $cmd[$table][$node->getId()]['copy'] = $targetId;
         $returnValue = self::processTceCmdAndDataMap($cmd);
-        return $returnValue['pages'][$sourceNode->getId()];
+        return $returnValue[$table][$node->getId()];
     }
 
     /**
@@ -145,46 +147,45 @@ class Commands
      *
      * Node: Use a negative target id to specify a sibling target else the parent is used
      *
-     * @param \TYPO3\CMS\Backend\Tree\ExtDirectNode $sourceNode
+     * @param NodeInterface $node
      * @param int $targetId
      * @return void
      */
-    public static function moveNode(\TYPO3\CMS\Backend\Tree\ExtDirectNode $sourceNode, $targetId)
+    public static function moveNode(NodeInterface $node, $targetId)
     {
-        $cmd['pages'][$sourceNode->getId()]['move'] = $targetId;
+        $cmd[$node->getType()][$node->getId()]['move'] = $targetId;
         self::processTceCmdAndDataMap($cmd);
     }
 
     /**
      * Creates a page of the given doktype and returns the id of the created page
      *
-     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $parentNode
+     * @param NodeInterface $parentNode
      * @param int $targetId
-     * @param int $pageType
      * @return int
      */
-    public static function createNode(\TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode $parentNode, $targetId, $pageType)
+    public static function createNode(NodeInterface $parentNode, $targetId)
     {
         $placeholder = 'NEW12345';
         $pid = (int)$parentNode->getWorkspaceId();
         $targetId = (int)$targetId;
+        $table = $parentNode->getType();
 
         // Use page TsConfig as default page initialization
         $pageTs = BackendUtility::getPagesTSconfig($pid);
-        if (array_key_exists('TCAdefaults.', $pageTs) && array_key_exists('pages.', $pageTs['TCAdefaults.'])) {
-            $data['pages'][$placeholder] = $pageTs['TCAdefaults.']['pages.'];
+        if (array_key_exists('TCAdefaults.', $pageTs) && array_key_exists($table . '.', $pageTs['TCAdefaults.'])) {
+            $data[$table][$placeholder] = $pageTs['TCAdefaults.'][$table . '.'];
         } else {
-            $data['pages'][$placeholder] = [];
+            $data[$table][$placeholder] = [];
         }
 
-        $data['pages'][$placeholder]['pid'] = $pid;
-        $data['pages'][$placeholder]['doktype'] = $pageType;
-        $data['pages'][$placeholder]['title'] = self::getLanguageService()->sL(
+        $data[$table][$placeholder]['pid'] = $pid;
+        $data[$table][$placeholder]['title'] = self::getLanguageService()->sL(
             'LLL:EXT:lang/locallang_core.xlf:tree.defaultPageTitle',
             true
         );
         $newPageId = self::processTceCmdAndDataMap([], $data);
-        $node = self::getNode($newPageId[$placeholder]);
+        $node = self::getNode($table, $newPageId[$placeholder]);
         if ($pid !== $targetId) {
             self::moveNode($node, $targetId);
         }
@@ -231,19 +232,6 @@ class Commands
     }
 
     /**
-     * Returns a node from the given node id
-     *
-     * @param int $nodeId
-     * @param bool $unsetMovePointers
-     * @return CategoryNode
-     */
-    public static function getNode($nodeId, $unsetMovePointers = true)
-    {
-        $record = self::getNodeRecord($nodeId, $unsetMovePointers);
-        return self::getCategoryNode($record);
-    }
-
-    /**
      * Returns the mount point path for a temporary mount or the given id
      *
      * @param int $uid
@@ -265,7 +253,7 @@ class Commands
         array_shift($rootline);
         $path = [];
         foreach ($rootline as $rootlineElement) {
-            $record = self::getNodeRecord($rootlineElement['uid']);
+            $record = self::getNodeRecord('tx_commerce_categories', $rootlineElement['uid']);
             $text = $record['title'];
             if (self::$useNavTitle && trim($record['nav_title']) !== '') {
                 $text = $record['nav_title'];
@@ -275,16 +263,44 @@ class Commands
         return '/' . implode('/', $path);
     }
 
+
+    /**
+     * Returns a node from the given node id
+     *
+     * @param string $table
+     * @param int $nodeId
+     * @param bool $unsetMovePointers
+     * @return CategoryNode
+     */
+    public static function getNode($table, $nodeId, $unsetMovePointers = true)
+    {
+        $record = self::getNodeRecord($table, $nodeId, $unsetMovePointers);
+        switch ($table) {
+            case 'tx_commerce_products':
+                $node = self::getProductNode($record);
+                break;
+
+            case 'tx_commerce_articles':
+                $node = self::getArticleNode($record);
+                break;
+
+            default:
+                $node = self::getCategoryNode($record);
+        }
+        return $node;
+    }
+
     /**
      * Returns a node record from a given id
      *
+     * @param string $table
      * @param int $nodeId
      * @param bool $unsetMovePointers
      * @return array
      */
-    public static function getNodeRecord($nodeId, $unsetMovePointers = true)
+    public static function getNodeRecord($table, $nodeId, $unsetMovePointers = true)
     {
-        $record = BackendUtility::getRecordWSOL('pages', $nodeId, '*', '', true, $unsetMovePointers);
+        $record = BackendUtility::getRecordWSOL($table, $nodeId, '*', '', true, $unsetMovePointers);
         return $record;
     }
 

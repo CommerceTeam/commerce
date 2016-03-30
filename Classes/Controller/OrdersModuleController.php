@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -64,12 +65,8 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
     {
         // Setting GPvars:
         $this->id = (int) GeneralUtility::_GP('id');
-        if (!$this->id) {
-            \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
-            $this->id = 0;
-        }
         // Find the right pid for the Ordersfolder
-        $this->orderPid = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid();
+        $this->orderPid = FolderRepository::initFolders('Orders', FolderRepository::initFolders());
         if ($this->id == $this->orderPid) {
             $this->id = 0;
         }

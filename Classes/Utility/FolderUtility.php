@@ -43,7 +43,7 @@ class FolderUtility
         /*
          * Folder Creation
          */
-        $modulePid = FolderRepository::initFolders('Commerce');
+        $modulePid = FolderRepository::initFolders();
         $productPid = FolderRepository::initFolders('Products', $modulePid);
         FolderRepository::initFolders('Attributes', $modulePid);
 

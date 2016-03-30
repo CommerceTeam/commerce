@@ -361,24 +361,24 @@ class BackendUtility
     /**
      * Returns all attributes for an article.
      *
-     * @param int $aUid Article UID
+     * @param int $articleUid Article UID
      * @param int $ct Correlationtype
      * @param array $excludeAttributes Relation datasets where the
      *      field "uid_foreign" is the UID of the attribute you don't want to get
      *
      * @return array of attributes
      */
-    public function getAttributesForArticle($aUid, $ct = null, array $excludeAttributes = [])
+    public function getAttributesForArticle($articleUid, $ct = null, array $excludeAttributes = [])
     {
         // build the basic query
-        $where = 'uid_local = ' . $aUid;
+        $where = 'uid_local = ' . $articleUid;
 
         if ($ct != null) {
-            $pUid = $this->getProductOfArticle($aUid);
+            $product = $this->getProductOfArticle($articleUid);
 
-            $productAttributes = $this->getAttributesForProduct($pUid['uid']);
+            $productAttributes = $this->getAttributesForProduct($product['uid']);
             $ctAttributes = [];
-            if (is_array($productAttributes)) {
+            if (!empty($productAttributes)) {
                 foreach ($productAttributes as $productAttribute) {
                     if ($productAttribute['uid_correlationtype'] == $ct) {
                         $ctAttributes[] = $productAttribute['uid_foreign'];
@@ -393,20 +393,33 @@ class BackendUtility
         // should we exclude some attributes
         if (is_array($excludeAttributes) && !empty($excludeAttributes)) {
             $eAttributes = [];
-            foreach ($excludeAttributes as $eAttribute) {
-                $eAttributes[] = (int) $eAttribute['uid_foreign'];
+            foreach ($excludeAttributes as $excludeAttribute) {
+                $eAttributes[] = (int) $excludeAttribute['uid_foreign'];
             }
             $where .= ' AND uid_foreign NOT IN (' . implode(',', $eAttributes) . ')';
         }
 
-        $database = $this->getDatabaseConnection();
-
         // execute the query
-        $result = (array) $database->exec_SELECTgetRows(
+        $result = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
-            'tx_commerce_articles_attributes_mm',
-            $where
+            'tx_commerce_articles_attributes_mm AS mm 
+            INNER JOIN tx_commerce_attributes ON mm.uid_foreign = tx_commerce_attributes.uid',
+            $where . $this->enableFields('tx_commerce_attributes')
         );
+
+        foreach ($result as &$row) {
+            if ($row['has_valuelist']) {
+                $row['valueList'] = $this->getDatabaseConnection()->exec_SELECTgetRows(
+                    '*',
+                    'tx_commerce_attribute_values',
+                    'attributes_uid = ' . $row['uid'] . $this->enableFields('tx_commerce_attribute_values'),
+                    '',
+                    '',
+                    '',
+                    'uid'
+                );
+            }
+        }
 
         return $result;
     }
@@ -2040,7 +2053,7 @@ class BackendUtility
         if (!empty($row)) {
             // the item we want to skip is the item with the lowest
             // sorting - use pid of the 'Product' Folder
-            $pid = self::getProductFolderUid();
+            $pid = FolderRepository::initFolders('Products', FolderRepository::initFolders());
         } else {
             $pid = -$row['uid'];
         }
@@ -2670,38 +2683,6 @@ class BackendUtility
         }
 
         return true;
-    }
-
-    /**
-     * Returns the UID of the product folder.
-     *
-     * @return int UID
-     */
-    public static function getProductFolderUid()
-    {
-        static $productPid = null;
-
-        if (is_null($productPid)) {
-            $productPid = FolderRepository::initFolders('Products', FolderRepository::initFolders('Commerce'));
-        }
-
-        return $productPid;
-    }
-
-    /**
-     * Returns the UID of the order folder.
-     *
-     * @return int UID
-     */
-    public static function getOrderFolderUid()
-    {
-        static $orderPid = null;
-
-        if (is_null($orderPid)) {
-            $orderPid = FolderRepository::initFolders('Orders', FolderRepository::initFolders('Commerce'));
-        }
-
-        return $orderPid;
     }
 
 

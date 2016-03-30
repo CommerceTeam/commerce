@@ -14,7 +14,6 @@ namespace CommerceTeam\Commerce\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Module\BaseScriptClass;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -67,11 +66,7 @@ class SystemdataNavigationFrameController extends BaseScriptClass
             'EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf'
         );
 
-        $this->id = FolderRepository::initFolders('Commerce');
-        if (!$this->id) {
-            \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
-            $this->id = FolderRepository::initFolders('Commerce');
-        }
+        $this->id = \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders();
 
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
 

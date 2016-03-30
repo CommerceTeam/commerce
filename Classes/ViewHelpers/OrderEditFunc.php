@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
@@ -349,7 +350,7 @@ class OrderEditFunc
         $data['items'] = [];
 
         // Find the right pid for the Ordersfolder
-        $orderPid = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid();
+        $orderPid = FolderRepository::initFolders('Orders', FolderRepository::initFolders());
 
         /*
          * Get the pages below $order_pid

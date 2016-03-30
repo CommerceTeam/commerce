@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
@@ -95,7 +96,7 @@ abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseS
         $this->statistics = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\StatisticsUtility::class);
         $this->statistics->init((int) ConfigurationUtility::getInstance()->getExtConf('excludeStatisticFolders'));
 
-        $this->orderPageId = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid();
+        $this->orderPageId = FolderRepository::initFolders('Orders', FolderRepository::initFolders());
 
         /*
          * If we get an id via GP use this, else use the default id
@@ -118,7 +119,7 @@ abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseS
         $this->doc->postCode = $this->doc->wrapScriptTags('
             script_ended = 1;
             if (top.fsMod) {
-                top.fsMod.recentIds["web"] = ' . (int) $this->id . ';
+                top.fsMod.recentIds["commerce_category"] = ' . (int) $this->id . ';
             }
         ');
     }

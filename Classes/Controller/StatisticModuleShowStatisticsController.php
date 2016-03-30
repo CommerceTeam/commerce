@@ -12,6 +12,8 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+
 class StatisticModuleShowStatisticsController extends StatisticModuleController
 {
     /**
@@ -22,7 +24,7 @@ class StatisticModuleShowStatisticsController extends StatisticModuleController
         $language = $this->getLanguageService();
         $database = $this->getDatabaseConnection();
 
-        $orderPageId = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid();
+        $orderPageId = FolderRepository::initFolders('Orders', FolderRepository::initFolders());
 
         $whereClause = '';
         if ($this->id != $orderPageId) {

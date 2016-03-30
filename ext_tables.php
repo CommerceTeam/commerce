@@ -104,6 +104,10 @@ call_user_func(function ($packageKey) {
             'TYPO3.Components.CategoryTree.DataProvider',
             \CommerceTeam\Commerce\Tree\CategoryTree\ExtdirectTreeDataProvider::class
         );
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
+            'TYPO3.Components.CategoryTree.Commands',
+            \CommerceTeam\Commerce\Tree\CategoryTree\ExtdirectTreeCommands::class
+        );
 
         // Permission Module
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
