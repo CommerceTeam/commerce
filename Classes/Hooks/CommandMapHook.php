@@ -83,12 +83,12 @@ class CommandMapHook
      * @param string $command Command
      * @param string $table Table the data will be stored in
      * @param int $id The uid of the dataset we're working on
-     * @param mixed $value Value
+     * @param mixed $_ Value
      * @param DataHandler $pObj Parent
      *
      * @return void
      */
-    public function processCmdmap_preProcess(&$command, $table, &$id, $value, DataHandler $pObj)
+    public function processCmdmap_preProcess(&$command, $table, &$id, $_, DataHandler $pObj)
     {
         $this->pObj = $pObj;
 

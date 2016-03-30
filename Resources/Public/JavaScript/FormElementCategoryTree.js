@@ -1,3 +1,5 @@
+/* globals window, TYPO3 */
+
 /*
  * This file is part of the TYPO3 Commerce project.
  *

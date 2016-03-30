@@ -1,4 +1,4 @@
-/* globals window */
+/* globals window, top */
 
 /*
  * This file is part of the TYPO3 Commerce project.

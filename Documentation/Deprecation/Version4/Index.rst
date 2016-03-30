@@ -339,14 +339,6 @@ Removed methods since 4.x
 	, isPSet, isPermissionSet
 
 
-.. _\CommerceTeam\Commerce\Utility\FolderUtility:
-.. csv-table::
-	:header: Class, Method, Replacement
-	:widths: 30, 35, 35
-
-	\CommerceTeam\Commerce\Utility\FolderUtility, init_folders, initFolders
-
-
 .. _\CommerceTeam\Commerce\Utility\GeneralUtility:
 .. csv-table::
 	:header: Class, Method, Replacement
@@ -700,17 +692,6 @@ Removed hooks since 4.x
 	, , ['commerce/Classes/Utility/BackendUtility.php']['copyProduct'], ['commerce/Utility/BackendUtility']['copyProduct']
 	, copyCategory, ['commerce/lib/class.tx_commerce_belib.php']['copyCategoryClass'], ['commerce/Utility/BackendUtility']['copyCategory']
 	, , ['commerce/Classes/Utility/BackendUtility.php']['copyCategory'], ['commerce/Utility/BackendUtility']['copyCategory']
-
-
-.. _\CommerceTeam\Commerce\Utility\FolderUtility_hooks:
-.. csv-table::
-	:header: Class, Method, Hook, Replacement
-	:widths: 25, 10, 35, 30
-
-	\CommerceTeam\Commerce\Utility\FolderUtility, initFolders, ['commerce/class.tx_commerce_create_folder.php']['postcreatefolder'], "Method got removed from the api"
-	, , ['commerce/class.tx_commerce_create_folder.php']['precreatesyscategory'], "Method got removed from the api"
-	, , ['commerce/class.tx_commerce_create_folder.php']['postcreatesyscategory'], "Method got removed from the api"
-	, , ['commerce/class.tx_commerce_create_folder.php']['postcreatediliveryarticles'], "Method got removed from the api"
 
 
 .. _\CommerceTeam\Commerce\Utility\GeneralUtility_hooks:

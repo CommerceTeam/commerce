@@ -276,12 +276,12 @@ class NavigationViewHelper
     /**
      * Init Method for initialising the navigation.
      *
-     * @param string $content Content passed to method
+     * @param string $_ Content passed to method
      * @param array $conf Typoscript Array
      *
      * @return array array for the menurendering of TYPO3
      */
-    public function init($content, array $conf)
+    public function init($_, array $conf)
     {
         $this->mConf = $this->processConf($conf);
         if ($this->mConf['useRootlineInformationToUrl']) {
@@ -1279,12 +1279,12 @@ class NavigationViewHelper
     /**
      * Method for generating the rootlineMenu to use in TS.
      *
-     * @param string $content Passed to method
+     * @param string $_ Passed to method
      * @param array $conf TS Array
      *
      * @return array for the menurendering of TYPO3
      */
-    public function renderRootline($content, array $conf)
+    public function renderRootline($_, array $conf)
     {
         $this->mConf = $this->processConf($conf);
         $this->pid = $this->mConf['overridePid'] ?

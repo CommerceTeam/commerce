@@ -164,7 +164,6 @@ class ProducibleArticlesElement extends AbstractFormElement
         }
 
         if (isset($this->attributes['ct1']) && is_array($this->attributes['ct1'])) {
-            //$attributes = array_reverse($this->attributes['ct1']);
             foreach ($this->attributes['ct1'] as $attribute) {
                 $result .= '<th  style="width: {width}%">'
                     . htmlspecialchars(strip_tags($attribute['attributeData']['title'])) . '</th>';

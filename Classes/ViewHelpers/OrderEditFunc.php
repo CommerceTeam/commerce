@@ -340,11 +340,6 @@ class OrderEditFunc
     public function orderStatus(array &$data)
     {
         /*
-         * Create folder if not existing
-         */
-        \CommerceTeam\Commerce\Utility\FolderUtility::initFolders();
-
-        /*
          * Create a new data item array
          */
         $data['items'] = [];
@@ -441,13 +436,13 @@ class OrderEditFunc
      * Renders an address block.
      *
      * @param array $parameter Parameter
-     * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj Form engine
+     * @param \TYPO3\CMS\Backend\Form\FormEngine $_ Form engine
      * @param string $table Table
      * @param int $uid Record UID
      *
      * @return string HTML-Content
      */
-    public function address(array $parameter, \TYPO3\CMS\Backend\Form\FormEngine $fobj, $table, $uid)
+    public function address(array $parameter, \TYPO3\CMS\Backend\Form\FormEngine $_, $table, $uid)
     {
         /**
          * Intialize Template Class

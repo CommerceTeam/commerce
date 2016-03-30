@@ -162,12 +162,13 @@ class Commands
      *
      * @param NodeInterface $parentNode
      * @param int $targetId
+     * @param string $type
      * @return int
      */
-    public static function createNode(NodeInterface $parentNode, $targetId)
+    public static function createNode(NodeInterface $parentNode, $targetId, $type)
     {
         $placeholder = 'NEW12345';
-        $pid = (int)$parentNode->getWorkspaceId();
+        $pid = (int)$parentNode->getPid();
         $targetId = (int)$targetId;
         $table = $parentNode->getType();
 
@@ -184,6 +185,17 @@ class Commands
             'LLL:EXT:lang/locallang_core.xlf:tree.defaultPageTitle',
             true
         );
+
+        if ($parentNode->getType() == 'tx_commerce_categories') {
+            if ($type == 'tx_category_categories') {
+                $data[$table][$placeholder]['defVals']['parent_category'] = $parentNode->getId();
+            } else {
+                $data[$table][$placeholder]['defVals']['categories'] = [$parentNode->getId()];
+            }
+        } elseif ($parentNode->getType() == 'tx_commerce_products') {
+            $data[$table][$placeholder]['defVals']['uid_product'] = $parentNode->getId();
+        }
+
         $newPageId = self::processTceCmdAndDataMap([], $data);
         $node = self::getNode($table, $newPageId[$placeholder]);
         if ($pid !== $targetId) {

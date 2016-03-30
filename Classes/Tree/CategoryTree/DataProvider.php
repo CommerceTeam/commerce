@@ -315,7 +315,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             ) {
                 continue;
             }
-            $liveVersion = BackendUtility::getLiveVersionOfRecord('pages', $subCategory['uid'], 'uid');
+            $liveVersion = BackendUtility::getLiveVersionOfRecord('tx_commerce_categories', $subCategory['uid'], 'uid');
             if ($liveVersion !== null) {
                 $subCategory = $liveVersion;
             }
@@ -329,7 +329,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             }
             $processedRecordIds[] = $subCategory['uid'];
 
-            $rootline = BackendUtility::BEgetRootLine(
+            $rootline = \CommerceTeam\Commerce\Utility\BackendUtility::BEgetRootLine(
                 $subCategory['uid'],
                 '',
                 $this->getBackendUserAuthentication()->workspace != 0
@@ -353,7 +353,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             for ($i = 0; $i < $amountOfRootlineElements; ++$i) {
                 $rootlineElement = $rootline[$i];
                 $rootlineElement['uid'] = (int)$rootlineElement['uid'];
-                $isInWebMount = (int)$this->getBackendUserAuthentication()->isInWebMount($rootlineElement['uid']);
+                $isInWebMount = (int)$backendUserUtility->isInWebMount($rootlineElement['uid']);
                 if (!$isInWebMount
                     || ($rootlineElement['uid'] === (int)$mountPoints[0]
                         && $rootlineElement['uid'] !== $isInWebMount)
@@ -399,7 +399,8 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                     /** @var $childCollection PagetreeNodeCollection */
                     $childCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
                     if ($i + 1 >= $amountOfRootlineElements) {
-                        $childNodes = $this->getNodes($refNode, $mountPoint);
+                        // @todo append product and/or article
+                        $childNodes = $this->getFilteredProductNodes($refNode, $searchFilter, $mountPoint);
                         foreach ($childNodes as $childNode) {
                             /** @var $childNode \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
                             $childRecord = $childNode->getRecord();
@@ -434,19 +435,11 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     {
         /** @var $nodeCollection PagetreeNodeCollection */
         $nodeCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
-        $records = $this->getCategories(-1, $searchFilter);
+        $records = $this->getProducts($node->getId(), $searchFilter);
         if (!is_array($records) || empty($records)) {
             return $nodeCollection;
         } elseif (count($records) > 500) {
             return $nodeCollection;
-        }
-        // check no temporary mountpoint is used
-        $mountPoints = 0;
-        if (!$mountPoints) {
-            $mountPoints = array_map('intval', $this->getBackendUserAuthentication()->returnWebmounts());
-            $mountPoints = array_unique($mountPoints);
-        } else {
-            $mountPoints = [$mountPoints];
         }
         $isNumericSearchFilter = is_numeric($searchFilter) && $searchFilter > 0;
         $searchFilterQuoted = preg_quote($searchFilter, '/');
@@ -458,7 +451,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             ) {
                 continue;
             }
-            $liveVersion = BackendUtility::getLiveVersionOfRecord('pages', $record['uid'], 'uid');
+            $liveVersion = BackendUtility::getLiveVersionOfRecord('tx_commerce_products', $record['uid'], 'uid');
             if ($liveVersion !== null) {
                 $record = $liveVersion;
             }
@@ -472,24 +465,12 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             }
             $processedRecordIds[] = $record['uid'];
 
-            $rootline = BackendUtility::BEgetRootLine(
+            $rootline = \CommerceTeam\Commerce\Utility\BackendUtility::BEgetRootLine(
                 $record['uid'],
                 '',
                 $this->getBackendUserAuthentication()->workspace != 0
             );
             $rootline = array_reverse($rootline);
-            if (!in_array(0, $mountPoints, true)) {
-                $isInsideMountPoints = false;
-                foreach ($rootline as $rootlineElement) {
-                    if (in_array((int)$rootlineElement['uid'], $mountPoints, true)) {
-                        $isInsideMountPoints = true;
-                        break;
-                    }
-                }
-                if (!$isInsideMountPoints) {
-                    continue;
-                }
-            }
             $reference = $nodeCollection;
             $inFilteredRootline = false;
             $amountOfRootlineElements = count($rootline);
@@ -615,7 +596,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             }
             $processedRecordIds[] = $record['uid'];
 
-            $rootline = BackendUtility::BEgetRootLine(
+            $rootline = \CommerceTeam\Commerce\Utility\BackendUtility::BEgetRootLine(
                 $record['uid'],
                 '',
                 $this->getBackendUserAuthentication()->workspace != 0
@@ -785,12 +766,13 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     /**
      * Returns the where clause for fetching pages
      *
-     * @param int $id Category id
+     * @param int|array $id Category id
      * @param string $searchFilter Search filter
+     * @param array $categoryUids
      *
      * @return string
      */
-    protected function getCategoryWhereClause($id, $searchFilter = '')
+    protected function getCategoryWhereClause($id, $searchFilter = '', array $categoryUids = [])
     {
         $where = \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause($id) .
             BackendUtility::deleteClause('tx_commerce_categories') .
@@ -800,18 +782,23 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         }
 
         if ($searchFilter !== '') {
-            $searchWhere = '';
+            $searchWhere = [];
+            // in case a previous search for products or articles returned category uids
+            if (!empty($categoryUids)) {
+                $searchWhere[] = 'tx_commerce_categories.uid IN (' . implode(',', $categoryUids) . ')';
+            }
+
             if (is_numeric($searchFilter) && $searchFilter > 0) {
-                $searchWhere .= 'uid = ' . (int) $searchFilter . ' OR ';
+                $searchWhere[] = 'tx_commerce_categories.uid = ' . (int) $searchFilter;
             }
 
             $searchFilter = $this->getDatabaseConnection()->fullQuoteStr(
                 '%' . $searchFilter . '%',
                 'tx_commerce_categories'
             );
-            $searchWhere .= 'title LIKE ' . $searchFilter;
+            $searchWhere[] = 'tx_commerce_categories.title LIKE ' . $searchFilter;
 
-            $where .= ' AND (' . $searchWhere . ')';
+            $where .= ' AND (' . implode(' OR ', $searchWhere) . ')';
         }
 
         return $where;
@@ -822,10 +809,11 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      *
      * @param int $id Category id
      * @param string $searchFilter Search filter
+     * @param array $productUids
      *
      * @return string
      */
-    protected function getProductWhereClause($id, $searchFilter = '')
+    protected function getProductWhereClause($id, $searchFilter = '', array $productUids = [])
     {
         $where = \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause($id) .
             BackendUtility::deleteClause('tx_commerce_products') .
@@ -836,18 +824,24 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         }
 
         if ($searchFilter !== '') {
-            $searchWhere = '';
-            if (is_numeric($searchFilter) && $searchFilter > 0) {
-                $searchWhere .= 'tx_commerce_products.uid = ' . (int) $searchFilter . ' OR ';
+            $searchWhere = [];
+            // in case a previous search for articles returned product uids
+            if (!empty($productUids)) {
+                $searchWhere[] = 'tx_commerce_products.uid IN (' . implode(',', $productUids) . ')';
             }
+
+            if (is_numeric($searchFilter) && $searchFilter > 0) {
+                $searchWhere[] = 'tx_commerce_products.uid = ' . (int) $searchFilter;
+            }
+
             $searchFilter = $this->getDatabaseConnection()->fullQuoteStr(
                 '%' . $searchFilter . '%',
                 'tx_commerce_products'
             );
 
-            $searchWhere .= 'tx_commerce_products.title LIKE ' . $searchFilter;
+            $searchWhere[] = 'tx_commerce_products.title LIKE ' . $searchFilter;
 
-            $where .= ' AND (' . $searchWhere . ')';
+            $where .= ' AND (' . implode(' OR ', $searchWhere) . ')';
         }
 
         return $where;
@@ -867,22 +861,22 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             BackendUtility::versioningPlaceholderClause('tx_commerce_articles');
 
         if (is_numeric($id) && $id >= 0) {
-            $where .= ' AND uid_product = ' . (int) $id;
+            $where .= ' AND tx_commerce_articles.uid_product = ' . (int) $id;
         }
 
         if ($searchFilter !== '') {
-            $searchWhere = '';
+            $searchWhere = [];
             if (is_numeric($searchFilter) && $searchFilter > 0) {
-                $searchWhere .= 'uid = ' . (int) $searchFilter . ' OR ';
+                $searchWhere[] = 'tx_commerce_articles.uid = ' . (int) $searchFilter;
             }
             $searchFilter = $this->getDatabaseConnection()->fullQuoteStr(
                 '%' . $searchFilter . '%',
                 'tx_commerce_articles'
             );
 
-            $searchWhere .= 'title LIKE ' . $searchFilter;
+            $searchWhere[] = 'tx_commerce_articles.title LIKE ' . $searchFilter;
 
-            $where .= ' AND (' . $searchWhere . ')';
+            $where .= ' AND (' . implode(' OR ', $searchWhere) . ')';
         }
 
         return $where;
@@ -898,7 +892,26 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function getCategories($id, $searchFilter = '')
     {
-        $where = $this->getCategoryWhereClause($id, $searchFilter);
+        $where = '';
+        if ($searchFilter) {
+            $categories = $this->searchCategoryWithMatchingArticle($searchFilter);
+            if (empty($categories)) {
+                $categories = $this->searchCategoryWithMatchingProduct($searchFilter);
+            }
+
+            if (!empty($categories)) {
+                $categoryUids = [];
+                foreach ($categories as $category) {
+                    $categoryUids[] = $category['uid'];
+                }
+
+                $where = $this->getCategoryWhereClause($id, $searchFilter, $categoryUids);
+            }
+        }
+        if ($where == '') {
+            $where = $this->getCategoryWhereClause($id, $searchFilter);
+        }
+
         return $this->getDatabaseConnection()->exec_SELECTgetRows(
             'uid, t3ver_wsid',
             'tx_commerce_categories
@@ -922,7 +935,23 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function getProducts($categoryId, $searchFilter = '')
     {
-        $where = $this->getProductWhereClause($categoryId, $searchFilter);
+        $where = '';
+        if ($searchFilter) {
+            $products = $this->searchProductWithMathingArticle($searchFilter);
+
+            if (!empty($products)) {
+                $productUids = [];
+                foreach ($products as $product) {
+                    $productUids[] = $product['uid'];
+                }
+
+                $where = $this->getCategoryWhereClause($categoryId, $searchFilter, $productUids);
+            }
+        }
+        if ($where == '') {
+            $where = $this->getCategoryWhereClause($categoryId, $searchFilter);
+        }
+
         return $this->getDatabaseConnection()->exec_SELECTgetRows(
             'tx_commerce_products.uid, tx_commerce_products.t3ver_wsid',
             'tx_commerce_products
@@ -953,6 +982,67 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             $where,
             '',
             'sorting',
+            '',
+            'uid'
+        );
+    }
+
+    /**
+     * @param string $searchFilter
+     * @return array
+     */
+    protected function searchCategoryWithMatchingArticle($searchFilter)
+    {
+        $where = $this->getArticleWhereClause(-1, $searchFilter);
+        return (array)$this->getDatabaseConnection()->exec_SELECTgetRows(
+            'tx_commerce_categories.uid, tx_commerce_categories.t3ver_wsid',
+            'tx_commerce_articles
+                INNER JOIN tx_commerce_products_categories_mm AS mm ON
+                    tx_commerce_articles.uid_product = mm.uid_local
+                INNER JOIN tx_commerce_categories ON mm.uid_foreign = tx_commerce_categories.uid',
+            $where,
+            '',
+            'tx_commerce_categories.sorting',
+            '',
+            'uid'
+        );
+    }
+
+    /**
+     * @param string $searchFilter
+     * @return array
+     */
+    protected function searchCategoryWithMatchingProduct($searchFilter)
+    {
+        $where = $this->getProductWhereClause(-1, $searchFilter);
+        return (array)$this->getDatabaseConnection()->exec_SELECTgetRows(
+            'uid, t3ver_wsid',
+            'tx_commerce_categories
+                INNER JOIN tx_commerce_categories_parent_category_mm ON
+                    tx_commerce_categories.uid = tx_commerce_categories_parent_category_mm.uid_local',
+            $where,
+            '',
+            'tx_commerce_categories.sorting',
+            '',
+            'uid'
+        );
+    }
+
+    /**
+     * @param $searchFilter
+     * @return array
+     */
+    protected function searchProductWithMathingArticle($searchFilter)
+    {
+        $where = $this->getArticleWhereClause(-1, $searchFilter);
+        return (array)$this->getDatabaseConnection()->exec_SELECTgetRows(
+            'tx_commerce_products.uid, tx_commerce_products.t3ver_wsid',
+            'tx_commerce_articles
+                INNER JOIN tx_commerce_products ON
+                    tx_commerce_articles.uid_product = tx_commerce_products.uid',
+            $where,
+            '',
+            'tx_commerce_products.sorting',
             '',
             'uid'
         );

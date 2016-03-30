@@ -41,7 +41,7 @@ class Attribute extends AbstractEntity
      *
      * @var \CommerceTeam\Commerce\Domain\Repository\AttributeRepository
      */
-    public $databaseConnection;
+    protected $databaseConnection;
 
     /**
      * Title of Attribute.

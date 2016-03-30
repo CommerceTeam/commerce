@@ -69,6 +69,11 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
     protected $backgroundColor = '';
 
     /**
+     * @var int
+     */
+    protected $pid = 0;
+
+    /**
      * Sets the background color
      *
      * @param string $backgroundColor
@@ -402,6 +407,22 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
     }
 
     /**
+     * @param int $pid
+     */
+    public function setPid($pid)
+    {
+        $this->pid = (int) $pid;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPid()
+    {
+        return $this->pid;
+    }
+
+    /**
      * @return string
      */
     public function getJumpUrl()
@@ -455,6 +476,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
     public function dataFromArray($data)
     {
         parent::dataFromArray($data);
+        $this->setPid($data['pid']);
         $this->setWorkspaceId($data['workspaceId']);
         $this->setMountPoint($data['mountPoint']);
         $this->setReadableRootline($data['readableRootline']);

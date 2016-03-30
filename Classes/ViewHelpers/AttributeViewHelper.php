@@ -11,6 +11,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
 use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
 use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
 use CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository;

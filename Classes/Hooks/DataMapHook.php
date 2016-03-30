@@ -75,11 +75,10 @@ class DataMapHook
      * @param array $incomingFieldArray Fields that where changed in BE
      * @param string $table Table the data will be stored in
      * @param int $id The uid of the dataset we're working on
-     * @param DataHandler $pObj The instance of the BE Form
      *
      * @return void
      */
-    public function processDatamap_preProcessFieldArray(array &$incomingFieldArray, $table, $id, DataHandler $pObj)
+    public function processDatamap_preProcessFieldArray(array &$incomingFieldArray, $table, $id)
     {
         // check if we have to do something
         if ($this->preProcessIsNotAllowed($incomingFieldArray, $table, $id)) {

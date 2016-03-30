@@ -14,7 +14,9 @@ namespace CommerceTeam\Commerce\Domain\Model;
 
 use CommerceTeam\Commerce\Domain\Repository\AbstractRepository;
 use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
 use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
+use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
 
 /*
  * Constants definition for Attribute correlation_types
@@ -404,7 +406,7 @@ class AbstractEntity
 
 
     /**
-     * @return AbstractRepository|ProductRepository|ArticleRepository
+     * @return AbstractRepository|CategoryRepository|ProductRepository|ArticleRepository|AttributeRepository
      */
     protected function getRepository()
     {

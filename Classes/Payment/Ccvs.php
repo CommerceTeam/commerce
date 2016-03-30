@@ -32,6 +32,11 @@ class Ccvs extends \CreditCardValidationSolution
     public $language;
 
     /**
+     * @var string
+     */
+    public $CCVSError = '';
+
+    /**
      * Constructor.
      */
     public function __construct()

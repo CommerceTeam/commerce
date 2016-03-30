@@ -2555,7 +2555,13 @@ class BackendUtility
             $theRowArray = [];
             while ($uid != 0 && $loopCheck) {
                 $loopCheck--;
-                $row = self::getCategoryForRootline($uid, $clause, $workspaceOl);
+                if ($loopCheck == 99) {
+                    $row = self::getProductForRootline($uid, $clause, $workspaceOl);
+                }
+                if (empty($row) || $loopCheck < 99) {
+                    $row = self::getCategoryForRootline($uid, $clause, $workspaceOl);
+                }
+
                 if (is_array($row)) {
                     $uid = $row['pid'];
                     $theRowArray[] = $row;
@@ -2563,6 +2569,7 @@ class BackendUtility
                     break;
                 }
             }
+
             if ($uid == 0) {
                 $theRowArray[] = ['uid' => 0, 'title' => ''];
             }
@@ -2609,12 +2616,13 @@ class BackendUtility
         static $getCategoryForRootlineCache = [];
         $ident = $uid . '-' . $clause . '-' . $workspaceOl;
 
-        if (is_array($getCategoryForRootlineCache[$ident])) {
-            $row = $getCategoryForRootlineCache[$ident];
-        } else {
-            $row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
+        if (!isset($getCategoryForRootlineCache[$ident])) {
+            $row = (array)self::getDatabaseConnection()->exec_SELECTgetSingleRow(
                 'mm.uid_foreign AS pid, tx_commerce_categories.uid, tx_commerce_categories.hidden,
-                    tx_commerce_categories.title, tx_commerce_categories.ts_config, tx_commerce_categories.t3ver_oid,
+                    tx_commerce_categories.title,
+                    tx_commerce_categories.ts_config, tx_commerce_categories.t3ver_oid,
+                    tx_commerce_categories.t3ver_wsid, tx_commerce_categories.t3ver_state,
+                    tx_commerce_categories.t3ver_stage,
                     tx_commerce_categories.perms_userid, tx_commerce_categories.perms_groupid,
                     tx_commerce_categories.perms_user, tx_commerce_categories.perms_group,
                     tx_commerce_categories.perms_everybody',
@@ -2626,19 +2634,60 @@ class BackendUtility
                 \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('tx_commerce_categories') . ' ' . $clause
             );
 
-            if (is_array($row)) {
+            if (!empty($row)) {
                 if ($workspaceOl) {
                     \TYPO3\CMS\Backend\Utility\BackendUtility::workspaceOL('tx_commerce_categories', $row);
                 }
                 if (is_array($row)) {
                     \TYPO3\CMS\Backend\Utility\BackendUtility::fixVersioningPid('tx_commerce_categories', $row);
-                    $getCategoryForRootlineCache[$ident] = $row;
                 }
                 $row['_is_category'] = true;
             }
+
+            $getCategoryForRootlineCache[$ident] = $row;
         }
 
-        return $row;
+        return $row = $getCategoryForRootlineCache[$ident];
+    }
+
+    protected function getProductForRootline($uid, $clause, $workspaceOl)
+    {
+        static $getProductForRootlineCache = [];
+        $ident = $uid . '-' . $clause . '-' . $workspaceOl;
+
+        if (!isset($getCategoryForRootlineCache[$ident])) {
+            $row = (array)self::getDatabaseConnection()->exec_SELECTgetSingleRow(
+                'mm.uid_foreign AS pid, tx_commerce_products.uid, tx_commerce_products.hidden,
+                    tx_commerce_products.title,
+                    tx_commerce_categories.ts_config, tx_commerce_categories.t3ver_oid,
+                    tx_commerce_categories.t3ver_wsid, tx_commerce_categories.t3ver_state,
+                    tx_commerce_categories.t3ver_stage,
+                    tx_commerce_categories.perms_userid, tx_commerce_categories.perms_groupid,
+                    tx_commerce_categories.perms_user, tx_commerce_categories.perms_group,
+                    tx_commerce_categories.perms_everybody',
+                'tx_commerce_products
+                    INNER JOIN pages ON tx_commerce_products.pid = pages.uid
+                    INNER JOIN tx_commerce_products_categories_mm AS mm
+                        ON tx_commerce_products.uid = mm.uid_local
+                    INNER JOIN tx_commerce_categories ON mm.uid_foreign = tx_commerce_categories.uid',
+                'tx_commerce_products.uid = ' . (int) $uid . $clause .
+                \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('tx_commerce_products')
+            );
+
+            if (!empty($row)) {
+                if ($workspaceOl) {
+                    \TYPO3\CMS\Backend\Utility\BackendUtility::workspaceOL('tx_commerce_products', $row);
+                }
+                if (is_array($row)) {
+                    \TYPO3\CMS\Backend\Utility\BackendUtility::fixVersioningPid('tx_commerce_products', $row);
+                }
+                $row['_is_category'] = true;
+            }
+
+            $getCategoryForRootlineCache[$ident] = $row;
+        }
+
+        return $row = $getProductForRootlineCache[$ident];
     }
 
     /**

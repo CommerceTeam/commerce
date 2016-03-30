@@ -23,6 +23,8 @@ Removed Files
 
 - Both the ClassAliasMap.php and LegacyClassesForIde.php. If you need still need to know which class was renamed into
 which need name, please copy it from the 4.0.0 tag.
+Classes/Utility/FolderUtility.php methods are moved to FolderRepository
+Classes/ViewHelpers/AttributeEditFunc.php
 Classes/ViewHelpers/FeuserRecordList.php
 Classes/ViewHelpers/TceFunc.php
 Classes/ViewHelpers/TreelibBrowser.php

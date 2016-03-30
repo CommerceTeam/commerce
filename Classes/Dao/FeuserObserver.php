@@ -51,12 +51,12 @@ class FeuserObserver
      * Keep this method static for efficient integration into hookHandlers.
      * Communicate using push principle to avoid errors.
      *
-     * @param string $status Status [update,new]
+     * @param string $_ Status [update,new]
      * @param string $id Database table
      *
      * @return void
      */
-    public static function update($status, $id)
+    public static function update($_, $id)
     {
         /**
          * Frontend user data access object.

@@ -44,4 +44,9 @@ interface NodeInterface
      * @return string
      */
     public function calculateNodeId($prefix = '');
+
+    /**
+     * @return int
+     */
+    public function getPid();
 }

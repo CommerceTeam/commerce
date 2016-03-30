@@ -196,8 +196,9 @@ class ExtdirectTreeCommands
     public static function setTemporaryMountPoint($nodeData)
     {
         $node = self::getNode($nodeData);
-        $GLOBALS['BE_USER']->uc['pageTree_temporaryMountPoint'] = $node->getId();
-        $GLOBALS['BE_USER']->writeUC($GLOBALS['BE_USER']->uc);
+        $backendUser = self::getBackendUserAuthentication();
+        $backendUser->uc['pageTree_temporaryMountPoint'] = $node->getId();
+        $backendUser->writeUC($GLOBALS['BE_USER']->uc);
         return Commands::getMountPointPath();
     }
 
@@ -303,14 +304,15 @@ class ExtdirectTreeCommands
      * Inserts a new node as the first child node of the destination node and returns the created node.
      *
      * @param \stdClass $nodeData
+     * @param string $type
      * @return array
      */
-    public function insertNodeToFirstChildOfDestination($nodeData)
+    public function insertNodeToFirstChildOfDestination($nodeData, $type)
     {
         $node = $this->getNode($nodeData);
         try {
-            $newPageId = Commands::createNode($node, $node->getId());
-            $returnValue = Commands::getNode($node->getType(), $newPageId)->toArray();
+            $newPageId = Commands::createNode($node, $node->getId(), $type);
+            $returnValue = Commands::getNode($type, $newPageId)->toArray();
         } catch (\Exception $exception) {
             $returnValue = array(
                 'success' => false,
@@ -325,14 +327,15 @@ class ExtdirectTreeCommands
      *
      * @param \stdClass $nodeData
      * @param int $destination
+     * @param string $type
      * @return array
      */
-    public function insertNodeAfterDestination($nodeData, $destination)
+    public function insertNodeAfterDestination($nodeData, $destination, $type)
     {
         $node = $this->getNode($nodeData);
         try {
-            $newPageId = Commands::createNode($node, -$destination);
-            $returnValue = Commands::getNode($node->getType(), $newPageId)->toArray();
+            $newPageId = Commands::createNode($node, -$destination, $type);
+            $returnValue = Commands::getNode($type, $newPageId)->toArray();
         } catch (\Exception $exception) {
             $returnValue = array(
                 'success' => false,
@@ -383,7 +386,11 @@ class ExtdirectTreeCommands
             $state->stateHash = new \stdClass();
         }
         $state->stateHash = (object)$state->stateHash;
-        $rootline = BackendUtility::BEgetRootLine($nodeId, '', $GLOBALS['BE_USER']->workspace != 0);
+        $rootline = \CommerceTeam\Commerce\Utility\BackendUtility::BEgetRootLine(
+            $nodeId,
+            '',
+            $GLOBALS['BE_USER']->workspace != 0
+        );
         $rootlineIds = array();
         foreach ($rootline as $pageData) {
             $rootlineIds[] = (int)$pageData['uid'];
@@ -406,5 +413,15 @@ class ExtdirectTreeCommands
         }
         $userSettingsController->process('set', 'BackendComponents.States.' . $stateId, $state);
         return (array)$state->stateHash;
+    }
+
+    /**
+     * Get backend user authentication
+     *
+     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     */
+    protected static function getBackendUserAuthentication()
+    {
+        return $GLOBALS['BE_USER'];
     }
 }
