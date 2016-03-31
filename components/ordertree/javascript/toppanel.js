@@ -232,7 +232,7 @@ TYPO3.Components.OrderTree.TopPanel = Ext.extend(Ext.Panel, {
 			this.app.ownerCt.getEl().addClass('t3-mask-loading');
 			this.filteringTree.show().refreshTree(function() {
 				if (selectedNode) {
-					this.app.select(selectedNode.attributes.nodeData.id, false);
+					this.app.select(selectedNode.attributes.nodeData.id, selectedNode.attributes.nodeData, false);
 				}
 				textField.focus();
 				this.app.ownerCt.getEl().unmask();

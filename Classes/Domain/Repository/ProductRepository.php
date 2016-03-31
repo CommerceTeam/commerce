@@ -416,4 +416,23 @@ class ProductRepository extends AbstractRepository
 
         return $products;
     }
+
+    /**
+     * @param int $categoryUid
+     * @return array
+     */
+    public function findByCategoryUid($categoryUid)
+    {
+        $categories = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            $this->databaseTable . '.*',
+            $this->databaseTable
+            . ' INNER JOIN ' . $this->databaseCategoryRelationTable . ' AS mm ON '
+            . $this->databaseTable . '.uid = mm.uid_local',
+            'mm.uid_foreign = ' . (int) $categoryUid . $this->enableFields(),
+            '',
+            $this->databaseTable . '.sorting'
+        );
+
+        return $categories;
+    }
 }

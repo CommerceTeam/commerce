@@ -456,15 +456,16 @@ class Commands
             );
         }
 
-        /** @var $subNode ProductNode */
-        $subNode = GeneralUtility::makeInstance(ProductNode::class);
-        $subNode->setRecord($record);
-        $subNode->setCls($record['_CSSCLASS']);
-        $subNode->setType('tx_commerce_products');
-        $subNode->setId($record['uid']);
-        $subNode->setMountPoint($mountPoint);
-        $subNode->setWorkspaceId($record['_ORIG_uid'] ?: $record['uid']);
-        $subNode->setBackgroundColor(self::$backgroundColors[$record['uid']]);
+        /** @var $productNode ProductNode */
+        $productNode = GeneralUtility::makeInstance(ProductNode::class);
+        $productNode->setRecord($record);
+        $productNode->setCls($record['_CSSCLASS']);
+        $productNode->setType('tx_commerce_products');
+        $productNode->setCategory($record['category']);
+        $productNode->setId($record['uid']);
+        $productNode->setMountPoint($mountPoint);
+        $productNode->setWorkspaceId($record['_ORIG_uid'] ?: $record['uid']);
+        $productNode->setBackgroundColor(self::$backgroundColors[$record['uid']]);
         $field = 'title';
         $text = $record['title'];
         if (self::$useNavTitle && trim($record['nav_title']) !== '') {
@@ -502,9 +503,9 @@ class Commands
             }
         }
         $prefix .= htmlspecialchars(self::$addIdAsPrefix ? '[' . $record['uid'] . '] ' : '');
-        $subNode->setEditableText($text);
-        $subNode->setText(htmlspecialchars($visibleText), $field, $prefix, htmlspecialchars($suffix) . $stat);
-        $subNode->setQTip($qtip);
+        $productNode->setEditableText($text);
+        $productNode->setText(htmlspecialchars($visibleText), $field, $prefix, htmlspecialchars($suffix) . $stat);
+        $productNode->setQTip($qtip);
         if ((int)$record['uid'] !== 0) {
             $spriteIconCode = $iconFactory->getIconForRecord(
                 'tx_commerce_products',
@@ -514,19 +515,19 @@ class Commands
         } else {
             $spriteIconCode = $iconFactory->getIcon('apps-pagetree-root', Icon::SIZE_SMALL)->render();
         }
-        $subNode->setSpriteIconCode((string)$spriteIconCode);
-        if (!$subNode->canCreateNewPages()
+        $productNode->setSpriteIconCode((string)$spriteIconCode);
+        if (!$productNode->canCreateNewPages()
             || VersionState::cast($record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
         ) {
-            $subNode->setIsDropTarget(false);
+            $productNode->setIsDropTarget(false);
         }
-        if (!$subNode->canBeEdited()
-            || !$subNode->canBeRemoved()
+        if (!$productNode->canBeEdited()
+            || !$productNode->canBeRemoved()
             || VersionState::cast($record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
         ) {
-            $subNode->setDraggable(false);
+            $productNode->setDraggable(false);
         }
-        return $subNode;
+        return $productNode;
     }
 
     /**
@@ -553,14 +554,16 @@ class Commands
             );
         }
 
-        /** @var $subNode ArticleNode */
-        $subNode = GeneralUtility::makeInstance(ArticleNode::class);
-        $subNode->setRecord($record);
-        $subNode->setCls($record['_CSSCLASS']);
-        $subNode->setType('tx_commerce_articles');
-        $subNode->setId($record['uid']);
-        $subNode->setWorkspaceId($record['_ORIG_uid'] ?: $record['uid']);
-        $subNode->setBackgroundColor(self::$backgroundColors[$record['uid']]);
+        /** @var $articleNode ArticleNode */
+        $articleNode = GeneralUtility::makeInstance(ArticleNode::class);
+        $articleNode->setRecord($record);
+        $articleNode->setCls($record['_CSSCLASS']);
+        $articleNode->setType('tx_commerce_articles');
+        $articleNode->setProduct($record['product']);
+        $articleNode->setCategory($record['category']);
+        $articleNode->setId($record['uid']);
+        $articleNode->setWorkspaceId($record['_ORIG_uid'] ?: $record['uid']);
+        $articleNode->setBackgroundColor(self::$backgroundColors[$record['uid']]);
         $field = 'title';
         $text = $record['title'];
         if (self::$useNavTitle && trim($record['nav_title']) !== '') {
@@ -598,9 +601,9 @@ class Commands
             }
         }
         $prefix .= htmlspecialchars(self::$addIdAsPrefix ? '[' . $record['uid'] . '] ' : '');
-        $subNode->setEditableText($text);
-        $subNode->setText(htmlspecialchars($visibleText), $field, $prefix, htmlspecialchars($suffix) . $stat);
-        $subNode->setQTip($qtip);
+        $articleNode->setEditableText($text);
+        $articleNode->setText(htmlspecialchars($visibleText), $field, $prefix, htmlspecialchars($suffix) . $stat);
+        $articleNode->setQTip($qtip);
         if ((int)$record['uid'] !== 0) {
             $spriteIconCode = $iconFactory->getIconForRecord(
                 'tx_commerce_articles',
@@ -610,19 +613,19 @@ class Commands
         } else {
             $spriteIconCode = $iconFactory->getIcon('apps-pagetree-root', Icon::SIZE_SMALL)->render();
         }
-        $subNode->setSpriteIconCode((string)$spriteIconCode);
-        if (!$subNode->canCreateNewPages()
+        $articleNode->setSpriteIconCode((string)$spriteIconCode);
+        if (!$articleNode->canCreateNewPages()
             || VersionState::cast($record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
         ) {
-            $subNode->setIsDropTarget(false);
+            $articleNode->setIsDropTarget(false);
         }
-        if (!$subNode->canBeEdited()
-            || !$subNode->canBeRemoved()
+        if (!$articleNode->canBeEdited()
+            || !$articleNode->canBeRemoved()
             || VersionState::cast($record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
         ) {
-            $subNode->setDraggable(false);
+            $articleNode->setDraggable(false);
         }
-        return $subNode;
+        return $articleNode;
     }
 
 

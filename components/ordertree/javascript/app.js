@@ -348,12 +348,15 @@ TYPO3.Components.OrderTree.App = Ext.extend(Ext.Panel, {
 	 * store the new location into the state hash.
 	 *
 	 * @param {int} pageId
+	 * @param {Object} nodeData
 	 * @return {Boolean}
 	 */
-	select: function(pageId) {
+	select: function(pageId, nodeData) {
 		TYPO3.Components.OrderTree.Commands.addRootlineOfNodeToStateHash(
 			TYPO3.Backend.NavigationContainer.OrderTree.mainTree.stateId,
-			pageId, function(stateHash) {
+			pageId,
+			nodeData,
+			function(stateHash) {
 				TYPO3.Backend.NavigationContainer.OrderTree.mainTree.stateHash = stateHash;
 				TYPO3.Backend.NavigationContainer.OrderTree.mainTree.refreshTree();
 			}

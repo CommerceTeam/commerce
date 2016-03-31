@@ -207,20 +207,16 @@ class BackendUtility
                 $categoryUidList[] = $cUid;
             }
 
-            $categories = self::getDatabaseConnection()->exec_SELECTgetRows(
-                'uid_local',
-                'tx_commerce_categories_parent_category_mm',
-                'uid_foreign = ' . (int) $cUid,
-                '',
-                'uid_local'
-            );
+            /** @var CategoryRepository $categoryRepository */
+            $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+            $categories = $categoryRepository->findByParentCategoryUid($cUid);
 
             if (!empty($categories)) {
                 foreach ($categories as $relData) {
                     if ($recursive) {
-                        $this->getChildCategories($relData['uid_local'], $categoryUidList, $cUid, $excludeUid);
+                        $this->getChildCategories($relData['uid'], $categoryUidList, $cUid, $excludeUid);
                     } else {
-                        $cUid = $relData['uid_local'];
+                        $cUid = $relData['uid'];
                         if (!in_array($cUid, $categoryUidList) && $cUid != $dontAdd) {
                             $categoryUidList[] = $cUid;
                         }
@@ -581,13 +577,12 @@ class BackendUtility
                 $dataArray['sorting'] = $counter;
                 ++$counter;
 
-                $checkRes = $database->exec_SELECTquery('uid_local', $relationTable, $where);
-                $exists = $database->sql_num_rows($checkRes) > 0;
+                $exists = $database->exec_SELECTcountRows('uid_local', $relationTable, $where);
 
-                if (!$exists) {
-                    $database->exec_INSERTquery($relationTable, $dataArray);
-                } else {
+                if ($exists) {
                     $database->exec_UPDATEquery($relationTable, $where, ['sorting' => $counter]);
+                } else {
+                    $database->exec_INSERTquery($relationTable, $dataArray);
                 }
 
                 if (isset($relation['uid_foreign'])) {
@@ -2047,23 +2042,13 @@ class BackendUtility
             return false;
         }
 
-        $database = self::getDatabaseConnection();
-
-        $res = $database->exec_SELECT_mm_query(
-            'uid_local',
-            'tx_commerce_products',
-            'tx_commerce_products_categories_mm',
-            '',
-            ' AND deleted = 0 AND uid_foreign = ' . (int) $catUidFrom,
-            'tx_commerce_products.sorting ASC',
-            '',
-            ''
-        );
+        /** @var ProductRepository $productRepository */
+        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        $products = $productRepository->findByCategoryUid($catUidFrom);
 
         $success = true;
-
-        while (($row = $database->sql_fetch_assoc($res))) {
-            $productCopied = self::copyProduct($row['uid_local'], $catUidTo, true, $locale);
+        foreach ($products as $product) {
+            $productCopied = self::copyProduct($product['uid'], $catUidTo, true, $locale);
             // keep false if one action was false
             $success = ($success) ? $productCopied : $success;
         }
@@ -2095,22 +2080,13 @@ class BackendUtility
             return false;
         }
 
-        $database = self::getDatabaseConnection();
+        /** @var CategoryRepository $categoryRepository */
+        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+        $categories = $categoryRepository->findByParentCategoryUid($catUidFrom);
 
-        $res = $database->exec_SELECT_mm_query(
-            'uid_local',
-            'tx_commerce_categories',
-            'tx_commerce_categories_parent_category_mm',
-            '',
-            ' AND deleted = 0 AND uid_foreign = ' . $catUidFrom . ' AND ' . self::getCategoryPermsClause(1),
-            'tx_commerce_categories.sorting ASC',
-            '',
-            ''
-        );
         $success = true;
-
-        while (($row = $database->sql_fetch_assoc($res))) {
-            $categoryCopied = self::copyCategory($row['uid_local'], $catUidTo, $locale);
+        foreach ($categories as $category) {
+            $categoryCopied = self::copyCategory($category['uid'], $catUidTo, $locale);
             $success = ($success) ? $categoryCopied : $success;
         }
 

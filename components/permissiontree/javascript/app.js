@@ -348,9 +348,10 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
 	 * store the new location into the state hash.
 	 *
 	 * @param {int} pageId
+	 * @param {Object} nodeData
 	 * @return {Boolean}
 	 */
-	select: function(pageId) {
+	select: function(pageId, nodeData) {
 		TYPO3.Components.PermissionTree.Commands.addRootlineOfNodeToStateHash(
 			TYPO3.Backend.NavigationContainer.PermissionTree.mainTree.stateId,
 			pageId, function(stateHash) {

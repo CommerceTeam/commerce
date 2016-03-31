@@ -308,7 +308,6 @@ class Article extends AbstractEntity
      *      [
      *          'title =>' $title,
      *          'value' => $value,
-     *          'unit' => $unit
      *      ],
      *      ...
      *  ].
@@ -317,40 +316,14 @@ class Article extends AbstractEntity
      */
     public function getArticleAttributes()
     {
-        $localTable = 'tx_commerce_articles';
-        $mmTable = 'tx_commerce_articles_attributes_mm';
-        $foreignTable = 'tx_commerce_attributes';
-        $select = 'DISTINCT ' . $foreignTable . '.uid, ' . $foreignTable . '.title';
-        $ignore = ['fe_group' => 1];
-
-        /**
-         * Page repository.
-         *
-         * @var \TYPO3\CMS\Frontend\Page\PageRepository $pageSelect
-         */
-        $pageSelect = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
-        $whereClause = $pageSelect->enableFields('tx_commerce_attributes', '', $ignore);
-
-        $database = $this->getDatabaseConnection();
-
-        $setArticleAttributesResult = $database->exec_SELECT_mm_query(
-            $select,
-            $localTable,
-            $mmTable,
-            $foreignTable,
-            $whereClause,
-            '',
-            '',
-            ''
-        );
+        $setArticleAttributesResult = $this->getRepository()->getAttributes($this->getUid());
 
         $attributesUidList = [];
-        while (($data = $database->sql_fetch_assoc($setArticleAttributesResult))) {
+        foreach ($setArticleAttributesResult as $data) {
             if (!empty($data['uid'])) {
                 $attributesUidList[$data['uid']] = $data['title'];
             }
         }
-        $database->sql_free_result($setArticleAttributesResult);
 
         $values = [];
         foreach ($attributesUidList as $uid => $title) {

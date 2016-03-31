@@ -347,13 +347,16 @@ TYPO3.Components.CategoryTree.App = Ext.extend(Ext.Panel, {
 	 * Selects a node defined by the page id. If the second parameter is set, we
 	 * store the new location into the state hash.
 	 *
-	 * @param {int} pageId
+	 * @param {int} nodeId
+	 * @param {Object} nodeData
 	 * @return {Boolean}
 	 */
-	select: function(pageId) {
+	select: function(nodeId, nodeData) {
 		TYPO3.Components.CategoryTree.Commands.addRootlineOfNodeToStateHash(
 			TYPO3.Backend.NavigationContainer.CategoryTree.mainTree.stateId,
-			pageId, function(stateHash) {
+			nodeId,
+			nodeData,
+			function(stateHash) {
 				TYPO3.Backend.NavigationContainer.CategoryTree.mainTree.stateHash = stateHash;
 				TYPO3.Backend.NavigationContainer.CategoryTree.mainTree.refreshTree();
 			}

@@ -1574,15 +1574,15 @@ class DataMapHook
                                     );
                                 }
                             } else {
-                                // if the article has already this attribute, we have to insert so try
+                                // if the article has already this attribute, we have to update so try
                                 // to select this attribute for this article
-                                $res = $database->exec_SELECTquery(
+                                $relationCount = $database->exec_SELECTcountRows(
                                     'uid_local, uid_foreign',
                                     'tx_commerce_articles_attributes_mm',
                                     'uid_local = ' . $article['uid'] . ' AND uid_foreign = ' . $attributeKey
                                 );
 
-                                if ($database->sql_num_rows($res)) {
+                                if ($relationCount) {
                                     $database->exec_UPDATEquery(
                                         'tx_commerce_articles_attributes_mm',
                                         'uid_local = ' . $article['uid'] . ' AND uid_foreign = ' . $attributeKey,

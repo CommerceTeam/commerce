@@ -369,9 +369,10 @@ class ExtdirectTreeCommands
      *
      * @param string $stateId
      * @param int $nodeId
+     * @param array|\stdClass $nodeData
      * @return array
      */
-    public static function addRootlineOfNodeToStateHash($stateId, $nodeId)
+    public static function addRootlineOfNodeToStateHash($stateId, $nodeId, $nodeData = [])
     {
         $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
         $mountPoints = array_map('intval', $backendUserUtility->returnWebmounts());
@@ -386,10 +387,27 @@ class ExtdirectTreeCommands
             $state->stateHash = new \stdClass();
         }
         $state->stateHash = (object)$state->stateHash;
+
+        /** @var ArticleNode $articleNode */
+        /** @var ProductNode $productNode */
+        $articleNode = null;
+        $productNode = null;
+        $productId = 0;
+        if ($nodeData->type == 'tx_commerce_articles') {
+            $articleNode = self::getNode($nodeData);
+            $productId = $articleNode->getProduct();
+            $nodeId = $articleNode->getCategory();
+        }
+        if ($nodeData->type == 'tx_commerce_products') {
+            $productNode = self::getNode($nodeData);
+            $productId = $productNode->getId();
+            $nodeId = $productNode->getCategory();
+        }
+
         $rootline = \CommerceTeam\Commerce\Utility\BackendUtility::BEgetRootLine(
             $nodeId,
             '',
-            $GLOBALS['BE_USER']->workspace != 0
+            self::getBackendUserAuthentication()->workspace != 0
         );
         $rootlineIds = array();
         foreach ($rootline as $pageData) {
@@ -402,10 +420,22 @@ class ExtdirectTreeCommands
             $isFirstNode = true;
             foreach ($rootline as $pageData) {
                 /** @var NodeInterface $node */
-                $node = Commands::getNewNode($pageData, $mountPoint);
+                $node = Commands::getCategoryNode($pageData, $mountPoint);
                 if ($isFirstNode) {
+                    // for clicked article or products we need a special handling
+                    // of which was the last selected node
+                    if ($articleNode) {
+                        $state->stateHash->lastSelectedNode = $articleNode->calculateNodeId();
+                        $state->stateHash->{'pp' . dechex($productId)} = 1;
+                        $state->stateHash->{$node->calculateNodeId('')} = 1;
+                    } elseif ($productNode) {
+                        $state->stateHash->lastSelectedNode = $productNode->calculateNodeId();
+                        $state->stateHash->{$node->calculateNodeId('')} = 1;
+                    } else {
+                        $state->stateHash->lastSelectedNode = $node->calculateNodeId();
+                    }
+
                     $isFirstNode = false;
-                    $state->stateHash->lastSelectedNode = $node->calculateNodeId();
                 } else {
                     $state->stateHash->{$node->calculateNodeId('')} = 1;
                 }

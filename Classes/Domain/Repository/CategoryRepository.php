@@ -12,6 +12,8 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Utility\BackendUtility;
+
 /**
  * Database Class for tx_commerce_categories. All database calls should
  * be made by this class. In most cases you should use the methodes
@@ -427,6 +429,26 @@ class CategoryRepository extends AbstractRepository
         }
 
         return $result;
+    }
+
+    /**
+     * @param int $parentCategoryUid
+     * @return array
+     */
+    public function findByParentCategoryUid($parentCategoryUid)
+    {
+        $categories = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            $this->databaseTable . '.*',
+            $this->databaseTable
+            . ' INNER JOIN ' . $this->databaseParentCategoryRelationTable . ' AS mm ON '
+            . $this->databaseTable . '.uid = mm.uid_local',
+            'mm.uid_foreign = ' . (int) $parentCategoryUid . $this->enableFields()
+            . BackendUtility::getCategoryPermsClause(1),
+            '',
+            $this->databaseTable . '.sorting'
+        );
+
+        return $categories;
     }
 
     /**

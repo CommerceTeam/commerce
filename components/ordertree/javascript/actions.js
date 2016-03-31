@@ -288,7 +288,8 @@ TYPO3.Components.OrderTree.Actions = {
 					var nodeIsSelected = false;
 					if (selectedNode) {
 						nodeIsSelected = TYPO3.Backend.NavigationContainer.OrderTree.select(
-							selectedNode.attributes.nodeData.id
+							selectedNode.attributes.nodeData.id,
+							selectedNode.attributes.nodeData
 						);
 					}
 
@@ -702,7 +703,9 @@ TYPO3.Components.OrderTree.Actions = {
 		} else {
 			TYPO3.Components.OrderTree.Commands.addRootlineOfNodeToStateHash(
 				TYPO3.Backend.NavigationContainer.OrderTree.mainTree.stateId,
-				node.attributes.nodeData.id, function(stateHash) {
+				node.attributes.nodeData.id,
+				node.attributes.nodeData,
+				function(stateHash) {
 					TYPO3.Backend.NavigationContainer.OrderTree.mainTree.stateHash = stateHash;
 					TYPO3.Backend.NavigationContainer.OrderTree.mainTree.refreshTree();
 				}

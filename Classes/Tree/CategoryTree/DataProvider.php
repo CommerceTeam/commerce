@@ -224,6 +224,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                 if (!$product) {
                     continue;
                 }
+                $product['category'] = $node->getId();
                 $subNode = Commands::getProductNode($product, $mountPoint);
                 if ($this->nodeCounter < $this->nodeLimit) {
                     $childNodes = $this->getArticleNodes($subNode, $nodeCollection);
@@ -269,6 +270,8 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                 if (!$article) {
                     continue;
                 }
+                $article['product'] = $node->getId();
+                $article['category'] = $node->getCategory();
                 $articleNode = Commands::getArticleNode($article);
                 $articleNode->setLeaf(true);
                 $nodeCollection->append($articleNode);
@@ -399,7 +402,6 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                     /** @var $childCollection PagetreeNodeCollection */
                     $childCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
                     if ($i + 1 >= $amountOfRootlineElements) {
-                        // @todo append product and/or article
                         $childNodes = $this->getFilteredProductNodes($refNode, $searchFilter, $mountPoint);
                         $childFound = false;
                         foreach ($childNodes as $childNode) {
@@ -468,6 +470,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                 continue;
             }
             $processedRecordIds[] = $productRecord['uid'];
+            $productRecord['category'] = $node->getId();
 
             $reference = $nodeCollection;
 
@@ -552,6 +555,8 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                 continue;
             }
             $processedRecordIds[] = $articleRecord['uid'];
+            $articleRecord['product'] = $node->getId();
+            $articleRecord['category'] = $node->getCategory();
 
             $reference = $nodeCollection;
 
