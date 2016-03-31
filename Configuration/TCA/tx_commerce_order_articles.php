@@ -114,6 +114,7 @@ return [
             'label' => $languageFile . ':tx_commerce_order_articles.order_uid',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_commerce_orders',
                 'readOnly' => true,
             ],

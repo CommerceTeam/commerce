@@ -32,6 +32,7 @@ return [
             'label' => $languageFile . 'tx_commerce_orders.order_type_uid',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'items' => [
                     ['' => 0],
                 ],
@@ -68,6 +69,7 @@ return [
             'label' => $languageFile . 'tx_commerce_orders.pid',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'foreign_table' => 'pages',
                 'itemsProcFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->orderStatus',
             ],
@@ -87,9 +89,11 @@ return [
                     'edit' => [
                         'type' => 'popup',
                         'title' => 'Edit user',
-                        'script' => 'wizard_edit.php',
+                        'module' => [
+                            'name' => 'wizard_edit'
+                        ],
                         'popup_onlyOpenIfSelected' => 1,
-                        'icon' => 'edit2.gif',
+                        'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_edit.gif',
                         'JSopenParams' => 'height=350,width=580,status=0,menubar=0,scrollbars=1',
                     ],
                 ],
@@ -106,6 +110,7 @@ return [
             'label' => $languageFile . 'tx_commerce_orders.paymenttype',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_commerce_articles',
                 'foreign_table_where' => ' AND tx_commerce_articles.article_type_uid = 2',
             ],
@@ -136,6 +141,7 @@ return [
             'label' => $languageFile . 'tx_commerce_orders.cu_iso_3_uid',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'foreign_table' => 'static_currencies',
                 'foreign_table_where' => ' ',
                 'default' => '49',
@@ -161,6 +167,7 @@ return [
             'label' => 'LLL:EXT:lang/locallang_general.php:LGL.language',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'foreign_table' => 'sys_language',
                 'foreign_table_where' => 'ORDER BY sys_language.title',
                 'items' => [
@@ -173,6 +180,7 @@ return [
             'label' => $languageFile . 'tx_commerce_orders.pricefromnet',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'items' => [
                     ['LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:no', 0],
                     ['LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:yes', 1],

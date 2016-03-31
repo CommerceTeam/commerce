@@ -45,6 +45,7 @@ $tempColumns = [
         'label' => $languageFile . 'tt_address.tx_commerce_address_type_id',
         'config' => [
             'type' => 'select',
+            'renderType' => 'selectSingle',
             'item' => [
                 ['', 0],
             ],

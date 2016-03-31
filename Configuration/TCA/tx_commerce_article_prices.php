@@ -12,7 +12,6 @@ return [
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
-        // @todo check if this works without further versioning configuration
         'versioning' => '1',
         'default_sortby' => 'ORDER BY crdate',
         'delete' => 'deleted',

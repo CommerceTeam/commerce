@@ -179,7 +179,7 @@ return [
                         'RTEonly' => 1,
                         'type' => 'script',
                         'title' => 'Full screen Rich Text Editing',
-                        'icon' => 'wizard_rte2.gif',
+                        'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_rte.gif',
                         'module' => [
                             'name' => 'wizard_rte'
                         ]

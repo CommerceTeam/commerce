@@ -172,6 +172,7 @@ return [
             'l10n_mode' => 'exclude',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'items' => [
                     ['', ''],
                     [$languageFile . 'tx_commerce_attributes.valueformat.money', '%01.2f'],
@@ -202,6 +203,7 @@ return [
             'l10n_mode' => 'exclude',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_commerce_attributes',
                 'foreign_label' => 'title',
                 'foreign_table_where' => ' AND tx_commerce_attributes.uid != ###THIS_UID###',

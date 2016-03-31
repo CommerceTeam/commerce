@@ -182,7 +182,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
                         'RTEonly' => 1,
                         'type' => 'script',
                         'title' => 'Full screen Rich Text Editing',
-                        'icon' => 'wizard_rte2.gif',
+                        'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_rte.gif',
                         'module' => [
                             'name' => 'wizard_rte'
                         ]
@@ -221,7 +221,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
                         'RTEonly' => 1,
                         'type' => 'script',
                         'title' => 'Full screen Rich Text Editing',
-                        'icon' => 'wizard_rte2.gif',
+                        'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_rte.gif',
                         'module' => [
                             'name' => 'wizard_rte'
                         ]
@@ -270,6 +270,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
             'l10n_mode' => 'exclude',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_commerce_manufacturer',
                 'foreign_table_where' => 'ORDER BY tx_commerce_manufacturer.title ASC',
                 'items' => [

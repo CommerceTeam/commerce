@@ -87,7 +87,9 @@ return [
     ],
     'types' => [
         '0' => [
-            'showitem' => 'year, month, day, dow, hour, registration'
+            'showitem' => '
+                year, month, day, dow, hour, registration
+            '
         ],
     ],
 ];
