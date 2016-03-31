@@ -1,6 +1,13 @@
 {namespace be = TYPO3\CMS\Backend\ViewHelpers}
 {namespace bu = TYPO3\CMS\Beuser\ViewHelpers}
 {namespace core = TYPO3\CMS\Core\ViewHelpers}
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers">
+<head>
+	<title>Owner selectbox</title>
+</head>
+<body>
 
 <f:layout name="Permission" />
 
@@ -64,6 +71,7 @@
 									<bu:permissions permission="{data.row.perms_user}" scope="user" pageId="{data.row.uid}" />
 									<f:render
 										partial="Permission/Ownername"
+										section="Main"
 										arguments="{
 											pageId: '{data.row.uid}',
 											userId: '{data.row.perms_userid}',
@@ -76,6 +84,7 @@
 									<bu:permissions permission="{data.row.perms_group}" scope="group" pageId="{data.row.uid}" />
 									<f:render
 										partial="Permission/Groupname"
+										section="Main"
 										arguments="{
 											pageId: '{data.row.uid}',
 											groupId: '{data.row.perms_groupid}',
@@ -195,3 +204,6 @@
 		<core:icon identifier="status-status-permission-denied" /> <f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf:A_Denied" />
 	</p>
 </f:section>
+
+</body>
+</html>

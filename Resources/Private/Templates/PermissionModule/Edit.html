@@ -1,5 +1,10 @@
-{namespace be = TYPO3\CMS\Backend\ViewHelpers}
-{namespace core = TYPO3\CMS\Core\ViewHelpers}
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers">
+<head>
+	<title>Owner selectbox</title>
+</head>
+<body>
 
 <f:layout name="Permission" />
 
@@ -107,5 +112,7 @@
 			Permissions.setCheck("check[perms_everybody]", "tx_commerce_commerce_commercecommercepermission[data][categories][{categoryUid}][perms_everybody]");
 		});
 	</script>
-
 </f:section>
+
+</body>
+</html>

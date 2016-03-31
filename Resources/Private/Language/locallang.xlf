@@ -22,7 +22,7 @@
 				<source>Price</source>
 			</trans-unit>
 			<trans-unit id="lang_header_action" xml:space="preserve">
-				<source></source>
+				<source/>
 			</trans-unit>
 			<trans-unit id="lang_submit" xml:space="preserve">
 				<source>Submit</source>
