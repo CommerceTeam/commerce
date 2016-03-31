@@ -384,7 +384,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                     }
                 } else {
                     $refNode = Commands::getCategoryNode($rootlineElement, $mountPoint);
-                    $replacement = '<span class="typo3-pagetree-filteringTree-highlight">$1</span>';
+                    $replacement = '<span class="commerce-categorytree-filteringTree-highlight">$1</span>';
                     if ($isNumericSearchFilter && (int)$rootlineElement['uid'] === (int)$searchFilter) {
                         $text = str_replace('$1', $refNode->getText(), $replacement);
                     } else {
@@ -401,13 +401,18 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                     if ($i + 1 >= $amountOfRootlineElements) {
                         // @todo append product and/or article
                         $childNodes = $this->getFilteredProductNodes($refNode, $searchFilter, $mountPoint);
+                        $childFound = false;
                         foreach ($childNodes as $childNode) {
                             /** @var $childNode \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
                             $childRecord = $childNode->getRecord();
                             $childIdent = (int)$childRecord['sorting'] . (int)$childRecord['uid'];
                             $childCollection->offsetSet($childIdent, $childNode);
+                            $childFound = true;
                         }
                         $refNode->setChildNodes($childNodes);
+                        if ($childFound) {
+                            $refNode->setExpanded(true);
+                        }
                     }
                     $refNode->setChildNodes($childCollection);
                     $reference->offsetSet($ident, $refNode);
@@ -443,101 +448,62 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         }
         $isNumericSearchFilter = is_numeric($searchFilter) && $searchFilter > 0;
         $searchFilterQuoted = preg_quote($searchFilter, '/');
-        $nodeId = (int)$node->getId();
         $processedRecordIds = [];
-        foreach ($records as $record) {
-            if ((int)$record['t3ver_wsid'] !== (int)$this->getBackendUserAuthentication()->workspace
-                && (int)$record['t3ver_wsid'] !== 0
+        foreach ($records as $productRecord) {
+            if ((int)$productRecord['t3ver_wsid'] !== (int)$this->getBackendUserAuthentication()->workspace
+                && (int)$productRecord['t3ver_wsid'] !== 0
             ) {
                 continue;
             }
-            $liveVersion = BackendUtility::getLiveVersionOfRecord('tx_commerce_products', $record['uid'], 'uid');
+            $liveVersion = BackendUtility::getLiveVersionOfRecord('tx_commerce_products', $productRecord['uid'], 'uid');
             if ($liveVersion !== null) {
-                $record = $liveVersion;
+                $productRecord = $liveVersion;
             }
 
-            $record = Commands::getNodeRecord('tx_commerce_products', $record['uid'], false);
-            if ((int)$record['pid'] === -1
-                || in_array($record['uid'], $this->hiddenRecords)
-                || in_array($record['uid'], $processedRecordIds)
+            $productRecord = Commands::getNodeRecord('tx_commerce_products', $productRecord['uid'], false);
+            if ((int)$productRecord['pid'] === -1
+                || in_array($productRecord['uid'], $this->hiddenRecords)
+                || in_array($productRecord['uid'], $processedRecordIds)
             ) {
                 continue;
             }
-            $processedRecordIds[] = $record['uid'];
+            $processedRecordIds[] = $productRecord['uid'];
 
-            $rootline = \CommerceTeam\Commerce\Utility\BackendUtility::BEgetRootLine(
-                $record['uid'],
-                '',
-                $this->getBackendUserAuthentication()->workspace != 0
-            );
-            $rootline = array_reverse($rootline);
             $reference = $nodeCollection;
-            $inFilteredRootline = false;
-            $amountOfRootlineElements = count($rootline);
-            for ($i = 0; $i < $amountOfRootlineElements; ++$i) {
-                $rootlineElement = $rootline[$i];
-                $rootlineElement['uid'] = (int)$rootlineElement['uid'];
-                $isInWebMount = (int)$this->getBackendUserAuthentication()->isInWebMount($rootlineElement['uid']);
-                if (!$isInWebMount
-                    || ($rootlineElement['uid'] === (int)$mountPoints[0]
-                        && $rootlineElement['uid'] !== $isInWebMount)
-                ) {
-                    continue;
-                }
-                if ((int)$rootlineElement['pid'] === $nodeId
-                    || $rootlineElement['uid'] === $nodeId
-                    || ($rootlineElement['uid'] === $isInWebMount
-                        && in_array($rootlineElement['uid'], $mountPoints, true))
-                ) {
-                    $inFilteredRootline = true;
-                }
-                if (!$inFilteredRootline || $rootlineElement['uid'] === $mountPoint) {
-                    continue;
-                }
-                $rootlineElement = Commands::getNodeRecord('tx_commerce_products', $rootlineElement['uid'], false);
-                $ident = (int)$rootlineElement['sorting'] . (int)$rootlineElement['uid'];
-                if ($reference && $reference->offsetExists($ident)) {
-                    /** @var $refNode \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
-                    $refNode = $reference->offsetGet($ident);
-                    $refNode->setExpanded(true);
-                    $refNode->setLeaf(false);
-                    $reference = $refNode->getChildNodes();
-                    if ($reference == null) {
-                        $reference = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
-                        $refNode->setChildNodes($reference);
-                    }
-                } else {
-                    $refNode = Commands::getCategoryNode($rootlineElement, $mountPoint);
-                    $replacement = '<span class="typo3-pagetree-filteringTree-highlight">$1</span>';
-                    if ($isNumericSearchFilter && (int)$rootlineElement['uid'] === (int)$searchFilter) {
-                        $text = str_replace('$1', $refNode->getText(), $replacement);
-                    } else {
-                        $text = preg_replace('/(' . $searchFilterQuoted . ')/i', $replacement, $refNode->getText());
-                    }
-                    $refNode->setText(
-                        $text,
-                        $refNode->getTextSourceField(),
-                        $refNode->getPrefix(),
-                        $refNode->getSuffix()
-                    );
-                    /** @var $childCollection PagetreeNodeCollection */
-                    $childCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
-                    if ($i + 1 >= $amountOfRootlineElements) {
-                        $childNodes = $this->getNodes($refNode, $mountPoint);
-                        foreach ($childNodes as $childNode) {
-                            /** @var $childNode \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
-                            $childRecord = $childNode->getRecord();
-                            $childIdent = (int)$childRecord['sorting'] . (int)$childRecord['uid'];
-                            $childCollection->offsetSet($childIdent, $childNode);
-                        }
-                        $refNode->setChildNodes($childNodes);
-                    }
-                    $refNode->setChildNodes($childCollection);
-                    $reference->offsetSet($ident, $refNode);
-                    $reference->ksort();
-                    $reference = $childCollection;
-                }
+
+            $ident = (int)$productRecord['sorting'] . (int)$productRecord['uid'];
+            $refNode = Commands::getProductNode($productRecord, $mountPoint);
+            $replacement = '<span class="commerce-categorytree-filteringTree-highlight">$1</span>';
+            if ($isNumericSearchFilter && (int)$productRecord['uid'] === (int)$searchFilter) {
+                $text = str_replace('$1', $refNode->getText(), $replacement);
+            } else {
+                $text = preg_replace('/(' . $searchFilterQuoted . ')/i', $replacement, $refNode->getText());
             }
+            $refNode->setText(
+                $text,
+                $refNode->getTextSourceField(),
+                $refNode->getPrefix(),
+                $refNode->getSuffix()
+            );
+            /** @var $childCollection PagetreeNodeCollection */
+            $childCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
+            $childNodes = $this->getFilteredArticleNodes($refNode, $searchFilter, $mountPoint);
+            $childFound = false;
+            foreach ($childNodes as $childNode) {
+                /** @var $childNode \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
+                $childRecord = $childNode->getRecord();
+                $childIdent = (int)$childRecord['sorting'] . (int)$childRecord['uid'];
+                $childCollection->offsetSet($childIdent, $childNode);
+                $childFound = true;
+            }
+            $refNode->setChildNodes($childNodes);
+            if ($childFound) {
+                $refNode->setExpanded(true);
+            }
+
+            $refNode->setChildNodes($childCollection);
+            $reference->offsetSet($ident, $refNode);
+            $reference->ksort();
         }
         foreach ($this->processCollectionHookObjects as $hookObject) {
             /** @var $hookObject \TYPO3\CMS\Backend\Tree\Pagetree\CollectionProcessorInterface */
@@ -549,138 +515,62 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     /**
      * Returns a node collection of filtered nodes
      *
-     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode|CategoryNode $node
+     * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode|ProductNode $node
      * @param string $searchFilter
      * @param int $mountPoint
      * @return PagetreeNodeCollection the filtered nodes
      */
-    public function getFilteredArticleNodes(CategoryNode $node, $searchFilter, $mountPoint = 0)
+    public function getFilteredArticleNodes(ProductNode $node, $searchFilter, $mountPoint = 0)
     {
         /** @var $nodeCollection PagetreeNodeCollection */
         $nodeCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
-        $records = $this->getCategories(-1, $searchFilter);
+        $records = $this->getArticles($node->getId(), $searchFilter);
         if (!is_array($records) || empty($records)) {
             return $nodeCollection;
         } elseif (count($records) > 500) {
             return $nodeCollection;
         }
-        // check no temporary mountpoint is used
-        $mountPoints = 0;
-        if (!$mountPoints) {
-            $mountPoints = array_map('intval', $this->getBackendUserAuthentication()->returnWebmounts());
-            $mountPoints = array_unique($mountPoints);
-        } else {
-            $mountPoints = [$mountPoints];
-        }
         $isNumericSearchFilter = is_numeric($searchFilter) && $searchFilter > 0;
         $searchFilterQuoted = preg_quote($searchFilter, '/');
-        $nodeId = (int)$node->getId();
         $processedRecordIds = [];
-        foreach ($records as $record) {
-            if ((int)$record['t3ver_wsid'] !== (int)$this->getBackendUserAuthentication()->workspace
-                && (int)$record['t3ver_wsid'] !== 0
+        foreach ($records as $articleRecord) {
+            if ((int)$articleRecord['t3ver_wsid'] !== (int)$this->getBackendUserAuthentication()->workspace
+                && (int)$articleRecord['t3ver_wsid'] !== 0
             ) {
                 continue;
             }
-            $liveVersion = BackendUtility::getLiveVersionOfRecord('pages', $record['uid'], 'uid');
+            $liveVersion = BackendUtility::getLiveVersionOfRecord('tx_commerce_articles', $articleRecord['uid'], 'uid');
             if ($liveVersion !== null) {
-                $record = $liveVersion;
+                $articleRecord = $liveVersion;
             }
 
-            $record = Commands::getNodeRecord('tx_commerce_articles', $record['uid'], false);
-            if ((int)$record['pid'] === -1
-                || in_array($record['uid'], $this->hiddenRecords)
-                || in_array($record['uid'], $processedRecordIds)
+            $articleRecord = Commands::getNodeRecord('tx_commerce_articles', $articleRecord['uid'], false);
+            if ((int)$articleRecord['pid'] === -1
+                || in_array($articleRecord['uid'], $this->hiddenRecords)
+                || in_array($articleRecord['uid'], $processedRecordIds)
             ) {
                 continue;
             }
-            $processedRecordIds[] = $record['uid'];
+            $processedRecordIds[] = $articleRecord['uid'];
 
-            $rootline = \CommerceTeam\Commerce\Utility\BackendUtility::BEgetRootLine(
-                $record['uid'],
-                '',
-                $this->getBackendUserAuthentication()->workspace != 0
-            );
-            $rootline = array_reverse($rootline);
-            if (!in_array(0, $mountPoints, true)) {
-                $isInsideMountPoints = false;
-                foreach ($rootline as $rootlineElement) {
-                    if (in_array((int)$rootlineElement['uid'], $mountPoints, true)) {
-                        $isInsideMountPoints = true;
-                        break;
-                    }
-                }
-                if (!$isInsideMountPoints) {
-                    continue;
-                }
-            }
             $reference = $nodeCollection;
-            $inFilteredRootline = false;
-            $amountOfRootlineElements = count($rootline);
-            for ($i = 0; $i < $amountOfRootlineElements; ++$i) {
-                $rootlineElement = $rootline[$i];
-                $rootlineElement['uid'] = (int)$rootlineElement['uid'];
-                $isInWebMount = (int)$this->getBackendUserAuthentication()->isInWebMount($rootlineElement['uid']);
-                if (!$isInWebMount
-                    || ($rootlineElement['uid'] === (int)$mountPoints[0]
-                        && $rootlineElement['uid'] !== $isInWebMount)
-                ) {
-                    continue;
-                }
-                if ((int)$rootlineElement['pid'] === $nodeId
-                    || $rootlineElement['uid'] === $nodeId
-                    || ($rootlineElement['uid'] === $isInWebMount
-                        && in_array($rootlineElement['uid'], $mountPoints, true))
-                ) {
-                    $inFilteredRootline = true;
-                }
-                if (!$inFilteredRootline || $rootlineElement['uid'] === $mountPoint) {
-                    continue;
-                }
-                $rootlineElement = Commands::getNodeRecord('tx_commerce_articles', $rootlineElement['uid'], false);
-                $ident = (int)$rootlineElement['sorting'] . (int)$rootlineElement['uid'];
-                if ($reference && $reference->offsetExists($ident)) {
-                    /** @var $refNode \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
-                    $refNode = $reference->offsetGet($ident);
-                    $refNode->setExpanded(true);
-                    $refNode->setLeaf(false);
-                    $reference = $refNode->getChildNodes();
-                    if ($reference == null) {
-                        $reference = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
-                        $refNode->setChildNodes($reference);
-                    }
-                } else {
-                    $refNode = Commands::getCategoryNode($rootlineElement, $mountPoint);
-                    $replacement = '<span class="typo3-pagetree-filteringTree-highlight">$1</span>';
-                    if ($isNumericSearchFilter && (int)$rootlineElement['uid'] === (int)$searchFilter) {
-                        $text = str_replace('$1', $refNode->getText(), $replacement);
-                    } else {
-                        $text = preg_replace('/(' . $searchFilterQuoted . ')/i', $replacement, $refNode->getText());
-                    }
-                    $refNode->setText(
-                        $text,
-                        $refNode->getTextSourceField(),
-                        $refNode->getPrefix(),
-                        $refNode->getSuffix()
-                    );
-                    /** @var $childCollection PagetreeNodeCollection */
-                    $childCollection = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
-                    if ($i + 1 >= $amountOfRootlineElements) {
-                        $childNodes = $this->getNodes($refNode, $mountPoint);
-                        foreach ($childNodes as $childNode) {
-                            /** @var $childNode \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode */
-                            $childRecord = $childNode->getRecord();
-                            $childIdent = (int)$childRecord['sorting'] . (int)$childRecord['uid'];
-                            $childCollection->offsetSet($childIdent, $childNode);
-                        }
-                        $refNode->setChildNodes($childNodes);
-                    }
-                    $refNode->setChildNodes($childCollection);
-                    $reference->offsetSet($ident, $refNode);
-                    $reference->ksort();
-                    $reference = $childCollection;
-                }
+
+            $ident = (int)$articleRecord['sorting'] . (int)$articleRecord['uid'];
+            $refNode = Commands::getArticleNode($articleRecord);
+            $replacement = '<span class="commerce-categorytree-filteringTree-highlight">$1</span>';
+            if ($isNumericSearchFilter && (int)$articleRecord['uid'] === (int)$searchFilter) {
+                $text = str_replace('$1', $refNode->getText(), $replacement);
+            } else {
+                $text = preg_replace('/(' . $searchFilterQuoted . ')/i', $replacement, $refNode->getText());
             }
+            $refNode->setText(
+                $text,
+                $refNode->getTextSourceField(),
+                $refNode->getPrefix(),
+                $refNode->getSuffix()
+            );
+            $reference->offsetSet($ident, $refNode);
+            $reference->ksort();
         }
         foreach ($this->processCollectionHookObjects as $hookObject) {
             /** @var $hookObject \TYPO3\CMS\Backend\Tree\Pagetree\CollectionProcessorInterface */
@@ -688,6 +578,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         }
         return $nodeCollection;
     }
+
 
 
     /**
@@ -945,7 +836,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                     $productUids[] = $product['uid'];
                 }
 
-                $where = $this->getCategoryWhereClause($categoryId, $searchFilter, $productUids);
+                $where = $this->getProductWhereClause($categoryId, $searchFilter, $productUids);
             }
         }
         if ($where == '') {

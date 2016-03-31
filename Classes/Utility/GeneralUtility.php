@@ -12,8 +12,6 @@ namespace CommerceTeam\Commerce\Utility;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Core\Utility\GeneralUtility as CoreGeneralUtility;
-
 /**
  * Misc COMMERCE functions.
  *
@@ -43,7 +41,7 @@ class GeneralUtility
         }
 
         if (is_string($input)) {
-            return (string) CoreGeneralUtility::removeXSS(strip_tags($input));
+            return (string) \TYPO3\CMS\Core\Utility\GeneralUtility::removeXSS(strip_tags($input));
         }
 
         if (is_array($input)) {
@@ -52,7 +50,7 @@ class GeneralUtility
                 if (is_array($value)) {
                     $returnValue[$key] = self::removeXSSStripTagsArray($value);
                 } else {
-                    $returnValue[$key] = CoreGeneralUtility::removeXSS(strip_tags($value));
+                    $returnValue[$key] = \TYPO3\CMS\Core\Utility\GeneralUtility::removeXSS(strip_tags($value));
                 }
             }
 
@@ -101,7 +99,9 @@ class GeneralUtility
              *
              * @var \CommerceTeam\Commerce\Domain\Model\Basket $basket
              */
-            $basket = CoreGeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Basket::class);
+            $basket = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                \CommerceTeam\Commerce\Domain\Model\Basket::class
+            );
             $basket->setSessionId($basketId);
             $basket->loadData();
             // @todo make singleton (setSingletonInstance/removeSingletonInstance)
@@ -152,7 +152,7 @@ class GeneralUtility
              *
              * @var \CommerceTeam\Commerce\Domain\Model\Product $product
              */
-            $product = CoreGeneralUtility::makeInstance(
+            $product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Product::class,
                 $productUid
             );
@@ -301,7 +301,7 @@ class GeneralUtility
              *
              * @var \TYPO3\CMS\Core\Mail\MailMessage $message
              */
-            $message = CoreGeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
+            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
             $message->setCharset($mailconf['defaultCharset']);
 
             if ($mailconf['encoding'] == 'base64') {
@@ -314,13 +314,13 @@ class GeneralUtility
             $message->setTo($mailconf['recipient']);
             $message->setFrom(
                 self::validEmailList($mailconf['fromEmail']),
-                implode(' ', CoreGeneralUtility::trimExplode(',', $mailconf['fromName']))
+                implode(' ', \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $mailconf['fromName']))
             );
 
             $replyAddress = $mailconf['replyTo'] ?: $mailconf['fromEmail'];
             $replyName = implode(
                 ' ',
-                CoreGeneralUtility::trimExplode(
+                \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(
                     ',',
                     $mailconf['replyTo'] ? '' : $mailconf['fromName']
                 )
@@ -374,11 +374,11 @@ class GeneralUtility
      */
     public static function validEmailList($list)
     {
-        $dataArray = CoreGeneralUtility::trimExplode(',', $list);
+        $dataArray = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $list);
 
         $returnArray = [];
         foreach ($dataArray as $data) {
-            if (CoreGeneralUtility::validEmail($data)) {
+            if (\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail($data)) {
                 $returnArray[] = $data;
             }
         }

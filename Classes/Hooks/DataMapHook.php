@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Hooks;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Model\Product;
 use CommerceTeam\Commerce\Domain\Repository\ArticlePriceRepository;
 use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
 use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
@@ -187,20 +188,23 @@ class DataMapHook
 
     /**
      * Preprocess product.
+
      *
-     * @param array $incomingFieldArray Incoming field array
-     * @param int $id Id
-     *
+*@param array $incomingFieldArray Incoming field array
+     * @param int $productUid Id
+
      * @return array
      */
-    protected function preProcessProduct(array $incomingFieldArray, $id)
+    protected function preProcessProduct(array $incomingFieldArray, $productUid)
     {
         // @todo get category from dataHandler
         $this->catList = $this->belib->getUidListFromList(
             GeneralUtility::trimExplode(',', $incomingFieldArray['categories'])
         );
 
-        $articles = $this->belib->getArticlesOfProduct($id);
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $articles = $articleRepository->findByProductUid($productUid);
         if (is_array($articles)) {
             foreach ($articles as $article) {
                 $this->belib->updateArticleHash($article['uid']);
@@ -223,9 +227,9 @@ class DataMapHook
                 /**
                  * Product.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
+                 * @var Product $product
                  */
-                $product = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Product::class, $id);
+                $product = GeneralUtility::makeInstance(Product::class, $productUid);
                 $product->loadData();
 
                 $parentCategory = $product->getMasterparentCategory();
@@ -233,7 +237,7 @@ class DataMapHook
                         $incomingFieldArray['sys_language_uid'] > 0 ?
                         '&L=' . $incomingFieldArray['sys_language_uid'] :
                         ''
-                    ) . '&ADMCMD_vPrev&no_cache=1&tx_commerce_pi1[showUid]=' . $id . '&tx_commerce_pi1[catUid]='
+                    ) . '&ADMCMD_vPrev&no_cache=1&tx_commerce_pi1[showUid]=' . $productUid . '&tx_commerce_pi1[catUid]='
                     . $parentCategory;
                 $GLOBALS['_POST']['popViewId'] = $previewPageId;
             }
@@ -830,9 +834,9 @@ class DataMapHook
             /**
              * Product.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Product $item
+             * @var Product $item
              */
-            $item = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Product::class, $id);
+            $item = GeneralUtility::makeInstance(Product::class, $id);
 
             $parentCategories = $item->getParentCategories();
 
@@ -912,17 +916,17 @@ class DataMapHook
             /**
              * Product.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Product $product
+             * @var Product $product
              */
             $product = GeneralUtility::makeInstance(
-                \CommerceTeam\Commerce\Domain\Model\Product::class,
+                Product::class,
                 $article->getParentProductUid()
             );
             $product->loadData();
 
             if ($product->getL18nParent()) {
                 $product = GeneralUtility::makeInstance(
-                    \CommerceTeam\Commerce\Domain\Model\Product::class,
+                    Product::class,
                     $product->getL18nParent()
                 );
                 $product->loadData();
@@ -1056,9 +1060,9 @@ class DataMapHook
             /**
              * Product.
              *
-             * @var \CommerceTeam\Commerce\Domain\Model\Product $product
+             * @var Product $product
              */
-            $product = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Product::class, $id);
+            $product = GeneralUtility::makeInstance(Product::class, $id);
             $product->loadData();
 
             if (isset($fieldArray['categories'])) {
@@ -1279,26 +1283,28 @@ class DataMapHook
 
     /**
      * Saves all relations between products and his attributes.
+
      *
-     * @param int $productId The UID of the product
+*@param int $productUid The UID of the product
      * @param array $fieldArray Field array
-     *
+
      * @return void
      */
-    protected function saveProductRelations($productId, array $fieldArray = null)
+    protected function saveProductRelations($productUid, array $fieldArray = null)
     {
-        $productId = (int) $productId;
+        $productUid = (int) $productUid;
         // first step is to save all relations between this product and all attributes of this product.
         // We don't have to check for any parent categories, because the attributes
         // from them should already be saved for this product.
 
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+
         // create an article and a new price for a new product
-        if (ConfigurationUtility::getInstance()->getExtConf('simpleMode') && $productId != null) {
-            /** @var ArticleRepository $articleRepository */
-            $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        if (ConfigurationUtility::getInstance()->getExtConf('simpleMode') && $productUid != null) {
             /** @var ArticlePriceRepository $articlePriceRepository */
             $articlePriceRepository = GeneralUtility::makeInstance(ArticlePriceRepository::class);
-            $article = $articleRepository->findByProductUid($productId);
+            $article = $articleRepository->findByProductUid($productUid);
 
             if (!empty($article)) {
                 $articleUid = $article['uid'];
@@ -1306,13 +1312,13 @@ class DataMapHook
                 // create a new article if no one exists
                 /** @var ProductRepository $productRepository */
                 $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
-                $product = $productRepository->findByUid($productId);
+                $product = $productRepository->findByUid($productUid);
 
                 $articleUid = $articleRepository->addRecord([
                     'pid' => $fieldArray['pid'],
                     'tstamp' => $GLOBALS['EXEC_TIME'],
                     'crdate' => $GLOBALS['EXEC_TIME'],
-                    'uid_product' => $productId,
+                    'uid_product' => $productUid,
                     'article_type_uid' => 1,
                     'title' => $product['title'],
                 ]);
@@ -1336,14 +1342,14 @@ class DataMapHook
             /** @var ProductRepository $productRepository */
             $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
 
-            $catList = $productRepository->getParentCategories($productId);
+            $catList = $productRepository->getParentCategories($productUid);
             $paList = $this->belib->getAttributesForCategoryList($catList);
             $uidList = $this->belib->extractFieldArray($paList, 'uid_foreign', true, ['uid_correlationtype']);
 
             if (!empty($uidList)) {
                 // Insert/Update relations and remove all remaining
-                $this->belib->saveRelations($productId, $uidList, 'tx_commerce_products_attributes_mm', true, false);
-                $this->belib->updateXML('attributes', 'tx_commerce_products', $productId, 'product', $catList);
+                $this->belib->saveRelations($productUid, $uidList, 'tx_commerce_products_attributes_mm', true, false);
+                $this->belib->updateXML('attributes', 'tx_commerce_products', $productUid, 'product', $catList);
                 $delete = false;
             }
         }
@@ -1366,7 +1372,7 @@ class DataMapHook
                     $ffData['data']['sDEF']['lDEF'],
                     'ct_',
                     $correlationTypeList,
-                    $productId,
+                    $productUid,
                     $paList
                 );
             }
@@ -1384,7 +1390,7 @@ class DataMapHook
             }
 
             // Insert/Update relations and remove only remaining relations if they were not added earlier in this method
-            $this->belib->saveRelations($productId, $uidList, 'tx_commerce_products_attributes_mm', $delete, false);
+            $this->belib->saveRelations($productUid, $uidList, 'tx_commerce_products_attributes_mm', $delete, false);
 
             /*
              * Rebuild the XML (last param set to true)
@@ -1393,7 +1399,7 @@ class DataMapHook
             $this->belib->updateXML(
                 'attributes',
                 'tx_commerce_products',
-                $productId,
+                $productUid,
                 'product',
                 $correlationTypeList,
                 true
@@ -1401,7 +1407,11 @@ class DataMapHook
 
             // update the XML for this product, we remove everything that is not
             // set for current attributes
-            $pXml = $database->exec_SELECTgetSingleRow('attributesedit', 'tx_commerce_products', 'uid = ' . $productId);
+            $pXml = $database->exec_SELECTgetSingleRow(
+                'attributesedit',
+                'tx_commerce_products',
+                'uid = ' . $productUid
+            );
             if (!empty($pXml['attributesedit'])) {
                 $pXml = GeneralUtility::xml2array($pXml['attributesedit']);
 
@@ -1422,7 +1432,7 @@ class DataMapHook
             }
 
             // now get all articles that where created from this product
-            $articles = $this->belib->getArticlesOfProduct($productId);
+            $articles = $articleRepository->findByProductUid($productUid);
 
             // build relation table
             if (is_array($articles) && !empty($articles)) {
@@ -1449,7 +1459,7 @@ class DataMapHook
 
                 // get articles if they are not already there
                 if (!$articles) {
-                    $articles = $this->belib->getArticlesOfProduct($productId);
+                    $articles = $articleRepository->findByProductUid($productUid);
                 }
 
                 // update this product
@@ -1469,7 +1479,7 @@ class DataMapHook
                         // bit different first we delete all existing attributes
                         $database->exec_DELETEquery(
                             'tx_commerce_products_attributes_mm',
-                            'uid_local = ' . $productId . ' AND uid_foreign = ' . $attributeKey
+                            'uid_local = ' . $productUid . ' AND uid_foreign = ' . $attributeKey
                         );
 
                         // now explode the data
@@ -1483,12 +1493,12 @@ class DataMapHook
                                 continue;
                             }
 
-                            $updateData = $this->belib->getUpdateData($attributeData, $attributeValue, $productId);
+                            $updateData = $this->belib->getUpdateData($attributeData, $attributeValue, $productUid);
                             $database->exec_INSERTquery(
                                 'tx_commerce_products_attributes_mm',
                                 array_merge(
                                     [
-                                        'uid_local' => $productId,
+                                        'uid_local' => $productUid,
                                         'uid_foreign' => $attributeKey,
                                         'uid_correlationtype' => 4,
                                     ],
@@ -1498,10 +1508,10 @@ class DataMapHook
                         }
                     } else {
                         // update a simple valuelist and normal attributes as usual
-                        $updateArrays = $this->belib->getUpdateData($attributeData, $ffDataItem['vDEF'], $productId);
+                        $updateArrays = $this->belib->getUpdateData($attributeData, $ffDataItem['vDEF'], $productUid);
                         $database->exec_UPDATEquery(
                             'tx_commerce_products_attributes_mm',
-                            'uid_local = ' . $productId . ' AND uid_foreign = ' . $attributeKey,
+                            'uid_local = ' . $productUid . ' AND uid_foreign = ' . $attributeKey,
                             $updateArrays[0]
                         );
                     }
@@ -1531,7 +1541,7 @@ class DataMapHook
                                     $updateData = $this->belib->getUpdateData(
                                         $attributeData,
                                         $attributeValue,
-                                        $productId
+                                        $productUid
                                     );
                                     $database->exec_INSERTquery(
                                         'tx_commerce_articles_attributes_mm',
@@ -1539,7 +1549,7 @@ class DataMapHook
                                             [
                                                 'uid_local' => $article['uid'],
                                                 'uid_foreign' => $attributeKey,
-                                                'uid_product' => $productId,
+                                                'uid_product' => $productUid,
                                                 'sorting' => $counter,
                                             ],
                                             $updateData[1]
@@ -1549,14 +1559,14 @@ class DataMapHook
 
                                 // create at least an empty relation if no attributes where set
                                 if ($attributeCount == 0) {
-                                    $updateData = $this->belib->getUpdateData([], $attributeValue, $productId);
+                                    $updateData = $this->belib->getUpdateData([], $attributeValue, $productUid);
                                     $database->exec_INSERTquery(
                                         'tx_commerce_articles_attributes_mm',
                                         array_merge(
                                             [
                                                 'uid_local' => $article['uid'],
                                                 'uid_foreign' => $attributeKey,
-                                                'uid_product' => $productId,
+                                                'uid_product' => $productUid,
                                                 'sorting' => $counter,
                                             ],
                                             $updateData[1]
@@ -1583,7 +1593,7 @@ class DataMapHook
                                         'tx_commerce_articles_attributes_mm',
                                         array_merge($updateArrays[1], [
                                             'uid_local' => $article['uid'],
-                                            'uid_product' => $productId,
+                                            'uid_product' => $productUid,
                                             'uid_foreign' => $attributeKey,
                                             'sorting' => $counter,
                                         ])
@@ -1603,7 +1613,7 @@ class DataMapHook
                 }
 
                 // Finally update the Felxform for this Product
-                $this->belib->updateArticleXML($articleRelations, false, null, $productId);
+                $this->belib->updateArticleXML($articleRelations, false, null, $productUid);
 
                 // And add those datas from the database to the articles
                 if (is_array($articles) && !empty($articles)) {
@@ -1620,7 +1630,7 @@ class DataMapHook
         $resLocalised = $database->exec_SELECTgetRows(
             'uid',
             'tx_commerce_products',
-            'deleted = 0 AND l18n_parent = ' . $productId
+            'deleted = 0 AND l18n_parent = ' . $productUid
         );
         foreach ($resLocalised as $rowLocalised) {
             $this->saveProductRelations($rowLocalised['uid'], $fieldArray);

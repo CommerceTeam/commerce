@@ -280,28 +280,6 @@ class BackendUtility
     /* ARTICLES */
 
     /**
-     * Return all articles that were created for a given product.
-     *
-     * @param int $pUid UID of the product
-     * @param string $additionalWhere Additional where string
-     * @param string $orderBy Order by field
-     *
-     * @return array of article datasets as assoc array or false if nothing was found
-     */
-    public function getArticlesOfProduct($pUid, $additionalWhere = '', $orderBy = '')
-    {
-        $result = (array) self::getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            'tx_commerce_articles',
-            'uid_product = ' . (int) $pUid . ' AND deleted = 0' . ($additionalWhere ? ' AND ' : '') . $additionalWhere,
-            '',
-            $orderBy
-        );
-
-        return $result;
-    }
-
-    /**
      * Return all articles that where created from a given product.
      *
      * @param int $pUid UID of the product
@@ -338,27 +316,6 @@ class BackendUtility
     }
 
     /**
-     * Returns the product from which an article was created.
-     *
-     * @param int $aUid Article UID
-     *
-     * @return array an associative array of the product
-     */
-    public function getProductOfArticle($aUid)
-    {
-        $database = self::getDatabaseConnection();
-
-        $proRes = $database->exec_SELECTgetSingleRow(
-            'p.*',
-            'tx_commerce_articles AS a
-            INNER JOIN tx_commerce_products AS p ON a.uid_product = p.uid',
-            'a.uid = ' . (int) $aUid . ' AND a.deleted = 0 AND p.deleted = 0'
-        );
-
-        return $proRes;
-    }
-
-    /**
      * Returns all attributes for an article.
      *
      * @param int $articleUid Article UID
@@ -374,9 +331,11 @@ class BackendUtility
         $where = 'uid_local = ' . $articleUid;
 
         if ($ct != null) {
-            $product = $this->getProductOfArticle($articleUid);
+            /** @var ProductRepository $productRepository */
+            $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+            $product = $productRepository->findByArticleUid($articleUid);
 
-            $productAttributes = $this->getAttributesForProduct($product['uid']);
+            $productAttributes = $this->getAttributesForProduct((int)$product['uid']);
             $ctAttributes = [];
             if (!empty($productAttributes)) {
                 foreach ($productAttributes as $productAttribute) {
@@ -1292,9 +1251,11 @@ class BackendUtility
 
         // check show right for this article under
         // all categories of the current parent product
-        $prod = $this->getProductOfArticle($uid);
+        /** @var ProductRepository $productRepository */
+        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        $product = $productRepository->findByArticleUid($uid);
 
-        if (!self::checkProductPerms($prod['uid'], 'show')) {
+        if (!self::checkProductPerms((int)$product['uid'], 'show')) {
             return false;
         }
 
@@ -2617,7 +2578,7 @@ class BackendUtility
         $ident = $uid . '-' . $clause . '-' . $workspaceOl;
 
         if (!isset($getCategoryForRootlineCache[$ident])) {
-            $row = (array)self::getDatabaseConnection()->exec_SELECTgetSingleRow(
+            $row = (array) self::getDatabaseConnection()->exec_SELECTgetSingleRow(
                 'mm.uid_foreign AS pid, tx_commerce_categories.uid, tx_commerce_categories.hidden,
                     tx_commerce_categories.title,
                     tx_commerce_categories.ts_config, tx_commerce_categories.t3ver_oid,
@@ -2650,13 +2611,19 @@ class BackendUtility
         return $row = $getCategoryForRootlineCache[$ident];
     }
 
+    /**
+     * @param int $uid
+     * @param string $clause
+     * @param bool $workspaceOl
+     * @return array
+     */
     protected function getProductForRootline($uid, $clause, $workspaceOl)
     {
         static $getProductForRootlineCache = [];
         $ident = $uid . '-' . $clause . '-' . $workspaceOl;
 
         if (!isset($getCategoryForRootlineCache[$ident])) {
-            $row = (array)self::getDatabaseConnection()->exec_SELECTgetSingleRow(
+            $row = (array) self::getDatabaseConnection()->exec_SELECTgetSingleRow(
                 'mm.uid_foreign AS pid, tx_commerce_products.uid, tx_commerce_products.hidden,
                     tx_commerce_products.title,
                     tx_commerce_categories.ts_config, tx_commerce_categories.t3ver_oid,
@@ -2748,7 +2715,7 @@ class BackendUtility
     /**
      * @return \TYPO3\CMS\Core\Database\DatabaseConnection
      */
-    protected function getDatabaseConnection()
+    protected static function getDatabaseConnection()
     {
         return $GLOBALS['TYPO3_DB'];
     }

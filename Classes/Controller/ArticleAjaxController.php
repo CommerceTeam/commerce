@@ -122,7 +122,8 @@ class ArticleAjaxController
 
         // get existing articles for this product, if they where not fetched yet
         if ($this->existingArticles == null) {
-            $this->existingArticles = $this->belib->getArticlesOfProduct($product->getUid(), '', 'sorting');
+            $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+            $this->existingArticles = $articleRepository->findByProductUid($product->getUid());
         }
 
         if (!empty($attributeValue)) {

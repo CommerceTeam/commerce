@@ -173,10 +173,11 @@ class CommandMapHook
     protected function preProcessProduct(&$command, &$productUid)
     {
         $backendUser = $this->getBackendUser();
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
 
         if ($command == 'localize') {
             // check if product has articles
-            if ($this->belib->getArticlesOfProduct($productUid) == false) {
+            if (empty($articleRepository->findByProductUid($productUid))) {
                 // Error output, no articles
                 $command = '';
                 $this->error(
@@ -483,7 +484,9 @@ class CommandMapHook
     protected function translateArticlesOfProduct($productUid, $localizedProductUid, $value)
     {
         // get all related articles
-        $articles = $this->belib->getArticlesOfProduct($productUid);
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $articles = $articleRepository->findByProductUid($productUid);
         if (empty($articles)) {
             // Error Output, no Articles
             $this->error(
@@ -492,7 +495,7 @@ class CommandMapHook
         }
 
         // get articles of localized Product
-        $localizedProductArticles = $this->belib->getArticlesOfProduct($localizedProductUid);
+        $localizedProductArticles = $articleRepository->findByProductUid($localizedProductUid);
 
         // Check if product has articles and localized product has no articles
         if (!empty($articles) && empty($localizedProductArticles)) {
@@ -508,9 +511,6 @@ class CommandMapHook
             if (empty($langIdent)) {
                 $langIdent = 'DEF';
             }
-
-            /** @var ArticleRepository $articleRepository */
-            $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
 
             // process all existing articles and copy them
             foreach ($articles as $origArticle) {
@@ -691,6 +691,8 @@ class CommandMapHook
         // because of performance issues
         // @todo is there realy a performance issue?
         $childCategories = [];
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
         $this->belib->getChildCategories($categoryUid, $childCategories, 0, 0, true);
 
         if (!empty($childCategories)) {
@@ -702,7 +704,7 @@ class CommandMapHook
                     foreach ($products as $product) {
                         $productList[] = $product['uid_local'];
 
-                        $articles = $this->belib->getArticlesOfProduct($product['uid_local']);
+                        $articles = $articleRepository->findByProductUid($product['uid_local']);
                         if (!empty($articles)) {
                             $articleList = [];
                             foreach ($articles as $article) {
@@ -733,7 +735,9 @@ class CommandMapHook
      */
     protected function deleteArticlesAndPricesOfProduct($productUid)
     {
-        $articles = $this->belib->getArticlesOfProduct($productUid);
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $articles = $articleRepository->findByProductUid($productUid);
 
         if (!empty($articles)) {
             $articleList = [];

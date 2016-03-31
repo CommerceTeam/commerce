@@ -384,16 +384,17 @@ class ArticleRepository extends AbstractRepository
 
     /**
      * @param int $productUid
+     * @param string $orderBy
      * @return array
      */
-    public function findByProductUid($productUid)
+    public function findByProductUid($productUid, $orderBy = 'sorting')
     {
         $articles = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             $this->databaseTable,
             'uid_product = ' . $productUid . $this->enableFields(),
             '',
-            'sorting'
+            $orderBy
         );
 
         return $articles;

@@ -73,6 +73,7 @@ Removed functions
 -----------------
 
 \CommerceTeam\Commerce\Utility\BackendUtility::deleteL18n
+\CommerceTeam\Commerce\Utility\BackendUtility::getArticlesOfProduct replaced with ArticleRepository::findByProductUid
 \CommerceTeam\Commerce\Utility\BackendUtility::getAttributeData replaced with AttributeRepository::findByUid
 \CommerceTeam\Commerce\Utility\BackendUtility::getAttributesForCategory replaced with CategoryRepository::findAttributesByCategoryUid
 \CommerceTeam\Commerce\Utility\BackendUtility::getAttributeTitle
@@ -83,6 +84,7 @@ Removed functions
 \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid replaced with FolderRepository::initFolders('Orders', FolderRepository::initFolders())
 \CommerceTeam\Commerce\Utility\BackendUtility::getOverwriteData
 \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid
+\CommerceTeam\Commerce\Utility\BackendUtility::getProductOfArticle replaced with ProductRepository::findByArticleUid
 \CommerceTeam\Commerce\Utility\BackendUtility::getProductParentCategories
 \CommerceTeam\Commerce\Utility\BackendUtility::isAjaxRequest
 \CommerceTeam\Commerce\Utility\BackendUtility::isNumber replaced with \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger
@@ -131,8 +133,6 @@ Changed methods
 ---------------
 
 - BackendUtility::getAttributesForCategoryList had 3 parameters from which three were not used in commerce context. The not needed parameter are removed.
-
-- BackendUtility::getProductOfArticle now only accepts the article uid as parameter and returns always thecomplete product with all fields
 
 - These two changes enables making better use of default values
   \CommerceTeam\Commerce\Domain\Repository\FolderRepository::initFolders changed the order of the parameters

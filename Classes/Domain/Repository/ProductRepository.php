@@ -398,4 +398,22 @@ class ProductRepository extends AbstractRepository
 
         return $this->getDatabaseConnection()->sql_error();
     }
+
+    /**
+     * @param int $articleUid
+     * @return array
+     */
+    public function findByArticleUid($articleUid)
+    {
+        $products = (array)$this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            $this->databaseTable . '.*',
+            $this->databaseTable . '
+            INNER JOIN tx_commerce_articles ON ' . $this->databaseTable . '.uid = tx_commerce_articles.uid_product',
+            'tx_commerce_articles.uid = ' . (int) $articleUid
+            . $this->enableFields()
+            . $this->enableFields('tx_commerce_articles')
+        );
+
+        return $products;
+    }
 }
