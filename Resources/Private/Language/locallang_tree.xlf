@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0" xmlns:t3="https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-transitional.xsd">
+	<file t3:id="1459436752939" source-language="en" datatype="plaintext" original="messages" date="2016-03-31T17:05:34Z" product-name="commerce">
+		<header/>
+		<body>
+			<trans-unit id="mlang_labels_tabdescr">
+				<source>Advanced Shopping System</source>
+			</trans-unit>
+			<trans-unit id="tree.dropZoneElementRestored">
+				<source>Restore record</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

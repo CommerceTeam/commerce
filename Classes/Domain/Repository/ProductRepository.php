@@ -234,21 +234,21 @@ class ProductRepository extends AbstractRepository
         if (!(int) $uid) {
             $this->error('getParentCategories has not been delivered a proper uid');
 
-            return null;
+            return [];
         }
 
         $uids = [];
 
         // read from sql
         $rows = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid_foreign',
+            'uid_foreign AS uid',
             $this->databaseCategoryRelationTable,
             'uid_local = ' . (int) $uid,
             '',
             'sorting'
         );
         foreach ($rows as $row) {
-            $uids[] = $row['uid_foreign'];
+            $uids[] = $row['uid'];
         }
 
         // If $uids is empty, the record might be a localized product

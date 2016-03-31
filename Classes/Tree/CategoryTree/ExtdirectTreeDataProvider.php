@@ -206,6 +206,7 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
         $backendUser = $this->getBackendUserAuthentication();
         $file = 'LLL:EXT:lang/locallang_core.xlf:';
         $backendFile = 'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:';
+        $commerceFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_tree.xlf:';
         $indicators = $this->getIndicators();
         $configuration = [
             'LLL' => [
@@ -217,7 +218,7 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
                 'buttonNewNode' => $lang->sL($file . 'tree.buttonNewNode', true),
                 'buttonFilter' => $lang->sL($file . 'tree.buttonFilter', true),
                 'dropZoneElementRemoved' => $lang->sL($file . 'tree.dropZoneElementRemoved', true),
-                'dropZoneElementRestored' => $lang->sL($file . 'tree.dropZoneElementRestored', true),
+                'dropZoneElementRestored' => $lang->sL($commerceFile . 'tree.dropZoneElementRestored', true),
                 'searchTermInfo' => $lang->sL($file . 'tree.searchTermInfo', true),
                 'temporaryMountPointIndicatorInfo' => $lang->sL($file . 'labels.temporaryDBmount', true),
                 'deleteDialogTitle' => $lang->sL($backendFile . 'deleteItem', true),

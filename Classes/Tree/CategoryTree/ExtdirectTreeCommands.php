@@ -351,9 +351,9 @@ class ExtdirectTreeCommands
      * @param \\stdClass $nodeData
      * @return string
      */
-    public static function getViewLink($nodeData)
+    public function getViewLink($nodeData)
     {
-        $node = self::getNode($nodeData);
+        $node = $this->getNode($nodeData);
         $javascriptLink = BackendUtility::viewOnClick($node->getId());
         $extractedLink = '';
         if (preg_match('/window\\.open\\(\'([^\']+)\'/i', $javascriptLink, $match)) {
@@ -372,7 +372,7 @@ class ExtdirectTreeCommands
      * @param array|\stdClass $nodeData
      * @return array
      */
-    public static function addRootlineOfNodeToStateHash($stateId, $nodeId, $nodeData = [])
+    public function addRootlineOfNodeToStateHash($stateId, $nodeId, $nodeData = [])
     {
         $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
         $mountPoints = array_map('intval', $backendUserUtility->returnWebmounts());
@@ -407,7 +407,7 @@ class ExtdirectTreeCommands
         $rootline = \CommerceTeam\Commerce\Utility\BackendUtility::BEgetRootLine(
             $nodeId,
             '',
-            self::getBackendUserAuthentication()->workspace != 0
+            $this->getBackendUserAuthentication()->workspace != 0
         );
         $rootlineIds = array();
         foreach ($rootline as $pageData) {
@@ -450,7 +450,7 @@ class ExtdirectTreeCommands
      *
      * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
      */
-    protected static function getBackendUserAuthentication()
+    protected function getBackendUserAuthentication()
     {
         return $GLOBALS['BE_USER'];
     }

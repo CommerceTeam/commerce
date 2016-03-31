@@ -256,15 +256,12 @@ class CommandMapHook
             );
             $article->loadData();
 
-            /**
-             * Product.
-             *
-             * @var \CommerceTeam\Commerce\Domain\Model\Product $product
-             */
             $product = $article->getParentProduct();
 
-            // check if product or if translated the translation parent category
-            if (!current($product->getParentCategories())) {
+            // check if product has atleast one category or
+            // if the translation parent has parent categories
+            $categories = $product->getParentCategories();
+            if (!current($categories)) {
                 $product = GeneralUtility::makeInstance(
                     \CommerceTeam\Commerce\Domain\Model\Product::class,
                     $product->getL18nParent()
