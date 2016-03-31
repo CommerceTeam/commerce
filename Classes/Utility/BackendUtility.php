@@ -2613,7 +2613,7 @@ class BackendUtility
                     INNER JOIN tx_commerce_products_categories_mm AS mm
                         ON tx_commerce_products.uid = mm.uid_local
                     INNER JOIN tx_commerce_categories ON mm.uid_foreign = tx_commerce_categories.uid',
-                'tx_commerce_products.uid = ' . (int) $uid . $clause .
+                'tx_commerce_products.uid = ' . (int) $uid . ' ' . $clause .
                 \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('tx_commerce_products')
             );
 

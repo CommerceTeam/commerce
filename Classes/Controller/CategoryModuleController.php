@@ -131,11 +131,14 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $userCanEditPage = $calcPerms & Permission::PAGE_EDIT
             && !empty($this->id)
             && ($backendUser->isAdmin() || (int)$this->pageinfo['editlock'] === 0);
-        if ($userCanEditPage) {
-            $this->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/PageActions', 'function(PageActions) {
-                PageActions.setPageId(' . (int)$this->id . ');
-                PageActions.initializePageTitleRenaming();
-            }');
+        if ($userCanEditPage && $this->categoryUid) {
+            $this->getPageRenderer()->loadRequireJsModule(
+                'TYPO3/CMS/Commerce/CategoryActions',
+                'function(CategoryActions) {
+                    CategoryActions.setCategoryId(' . (int)$this->categoryUid . ');
+                    CategoryActions.initializePageTitleRenaming();
+                }'
+            );
         }
         $this->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Recordlist/Tooltip');
         // Apply predefined values for hidden checkboxes

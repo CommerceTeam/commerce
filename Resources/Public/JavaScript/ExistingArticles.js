@@ -12,8 +12,8 @@
  */
 
 /**
- * Module: TYPO3/CMS/Commerce/Permissions
- * Javascript functions regarding the permissions module
+ * Module: TYPO3/CMS/Commerce/ExistingArticles
+ * Javascript functions regarding the existing articles
  */
 define([
 	'jquery',
