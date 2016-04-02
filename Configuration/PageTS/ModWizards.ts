@@ -1,28 +1,32 @@
 mod.web_list.deniedNewTables := addToList(tx_commerce_address_types, tx_commerce_attribute_correlationtypes, tx_commerce_attribute_values, tx_commerce_baskets, tx_commerce_orders, tx_commerce_order_articles, tx_commerce_order_types, tx_commerce_salesfigures, tx_commerce_supplier, tx_commerce_tracking, tx_commerce_trackingcodes, tx_commerce_user_states)
 
 # module and foldername to match
-[CommerceTeam\Commerce\Utility\TyposcriptConfig web_list, commerce]
+[CommerceTeam\Commerce\Configuration\TyposcriptConfig web_list, commerce]
 mod.web_list.allowedNewTables = tx_commerce_moveordermails, tx_commerce_newclients, tx_commerce_trackingcodes, tx_commerce_user_states, pages_language_overlay
 mod.web_list.deniedNewTables := removeFromList(tx_commerce_moveordermails, tx_commerce_newclients, tx_commerce_trackingcodes, tx_commerce_user_states)
 [end]
 
-[CommerceTeam\Commerce\Utility\TyposcriptConfig web_list, attributes]
+[CommerceTeam\Commerce\Configuration\TyposcriptConfig web_list, attributes]
 mod.web_list.allowedNewTables = tx_commerce_attributes, pages_language_overlay
 [products]
 
-[CommerceTeam\Commerce\Utility\TyposcriptConfig web_list, products]
+[CommerceTeam\Commerce\Configuration\TyposcriptConfig web_list, products]
 mod.web_list.allowedNewTables = pages_language_overlay
 [products]
 
-[CommerceTeam\Commerce\Utility\TyposcriptConfig web_list, 'orders,incoming,working,waiting,delivered']
+[CommerceTeam\Commerce\Configuration\TyposcriptConfig web_list, 'orders,incoming,working,waiting,delivered']
 mod.web_list.allowedNewTables = pages_language_overlay
 [end]
 
-[CommerceTeam\Commerce\Utility\TyposcriptConfig commerce_category, products]
-mod.web_list.allowedNewTables = tx_commerce_products, tx_commerce_categories, pages_language_overlay
+[CommerceTeam\Commerce\Configuration\TyposcriptConfig commerce_category, products]
+mod.web_list.allowedNewTables = tx_commerce_products, tx_commerce_categories
 [end]
 
-[CommerceTeam\Commerce\Utility\TyposcriptConfig commerce_order, 'orders,incoming,working,waiting,delivered']
+[CommerceTeam\Commerce\Configuration\TyposcriptConfig commerce_category, products] && [CommerceTeam\Commerce\Configuration\NoCategorySet]
+mod.web_list.allowedNewTables = tx_commerce_categories, pages_language_overlay
+[end]
+
+[CommerceTeam\Commerce\Configuration\TyposcriptConfig commerce_order, 'orders,incoming,working,waiting,delivered']
 mod.web_list.allowedNewTables = tx_commerce_orders, tx_commerce_order_articles
 [end]
 
@@ -32,6 +36,12 @@ mod.commerce_category.enableLocalizationView = selectable
 mod.commerce_category.enableDisplayBigControlPanel = selectable
 
 mod.wizards {
+	newRecord.tx_commerce_categories.show {
+		# not implemented by now
+		# pageSelectPosition = 1
+		pageInside = 1
+		pageAfter = 1
+	}
 	newContentElement {
 		wizardItems {
 			plugins {

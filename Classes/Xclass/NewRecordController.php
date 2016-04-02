@@ -12,8 +12,10 @@ namespace CommerceTeam\Commerce\Xclass;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use CommerceTeam\Commerce\Utility\ConfigurationUtility;
+use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -22,86 +24,273 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordController
 {
     /**
-     * Main processing, creating the list of new record tables to select from.
+     * Create a regular new element (pages and records)
      *
      * @return void
      */
-    public function main()
+    public function regularNew()
     {
-        // if commerce parameter is missing use default controller
-        if (!GeneralUtility::_GP('parentCategory')) {
-            parent::main();
-
+        /** @var CategoryRepository $categoryRepository */
+        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+        $defaultValue = GeneralUtility::_GP('defVals');
+        if (!is_array($defaultValue)
+            || !isset($defaultValue['tx_commerce_categories'])
+            || !isset($defaultValue['tx_commerce_categories']['uid'])) {
+            parent::regularNew();
             return;
+        } else {
+            $this->newPagesInto = 1;
+            $this->newPagesAfter = 1;
+
+            $this->pageinfo = $categoryRepository->findByUid($defaultValue['tx_commerce_categories']['uid']);
+
+            // needed for table allowed checks
+            $this->pageinfo['doktype'] = 254;
         }
 
-        // If there was a page - or if the user is admin
-        // (admins has access to the root) we proceed:
-        if ($this->pageinfo['uid'] || $this->getBackendUserAuthentication()->isAdmin()) {
-            if (empty($this->pageinfo)) {
-                // Explicitly pass an empty array to the docHeader
-                $this->moduleTemplate->getDocHeaderComponent()->setMetaInformation([]);
-            } else {
-                $this->moduleTemplate->getDocHeaderComponent()->setMetaInformation($this->pageinfo);
-            }
-            // Acquiring TSconfig for this module/current page:
-            $this->web_list_modTSconfig = BackendUtility::getModTSconfig((int) $this->pageinfo['uid'], 'mod.web_list');
+        $lang = $this->getLanguageService();
+        $lang->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_newwizard.xlf');
+        // Initialize array for accumulating table rows:
+        $this->tRows = array();
+        // Get TSconfig for current page
+        $pageTS = BackendUtility::getPagesTSconfig($this->id);
+        // Finish initializing new pages options with TSconfig
+        // Each new page option may be hidden by TSconfig
+        // Enabled option for the position of a new page
+        $this->newPagesSelectPosition = !empty(
+            $pageTS['mod.']['wizards.']['newRecord.']['tx_commerce_categories.']['show.']['pageSelectPosition']
+        );
+        // Pseudo-boolean (0/1) for backward compatibility
+        $displayNewPagesIntoLink = $this->newPagesInto
+            && !empty($pageTS['mod.']['wizards.']['newRecord.']['tx_commerce_categories.']['show.']['pageInside']);
+        $displayNewPagesAfterLink = $this->newPagesAfter
+            && !empty($pageTS['mod.']['wizards.']['newRecord.']['tx_commerce_categories.']['show.']['pageAfter']);
 
-            // allow only commerce related tables
-            $this->allowedNewTables = [
+        // Slight spacer from header:
+        $this->code .= '';
+
+        // New Page
+        $table = 'tx_commerce_categories';
+        $v = $GLOBALS['TCA'][$table];
+        $pageIcon = $this->moduleTemplate->getIconFactory()->getIconForRecord(
+            $table,
+            array(),
+            Icon::SIZE_SMALL
+        )->render();
+        $newPageIcon = $this->moduleTemplate->getIconFactory()->getIcon('actions-add', Icon::SIZE_SMALL)->render();
+        $rowContent = '';
+        // New pages INSIDE this pages
+        $newPageLinks = array();
+        if ($displayNewPagesIntoLink
+            && $this->isTableAllowedForThisPage($this->pageinfo, 'tx_commerce_categories')
+            && $this->getBackendUserAuthentication()->check('tables_modify', 'tx_commerce_categories')
+            && $this->getBackendUserAuthentication()->workspaceCreateNewRecord(
+                ($this->pageinfo['_ORIG_uid'] ?: $this->id),
+                'tx_commerce_categories'
+            )
+        ) {
+            // Create link to new page inside:
+            $newPageLinks[] = $this->linkWrap(
+                $this->moduleTemplate->getIconFactory()->getIconForRecord($table, array(), Icon::SIZE_SMALL)->render()
+                . $lang->sL($v['ctrl']['title'], true) . ' ('
+                . $lang->sL('LLL:EXT:lang/locallang_core.xlf:db_new.php.inside', true) . ')',
+                $table,
+                $this->id
+            );
+        }
+        // New pages AFTER this pages
+        if ($displayNewPagesAfterLink
+            && $this->isTableAllowedForThisPage($this->pidInfo, 'tx_commerce_categories')
+            && $this->getBackendUserAuthentication()->check('tables_modify', 'tx_commerce_categories')
+            && $this->getBackendUserAuthentication()->workspaceCreateNewRecord(
+                (int) $this->pidInfo['uid'],
+                'tx_commerce_categories'
+            )
+        ) {
+            // we need to override the value so better save it
+            $backup = (int) $this->pageinfo['uid'];
+
+            // get parent category of current category to create new category on same level
+            $this->pageinfo['uid'] = $categoryRepository->getParentCategory($backup);
+
+            $newPageLinks[] = $this->linkWrap(
+                $pageIcon . $lang->sL($v['ctrl']['title'], true) . ' ('
+                . $lang->sL('LLL:EXT:lang/locallang_core.xlf:db_new.php.after', true)
+                . ')',
                 'tx_commerce_categories',
-                'tx_commerce_products'
-            ];
-
-            $this->deniedNewTables = GeneralUtility::trimExplode(
-                ',',
-                $this->web_list_modTSconfig['properties']['deniedNewTables'],
-                true
+                -(int) $this->pageinfo['uid']
             );
-            // Acquiring TSconfig for this module/parent page:
-            $this->web_list_modTSconfig_pid = BackendUtility::getModTSconfig(
-                (int) $this->pageinfo['pid'],
-                'mod.web_list'
-            );
-            $this->allowedNewTables_pid = GeneralUtility::trimExplode(
-                ',',
-                $this->web_list_modTSconfig_pid['properties']['allowedNewTables'],
-                true
-            );
-            $this->deniedNewTables_pid = GeneralUtility::trimExplode(
-                ',',
-                $this->web_list_modTSconfig_pid['properties']['deniedNewTables'],
-                true
-            );
-            // More init:
-            if (!$this->showNewRecLink('pages')) {
-                $this->newPagesInto = 0;
-            }
-            if (!$this->showNewRecLink('pages', $this->allowedNewTables_pid, $this->deniedNewTables_pid)) {
-                $this->newPagesAfter = 0;
-            }
-            // Set header-HTML and return_url
-            if (is_array($this->pageinfo) && $this->pageinfo['uid']) {
-                $title = strip_tags($this->pageinfo[$GLOBALS['TCA']['pages']['ctrl']['label']]);
-            } else {
-                $title = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
-            }
-            $this->moduleTemplate->setTitle($title);
-            // GENERATE the HTML-output depending on mode (pagesOnly is the page wizard)
-            // Regular new element:
-            if (!$this->pagesOnly) {
-                $this->regularNew();
-            } elseif ($this->showNewRecLink('pages')) {
-                // Pages only wizard
-                $this->pagesOnly();
-            }
-            // Add all the content to an output section
-            $this->content .= '<div>' . $this->code . '</div>';
-            // Setting up the buttons and markers for docheader
-            $this->getButtons();
-            // Build the <body> for the module
-            $this->moduleTemplate->setContent($this->content);
+            // restore previous value
+            $this->pageinfo['uid'] = $backup;
         }
+        // New pages at selection position
+        if ($this->newPagesSelectPosition && $this->showNewRecLink('tx_commerce_categories')) {
+            // Link to page-wizard:
+            $newPageLinks[] = '<a href="'
+                . htmlspecialchars(GeneralUtility::linkThisScript(array('pagesOnly' => 1))) . '">' . $pageIcon
+                . htmlspecialchars($lang->getLL('categorySelectPosition')) . '</a>';
+        }
+        // Assemble all new page links
+        $numPageLinks = count($newPageLinks);
+        for ($i = 0; $i < $numPageLinks; $i++) {
+            $rowContent .= '<li>' . $newPageLinks[$i] . '</li>';
+        }
+        if ($this->showNewRecLink('tx_commerce_categories')) {
+            $rowContent = '<ul class="list-tree"><li>' . $newPageIcon . '<strong>' .
+                $lang->getLL('createNewCategory') . '</strong><ul>' . $rowContent . '</ul></li>';
+        } else {
+            $rowContent = '<ul class="list-tree"><li><ul>' . $rowContent . '</li></ul>';
+        }
+        // Compile table row
+        $startRows = array($rowContent);
+        $iconFile = array();
+        // New tables (but not pages) INSIDE this pages
+        $isAdmin = $this->getBackendUserAuthentication()->isAdmin();
+        $newContentIcon = $this->moduleTemplate->getIconFactory()->getIcon(
+            'actions-document-new',
+            Icon::SIZE_SMALL
+        )->render();
+        if ($this->newContentInto) {
+            if (is_array($GLOBALS['TCA'])) {
+                $groupName = '';
+                foreach ($GLOBALS['TCA'] as $table => $v) {
+                    if ($table != 'tx_commerce_categories'
+                        && $this->showNewRecLink($table)
+                        && $this->isTableAllowedForThisPage($this->pageinfo, $table)
+                        && $this->getBackendUserAuthentication()->check('tables_modify', $table)
+                        && (($v['ctrl']['rootLevel'] xor $this->id) || $v['ctrl']['rootLevel'] == -1)
+                        && $this->getBackendUserAuthentication()->workspaceCreateNewRecord(
+                            ($this->pageinfo['_ORIG_uid'] ? $this->pageinfo['_ORIG_uid'] : $this->id),
+                            $table
+                        )
+                    ) {
+                        $newRecordIcon = $this->moduleTemplate->getIconFactory()->getIconForRecord(
+                            $table,
+                            array(),
+                            Icon::SIZE_SMALL
+                        )->render();
+                        $rowContent = '';
+                        $thisTitle = '';
+                        // Create new link for record:
+                        $newLink = $this->linkWrap(
+                            $newRecordIcon . $lang->sL($v['ctrl']['title'], true),
+                            $table,
+                            $this->id
+                        );
+                        // If the table is 'tt_content', create link to wizard
+                        if ($table == 'tt_content') {
+                            $groupName = $lang->getLL('createNewContent');
+                            $rowContent = $newContentIcon . '<strong>' . $lang->getLL('createNewContent')
+                                . '</strong><ul>';
+                            // If mod.newContentElementWizard.override is set, use that extension's wizard instead:
+                            $tsConfig = BackendUtility::getModTSconfig($this->id, 'mod');
+                            $moduleName = isset($tsConfig['properties']['newContentElementWizard.']['override'])
+                                ? $tsConfig['properties']['newContentElementWizard.']['override']
+                                : 'new_content_element';
+                            $url = BackendUtility::getModuleUrl(
+                                $moduleName,
+                                [
+                                    'id' => $this->id,
+                                    'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')
+                                ]
+                            );
+                            $rowContent .= '<li>' . $newLink . ' ' . BackendUtility::wrapInHelp($table, '')
+                                . '</li><li><a href="' . htmlspecialchars($url) . '">' . $newContentIcon
+                                . htmlspecialchars($lang->getLL('clickForWizard')) . '</a></li></ul>';
+                        } else {
+                            // Get the title
+                            if ($v['ctrl']['readOnly'] || $v['ctrl']['hideTable'] || $v['ctrl']['is_static']) {
+                                continue;
+                            }
+                            if ($v['ctrl']['adminOnly'] && !$isAdmin) {
+                                continue;
+                            }
+                            $nameParts = explode('_', $table);
+                            $thisTitle = '';
+                            $_EXTKEY = '';
+                            if ($nameParts[0] == 'tx' || $nameParts[0] == 'tt') {
+                                // Try to extract extension name
+                                if (substr($v['ctrl']['title'], 0, 8) == 'LLL:EXT:') {
+                                    $_EXTKEY = substr($v['ctrl']['title'], 8);
+                                    $_EXTKEY = substr($_EXTKEY, 0, strpos($_EXTKEY, '/'));
+                                    if ($_EXTKEY != '') {
+                                        // First try to get localisation of extension title
+                                        $temp = explode(':', substr($v['ctrl']['title'], 9 + strlen($_EXTKEY)));
+                                        $langFile = $temp[0];
+                                        $thisTitle = $lang->sL(
+                                            'LLL:EXT:' . $_EXTKEY . '/' . $langFile . ':extension.title'
+                                        );
+                                        // If no localisation available, read title from ext_emconf.php
+                                        $extEmConfFile =
+                                            ExtensionManagementUtility::extPath($_EXTKEY) . 'ext_emconf.php';
+                                        if (!$thisTitle && is_file($extEmConfFile)) {
+                                            $EM_CONF = array();
+                                            //include $extEmConfFile;
+                                            $thisTitle = $EM_CONF[$_EXTKEY]['title'];
+                                        }
+                                        $iconFile[$_EXTKEY] = '<img ' . 'src="'
+                                            . ExtensionManagementUtility::extRelPath($_EXTKEY)
+                                            . $GLOBALS['TYPO3_LOADED_EXT'][$_EXTKEY]['ext_icon']
+                                            . '" ' . 'width="16" height="16" ' . 'alt="' . $thisTitle . '" />';
+                                    }
+                                }
+                                if (empty($thisTitle)) {
+                                    $_EXTKEY = $nameParts[1];
+                                    $thisTitle = $nameParts[1];
+                                    $iconFile[$_EXTKEY] = '';
+                                }
+                            } else {
+                                if ($table === 'pages_language_overlay' && !$this->checkIfLanguagesExist()) {
+                                    continue;
+                                }
+                                $_EXTKEY = 'system';
+                                $thisTitle = $lang->getLL('system_records');
+                                $iconFile['system'] = $this->moduleTemplate->getIconFactory()->getIcon(
+                                    'apps-pagetree-root',
+                                    Icon::SIZE_SMALL
+                                )->render();
+                            }
+                            if ($groupName == '' || $groupName != $_EXTKEY) {
+                                $groupName = empty($v['ctrl']['groupName']) ? $_EXTKEY : $v['ctrl']['groupName'];
+                            }
+                            $rowContent .= $newLink;
+                        }
+                        // Compile table row:
+                        if ($table == 'tt_content') {
+                            $startRows[] = '<li>' . $rowContent . '</li>';
+                        } else {
+                            $this->tRows[$groupName]['title'] = $thisTitle;
+                            $this->tRows[$groupName]['html'][] = $rowContent;
+                            $this->tRows[$groupName]['table'][] = $table;
+                        }
+                    }
+                }
+            }
+        }
+        // User sort
+        if (isset($pageTS['mod.']['wizards.']['newRecord.']['order'])) {
+            $this->newRecordSortList = GeneralUtility::trimExplode(
+                ',',
+                $pageTS['mod.']['wizards.']['newRecord.']['order'],
+                true
+            );
+        }
+        uksort($this->tRows, array($this, 'sortNewRecordsByConfig'));
+        // Compile table row:
+        $finalRows = array();
+        $finalRows[] = implode('', $startRows);
+        foreach ($this->tRows as $key => $value) {
+            $row = '<li>' . $iconFile[$key] . ' <strong>' . $value['title'] . '</strong><ul>';
+            foreach ($value['html'] as $recordKey => $record) {
+                $row .= '<li>' . $record . ' ' . BackendUtility::wrapInHelp($value['table'][$recordKey], '') . '</li>';
+            }
+            $row .= '</ul></li>';
+            $finalRows[] = $row;
+        }
+
+        $finalRows[] = '</ul>';
+        // Make table:
+        $this->code .= implode('', $finalRows);
     }
 
     /**
@@ -119,62 +308,44 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
      */
     public function linkWrap($linkText, $table, $pid, $addContentTable = false)
     {
-        $parameters = '&edit[' . $table . '][' . $pid . ']=new';
-
-        $contentTable = $GLOBALS['TYPO3_CONF_VARS']['SYS']['contentTable'];
-        $contentTableConfig = ConfigurationUtility::getInstance()->getTcaValue($contentTable);
-        if ($table == 'pages'
-            && $contentTable
-            && $contentTableConfig
-            && $addContentTable) {
-            $parameters .= '&edit[' . $contentTable . '][prev]=new&returnNewPageId=1';
+        $urlParameters = [
+            'edit' => [
+                $table => [
+                    $pid => 'new'
+                ]
+            ],
+            'returnUrl' => $this->returnUrl
+        ];
+        if ($table == 'pages' && $addContentTable) {
+            $urlParameters['tt_content']['prev'] = 'new';
+            $urlParameters['returnNewPageId'] = 1;
         } elseif ($table == 'pages_language_overlay') {
-            $parameters .= '&overrideVals[pages_language_overlay][doktype]=' . (int) $this->pageinfo['doktype'];
+            $urlParameters['overrideVals']['pages_language_overlay']['doktype'] = (int)$this->pageinfo['doktype'];
         }
 
-        $parameters = $this->addCommerceParameter($parameters, $table);
-        $onClick = BackendUtility::editOnClick($parameters, '', $this->returnUrl);
+        $urlParameters = $this->addCommerceParameter($urlParameters, $table);
 
-        return '<a href="#" onclick="' . htmlspecialchars($onClick) . '">' . $linkText . '</a>';
+        $url = BackendUtility::getModuleUrl('record_edit', $urlParameters);
+        return '<a href="' . htmlspecialchars($url) . '">' . $linkText . '</a>';
     }
 
     /**
      * Add commerce parameters.
      *
-     * @param string $parameters Parameters
+     * @param string $urlParameters Parameters
      * @param string $table Table
      *
-     * @return string
+     * @return array
      */
-    protected function addCommerceParameter($parameters, $table)
+    protected function addCommerceParameter($urlParameters, $table)
     {
-        if (GeneralUtility::_GP('parentCategory')) {
-            switch ($table) {
-                case 'tx_commerce_categories':
-                    $parameters .= '&defVals[tx_commerce_categories][parent_category]=' .
-                        GeneralUtility::_GP('parentCategory');
-                    break;
-
-                case 'tx_commerce_products':
-                    $parameters .= '&defVals[tx_commerce_products][categories]=' .
-                        GeneralUtility::_GP('parentCategory');
-                    break;
-
-                default:
-            }
+        if ($table == 'tx_commerce_categories') {
+            $urlParameters['defVals'][$table]['parent_category'] = $this->pageinfo['uid'];
+        }
+        if ($table == 'tx_commerce_products') {
+            $urlParameters['defVals'][$table]['categories'] = [$this->pageinfo['uid']];
         }
 
-        return $parameters;
-    }
-
-
-    /**
-     * Get language service.
-     *
-     * @return \TYPO3\CMS\Lang\LanguageService
-     */
-    protected function getLanguageService()
-    {
-        return $GLOBALS['LANG'];
+        return $urlParameters;
     }
 }

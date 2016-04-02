@@ -225,7 +225,7 @@ return [
                     ORDER BY tx_commerce_categories.sorting ASC',
                 'MM' => 'tx_commerce_categories_parent_category_mm',
                 'size' => 10,
-                'minitems' => 1,
+                'minitems' => 0,
                 'maxitems' => 20,
             ],
         ],

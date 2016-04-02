@@ -37,11 +37,15 @@ class ExistingArticlesElement extends AbstractFormElement
     {
         $articles = $this->data['databaseRow']['articles'];
 
-        if ($this->data['vanillaUid'] == 0 || empty($articles)) {
-            return 'No articles existing for this product';
-        }
-
         $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_list.xlf');
+        $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_db.xlf');
+
+        $resultArray = $this->initializeResultArray();
+
+        if ($this->data['vanillaUid'] == 0 || empty($articles)) {
+            $resultArray['html'] = $this->getLanguageService()->getLL('tx_commerce_products.no_article');
+            return $resultArray;
+        }
 
         $output = '';
         $i = 0;
@@ -79,7 +83,6 @@ class ExistingArticlesElement extends AbstractFormElement
                 </div>
             ';
 
-        $resultArray = $this->initializeResultArray();
         $resultArray['html'] = $out;
         $resultArray['requireJsModules'][] = 'TYPO3/CMS/Commerce/ExistingArticles';
 

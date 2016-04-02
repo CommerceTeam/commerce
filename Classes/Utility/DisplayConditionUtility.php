@@ -32,7 +32,7 @@ class DisplayConditionUtility
                 'tx_commerce_products
                 INNER JOIN tx_commerce_products_attributes_mm AS mm ON tx_commerce_products.uid = mm.uid_local
                 INNER JOIN tx_commerce_attributes ON mm.uid_foreign = tx_commerce_attributes.uid',
-                'mm.uid_correlationtype = 4 AND tx_commerce_products.uid = ' . $parameter['record']['uid']
+                'mm.uid_correlationtype = 4 AND tx_commerce_products.uid = ' . (int) $parameter['record']['uid']
                 . BackendUtility::deleteClause('tx_commerce_products')
                 . BackendUtility::deleteClause('tx_commerce_attributes')
             );
@@ -44,7 +44,7 @@ class DisplayConditionUtility
                     INNER JOIN tx_commerce_categories ON cm.uid_foreign = tx_commerce_categories.uid
                     INNER JOIN tx_commerce_categories_attributes_mm AS mm ON tx_commerce_categories.uid = mm.uid_local
                     INNER JOIN tx_commerce_attributes ON mm.uid_foreign = tx_commerce_attributes.uid',
-                    'mm.uid_correlationtype = 4 AND cm.uid_local = ' . $parameter['record']['uid']
+                    'mm.uid_correlationtype = 4 AND cm.uid_local = ' . (int) $parameter['record']['uid']
                     . BackendUtility::deleteClause('tx_commerce_categories')
                     . BackendUtility::deleteClause('tx_commerce_attributes')
                 );

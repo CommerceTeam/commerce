@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-03-31T17:05:34Z" product-name="commerce">
+		<header/>
+		<body>
+			<trans-unit id="createNewCategory">
+				<source>Create a new category</source>
+			</trans-unit>
+			<trans-unit id="categorySelectPosition">
+				<source>Category (select position)</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

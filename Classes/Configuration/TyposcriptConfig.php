@@ -1,5 +1,5 @@
 <?php
-namespace CommerceTeam\Commerce\Utility;
+namespace CommerceTeam\Commerce\Configuration;
 
 /*
  * This file is part of the TYPO3 Commerce project.

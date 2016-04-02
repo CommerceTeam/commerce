@@ -88,13 +88,13 @@ class CommandMapHook
      * @param string $table Table the data will be stored in
      * @param int $id The uid of the dataset we're working on
      * @param mixed $_ Value
-     * @param DataHandler $pObj Parent
+     * @param DataHandler $dataHandler Parent
      *
      * @return void
      */
-    public function processCmdmap_preProcess(&$command, $table, &$id, $_, DataHandler $pObj)
+    public function processCmdmap_preProcess(&$command, $table, &$id, $_, DataHandler $dataHandler)
     {
-        $this->pObj = $pObj;
+        $this->pObj = $dataHandler;
 
         switch ($table) {
             case 'tx_commerce_categories':
@@ -300,13 +300,13 @@ class CommandMapHook
      * @param string $table Table the data will be stored in
      * @param int $id The uid of the dataset we're working on
      * @param int $value Value
-     * @param DataHandler $pObj The instance of the BE data handler
+     * @param DataHandler $dataHandler The instance of the BE data handler
      *
      * @return void
      */
-    public function processCmdmap_postProcess(&$command, $table, $id, $value, DataHandler $pObj)
+    public function processCmdmap_postProcess(&$command, $table, $id, $value, DataHandler $dataHandler)
     {
-        $this->pObj = $pObj;
+        $this->pObj = $dataHandler;
 
         switch ($table) {
             case 'tx_commerce_categories':
@@ -318,6 +318,10 @@ class CommandMapHook
                 break;
 
             default:
+        }
+
+        if (TYPO3_MODE == 'BE' && $this->isUpdateSignalAllowed($dataHandler)) {
+            BackendUtility::setUpdateSignal('updateCategoryTree');
         }
     }
 
@@ -888,39 +892,22 @@ class CommandMapHook
 
     /**
      * @param DataHandler $dataHandler
-     */
-    public function processCmdmap_afterFinish($dataHandler)
-    {
-        if (TYPO3_MODE == 'BE' && $this->isUpdateSignalAllowed($dataHandler)) {
-            BackendUtility::setUpdateSignal('updateCategoryTree');
-        }
-    }
-
-    /**
-     * @param DataHandler $dataHandler
      * @return bool
      */
     protected function isUpdateSignalAllowed($dataHandler)
     {
-        if (!(
-            isset($dataHandler->cmdmap['tx_commerce_categories'])
-            || isset($dataHandler->cmdmap['tx_commerce_products'])
-            || isset($dataHandler->cmdmap['tx_commerce_articles'])
-        )) {
-            return false;
-        }
-
         $isEnableFieldSet = false;
-        foreach ($dataHandler->cmdmap as $table) {
+        foreach ($dataHandler->cmdmap as $table => $commands) {
             if (!in_array($table, ['tx_commerce_categories', 'tx_commerce_products', 'tx_commerce_articles'])) {
                 continue;
             }
 
-            $ctrl = $GLOBALS['TCA'][$table]['ctrl'];
-            $enableFields = array_merge([$ctrl['delete']], $ctrl['enablecolumns']);
-
-            foreach ($enableFields as $enableField) {
-                if ($enableField && isset($fieldArray[$enableField])) {
+            foreach ($commands as $uid => $command) {
+                if (isset($command['delete'])
+                    || isset($command['undelete'])
+                    || isset($command['move'])
+                    || isset($command['copy'])
+                ) {
                     $isEnableFieldSet = true;
                     break;
                 }

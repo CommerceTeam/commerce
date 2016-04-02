@@ -3,6 +3,9 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2016-02-14T13:27:34Z" product-name="commerce">
 		<header/>
 		<body>
+			<trans-unit id="extension.title" xml:space="preserve">
+				<source>Commerce</source>
+			</trans-unit>
 			<trans-unit id="tabs.references" xml:space="preserve">
 				<source>References</source>
 			</trans-unit>

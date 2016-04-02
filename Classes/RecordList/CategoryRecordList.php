@@ -40,7 +40,12 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @var int
      */
-    public $categoryUid;
+    public $categoryUid = 0;
+
+    /**
+     * @var array
+     */
+    public $categoryRow = [];
 
     /**
      * @var BackendUserUtility
@@ -102,7 +107,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         $backendUser = $this->getBackendUserAuthentication();
         $lang = $this->getLanguageService();
         // Get users permissions for this page record:
-        $localCalcPerms = $this->backendUserUtility->calcPerms($this->pageRow);
+        $localCalcPerms = $this->backendUserUtility->calcPerms($this->categoryRow);
 
         // CSH
         if ((string)$this->id === '') {
@@ -119,25 +124,29 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
         if (isset($this->id)) {
             // New record on tx_commerce_categories that are not locked by editlock
-            if (!$module->modTSconfig['properties']['noCreateRecordsLink'] && $this->editLockPermissions()) {
-                $onClick = 'return jumpExt(' . GeneralUtility::quoteJSvalue(
-                    BackendUtility::getModuleUrl(
-                        'db_new',
-                        [
-                            'id' => $this->id,
-                            'defVals' => [
-                                'tx_commerce_categories' => [
-                                    'uid' => $this->categoryUid,
-                                ]
-                            ]
+            if (!$module->modTSconfig['properties']['noCreateRecordsLink']
+                && (
+                    $this->getBackendUserAuthentication()->isAdmin()
+                    || !$this->categoryRow['editlock']
+                )
+            ) {
+                $parameter = ['id' => $this->id];
+                if ($this->categoryUid) {
+                    $parameter['defVals'] = [
+                        'tx_commerce_categories' => [
+                            'uid' => $this->categoryUid,
                         ]
-                    )
+                    ];
+                }
+
+                $onClick = 'return jumpExt(' . GeneralUtility::quoteJSvalue(
+                    BackendUtility::getModuleUrl('db_new', $parameter)
                 ) . ');';
                 $newRecordButton = $buttonBar->makeLinkButton()
                     ->setHref('#')
                     ->setOnClick($onClick)
                     ->setTitle($lang->getLL('newRecordGeneral'))
-                    ->setIcon($this->iconFactory->getIcon('actions-document-new', Icon::SIZE_SMALL));
+                    ->setIcon($this->iconFactory->getIcon('actions-add', Icon::SIZE_SMALL));
                 $buttonBar->addButton($newRecordButton, ButtonBar::BUTTON_POSITION_LEFT, 10);
             }
 
@@ -168,7 +177,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             // \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
             if ($localCalcPerms & Permission::PAGE_EDIT && !empty($this->id) && $this->editLockPermissions()) {
                 // Edit
-                $params = '&edit[tx_commerce_categories][' . $this->pageRow['uid'] . ']=edit';
+                $params = '&edit[tx_commerce_categories][' . $this->categoryRow['uid'] . ']=edit';
                 $onClick = BackendUtility::editOnClick($params, '', -1);
                 $editButton = $buttonBar->makeLinkButton()
                     ->setHref('#')
@@ -186,7 +195,12 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 $elFromTable = $this->clipObj->elFromTable('');
                 if (!empty($elFromTable)) {
                     $onClick = 'return '
-                        . $this->clipObj->confirmMsg('tx_commerce_categories', $this->pageRow, 'into', $elFromTable);
+                        . $this->clipObj->confirmMsg(
+                            'tx_commerce_categories',
+                            $this->categoryRow,
+                            'into',
+                            $elFromTable
+                        );
                     $pasteButton = $buttonBar->makeLinkButton()
                         ->setHref($this->clipObj->pasteUrl('', $this->id))
                         ->setOnClick($onClick)
@@ -907,7 +921,12 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                         $href = htmlspecialchars($this->clipObj->pasteUrl($table, $this->id));
                         $onClick = htmlspecialchars(
                             'return '
-                            . $this->clipObj->confirmMsg('tx_commerce_categories', $this->pageRow, 'into', $elFromTable)
+                            . $this->clipObj->confirmMsg(
+                                'tx_commerce_categories',
+                                $this->categoryRow,
+                                'into',
+                                $elFromTable
+                            )
                         );
                         $cells['pasteAfter'] = '<a class="btn btn-default" href="' . $href . '" onclick="' . $onClick
                             . '" title="' . $lang->getLL('clip_paste', true) . '">'
@@ -1328,13 +1347,10 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                         $categoryField = $table == 'tx_commerce_categories' ? 'parent_category' : 'categories';
                         $params .= '&defVals[' . $table . '][' . $categoryField . '] = ' . $this->categoryUid;
 
-                        $icon = ($table == 'tx_commerce_categories' ?
-                            $this->iconFactory->getIcon('actions-page-new', Icon::SIZE_SMALL)->render() :
-                            $this->iconFactory->getIcon('actions-add', Icon::SIZE_SMALL)->render()
-                        );
+                        $icon = $this->iconFactory->getIcon('actions-add', Icon::SIZE_SMALL)->render();
                         $titleLabel = 'new';
                         if ($tableConfig['ctrl']['sortby']) {
-                            $titleLabel .= ($table === 'tx_commerce_categories' ? 'Page' : 'Record');
+                            $titleLabel .= 'Record';
                         }
                         $newAction = '<a class="btn btn-default" href="#" onclick="'
                             . htmlspecialchars(BackendUtility::editOnClick($params, '', -1))
@@ -1972,10 +1988,10 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             // If no $row is submitted we only check for general edit lock of current category
             // (except for table "tx_commerce_categories")
             if (empty($row)) {
-                return $table === 'tx_commerce_categories' ? true : !$this->pageRow['editlock'];
+                return $table === 'tx_commerce_categories' ? true : !$this->categoryRow['editlock'];
             }
             if (($table === 'tx_commerce_categories' && $row['editlock'])
-                || ($table !== 'tx_commerce_categories' && $this->pageRow['editlock'])
+                || ($table !== 'tx_commerce_categories' && $this->categoryRow['editlock'])
             ) {
                 $editPermission = false;
             } elseif (isset($tableControl['editlock']) && $row[$tableControl['editlock']]) {

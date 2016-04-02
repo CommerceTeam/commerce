@@ -191,7 +191,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             true
         );
         $dbList->newWizards = $this->modTSconfig['properties']['newWizards'] ? 1 : 0;
-        $dbList->pageRow = $this->pageinfo;
+        $dbList->categoryRow = $this->pageinfo;
         $dbList->counter++;
         $dbList->MOD_MENU = ['bigControlPanel' => '', 'clipBoard' => '', 'localization' => ''];
         $dbList->modTSconfig = $this->modTSconfig;

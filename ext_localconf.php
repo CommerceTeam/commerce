@@ -124,8 +124,8 @@ call_user_func(function ($packageKey) {
             'className' => \CommerceTeam\Commerce\Xclass\VersionModuleController::class,
         ];
 
-        // For TYPO3 6.2
-        // @todo check if needed
+        // XCLASS for new record controller to be able to treat categories like pages
+        // and add a default value for categories and products
         $typo3ConfVars['SYS']['Objects'][\TYPO3\CMS\Backend\Controller\NewRecordController::class] = [
             'className' => \CommerceTeam\Commerce\Xclass\NewRecordController::class,
         ];

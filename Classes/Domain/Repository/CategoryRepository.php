@@ -432,7 +432,7 @@ class CategoryRepository extends AbstractRepository
             . ' INNER JOIN ' . $this->databaseParentCategoryRelationTable . ' AS mm ON '
             . $this->databaseTable . '.uid = mm.uid_local',
             'mm.uid_foreign = ' . (int) $parentCategoryUid . $this->enableFields()
-            . BackendUtility::getCategoryPermsClause(1),
+            . ' AND ' . BackendUtility::getCategoryPermsClause(1),
             '',
             $this->categoryOrderField
         );

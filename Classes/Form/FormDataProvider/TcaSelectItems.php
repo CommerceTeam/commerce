@@ -65,7 +65,8 @@ class TcaSelectItems extends AbstractItemProvider implements FormDataProviderInt
                 $foreignTable . '.uid, CONCAT(' . $foreignTable . '.uid, \'|\', ' . $foreignTable . '.title) AS value',
                 $foreignTable . '
                 INNER JOIN ' . $mmTable . ' ON ' . $foreignTable . '.uid = ' . $mmTable . '.uid_foreign',
-                $mmTable . '.uid_local = ' . $result['databaseRow']['uid'] . ' AND ' . $foreignTable . '.deleted = 0',
+                $mmTable . '.uid_local = ' . (int) $result['databaseRow']['uid']
+                . ' AND ' . $foreignTable . '.deleted = 0',
                 $foreignTable . '.uid',
                 '',
                 '',
@@ -83,6 +84,26 @@ class TcaSelectItems extends AbstractItemProvider implements FormDataProviderInt
                 'uid'
             );
         }
+
+        $defaultValues = isset($result['databaseRow'][$fieldName]) ? $result['databaseRow'][$fieldName] : null;
+        if (empty($rows) && !empty($defaultValues)) {
+            if (is_array($defaultValues)) {
+                $where = 'uid IN (' . implode(',', $defaultValues) . ')';
+            } else {
+                $where = 'uid = ' . (int) $defaultValues;
+            }
+
+            $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
+                'uid, CONCAT(uid, \'|\', title) AS value',
+                $foreignTable,
+                $where . ' AND deleted = 0',
+                '',
+                '',
+                '',
+                'uid'
+            );
+        }
+
         return $rows;
     }
 

@@ -1018,23 +1018,30 @@ class DataMapHook
         // if unset, do not save anything, but load the dynaflex
         if (!empty($fieldArray)) {
             if (isset($fieldArray['parent_category'])) {
+                $newId = '';
+                foreach ($dataHandler->substNEWwithIDs as $newId => $uid) {
+                    if ($uid == $id) {
+                        break;
+                    }
+                }
+                $categoryListUid = $newId ?: $id;
                 // get the list of parent categories and save the relations in the database
-                $catList = explode(',', $dataHandler->datamap[$table][$id]['parent_category']);
+                $categories = explode(',', $dataHandler->datamap[$table][$categoryListUid]['parent_category']);
 
                 // preserve the 0 as root.
                 $preserve = [];
 
-                if (in_array(0, $catList)) {
+                if (in_array(0, $categories)) {
                     $preserve[] = 0;
                 }
 
                 // extract uids.
-                $catList = $this->belib->extractFieldArray($catList, 'uid_foreign', true);
+                $categories = $this->belib->extractFieldArray($categories, 'uid_foreign', true);
 
                 // add preserved
-                $catList = array_merge($catList, $preserve);
+                $categories = array_merge($categories, $preserve);
 
-                $this->belib->saveRelations($id, $catList, 'tx_commerce_categories_parent_category_mm', true);
+                $this->belib->saveRelations($id, $categories, 'tx_commerce_categories_parent_category_mm', true);
             }
 
             // save all relations concerning categories
@@ -1055,7 +1062,6 @@ class DataMapHook
      */
     protected function afterDatabaseProduct($status, $table, $id, array $fieldArray, DataHandler $dataHandler)
     {
-        // if fieldArray has been unset, do not save anything, but load dynaflex config
         if (!empty($fieldArray)) {
             /**
              * Product.
@@ -1066,13 +1072,22 @@ class DataMapHook
             $product->loadData();
 
             if (isset($fieldArray['categories'])) {
-                $catList = explode(',', $dataHandler->datamap[$table][$id]['categories']);
-                $catList = $this->belib->extractFieldArray($catList, 'uid_foreign', true);
+                $newId = '';
+                foreach ($dataHandler->substNEWwithIDs as $newId => $uid) {
+                    if ($uid == $id) {
+                        break;
+                    }
+                }
+                $categoryListUid = $newId ?: $id;
+                $categories = explode(',', $dataHandler->datamap[$table][$categoryListUid]['categories']);
+                $categories = $this->belib->extractFieldArray($categories, 'uid_foreign', true);
 
                 // get id of the live placeholder instead if such exists
                 $relId = ($status != 'new' && $product->getPid() == '-1') ? $product->getT3verOid() : $id;
 
-                $this->belib->saveRelations($relId, $catList, 'tx_commerce_products_categories_mm', true, false);
+                if (!$newId) {
+                    $this->belib->saveRelations($relId, $categories, 'tx_commerce_products_categories_mm', true, false);
+                }
             }
 
             // if the live shadow is saved, the product relations have to be saved
