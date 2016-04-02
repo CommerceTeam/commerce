@@ -2160,7 +2160,7 @@ class BackendUtility
 
         if (is_array($backendUser->user)) {
             if ($backendUser->isAdmin()) {
-                return ' 1=1';
+                return ' 1 = 1';
             }
             $perms = (int) $perms;
             // Make sure it's integer.
@@ -2179,7 +2179,7 @@ class BackendUtility
 
             return $str;
         } else {
-            return ' 1=0';
+            return ' 1 = 0';
         }
     }
 

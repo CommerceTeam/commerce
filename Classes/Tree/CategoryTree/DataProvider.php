@@ -670,9 +670,8 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function getCategoryWhereClause($id, $searchFilter = '', array $categoryUids = [])
     {
-        $where = \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause($id) .
-            BackendUtility::deleteClause('tx_commerce_categories') .
-            BackendUtility::versioningPlaceholderClause('tx_commerce_categories');
+        $where = '';
+
         if (is_numeric($id) && $id >= 0) {
             $where .= ' AND uid_foreign = ' . (int) $id;
         }
@@ -697,7 +696,11 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             $where .= ' AND (' . implode(' OR ', $searchWhere) . ')';
         }
 
-        return $where;
+        $where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause($id) .
+            BackendUtility::deleteClause('tx_commerce_categories') .
+            BackendUtility::versioningPlaceholderClause('tx_commerce_categories');
+
+        return ltrim($where, ' AND ');
     }
 
     /**
@@ -711,12 +714,10 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function getProductWhereClause($id, $searchFilter = '', array $productUids = [])
     {
-        $where = \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause($id) .
-            BackendUtility::deleteClause('tx_commerce_products') .
-            BackendUtility::versioningPlaceholderClause('tx_commerce_products');
+        $where = '';
 
         if (is_numeric($id) && $id >= 0) {
-            $where .= ' AND tx_commerce_categories.uid = ' . (int) $id;
+            $where .= ' AND uid_foreign = ' . (int) $id;
         }
 
         if ($searchFilter !== '') {
@@ -740,7 +741,11 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             $where .= ' AND (' . implode(' OR ', $searchWhere) . ')';
         }
 
-        return $where;
+        $where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause($id) .
+            BackendUtility::deleteClause('tx_commerce_products') .
+            BackendUtility::versioningPlaceholderClause('tx_commerce_products');
+
+        return ltrim($where, ' AND ');
     }
 
     /**
@@ -753,17 +758,16 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function getArticleWhereClause($id, $searchFilter = '')
     {
-        $where = '1 = 1' . BackendUtility::deleteClause('tx_commerce_articles') .
-            BackendUtility::versioningPlaceholderClause('tx_commerce_articles');
+        $where = '';
 
         if (is_numeric($id) && $id >= 0) {
-            $where .= ' AND tx_commerce_articles.uid_product = ' . (int) $id;
+            $where .= ' AND uid_product = ' . (int) $id;
         }
 
         if ($searchFilter !== '') {
             $searchWhere = [];
             if (is_numeric($searchFilter) && $searchFilter > 0) {
-                $searchWhere[] = 'tx_commerce_articles.uid = ' . (int) $searchFilter;
+                $searchWhere[] = 'uid = ' . (int) $searchFilter;
             }
             $searchFilter = $this->getDatabaseConnection()->fullQuoteStr(
                 '%' . $searchFilter . '%',
@@ -775,7 +779,10 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             $where .= ' AND (' . implode(' OR ', $searchWhere) . ')';
         }
 
-        return $where;
+        $where .= ($where ? '' : '1 = 1') . BackendUtility::deleteClause('tx_commerce_articles') .
+            BackendUtility::versioningPlaceholderClause('tx_commerce_articles');
+
+        return ltrim($where, ' AND ');
     }
 
 
@@ -789,6 +796,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     protected function getCategories($id, $searchFilter = '')
     {
         $where = '';
+        // try to find articles and products with searchFilter to include the categories they are on to the result
         if ($searchFilter) {
             $categories = $this->searchCategoryWithMatchingArticle($searchFilter);
             if (empty($categories)) {
@@ -808,7 +816,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             $where = $this->getCategoryWhereClause($id, $searchFilter);
         }
 
-        return $this->getDatabaseConnection()->exec_SELECTgetRows(
+        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             'uid, t3ver_wsid',
             'tx_commerce_categories
                 INNER JOIN tx_commerce_categories_parent_category_mm ON
@@ -832,6 +840,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     protected function getProducts($categoryId, $searchFilter = '')
     {
         $where = '';
+        // try to find articles with searchFilter to include the products they are on to the result
         if ($searchFilter) {
             $products = $this->searchProductWithMathingArticle($searchFilter);
 
@@ -845,14 +854,13 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             }
         }
         if ($where == '') {
-            $where = $this->getCategoryWhereClause($categoryId, $searchFilter);
+            $where = $this->getProductWhereClause($categoryId, $searchFilter);
         }
 
-        return $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'tx_commerce_products.uid, tx_commerce_products.t3ver_wsid',
+        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            'uid, t3ver_wsid',
             'tx_commerce_products
-                INNER JOIN tx_commerce_products_categories_mm AS mm ON mm.uid_local = tx_commerce_products.uid
-                INNER JOIN tx_commerce_categories ON mm.uid_foreign = tx_commerce_categories.uid',
+                INNER JOIN tx_commerce_products_categories_mm AS mm ON tx_commerce_products.uid = mm.uid_local',
             $where,
             '',
             'tx_commerce_products.sorting',
@@ -877,20 +885,25 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             'tx_commerce_articles',
             $where,
             '',
-            'sorting',
+            'tx_commerce_articles.sorting',
             '',
             'uid'
         );
     }
 
     /**
+     * As the category search can only search in the category table this
+     * search gathers all category ids that contain articles that match
+     * the search. The search in category takes these ids as part of the
+     * search pattern
+     *
      * @param string $searchFilter
      * @return array
      */
     protected function searchCategoryWithMatchingArticle($searchFilter)
     {
         $where = $this->getArticleWhereClause(-1, $searchFilter);
-        return (array)$this->getDatabaseConnection()->exec_SELECTgetRows(
+        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             'tx_commerce_categories.uid, tx_commerce_categories.t3ver_wsid',
             'tx_commerce_articles
                 INNER JOIN tx_commerce_products_categories_mm AS mm ON
@@ -905,17 +918,23 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     }
 
     /**
+     * As the category search can only search in the category table this
+     * search gathers all category ids that contain products that match
+     * the search. The search in category takes these ids as part of the
+     * search pattern
+     *
      * @param string $searchFilter
      * @return array
      */
     protected function searchCategoryWithMatchingProduct($searchFilter)
     {
         $where = $this->getProductWhereClause(-1, $searchFilter);
-        return (array)$this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid, t3ver_wsid',
+        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            'tx_commerce_categories.uid, tx_commerce_categories.t3ver_wsid',
             'tx_commerce_categories
-                INNER JOIN tx_commerce_categories_parent_category_mm ON
-                    tx_commerce_categories.uid = tx_commerce_categories_parent_category_mm.uid_local',
+                INNER JOIN tx_commerce_products_categories_mm AS mm ON
+                    tx_commerce_categories.uid = mm.uid_local
+                INNER JOIN tx_commerce_products ON mm.uid_foreign = tx_commerce_products.uid',
             $where,
             '',
             'tx_commerce_categories.sorting',
@@ -925,13 +944,18 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     }
 
     /**
+     * As the product search can only search in the product table this
+     * search gathers all product ids that contain articles that match
+     * the search. The search in product takes these ids as part of the
+     * search pattern
+     *
      * @param $searchFilter
      * @return array
      */
     protected function searchProductWithMathingArticle($searchFilter)
     {
         $where = $this->getArticleWhereClause(-1, $searchFilter);
-        return (array)$this->getDatabaseConnection()->exec_SELECTgetRows(
+        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             'tx_commerce_products.uid, tx_commerce_products.t3ver_wsid',
             'tx_commerce_articles
                 INNER JOIN tx_commerce_products ON
