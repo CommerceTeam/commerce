@@ -378,7 +378,8 @@ class ArticleRepository extends AbstractRepository
         return (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             '*',
             'tx_commerce_articles',
-            'classname = \'' . $classname . '\'' . $this->enableFields()
+            'classname = ' . $this->getDatabaseConnection()->fullQuoteStr($classname, $this->databaseTable)
+            . $this->enableFields()
         );
     }
 
@@ -398,6 +399,29 @@ class ArticleRepository extends AbstractRepository
         );
 
         return $articles;
+    }
+
+    /**
+     * Finds articles by product uid and returns only the uids as flat array
+     *
+     * @param int $productUid
+     * @param string $orderBy
+     *
+     * @return array
+     */
+    public function findUidsByProductUid($productUid, $orderBy = 'sorting')
+    {
+        $articles = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            'uid',
+            $this->databaseTable,
+            'uid_product = ' . $productUid . $this->enableFields(),
+            '',
+            $orderBy,
+            '',
+            'uid'
+        );
+
+        return array_keys($articles);
     }
 
     /**
@@ -439,6 +463,25 @@ class ArticleRepository extends AbstractRepository
         $this->getDatabaseConnection()->exec_DELETEquery(
             $this->databaseAttributeRelationTable,
             'uid_local = ' . (int) $articleUid . ' AND uid_foreign = ' . (int) $attributeId
+        );
+    }
+
+    /**
+     * Set delete flag and timestamp to current date for given articles
+     *
+     * @param array $articleUids
+     */
+    public function deleteByUids(array $articleUids)
+    {
+        $updateValues = [
+            'tstamp' => $GLOBALS['EXEC_TIME'],
+            'deleted' => 1,
+        ];
+
+        $this->getDatabaseConnection()->exec_UPDATEquery(
+            $this->databaseTable,
+            'uid IN (' . implode(',', $articleUids) . ') OR l18n_parent IN (' . implode(',', $articleUids) . ')',
+            $updateValues
         );
     }
 }

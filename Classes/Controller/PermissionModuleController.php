@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
 use CommerceTeam\Commerce\Tree\View\CategoryTreeView;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use \CommerceTeam\Commerce\Utility\BackendUtility as CommerceBackendUtility;
@@ -401,19 +402,14 @@ class PermissionModuleController extends ActionController
                 if ((int)$properties['perms_groupid'] === -1) {
                     unset($properties['perms_groupid']);
                 }
-                $this->getDatabaseConnection()->exec_UPDATEquery(
-                    'tx_commerce_categories',
-                    'uid = ' . (int)$categoryUid,
-                    $properties
-                );
+                /** @var CategoryRepository $categoryRepository */
+                $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+                $categoryRepository->updateRecord((int) $categoryUid, $properties);
+
                 if (!empty($mirror['categories'][$categoryUid])) {
-                    $mirrorPages = GeneralUtility::trimExplode(',', $mirror['categories'][$categoryUid]);
-                    foreach ($mirrorPages as $mirrorPageUid) {
-                        $this->getDatabaseConnection()->exec_UPDATEquery(
-                            'tx_commerce_categories',
-                            'uid = ' . (int)$mirrorPageUid,
-                            $properties
-                        );
+                    $mirrorCategoryUids = GeneralUtility::trimExplode(',', $mirror['categories'][$categoryUid]);
+                    foreach ($mirrorCategoryUids as $mirrorCategoryUid) {
+                        $categoryRepository->updateRecord((int) $mirrorCategoryUid, $properties);
                     }
                 }
             }
@@ -430,14 +426,6 @@ class PermissionModuleController extends ActionController
     protected function getBackendUserAuthentication()
     {
         return $GLOBALS['BE_USER'];
-    }
-
-    /**
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 
     /**

@@ -39,4 +39,28 @@ class PageRepository extends AbstractRepository
             'tx_commerce_foldereditorder = 1 AND uid = ' . (int) $uid
         );
     }
+
+    /**
+     * Find all sys language uids of page overlay for given page
+     *
+     * @param int $pageUid
+     *
+     * @return array
+     */
+    public function findLanguageUidsByUid($pageUid)
+    {
+        $locale = array_keys(
+            (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+                'sys_language_uid',
+                'pages_language_overlay',
+                'pid = ' . (int) $pageUid,
+                '',
+                '',
+                '',
+                'sys_language_uid'
+            )
+        );
+
+        return $locale;
+    }
 }

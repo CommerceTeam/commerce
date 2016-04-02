@@ -408,10 +408,10 @@ class Product extends AbstractEntity
     {
         $whereUid = $proofUid ? ' AND tx_commerce_articles.uid_product = ' . $this->uid : '';
 
-        $first = 1;
+        $first = true;
+        $articleUids = [];
         if (is_array($attributes)) {
             $database = $this->getDatabaseConnection();
-            $attributeUids = [];
             foreach ($attributes as $uidValuePair) {
                 // Initialize arrays to prevent warningn in array_intersect()
                 $next = [];
@@ -448,39 +448,34 @@ class Product extends AbstractEntity
 
                 $addwhere = ' AND (0 ' . $addwheretmp . ') ';
 
-                $result = $database->exec_SELECT_mm_query(
+                $result = (array) $database->exec_SELECTgetRows(
                     'DISTINCT tx_commerce_articles.uid',
-                    'tx_commerce_articles',
-                    'tx_commerce_articles_attributes_mm',
-                    'tx_commerce_attributes',
+                    'tx_commerce_articles
+                    INNER JOIN tx_commerce_articles_attributes_mm AS mm ON tx_commerce_articles.uid = mm.uid_local
+                    INNER JOIN tx_commerce_attributes ON mm.uid_foreign = tx_commerce_attributes.uid',
                     $addwhere . ' AND tx_commerce_articles.hidden = 0 AND tx_commerce_articles.deleted = 0' . $whereUid
                 );
 
-                if ($database->sql_num_rows($result)) {
-                    while (($data = $database->sql_fetch_assoc($result))) {
-                        $next[] = $data['uid'];
-                    }
-                    $database->sql_free_result($result);
+                foreach ($result as $data) {
+                    $next[] = $data['uid'];
                 }
 
                 // Return only the first article that exists in all arrays that's why the
                 // first array get set and then array intersect checks the matching
                 if ($first) {
-                    $attributeUids = $next;
-                    $first = 0;
+                    $articleUids = $next;
+                    $first = false;
                 } else {
-                    $attributeUids = array_intersect($attributeUids, $next);
+                    $articleUids = array_intersect($articleUids, $next);
                 }
             }
 
-            if (!empty($attributeUids)) {
-                sort($attributeUids);
-
-                return $attributeUids;
+            if (!empty($articleUids)) {
+                sort($articleUids);
             }
         }
 
-        return [];
+        return $articleUids;
     }
 
     /**

@@ -276,42 +276,6 @@ class BackendUtility
     /* ARTICLES */
 
     /**
-     * Return all articles that where created from a given product.
-     *
-     * @param int $pUid UID of the product
-     * @param string $additionalWhere Additional where string
-     * @param string $orderBy Order by field
-     *
-     * @return array of article UIDs, ready to implode for coma separed list
-     */
-    public static function getArticlesOfProductAsUidList($pUid, $additionalWhere = '', $orderBy = '')
-    {
-        $where = 'uid_product = ' . (int) $pUid . ' AND deleted = 0';
-
-        if ($additionalWhere != '') {
-            $where .= ' AND ' . $additionalWhere;
-        }
-
-        $articles = self::getDatabaseConnection()->exec_SELECTgetRows(
-            'uid',
-            'tx_commerce_articles',
-            $where,
-            '',
-            $orderBy
-        );
-        if (!empty($articles)) {
-            $result = [];
-            foreach ($articles as $article) {
-                $result[] = $article['uid'];
-            }
-
-            return $result;
-        }
-
-        return false;
-    }
-
-    /**
      * Returns all attributes for an article.
      *
      * @param int $articleUid Article UID
@@ -358,7 +322,7 @@ class BackendUtility
         $result = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             'tx_commerce_articles_attributes_mm AS mm 
-            INNER JOIN tx_commerce_attributes ON mm.uid_foreign = tx_commerce_attributes.uid',
+                INNER JOIN tx_commerce_attributes ON mm.uid_foreign = tx_commerce_attributes.uid',
             $where . $this->enableFields('tx_commerce_attributes')
         );
 
@@ -382,21 +346,21 @@ class BackendUtility
     /**
      * Returns the hash value for the ct1 select attributes for an article.
      *
-     * @param int $aUid Uid of the article
+     * @param int $articleUid Uid of the article
      * @param array $fullAttributeList List of uids for the attributes
      *      that are assigned to the article
      *
      * @return string
      */
-    public function getArticleHash($aUid, array $fullAttributeList)
+    public function getArticleHash($articleUid, array $fullAttributeList)
     {
         $hashData = [];
 
         if (!empty($fullAttributeList)) {
-            $attributes = self::getDatabaseConnection()->exec_SELECTgetRows(
+            $attributes = $this->getDatabaseConnection()->exec_SELECTgetRows(
                 '*',
                 'tx_commerce_articles_attributes_mm',
-                'uid_local = ' . (int) $aUid . ' AND uid_foreign IN (' . implode(',', $fullAttributeList) . ')'
+                'uid_local = ' . (int) $articleUid . ' AND uid_foreign IN (' . implode(',', $fullAttributeList) . ')'
             );
 
             foreach ($attributes as $attributeData) {
@@ -414,17 +378,17 @@ class BackendUtility
      * Updates an article and recalculates the hash value for the assigned
      * attributes.
      *
-     * @param int $aUid Uid of the article
+     * @param int $articleUid Uid of the article
      * @param array $fullAttributeList The list of uids for the attributes
      *      that are assigned to the article
      *
      * @return void
      */
-    public function updateArticleHash($aUid, array $fullAttributeList = [])
+    public function updateArticleHash($articleUid, array $fullAttributeList = [])
     {
         if ($fullAttributeList == null) {
             $fullAttributeList = [];
-            $articleAttributes = $this->getAttributesForArticle($aUid, 1);
+            $articleAttributes = $this->getAttributesForArticle($articleUid, 1);
             if (!empty($articleAttributes)) {
                 foreach ($articleAttributes as $articleAttribute) {
                     $fullAttributeList[] = $articleAttribute['uid_foreign'];
@@ -432,12 +396,12 @@ class BackendUtility
             }
         }
 
-        $hash = $this->getArticleHash($aUid, $fullAttributeList);
+        $hash = $this->getArticleHash($articleUid, $fullAttributeList);
 
         // update the article
-        self::getDatabaseConnection()->exec_UPDATEquery(
+        $this->getDatabaseConnection()->exec_UPDATEquery(
             'tx_commerce_articles',
-            'uid = ' . (int) $aUid,
+            'uid = ' . (int) $articleUid,
             ['attribute_hash' => $hash]
         );
     }

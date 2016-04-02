@@ -39,4 +39,22 @@ class FrontendUserRepository extends AbstractRepository
             'tx_commerce_tt_address_id = ' . $addressId . ' AND deleted = 0'
         );
     }
+
+    /**
+     * @param string $username
+     * @param int $folderId
+     *
+     * @return array
+     */
+    public function findByUsernameInFolder($username, $folderId)
+    {
+        $row = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'uid',
+            $this->databaseTable,
+            'username = ' . $this->getDatabaseConnection()->fullQuoteStr($username, $this->databaseTable)
+            . ' AND pid = ' . $folderId . $this->enableFields()
+        );
+
+        return $row;
+    }
 }

@@ -182,7 +182,7 @@ class Wirecard extends ProviderAbstract
         $orderRepository = GeneralUtility::makeInstance(
             \CommerceTeam\Commerce\Domain\Repository\OrderRepository::class
         );
-        $orderRepository->updateByUid(
+        $orderRepository->updateRecord(
             $orderUid,
             ['payment_ref_id' => $this->paymentRefId]
         );

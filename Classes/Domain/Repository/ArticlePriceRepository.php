@@ -75,4 +75,23 @@ class ArticlePriceRepository extends AbstractRepository
 
         return $prices;
     }
+
+    /**
+     * Set delete flag and timestamp to current date for given articles
+     *
+     * @param array $articleUids
+     */
+    public function deleteByArticleUids(array $articleUids)
+    {
+        $updateValues = [
+            'tstamp' => $GLOBALS['EXEC_TIME'],
+            'deleted' => 1,
+        ];
+
+        $this->getDatabaseConnection()->exec_UPDATEquery(
+            $this->databaseTable,
+            'uid_article IN (' . implode(',', $articleUids) . ')',
+            $updateValues
+        );
+    }
 }

@@ -136,7 +136,7 @@ class Debit extends PaymentAbstract
         $orderRepository = GeneralUtility::makeInstance(
             \CommerceTeam\Commerce\Domain\Repository\OrderRepository::class
         );
-        $orderRepository->updateByUid(
+        $orderRepository->updateRecord(
             $orderUid,
             [
                 'payment_debit_bic' => $session['payment']['debit_bic'],

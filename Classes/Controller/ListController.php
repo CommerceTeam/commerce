@@ -497,10 +497,8 @@ class ListController extends BaseController
 
         $result = false;
         if ($productId > 0) {
-            $database = $this->getDatabaseConnection();
-
             // Get not localized product
-            $row = (array) $database->exec_SELECTgetSingleRow(
+            $row = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
                 'l18n_parent',
                 'tx_commerce_products',
                 'uid = ' . $productId

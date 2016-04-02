@@ -368,6 +368,18 @@ class ProductRepository extends AbstractRepository
 
     /**
      * @param int $productUid
+     * @param int $categoryUid
+     */
+    public function removeCategoryRelation($productUid, $categoryUid)
+    {
+        $this->getDatabaseConnection()->exec_DELETEquery(
+            'tx_commerce_products_categories_mm',
+            'uid_local = ' . $productUid . ' AND uid_foreign = ' . $categoryUid
+        );
+    }
+
+    /**
+     * @param int $productUid
      * @param array $data
      * @return string
      */
@@ -397,6 +409,24 @@ class ProductRepository extends AbstractRepository
         );
 
         return $this->getDatabaseConnection()->sql_error();
+    }
+
+    /**
+     * Find product translations by translation parent uid
+     *
+     * @param int $productUid
+     *
+     * @return array
+     */
+    public function findByTranslationParentUid($productUid)
+    {
+        $products = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            '*',
+            'tx_commerce_products',
+            'l18n_parent = ' . (int) $productUid
+        );
+
+        return $products;
     }
 
     /**
@@ -434,5 +464,44 @@ class ProductRepository extends AbstractRepository
         );
 
         return $categories;
+    }
+
+    /**
+     * Set delete flag and timestamp to current date for given products uids
+     *
+     * @param array $productUids
+     */
+    public function deleteByUids(array $productUids)
+    {
+        $updateValues = [
+            'tstamp' => $GLOBALS['EXEC_TIME'],
+            'deleted' => 1,
+        ];
+
+        $this->getDatabaseConnection()->exec_UPDATEquery(
+            $this->databaseTable,
+            'uid IN (' . implode(',', $productUids) . ')',
+            $updateValues
+        );
+    }
+
+    /**
+     * Set delete flag and timestamp to current date for given translated products
+     * by translation parent
+     *
+     * @param array $productUids
+     */
+    public function deleteTranslationByParentUids(array $productUids)
+    {
+        $updateValues = [
+            'tstamp' => $GLOBALS['EXEC_TIME'],
+            'deleted' => 1,
+        ];
+
+        $this->getDatabaseConnection()->exec_UPDATEquery(
+            $this->databaseTable,
+            'l18n_parent IN (' . implode(',', $productUids) . ')',
+            $updateValues
+        );
     }
 }

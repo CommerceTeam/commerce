@@ -25,29 +25,25 @@ class OrderRepository extends AbstractRepository
     protected $databaseTable = 'tx_commerce_orders';
 
     /**
-     * Update data.
+     * @param string $orderId
+     * @param int $userId
      *
-     * @param string $where Search
-     * @param array $data Data
-     *
-     * @return void
+     * @return array
      */
-    protected function update($where, array $data)
+    public function findByOrderIdAndUser($orderId, $userId = 0)
     {
-        $this->getDatabaseConnection()->exec_UPDATEquery($this->databaseTable, $where, $data);
-    }
+        $queryString = 'order_id = ' . $this->getDatabaseConnection()->fullQuoteStr($orderId, $this->databaseTable);
+        if ($userId) {
+            $queryString .= ' AND cust_fe_user = ' . (int) $userId;
+        }
 
-    /**
-     * Update order by uid.
-     *
-     * @param int $uid Order uid
-     * @param array $data Data
-     *
-     * @return void
-     */
-    public function updateByUid($uid, array $data)
-    {
-        $this->update('uid = ' . (int) $uid, $data);
+        $row = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            '*',
+            $this->databaseTable,
+            $queryString . $this->enableFields('tx_commerce_orders')
+        );
+
+        return $row;
     }
 
     /**
@@ -60,7 +56,8 @@ class OrderRepository extends AbstractRepository
      */
     public function updateByOrderId($orderId, array $data)
     {
-        $this->update(
+        $this->getDatabaseConnection()->exec_UPDATEquery(
+            $this->databaseTable,
             'order_id = ' . $this->getDatabaseConnection()->fullQuoteStr($orderId, $this->databaseTable),
             $data
         );

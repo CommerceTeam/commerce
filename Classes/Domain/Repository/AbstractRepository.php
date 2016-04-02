@@ -164,16 +164,17 @@ abstract class AbstractRepository implements SingletonInterface
     /**
      * Find by uid.
      *
-     * @param int $uid Product uid
+     * @param int $uid Record uid
+     * @param string $additionalWhere
      *
      * @return array
      */
-    public function findByUid($uid)
+    public function findByUid($uid, $additionalWhere = '')
     {
         return (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             '*',
             $this->databaseTable,
-            'uid = ' . (int) $uid . $this->enableFields()
+            'uid = ' . (int) $uid . $this->enableFields() . ($additionalWhere ? ' AND ' . $additionalWhere : '')
         );
     }
 
@@ -267,7 +268,7 @@ abstract class AbstractRepository implements SingletonInterface
         if ($this->getDatabaseConnection()->sql_error()) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
-                    'updateRecord (db_alib): invalid sql.',
+                    'updateRecord (AbstractRepository): invalid sql.',
                     'commerce',
                     3
                 );

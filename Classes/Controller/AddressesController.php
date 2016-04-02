@@ -603,7 +603,6 @@ class AddressesController extends BaseController
                 $addressType = 'billing';
         }
 
-        // Build query to select an address from the database if user is logged in
         $addressData = ($addressUid != null) ? $this->addresses[$addressUid] : [];
 
         foreach ($hooks as $hookObj) {
@@ -819,15 +818,14 @@ class AddressesController extends BaseController
     }
 
     /**
-     * Deletes an address from the database. It doesn't delete the dataset in
-     * real, but it sets the deleted flag like it's done inside TYPO3.
-     * This method has no params, because it currently gets the data from piVars.
+     * Flags an address as deleted and uses piVars parameter for address uid
      *
      * @return bool
      */
     protected function deleteAddress()
     {
-        if (!in_array((int) $this->piVars['addressid'], array_keys($this->addresses))) {
+        $addressUid = (int) $this->piVars['addressid'];
+        if (!in_array($addressUid, array_keys($this->addresses))) {
             return true;
         }
 
@@ -837,7 +835,7 @@ class AddressesController extends BaseController
         $hooks = HookFactory::getHooks('Controller/AddressesController', 'deleteAddress');
         foreach ($hooks as $hook) {
             if (method_exists($hook, 'deleteAddress')) {
-                $message = $hook->deleteAddress((int) $this->piVars['addressid'], $this);
+                $message = $hook->deleteAddress($addressUid, $this);
             }
         }
 
@@ -850,7 +848,7 @@ class AddressesController extends BaseController
 
         /** @var AddressRepository $addressRepository */
         $addressRepository = GeneralUtility::makeInstance(AddressRepository::class);
-        $error = $addressRepository->deleteAddress((int) $this->piVars['addressid']);
+        $error = $addressRepository->deleteAddress($addressUid);
 
         unset($this->addresses[(int) $this->piVars['addressid']]);
         unset($this->piVars['confirmed']);

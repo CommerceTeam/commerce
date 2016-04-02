@@ -219,20 +219,17 @@ class CategoryRepository extends AbstractRepository
      *
      * @return array Array of child categories UID
      */
-    public function getChildCategories($uid, $languageUid = -1)
+    public function getChildCategories($uid, $languageUid = 0)
     {
         if (empty($uid) || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
             return [];
         }
 
-        if ($languageUid == -1) {
-            $languageUid = 0;
-        }
-        $this->uid = $uid;
         $frontend = $this->getFrontendController();
         if ($languageUid == 0 && $frontend->sys_language_uid) {
             $languageUid = $frontend->sys_language_uid;
         }
+        $this->uid = $uid;
         $this->lang_uid = $languageUid;
 
         // @todo Sorting should be by database
@@ -246,19 +243,16 @@ class CategoryRepository extends AbstractRepository
             'getChildCategories'
         );
         if (is_object($hookObject) && method_exists($hookObject, 'categoryOrder')) {
-            $localOrderField = $hookObject->categoryOrder($this->categoryOrderField, $this);
+            $localOrderField = $hookObject->categoryOrder($localOrderField, $this);
         }
 
-        $additionalWhere = $this->enableFields();
-
-        $database = $this->getDatabaseConnection();
-
-        $result = $database->exec_SELECT_mm_query(
+        $result = $this->getDatabaseConnection()->exec_SELECTgetRows(
             'uid_local',
-            $this->databaseTable,
-            $this->databaseParentCategoryRelationTable,
-            $this->databaseTable,
-            ' AND ' . $this->databaseParentCategoryRelationTable . '.uid_foreign = ' . $uid . ' ' . $additionalWhere,
+            $this->databaseTable
+            . ' INNER JOIN ' . $this->databaseParentCategoryRelationTable
+            . ' AS mm ON ' . $this->databaseTable . '.uid = mm.uid_local'
+            . ' INNER JOIN ' . $this->databaseTable . ' AS parent ON mm.uid_foreign = parent.uid',
+            'parent.uid = ' . $uid . $this->enableFields(),
             '',
             $localOrderField
         );
@@ -266,22 +260,22 @@ class CategoryRepository extends AbstractRepository
         $return = [];
         if ($result) {
             $data = [];
-            while (($row = $database->sql_fetch_assoc($result))) {
+            foreach ($result as $row) {
                 // @todo access_check for datasets
                 if ($languageUid == 0) {
-                    $data[] = (int) $row['uid_local'];
+                    $data[] = $row['uid_local'];
                 } else {
-                    // Check if a localised product is availiabe for this product
+                    // Check if a localised product is available for this category
                     // @todo Check if this is correct in Multi Tree Sites
-                    $lresult = $database->exec_SELECTquery(
+                    $translationCount = $this->getDatabaseConnection()->exec_SELECTcountRows(
                         'uid',
                         $this->databaseTable,
-                        'l18n_parent = ' . (int) $row['uid_local'] . ' AND sys_language_uid = ' . $this->lang_uid
+                        'l18n_parent = ' . $row['uid_local'] . ' AND sys_language_uid = ' . $this->lang_uid
                         . $this->enableFields()
                     );
 
-                    if ($database->sql_num_rows($lresult)) {
-                        $data[] = (int) $row['uid_local'];
+                    if ($translationCount > 0) {
+                        $data[] = $row['uid_local'];
                     }
                 }
             }
@@ -290,7 +284,6 @@ class CategoryRepository extends AbstractRepository
                 $data = $hookObject->categoryQueryPostHook($data, $this);
             }
 
-            $database->sql_free_result($result);
             $return = $data;
         }
 
@@ -305,20 +298,17 @@ class CategoryRepository extends AbstractRepository
      *
      * @return array Array of child products UIDs
      */
-    public function getChildProducts($uid, $languageUid = -1)
+    public function getChildProducts($uid, $languageUid = 0)
     {
         if (empty($uid) || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
             return [];
         }
 
-        if ($languageUid == -1) {
-            $languageUid = 0;
-        }
-        $this->uid = $uid;
         $frontend = $this->getFrontendController();
         if ($languageUid == 0 && $frontend->sys_language_uid) {
             $languageUid = $frontend->sys_language_uid;
         }
+        $this->uid = $uid;
         $this->lang_uid = $languageUid;
 
         $localOrderField = $this->productOrderField;
@@ -376,8 +366,7 @@ class CategoryRepository extends AbstractRepository
                 if ($languageUid == 0) {
                     $return[] = (int) $row['uid'];
                 } else {
-                    // Check if a localized product is available
-                    // @todo Check if this is correct in multi tree sites
+                    // Check if a localized product for current language is available
                     $lresult = $database->exec_SELECTquery(
                         'uid',
                         'tx_commerce_products',
@@ -445,26 +434,10 @@ class CategoryRepository extends AbstractRepository
             'mm.uid_foreign = ' . (int) $parentCategoryUid . $this->enableFields()
             . BackendUtility::getCategoryPermsClause(1),
             '',
-            $this->databaseTable . '.sorting'
+            $this->categoryOrderField
         );
 
         return $categories;
-    }
-
-    /**
-     * Find by uid.
-     *
-     * @param int $uid Product uid
-     * @param string $additionalWhere
-     * @return array
-     */
-    public function findByUid($uid, $additionalWhere = '')
-    {
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            '*',
-            $this->databaseTable,
-            'uid = ' . (int) $uid . $this->enableFields() . ($additionalWhere ? ' AND ' . $additionalWhere : '')
-        );
     }
 
     /**
@@ -514,5 +487,45 @@ class CategoryRepository extends AbstractRepository
             'sorting'
         );
         return $result;
+    }
+
+    /**
+     * Set delete flag and timestamp to current date for given translated products
+     * by translation parent
+     *
+     * @param array $categoryUids
+     */
+    public function deleteByUids(array $categoryUids)
+    {
+        $updateValues = [
+            'tstamp' => $GLOBALS['EXEC_TIME'],
+            'deleted' => 1,
+        ];
+
+        $this->getDatabaseConnection()->exec_UPDATEquery(
+            $this->databaseTable,
+            'uid IN (' . implode(',', $categoryUids) . ')',
+            $updateValues
+        );
+    }
+
+    /**
+     * Set delete flag and timestamp to current date for given translated category
+     * by translation parent
+     *
+     * @param array $categoryUids
+     */
+    public function deleteTranslationByParentUids(array $categoryUids)
+    {
+        $updateValues = [
+            'tstamp' => $GLOBALS['EXEC_TIME'],
+            'deleted' => 1,
+        ];
+
+        $this->getDatabaseConnection()->exec_UPDATEquery(
+            $this->databaseTable,
+            'l18n_parent IN (' . implode(',', $categoryUids) . ')',
+            $updateValues
+        );
     }
 }

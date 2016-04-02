@@ -12,9 +12,12 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\OrderRepository;
 use CommerceTeam\Commerce\Factory\HookFactory;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use CommerceTeam\Commerce\ViewHelpers\MoneyViewHelper;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Plugin 'commerce_invoice' for the 'commerce_invoice' extension.
@@ -295,15 +298,9 @@ class InvoiceController extends BaseController
             $typoScript = $this->conf['OrderArticles.'];
         }
 
-        $queryString = 'order_uid=' . (int) $orderUid . ' AND article_type_uid < 2 ';
-        $queryString .= $this->cObj->enableFields('tx_commerce_order_articles');
-        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            'tx_commerce_order_articles',
-            $queryString,
-            '',
-            ''
-        );
+        /** @var OrderArticleRepository $orderArticlesRepository */
+        $orderArticlesRepository = GeneralUtility::makeInstance(OrderArticleRepository::class);
+        $rows = $orderArticlesRepository->findByOrderIdAndType($orderUid, 1);
 
         $orderpos = 1;
         $out = '';
@@ -404,20 +401,11 @@ class InvoiceController extends BaseController
      */
     protected function getOrderData()
     {
-        $database = $this->getDatabaseConnection();
+        /** @var OrderRepository $orderRepository */
+        $orderRepository = GeneralUtility::makeInstance(OrderRepository::class);
+        $order = $orderRepository->findByOrderIdAndUser($this->order_id, $this->user['uid']);
 
-        $queryString = 'order_id = ' . $database->fullQuoteStr($this->order_id, 'tx_commerce_orders') .
-            $this->cObj->enableFields('tx_commerce_orders');
-        if ($this->user) {
-            $queryString .= ' AND cust_fe_user = ' . (int) $this->user['uid'];
-        }
-        $row = $database->exec_SELECTgetSingleRow(
-            '*',
-            'tx_commerce_orders',
-            $queryString
-        );
-
-        return $row;
+        return $order;
     }
 
     /**
@@ -431,27 +419,18 @@ class InvoiceController extends BaseController
      */
     protected function getOrderSystemArticles($orderUid, $articleType = 0, $prefix = '')
     {
-        $database = $this->getDatabaseConnection();
+        /** @var OrderArticleRepository $orderArticleRepository */
+        $orderArticleRepository = GeneralUtility::makeInstance(OrderArticleRepository::class);
+        $orderArticles = $orderArticleRepository->findByOrderIdAndType($orderUid, $articleType);
 
-        $queryString = 'order_uid = ' . $orderUid . ' ';
-        if ($articleType) {
-            $queryString .= ' AND article_type_uid = ' . $articleType . ' ';
-        }
-
-        $queryString .= $this->cObj->enableFields('tx_commerce_order_articles');
-        $rows = $database->exec_SELECTgetRows(
-            '*',
-            'tx_commerce_order_articles',
-            $queryString
-        );
         $content = '';
-        foreach ($rows as $row) {
+        foreach ($orderArticles as $orderArticle) {
             $subpart = $this->cObj->getSubpart($this->templateCode, '###LISTING_' . $prefix . 'ROW###');
             // @todo Use $markerArray = $this->generateMarkerArray($row, '', $prefix);
-            $markerArray['###' . $prefix . 'AMOUNT###'] = $row['amount'];
-            $markerArray['###' . $prefix . 'METHOD###'] = $row['title'];
+            $markerArray['###' . $prefix . 'AMOUNT###'] = $orderArticle['amount'];
+            $markerArray['###' . $prefix . 'METHOD###'] = $orderArticle['title'];
             $markerArray['###' . $prefix . 'COST###'] = MoneyViewHelper::format(
-                ($row['amount'] * $row['price_gross']),
+                ($orderArticle['amount'] * $orderArticle['price_gross']),
                 $this->conf['currency'],
                 (bool) $this->conf['showCurrencySign']
             );

@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\Controller;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\AddressRepository;
+use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository;
 use CommerceTeam\Commerce\Domain\Repository\OrderRepository;
@@ -1048,8 +1049,6 @@ class CheckoutController extends BaseController
      */
     public function finishIt(\CommerceTeam\Commerce\Payment\PaymentInterface $paymentObj = null)
     {
-        $database = $this->getDatabaseConnection();
-
         $orderId = $this->getOrderId();
 
         if (!is_object($paymentObj)) {
@@ -1199,13 +1198,12 @@ class CheckoutController extends BaseController
             $markerArray['###MESSAGE_PAYMENT_OBJECT###'] = '';
         }
 
+        /** @var AddressRepository $addressRepository */
+        $addressRepository = GeneralUtility::makeInstance(AddressRepository::class);
+
         $deliveryAddress = '';
         if ($orderData['cust_deliveryaddress']) {
-            $data = $database->exec_SELECTgetSingleRow(
-                '*',
-                'tt_address',
-                'uid = ' . $orderData['cust_deliveryaddress']
-            );
+            $data = $addressRepository->findByUid($orderData['cust_deliveryaddress']);
             if (is_array($data)) {
                 $deliveryAddress = $this->makeAdressView($data, '###DELIVERY_ADDRESS###');
             }
@@ -1215,7 +1213,7 @@ class CheckoutController extends BaseController
 
         $billingAddress = '';
         if ($orderData['cust_invoice']) {
-            $data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = ' . $orderData['cust_invoice']);
+            $data = $addressRepository->findByUid($orderData['cust_invoice']);
             if (is_array($data)) {
                 $billingAddress = $this->makeAdressView($data, '###BILLING_ADDRESS_SUB###');
                 $markerArray['###CUST_NAME###'] = $data['NAME'];
@@ -1643,16 +1641,9 @@ class CheckoutController extends BaseController
      */
     public function checkUserName($username)
     {
-        $database = $this->getDatabaseConnection();
-
-        $table = 'fe_users';
-
-        $row = (array) $database->exec_SELECTgetSingleRow(
-            'uid',
-            $table,
-            'username = ' . $database->fullQuoteStr($username, $table) . ' AND pid = '. $this->conf['userPID'] .
-            \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table)
-        );
+        /** @var FrontendUserRepository $frontendUserRepository */
+        $frontendUserRepository = GeneralUtility::makeInstance(FrontendUserRepository::class);
+        $row = $frontendUserRepository->findByUsernameInFolder($username, (int) $this->conf['userPID']);
 
         return empty($row);
     }
@@ -1709,8 +1700,6 @@ class CheckoutController extends BaseController
     {
         if ($this->piVars['payArt']) {
             $basket = $this->getBasket();
-            $database = $this->getDatabaseConnection();
-
             $paymentBasketItem = $basket->getCurrentPaymentBasketItem();
 
             if ((
@@ -1726,14 +1715,9 @@ class CheckoutController extends BaseController
                     $this->piVars['payArt']
                 );
 
-                $articleRow = $database->exec_SELECTgetSingleRow(
-                    '*',
-                    'tx_commerce_articles',
-                    'classname = ' . $database->fullQuoteStr(
-                        strtolower($this->piVars['payArt']),
-                        'tx_commerce_articles'
-                    ) . $this->cObj->enableFields('tx_commerce_articles')
-                );
+                /** @var ArticleRepository $articleRepository */
+                $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+                $articleRow = $articleRepository->findByClassname(strtolower($this->piVars['payArt']));
                 if (!empty($articleRow)) {
                     $basket->addArticle((int) $articleRow['uid']);
                     $basket->storeData();
@@ -2655,8 +2639,6 @@ class CheckoutController extends BaseController
      */
     public function generateMail($orderUid, array $orderData, array $userMarker = [])
     {
-        $database = $this->getDatabaseConnection();
-
         $markerArray = $userMarker;
         $markerArray['###ORDERID###'] = $orderUid;
         $markerArray['###ORDERDATE###'] = date($this->conf['generalMail.']['orderDate_format'], $orderData['tstamp']);
@@ -2690,14 +2672,13 @@ class CheckoutController extends BaseController
 
         $content = $this->cObj->substituteSubpart($content, '###BASKET_VIEW###', $basketContent);
 
+        /** @var AddressRepository $addressRepository */
+        $addressRepository = GeneralUtility::makeInstance(AddressRepository::class);
+
         // Get addresses
         $deliveryAdress = '';
         if ($orderData['cust_deliveryaddress']) {
-            $data = $database->exec_SELECTgetSingleRow(
-                '*',
-                'tt_address',
-                'uid = ' . (int) $orderData['cust_deliveryaddress']
-            );
+            $data = $addressRepository->findByUid($orderData['cust_deliveryaddress']);
             if (is_array($data)) {
                 $data = $this->parseRawData($data, (array) $this->conf['delivery.']['sourceFields.']);
                 $deliveryAdress = $this->makeAdressView($data, '###DELIVERY_ADDRESS###');
@@ -2708,7 +2689,7 @@ class CheckoutController extends BaseController
 
         $billingAdress = '';
         if ($orderData['cust_invoice']) {
-            $data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = ' . (int) $orderData['cust_invoice']);
+            $data = $addressRepository->findByUid($orderData['cust_invoice']);
             if (is_array($data)) {
                 $data = $this->parseRawData($data, (array) $this->conf['billing.']['sourceFields.']);
                 $billingAdress = $this->makeAdressView($data, '###BILLING_ADDRESS###');
@@ -2806,11 +2787,9 @@ class CheckoutController extends BaseController
         $doHook = true,
         $doStock = true
     ) {
-        $database = $this->getDatabaseConnection();
-
         // Save addresses with reference to the pObj - which is an instance of pi3
         $uids = [];
-        $types = $database->exec_SELECTgetRows('name', 'tx_commerce_address_types', '1');
+        $types = $this->getDatabaseConnection()->exec_SELECTgetRows('name', 'tx_commerce_address_types', '1');
         foreach ($types as $type) {
             $uids[$type['name']] = $this->handleAddress($type['name']);
         }

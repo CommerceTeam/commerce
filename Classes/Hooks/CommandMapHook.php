@@ -12,8 +12,12 @@ namespace CommerceTeam\Commerce\Hooks;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\ArticlePriceRepository;
 use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use CommerceTeam\Commerce\Domain\Repository\PageRepository;
+use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -401,8 +405,6 @@ class CommandMapHook
      */
     protected function translateAttributesOfProduct($productUid, $localizedProductUid, $value)
     {
-        $database = $this->getDatabaseConnection();
-
         // get all related attributes
         $productAttributes = $this->belib->getAttributesForProduct($productUid, false, true);
         // check if localized product has attributes
@@ -411,6 +413,9 @@ class CommandMapHook
         // Check product has attrinutes and no attributes are
         // avaliable for localized version
         if ($localizedProductAttributes == false && !empty($productAttributes)) {
+            /** @var ProductRepository $productRepository */
+            $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+
             // if true
             $langIsoCode = BackendUtility::getRecord('sys_language', (int) $value, 'language_isocode');
             $langIdent = BackendUtility::getRecord(
@@ -445,26 +450,29 @@ class CommandMapHook
 
                         default:
                     }
-                    $localizedProductAttribute['uid_local'] = $localizedProductUid;
 
-                    $database->exec_INSERTquery('tx_commerce_products_attributes_mm', $localizedProductAttribute);
+                    $productRepository->addAttributeRelation(
+                        $localizedProductUid,
+                        $localizedProductAttribute
+                    );
                 }
             }
 
             /*
              * Update the flexform
              */
-            $rowProduct = $database->exec_SELECTgetSingleRow(
-                'attributesedit, attributes',
-                'tx_commerce_products',
-                'uid = ' . $productUid
-            );
-            if (!empty($rowProduct)) {
-                $product['attributesedit'] = $this->belib->buildLocalisedAttributeValues(
-                    $rowProduct['attributesedit'],
+            $product = $productRepository->findByUid($productUid);
+            if (!empty($product)) {
+                $localizedProductFields = [
+                    'attributesedit' => $product['attributesedit'],
+                    'attributes' => $product['attributes'],
+                ];
+
+                $localizedProductFields['attributesedit'] = $this->belib->buildLocalisedAttributeValues(
+                    $localizedProductFields['attributesedit'],
                     $langIdent
                 );
-                $database->exec_UPDATEquery('tx_commerce_products', 'uid = ' . $localizedProductUid, $product);
+                $productRepository->updateRecord($localizedProductUid, $localizedProductFields);
             }
         }
     }
@@ -564,17 +572,10 @@ class CommandMapHook
     protected function getLocale()
     {
         $productPid = FolderRepository::initFolders('Products', FolderRepository::initFolders());
-        $locale = array_keys(
-            (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-                'sys_language_uid',
-                'pages_language_overlay',
-                'pid = ' . $productPid,
-                '',
-                '',
-                '',
-                'sys_language_uid'
-            )
-        );
+
+        /** @var PageRepository $pageRepository */
+        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
+        $locale = $pageRepository->findLanguageUidsByUid($productPid);
 
         return $locale;
     }
@@ -600,25 +601,16 @@ class CommandMapHook
         $clipboard->initializeClipboard();
         $clipboard->setCurrentPad($pasteData['pad']);
 
-        $fromData = array_pop(
+        $fromCategorUid = array_pop(
             GeneralUtility::trimExplode('|', key($clipboard->clipData[$clipboard->current]['el']), true)
         );
-        $toData = abs(array_pop(GeneralUtility::trimExplode('|', $pasteData['paste'], true)));
+        $toCategoryUid = abs(array_pop(GeneralUtility::trimExplode('|', $pasteData['paste'], true)));
 
-        if ($fromData && $toData) {
-            $database = $this->getDatabaseConnection();
-
-            $database->exec_DELETEquery(
-                'tx_commerce_products_categories_mm',
-                'uid_local = ' . $productUid . ' AND uid_foreign = ' . $fromData
-            );
-            $database->exec_INSERTquery(
-                'tx_commerce_products_categories_mm',
-                [
-                    'uid_local' => $productUid,
-                    'uid_foreign' => $toData,
-                ]
-            );
+        if ($fromCategorUid && $toCategoryUid) {
+            /** @var ProductRepository $productRepository */
+            $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+            $productRepository->removeCategoryRelation($productUid, $fromCategorUid);
+            $productRepository->addCategoryRelation($productUid, $toCategoryUid);
         }
     }
 
@@ -632,11 +624,9 @@ class CommandMapHook
      */
     protected function copyProductTanslations($oldProductUid, $newProductUid)
     {
-        $products = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            'tx_commerce_products',
-            'l18n_parent = ' . $oldProductUid
-        );
+        /** @var ProductRepository $productRepository */
+        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        $products = $productRepository->findByTranslationParentUid($oldProductUid);
 
         foreach ($products as $product) {
             $oldTranslationProductUid = $product['uid'];
@@ -734,157 +724,112 @@ class CommandMapHook
     {
         /** @var ArticleRepository $articleRepository */
         $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
-        $articles = $articleRepository->findByProductUid($productUid);
+        $articleUids = $articleRepository->findUidsByProductUid($productUid);
 
-        if (!empty($articles)) {
-            $articleList = [];
-            foreach ($articles as $article) {
-                $articleList[] = $article['uid'];
-            }
-
-            $this->deletePricesByArticleList($articleList);
-            $this->deleteArticlesByArticleList($articleList);
+        if (!empty($articleUids)) {
+            $this->deletePricesByArticleList($articleUids);
+            $this->deleteArticlesByArticleList($articleUids);
         }
     }
 
     /**
-     * Flag categories as deleted for categoryList.
+     * Flag categories as deleted for category uid list.
      *
-     * @param array $categoryList Category list
+     * @param array $categoryUids Category list
      *
      * @return void
      */
-    protected function deleteCategoriesByCategoryList(array $categoryList)
+    protected function deleteCategoriesByCategoryList(array $categoryUids)
     {
-        $updateValues = [
-            'tstamp' => $GLOBALS['EXEC_TIME'],
-            'deleted' => 1,
-        ];
-
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            'tx_commerce_categories',
-            'uid IN (' . implode(',', $categoryList) . ')',
-            $updateValues
-        );
+        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+        $categoryRepository->deleteByUids($categoryUids);
     }
 
     /**
-     * Flag category translations as deleted for categoryList.
+     * Flag category translations as deleted for category uid list.
      *
-     * @param array $categoryList Category list
+     * @param array $categoryUids Category list
      *
      * @return void
      */
-    protected function deleteCategoryTranslationsByCategoryList(array $categoryList)
+    protected function deleteCategoryTranslationsByCategoryList(array $categoryUids)
     {
-        $updateValues = [
-            'tstamp' => $GLOBALS['EXEC_TIME'],
-            'deleted' => 1,
-        ];
-
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            'tx_commerce_categories',
-            'l18n_parent IN (' . implode(',', $categoryList) . ')',
-            $updateValues
-        );
+        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+        $categoryRepository->deleteTranslationByParentUids($categoryUids);
     }
 
     /**
-     * Flag product as deleted for productList.
+     * Flag product as deleted for product uid list.
      *
-     * @param array $productList Product list
+     * @param array $productUids Product list
      *
      * @return void
      */
-    protected function deleteProductsByProductList(array $productList)
+    protected function deleteProductsByProductList(array $productUids)
     {
-        $updateValues = [
-            'tstamp' => $GLOBALS['EXEC_TIME'],
-            'deleted' => 1,
-        ];
-
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            'tx_commerce_products',
-            'uid IN (' . implode(',', $productList) . ')',
-            $updateValues
-        );
+        /** @var ProductRepository $productRepository */
+        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        $productRepository->deleteByUids($productUids);
     }
 
     /**
      * Flag product translations as deleted for productList.
      *
-     * @param array $productList Product list
+     * @param array $productUids Product uid list
      *
      * @return void
      */
-    protected function deleteProductTranslationsByProductList(array $productList)
+    protected function deleteProductTranslationsByProductList(array $productUids)
     {
-        $updateValues = [
-            'tstamp' => $GLOBALS['EXEC_TIME'],
-            'deleted' => 1,
-        ];
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        /** @var ProductRepository $productRepository */
+        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
 
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            'tx_commerce_products',
-            'l18n_parent IN (' . implode(',', $productList) . ')',
-            $updateValues
-        );
+        $productRepository->deleteTranslationByParentUids($productUids);
 
         $translatedArticles = [];
-        foreach ($productList as $productId) {
-            $articlesOfProduct = $this->belib->getArticlesOfProductAsUidList($productId);
-            if (is_array($articlesOfProduct) && !empty($articlesOfProduct)) {
+        foreach ($productUids as $productId) {
+            $articlesOfProduct = $articleRepository->findUidsByProductUid($productId);
+            if (!empty($articlesOfProduct)) {
                 $translatedArticles = array_merge($translatedArticles, $articlesOfProduct);
             }
         }
         $translatedArticles = array_unique($translatedArticles);
 
         if (!empty($translatedArticles)) {
-            $this->deletePricesByArticleList($translatedArticles);
             $this->deleteArticlesByArticleList($translatedArticles);
         }
     }
 
     /**
-     * Flag articles as deleted for articleList.
+     * Flag articles and prices as deleted for article uids.
      *
-     * @param array $articleList Article list
+     * @param array $articleUids Article list
      *
      * @return void
      */
-    protected function deleteArticlesByArticleList(array $articleList)
+    protected function deleteArticlesByArticleList(array $articleUids)
     {
-        $updateValues = [
-            'tstamp' => $GLOBALS['EXEC_TIME'],
-            'deleted' => 1,
-        ];
+        $this->deletePricesByArticleList($articleUids);
 
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            'tx_commerce_articles',
-            'uid IN (' . implode(',', $articleList) . ') OR l18n_parent IN (' . implode(',', $articleList) . ')',
-            $updateValues
-        );
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $articleRepository->deleteByUids($articleUids);
     }
 
     /**
-     * Flag prices as deleted for articleList.
+     * Flag prices as deleted for article uids.
      *
-     * @param array $articleList Article list
+     * @param array $articleUids Article uid list
      *
      * @return void
      */
-    protected function deletePricesByArticleList(array $articleList)
+    protected function deletePricesByArticleList(array $articleUids)
     {
-        $updateValues = [
-            'tstamp' => $GLOBALS['EXEC_TIME'],
-            'deleted' => 1,
-        ];
-
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            'tx_commerce_article_prices',
-            'uid_article IN (' . implode(',', $articleList) . ')',
-            $updateValues
-        );
+        /** @var ArticlePriceRepository $articlePriceRepository */
+        $articlePriceRepository = GeneralUtility::makeInstance(ArticlePriceRepository::class);
+        $articlePriceRepository->deleteByArticleUids($articleUids);
     }
 
     /**
@@ -998,16 +943,6 @@ class CommandMapHook
     protected function getBackendUser()
     {
         return $GLOBALS['BE_USER'];
-    }
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 
     /**

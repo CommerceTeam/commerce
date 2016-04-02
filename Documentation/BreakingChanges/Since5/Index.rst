@@ -74,6 +74,7 @@ Removed functions
 
 \CommerceTeam\Commerce\Utility\BackendUtility::deleteL18n
 \CommerceTeam\Commerce\Utility\BackendUtility::getArticlesOfProduct replaced with ArticleRepository::findByProductUid
+\CommerceTeam\Commerce\Utility\BackendUtility::getArticlesOfProductAsUidList replaced with ArticleRepository::findUidsByProductUid
 \CommerceTeam\Commerce\Utility\BackendUtility::getAttributeData replaced with AttributeRepository::findByUid
 \CommerceTeam\Commerce\Utility\BackendUtility::getAttributesForCategory replaced with CategoryRepository::findAttributesByCategoryUid
 \CommerceTeam\Commerce\Utility\BackendUtility::getAttributeTitle
@@ -90,6 +91,7 @@ Removed functions
 \CommerceTeam\Commerce\Utility\BackendUtility::isNumber replaced with \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger
 \CommerceTeam\Commerce\Utility\BackendUtility::overwriteArticle
 \CommerceTeam\Commerce\Utility\BackendUtility::overwriteProduct
+\CommerceTeam\Commerce\Domain\Repository\OrderRepository::updateByUid replaced with ::updateRecord
 
 
 Changed modules

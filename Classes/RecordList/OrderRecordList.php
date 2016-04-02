@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\RecordList;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -1115,6 +1116,9 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             'LIMIT' => $limit,
         ];
 
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+
         // get Module TSConfig
         $moduleConfig = BackendUtility::getModTSconfig($id, 'mod.commerce_orders');
 
@@ -1122,9 +1126,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             $moduleConfig['properties']['deliveryProductUid'] :
             0;
         if ($deliveryProductUid > 0) {
-            $deliveryArticles = \CommerceTeam\Commerce\Utility\BackendUtility::getArticlesOfProductAsUidList(
-                $deliveryProductUid
-            );
+            $deliveryArticles = $articleRepository->findUidsByProductUid($deliveryProductUid);
 
             if (!empty($deliveryArticles)) {
                 $queryParts['WHERE'] .= ' AND delivery_table.article_uid IN (' . implode(',', $deliveryArticles) . ') ';
@@ -1135,9 +1137,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             $moduleConfig['properties']['paymentProductUid'] :
             0;
         if ($paymentProductUid > 0) {
-            $paymentArticles = \CommerceTeam\Commerce\Utility\BackendUtility::getArticlesOfProductAsUidList(
-                $paymentProductUid
-            );
+            $paymentArticles = $articleRepository->findUidsByProductUid($paymentProductUid);
 
             if (!empty($paymentArticles)) {
                 $queryParts['WHERE'] .= ' AND delivery_table.article_uid IN (' . implode(',', $paymentArticles) . ') ';

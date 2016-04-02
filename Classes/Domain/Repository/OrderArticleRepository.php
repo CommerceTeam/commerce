@@ -57,4 +57,26 @@ class OrderArticleRepository extends AbstractRepository
             ' AND order_id = ' . $this->getDatabaseConnection()->fullQuoteStr($orderId, $this->databaseTable)
         );
     }
+
+    /**
+     * @param int $orderUid
+     * @param int $articleType
+     *
+     * @return array
+     */
+    public function findByOrderIdAndType($orderUid, $articleType = 0)
+    {
+        $where = 'order_uid = ' . (int) $orderUid . ' ';
+        if ($articleType) {
+            $where .= ' AND article_type_uid = ' . (int) $articleType . ' ';
+        }
+
+        $rows = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+            '*',
+            'tx_commerce_order_articles',
+            $where . $this->enableFields()
+        );
+
+        return $rows;
+    }
 }
