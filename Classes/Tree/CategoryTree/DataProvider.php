@@ -764,7 +764,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         if ($searchFilter !== '') {
             $searchWhere = [];
             if (is_numeric($searchFilter) && $searchFilter > 0) {
-                $searchWhere[] = 'uid = ' . (int) $searchFilter;
+                $searchWhere[] = 'tx_commerce_articles.uid = ' . (int) $searchFilter;
             }
             $searchFilter = $this->getDatabaseConnection()->fullQuoteStr(
                 '%' . $searchFilter . '%',
