@@ -32,8 +32,10 @@ class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\Addit
      * @var array
      */
     protected $aggregation = [
-        'completeAggregation' => 'tx_commerce_task_statistictask.completeAggregation',
-        'incrementalAggregation' => 'tx_commerce_task_statistictask.incrementalAggregation',
+        'completeAggregation' =>
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:tx_commerce_task_statistictask.completeAggregation',
+        'incrementalAggregation' =>
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:tx_commerce_task_statistictask.incrementalAggregation',
     ];
 
     /**
@@ -69,7 +71,7 @@ class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\Addit
         $fieldHtml = $this->renderOptions(
             'tx_scheduler[' . $uid . '][commerce_statisticTask_aggregation]',
             $fieldId,
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:' . $this->aggregation,
+            $this->aggregation,
             $taskInfo[$uid]['commerce_statisticTask_aggregation']
         );
 
