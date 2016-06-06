@@ -916,7 +916,9 @@ class ListController extends BaseController
                         }
                     }
 
-                    $content .= $this->cObj->substituteMarkerArray($templateAttributes, $markerArray, '###|###', 1);
+                    if (!empty($markerArray)) {
+                        $content .= $this->cObj->substituteMarkerArray($templateAttributes, $markerArray, '###|###', 1);
+                    }
                 }
             } else {
                 $sortedAttributeArray = array();
