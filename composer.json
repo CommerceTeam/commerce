@@ -20,9 +20,9 @@
 	},
 	"require": {
 		"typo3/cms-core": "^6.2.14",
-		"tt_address": ">= 3.0",
-		"dynaflex": ">= 2.0",
-		"static_info_tables": ">= 6.2.0"
+		"friendsoftypo3/tt-address": ">= 3.0",
+		"typo3-ter/dynaflex": ">= 2.0",
+		"sjbr/static-info-tables": ">= 6.2.0"
 	},
 	"require-dev": {
 		"namelesscoder/typo3-repository-client": "1.1.x-dev"
