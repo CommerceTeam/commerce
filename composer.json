@@ -36,6 +36,10 @@
 		{
 			"type": "vcs",
 			"url": "https://github.com/CommerceTeam/commerce.git"
-		}
+		},
+	        {
+        		"type": "composer",
+            		"url": "https://composer.typo3.org/"
+        	}
 	]
 }
