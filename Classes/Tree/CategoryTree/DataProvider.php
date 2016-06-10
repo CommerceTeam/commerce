@@ -855,9 +855,10 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         }
 
         return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid, t3ver_wsid',
+            'tx_commerce_products.uid AS uid, tx_commerce_products.t3ver_wsid',
             'tx_commerce_products
-                INNER JOIN tx_commerce_products_categories_mm AS mm ON tx_commerce_products.uid = mm.uid_local',
+                INNER JOIN tx_commerce_products_categories_mm AS mm ON tx_commerce_products.uid = mm.uid_local
+                INNER JOIN tx_commerce_categories ON mm.uid_foreign = tx_commerce_categories.uid',
             $where,
             '',
             'tx_commerce_products.sorting',
