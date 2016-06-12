@@ -46,16 +46,10 @@ before_install:
   - if [ "$GITHUB_COMPOSER_AUTH" ]; then composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH; fi
 
 before_script:
-  - cd ..
-  - git clone --single-branch --branch TYPO3_6-2 --depth 1 https://github.com/TYPO3/TYPO3.CMS.git typo3_core
-  - mv typo3_core/* .
-  - composer self-update
-  - composer install
-  - mkdir -p uploads typo3temp typo3conf/ext
-  - mv dynaflex typo3conf/ext/
-  - mv tt_address typo3conf/ext/
-  - mv static_info_tables typo3conf/ext/
-  - mv commerce typo3conf/ext/
+  - composer require typo3/cms=$TYPO3_VERSION
+  # Restore composer.json
+  - git checkout composer.json
+  - export TYPO3_PATH_WEB=$PWD/.Build/Web
 
 script:
   - >
