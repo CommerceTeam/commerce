@@ -718,7 +718,7 @@ class ListController extends BaseController
         $templateMarkerArray = '',
         $template = ''
     ) {
-        $hooks = HookFactory::getHooks('Controller/CheckoutController', 'makeArticleView');
+        $hooks = HookFactory::getHooks('Controller/ListController', 'makeArticleView');
 
         $count = is_array($product->getArticleUids()) ? count($product->getArticleUids()) : 0;
 

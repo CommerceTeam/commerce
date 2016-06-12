@@ -385,7 +385,7 @@ class BasketItem
      */
     public function getPriceGross()
     {
-        return $this->priceGross;
+        return (int)$this->priceGross;
     }
 
     /**
@@ -408,7 +408,7 @@ class BasketItem
      */
     public function getPriceNet()
     {
-        return $this->priceNet;
+        return (int)$this->priceNet;
     }
 
     /**

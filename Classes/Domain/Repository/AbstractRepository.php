@@ -214,13 +214,13 @@ abstract class AbstractRepository implements SingletonInterface
         $return = false;
         $uid = (int) $uid;
         if ($uid) {
-            $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            $count = $this->getDatabaseConnection()->exec_SELECTcountRows(
                 '*',
                 $this->databaseTable,
                 'uid = ' . $uid . $this->enableFields()
             );
 
-            if (count($row) == 1) {
+            if ($count == 1) {
                 $return = true;
             }
         }

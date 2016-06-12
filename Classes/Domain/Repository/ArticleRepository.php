@@ -193,7 +193,7 @@ class ArticleRepository extends AbstractRepository
      */
     public function getAttributes($uid)
     {
-        $attributes = $this->getDatabaseConnection()->exec_SELECTgetRows(
+        $attributes = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
             'tx_commerce_attributes.*',
             $this->databaseTable
             . ' INNER JOIN ' . $this->databaseAttributeRelationTable . ' ON ' . $this->databaseTable . '.uid = '

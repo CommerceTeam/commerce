@@ -16,8 +16,8 @@ CREATE TABLE be_users (
 # Table structure for table 'fe_users'
 #
 CREATE TABLE fe_users (
-	tx_commerce_user_state_id blob NOT NULL,
-	tx_commerce_tt_address_id blob NOT NULL,
+	tx_commerce_user_state_id int(11) DEFAULT '0' NOT NULL,
+	tx_commerce_tt_address_id int(11) DEFAULT '0' NOT NULL,
 	first_name varchar(50) DEFAULT '' NOT NULL,
 	last_name varchar(50) DEFAULT '' NOT NULL,
 	static_info_country char(3) DEFAULT '' NOT NULL,

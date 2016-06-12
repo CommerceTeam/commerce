@@ -114,7 +114,7 @@ class DatabaseRowArticleData implements FormDataProviderInterface
                 $root[$correlationType]['vDEF'][] = $attribute['uid_foreign'];
             }
         }
-        if (!empty($root)) {
+        if (!empty($root) && is_array($result['databaseRow']['attributes'])) {
             $result['databaseRow']['attributes']['data']['sDEF']['lDEF'] = $root;
         }
         $result['databaseRow']['articles'] = $articles;

@@ -115,23 +115,23 @@ class ProductRepository extends AbstractRepository
      *
      * @param int $uid Product uid
      * @param array|int $correlationtypes Correlation types
-     *
+     * @todo get in sync with articleRepository::getAttributes
      * @return array of Article UID
      */
     public function getAttributes($uid, $correlationtypes)
     {
-        $return = false;
+        $return = [];
         $uid = (int) $uid;
-        if ((int) $uid) {
+        if ($uid) {
             if (!is_array($correlationtypes)) {
                 $correlationtypes = [$correlationtypes];
             }
 
             $attributeUids = [];
             $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                'DISTINCT(uid_foreign) AS uid',
+                'DISTINCT(uid_foreign) AS uid, ' . $this->databaseAttributeRelationTable . '.sorting',
                 $this->databaseAttributeRelationTable,
-                'uid_local = ' . (int) $uid . ' AND uid_correlationtype IN (' . implode(',', $correlationtypes) . ')',
+                'uid_local = ' . $uid . ' AND uid_correlationtype IN (' . implode(',', $correlationtypes) . ')',
                 '',
                 $this->databaseAttributeRelationTable . '.sorting'
             );
@@ -140,11 +140,6 @@ class ProductRepository extends AbstractRepository
                     $attributeUids[] = (int) $data['uid'];
                 }
                 $return = $attributeUids;
-            } else {
-                $this->error(
-                    'exec_SELECTquery(\'DISTINCT(uid_foreign)\', ' . $this->databaseAttributeRelationTable
-                    . ', \'uid_local = ' . (int) $uid . '\'); returns no Result'
-                );
             }
         }
 
