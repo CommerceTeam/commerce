@@ -1,0 +1,5 @@
+projectKey=commerce:master
+serverUrl=http://localhost:9000
+dashboardUrl=http://localhost:9000/dashboard/index/commerce:master
+ceTaskId=AVQBRDxQ17lyfyTH8OzU
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AVQBRDxQ17lyfyTH8OzU

@@ -108,6 +108,10 @@ call_user_func(function ($packageKey) {
             'TYPO3.Components.CategoryTree.Commands',
             \CommerceTeam\Commerce\Tree\CategoryTree\ExtdirectTreeCommands::class
         );
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
+            'TYPO3.Components.CategoryTree.ContextMenuDataProvider',
+            \CommerceTeam\Commerce\ContextMenu\CategoryTree\Extdirect\ContextMenuConfiguration::class
+        );
 
         // Permission Module
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
