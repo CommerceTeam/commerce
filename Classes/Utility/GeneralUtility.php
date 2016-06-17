@@ -328,9 +328,11 @@ class GeneralUtility
             $message->setReplyTo($replyAddress, $replyName);
 
             if (isset($mailconf['recipient_copy']) && $mailconf['recipient_copy'] != '') {
-                if ($mailconf['recipient_copy'] != '') {
-                    $message->setCc($mailconf['recipient_copy']);
-                }
+                $message->setCc($mailconf['recipient_copy']);
+            }
+
+            if (isset($mailconf['blindcopy']) && $mailconf['blindcopy'] != '') {
+                $message->setBcc($mailconf['blindcopy']);
             }
 
             $message->setReturnPath($mailconf['fromEmail']);
