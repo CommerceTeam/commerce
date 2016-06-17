@@ -162,36 +162,30 @@ call_user_func(function ($packageKey) {
         $typo3ConfVars['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord']
             [\CommerceTeam\Commerce\Form\FormDataProvider\DatabaseRowArticleData::class] =
         [
-            'depends' => [
-                \CommerceTeam\Commerce\Form\FormDataProvider\TcaSelectItems::class,
-            ],
-            'before' => [
-                \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectTreeItems::class,
-            ],
+            'depends' => [\CommerceTeam\Commerce\Form\FormDataProvider\TcaSelectItems::class],
+            'before' => [\TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectTreeItems::class],
+        ];
+        $typo3ConfVars['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord']
+            [\CommerceTeam\Commerce\Form\FormDataProvider\DatabaseRowPriceData::class] =
+        [
+            'depends' => [\CommerceTeam\Commerce\Form\FormDataProvider\TcaSelectItems::class],
+            'before' => [\TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectTreeItems::class],
         ];
 
         // Add attribute select fields
         $typo3ConfVars['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord']
             [\CommerceTeam\Commerce\Form\FormDataProvider\TcaAttributeFields::class] =
         [
-            'depends' => [
-                \TYPO3\CMS\Backend\Form\FormDataProvider\TcaFlexPrepare::class,
-            ],
-            'before' => [
-                \TYPO3\CMS\Backend\Form\FormDataProvider\TcaFlexProcess::class,
-            ],
+            'depends' => [\TYPO3\CMS\Backend\Form\FormDataProvider\TcaFlexPrepare::class],
+            'before' => [\TYPO3\CMS\Backend\Form\FormDataProvider\TcaFlexProcess::class],
         ];
 
         // Add attribute select values
         $typo3ConfVars['SYS']['formEngine']['formDataGroup']['flexFormSegment']
             [\CommerceTeam\Commerce\Form\FormDataProvider\DatabaseRowAttributeData::class] =
         [
-            'depends' => [
-                \TYPO3\CMS\Backend\Form\FormDataProvider\DatabaseRowDefaultValues::class,
-            ],
-            'before' => [
-                \TYPO3\CMS\Backend\Form\FormDataProvider\TcaCheckboxItems::class,
-            ],
+            'depends' => [\TYPO3\CMS\Backend\Form\FormDataProvider\DatabaseRowDefaultValues::class],
+            'before' => [\TYPO3\CMS\Backend\Form\FormDataProvider\TcaCheckboxItems::class],
         ];
 
 

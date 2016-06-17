@@ -92,7 +92,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => '30',
-                'eval' => 'nospace',
+                'eval' => 'nospace,double2',
             ],
         ],
 
@@ -102,7 +102,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => '30',
-                'eval' => 'nospace',
+                'eval' => 'nospace,double2',
             ],
         ],
 
@@ -112,7 +112,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => '30',
-                'eval' => 'nospace',
+                'eval' => 'nospace,double2',
             ],
         ],
 
