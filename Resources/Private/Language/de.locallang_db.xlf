@@ -1,0 +1,911 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xliff version="1.0">
+  <file source-language="en" target-language="de" datatype="plaintext" original="messages" date="Tue Jul 12 18:43:45 UTC 2011" product-name="commerce">
+    <header/>
+    <body>
+      <trans-unit id="tt_address.surname" approved="yes">
+        <source>Surname</source>
+        <target state="translated">Nachname</target>
+      </trans-unit>
+      <trans-unit id="tt_address.company" approved="yes">
+        <source>Company</source>
+        <target state="translated">Firma</target>
+      </trans-unit>
+      <trans-unit id="tt_address.tx_commerce_default_values" approved="yes">
+        <source>Default values</source>
+        <target state="translated">Standardwerte</target>
+      </trans-unit>
+      <trans-unit id="tt_address.tx_commerce_fe_user_id" approved="yes">
+        <source>User</source>
+        <target state="translated">Benutzername</target>
+      </trans-unit>
+      <trans-unit id="tt_address.tx_commerce_address_type_id" approved="yes">
+        <source>Address type</source>
+        <target state="translated">Adresstyp</target>
+      </trans-unit>
+      <trans-unit id="tt_address.tx_commerce_is_main_address" approved="yes">
+        <source>Is main address</source>
+        <target state="translated">Ist Hauptadresse</target>
+      </trans-unit>
+      <trans-unit id="fe_users.tx_commerce_feuser_orders" approved="yes">
+        <source>User orders</source>
+        <target state="translated">Kundenbestellungen</target>
+      </trans-unit>
+      <trans-unit id="fe_users.tx_commerce_user_state_id" approved="yes">
+        <source>User state</source>
+        <target state="translated">Kundenstatus</target>
+      </trans-unit>
+      <trans-unit id="fe_users.tx_commerce_tt_address_id" approved="yes">
+        <source>User adresse</source>
+        <target state="translated">Kundenadresse</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce.ct_selector" approved="yes">
+        <source>Generate article from</source>
+        <target state="translated">Auswahl</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce.ct_shall" approved="yes">
+        <source>Show always in article</source>
+        <target state="translated">Sollte</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce.ct_can" approved="yes">
+        <source>Show if set in article</source>
+        <target state="translated">Kann</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce.ct_product" approved="yes">
+        <source>Show if set in product</source>
+        <target state="translated">Produkt</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce.ct_filter_attributes" approved="yes">
+        <source>Filter attributes</source>
+        <target state="translated">Filterattribute</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products" approved="yes">
+        <source>Products</source>
+        <target state="translated">Produkte</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.extras" approved="yes">
+        <source>Extra information</source>
+        <target state="translated">Zusatzinformationen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.title" approved="yes">
+        <source>Title</source>
+        <target state="translated">Titel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.subtitle" approved="yes">
+        <source>Subtitle</source>
+        <target state="translated">Untertitel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.navtitle" approved="yes">
+        <source>Navigation title</source>
+        <target state="translated">Navigationstitel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.keywords" approved="yes">
+        <source>Keywords</source>
+        <target state="translated">Stichworte</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.description" approved="yes">
+        <source>Description</source>
+        <target state="translated">Beschreibung</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.images" approved="yes">
+        <source>Images</source>
+        <target state="translated">Bilder</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.teaser" approved="yes">
+        <source>Teaser</source>
+        <target state="translated">Antext</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.teaserimages" approved="yes">
+        <source>Teaser images</source>
+        <target state="translated">Bilder für Antext</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.categories" approved="yes">
+        <source>Categories</source>
+        <target state="translated">Kategorien</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.attributes" approved="yes">
+        <source>Attributes</source>
+        <target state="translated">Attribute</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.create_articles" approved="yes">
+        <source>Articles</source>
+        <target state="translated">Artikel erzeugen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.lokalise_articles" approved="yes">
+        <source>Localise Articles</source>
+        <target state="translated">Artikel lokalisieren</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.select_attributes" approved="yes">
+        <source>Select attributes</source>
+        <target state="translated">Attribute auswählen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.edit_attributes" approved="yes">
+        <source>Edit attributes</source>
+        <target state="translated">Attribute bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.localedit_attributes" approved="yes">
+        <source>Edit localised attributes</source>
+        <target state="translated">Lokalisierte Attribute bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.from_cat" approved="yes">
+        <source>From category</source>
+        <target state="translated">aus Kategorie</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.existing_articles" approved="yes">
+        <source>Existing articles</source>
+        <target state="translated">vorhandene Artikel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.producible_articles" approved="yes">
+        <source>Producible articles</source>
+        <target state="translated">erzeugbare Artikel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.to_much_articles" approved="yes">
+        <source>With this combination of attributes, the list of possible articles would be %d rows long. Please reduce the number of select attributes!</source>
+        <target state="translated">Mit dieser Kombination von Attributen würde die Liste möglicher Artikel %d Zeilen lang sein. Bitte reduzieren Sie die Anzahl der gewählten Attribute!</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.create_warning" approved="yes">
+        <source>If you create articles, NO OTHER fields will be saved to products and articles!</source>
+        <target state="translated">Wenn Sie neue Artikel erzeugen, werden KEINE weiteren Felder im Produkt oder dem Artikel gespeichert!</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.empty_article" approved="yes">
+        <source>Create an empty article</source>
+        <target state="translated">Einen leeren Datensatz erzeugen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.select_all_articles" approved="yes">
+        <source>Select all articles</source>
+        <target state="translated">Alle Artikel auswählen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.no_article" approved="yes">
+        <source>No articles existing for this product</source>
+        <target state="translated">Keine Artikel für dieses Produkt vorhanden</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.relatedpage" approved="yes">
+        <source>Related Page</source>
+        <target state="translated">Zugehörige Seite</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_products.relatedproducts">
+        <source>Related Products</source>
+      <target></target></trans-unit>
+      <trans-unit id="tx_commerce_products.noManufacturer" approved="yes">
+        <source>----</source>
+        <target state="translated">----</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_article_types" approved="yes">
+        <source>Article Types</source>
+        <target state="translated">Artikeltypen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_article_types.title" approved="yes">
+        <source>Title</source>
+        <target state="translated">Titel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_article_types.name" approved="yes">
+        <source>Name</source>
+        <target state="translated">Name</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_article" approved="yes">
+        <source>Article</source>
+        <target state="translated">Artikel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles" approved="yes">
+        <source>Articles</source>
+        <target state="translated">Artikel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.extras" approved="yes">
+        <source>Extra information</source>
+        <target state="translated">Zusatzinformationen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.title" approved="yes">
+        <source>Title</source>
+        <target state="translated">Titel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.subtitle" approved="yes">
+        <source>Subtitle</source>
+        <target state="translated">Untertitel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.images" approved="yes">
+        <source>Images</source>
+        <target state="translated">Bilder</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.ordernumber" approved="yes">
+        <source>Ordernumber</source>
+        <target state="translated">Auftragsnummer</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.eancode" approved="yes">
+        <source>Eancode</source>
+        <target state="translated">EAN-Code</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.description_extra" approved="yes">
+        <source>Extra description</source>
+        <target state="translated">Extra_Beschreibung</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.plain_text" approved="yes">
+        <source>Plain text</source>
+        <target state="translated">unformatierter Text</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.prices" approved="yes">
+        <source>Prices</source>
+        <target state="translated">Preise</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.price_gross" approved="yes">
+        <source>Price gross</source>
+        <target state="translated">Bruttopreis</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.price_net" approved="yes">
+        <source>Price net</source>
+        <target state="translated">Nettopreis</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.price_scale_amount" approved="yes">
+        <source>Price scale amount</source>
+        <target state="translated">Staffelpreis</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.purchase_price" approved="yes">
+        <source>Purchase price</source>
+        <target state="translated">Einkaufspreis</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.tax" approved="yes">
+        <source>Tax</source>
+        <target state="translated">Steuer</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.article_type_uid" approved="yes">
+        <source>article_type_uid</source>
+        <target state="translated">Artikeltyp</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.products_uid" approved="yes">
+        <source>products_uid</source>
+        <target state="translated">Produkt-ID</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.article_attributes" approved="yes">
+        <source>Article attributes</source>
+        <target state="translated">Artikelattribute</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.relatedpage" approved="yes">
+        <source>Related Page</source>
+        <target state="translated">Zugehörige Seite</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_article_prices" approved="yes">
+        <source>Article Prices</source>
+        <target state="translated">Artikelpreise</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_article_prices.price_gross" approved="yes">
+        <source>Price gross</source>
+        <target state="translated">Bruttopreis</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_article_prices.price_net" approved="yes">
+        <source>Price net</source>
+        <target state="translated">Nettopreis</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.price_scale_amount_start" approved="yes">
+        <source>Price scale amount start</source>
+        <target state="translated">Staffelpreismenge von</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.price_scale_amount_end" approved="yes">
+        <source>Price scale amount end</source>
+        <target state="translated">Staffelpreismenge bis</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.price_scale_count" approved="yes">
+        <source>Price scale add prices</source>
+        <target state="translated">Staffelpreise Anzahl</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.price_scale_steps" approved="yes">
+        <source>Price scale steps</source>
+        <target state="translated">Staffelpreise Schrittweite</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.price_scale_startamount" approved="yes">
+        <source>Price scale startamount</source>
+        <target state="translated">Staffelpreise Startmenge</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_articles.price_scale_fe_group" approved="yes">
+        <source>Price scale access</source>
+        <target state="translated">Staffelpreise Zugriff</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_article_prices.purchase_price" approved="yes">
+        <source>Purchase price</source>
+        <target state="translated">Kaufpreis</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_baskets" approved="yes">
+        <source>Baskets</source>
+        <target state="translated">Warenkorb</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_baskets.sid" approved="yes">
+        <source>Session id</source>
+        <target state="translated">Session-ID</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_baskets.finished_time" approved="yes">
+        <source>Finished time</source>
+        <target state="translated">Beendungszeit</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_baskets.article_id" approved="yes">
+        <source>Article uid</source>
+        <target state="translated">Artikelnummer</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_baskets.price_id" approved="yes">
+        <source>Price uid</source>
+        <target state="translated">Preisnummer</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_baskets.price_gross" approved="yes">
+        <source>Price gross</source>
+        <target state="translated">Bruttopreis</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_baskets.price_net" approved="yes">
+        <source>Price net</source>
+        <target state="translated">Nettopreis</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_baskets.quantity" approved="yes">
+        <source>Quantity</source>
+        <target state="translated">Menge</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_baskets.readonly" approved="yes">
+        <source>Read Only</source>
+        <target state="translated">Nur lesen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attributes" approved="yes">
+        <source>Attributes</source>
+        <target state="translated">Attribute</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attributes.has_valuelist" approved="yes">
+        <source>Has valuelist</source>
+        <target state="translated">Hat Werteliste</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attributes.multiple" approved="yes">
+        <source>Allow multiple selection</source>
+        <target state="translated">Mehrfachauswahl erlauben</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attributes.title" approved="yes">
+        <source>Title</source>
+        <target state="translated">Titel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attributes.internal_title" approved="yes">
+        <source>Internal title</source>
+        <target state="translated">Interner Titel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attributes.unit" approved="yes">
+        <source>Unit</source>
+        <target state="translated">Einheit</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attributes.valuelist" approved="yes">
+        <source>Valuelist</source>
+        <target state="translated">Werteliste</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attributes.valueformat" approved="yes">
+        <source>Outputformat of Value</source>
+        <target state="translated">Ausgabeformat des Wertes</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attributes.valueformat.money" approved="yes">
+        <source> Money (123.12) </source>
+        <target state="translated">Währung (123.12)</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attributes.valueformat.integer" approved="yes">
+        <source> Integer (123) </source>
+        <target state="translated">Ganzzahl (123)</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attributes.valueformat.float" approved="yes">
+        <source> Float (123.1) </source>
+        <target state="translated">Fließkomma (123.1)</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attributes.basis" approved="yes">
+        <source> Basic Data </source>
+        <target state="translated">Grunddaten</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attributes.valuelistlist" approved="yes">
+        <source> Related Values </source>
+        <target state="translated">Zugeordnete Werte</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attributes.icon" approved="yes">
+        <source>Icon</source>
+        <target state="translated">Symbol</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attributes.iconMode">
+        <source>Icon Mode (inactive = dropdowns, active = radiobuttons)</source>
+      <target></target></trans-unit>
+      <trans-unit id="tx_commerce_attribute_correlationtypes" approved="yes">
+        <source>Attribute Correlationtypes</source>
+        <target state="translated">Attributkorrelationtypen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attribute_correlationtypes.title" approved="yes">
+        <source>Title</source>
+        <target state="translated">Titel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attribute_values" approved="yes">
+        <source>Attribute Values</source>
+        <target state="translated">Attributwerte</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attribute_values.value" approved="yes">
+        <source>Value</source>
+        <target state="translated">Wert</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attribute_values.icon" approved="yes">
+        <source>Icon</source>
+        <target state="translated">Symbol</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attribute_values.showvalue" approved="yes">
+        <source>Show Value in Article/ Product</source>
+        <target state="translated">Wert auf Produkt-/Artikel-Seite anzeigen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_attribute_values.attributes_uid" approved="yes">
+        <source>Attributes uid</source>
+        <target state="translated">Attribut-ID</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_categories" approved="yes">
+        <source>Categories</source>
+        <target state="translated">Kategorien</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_categories.title" approved="yes">
+        <source>Title</source>
+        <target state="translated">Titel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_categories.subtitle" approved="yes">
+        <source>Subtitle</source>
+        <target state="translated">Untertitel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_categories.description" approved="yes">
+        <source>Description</source>
+        <target state="translated">Beschreibung</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_categories.images" approved="yes">
+        <source>Images</source>
+        <target state="translated">Bilder</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_categories.navtitle" approved="yes">
+        <source>Navtitle</source>
+        <target state="translated">Navigationstitel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_categories.keywords" approved="yes">
+        <source>Keywords</source>
+        <target state="translated">Schlüsselwörter</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_categories.attributes" approved="yes">
+        <source>Attributes</source>
+        <target state="translated">Attribute</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_categories.parent_category" approved="yes">
+        <source>Parent category</source>
+        <target state="translated">Oberkategorie</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_categories.select_attributes" approved="yes">
+        <source>Select attributes</source>
+        <target state="translated">Attribute auswählen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_categories.extendToSubpages" approved="yes">
+        <source>Include subpages:</source>
+        <target state="translated">Inklusive Unterseiten:</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_categories.ts_config" approved="yes">
+        <source>Category TypoScript</source>
+        <target state="translated">Kategorie TypoScript</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_trackingcodes" approved="yes">
+        <source>Trackingcodes</source>
+        <target state="translated">Verfolguns-Code</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_trackingcodes.title" approved="yes">
+        <source>Title</source>
+        <target state="translated">Titel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_trackingcodes.description" approved="yes">
+        <source>Description</source>
+        <target state="translated">Beschreibung</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_order_types" approved="yes">
+        <source>Order Types</source>
+        <target state="translated">Bestellarten</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_order_types.title">
+        <source>Title</source>
+        <target state="translated">Symbol</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_order_types.title" approved="yes">
+        <source>Icon</source>
+        <target state="translated">Symbol</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_tracking" approved="yes">
+        <source>Tracking</source>
+        <target state="translated">Verfolgung</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_tracking.orders_uid" approved="yes">
+        <source>Orders uid</source>
+        <target state="translated">Bestellungen_uid</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_tracking.trackingcodes_uid" approved="yes">
+        <source>Trackingcodes uid</source>
+        <target state="translated">Verfolgungscodes_uid</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_tracking.msg" approved="yes">
+        <source>Message</source>
+        <target state="translated">Nachricht</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders" approved="yes">
+        <source>Orders</source>
+        <target state="translated">Bestellungen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.cust_deliveryaddress" approved="yes">
+        <source>Customer delivery address</source>
+        <target state="translated">Lieferadresse</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.order_type_uid" approved="yes">
+        <source>Order type</source>
+        <target state="translated">Bestellart</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.order_id" approved="yes">
+        <source>Order number</source>
+        <target state="translated">Bestell-ID</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.cust_fe_user" approved="yes">
+        <source>Customer feuser</source>
+        <target state="translated">Web-Site-Benutzer</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.cust_invoice" approved="yes">
+        <source>Customer invoice address</source>
+        <target state="translated">Rechnungsadresse</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.paymenttype" approved="yes">
+        <source>Paymenttype</source>
+        <target state="translated">Bezahlungsart</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.sum_price_net" approved="yes">
+        <source>Sum price net</source>
+        <target state="translated">Gesamtbetrag netto</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.sum_price_gross" approved="yes">
+        <source>Sum price gross</source>
+        <target state="translated">Gesamtbetrag brutto</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.crdate" approved="yes">
+        <source>Create Date</source>
+        <target state="translated">Bestelldatum</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.payment_ref_id" approved="yes">
+        <source>Payment reference ID</source>
+        <target state="translated">Verwendungszweck für Zahlung</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.basis" approved="yes">
+        <source>Basis</source>
+        <target state="translated">Basis</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.customer" approved="yes">
+        <source>Customerdata</source>
+        <target state="translated">Kundendaten</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.items" approved="yes">
+        <source>Items</source>
+        <target state="translated">Artikel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.cu_iso_3_uid" approved="yes">
+        <source>Currency ISO Code</source>
+        <target state="translated">Währung ISO-Code</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.payment" approved="yes">
+        <source>Payment</source>
+        <target state="translated">Bezahlart</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.delivery" approved="yes">
+        <source>Delivery</source>
+        <target state="translated">Versand</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.articles" approved="yes">
+        <source>Articles</source>
+        <target state="translated">Artikel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.pricefromnet" approved="yes">
+        <source>Price from net</source>
+        <target state="translated">Preiskalkulation vom Netto</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.tstamp" approved="yes">
+        <source>Timestamp</source>
+        <target state="translated">Änderung</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_order_articles" approved="yes">
+        <source>Order articles</source>
+        <target state="translated">Bestellte Artikel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_order_articles.article_type_uid" approved="yes">
+        <source>Article type</source>
+        <target state="translated">Artikeltyp</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_order_articles.article_uid" approved="yes">
+        <source>Article uid</source>
+        <target state="translated">Artikel-ID</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_order_articles.article_number" approved="yes">
+        <source>Article number</source>
+        <target state="translated">Artikelnummer</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_order_articles.title" approved="yes">
+        <source>Title</source>
+        <target state="translated">Titel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_order_articles.subtitle" approved="yes">
+        <source>Subtitle</source>
+        <target state="translated">Untertitel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_order_articles.price_net" approved="yes">
+        <source>Price net</source>
+        <target state="translated">Nettopreis</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_order_articles.price_gross" approved="yes">
+        <source>Price gross</source>
+        <target state="translated">Bruttopreis</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_order_articles.tax" approved="yes">
+        <source>Tax</source>
+        <target state="translated">Steuer</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_order_articles.amount" approved="yes">
+        <source>Amount</source>
+        <target state="translated">Betrag</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_order_articles.order_id" approved="yes">
+        <source>Order number</source>
+        <target state="translated">Auftragsnummer</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_order_articles.order_uid" approved="yes">
+        <source>Order</source>
+        <target state="translated">Bestellung</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.comment" approved="yes">
+        <source>Customer comment</source>
+        <target state="translated">Kommentar des Kunden</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_orders.internalcomment" approved="yes">
+        <source>Shop comment</source>
+        <target state="translated">Kommentar des Shops</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_address_types" approved="yes">
+        <source>Address Types</source>
+        <target state="translated">Addresstypen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_address_types.title" approved="yes">
+        <source>Title</source>
+        <target state="translated">Titel</target>
+      </trans-unit>
+      <trans-unit id="tt_address" approved="yes">
+        <source>Address</source>
+        <target state="translated">Adressen</target>
+      </trans-unit>
+      <trans-unit id="tt_address.name" approved="yes">
+        <source>Name</source>
+        <target state="translated">Name</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_user_states" approved="yes">
+        <source>User States</source>
+        <target state="translated">Benutzer Zustände</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_user_states.title" approved="yes">
+        <source>Title</source>
+        <target state="translated">Titel</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_user_states.icon" approved="yes">
+        <source>Icon</source>
+        <target state="translated">Symbol</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_moveordermails" approved="yes">
+        <source>Move Order Mail</source>
+        <target state="translated">Bestellemail verschieben</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_moveordermails.hidden" approved="yes">
+        <source>Hide</source>
+        <target state="translated">Verbergen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_moveordermails.name" approved="yes">
+        <source>Name of Template</source>
+        <target state="translated">Name der Vorlage</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_moveordermails.mailkind.I.0" approved="yes">
+        <source>Mail when move in</source>
+        <target state="translated">E-Mail wenn hinein verschoben</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_moveordermails.mailkind.I.1" approved="yes">
+        <source>Mail when move out</source>
+        <target state="translated">E-Mail wenn heraus verschoben</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_moveordermails.mailkind" approved="yes">
+        <source>When should mail be send</source>
+        <target state="translated">Wann E-Mail senden</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_moveordermails.mailtemplate" approved="yes">
+        <source>Reference to PLAIN-Mailtemplate</source>
+        <target state="translated">Verweis auf E-Mail-Vorlage</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_moveordermails.htmltemplate">
+        <source>Reference to HTML-Mailtemplate</source>
+      <target></target></trans-unit>
+      <trans-unit id="tx_commerce_moveordermails.mailcharset">
+        <source>Mail Charset</source>
+      <target></target></trans-unit>
+      <trans-unit id="tx_commerce_moveordermails.sendername" approved="yes">
+        <source>E-Mail Sendername (if not set: Mailaddress)</source>
+        <target state="translated">Absender E-Mail (falls leer: E-Mail-Adresse)</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_moveordermails.senderemail" approved="yes">
+        <source>E-Mailaddress of Sender (if not set: Moduledefault)</source>
+        <target state="translated">Absender E-Mail-Adresse (falls leer: Standardwert)</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_moveordermails.otherreceiver" approved="yes">
+        <source>Other Mailreceiver than Customer</source>
+        <target state="translated">Anderer E-Mail-Empfänger als Kunde</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_moveordermails.BCC" approved="yes">
+        <source>BCC Mail to</source>
+        <target state="translated">Blindkopie der E-Mail an</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_salesfigures" approved="yes">
+        <source>Sales figures aggregation</source>
+        <target state="translated">Zusammenfassung Verkaufszahlen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_salesfigures.year" approved="yes">
+        <source>Year of sale</source>
+        <target state="translated">Jahr des Verkaufs</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_salesfigures.month" approved="yes">
+        <source>Month of sale</source>
+        <target state="translated">Monat des Verkaufs</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_salesfigures.day" approved="yes">
+        <source>Day of sale</source>
+        <target state="translated">Tag des Verkaufs</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_salesfigures.dow" approved="yes">
+        <source>Day of Sale</source>
+        <target state="translated">Wochentag des Verkaufs</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_salesfigures.hour" approved="yes">
+        <source>Hour of Sale</source>
+        <target state="translated">Stunde des Verkaufs</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_salesfigures.pricegross" approved="yes">
+        <source>Sum Price Gross</source>
+        <target state="translated">Gesamtbetrag brutto</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_salesfigures.pricenet" approved="yes">
+        <source>Sum Price Net</source>
+        <target state="translated">Gesamtbetrag netto</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_salesfigures.amount" approved="yes">
+        <source>Sum amount</source>
+        <target state="translated">Gesamtmenge</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_salesfigures.orders" approved="yes">
+        <source>Sum of Orders</source>
+        <target state="translated">Gesamtanzahl Bestellungen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_newclients" approved="yes">
+        <source>Aggregation of new clients</source>
+        <target state="translated">Zusammenfassung Neukunden</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_newclients.year" approved="yes">
+        <source>Year of registration</source>
+        <target state="translated">Jahr der Registrierung</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_newclients.month" approved="yes">
+        <source>Month of registration</source>
+        <target state="translated">Monat der Registrierung</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_newclients.day" approved="yes">
+        <source>Day of registration</source>
+        <target state="translated">Tag der Registrierung</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_newclients.dow" approved="yes">
+        <source>Day of week</source>
+        <target state="translated">Wochentag der Registrierung</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_newclients.hour" approved="yes">
+        <source>Hour of registration</source>
+        <target state="translated">Stunde der Registrierung</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_newclients.registration" approved="yes">
+        <source>Sum of registrations</source>
+        <target state="translated">Gesamtanzahl Registrierungen</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_manufacturer" approved="yes">
+        <source>Manufacturer</source>
+        <target state="translated">Hersteller</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_manufacturer.title" approved="yes">
+        <source>Manufacturer</source>
+        <target state="translated">Hersteller</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_manufacturer.street" approved="yes">
+        <source>Street</source>
+        <target state="translated">Straße</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_manufacturer.number" approved="yes">
+        <source>Number</source>
+        <target state="translated">Hausnummer</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_manufacturer.zip" approved="yes">
+        <source>Zip</source>
+        <target state="translated">PLZ</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_manufacturer.city" approved="yes">
+        <source>City</source>
+        <target state="translated">Stadt</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_manufacturer.country" approved="yes">
+        <source>Country</source>
+        <target state="translated">Land</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_manufacturer.phone" approved="yes">
+        <source>Phone</source>
+        <target state="translated">Telefon</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_manufacturer.fax" approved="yes">
+        <source>Fax</source>
+        <target state="translated">Fax</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_manufacturer.email" approved="yes">
+        <source>Email</source>
+        <target state="translated">E-Mail</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_manufacturer.internet" approved="yes">
+        <source>Internet</source>
+        <target state="translated">Internet</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_manufacturer.contactperson" approved="yes">
+        <source>Contact Person</source>
+        <target state="translated">Kontaktperson</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_manufacturer.logo" approved="yes">
+        <source>Logo</source>
+        <target state="translated">Logo</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_supplier" approved="yes">
+        <source>Supplier</source>
+        <target state="translated">Lieferant</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_supplier.title" approved="yes">
+        <source>Supplier</source>
+        <target state="translated">Lieferant</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_supplier.street" approved="yes">
+        <source>Street</source>
+        <target state="translated">Straße</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_supplier.number" approved="yes">
+        <source>Number</source>
+        <target state="translated">Nummer</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_supplier.zip" approved="yes">
+        <source>Zip</source>
+        <target state="translated">PLZ</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_supplier.city" approved="yes">
+        <source>City</source>
+        <target state="translated">Stadt</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_supplier.country" approved="yes">
+        <source>Country</source>
+        <target state="translated">Land</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_supplier.phone" approved="yes">
+        <source>Phone</source>
+        <target state="translated">Telefon</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_supplier.fax" approved="yes">
+        <source>Fax</source>
+        <target state="translated">Fax</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_supplier.email" approved="yes">
+        <source>Email</source>
+        <target state="translated">E-Mail</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_supplier.internet" approved="yes">
+        <source>Internet</source>
+        <target state="translated">Internet</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_supplier.contactperson" approved="yes">
+        <source>Contact Person</source>
+        <target state="translated">Kontaktperson</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_supplier.logo" approved="yes">
+        <source>Logo</source>
+        <target state="translated">Logo</target>
+      </trans-unit>
+      <trans-unit id="tx_commerce_pages.tx_commerce_foldereditorder" approved="yes">
+        <source>Orders in this folder editable</source>
+        <target state="translated">Bestellungen in diesem Ordner bearbeitbar</target>
+      </trans-unit>
+      <trans-unit id="label.tx_commerce_mountpoints">
+        <source>Commerce Mounts:</source>
+      <target></target></trans-unit>
+    </body>
+  </file>
+</xliff>
