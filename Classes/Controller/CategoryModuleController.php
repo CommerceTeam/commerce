@@ -96,9 +96,16 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $backendUser->setAndSaveSessionData(CategoryModuleController::class, $sessionData);
 
         // Get category uid from control
+        // @todo reduce usage to only either defVals or control but not both
         $controlFromGetPost = GeneralUtility::_GP('control');
+        $defaultValue = GeneralUtility::_GP('defVals');
         if (is_array($controlFromGetPost) && isset($controlFromGetPost['categoryUid'])) {
             $this->categoryUid = (int) $controlFromGetPost['categoryUid'];
+        } elseif (is_array($defaultValue)
+            && isset($defaultValue['tx_commerce_categories'])
+            && isset($defaultValue['tx_commerce_categories']['uid'])
+        ) {
+            $this->categoryUid = (int) $defaultValue['tx_commerce_categories']['uid'];
         }
     }
 
@@ -401,9 +408,10 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             // add the page id and the current selected categor uid to the function links
             $functionParameter = ['id' => $this->id];
             if ($this->categoryUid) {
-                $functionParameter['control']['categoryUid'] = $this->categoryUid;
+                $functionParameter['defVals']['categoryUid'] = $this->categoryUid;
             }
 
+            $categoryParameter = $this->categoryUid > 0 ? '&control[categoryUid]=' . $this->categoryUid : '';
             // Add "display bigControlPanel" checkbox:
             if ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'selectable') {
                 $this->body .= '<div class="checkbox">'
@@ -413,7 +421,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                         'SET[bigControlPanel]',
                         $this->MOD_SETTINGS['bigControlPanel'],
                         '',
-                        $this->table ? '&table=' . $this->table : '',
+                        ($this->table ? '&table=' . $this->table : '') . $categoryParameter,
                         'id="checkLargeControl"'
                     )
                     . BackendUtility::wrapInHelp('xMOD_csh_corebe', 'list_options', $lang->getLL('largeControl', true))
@@ -431,7 +439,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                             'SET[clipBoard]',
                             $this->MOD_SETTINGS['clipBoard'],
                             '',
-                            $this->table ? '&table=' . $this->table : '',
+                            ($this->table ? '&table=' . $this->table : '') . $categoryParameter,
                             'id="checkShowClipBoard"'
                         )
                         . BackendUtility::wrapInHelp(
@@ -453,7 +461,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                         'SET[localization]',
                         $this->MOD_SETTINGS['localization'],
                         '',
-                        $this->table ? '&table=' . $this->table : '',
+                        ($this->table ? '&table=' . $this->table : '') . $categoryParameter,
                         'id="checkLocalization"'
                     )
                     . BackendUtility::wrapInHelp('xMOD_csh_corebe', 'list_options', $lang->getLL('localization', true))
