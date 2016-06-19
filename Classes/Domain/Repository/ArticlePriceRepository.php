@@ -42,7 +42,7 @@ class ArticlePriceRepository extends AbstractRepository
      */
     public function getData($uid)
     {
-        $returnData = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+        $returnData = $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             $this->databaseTable,
             'uid = ' . (int)$uid . $this->enableFields()
@@ -50,7 +50,7 @@ class ArticlePriceRepository extends AbstractRepository
 
         // Result should contain only one Dataset
         if (count($returnData) == 1) {
-            return $returnData;
+            return reset($returnData);
         }
 
         $this->error(
