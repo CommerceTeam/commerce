@@ -61,6 +61,7 @@ options.contextMenu.table.tx_commerce_categories {
 
         800 = DIVIDER
 
+        // disabled by now until working as expected
         900 = SUBMENU
         900 {
             label = LLL:EXT:lang/locallang_core.xlf:cm.copyPasteActions
@@ -129,51 +130,16 @@ options.contextMenu.table.tx_commerce_categories {
                 displayCondition = getContextInfo|inCopyMode = 1 || getContextInfo|inCutMode = 1 && canBePastedAfter != 0
                 callbackAction = pasteAfterNode
             }
-
-            900 = DIVIDER
-
-            1000 = ITEM
-            1000 {
-                name = delete
-                label = LLL:EXT:lang/locallang_core.xlf:cm.delete
-                iconName = actions-edit-delete
-                displayCondition = canBeRemoved != 0 && isMountPoint != 1
-                callbackAction = removeNode
-            }
         }
+        900 >
 
-        1000 = SUBMENU
+        1000 = ITEM
         1000 {
-            label = LLL:EXT:lang/locallang_core.xlf:cm.branchActions
-
-            100 = ITEM
-            100 {
-                name = mountAsTreeroot
-                label = LLL:EXT:lang/locallang_core.xlf:cm.tempMountPoint
-                iconName = actions-pagetree-mountroot
-                displayCondition = canBeTemporaryMountPoint != 0 && isMountPoint = 0
-                callbackAction = mountAsTreeRoot
-            }
-
-            200 = DIVIDER
-
-            300 = ITEM
-            300 {
-                name = expandBranch
-                label = LLL:EXT:lang/locallang_core.xlf:cm.expandBranch
-                iconName = actions-pagetree-expand
-                displayCondition =
-                callbackAction = expandBranch
-            }
-
-            400 = ITEM
-            400 {
-                name = collapseBranch
-                label = LLL:EXT:lang/locallang_core.xlf:cm.collapseBranch
-                iconName = actions-pagetree-collapse
-                displayCondition =
-                callbackAction = collapseBranch
-            }
+            name = delete
+            label = LLL:EXT:lang/locallang_core.xlf:cm.delete
+            iconName = actions-edit-delete
+            displayCondition = canBeRemoved != 0 && isMountPoint != 1
+            callbackAction = removeNode
         }
     }
 }
@@ -239,6 +205,7 @@ options.contextMenu.table.tx_commerce_products {
 
         800 = DIVIDER
 
+        // disabled by now until working as expected
         900 = SUBMENU
         900 {
             label = LLL:EXT:lang/locallang_core.xlf:cm.copyPasteActions
@@ -307,51 +274,17 @@ options.contextMenu.table.tx_commerce_products {
                 displayCondition = getContextInfo|inCopyMode = 1 || getContextInfo|inCutMode = 1 && canBePastedAfter != 0
                 callbackAction = pasteAfterNode
             }
-
-            900 = DIVIDER
-
-            1000 = ITEM
-            1000 {
-                name = delete
-                label = LLL:EXT:lang/locallang_core.xlf:cm.delete
-                iconName = actions-edit-delete
-                displayCondition = canBeRemoved != 0 && isMountPoint != 1
-                callbackAction = removeNode
-            }
         }
+        900 >
 
-        1000 = SUBMENU
+
+        1000 = ITEM
         1000 {
-            label = LLL:EXT:lang/locallang_core.xlf:cm.branchActions
-
-            100 = ITEM
-            100 {
-                name = mountAsTreeroot
-                label = LLL:EXT:lang/locallang_core.xlf:cm.tempMountPoint
-                iconName = actions-pagetree-mountroot
-                displayCondition = canBeTemporaryMountPoint != 0 && isMountPoint = 0
-                callbackAction = mountAsTreeRoot
-            }
-
-            200 = DIVIDER
-
-            300 = ITEM
-            300 {
-                name = expandBranch
-                label = LLL:EXT:lang/locallang_core.xlf:cm.expandBranch
-                iconName = actions-pagetree-expand
-                displayCondition =
-                callbackAction = expandBranch
-            }
-
-            400 = ITEM
-            400 {
-                name = collapseBranch
-                label = LLL:EXT:lang/locallang_core.xlf:cm.collapseBranch
-                iconName = actions-pagetree-collapse
-                displayCondition =
-                callbackAction = collapseBranch
-            }
+            name = delete
+            label = LLL:EXT:lang/locallang_core.xlf:cm.delete
+            iconName = actions-edit-delete
+            displayCondition = canBeRemoved != 0 && isMountPoint != 1
+            callbackAction = removeNode
         }
     }
 }
