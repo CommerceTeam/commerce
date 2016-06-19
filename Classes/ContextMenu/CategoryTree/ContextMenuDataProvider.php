@@ -85,14 +85,4 @@ class ContextMenuDataProvider extends \TYPO3\CMS\Backend\ContextMenu\AbstractCon
         }
         return $contextMenuActions;
     }
-
-    /**
-     * Returns the current BE user.
-     *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-     */
-    protected function getBackendUser()
-    {
-        return $GLOBALS['BE_USER'];
-    }
 }
