@@ -80,18 +80,24 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
         $this->initDataProvider();
         if ($nodeId === 'root') {
             $nodeCollection = $this->dataProvider->getTreeMounts();
+            $result = $nodeCollection->toArray();
         } else {
-            if (strpos($nodeId, 'pp') === 0) {
+            if (strpos($nodeData->serializeClassName, 'ArticleNode') !== false) {
+                $result = [];
+            } elseif (strpos($nodeId, 'pp') === 0) {
+                // @todo check if this ever gets hit
                 /** @var $node ProductNode */
                 $node = GeneralUtility::makeInstance(ProductNode::class, (array)$nodeData);
                 $nodeCollection = $this->dataProvider->getArticleNodes($node, $node->getMountPoint());
+                $result = $nodeCollection->toArray();
             } else {
                 /** @var $node CategoryNode */
                 $node = GeneralUtility::makeInstance(CategoryNode::class, (array)$nodeData);
                 $nodeCollection = $this->dataProvider->getCategoryNodes($node, $node->getMountPoint());
+                $result = $nodeCollection->toArray();
             }
         }
-        return $nodeCollection->toArray();
+        return $result;
     }
 
     /**
