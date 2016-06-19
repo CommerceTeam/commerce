@@ -191,7 +191,6 @@ call_user_func(function ($packageKey) {
 
         // CLI Script configuration
         // Add statistic task
-        /* @noinspection PhpUndefinedVariableInspection */
         $scOptions['scheduler']['tasks'][\CommerceTeam\Commerce\Task\StatisticTask::class] = [
             'extension' => $packageKey,
             'title' => 'LLL:EXT:' . $packageKey
