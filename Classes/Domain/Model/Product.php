@@ -912,7 +912,7 @@ class Product extends AbstractEntity
     public function getCheapestArticle($usePriceNet = 0)
     {
         $this->loadArticles();
-        if (!is_array($this->articles_uids) || empty($this->articles_uids)) {
+        if (empty($this->articles_uids)) {
             return false;
         }
 
@@ -1465,7 +1465,7 @@ class Product extends AbstractEntity
 
                 return $this->articles_uids;
             } else {
-                return false;
+                return [];
             }
         }
 
