@@ -345,7 +345,7 @@ TYPO3.Components.CategoryTree.Actions = {
 	 * @return {void}
 	 */
 	openInfoPopUp: function(node) {
-		launchView('pages', node.attributes.nodeData.id);
+		launchView(node.attributes.nodeData.type, node.attributes.nodeData.id);
 	},
 
 	/**
@@ -357,7 +357,7 @@ TYPO3.Components.CategoryTree.Actions = {
 	openHistoryPopUp: function(node) {
 		node.select();
 		TYPO3.Backend.ContentContainer.setUrl(
-			TYPO3.settings.RecordHistory.moduleUrl + '&element=pages:' + node.attributes.nodeData.id
+			TYPO3.settings.RecordHistory.moduleUrl + '&element=' + node.attributes.nodeData.type + ':' + node.attributes.nodeData.id
 		);
 	},
 
