@@ -206,7 +206,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
     protected function canCreate()
     {
         if (!isset($this->cachedAccessRights['create'])) {
-            $this->cachedAccessRights['create'] = $this->getBackendUserAuthentication()->doesUserHaveAccess(
+            $this->cachedAccessRights['create'] = $this->getBackendUser()->doesUserHaveAccess(
                 $this->record,
                 8
             );
@@ -223,10 +223,10 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
     {
         if (!isset($this->cachedAccessRights['edit'])) {
             $this->cachedAccessRights['edit'] =
-                $this->getBackendUserAuthentication()->isAdmin()
+                $this->getBackendUser()->isAdmin()
                 || (
                     (int)$this->record['editlock'] === 0
-                    && $this->getBackendUserAuthentication()->doesUserHaveAccess($this->record, 2)
+                    && $this->getBackendUser()->doesUserHaveAccess($this->record, 2)
                 );
         }
         return $this->cachedAccessRights['edit'];
@@ -241,12 +241,12 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
     {
         if (!isset($this->cachedAccessRights['remove'])) {
             $this->cachedAccessRights['remove'] =
-                $this->getBackendUserAuthentication()->isAdmin()
+                $this->getBackendUser()->isAdmin()
                 || (
                     (int)$this->record['editlock'] === 0
-                    && $this->getBackendUserAuthentication()->doesUserHaveAccess($this->record, 4)
+                    && $this->getBackendUser()->doesUserHaveAccess($this->record, 4)
                 );
-            if (!$this->isLeafNode() && !$this->getBackendUserAuthentication()->uc['recursiveDelete']) {
+            if (!$this->isLeafNode() && !$this->getBackendUser()->uc['recursiveDelete']) {
                 $this->cachedAccessRights['remove'] = false;
             }
         }
@@ -260,7 +260,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      */
     public function canBeDisabledAndEnabled()
     {
-        return $this->canEdit() && $this->getBackendUserAuthentication()->checkLanguageAccess(0);
+        return $this->canEdit() && $this->getBackendUser()->checkLanguageAccess(0);
     }
 
     /**
@@ -273,7 +273,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
         return (
             $this->canEdit()
             && !VersionState::cast($this->record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
-            && $this->getBackendUserAuthentication()->checkLanguageAccess(0)
+            && $this->getBackendUser()->checkLanguageAccess(0)
         );
     }
 
@@ -284,7 +284,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      */
     public function canBeEdited()
     {
-        return $this->canEdit() && $this->getBackendUserAuthentication()->checkLanguageAccess(0);
+        return $this->canEdit() && $this->getBackendUser()->checkLanguageAccess(0);
     }
 
     /**
@@ -297,7 +297,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
         return (
             $this->canCreate()
             && !VersionState::cast($this->record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
-            && $this->getBackendUserAuthentication()->checkLanguageAccess(0)
+            && $this->getBackendUser()->checkLanguageAccess(0)
         );
     }
 
@@ -308,7 +308,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      */
     public function canCreateNewPages()
     {
-        return $this->canCreate() && $this->getBackendUserAuthentication()->checkLanguageAccess(0);
+        return $this->canCreate() && $this->getBackendUser()->checkLanguageAccess(0);
     }
 
     /**
@@ -321,7 +321,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
         return (
             $this->canRemove()
             && !VersionState::cast($this->record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
-            && $this->getBackendUserAuthentication()->checkLanguageAccess(0)
+            && $this->getBackendUser()->checkLanguageAccess(0)
         );
     }
 
@@ -335,7 +335,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
         return (
             $this->canCreate()
             && !VersionState::cast($this->record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
-            && $this->getBackendUserAuthentication()->checkLanguageAccess(0)
+            && $this->getBackendUser()->checkLanguageAccess(0)
         );
     }
 
@@ -349,7 +349,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
         return (
             $this->canCreate()
             && !VersionState::cast($this->record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
-            && $this->getBackendUserAuthentication()->checkLanguageAccess(0)
+            && $this->getBackendUser()->checkLanguageAccess(0)
         );
     }
 
@@ -360,7 +360,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      */
     public function canShowHistory()
     {
-        return $this->getBackendUserAuthentication()->checkLanguageAccess(0);
+        return $this->getBackendUser()->checkLanguageAccess(0);
     }
 
     /**
@@ -370,7 +370,10 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      */
     public function canBeViewed()
     {
-        return !$this->isDeleted();
+        $tsConfig = $this->getBackendUser()->getTSConfig(
+            'mod.commerce_category.' . $this->getType() . '.previewPageID'
+        );
+        return !$this->isDeleted() && (int)$tsConfig['value'];
     }
 
     /**
@@ -490,7 +493,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      *
      * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
      */
-    protected function getBackendUserAuthentication()
+    protected function getBackendUser()
     {
         return $GLOBALS['BE_USER'];
     }

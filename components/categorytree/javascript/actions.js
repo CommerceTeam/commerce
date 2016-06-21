@@ -321,7 +321,7 @@ TYPO3.Components.CategoryTree.Actions = {
 		}
 
 		TYPO3.Backend.ContentContainer.setUrl(
-			TYPO3.settings.FormEngine.moduleUrl + '&edit[pages][' + node.attributes.nodeData.id + ']=edit&returnUrl=' + returnUrl
+			TYPO3.settings.FormEngine.moduleUrl + '&edit[' + node.attributes.nodeData.type + '][' + node.attributes.nodeData.id + ']=edit&returnUrl=' + returnUrl
 		);
 	},
 

@@ -73,7 +73,19 @@ class DatabaseRowArticleData implements FormDataProviderInterface
         foreach ($attributes as $attribute) {
             $root['ct_' . $attribute['uid_correlationtype']]['vDEF'][] = $attribute['uid_foreign'];
         }
-        $result['databaseRow']['attributes']['data']['sDEF']['lDEF'] = $root;
+
+        if (!empty($root)) {
+            $result['databaseRow']['attributes'] =
+                is_array($result['databaseRow']['attributes']) ?
+                $result['databaseRow']['attributes'] : [];
+            $result['databaseRow']['attributes']['data'] =
+                is_array($result['databaseRow']['attributes']['data']) ?
+                $result['databaseRow']['attributes']['data'] : [];
+            $result['databaseRow']['attributes']['data']['sDEF'] =
+                is_array($result['databaseRow']['attributes']['data']['sDEF']) ?
+                $result['databaseRow']['attributes']['data']['sDEF'] : [];
+            $result['databaseRow']['attributes']['data']['sDEF']['lDEF'] = $root;
+        }
 
         return $result;
     }

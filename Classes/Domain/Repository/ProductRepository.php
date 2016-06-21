@@ -67,7 +67,7 @@ class ProductRepository extends AbstractRepository
      */
     public function getArticles($uid)
     {
-        $return = false;
+        $return = [];
         $uid = (int) $uid;
         if ($uid) {
             $localOrderField = $this->orderField;
