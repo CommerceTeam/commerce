@@ -24,7 +24,7 @@ options.contextMenu.table.tx_commerce_categories {
             label = LLL:EXT:lang/locallang_common.xlf:disable
             iconName = actions-edit-hide
             displayCondition = getRecord|hidden = 0 && canBeDisabledAndEnabled != 0
-            callbackAction = disablePage
+            callbackAction = disableRecord
         }
 
         400 = ITEM
@@ -33,7 +33,7 @@ options.contextMenu.table.tx_commerce_categories {
             label = LLL:EXT:lang/locallang_common.xlf:enable
             iconName = actions-edit-unhide
             displayCondition = getRecord|hidden = 1 && canBeDisabledAndEnabled != 0
-            callbackAction = enablePage
+            callbackAction = enableRecord
         }
 
         500 = ITEM
@@ -168,7 +168,7 @@ options.contextMenu.table.tx_commerce_products {
             label = LLL:EXT:lang/locallang_common.xlf:disable
             iconName = actions-edit-hide
             displayCondition = getRecord|hidden = 0 && canBeDisabledAndEnabled != 0
-            callbackAction = disablePage
+            callbackAction = disableRecord
         }
 
         400 = ITEM
@@ -177,7 +177,7 @@ options.contextMenu.table.tx_commerce_products {
             label = LLL:EXT:lang/locallang_common.xlf:enable
             iconName = actions-edit-unhide
             displayCondition = getRecord|hidden = 1 && canBeDisabledAndEnabled != 0
-            callbackAction = enablePage
+            callbackAction = enableRecord
         }
 
         500 = ITEM
@@ -313,7 +313,7 @@ options.contextMenu.table.tx_commerce_articles {
             label = LLL:EXT:lang/locallang_common.xlf:disable
             iconName = actions-edit-hide
             displayCondition = getRecord|hidden = 0 && canBeDisabledAndEnabled != 0
-            callbackAction = disablePage
+            callbackAction = disableRecord
         }
 
         400 = ITEM
@@ -322,7 +322,7 @@ options.contextMenu.table.tx_commerce_articles {
             label = LLL:EXT:lang/locallang_common.xlf:enable
             iconName = actions-edit-unhide
             displayCondition = getRecord|hidden = 1 && canBeDisabledAndEnabled != 0
-            callbackAction = enablePage
+            callbackAction = enableRecord
         }
 
         500 = ITEM
