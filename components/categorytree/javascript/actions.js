@@ -652,7 +652,7 @@ TYPO3.Components.CategoryTree.Actions = {
 	 * @param {Ext.tree.TreeNode} node
 	 * @return {void}
 	 */
-	enablePage: function(node) {
+	enableRecord: function(node) {
 		TYPO3.Components.CategoryTree.Commands.visiblyNode(
 			node.attributes.nodeData,
 			function(response) {
@@ -670,7 +670,7 @@ TYPO3.Components.CategoryTree.Actions = {
 	 * @param {Ext.tree.TreeNode} node
 	 * @return {void}
 	 */
-	disablePage: function(node) {
+	disableRecord: function(node) {
 		TYPO3.Components.CategoryTree.Commands.disableNode(
 			node.attributes.nodeData,
 			function(response) {
