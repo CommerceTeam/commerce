@@ -785,7 +785,7 @@ class DataMapHooks
                     if (!$category->isPermissionSet('new')) {
                         $fieldArray['parent_category'] = GeneralUtility::rmFromList(
                             $uid,
-                        	$fieldArray['parent_category']
+                            $fieldArray['parent_category']
                         );
                     } else {
                         // conversion to int is important, otherwise the binary & will not work properly
