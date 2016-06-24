@@ -713,7 +713,7 @@ class DataMapHooks
             }
 
             // Unique the list
-            $fieldArray['parent_category'] = GeneralUtility::uniqueList($fieldArray['parent_category']);
+            $fieldArray['parent_category'] = implode(',', $this->belib->getUidListFromList(explode(',', GeneralUtility::uniqueList($fieldArray['parent_category']))));
 
             // abort if the user didn't assign a category - rights need not be checked then
             if ($fieldArray['parent_category'] == '') {
@@ -739,7 +739,7 @@ class DataMapHooks
             // Check if any parent_category has been set that is not allowed because no
             // child-records are to be set beneath it
             // Only on parents that were newly added
-            $newParents = array_diff(explode(',', $fieldArray['parent_category']), $existingParents);
+            $newParents = array_diff($this->belib->getUidListFromList(explode(',', $fieldArray['parent_category'])), $existingParents);
 
             // work with keys because array_diff does not start with key 0 but keeps the
             // old keys - that means gaps could exist
@@ -785,7 +785,7 @@ class DataMapHooks
                     if (!$category->isPermissionSet('new')) {
                         $fieldArray['parent_category'] = GeneralUtility::rmFromList(
                             $uid,
-                            $fieldArray['parent_category']
+                        	implode(',', $this->belib->getUidListFromList(GeneralUtility::explode(',', $fieldArray['parent_category'])))
                         );
                     } else {
                         // conversion to int is important, otherwise the binary & will not work properly
@@ -819,7 +819,7 @@ class DataMapHooks
             // make sure the category does not end up as its own parent - would lead
             // to endless recursion.
             if ($fieldArray['parent_category'] != '' && $status == 'new') {
-                $catUids = GeneralUtility::intExplode(',', $fieldArray['parent_category']);
+                $catUids = $this->belib->getUidListFromList(explode(',', $fieldArray['parent_category']));
 
                 foreach ($catUids as $catUid) {
                     // Skip root.
@@ -933,7 +933,7 @@ class DataMapHooks
         // check new categories
         if (isset($data['categories'])) {
             $newCats = $this->singleDiffAssoc(
-                GeneralUtility::trimExplode(',', GeneralUtility::uniqueList($data['categories'])),
+                $this->belib->getUidListFromList(GeneralUtility::trimExplode(',', GeneralUtility::uniqueList($data['categories']))),
                 $parentCategories
             );
 
@@ -1435,7 +1435,7 @@ class DataMapHooks
             $this->belib->getChildCategories($cUid, $childList, $cUid, 0, false);
 
             foreach ($childList as $childUid) {
-                $this->saveCategoryRelations($childUid, null, true, false);
+                $this->saveCategoryRelations($childUid, array(), true, false);
             }
         }
     }
