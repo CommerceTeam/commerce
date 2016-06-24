@@ -739,7 +739,7 @@ class DataMapHooks
             // Check if any parent_category has been set that is not allowed because no
             // child-records are to be set beneath it
             // Only on parents that were newly added
-            $newParents = array_diff($this->belib->getUidListFromList(explode(',', $fieldArray['parent_category'])), $existingParents);
+            $newParents = array_diff(explode(',', $fieldArray['parent_category']), $existingParents);
 
             // work with keys because array_diff does not start with key 0 but keeps the
             // old keys - that means gaps could exist
@@ -785,7 +785,7 @@ class DataMapHooks
                     if (!$category->isPermissionSet('new')) {
                         $fieldArray['parent_category'] = GeneralUtility::rmFromList(
                             $uid,
-                        	implode(',', $this->belib->getUidListFromList(GeneralUtility::explode(',', $fieldArray['parent_category'])))
+                        	$fieldArray['parent_category']
                         );
                     } else {
                         // conversion to int is important, otherwise the binary & will not work properly
@@ -819,7 +819,7 @@ class DataMapHooks
             // make sure the category does not end up as its own parent - would lead
             // to endless recursion.
             if ($fieldArray['parent_category'] != '' && $status == 'new') {
-                $catUids = $this->belib->getUidListFromList(explode(',', $fieldArray['parent_category']));
+                $catUids = GeneralUtility::intExplode(',', $fieldArray['parent_category']);
 
                 foreach ($catUids as $catUid) {
                     // Skip root.
