@@ -1435,7 +1435,7 @@ class DataMapHooks
             $this->belib->getChildCategories($cUid, $childList, $cUid, 0, false);
 
             foreach ($childList as $childUid) {
-                $this->saveCategoryRelations($childUid, null, true, false);
+                $this->saveCategoryRelations($childUid, array(), true, false);
             }
         }
     }
