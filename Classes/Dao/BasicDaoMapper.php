@@ -248,7 +248,7 @@ class BasicDaoMapper
         $database = $this->getDatabaseConnection();
 
         // execute query
-        $res = $database->exec_SELECTquery('*', $this->dbTable, 'uid = ' . (int) $uid . 'AND deleted = 0');
+        $res = $database->exec_SELECTquery('*', $this->dbTable, 'uid = ' . (int) $uid . ' AND deleted = 0');
 
         // insert into object
         $model = $database->sql_fetch_assoc($res);
