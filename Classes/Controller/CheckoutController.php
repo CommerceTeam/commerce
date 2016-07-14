@@ -2366,8 +2366,7 @@ class CheckoutController extends BaseController
                     }
                 }
 
-                $userMarker = [];
-                $mailcontent = $userMailObj->generateMail($orderUid, $orderData, $userMarker);
+                $mailcontent = $userMailObj->generateMail($orderUid, $orderData);
 
                 $basket = $this->getBasket();
                 foreach ($hooks as $hookObj) {
@@ -2381,7 +2380,7 @@ class CheckoutController extends BaseController
                     $userMailObj->templateCode = $this->cObj->fileResource(
                         $this->conf['usermail.']['templateFileHtml']
                     );
-                    $htmlContent = $userMailObj->generateMail($orderUid, $orderData, $userMarker);
+                    $htmlContent = $userMailObj->generateMail($orderUid, $orderData);
                     $userMailObj->isHtmlMail = true;
                     foreach ($hooks as $hookObj) {
                         if (method_exists($hookObj, 'postGenerateMail')) {
