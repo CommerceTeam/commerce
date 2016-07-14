@@ -2390,11 +2390,7 @@ class CheckoutController extends BaseController
                     unset($userMailObj->isHtmlMail);
                 }
 
-                // Moved to plainMailEncoded
-                $parts = explode(chr(10), $mailcontent, 2);
-                // First line is subject
-                $subject = trim($parts[0]);
-                $plainMessage = trim($parts[1]);
+                list($subject, $plainMessage) = GeneralUtility::trimExplode(chr(10), ltrim($mailcontent), true, 2);
 
                 // Check if charset ist set by TS
                 // Otherwise set to default Charset
@@ -2408,22 +2404,28 @@ class CheckoutController extends BaseController
                     $this->conf['usermail.']['encoding'] = '8bit';
                 }
 
-                // Convert Text to charset
-                $frontendController->csConvObj->initCharset($frontendController->renderCharset);
-                $frontendController->csConvObj->initCharset(strtolower($this->conf['usermail.']['charset']));
-                $plainMessage = $frontendController->csConvObj->conv(
+                /** @var \TYPO3\CMS\Core\Charset\CharsetConverter $charsetConverter */
+                $charsetConverter = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
+                $charsetConverter->initCharset($frontendController->renderCharset);
+                $charsetConverter->initCharset(strtolower($this->conf['adminmail.']['charset']));
+
+                $plainMessage = $charsetConverter->conv(
                     $plainMessage,
                     $frontendController->renderCharset,
                     strtolower($this->conf['usermail.']['charset'])
                 );
-                $subject = $frontendController->csConvObj->conv(
+                $subject = $charsetConverter->conv(
                     $subject,
                     $frontendController->renderCharset,
                     strtolower($this->conf['usermail.']['charset'])
                 );
 
                 if ($this->debug) {
-                    print '<b>Usermail to ' . $userMail . '</b><pre>' . $plainMessage . '</pre>' . LF;
+                    $this->debug(
+                        '<b>Usermail to ' . $userMail . '</b><pre>' . $plainMessage . '</pre>',
+                        'adminEmail',
+                        __FILE__ . ' ' . __LINE__
+                    );
                 }
 
                 // Mailconf for  tx_commerce_div::sendMail($mailconf);
@@ -2458,9 +2460,7 @@ class CheckoutController extends BaseController
                     'additionalData' => $this,
                 ];
 
-                \CommerceTeam\Commerce\Utility\GeneralUtility::sendMail($mailconf);
-
-                return true;
+                return \CommerceTeam\Commerce\Utility\GeneralUtility::sendMail($mailconf);
             }
         }
 
@@ -2558,6 +2558,7 @@ class CheckoutController extends BaseController
             $charsetConverter = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
             $charsetConverter->initCharset($frontendController->renderCharset);
             $charsetConverter->initCharset(strtolower($this->conf['adminmail.']['charset']));
+
             // Convert Text to charset
             $plainMessage = $charsetConverter->conv(
                 $plainMessage,
