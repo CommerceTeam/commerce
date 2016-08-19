@@ -184,7 +184,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/rtehtmlarea/mod3/class.tx_rtehtml
     'EXT:commerce/Classes/Hook/BrowselinksHooks.php:CommerceTeam\\Commerce\\Hook\\BrowselinksHooks';
 
 // Add ajax listener for tree in linkcommerce
-$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['CommerceTeam\\Commerce\\Hook\\BrowselinksHooks::ajaxExpandCollapse'] =
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['CommerceTeam_Commerce_Hook_BrowselinksHooks::ajaxExpandCollapse'] =
     'EXT:commerce/Classes/Hook/BrowselinksHooks.php:CommerceTeam\\Commerce\\Hook\\BrowselinksHooks->ajaxExpandCollapse';
 
 // Hooks for datamap procesing

@@ -75,7 +75,7 @@ class BrowselinksHooks implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserH
 
         $this->script = '<script src="' . $linkToTreeJs . '" type="text/javascript"></script>';
         $this->script .= GeneralUtility::wrapJS('
-            Tree.ajaxID = "CommerceTeam\\Commerce\\Hook\\BrowselinksHooks::ajaxExpandCollapse";
+            Tree.ajaxID = "CommerceTeam_Commerce_Hook_BrowselinksHooks::ajaxExpandCollapse";
         ');
 
         if ($parentObject->RTEtsConfigParams) {
