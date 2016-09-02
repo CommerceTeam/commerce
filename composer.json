@@ -25,7 +25,7 @@
 		"sjbr/static-info-tables": ">= 6.2.0"
 	},
 	"require-dev": {
-		"namelesscoder/typo3-repository-client": "1.1.x-dev"
+		"namelesscoder/typo3-repository-client": "^1.2.0"
 	},
 	"autoload": {
 		"psr-4": {
