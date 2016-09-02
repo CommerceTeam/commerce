@@ -4,7 +4,7 @@
 	"description": "TYPO3 commerce shopping system",
 	"homepage": "https://github.com/CommerceTeam/commerce/",
 	"license": ["GPL-2.0+"],
-	"version": "4.0.0",
+	"version": "4.0.3",
 
 	"support" : {
 		"issues" : "https://forge.typo3.org/projects/extension-commerce/issues"
