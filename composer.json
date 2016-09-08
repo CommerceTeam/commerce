@@ -19,7 +19,7 @@
 		"typo3-ter/commerce": "self.version"
 	},
 	"require": {
-		"typo3/cms-core": "^6.2.14",
+		"typo3/cms": "^6.2.14|^7.6.0|dev-master",
 		"friendsoftypo3/tt-address": ">= 3.0",
 		"typo3-ter/dynaflex": ">= 2.0",
 		"sjbr/static-info-tables": ">= 6.2.0"
