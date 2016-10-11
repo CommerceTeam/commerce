@@ -47,7 +47,8 @@ class TcehooksHandlerHooks
                     $this->calculateTax($incomingFieldArray, doubleval($v['tax']));
                 }
             }
-
+            // disable the auto correct to intval
+/*
             foreach ($incomingFieldArray as $key => $value) {
                 if ($key == 'price_net' || $key == 'price_gross' || $key == 'purchase_price') {
                     if (is_numeric($value)) {
@@ -57,6 +58,7 @@ class TcehooksHandlerHooks
                     }
                 }
             }
+*/
         }
     }
 

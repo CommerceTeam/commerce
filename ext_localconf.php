@@ -70,7 +70,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT'
         'creditcard' => array(
             'class' => 'CommerceTeam\\Commerce\\Payment\\Creditcard',
             'type' => PAYMENTARTICLETYPE,
-                // Language file for external credit card check
+            // Language file for external credit card check
             'ccvs_language_files' => PATH_TXCOMMERCE . 'payment/ccvs/language',
             'provider' => array(
                 'wirecard' => array(
@@ -82,7 +82,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['PAYMENT'
     ),
 );
 
-    // Delivery settings
+// Delivery settings
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['SYSPRODUCTS']['DELIVERY'] = array(
     'tablefields' => array(
         'title' => 'SYSTEMPRODUCT_DELIVERY',
@@ -167,12 +167,12 @@ if (TYPO3_MODE == 'BE') {
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/backend.php']['renderPreProcess']['commerce'] =
     'CommerceTeam\\Commerce\\Hook\\BackendHooks->addJsFiles';
- \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
-     'TYPO3.Components.SystemdataNavframe.DataProvider',
-     'CommerceTeam\\Commerce\\Tree\\Pagetree\\ExtdirectSystemdataNavigationProvider',
-     'commerce',
-     'user,group'
- );
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
+    'TYPO3.Components.SystemdataNavframe.DataProvider',
+    'CommerceTeam\\Commerce\\Tree\\Pagetree\\ExtdirectSystemdataNavigationProvider',
+    'commerce',
+    'user,group'
+);
 
 
 // Add linkhandler for "commerce"
@@ -191,11 +191,15 @@ $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['CommerceTeam\\Commerce\\Hook\\Browsel
 // For processing the order sfe, when changing the pid
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['commerce'] =
     'EXT:commerce/Classes/Hook/DataMapHooks.php:CommerceTeam\\Commerce\\Hook\\DataMapHooks';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['commercehooks'] =
+    'EXT:commerce/Classes/Hook/TcehooksHandlerHooks.php:CommerceTeam\\Commerce\\Hook\\TcehooksHandlerHooks';
 
 // Hooks for commandmap processing
 // For new drawing of the category tree after having deleted a record
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['commerce'] =
     'EXT:commerce/Classes/Hook/CommandMapHooks.php:CommerceTeam\\Commerce\\Hook\\CommandMapHooks';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['commercehooks'] =
+    'EXT:commerce/Classes/Hook/TcehooksHandlerHooks.php:CommerceTeam\\Commerce\\Hook\\TcehooksHandlerHooks';
 
 // Hooks for version swap processing
 // For processing the order sfe, when changing the pid
@@ -205,7 +209,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 // Adding some hooks for tx_commerce_article_processing
 // As basic hook for calculation the delivery_costs
 if (empty(
-    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost']
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost']
 )) {
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Domain/Model/Article.php']['calculateDeliveryCost'] =
         'EXT:commerce/Classes/Hook/ArticleHooks.php:CommerceTeam\\Commerce\\Hook\\ArticleHooks';
@@ -217,8 +221,6 @@ if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Hook/DataMapH
 }
 
 // Configuration to process the code selectConf
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getSingleFieldClass']['commerce'] =
-    'EXT:commerce/Classes/Hook/TcehooksHandlerHooks.php:CommerceTeam\\Commerce\\Hook\\TcehooksHandlerHooks';
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms_inline.php']['tceformsInlineHook'][] =
     'EXT:commerce/Classes/Hook/IrreHooks.php:CommerceTeam\\Commerce\\Hook\\IrreHooks';
@@ -230,7 +232,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['acti
     'EXT:commerce/Classes/Hook/LocalRecordListHooks.php:CommerceTeam\\Commerce\\Hook\\LocalRecordListHooks';
 
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess'][] =
-    'CommerceTeam\\Commerce\\Hook\\SrfeuserregisterPi1Hook';
+    'EXT:commerce/Classes/Hook/SrfeuserregisterPi1Hook.php:CommerceTeam\\Commerce\\Hook\\SrfeuserregisterPi1Hook';
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['deleteAddress'][] =
     'EXT:commerce/Classes/Hook/Pi4Hooks.php:CommerceTeam\\Commerce\\Hook\\Pi4Hooks';
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce/Classes/Controller/AddressesController.php']['saveAddress'][] =
