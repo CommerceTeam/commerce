@@ -92,8 +92,12 @@ class OrderEditFunc
      */
     public function sumPriceGrossFormat(array $parameter)
     {
+        $currency = 'EUR';
+        if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf']['defaultCurrency'])) {
+            $currency = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf']['defaultCurrency'];
+        }
         $content = '<input type="text" disabled name="' . $parameter['itemFormElName'] . '" value="' .
-            \CommerceTeam\Commerce\ViewHelpers\Money::format($parameter['itemFormElValue'] / 100, '') . '">';
+            \CommerceTeam\Commerce\ViewHelpers\Money::format(strval($parameter['itemFormElValue']), $currency) . '">';
 
         return $content;
     }
