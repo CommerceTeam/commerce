@@ -203,6 +203,10 @@ class OrderEditFunc
             // @todo Switch to moneylib to use formating
             $cc = 0;
             $iOut = '';
+            $currency = 'EUR';
+            if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf']['defaultCurrency'])) {
+                $currency = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['commerce']['extConf']['defaultCurrency'];
+            }
             foreach ($orderArticles as $row) {
                 ++$cc;
                 $sum['amount'] += $row['amount'];
@@ -215,14 +219,14 @@ class OrderEditFunc
                     $row['price_net'] = $row['price_gross'] / (1 + (((float) $row['tax']) / 100));
                 }
 
-                $sum['price_net_value'] += $row['price_net'] / 100;
-                $sum['price_gross_value'] += $row['price_gross'] / 100;
+                $sum['price_net_value'] += $row['price_net'];
+                $sum['price_gross_value'] += $row['price_gross'];
 
-                $row['price_net'] = Money::format($row['price_net'] / 100, '');
-                $row['price_gross'] = Money::format($row['price_gross'] / 100, '');
+                $row['price_net'] = Money::format(strval($row['price_net']), $currency);
+                $row['price_gross'] = Money::format(strval($row['price_gross']), $currency);
 
                 $rowBgColor = (
-                    $cc % 2 ?
+                $cc % 2 ?
                     '' :
                     ' bgcolor="' .
                     GeneralUtility::modifyHTMLColor($this->getControllerDocumentTemplate()->bgColor4, +10, +10, +10) .
@@ -294,8 +298,8 @@ class OrderEditFunc
              * Cerate the summ row
              */
             $out .= '<tr>';
-            $sum['price_net'] = Money::format($sum['price_net_value'], '');
-            $sum['price_gross'] = Money::format($sum['price_gross_value'], '');
+            $sum['price_net'] = Money::format(strval($sum['price_net_value']), $currency);
+            $sum['price_gross'] = Money::format(strval($sum['price_gross_value']), $currency);
 
             foreach ($fieldRows as $field) {
                 switch ($field) {
@@ -309,7 +313,7 @@ class OrderEditFunc
                         $out .= '<td class="c-headLineTable"><b>';
                 }
 
-                if ($sum[$field] > 0) {
+                if (!empty($sum[$field])) {
                     $out .= BackendUtility::getProcessedValueExtra($orderArticleTable, $field, $sum[$field], 100);
                 }
 
@@ -324,8 +328,8 @@ class OrderEditFunc
              * To Be shure everything is ok
              */
             $values = array(
-                'sum_price_gross' => $sum['price_gross_value'] * 100,
-                'sum_price_net' => $sum['price_net_value'] * 100
+                'sum_price_gross' => $sum['price_gross_value'],
+                'sum_price_net' => $sum['price_net_value']
             );
             /**
              * Order repository.
@@ -409,7 +413,6 @@ class OrderEditFunc
                 $orderPid = $page['pid'];
             }
         }
-
         $data['items'] = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderSelector(
             $orderPid,
             SettingsFactory::getInstance()->getExtConf('OrderFolderRecursiveLevel')
@@ -560,12 +563,13 @@ class OrderEditFunc
      */
     public function feUserOrders()
     {
+        return ''; // funktion wirft sql fehler
         /**
          * Order record list.
          *
          * @var \CommerceTeam\Commerce\ViewHelpers\OrderRecordlist $dblist
          */
-        $dblist = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\OrderRecordlist');
+        $dblist = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\ViewHelpers\\OrderRecordList');
         $dblist->backPath = $this->getBackPath();
         $dblist->script = 'index.php';
         $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
