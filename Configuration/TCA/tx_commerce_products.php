@@ -319,6 +319,29 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
             'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.attributes',
             'config' => array(
                 'type' => 'flex',
+                'default' => '<T3FlexForms>
+	<data type="array">
+		<sDEF type="array">
+			<lDEF type="array">
+				<ct_1 type="array">
+					<vDEF></vDEF>
+				</ct_1>
+				<ct_2 type="array">
+					<vDEF></vDEF>
+				</ct_2>
+				<ct_3 type="array">
+					<vDEF></vDEF>
+				</ct_3>
+				<ct_4 type="array">
+					<vDEF></vDEF>
+				</ct_4>
+				<ct_5 type="array">
+					<vDEF></vDEF>
+				</ct_5>
+			</lDEF>
+		</sDEF>
+	</data>
+</T3FlexForms>',
                 'ds' => array(
                     'default' => '
 <T3DataStructure>
