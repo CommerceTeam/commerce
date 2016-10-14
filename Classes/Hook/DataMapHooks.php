@@ -1234,13 +1234,13 @@ class DataMapHooks
 
         $record = BackendUtility::getRecord($table, $id);
 
-        $backendUser->uc['txcommerce_afterDatabaseOperations'] = 1;
+        $backendUser->uc['txcommerce_afterDatabaseOperations'] = 0;
         $backendUser->writeUC();
 
         $dynaFlexConf = \Tx_Dynaflex_Utility_TcaUtility::loadDynaFlexConfig($table, (int) $record['pid'], $record);
         $dynaFlexConf = $dynaFlexConf['DCA'];
 
-        $backendUser->uc['txcommerce_afterDatabaseOperations'] = 0;
+        $backendUser->uc['txcommerce_afterDatabaseOperations'] = 1;
         $backendUser->writeUC();
 
         if (!is_array($dynaFlexConf) || empty($dynaFlexConf)) {
