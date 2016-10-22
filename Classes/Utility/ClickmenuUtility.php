@@ -47,7 +47,7 @@ class ClickmenuUtility extends ClickMenu
      *
      * @var \TYPO3\CMS\Backend\Clipboard\Clipboard
      */
-    protected $clipObj;
+    public $clipObj;
 
     /**
      * Additional parameter.
