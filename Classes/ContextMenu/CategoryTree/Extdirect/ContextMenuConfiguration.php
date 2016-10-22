@@ -50,6 +50,7 @@ class ContextMenuConfiguration extends \TYPO3\CMS\Backend\ContextMenu\Extdirect\
      * Returns the actions for the given node information's
      *
      * @param \stdClass $nodeData
+     *
      * @return array
      */
     public function getActionsForNodeArray($nodeData)

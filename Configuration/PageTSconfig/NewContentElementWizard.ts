@@ -33,7 +33,9 @@ mod.web_list.allowedNewTables = tx_commerce_orders, tx_commerce_order_articles
 mod.commerce_category.enableDisplayBigControlPanel = selectable
 mod.commerce_category.enableClipBoard = selectable
 mod.commerce_category.enableLocalizationView = selectable
-mod.commerce_category.enableDisplayBigControlPanel = selectable
+
+mod.commerce_order.enableDisplayBigControlPanel = selectable
+mod.commerce_order.enableClipBoard = selectable
 
 mod.wizards {
 	newRecord.tx_commerce_categories.show {

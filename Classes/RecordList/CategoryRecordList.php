@@ -21,7 +21,6 @@ use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
-use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
@@ -2023,13 +2022,5 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         // of the times) These class do not inherit from any common class,
         // but they all seem to have a "doc" member
         return $this->getController()->doc;
-    }
-
-    /**
-     * @return IconFactory
-     */
-    protected function getIconFactory()
-    {
-        return GeneralUtility::makeInstance(IconFactory::class);
     }
 }

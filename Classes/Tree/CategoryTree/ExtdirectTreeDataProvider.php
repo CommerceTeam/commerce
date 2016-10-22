@@ -73,6 +73,7 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
      *
      * @param int $nodeId
      * @param \stdClass $nodeData
+     *
      * @return array
      */
     public function getNextTreeLevel($nodeId, $nodeData)
@@ -106,6 +107,7 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
      * @param int $nodeId
      * @param \stdClass $nodeData
      * @param string $searchFilter
+     *
      * @return array
      */
     public function getFilteredTree($nodeId, $nodeData, $searchFilter)

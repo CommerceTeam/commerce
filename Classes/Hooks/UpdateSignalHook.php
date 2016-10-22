@@ -21,6 +21,7 @@ class UpdateSignalHook
 {
     /**
      * @param array $result
+     *
      * @return void Result returned via reference
      */
     public function updateCategoryTree(array &$result)
@@ -28,6 +29,20 @@ class UpdateSignalHook
         $result['JScode'] = '
             if (top && top.TYPO3.Backend.NavigationContainer.CategoryTree) {
                 top.TYPO3.Backend.NavigationContainer.CategoryTree.refreshTree();
+            }
+            ';
+    }
+
+    /**
+     * @param array $result
+     *
+     * @return void Result returned via reference
+     */
+    public function updateOrderTree(array &$result)
+    {
+        $result['JScode'] = '
+            if (top && top.TYPO3.Backend.NavigationContainer.OrderTree) {
+                top.TYPO3.Backend.NavigationContainer.OrderTree.refreshTree();
             }
             ';
     }

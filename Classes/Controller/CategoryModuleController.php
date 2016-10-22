@@ -18,6 +18,7 @@ use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use TYPO3\CMS\Backend\Clipboard\Clipboard;
 use TYPO3\CMS\Backend\Template\Components\Buttons\LinkButton;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -259,27 +260,24 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
 
         if ($access || ($this->id === 0 && $this->search_levels > 0 && strlen($this->search_field) > 0)) {
             // Deleting records...:
-            // Has not to do with the clipboard but is simply the delete action. The
-            // clipboard object is used to clean up the submitted entries to only the
-            // selected table.
+            // Has not to do with the clipboard but is simply the delete action.
+            // The clipboard object is used to clean up the submitted entries to only the selected table.
             if ($this->cmd == 'delete') {
                 $items = $dbList->clipObj->cleanUpCBC(GeneralUtility::_POST('CBC'), $this->cmd_table, 1);
                 if (!empty($items)) {
-                    $cmd = [];
-                    foreach ($items as $iK => $_) {
-                        $iKparts = explode('|', $iK);
-                        $cmd[$iKparts[0]][$iKparts[1]]['delete'] = 1;
+                    $cmd = array();
+                    foreach ($items as $iK => $value) {
+                        $iKParts = explode('|', $iK);
+                        $cmd[$iKParts[0]][$iKParts[1]]['delete'] = 1;
                     }
-
-                    /**
-                     * Data handler.
-                     *
-                     * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
-                     */
-                    $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-                    $tce->start([], $cmd);
+                    $tce = GeneralUtility::makeInstance(DataHandler::class);
+                    $tce->stripslashes_values = 0;
+                    $tce->start(array(), $cmd);
                     $tce->process_cmdmap();
-
+                    if (isset($cmd['tx_commerce_categories'])
+                        || isset($cmd['tx_commerce_products'])) {
+                        BackendUtility::setUpdateSignal('updateCategoryTree');
+                    }
                     $tce->printLogErrorMessages(GeneralUtility::getIndpEnv('REQUEST_URI'));
                 }
             }
@@ -297,12 +295,14 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             $dbList->setDispFields();
             // Render versioning selector:
             if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('version')) {
+                /** @noinspection PhpInternalEntityUsedInspection */
                 $dbList->HTMLcode .= $this->moduleTemplate->getVersionSelector($this->id);
             }
             // Render the list of tables:
             $dbList->generateList();
             $listUrl = $dbList->listURL();
             // Add JavaScript functions to the page:
+            /** @noinspection PhpInternalEntityUsedInspection */
             $this->moduleTemplate->addJavaScriptCode(
                 'CategoryModuleController',
                 '
@@ -334,12 +334,11 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                 ' . $this->moduleTemplate->redirectUrls($listUrl) . '
                 ' . $dbList->CBfunctions() . '
                 function editRecords(table, idList, addParams, CBflag) {
-                    window.location.href = "'
-                . BackendUtility::getModuleUrl(
+                    window.location.href = "' .
+                BackendUtility::getModuleUrl(
                     'record_edit',
                     ['returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')]
-                )
-                . '&edit[" + table + "][" + idList + "]=edit" + addParams;
+                ) . '&edit[" + table + "][" + idList + "]=edit" + addParams;
                 }
                 function editList(table, idList) {
                     var list = "";
@@ -368,6 +367,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         }
         // access
         // Begin to compile the whole page, starting out with page header:
+        /** @noinspection PhpInternalEntityUsedInspection */
         $this->body = $this->moduleTemplate->header(!$this->id ? 'Commerce' : $this->pageinfo['title']);
 
         if (!empty($dbList->HTMLcode)) {
@@ -413,61 +413,66 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             }
 
             $categoryParameter = $this->categoryUid > 0 ? '&control[categoryUid]=' . $this->categoryUid : '';
+
             // Add "display bigControlPanel" checkbox:
             if ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'selectable') {
-                $this->body .= '<div class="checkbox">'
-                    . '<label for="checkLargeControl">'
-                    . BackendUtility::getFuncCheck(
+                $this->body .= '<div class="checkbox">' .
+                    '<label for="checkLargeControl">' .
+                    BackendUtility::getFuncCheck(
                         $functionParameter,
                         'SET[bigControlPanel]',
                         $this->MOD_SETTINGS['bigControlPanel'],
                         '',
                         ($this->table ? '&table=' . $this->table : '') . $categoryParameter,
                         'id="checkLargeControl"'
-                    )
-                    . BackendUtility::wrapInHelp('xMOD_csh_corebe', 'list_options', $lang->getLL('largeControl', true))
-                    . '</label>'
-                    . '</div>';
+                    ) .
+                    BackendUtility::wrapInHelp('xMOD_csh_corebe', 'list_options', $lang->getLL('largeControl', true)) .
+                    '</label>' .
+                    '</div>';
             }
 
             // Add "clipboard" checkbox:
             if ($this->modTSconfig['properties']['enableClipBoard'] === 'selectable' && $dbList->showClipboard) {
                 if ($dbList->showClipboard) {
-                    $this->body .= '<div class="checkbox">'
-                        . '<label for="checkShowClipBoard">'
-                        . BackendUtility::getFuncCheck(
+                    $this->body .= '<div class="checkbox">' .
+                        '<label for="checkShowClipBoard">' .
+                        BackendUtility::getFuncCheck(
                             $functionParameter,
                             'SET[clipBoard]',
                             $this->MOD_SETTINGS['clipBoard'],
                             '',
                             ($this->table ? '&table=' . $this->table : '') . $categoryParameter,
                             'id="checkShowClipBoard"'
-                        )
-                        . BackendUtility::wrapInHelp(
+                        ) .
+                        BackendUtility::wrapInHelp(
                             'xMOD_csh_corebe',
                             'list_options',
                             $lang->getLL('showClipBoard', true)
-                        )
-                        . '</label>'
-                        . '</div>';
+                        ) .
+                        '</label>' .
+                        '</div>';
                 }
             }
 
             // Add "localization view" checkbox:
             if ($this->modTSconfig['properties']['enableLocalizationView'] === 'selectable') {
-                $this->body .= '<div class="checkbox">'
-                    . '<label for="checkLocalization">'
-                    . BackendUtility::getFuncCheck(
+                $this->body .= '<div class="checkbox">' .
+                    '<label for="checkLocalization">' .
+                    BackendUtility::getFuncCheck(
                         $functionParameter,
                         'SET[localization]',
                         $this->MOD_SETTINGS['localization'],
                         '',
                         ($this->table ? '&table=' . $this->table : '') . $categoryParameter,
                         'id="checkLocalization"'
-                    )
-                    . BackendUtility::wrapInHelp('xMOD_csh_corebe', 'list_options', $lang->getLL('localization', true))
-                    . '</label>'
-                    . '</div>';
+                    ) .
+                    BackendUtility::wrapInHelp(
+                        'xMOD_csh_corebe',
+                        'list_options',
+                        $lang->getLL('localization', true)
+                    ) .
+                    '</label>' .
+                    '</div>';
             }
 
             $this->body .= '
