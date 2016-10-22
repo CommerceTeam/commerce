@@ -293,6 +293,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                 $this->search_levels,
                 $this->showLimit
             );
+            $dbList->perms_clause = $this->perms_clause;
             $dbList->setDispFields();
             // Render versioning selector:
             if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('version')) {
