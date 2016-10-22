@@ -98,7 +98,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      * @param int $mountPoint Mount point
      * @param int $level Internally used variable as a recursion limiter
      *
-     * @return \TYPO3\CMS\Backend\Tree\TreeNodeCollection
+     * @return void
      */
     public function getNodes(\TYPO3\CMS\Backend\Tree\TreeNode $node, $mountPoint = 0, $level = 0)
     {
@@ -693,7 +693,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             $where .= ' AND (' . implode(' OR ', $searchWhere) . ')';
         }
 
-        $where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause($id) .
+        $where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1) .
             BackendUtility::deleteClause('tx_commerce_categories') .
             BackendUtility::versioningPlaceholderClause('tx_commerce_categories');
 
@@ -738,7 +738,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             $where .= ' AND (' . implode(' OR ', $searchWhere) . ')';
         }
 
-        $where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause($id) .
+        $where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1) .
             BackendUtility::deleteClause('tx_commerce_products') .
             BackendUtility::versioningPlaceholderClause('tx_commerce_products');
 
