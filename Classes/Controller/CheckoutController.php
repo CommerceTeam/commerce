@@ -2366,7 +2366,8 @@ class CheckoutController extends BaseController
                     }
                 }
 
-                $mailcontent = $userMailObj->generateMail($orderUid, $orderData);
+                $userMarker = [];
+                $mailcontent = $userMailObj->generateMail($orderUid, $orderData, $userMarker);
 
                 $basket = $this->getBasket();
                 foreach ($hooks as $hookObj) {
@@ -2380,7 +2381,7 @@ class CheckoutController extends BaseController
                     $userMailObj->templateCode = $this->cObj->fileResource(
                         $this->conf['usermail.']['templateFileHtml']
                     );
-                    $htmlContent = $userMailObj->generateMail($orderUid, $orderData);
+                    $htmlContent = $userMailObj->generateMail($orderUid, $orderData, $userMarker);
                     $userMailObj->isHtmlMail = true;
                     foreach ($hooks as $hookObj) {
                         if (method_exists($hookObj, 'postGenerateMail')) {
@@ -2390,7 +2391,11 @@ class CheckoutController extends BaseController
                     unset($userMailObj->isHtmlMail);
                 }
 
-                list($subject, $plainMessage) = GeneralUtility::trimExplode(chr(10), ltrim($mailcontent), true, 2);
+                // Moved to plainMailEncoded
+                $parts = explode(chr(10), $mailcontent, 2);
+                // First line is subject
+                $subject = trim($parts[0]);
+                $plainMessage = trim($parts[1]);
 
                 // Check if charset ist set by TS
                 // Otherwise set to default Charset
@@ -2404,17 +2409,15 @@ class CheckoutController extends BaseController
                     $this->conf['usermail.']['encoding'] = '8bit';
                 }
 
-                /** @var \TYPO3\CMS\Core\Charset\CharsetConverter $charsetConverter */
-                $charsetConverter = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
-                $charsetConverter->initCharset($frontendController->renderCharset);
-                $charsetConverter->initCharset(strtolower($this->conf['adminmail.']['charset']));
-
-                $plainMessage = $charsetConverter->conv(
+                // Convert Text to charset
+                $frontendController->csConvObj->initCharset($frontendController->renderCharset);
+                $frontendController->csConvObj->initCharset(strtolower($this->conf['usermail.']['charset']));
+                $plainMessage = $frontendController->csConvObj->conv(
                     $plainMessage,
                     $frontendController->renderCharset,
                     strtolower($this->conf['usermail.']['charset'])
                 );
-                $subject = $charsetConverter->conv(
+                $subject = $frontendController->csConvObj->conv(
                     $subject,
                     $frontendController->renderCharset,
                     strtolower($this->conf['usermail.']['charset'])
@@ -2460,7 +2463,9 @@ class CheckoutController extends BaseController
                     'additionalData' => $this,
                 ];
 
-                return \CommerceTeam\Commerce\Utility\GeneralUtility::sendMail($mailconf);
+                \CommerceTeam\Commerce\Utility\GeneralUtility::sendMail($mailconf);
+
+                return true;
             }
         }
 
@@ -2540,7 +2545,11 @@ class CheckoutController extends BaseController
                 unset($adminMailObj->isHtmlMail);
             }
 
-            list($subject, $plainMessage) = GeneralUtility::trimExplode(chr(10), ltrim($mailcontent), true, 2);
+            // Moved to plainMailEncoded
+            // First line is subject
+            $parts = explode(chr(10), $mailcontent, 2);
+            $subject = trim($parts[0]);
+            $plainMessage = trim($parts[1]);
 
             // Check if charset ist set by TS
             // Otherwise set to default Charset
@@ -2554,33 +2563,26 @@ class CheckoutController extends BaseController
                 $this->conf['adminmail.']['encoding '] = '8bit';
             }
 
-            /** @var \TYPO3\CMS\Core\Charset\CharsetConverter $charsetConverter */
-            $charsetConverter = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
-            $charsetConverter->initCharset($frontendController->renderCharset);
-            $charsetConverter->initCharset(strtolower($this->conf['adminmail.']['charset']));
-
             // Convert Text to charset
-            $plainMessage = $charsetConverter->conv(
+            $frontendController->csConvObj->initCharset($frontendController->renderCharset);
+            $frontendController->csConvObj->initCharset(strtolower($this->conf['adminmail.']['charset']));
+            $plainMessage = $frontendController->csConvObj->conv(
                 $plainMessage,
                 $frontendController->renderCharset,
                 strtolower($this->conf['adminmail.']['charset'])
             );
-            $subject = $charsetConverter->conv(
+            $subject = $frontendController->csConvObj->conv(
                 $subject,
                 $frontendController->renderCharset,
                 strtolower($this->conf['adminmail.']['charset'])
             );
-            $usernameMailencoded = $charsetConverter->specCharsToASCII(
+            $usernameMailencoded = $frontendController->csConvObj->specCharsToASCII(
                 $frontendController->renderCharset,
                 $userName
             );
 
             if ($this->debug) {
-                $this->debug(
-                    '<b>Adminmail from </b><pre>' . $plainMessage . '</pre>',
-                    'adminEmail',
-                    __FILE__ . ' ' . __LINE__
-                );
+                print '<b>Adminmail from </b><pre>' . $plainMessage . '</pre>' . LF;
             }
 
             // Mailconf for tx_commerce_div::sendMail($mailconf);
@@ -2622,7 +2624,9 @@ class CheckoutController extends BaseController
                 $mailconf['fromName'] = $this->conf['adminmail.']['from_name'];
             }
 
-            return \CommerceTeam\Commerce\Utility\GeneralUtility::sendMail($mailconf);
+            \CommerceTeam\Commerce\Utility\GeneralUtility::sendMail($mailconf);
+
+            return true;
         }
 
         return false;
