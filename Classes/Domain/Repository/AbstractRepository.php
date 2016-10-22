@@ -115,7 +115,7 @@ abstract class AbstractRepository implements SingletonInterface
             if (!is_array($returnData)) {
                 $this->error('There was an error overlaying the record with the version');
 
-                return false;
+                return [];
             }
 
             if ($langUid > 0) {
@@ -131,7 +131,7 @@ abstract class AbstractRepository implements SingletonInterface
                             $this->databaseTable,
                             $returnData,
                             $langUid,
-                            $this->translationMode
+                            $translationMode
                         );
 
                         if (!empty($newData)) {
@@ -144,7 +144,7 @@ abstract class AbstractRepository implements SingletonInterface
                             $this->databaseTable,
                             $returnData,
                             $langUid,
-                            $this->translationMode
+                            $translationMode
                         );
                 }
             }
@@ -154,11 +154,10 @@ abstract class AbstractRepository implements SingletonInterface
 
         // error Handling
         $this->error(
-            'exec_SELECTquery(\'*\', ' . $this->databaseTable . ', "uid = ' .
-            $uid . '"); returns no or more than one Result'
+            'exec_SELECTquery(\'*\', ' . $this->databaseTable . ', "uid = ' . $uid . '"); returns no result'
         );
 
-        return false;
+        return [];
     }
 
     /**
