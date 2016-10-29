@@ -497,9 +497,7 @@ class BasketController extends BaseController
     /**
      * Returns a list of markers to generate a quick-view of the basket.
      *
-     * @todo: implement getQuickView
-     *
-     * @return array Marker array for rendering
+     * @return void
      */
     public function getQuickView()
     {
@@ -527,8 +525,6 @@ class BasketController extends BaseController
         }
 
         $this->setContent($this->cObj->substituteMarkerArray($template, $basketArray));
-
-        return true;
     }
 
     /**
@@ -911,7 +907,7 @@ class BasketController extends BaseController
      *
      * @return string
      */
-    public function makeArticleView(Article $article, Product $product)
+    public function makeBasketArticleView(Article $article, Product $product)
     {
         // Getting the select attributes for view
         $attCode = '';
@@ -1147,7 +1143,7 @@ class BasketController extends BaseController
                     'tx_commerce_articles'
                 );
                 $this->selectAttributes = $basketItem->getProduct()->getAttributes([ATTRIB_SELECTOR]);
-                $productMarkerArray['PRODUCT_BASKET_FOR_LISTVIEW'] = $this->makeArticleView(
+                $productMarkerArray['PRODUCT_BASKET_FOR_LISTVIEW'] = $this->makeBasketArticleView(
                     $basketItem->getArticle(),
                     $basketItem->getProduct()
                 );
