@@ -306,7 +306,7 @@ class FolderRepository
      * @param array $addArray Additional params for the inserts (like timestamp)
      * @return int
      */
-    protected static function makeArticle($productUid, $classname, array $value, array $addArray)
+    public static function makeArticle($productUid, $classname, array $value, array $addArray)
     {
         /** @var ArticleRepository $articleRepository */
         $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
