@@ -134,7 +134,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
     /**
      * @param \TYPO3\CMS\Backend\Template\ModuleTemplate $moduleTemplate
      */
-    public function getDocHeaderButtons($moduleTemplate)
+    public function getDocHeaderButtons(\TYPO3\CMS\Backend\Template\ModuleTemplate $moduleTemplate)
     {
         $buttonBar = $moduleTemplate->getDocHeaderComponent()->getButtonBar();
         $module = $this->getModule();
@@ -218,7 +218,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
      * @return string
      * @throws \UnexpectedValueException If hook is of wrong interface
      */
-    public function getTable($table, $id, $rowList)
+    public function getTable($table, $id, $rowList = '')
     {
         $rowListArray = GeneralUtility::trimExplode(',', $rowList, true);
         // if no columns have been specified, show description (if configured)
