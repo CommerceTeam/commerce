@@ -207,6 +207,9 @@
 			<trans-unit id="tx_commerce_articles.relatedpage" xml:space="preserve">
 				<source>Related Page</source>
 			</trans-unit>
+			<trans-unit id="tx_commerce_articles.classname" xml:space="preserve">
+				<source>Payment class</source>
+			</trans-unit>
 			<trans-unit id="tx_commerce_article_prices" xml:space="preserve">
 				<source>Article Prices</source>
 			</trans-unit>

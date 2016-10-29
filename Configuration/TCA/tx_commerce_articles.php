@@ -324,6 +324,15 @@ return [
                 ],
             ],
         ],
+        'classname' => [
+            'label' => $languageFile . 'tx_commerce_articles.classname',
+            'l10n_display' => 'exclude',
+            'displayCond' => 'FIELD:classname:REQ:true',
+            'config' => [
+                'type' => 'input',
+                'readOnly' => true,
+            ],
+        ],
     ],
     'types' => [
         '0' => [
@@ -339,7 +348,8 @@ return [
                 --div--;' . $languageFile . 'tx_commerce_articles.prices, prices,
                 --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,
                     hidden,
-                    --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access',
+                    --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access,
+                    classname',
         ],
     ],
     'palettes' => [
