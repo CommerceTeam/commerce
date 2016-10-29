@@ -1254,11 +1254,7 @@ class BackendUtility
         // invoke the copy manually so we can actually override the uid_product field
         $overrideArray = ['uid_product' => $uidProduct];
 
-        // Write to session that we copy
-        // this is used by the hook to the datamap class
-        // to figure out if it should call the dynaflex
-        // so far this is the best (though not very clean)
-        // way to solve the issue we get when saving an article
+        // Write to session that we copy and not get stuck in a loop
         $backendUser->uc['txcommerce_copyProcess'] = 1;
         $backendUser->writeUC();
 
@@ -1643,10 +1639,7 @@ class BackendUtility
             // start
             $tce->start($data, []);
 
-            // Write to session that we copy
-            // this is used by the hook to the datamap class to figure out if
-            // it should call the dynaflex so far this is the best (though not
-            // very clean) way to solve the issue we get when saving an article
+            // Write to session that we copy to not get stuck in a loop
             $backendUser->uc['txcommerce_copyProcess'] = 1;
             $backendUser->writeUC();
 
@@ -1759,10 +1752,7 @@ class BackendUtility
             // start
             $tce->start($data, []);
 
-            // Write to session that we copy
-            // this is used by the hook to the datamap class to figure out if
-            // it should call the dynaflex so far this is the best (though not
-            // very clean) way to solve the issue we get when saving an article
+            // Write to session that we copy to not get stuck in a loop
             $backendUser->uc['txcommerce_copyProcess'] = 1;
             $backendUser->writeUC();
 

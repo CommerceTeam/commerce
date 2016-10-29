@@ -23,7 +23,6 @@ The following extensions need to be installed and running:
 
 - Commerce Extension Key: commerce
 - Address list, Extension Key: tt_address
-- Dynamic Flexforms, Extension Key: dynaflex
 - Money code Library, Extension Key: moneylib
 - Static Info Tables , Extension Key: static_info_tables
 - Optional: Frontend User Registration, Extension Key: sr_feuser_register

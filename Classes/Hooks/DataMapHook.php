@@ -461,7 +461,7 @@ class DataMapHook
         $this->belib->getParentCategoriesFromList($this->catList);
 
         $correlationTypes = [];
-        // get all correlation types from flexform thats was created by dynaflex!
+        // get all correlation types from flexform
         if (isset($incomingFieldArray['attributes'])
             && is_array($incomingFieldArray['attributes'])
             && isset($incomingFieldArray['attributes']['data'])
@@ -954,12 +954,6 @@ class DataMapHook
      * information in the relation tables like values, correlation types and
      * such stuff.
      * The hole save stuff is done by the "saveAllCorrelations" method.
-     * After the relations are stored in the database, we have to call the
-     * dynaflex extension to modify the TCA that it fit's the current
-     * situation of saved database entries. We call it here because the TCA
-     * is allready built and so the calls in the tca.php of commerce won't
-     * be executed between now and the point where the backendform is
-     * rendered.
      *
      * @param string $status Status
      * @param string $table Table
@@ -1015,7 +1009,6 @@ class DataMapHook
      */
     protected function afterDatabaseCategory($table, $id, array $fieldArray, DataHandler $dataHandler)
     {
-        // if unset, do not save anything, but load the dynaflex
         if (!empty($fieldArray)) {
             if (isset($fieldArray['parent_category'])) {
                 $newId = '';
