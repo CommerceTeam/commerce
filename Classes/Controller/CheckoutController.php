@@ -155,11 +155,11 @@ class CheckoutController extends BaseController
     /**
      * Init Method, autmatically called $this->main.
      *
-     * @param string $conf Configuration
+     * @param array $conf Configuration
      *
      * @return void
      */
-    public function init($conf)
+    public function init(array $conf = [])
     {
         parent::init($conf);
 
