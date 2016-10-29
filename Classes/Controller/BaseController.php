@@ -309,6 +309,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             throw new \Exception('No target implementation found for payment type ' . $paymentType, 1305676132);
         }
 
+        /** @var \CommerceTeam\Commerce\Payment\PaymentAbstract $paymentObject */
         $paymentObject = GeneralUtility::makeInstance($config['class'], $this);
         if (!$paymentObject instanceof \CommerceTeam\Commerce\Payment\PaymentInterface) {
             throw new \Exception(
