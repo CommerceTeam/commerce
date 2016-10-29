@@ -138,6 +138,10 @@ class BasketController extends BaseController
             );
         }
 
+        if (isset($this->conf['basketPid.']) && !empty($this->conf['basketPid.'])) {
+            $this->conf['basketPid'] = $this->cObj->stdWrap($this->conf['basketPid'], $this->conf['basketPid.']);
+        }
+
         $this->handleBasket();
 
         // Define the currency
