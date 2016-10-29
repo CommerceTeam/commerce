@@ -182,7 +182,7 @@ class AddressesController extends BaseController
      * @param bool  $getAddresses If this is set to TRUE, this method will fetch
      *                            all addresses into $this->addresses (Default is TRUE)
      */
-    public function init(array $conf, $getAddresses = true)
+    public function init(array $conf = [], $getAddresses = true)
     {
         $this->conf = $conf;
         $this->pi_setPiVarDefaults();
@@ -369,6 +369,7 @@ class AddressesController extends BaseController
                         $table,
                         $select
                     );
+                    $value = is_array($value) ? $value : [];
 
                     $valueHidden = $value['value'];
                     $value = $value['label'];

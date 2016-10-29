@@ -1111,7 +1111,7 @@ class DataMapHook
                 'tx_commerce_article_prices',
                 'uid = ' . (int) $id
             );
-            $uidArticle = $uidArticleRow['uid_article'];
+            $uidArticle = is_array($uidArticleRow) ? $uidArticleRow['uid_article'] : 0;
         } else {
             $uidArticle = $fieldArray['uid_article'];
         }
@@ -1420,7 +1420,7 @@ class DataMapHook
                 'tx_commerce_products',
                 'uid = ' . $productUid
             );
-            if (!empty($pXml['attributesedit'])) {
+            if (!empty($pXml) && !empty($pXml['attributesedit'])) {
                 $pXml = GeneralUtility::xml2array($pXml['attributesedit']);
 
                 if (is_array($pXml['data']['sDEF']['lDEF'])) {

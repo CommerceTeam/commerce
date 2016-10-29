@@ -333,7 +333,7 @@ class Commands
             '',
             'sorting'
         );
-        return is_array($domain) ? htmlspecialchars($domain['domainName']) : '';
+        return !empty($domain) ? htmlspecialchars($domain['domainName']) : '';
     }
 
 

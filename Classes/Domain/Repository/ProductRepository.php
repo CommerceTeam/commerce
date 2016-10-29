@@ -266,13 +266,13 @@ class ProductRepository extends AbstractRepository
      */
     public function getManufacturerTitle($manufacturer)
     {
-        $row = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             'title',
             'tx_commerce_manufacturer',
             'uid = ' . (int) $manufacturer
         );
 
-        return isset($row['title']) ? $row['title'] : '';
+        return is_array($row) && isset($row['title']) ? $row['title'] : '';
     }
 
     /**
@@ -334,7 +334,7 @@ class ProductRepository extends AbstractRepository
      */
     public function findByCategoryAndUname($categoryUid, $uname)
     {
-        $product = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+        $product = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             'tx_commerce_products.*',
             $this->databaseCategoryRelationTable
             . ' AS mm
@@ -342,6 +342,7 @@ class ProductRepository extends AbstractRepository
             'tx_commerce_products.deleted = 0 AND tx_commerce_products.hidden = 0 AND mm.uid_foreign = '
             . (int) $categoryUid . ' AND uname = \'' . $uname . '\''
         );
+        $product = is_array($product) ? $product : [];
 
         return $product;
     }
@@ -430,7 +431,7 @@ class ProductRepository extends AbstractRepository
      */
     public function findByArticleUid($articleUid)
     {
-        $products = (array)$this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+        $product = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             $this->databaseTable . '.*',
             $this->databaseTable . '
             INNER JOIN tx_commerce_articles ON ' . $this->databaseTable . '.uid = tx_commerce_articles.uid_product',
@@ -438,8 +439,9 @@ class ProductRepository extends AbstractRepository
             . $this->enableFields()
             . $this->enableFields('tx_commerce_articles')
         );
+        $product = is_array($product) ? $product : [];
 
-        return $products;
+        return $product;
     }
 
     /**

@@ -93,6 +93,7 @@ class BackendUtility
                     '',
                     'uid'
                 );
+                $attribute = is_array($attribute) ? $attribute : '';
                 $relation['attributeData'] = $attribute;
                 if ($attribute['has_valuelist'] && $getValueListData) {
                     // fetch values for this valuelist entry
@@ -594,6 +595,7 @@ class BackendUtility
                 'tx_commerce_articles',
                 'uid = ' . (int) $articleUid
             );
+            $xmlData = is_array($xmlData) ? $xmlData : ['attributesedit' => ''];
             $xmlData = GeneralUtility::xml2array($xmlData['attributesedit']);
         }
 
@@ -670,6 +672,7 @@ class BackendUtility
     public function updateXML($xmlField, $table, $uid, $type, array $ctList, $rebuild = false)
     {
         $xmlData = $this->getDatabaseConnection()->exec_SELECTgetSingleRow($xmlField, $table, 'uid = ' . (int) $uid);
+        $xmlData = is_array($xmlData) ? $xmlData : [$xmlField => ''];
         $xmlData = GeneralUtility::xml2array($xmlData[$xmlField]);
         if (!is_array($xmlData)) {
             $xmlData = [];
@@ -1611,6 +1614,7 @@ class BackendUtility
                     'tx_commerce_products',
                     'l18n_parent = ' . $productUid . ' AND sys_language_uid = ' . $languageUid
                 );
+                $row = is_array($row) ? $row : [];
 
                 $rec[0]['uid_product'] = $row['uid'];
             }
@@ -2508,7 +2512,7 @@ class BackendUtility
         $ident = $uid . '-' . $clause . '-' . $workspaceOl;
 
         if (!isset($getCategoryForRootlineCache[$ident])) {
-            $row = (array) self::getDatabaseConnection()->exec_SELECTgetSingleRow(
+            $row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
                 'mm.uid_foreign AS pid, tx_commerce_categories.uid, tx_commerce_categories.hidden,
                     tx_commerce_categories.title,
                     tx_commerce_categories.ts_config, tx_commerce_categories.t3ver_oid,
@@ -2553,7 +2557,7 @@ class BackendUtility
         $ident = $uid . '-' . $clause . '-' . $workspaceOl;
 
         if (!isset($getCategoryForRootlineCache[$ident])) {
-            $row = (array) self::getDatabaseConnection()->exec_SELECTgetSingleRow(
+            $row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
                 'mm.uid_foreign AS pid, tx_commerce_products.uid, tx_commerce_products.hidden,
                     tx_commerce_products.title,
                     tx_commerce_categories.ts_config, tx_commerce_categories.t3ver_oid,

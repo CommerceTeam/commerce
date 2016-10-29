@@ -33,11 +33,13 @@ class FrontendUserRepository extends AbstractRepository
      */
     public function findByAddressId($addressId)
     {
-        return (array) self::getDatabaseConnection()->exec_SELECTgetSingleRow(
+        $row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
             'uid',
             $this->databaseTable,
             'tx_commerce_tt_address_id = ' . $addressId . ' AND deleted = 0'
         );
+        $row = is_array($row) ? $row : [];
+        return $row;
     }
 
     /**
@@ -48,13 +50,13 @@ class FrontendUserRepository extends AbstractRepository
      */
     public function findByUsernameInFolder($username, $folderId)
     {
-        $row = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             'uid',
             $this->databaseTable,
             'username = ' . $this->getDatabaseConnection()->fullQuoteStr($username, $this->databaseTable)
             . ' AND pid = ' . $folderId . $this->enableFields()
         );
-
+        $row = is_array($row) ? $row : [];
         return $row;
     }
 }

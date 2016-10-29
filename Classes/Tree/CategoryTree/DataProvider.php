@@ -986,7 +986,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             'tx_commerce_categories.sorting'
         );
         $returnValue = true;
-        if (!$category['uid']) {
+        if (empty($category) || !$category['uid']) {
             $returnValue = false;
         }
         return $returnValue;
@@ -1011,7 +1011,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             'tx_commerce_products.sorting'
         );
         $returnValue = true;
-        if (!$product['uid']) {
+        if (empty($product) || !$product['uid']) {
             $returnValue = false;
         }
         return $returnValue;
@@ -1036,7 +1036,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         );
 
         $returnValue = true;
-        if (!$article['uid']) {
+        if (empty($article) || !$article['uid']) {
             $returnValue = false;
         }
 

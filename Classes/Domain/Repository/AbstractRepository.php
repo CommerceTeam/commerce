@@ -170,11 +170,12 @@ abstract class AbstractRepository implements SingletonInterface
      */
     public function findByUid($uid, $additionalWhere = '')
     {
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+        $result = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             '*',
             $this->databaseTable,
             'uid = ' . (int) $uid . $this->enableFields() . ($additionalWhere ? ' AND ' . $additionalWhere : '')
         );
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -196,7 +197,7 @@ abstract class AbstractRepository implements SingletonInterface
             'uid = ' . (int) $uid
         );
 
-        return count($row) == 1;
+        return is_array($row);
     }
 
     /**

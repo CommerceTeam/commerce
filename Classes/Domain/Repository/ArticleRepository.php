@@ -68,7 +68,7 @@ class ArticleRepository extends AbstractRepository
      */
     public function getHighestSortingByProductUid($productUid)
     {
-        $sorting = (array)$this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+        $sorting = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             'uid, sorting',
             $this->databaseTable,
             'uid_product = ' . (int) $productUid . $this->enableFields(),
@@ -76,7 +76,7 @@ class ArticleRepository extends AbstractRepository
             'sorting DESC'
         );
 
-        return isset($sorting['sorting']) ? $sorting['sorting'] : 0;
+        return is_array($sorting) && isset($sorting['sorting']) ? $sorting['sorting'] : 0;
     }
 
     /**
@@ -137,11 +137,11 @@ class ArticleRepository extends AbstractRepository
                     '); returns no Result'
                 );
 
-                return false;
+                return [];
             }
         }
 
-        return false;
+        return [];
     }
 
     /**
@@ -177,11 +177,11 @@ class ArticleRepository extends AbstractRepository
                     '); returns no Result'
                 );
 
-                return false;
+                return [];
             }
         }
 
-        return false;
+        return [];
     }
 
     /**
@@ -363,7 +363,7 @@ class ArticleRepository extends AbstractRepository
             }
         }
 
-        return false;
+        return '';
     }
 
     /**
@@ -375,12 +375,14 @@ class ArticleRepository extends AbstractRepository
      */
     public function findByClassname($classname)
     {
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             '*',
             'tx_commerce_articles',
             'classname = ' . $this->getDatabaseConnection()->fullQuoteStr($classname, $this->databaseTable)
             . $this->enableFields()
         );
+
+        return is_array($row) ? $row : [];
     }
 
     /**

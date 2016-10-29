@@ -2010,6 +2010,7 @@ class CheckoutController extends BaseController
             $select = $this->conf[$type . '.']['sourceFields.'][$field . '.']['value'] . ' = \'' . $value . '\'';
             $fields = $this->conf[$type . '.']['sourceFields.'][$field . '.']['label'];
             $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow($fields, $table, $select);
+            $row = is_array($row) ? $row : [];
 
             return $row[$fields];
         }
@@ -2745,6 +2746,7 @@ class CheckoutController extends BaseController
                 $fields = $fieldConfig['label'] . ' AS label,';
                 $fields .= $fieldConfig['value'] . ' AS value';
                 $value = $this->getDatabaseConnection()->exec_SELECTgetSingleRow($fields, $table, $select);
+                $value = is_array($value) ? $value : [];
 
                 $newdata[$key] = $value['label'];
             } elseif ($fieldConfig['type'] == 'select' && is_array($fieldConfig['values.'])) {

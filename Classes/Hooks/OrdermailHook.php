@@ -301,7 +301,7 @@ class OrdermailHook
                 'tt_address',
                 'uid = ' . (int) $orderData['cust_deliveryaddress']
             );
-            if (is_array($data)) {
+            if (!empty($data)) {
                 $deliveryAdress = $this->makeAdressView($data, '###DELIVERY_ADDRESS###', $content);
             }
         }
@@ -310,7 +310,7 @@ class OrdermailHook
         $billingAdress = '';
         if ($orderData['cust_invoice']) {
             $data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = ' . (int) $orderData['cust_invoice']);
-            if (is_array($data)) {
+            if (!empty($data)) {
                 $billingAdress = $this->makeAdressView($data, '###BILLING_ADDRESS###', $content);
                 $this->customermailadress = $data['email'];
             }

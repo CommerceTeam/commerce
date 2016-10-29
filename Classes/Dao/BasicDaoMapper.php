@@ -238,6 +238,7 @@ class BasicDaoMapper
             $this->dbTable,
             'uid = ' . (int) $uid . 'AND deleted = 0'
         );
+        $model = is_array($model) ? $model : [];
         if ($model) {
             // parse into object
             $this->parser->parseModelToObject($model, $object);

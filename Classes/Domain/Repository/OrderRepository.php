@@ -37,12 +37,12 @@ class OrderRepository extends AbstractRepository
             $queryString .= ' AND cust_fe_user = ' . (int) $userId;
         }
 
-        $row = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             '*',
             $this->databaseTable,
             $queryString . $this->enableFields('tx_commerce_orders')
         );
-
+        $row = is_array($row) ? $row : [];
         return $row;
     }
 

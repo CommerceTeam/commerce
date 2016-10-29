@@ -278,7 +278,7 @@ class Article extends AbstractEntity
         }
 
         $arrayOfPrices = $this->getPriceScales();
-        if (!$arrayOfPrices) {
+        if (empty($arrayOfPrices)) {
             return $this->getPriceUid();
         }
 
@@ -487,7 +487,7 @@ class Article extends AbstractEntity
         $return = [];
         $arrayOfPricesUids = $this->getPriceScales($startCount);
 
-        if (is_array($arrayOfPricesUids)) {
+        if (!empty($arrayOfPricesUids)) {
             foreach ($arrayOfPricesUids as $startCount => $tmpArray) {
                 foreach ($tmpArray as $endCount => $pricdUid) {
                     /**
@@ -688,7 +688,7 @@ class Article extends AbstractEntity
         if ($this->prices_loaded == false) {
             $this->prices_uids = $this->getRepository()->getPrices($this->uid);
 
-            if ($this->prices_uids) {
+            if (!empty($this->prices_uids)) {
                 $priceData = array_shift($this->prices_uids);
                 $this->price_uid = $priceData[0];
 

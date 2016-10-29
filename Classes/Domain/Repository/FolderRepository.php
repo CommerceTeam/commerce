@@ -122,6 +122,7 @@ class FolderRepository
             'doktype = 254 AND tx_commerce_foldername = \'' . strtolower($title) . '\' AND pid = ' . (int) $pid .
             ' AND module = \'' . $module . '\' ' . \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('pages')
         );
+        $row = is_array($row) ? $row : [];
 
         return $row;
     }
@@ -145,11 +146,12 @@ class FolderRepository
             '',
             'sorting DESC'
         );
+        $sorting = is_array($sorting) ? $sorting : [];
 
         self::getDatabaseConnection()->exec_INSERTquery(
             'pages',
             [
-                'sorting' => $sorting['sorting'] ? $sorting['sorting'] + 1 : 10111,
+                'sorting' => isset($sorting['sorting']) ? $sorting['sorting'] + 1 : 10111,
                 'perms_user' => 31,
                 'perms_group' => 31,
                 'perms_everybody' => 31,

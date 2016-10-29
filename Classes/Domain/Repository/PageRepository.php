@@ -33,11 +33,13 @@ class PageRepository extends AbstractRepository
      */
     public function findEditFolderByUid($uid)
     {
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             'tx_commerce_foldereditorder',
             $this->databaseTable,
             'tx_commerce_foldereditorder = 1 AND uid = ' . (int) $uid
         );
+        $row = is_array($row) ? $row : [];
+        return $row;
     }
 
     /**

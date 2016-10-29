@@ -82,7 +82,7 @@ class CategoryRepository extends AbstractRepository
             $this->databaseTable,
             'uname = \'SYSTEM\' AND parent_category = \'\' AND deleted = 0'
         );
-        return isset($category['uid']) ? $category['uid'] : 0;
+        return is_array($category) && isset($category['uid']) ? $category['uid'] : 0;
     }
 
     /**
@@ -94,12 +94,10 @@ class CategoryRepository extends AbstractRepository
      */
     public function getParentCategory($uid)
     {
-        $database = $this->getDatabaseConnection();
-
         $result = 0;
         if ($uid && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
             $this->uid = $uid;
-            $row = (array) $database->exec_SELECTgetSingleRow(
+            $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
                 'uid_foreign',
                 $this->databaseParentCategoryRelationTable,
                 'uid_local = ' . $uid . ' AND is_reference = 0'
@@ -121,15 +119,14 @@ class CategoryRepository extends AbstractRepository
      */
     public function getPermissionsRecord($uid)
     {
-        $database = $this->getDatabaseConnection();
-
         $result = [];
         if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) && $uid) {
-            $result = (array) $database->exec_SELECTgetSingleRow(
+            $result = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
                 'perms_everybody, perms_user, perms_group, perms_userid, perms_groupid, editlock',
                 $this->databaseTable,
                 'uid = ' . $uid
             );
+            $result = is_array($result) ? $result : [];
         }
 
         return $result;
@@ -398,7 +395,7 @@ class CategoryRepository extends AbstractRepository
     public function getCategoryRootline($categoryUid, $clause = '', array $result = [])
     {
         if (!empty($categoryUid) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($categoryUid)) {
-            $row = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
                 'tx_commerce_categories.uid, mm.uid_foreign AS parent',
                 'tx_commerce_categories
                     INNER JOIN tx_commerce_categories_parent_category_mm AS mm
@@ -408,6 +405,7 @@ class CategoryRepository extends AbstractRepository
 
             if (!empty($row) && $row['parent'] != $categoryUid) {
                 $result = $this->getCategoryRootline((int) $row['parent'], $clause, $result);
+                $result = is_array($result) ? $result : [];
             }
 
             $result[] = [

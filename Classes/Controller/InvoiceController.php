@@ -161,7 +161,7 @@ class InvoiceController extends BaseController
         $this->content = '';
         $this->order = $this->getOrderData();
         if ($this->order) {
-            $row = (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
                 'cu_iso_3',
                 'static_currencies',
                 'uid = ' . (int) $this->order['cu_iso_3_uid']
@@ -373,6 +373,7 @@ class InvoiceController extends BaseController
                 'tt_address, fe_users',
                 $queryString
             );
+            $row = is_array($row) ? $row : [];
         } else {
             $queryString = ' 1 = 1 ';
             if ($addressUid) {
@@ -385,6 +386,7 @@ class InvoiceController extends BaseController
                 'tt_address',
                 $queryString
             );
+            $row = is_array($row) ? $row : [];
         }
         $markerArray = $this->generateMarkerArray($row, $typoScript, $prefix, 'tt_address');
         $template = $this->cObj->getSubpart($this->templateCode, '###' . $prefix . 'DATA###');
