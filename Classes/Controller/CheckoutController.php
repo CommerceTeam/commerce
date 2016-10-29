@@ -449,7 +449,6 @@ class CheckoutController extends BaseController
      */
     public function storeSessionData()
     {
-        $database = $this->getDatabaseConnection();
         $feUser = $this->getFrontendUser();
 
         // Saves UC and SesData if changed.
@@ -463,13 +462,7 @@ class CheckoutController extends BaseController
                 $feUser->removeSessionData();
             } else {
                 // Write new session-data
-                $insertFields = [
-                    'hash' => $feUser->id,
-                    'content' => serialize($feUser->sesData),
-                    'tstamp' => $GLOBALS['EXEC_TIME'],
-                ];
-                $feUser->removeSessionData();
-                $database->exec_INSERTquery('fe_session_data', $insertFields);
+                $feUser->storeSessionData();
             }
         }
     }
