@@ -1385,39 +1385,25 @@ class CheckoutController extends BaseController
         $sumGross = $basket->getSumGross();
         $sumTax = $sumGross - $sumNet;
 
-        $deliveryArticleArray = $basket->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
-
-        $sumShippingNet = 0;
-        $sumShippingGross = 0;
-
-        foreach ($deliveryArticleArray as $oneDeliveryArticle) {
-            /**
-             * Basket item.
-             *
-             * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
-             */
-            $basketItem = $basket->getBasketItem($oneDeliveryArticle);
-            $sumShippingNet += $basketItem->getPriceNet();
-            $sumShippingGross += $basketItem->getPriceGross();
+        $deliveryArticle = $basket->getDeliveryArticle();
+        if ($deliveryArticle) {
+            $sumShippingNet = $deliveryArticle->getPriceNet();
+            $sumShippingGross = $deliveryArticle->getPriceGross();
+        } else {
+            $sumShippingNet = 0;
+            $sumShippingGross = 0;
         }
 
-        $paymentArticleArray = $basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
-
-        $sumPaymentNet = 0;
-        $sumPaymentGross = 0;
-
-        foreach ($paymentArticleArray as $onePaymentArticle) {
-            /**
-             * Basket item.
-             *
-             * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
-             */
-            $basketItem = $basket->getBasketItem($onePaymentArticle);
-            $sumPaymentNet += $basketItem->getPriceNet();
-            $sumPaymentGross += $basketItem->getPriceGross();
+        $paymentArticle = $basket->getPaymentArticle();
+        if ($paymentArticle) {
+            $sumPaymentNet = $paymentArticle->getPriceNet();
+            $sumPaymentGross = $paymentArticle->getPriceGross();
+        } else {
+            $sumPaymentNet = 0;
+            $sumPaymentGross = 0;
         }
 
-        $paymentTitle = $basket->getFirstArticleTypeTitle(PAYMENTARTICLETYPE);
+        $paymentTitle = $paymentArticle->getArticle()->getTitle();
 
         $markerArray = [];
         $markerArray['###LABEL_SUM_ARTICLE_NET###'] = $this->pi_getLL('listing_article_net');
@@ -2282,7 +2268,9 @@ class CheckoutController extends BaseController
         $basket = $this->getBasket();
 
         // Check if basket is empty
-        if (in_array('noarticles', $checks) && !$basket->getFirstArticleTypeTitle(NORMALARTICLETYPE)) {
+        if (in_array('noarticles', $checks)
+            && !empty($basket->getArticlesByArticleTypeUidAsUidlist(NORMALARTICLETYPE))
+        ) {
             return 'noarticles';
         }
 

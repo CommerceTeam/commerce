@@ -245,6 +245,24 @@ class BasicBasket
     }
 
     /**
+     * @return BasketItem
+     */
+    public function getDeliveryArticle()
+    {
+        $articleUids = $this->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
+        return !empty($articleUids) ? $this->getBasketItem(reset($articleUids)) : null;
+    }
+
+    /**
+     * @return BasketItem
+     */
+    public function getPaymentArticle()
+    {
+        $articleUids = $this->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
+        return !empty($articleUids) ? $this->getBasketItem(reset($articleUids)) : null;
+    }
+
+    /**
      * Create an array of assoc arrays from the basket articles.
      *
      * [
@@ -321,13 +339,11 @@ class BasicBasket
     /**
      * Get first title from of all articles concerning this type.
      *
-     * Eexample:
-     * $basket->getFirstArticleTypeTitle(PAYMENTARTICLETYPE)
-     * $basket->getFirstArticleTypeTitle(DELIVERYARTICLETYPE)
-     *
      * @param int $articleTypeUid Article type uid
      *
      * @return string Title
+     *
+     * @deprecated Replace with ->getArticlesByArticleTypeUidAsUidlist($articleTypeUid)[0]->getArticle()->getTitle();
      */
     public function getFirstArticleTypeTitle($articleTypeUid)
     {

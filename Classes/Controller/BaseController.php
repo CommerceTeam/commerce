@@ -1137,7 +1137,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $this->currency,
             $this->showCurrency
         );
-        $markerArray['###SHIPPING_TITLE###'] = $basket->getFirstArticleTypeTitle(DELIVERYARTICLETYPE);
+        $markerArray['###SHIPPING_TITLE###'] = $basket->getDeliveryArticle()->getArticle()->getTitle();
         $markerArray['###SUM_PAYMENT_NET###'] = MoneyViewHelper::format(
             $basket->getArticleTypeSumNet(PAYMENTARTICLETYPE),
             $this->currency,
@@ -1148,7 +1148,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $this->currency,
             $this->showCurrency
         );
-        $markerArray['###PAYMENT_TITLE###'] = $basket->getFirstArticleTypeTitle(PAYMENTARTICLETYPE);
+        $markerArray['###PAYMENT_TITLE###'] = $basket->getPaymentArticle()->getArticle()->getTitle();
         $markerArray['###PAYMENT_DESCRIPTION###'] = $basket->getFirstArticleTypeDescription(PAYMENTARTICLETYPE);
         $markerArray['###SUM_TAX###'] = MoneyViewHelper::format(
             $basket->getTaxSum(),
