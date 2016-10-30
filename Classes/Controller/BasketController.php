@@ -607,6 +607,7 @@ class BasketController extends BaseController
             $this->makeCheckOutLink(),
             $this->conf['nextbutton.']
         );
+        $basketArray['###BASKET_CHECKOUTURL###'] = $this->cObj->lastTypoLinkUrl;
         $basketArray['###BASKET_ARTICLES_NET_SUM###'] = MoneyViewHelper::format(
             $this->basket->getArticleTypeSumNet(NORMALARTICLETYPE),
             $this->currency
