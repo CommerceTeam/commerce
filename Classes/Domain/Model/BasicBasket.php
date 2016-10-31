@@ -245,6 +245,21 @@ class BasicBasket
     }
 
     /**
+     * @return array
+     */
+    public function getNormalArticles()
+    {
+        $basketArticleUids = $this->getArticlesByArticleTypeUidAsUidlist(NORMALARTICLETYPE);
+
+        $basketArticles = [];
+        foreach ($basketArticleUids as $basketArticleUid) {
+            $basketArticles[$basketArticleUid] = $this->basketItems[$basketArticleUid];
+        }
+
+        return $basketArticles;
+    }
+
+    /**
      * @return BasketItem
      */
     public function getDeliveryArticle()
