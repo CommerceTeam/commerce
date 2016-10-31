@@ -95,14 +95,9 @@ class BasicBasket
     public function getArticleTypeCount($articleTypeUid)
     {
         $count = 0;
-
-        /**
-         * Basket item.
-         *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
-         */
-        foreach ($this->basketItems as $oneItem) {
-            if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
+        /** @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem */
+        foreach ($this->basketItems as $basketItem) {
+            if ($basketItem->getArticleTypeUid() == $articleTypeUid) {
                 ++$count;
             }
         }
@@ -121,13 +116,9 @@ class BasicBasket
     {
         $count = 0;
 
-        /**
-         * Basket item.
-         *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
-         */
-        foreach ($this->basketItems as $oneItem) {
-            if (in_array($oneItem->getArticle()->getArticleTypeUid(), $articleTypes)) {
+        /** @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem */
+        foreach ($this->basketItems as $basketItem) {
+            if (in_array($basketItem->getArticleTypeUid(), $articleTypes)) {
                 ++$count;
             }
         }
@@ -151,25 +142,21 @@ class BasicBasket
     {
         $sumNet = 0;
 
-        /**
-         * Basket item
-         *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
-         */
+        /** @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem */
         if ($this->pricefromnet == 0) {
             $grossSumArray = [];
-            foreach ($this->basketItems as $oneItem) {
-                if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
-                    $grossSumArray[(string) $oneItem->getTax()] += $oneItem->getItemSumGross();
+            foreach ($this->basketItems as $basketItem) {
+                if ($basketItem->getArticleTypeUid() == $articleTypeUid) {
+                    $grossSumArray[(string) $basketItem->getTax()] += $basketItem->getItemSumGross();
                 }
             }
             foreach ($grossSumArray as $taxrate => $rateGrossSum) {
                 $sumNet += (int) round($rateGrossSum / (1 + (((float) $taxrate) / 100)));
             }
         } else {
-            foreach ($this->basketItems as $oneItem) {
-                if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
-                    $sumNet += ($oneItem->getQuantity() * $oneItem->getPriceNet());
+            foreach ($this->basketItems as $basketItem) {
+                if ($basketItem->getArticleTypeUid() == $articleTypeUid) {
+                    $sumNet += ($basketItem->getQuantity() * $basketItem->getPriceNet());
                 }
             }
         }
@@ -193,25 +180,21 @@ class BasicBasket
     {
         $sumGross = 0;
 
-        /**
-         * Basket item
-         *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
-         */
+        /** @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem */
         if ($this->pricefromnet == 1) {
             $netSumArray = [];
-            foreach ($this->basketItems as $oneItem) {
-                if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
-                    $netSumArray[(string) $oneItem->getTax()] += $oneItem->getItemSumNet();
+            foreach ($this->basketItems as $basketItem) {
+                if ($basketItem->getArticleTypeUid() == $articleTypeUid) {
+                    $netSumArray[(string) $basketItem->getTax()] += $basketItem->getItemSumNet();
                 }
             }
             foreach ($netSumArray as $taxrate => $rateGrossSum) {
                 $sumGross += (int) round($rateGrossSum * (1 + (((float) $taxrate) / 100)));
             }
         } else {
-            foreach ($this->basketItems as $oneItem) {
-                if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
-                    $sumGross += ($oneItem->getQuantity() * $oneItem->getPriceGross());
+            foreach ($this->basketItems as $basketItem) {
+                if ($basketItem->getArticleTypeUid() == $articleTypeUid) {
+                    $sumGross += ($basketItem->getQuantity() * $basketItem->getPriceGross());
                 }
             }
         }
@@ -230,13 +213,9 @@ class BasicBasket
     {
         $result = [];
 
-        /**
-         * Basket item.
-         *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
-         */
-        foreach ($this->basketItems as $uid => $oneItem) {
-            if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
+        /** @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem */
+        foreach ($this->basketItems as $uid => $basketItem) {
+            if ($basketItem->getArticleTypeUid() == $articleTypeUid) {
                 $result[] = $uid;
             }
         }
@@ -896,13 +875,9 @@ class BasicBasket
     {
         $result = null;
 
-        /**
-         * Basket item.
-         *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem
-         */
+        /** @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem */
         foreach ($this->basketItems as $basketItem) {
-            if ((int) $basketItem->getArticleTypeUid() === (int) $articleType) {
+            if ($basketItem->getArticleTypeUid() === (int) $articleType) {
                 $result = $basketItem;
                 break;
             }
