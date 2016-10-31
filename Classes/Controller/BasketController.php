@@ -58,25 +58,11 @@ class BasketController extends BaseController
     public $deliveryProduct;
 
     /**
-     * Basket delivery articles.
-     *
-     * @var array
-     */
-    public $basketDeliveryArticles;
-
-    /**
      * Payment product.
      *
      * @var Product
      */
     public $paymentProduct;
-
-    /**
-     * Basket payment articles.
-     *
-     * @var array
-     */
-    public $basketPaymentArticles;
 
     /**
      * Basket object.
@@ -679,14 +665,14 @@ class BasketController extends BaseController
         $deliverySelectTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###DELIVERY_ARTICLE_SELECT###');
         $deliveryOptionTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###DELIVERY_ARTICLE_OPTION###');
 
-        $this->basketDeliveryArticles = $this->basket->getDeliveryArticle();
+        $currentDeliveryArticle = $this->basket->getDeliveryArticle();
 
         $allowedArticles = [];
         if ($this->conf['delivery.']['allowedArticles']) {
             $allowedArticles = explode(',', $this->conf['delivery.']['allowedArticles']);
         }
 
-        // Hook to define/overwrite individually, which delivery articles are allowed
+        // Hook to allow to define/overwrite individually, which delivery articles are allowed
         $hooks = HookFactory::getHooks('Controller/BasketController', 'makeDelivery');
         foreach ($hooks as $hook) {
             if (method_exists($hook, 'deliveryAllowedArticles')) {
@@ -698,10 +684,10 @@ class BasketController extends BaseController
             ' selected="selected"' :
             ' checked="checked"';
 
+        $first = false;
         $priceNet = '';
         $priceGross = '';
         $options = '';
-        $first = false;
         /**
          * Article.
          *
@@ -711,21 +697,18 @@ class BasketController extends BaseController
             if (empty($allowedArticles) || in_array($deliveryArticle->getUid(), $allowedArticles)) {
                 $selected = '';
 
-                if ($deliveryArticle->getUid() == $this->basketDeliveryArticles[0]) {
+                if ($deliveryArticle->getUid() == $currentDeliveryArticle->getArticle()->getUid()) {
                     $selected = $activeFlag;
                     $priceNet = MoneyViewHelper::format($deliveryArticle->getPriceNet(), $this->currency);
                     $priceGross = MoneyViewHelper::format($deliveryArticle->getPriceGross(), $this->currency);
                 } elseif (!$first) {
-                    if (empty($this->basketDeliveryArticles[0])) {
+                    if (empty($currentDeliveryArticle)) {
                         $selected = $activeFlag;
+                        $this->getBasket()->addArticle($deliveryArticle->getUid());
                     }
 
                     $priceNet = MoneyViewHelper::format($deliveryArticle->getPriceNet(), $this->currency);
                     $priceGross = MoneyViewHelper::format($deliveryArticle->getPriceGross(), $this->currency);
-                    if (!is_array($this->basketDeliveryArticles) || empty($this->basketDeliveryArticles)) {
-                        $this->getBasket()->addArticle($deliveryArticle->getUid());
-                        $this->getBasket()->storeData();
-                    }
                 }
 
                 $markerArray = [
@@ -751,6 +734,8 @@ class BasketController extends BaseController
         $basketArray['###DELIVERY_PRICE_GROSS###'] = $priceGross;
         $basketArray['###DELIVERY_PRICE_NET###'] = $priceNet;
 
+        $this->getBasket()->storeData();
+
         return $basketArray;
     }
 
@@ -770,58 +755,15 @@ class BasketController extends BaseController
         );
         $this->paymentProduct->loadData();
 
-        $this->basketPaymentArticles = $this->basket->getPaymentArticle();
+        $paymentSelectTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###PAYMENT_ARTICLE_SELECT###');
+        $paymentOptionTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###PAYMENT_ARTICLE_OPTION###');
 
-        $select = '<select name="' . $this->prefixId . '[payArt]" onChange="this.form.submit();">';
-
-        $addPleaseSelect = false;
-        $addDefaultPaymentToBasket = false;
-        // Check if a Payment is selected if not, add standard payment
-        if (empty($this->basketPaymentArticles)) {
-            // Check if Payment selection is forced
-            if ($this->conf['payment.']['forceSelection']) {
-                // Add Please Select Option
-                $select .= '<option value="-1" selected="selected">' . $this->pi_getLL('lang_payment_force') .
-                    '</option>';
-                $addPleaseSelect = true;
-            } else {
-                // No payment article is in the basket, so add the first one
-                $addDefaultPaymentToBasket = true;
-            }
-        }
+        $currentPaymentArticle = $this->basket->getPaymentArticle();
 
         $allowedArticles = [];
         if ($this->conf['payment.']['allowedArticles']) {
             $allowedArticles = explode(',', $this->conf['payment.']['allowedArticles']);
         }
-
-        // Check if payment articles are allowed
-        $newAllowedArticles = [];
-        /**
-         * Article.
-         *
-         * @var Article $article
-         */
-        foreach ($this->paymentProduct->getArticleObjects() as $articleUid => $article) {
-            if (empty($allowedArticles) || in_array($articleUid, $allowedArticles)) {
-                $article->loadData();
-                $payment = $this->getPaymentObject($article->getClassname());
-                if ($payment->isAllowed()) {
-                    $newAllowedArticles[] = $articleUid;
-                }
-            }
-        }
-
-        // If default Paymentarticle is, for example, credit card
-        // but when we have an article in the basket with the only possible
-        // payment method like debit, this ensures that there is still the correct
-        // payment article in the basket.
-        // @todo: Refactor default handling
-        if (count($newAllowedArticles) == 1 && $this->conf['defaultPaymentArticleId'] != $newAllowedArticles[0]) {
-            $this->conf['defaultPaymentArticleId'] = $newAllowedArticles[0];
-        }
-        $allowedArticles = $newAllowedArticles;
-        unset($newAllowedArticles);
 
         // Hook to allow to define/overwrite individually, which payment articles are allowed
         $hooks = HookFactory::getHooks('Controller/BasketController', 'makePayment');
@@ -831,46 +773,57 @@ class BasketController extends BaseController
             }
         }
 
+        $activeFlag = strpos($paymentOptionTemplate, '<option') !== false ?
+            ' selected="selected"' :
+            ' checked="checked"';
+
         $first = false;
         $priceNet = '';
         $priceGross = '';
+        $options = '';
         /**
          * Article.
          *
-         * @var Article $article
+         * @var Article $paymentArticle
          */
-        foreach ($this->paymentProduct->getArticleObjects() as $articleUid => $article) {
-            if (empty($allowedArticles) || in_array($articleUid, $allowedArticles)) {
-                $select .= '<option value="' . $articleUid . '"';
-                if ($articleUid == $this->basketPaymentArticles[0]
-                    || ($addDefaultPaymentToBasket
-                    && ($articleUid == $this->conf['defaultPaymentArticleId']))
-                    && !$addPleaseSelect
-                ) {
-                    $addDefaultPaymentToBasket = false;
-                    $first = true;
-                    $select .= ' selected="selected"';
-                    $this->basket->addArticle($articleUid);
-                    $priceNet = MoneyViewHelper::format($article->getPriceNet(), $this->currency);
-                    $priceGross = MoneyViewHelper::format($article->getPriceGross(), $this->currency);
+        foreach ($this->paymentProduct->getArticleObjects() as $paymentArticle) {
+            if (empty($allowedArticles) || in_array($paymentArticle->getUid(), $allowedArticles)) {
+                $selected = '';
+
+                if ($paymentArticle->getUid() == $currentPaymentArticle->getArticle()->getUid()) {
+                    $selected = $activeFlag;
+                    $priceNet = MoneyViewHelper::format($paymentArticle->getPriceNet(), $this->currency);
+                    $priceGross = MoneyViewHelper::format($paymentArticle->getPriceGross(), $this->currency);
                 } elseif (!$first) {
-                    $priceNet = MoneyViewHelper::format($article->getPriceNet(), $this->currency);
-                    $priceGross = MoneyViewHelper::format($article->getPriceGross(), $this->currency);
-                    $this->basket->deleteArticle($articleUid);
+                    if (empty($currentPaymentArticle)) {
+                        $selected = $activeFlag;
+                        $this->basket->addArticle($paymentArticle->getUid());
+                    }
+
+                    $priceNet = MoneyViewHelper::format($paymentArticle->getPriceNet(), $this->currency);
+                    $priceGross = MoneyViewHelper::format($paymentArticle->getPriceGross(), $this->currency);
                 }
-                $select .= '>' . $article->getTitle() . '</option>';
+
+                $markerArray = [
+                    'value' => $paymentArticle->getUid(),
+                    'label' => $paymentArticle->getTitle(),
+                    'selected' => $selected,
+                    'description' => $this->cObj->stdWrap(
+                        $paymentArticle->getDescriptionExtra(),
+                        $this->conf['fields.']['articles.']['fields.']['description_extra.']
+                    ),
+                ];
+                $options .= $this->cObj->substituteMarkerArray($paymentOptionTemplate, $markerArray, '###|###', true);
+
+                $first = true;
             }
         }
 
-        $select .= '</select>';
-
-        // Set Prices to 0, if "please select " is shown
-        if ($addPleaseSelect) {
-            $priceGross = MoneyViewHelper::format(0, $this->currency);
-            $priceNet = MoneyViewHelper::format(0, $this->currency);
-        }
-
-        $basketArray['###PAYMENT_SELECT_BOX###'] = $select;
+        $basketArray['###PAYMENT_SELECT_BOX###'] = $this->cObj->substituteMarker(
+            $paymentSelectTemplate,
+            '###OPTIONS###',
+            $options
+        );
         $basketArray['###PAYMENT_PRICE_GROSS###'] = $priceGross;
         $basketArray['###PAYMENT_PRICE_NET###'] = $priceNet;
 
