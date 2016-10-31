@@ -289,6 +289,24 @@ return [
                 'default' => 1,
             ],
         ],
+        'item_category' => [
+            'exclude' => 1,
+            'label' => $languageFile . 'tx_commerce_articles.item_category',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'items' => [
+                    [
+                        $languageFile . 'tx_commerce_articles.item_category.physical',
+                        'Physical',
+                    ],
+                    [
+                        $languageFile . 'tx_commerce_articles.item_category.digital',
+                        'Digital',
+                    ],
+                ],
+            ],
+        ],
         'relatedpage' => [
             'exclude' => 1,
             'label' => $languageFile . 'tx_commerce_articles.relatedpage',
@@ -343,7 +361,7 @@ return [
             ],
             'showitem' => '
                     title, subtitle, ordernumber, eancode, description_extra,
-                    images, plain_text, tax, supplier_uid, article_type_uid, relatedpage, products_uid,
+                    images, plain_text, tax, supplier_uid, article_type_uid, item_category, relatedpage, products_uid,
                     article_attributes, ' . $attributeField . '
                 --div--;' . $languageFile . 'tx_commerce_articles.prices, prices,
                 --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,

@@ -103,6 +103,7 @@ CREATE TABLE tx_commerce_articles (
 	prices mediumtext,
 	tax double(4,2) DEFAULT '0.00' NOT NULL,
 	article_type_uid int(11) DEFAULT '0' NOT NULL,
+	item_category varchar(20) DEFAULT 'Physical' NOT NULL,
 	supplier_uid int(11) DEFAULT '0' NOT NULL,
 	uid_product int(11) DEFAULT '0' NOT NULL,
 	article_attributes int(11) DEFAULT '0' NOT NULL,

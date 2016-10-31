@@ -198,6 +198,15 @@
 			<trans-unit id="tx_commerce_articles.article_type_uid" xml:space="preserve">
 				<source>Article type</source>
 			</trans-unit>
+			<trans-unit id="tx_commerce_articles.item_category">
+				<source>Item category</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.item_category.physical">
+				<source>Physical</source>
+			</trans-unit>
+			<trans-unit id="tx_commerce_articles.item_category.digital">
+				<source>Digital</source>
+			</trans-unit>
 			<trans-unit id="tx_commerce_articles.products_uid" xml:space="preserve">
 				<source>products_uid</source>
 			</trans-unit>

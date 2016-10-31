@@ -55,6 +55,7 @@ class Article extends AbstractEntity
         'eancode',
         'uid_product',
         'article_type_uid',
+        'item_category',
         'images',
         'classname',
         'relatedpage',
@@ -146,6 +147,11 @@ class Article extends AbstractEntity
      * @var int
      */
     protected $article_type_uid;
+
+    /**
+     * @var string
+     */
+    protected $item_category;
 
     /**
      * Supplier uid.
@@ -347,6 +353,14 @@ class Article extends AbstractEntity
     public function getArticleTypeUid()
     {
         return (int) $this->article_type_uid;
+    }
+
+    /**
+     * @return string
+     */
+    public function getItemCategory()
+    {
+        return $this->item_category;
     }
 
     /**
