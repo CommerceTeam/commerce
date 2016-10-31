@@ -73,25 +73,18 @@ Removed functions
 -----------------
 
 \CommerceTeam\Commerce\Utility\BackendUtility::deleteL18n
-\CommerceTeam\Commerce\Utility\BackendUtility::getArticlesOfProduct replaced with ArticleRepository::findByProductUid
-\CommerceTeam\Commerce\Utility\BackendUtility::getArticlesOfProductAsUidList replaced with ArticleRepository::findUidsByProductUid
-\CommerceTeam\Commerce\Utility\BackendUtility::getAttributeData replaced with AttributeRepository::findByUid
-\CommerceTeam\Commerce\Utility\BackendUtility::getAttributesForCategory replaced with CategoryRepository::findAttributesByCategoryUid
 \CommerceTeam\Commerce\Utility\BackendUtility::getAttributeTitle
 \CommerceTeam\Commerce\Utility\BackendUtility::getAttributeTitles
 \CommerceTeam\Commerce\Utility\BackendUtility::getAttributeValue
-\CommerceTeam\Commerce\Utility\BackendUtility::getCategoryData replaced with CategoryRepository::findByUid
 \CommerceTeam\Commerce\Utility\BackendUtility::getCategoriesForProductFromDb
-\CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid replaced with FolderRepository::initFolders('Orders', FolderRepository::initFolders())
 \CommerceTeam\Commerce\Utility\BackendUtility::getOverwriteData
 \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid
-\CommerceTeam\Commerce\Utility\BackendUtility::getProductOfArticle replaced with ProductRepository::findByArticleUid
 \CommerceTeam\Commerce\Utility\BackendUtility::getProductParentCategories
 \CommerceTeam\Commerce\Utility\BackendUtility::isAjaxRequest
-\CommerceTeam\Commerce\Utility\BackendUtility::isNumber replaced with \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger
 \CommerceTeam\Commerce\Utility\BackendUtility::overwriteArticle
 \CommerceTeam\Commerce\Utility\BackendUtility::overwriteProduct
-\CommerceTeam\Commerce\Domain\Repository\OrderRepository::updateByUid replaced with ::updateRecord
+\CommerceTeam\Commerce\Domain\Model\BasicBasket::getFirstArticleTypeTitle
+\CommerceTeam\Commerce\Domain\Model\BasicBasket::getFirstArticleTypeDescription
 
 
 Changed modules
@@ -159,6 +152,17 @@ Renamed classes
 Renamed functions
 -----------------
 
+\CommerceTeam\Commerce\Domain\Model\BasicBasket::getCurrentDeliveryBasketItem to getDeliveryArticle
+\CommerceTeam\Commerce\Domain\Model\BasicBasket::getCurrentPaymentBasketItem to getPaymentArticle
+\CommerceTeam\Commerce\Domain\Repository\OrderRepository::updateByUid replaced with ::updateRecord
+\CommerceTeam\Commerce\Utility\BackendUtility::getArticlesOfProduct replaced with ArticleRepository::findByProductUid
+\CommerceTeam\Commerce\Utility\BackendUtility::getArticlesOfProductAsUidList replaced with ArticleRepository::findUidsByProductUid
+\CommerceTeam\Commerce\Utility\BackendUtility::getAttributeData replaced with AttributeRepository::findByUid
+\CommerceTeam\Commerce\Utility\BackendUtility::getAttributesForCategory replaced with CategoryRepository::findAttributesByCategoryUid
+\CommerceTeam\Commerce\Utility\BackendUtility::getCategoryData replaced with CategoryRepository::findByUid
+\CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderUid replaced with FolderRepository::initFolders('Orders', FolderRepository::initFolders())
+\CommerceTeam\Commerce\Utility\BackendUtility::getProductOfArticle replaced with ProductRepository::findByArticleUid
+\CommerceTeam\Commerce\Utility\BackendUtility::isNumber replaced with \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger
 \CommerceTeam\Commerce\Utility\BackendUtility::mergeAttributeListFromFFData to mergeAttributeListFromFlexFormData
 
 

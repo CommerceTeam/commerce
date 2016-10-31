@@ -346,7 +346,7 @@ class Article extends AbstractEntity
      */
     public function getArticleTypeUid()
     {
-        return $this->article_type_uid;
+        return (int) $this->article_type_uid;
     }
 
     /**
@@ -586,7 +586,7 @@ class Article extends AbstractEntity
     /**
      * Default price object, which doesn't have any start or stoptime.
      *
-     * @return int price_uid
+     * @return array price_uid
      */
     public function getSpecialPrice()
     {

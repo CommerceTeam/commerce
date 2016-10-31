@@ -249,8 +249,7 @@ class BasicBasket
      */
     public function getDeliveryArticle()
     {
-        $articleUids = $this->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
-        return !empty($articleUids) ? $this->getBasketItem(reset($articleUids)) : null;
+        return $this->getCurrentBasketItemByArticleType(DELIVERYARTICLETYPE);
     }
 
     /**
@@ -258,8 +257,7 @@ class BasicBasket
      */
     public function getPaymentArticle()
     {
-        $articleUids = $this->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
-        return !empty($articleUids) ? $this->getBasketItem(reset($articleUids)) : null;
+        return $this->getCurrentBasketItemByArticleType(PAYMENTARTICLETYPE);
     }
 
     /**
@@ -334,68 +332,6 @@ class BasicBasket
     public function getBasketItems()
     {
         return $this->basketItems;
-    }
-
-    /**
-     * Get first title from of all articles concerning this type.
-     *
-     * @param int $articleTypeUid Article type uid
-     *
-     * @return string Title
-     *
-     * @deprecated Replace with ->getArticlesByArticleTypeUidAsUidlist($articleTypeUid)[0]->getArticle()->getTitle();
-     */
-    public function getFirstArticleTypeTitle($articleTypeUid)
-    {
-        $result = '';
-
-        /**
-         * Basket item.
-         *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
-         */
-        foreach ($this->basketItems as $oneItem) {
-            if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
-                if ($oneItem->getArticle()->getTitle() > '') {
-                    $result = $oneItem->getArticle()->getTitle();
-                    break;
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Returns the first Description from of all Articles concerning this type
-     *
-     * Example:
-     * $basket->getFirstArticleTypeDescription(PAYMENTARTICLETYPE)
-     * $basket->getFirstArticleTypeDescription(DELIVERYARTICLETYPE)
-     *
-     * @param string $articleTypeUid Article type uid
-     *
-     * @return string Description
-     */
-    public function getFirstArticleTypeDescription($articleTypeUid)
-    {
-        $result = '';
-
-        /**
-         * Basket item.
-         *
-         * @var \CommerceTeam\Commerce\Domain\Model\BasketItem $oneItem
-         */
-        foreach ($this->basketItems as $oneItem) {
-            if ($oneItem->getArticle()->getArticleTypeUid() == $articleTypeUid) {
-                if ($oneItem->getArticle()->getDescriptionExtra() > '') {
-                    $result = $oneItem->getArticle()->getDescriptionExtra();
-                    break;
-                }
-            }
-        }
-
-        return $result;
     }
 
     /**
@@ -662,7 +598,7 @@ class BasicBasket
     public function loadData()
     {
         // Check if payment article is available and set default if not
-        if (empty($this->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE))) {
+        if (empty($this->getPaymentArticle())) {
             $this->addArticle((int) $this->conf['defaultPaymentArticleId']);
         }
     }
@@ -959,33 +895,13 @@ class BasicBasket
     }
 
     /**
-     * Get current payment article.
-     *
-     * @return \CommerceTeam\Commerce\Domain\Model\BasketItem
-     */
-    public function getCurrentPaymentBasketItem()
-    {
-        return $this->getCurrentBasketItemByArticleType(PAYMENTARTICLETYPE);
-    }
-
-    /**
-     * Get current delivery article.
-     *
-     * @return \CommerceTeam\Commerce\Domain\Model\BasketItem
-     */
-    public function getCurrentDeliveryBasketItem()
-    {
-        return $this->getCurrentBasketItemByArticleType(DELIVERYARTICLETYPE);
-    }
-
-    /**
      * Remove current payment article from basket.
      *
      * @return void
      */
     public function removeCurrentPaymentArticle()
     {
-        $paymentBasketItem = $this->getCurrentPaymentBasketItem();
+        $paymentBasketItem = $this->getPaymentArticle();
         if (is_object($paymentBasketItem)) {
             $this->deleteArticle($paymentBasketItem->getArticleUid());
         }
@@ -998,7 +914,7 @@ class BasicBasket
      */
     public function removeCurrentDeliveryArticle()
     {
-        $deliveryBasketItem = $this->getCurrentDeliveryBasketItem();
+        $deliveryBasketItem = $this->getDeliveryArticle();
         if (is_object($deliveryBasketItem)) {
             $this->deleteArticle($deliveryBasketItem->getArticleUid());
         }

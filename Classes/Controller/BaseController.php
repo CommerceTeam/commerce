@@ -1148,8 +1148,9 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $this->currency,
             $this->showCurrency
         );
-        $markerArray['###PAYMENT_TITLE###'] = $basket->getPaymentArticle()->getArticle()->getTitle();
-        $markerArray['###PAYMENT_DESCRIPTION###'] = $basket->getFirstArticleTypeDescription(PAYMENTARTICLETYPE);
+        $paymentArticle = $basket->getPaymentArticle()->getArticle();
+        $markerArray['###PAYMENT_TITLE###'] = $paymentArticle->getTitle();
+        $markerArray['###PAYMENT_DESCRIPTION###'] = $paymentArticle->getDescriptionExtra();
         $markerArray['###SUM_TAX###'] = MoneyViewHelper::format(
             $basket->getTaxSum(),
             $this->currency,

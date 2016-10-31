@@ -847,7 +847,7 @@ class CheckoutController extends BaseController
         // If we don't have one, try to create a new one from the config
         if (!isset($paymentObj)) {
             $config = ConfigurationUtility::getInstance()->getConfiguration(
-                'SYSPRODUCTS.PAYMENT.types.' . strtolower((string) $paymentType)
+                'SYSPRODUCTS.PAYMENT.types.' . $paymentType
             );
 
             $errorStr = null;
@@ -1047,7 +1047,7 @@ class CheckoutController extends BaseController
         if (!is_object($paymentObj)) {
             $paymentType = $this->getPaymentType();
             $config = ConfigurationUtility::getInstance()->getConfiguration(
-                'SYSPRODUCTS.PAYMENT.types.' . strtolower((string) $paymentType)
+                'SYSPRODUCTS.PAYMENT.types.' . $paymentType
             );
 
             if (!isset($config['class']) || !file_exists($config['path'])) {
@@ -1661,6 +1661,7 @@ class CheckoutController extends BaseController
      */
     public function getPaymentObject($paymentType = '')
     {
+        // @todo WTF cleanup this mess. The basket has a getPayment method
         if (empty($paymentType)) {
             $this->getPaymentFromRequest();
             $paymentType = $this->getPaymentType();
@@ -1679,7 +1680,7 @@ class CheckoutController extends BaseController
     {
         if ($this->piVars['payArt']) {
             $basket = $this->getBasket();
-            $paymentBasketItem = $basket->getCurrentPaymentBasketItem();
+            $paymentBasketItem = $basket->getPaymentArticle();
 
             if ((
                     is_object($paymentBasketItem)
@@ -1711,21 +1712,22 @@ class CheckoutController extends BaseController
      * Return payment type. The type is extracted from the basket object. The type
      * is stored in the basket as a special article.
      *
-     * @param bool $id Switch for returning the id or classname
+     * @param bool $returnUid Switch for returning the id or classname
      *
-     * @return string Determines the payment ('creditcard', 'invoice' or whatever)
-     *      if not $id is set, otherwise returns the id of the paymentarticle
+     * @return string|int If not $returnUid is set the payment ('creditcard', 'invoice' e.g.)
+     *      otherwise returns the uid of the payment article
      */
-    public function getPaymentType($id = false)
+    public function getPaymentType($returnUid = false)
     {
-        $basket = $this->getBasket();
-        $payment = $basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
+        $payment = $this->getBasket()->getPaymentArticle();
 
-        if ($id) {
-            return $payment[0];
+        if ($returnUid) {
+            $result = $payment->getArticle()->getUid();
+        } else {
+            $result = strtolower((string) $payment->getArticle()->getClassname());
         }
 
-        return strtolower($basket->getBasketItem($payment[0])->getArticle()->getClassname());
+        return $result;
     }
 
     /**
@@ -2269,14 +2271,14 @@ class CheckoutController extends BaseController
 
         // Check if basket is empty
         if (in_array('noarticles', $checks)
-            && !empty($basket->getArticlesByArticleTypeUidAsUidlist(NORMALARTICLETYPE))
+            && empty($basket->getArticlesByArticleTypeUidAsUidlist(NORMALARTICLETYPE))
         ) {
             return 'noarticles';
         }
 
         // Check if we have a payment article in the basket
         if (in_array('nopayment', $checks) && $this->currentStep == 'finish') {
-            $paymentArticles = $basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
+            $paymentArticles = $basket->getPaymentArticle();
             if (empty($paymentArticles)) {
                 return 'nopayment';
             }

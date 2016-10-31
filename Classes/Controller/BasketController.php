@@ -429,12 +429,7 @@ class BasketController extends BaseController
     public function handlePaymentArticle()
     {
         if ($this->piVars['payArt']) {
-            $basketPay = $this->basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
-
-            // Delete old payment article
-            foreach ($basketPay as $actualPaymentArticle) {
-                $this->basket->deleteArticle($actualPaymentArticle);
-            }
+            $this->basket->removeCurrentPaymentArticle();
 
             // Add new article
             if (is_array($this->piVars['payArt'])) {
@@ -466,12 +461,7 @@ class BasketController extends BaseController
     public function handleDeliveryArticle()
     {
         if ($this->piVars['delArt']) {
-            $basketDeliveryArticles = $this->basket->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
-
-            // Delete old delivery article
-            foreach ($basketDeliveryArticles as $singleDeliveryArticle) {
-                $this->basket->deleteArticle($singleDeliveryArticle);
-            }
+            $this->basket->removeCurrentDeliveryArticle();
 
             // Add new article
             if (is_array($this->piVars['delArt'])) {
@@ -689,7 +679,7 @@ class BasketController extends BaseController
         $deliverySelectTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###DELIVERY_ARTICLE_SELECT###');
         $deliveryOptionTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###DELIVERY_ARTICLE_OPTION###');
 
-        $this->basketDeliveryArticles = $this->basket->getArticlesByArticleTypeUidAsUidlist(DELIVERYARTICLETYPE);
+        $this->basketDeliveryArticles = $this->basket->getDeliveryArticle();
 
         $allowedArticles = [];
         if ($this->conf['delivery.']['allowedArticles']) {
@@ -780,7 +770,7 @@ class BasketController extends BaseController
         );
         $this->paymentProduct->loadData();
 
-        $this->basketPaymentArticles = $this->basket->getArticlesByArticleTypeUidAsUidlist(PAYMENTARTICLETYPE);
+        $this->basketPaymentArticles = $this->basket->getPaymentArticle();
 
         $select = '<select name="' . $this->prefixId . '[payArt]" onChange="this.form.submit();">';
 
@@ -833,8 +823,7 @@ class BasketController extends BaseController
         $allowedArticles = $newAllowedArticles;
         unset($newAllowedArticles);
 
-        // Hook to allow to define/overwrite individually, which payment
-        // articles are allowed
+        // Hook to allow to define/overwrite individually, which payment articles are allowed
         $hooks = HookFactory::getHooks('Controller/BasketController', 'makePayment');
         foreach ($hooks as $hook) {
             if (method_exists($hook, 'paymentAllowedArticles')) {
