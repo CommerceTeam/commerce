@@ -222,7 +222,9 @@ class CheckoutController extends BaseController
         }
 
         // Store current step
-        $this->currentStep = strtolower($this->piVars['step']);
+        if (isset($this->piVars['step'])) {
+            $this->currentStep = strtolower($this->piVars['step']);
+        }
 
         // Set deliveryType as current step, if comes from pi4 to create a new address
         if (empty($this->currentStep) && $this->piVars['addressType']) {
