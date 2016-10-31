@@ -2272,9 +2272,7 @@ class CheckoutController extends BaseController
         $basket = $this->getBasket();
 
         // Check if basket is empty
-        if (in_array('noarticles', $checks)
-            && empty($basket->getArticlesByArticleTypeUidAsUidlist(NORMALARTICLETYPE))
-        ) {
+        if (in_array('noarticles', $checks) && empty($basket->getNormalArticles())) {
             return 'noarticles';
         }
 

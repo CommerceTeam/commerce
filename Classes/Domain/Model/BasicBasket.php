@@ -249,11 +249,13 @@ class BasicBasket
      */
     public function getNormalArticles()
     {
-        $basketArticleUids = $this->getArticlesByArticleTypeUidAsUidlist(NORMALARTICLETYPE);
-
         $basketArticles = [];
-        foreach ($basketArticleUids as $basketArticleUid) {
-            $basketArticles[$basketArticleUid] = $this->basketItems[$basketArticleUid];
+        /** @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem */
+        foreach ($this->basketItems as $basketItem) {
+            if ($basketItem->getArticleTypeUid() === NORMALARTICLETYPE) {
+                $basketArticles[] = $basketItem;
+                break;
+            }
         }
 
         return $basketArticles;
@@ -759,7 +761,7 @@ class BasicBasket
                 if (isset($this->basketItems[$articleUid])) {
                     $this->deleteArticle($articleUid);
                 }
-                $items = $this->getArticlesByArticleTypeUidAsUidlist(NORMALARTICLETYPE);
+                $items = $this->getNormalArticles();
                 if (empty($items)) {
                     $this->deleteAllArticles();
                 }
