@@ -101,7 +101,7 @@ plugin.tx_commerce_pi3 {
 	useHtmlMail = 0
 
 	# cat=plugin.commerce: Checkout/file/10; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for display the checkout
-	templateFile = EXT:commerce/Resources/Private/Templates/template_checkout.html
+	templateFile = EXT:commerce/Resources/Private/Templates/checkout.html
 
 	# cat=plugin.commerce: Checkout/file/15; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template for the email that is send to the user after checking out
 	UserMailTemplateFile =  EXT:commerce/Resources/Private/Templates/template_usermail.txt
