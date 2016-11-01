@@ -132,11 +132,11 @@ class SystemdataNavigationFrameController extends BaseScriptClass
      * Injects the request object for the current request or subrequest
      * Then checks for module functions that have hooked in, and renders menu etc.
      *
-     * @param ServerRequestInterface $request the current request
+     * @param ServerRequestInterface $_ the current request
      * @param ResponseInterface $response
      * @return ResponseInterface the response with the content
      */
-    public function mainAction(ServerRequestInterface $request, ResponseInterface $response)
+    public function mainAction(ServerRequestInterface $_, ResponseInterface $response)
     {
         $GLOBALS['SOBE'] = $this;
         $this->init();
@@ -152,7 +152,7 @@ class SystemdataNavigationFrameController extends BaseScriptClass
      * Create the panel of buttons for submitting the
      * form or otherwise perform operations.
      *
-     * @return array all available buttons as an assoc. array
+     * @return void
      */
     protected function getButtons()
     {

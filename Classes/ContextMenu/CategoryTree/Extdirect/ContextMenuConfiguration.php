@@ -10,12 +10,10 @@ namespace CommerceTeam\Commerce\ContextMenu\CategoryTree\Extdirect;
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
 use CommerceTeam\Commerce\Tree\CategoryTree\ArticleNode;
 use CommerceTeam\Commerce\Tree\CategoryTree\CategoryNode;
-use CommerceTeam\Commerce\Tree\CategoryTree\PagetreeNode;
 use CommerceTeam\Commerce\Tree\CategoryTree\ProductNode;
 
 /**

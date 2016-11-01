@@ -29,11 +29,11 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
      * Administrative links for a table / record.
      *
      * @param string $table Table name
-     * @param array  $row   Record for which administrative links are generated.
+     * @param array $row Record for which administrative links are generated.
      *
      * @return string HTML link tags.
      */
-    public function adminLinks($table, array $row)
+    public function adminLinks($table, $row)
     {
         if ($table !== 'tx_commerce_products') {
             return parent::adminLinks($table, $row);

@@ -192,7 +192,7 @@ class ProductRepository extends AbstractRepository
     public function getL18nProducts($uid)
     {
         if (!(int) $uid) {
-            return false;
+            return [];
         }
 
         $rows = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(

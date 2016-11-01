@@ -196,7 +196,7 @@ class Wirecard
         if ($this->isError()) {
             return false;
         } else {
-            return [1];
+            return true;
         }
     }
 

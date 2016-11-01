@@ -36,11 +36,13 @@ class ArticlePriceRepository extends AbstractRepository
      * Special Implementation for prices, as they don't have a localisation'
      *
      * @param int $uid UID for Data
+     * @param int $langUid Language Uid
+     * @param bool $translationMode Translation Mode for recordset
      *
      * @return array assoc array with data
      * @todo implement access_check concering category tree
      */
-    public function getData($uid)
+    public function getData($uid, $langUid = -1, $translationMode = false)
     {
         $returnData = $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
@@ -58,7 +60,7 @@ class ArticlePriceRepository extends AbstractRepository
             . $uid . '\'); returns no or more than one Result'
         );
 
-        return false;
+        return [];
     }
 
     /**

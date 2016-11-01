@@ -1479,7 +1479,7 @@ class Product extends AbstractEntity
      * @param mixed $translationMode Translation mode of the record,
      *     default FALSE to use the default way of translation
      *
-     * @return \CommerceTeam\Commerce\Domain\Model\Product
+     * @return array
      */
     public function loadData($translationMode = false)
     {

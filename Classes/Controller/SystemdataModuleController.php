@@ -219,11 +219,11 @@ abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\Base
      * Injects the request object for the current request or subrequest
      * Simply calls main() and init() and outputs the content
      *
-     * @param ServerRequestInterface $request the current request
+     * @param ServerRequestInterface $_ the current request
      * @param ResponseInterface $response
      * @return ResponseInterface the response with the content
      */
-    public function mainAction(ServerRequestInterface $request, ResponseInterface $response)
+    public function mainAction(ServerRequestInterface $_, ResponseInterface $response)
     {
         $functionClassname = $this->getFunctionClassname();
         if ($functionClassname !== '' && $functionClassname != static::class) {

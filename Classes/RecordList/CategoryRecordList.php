@@ -19,6 +19,7 @@ use TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface;
 use TYPO3\CMS\Backend\Routing\Router;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -96,9 +97,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
     }
 
     /**
-     * @param \TYPO3\CMS\Backend\Template\ModuleTemplate $moduleTemplate
+     * @param ModuleTemplate $moduleTemplate
      */
-    public function getDocHeaderButtons($moduleTemplate)
+    public function getDocHeaderButtons(ModuleTemplate $moduleTemplate)
     {
         $buttonBar = $moduleTemplate->getDocHeaderComponent()->getButtonBar();
         /** @var CategoryModuleController $module */
@@ -282,7 +283,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @throws \UnexpectedValueException If hook was of wrong interface
      */
-    public function getTable($table, $id, $rowList)
+    public function getTable($table, $id, $rowList = '')
     {
         $rowListArray = GeneralUtility::trimExplode(',', $rowList, true);
         // if no columns have been specified, show description (if configured)
@@ -870,7 +871,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @throws \UnexpectedValueException If hook was of wrong interface
      */
-    public function renderListHeader($table, array $currentIdList)
+    public function renderListHeader($table, $currentIdList)
     {
         $lang = $this->getLanguageService();
         $tableConfig = ConfigurationUtility::getInstance()->getTcaValue($table);
@@ -1165,7 +1166,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @throws \UnexpectedValueException If hook was of wrong interface
      */
-    public function makeControl($table, array $row)
+    public function makeControl($table, $row)
     {
         $tableConfig = ConfigurationUtility::getInstance()->getTcaValue($table);
         /**
@@ -1603,7 +1604,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @throws \UnexpectedValueException If hook was of wrong interface
      */
-    public function makeClip($table, array $row)
+    public function makeClip($table, $row)
     {
         // Return blank, if disabled:
         if (!$this->getModule()->MOD_SETTINGS['clipBoard']) {
@@ -1889,7 +1890,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @return string The item title. Ready for HTML output
      */
-    public function linkWrapItems($table, $uid, $code, array $row)
+    public function linkWrapItems($table, $uid, $code, $row)
     {
         $lang = $this->getLanguageService();
         /**

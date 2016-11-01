@@ -64,29 +64,6 @@ class ConfigurationUtility implements SingletonInterface
     protected static $instance = null;
 
     /**
-     * Clone.
-     *
-     * Block cloning of instance
-     *
-     * @return void
-     */
-    protected function __clone()
-    {
-    }
-
-    /**
-     * Constructor.
-
-     * Block external instantiation
-
-     *
-*@return ConfigurationUtility
-     */
-    protected function __construct()
-    {
-    }
-
-    /**
      * Get instance.
 
      *
