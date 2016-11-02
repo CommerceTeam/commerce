@@ -189,6 +189,9 @@
 			<trans-unit id="error_terms_not_accepted" xml:space="preserve">
 				<source>Please accept our Terms and Conditions</source>
 			</trans-unit>
+			<trans-unit id="error_payment_unhandled" xml:space="preserve">
+				<source>Please check if all payment requirements are met.</source>
+			</trans-unit>
 			<trans-unit id="detaillink" xml:space="preserve">
 				<source>Details</source>
 			</trans-unit>

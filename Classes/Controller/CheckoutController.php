@@ -1073,15 +1073,21 @@ class CheckoutController extends BaseController
         }
 
         // Check if terms are accepted
-        if (!$paymentDone && (empty($this->piVars['terms']) || ($this->piVars['terms'] != 'termschecked'))) {
+        if (!isset($this->piVars['terms'])
+            || empty($this->piVars['terms'])
+            || $this->piVars['terms'] != 'termschecked'
+        ) {
             $this->formError['terms'] = $this->pi_getLL('error_terms_not_accepted');
+            return $this->getListing();
+        }
+
+        if (!$paymentDone) {
             $content = $this->handlePayment($paymentObj);
             if ($content == false) {
-                $this->formError['terms'] = $this->pi_getLL('error_terms_not_accepted');
+                $this->formError['terms'] = $this->pi_getLL('error_payment_unhandled');
                 $content = $this->getListing();
+                return $content;
             }
-
-            return $content;
         }
 
         // Check stock amount of articles
