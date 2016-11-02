@@ -69,6 +69,7 @@ Commerce: TYPO3 commerce shopping system
 		Modules/Index
 		Configuration/Index
 		Development/Index
+		Sponsors/Index
 		CodingGuidelines/Index
 		Deprecation/Index
 		BreakingChanges/Index
@@ -89,6 +90,7 @@ Commerce: TYPO3 commerce shopping system
 		Modules/Index
 		Configuration/Index
 		Development/Index
+		Sponsors/Index
 		CodingGuidelines/Index
 		Deprecation/Index
 		BreakingChanges/Index
