@@ -12,7 +12,7 @@ Commerce Coding Guidelines
 
 CGL
 ---
-The TYPO3 Commerce defines the latest Version of the TYPO3 Core CGL to be used for TYPO3 Commerce.
+TYPO3 Commerce defines the latest Version of the TYPO3 Core CGL to be used for TYPO3 Commerce.
 All new code must be created by the CGL, patches should also be fix CGL issues.
 
 
@@ -39,7 +39,7 @@ All members of the TYPO3 Commerce project have write access to the SVN
 
 TYPO3 Core Mailinglist
 ______________________
-A project has been set up at forge https://forge.typo3.org/projects/extension-commerce/. All patches
+A project has been set up at Github https://github.com/CommerceTeam/commerce/. All patches
 should be posted in addition with RFC or RFI to the slack channel https://typo3.slack.com/messages/commerce/,
 everyone is allowed to post to this list!
 
@@ -62,4 +62,4 @@ Nobrainer, comments in the code, CGL changes can be made as direct commit to the
 
 Twitter
 _______
-The official hash-tag for twitter-posts ist #t3commerce
+The official hash-tag for twitter-posts is #t3commerce
