@@ -98,6 +98,7 @@ call_user_func(function ($packageKey) {
                 'access' => 'user,group',
                 'name' => $packageKey,
                 'workspaces' => 'online',
+                'icon' => 'EXT:commerce/Resources/Public/Icons/mod_main.gif',
                 'labels' => [
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_main.xlf',
                     'tabs_images' => [
@@ -117,6 +118,7 @@ call_user_func(function ($packageKey) {
                 'routeTarget' => \CommerceTeam\Commerce\Controller\CategoryModuleController::class . '::mainAction',
                 'access' => 'user,group',
                 'name' => 'commerce_category',
+                'icon' => 'EXT:commerce/Resources/Public/Icons/mod_category.gif',
                 'labels' => [
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_category.xlf',
                     'tabs_images' => [
@@ -181,6 +183,7 @@ call_user_func(function ($packageKey) {
                 'routeTarget' => \CommerceTeam\Commerce\Controller\OrdersModuleController::class . '::mainAction',
                 'access' => 'user,group',
                 'name' => 'commerce_order',
+                'icon' => 'EXT:commerce/Resources/Public/Icons/mod_orders.gif',
                 'labels' => [
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xlf',
                     'tabs_images' => [
@@ -211,6 +214,7 @@ call_user_func(function ($packageKey) {
                     . '::mainAction',
                 'access' => 'user,group',
                 'name' => 'commerce_systemdata',
+                'icon' => 'EXT:commerce/Resources/Public/Icons/mod_systemdata.gif',
                 'labels' => [
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf',
                     'tabs_images' => [
@@ -253,6 +257,7 @@ call_user_func(function ($packageKey) {
                     . '::mainAction',
                 'access' => 'user,group',
                 'name' => 'commerce_statistic',
+                'icon' => 'EXT:commerce/Resources/Public/Icons/mod_statistic.gif',
                 'labels' => [
                     'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf',
                     'tabs_images' => [

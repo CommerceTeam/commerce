@@ -697,7 +697,9 @@ class BasketController extends BaseController
             if (empty($allowedArticles) || in_array($deliveryArticle->getUid(), $allowedArticles)) {
                 $selected = '';
 
-                if ($deliveryArticle->getUid() == $currentDeliveryArticle->getArticle()->getUid()) {
+                if ($currentDeliveryArticle !== null &&
+                    $deliveryArticle->getUid() == $currentDeliveryArticle->getArticle()->getUid()
+                ) {
                     $selected = $activeFlag;
                     $priceNet = MoneyViewHelper::format($deliveryArticle->getPriceNet(), $this->currency);
                     $priceGross = MoneyViewHelper::format($deliveryArticle->getPriceGross(), $this->currency);
@@ -754,6 +756,7 @@ class BasketController extends BaseController
             $this->getFrontendController()->sys_language_uid
         );
         $this->paymentProduct->loadData();
+        $this->paymentProduct->loadArticles();
 
         $paymentSelectTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###PAYMENT_ARTICLE_SELECT###');
         $paymentOptionTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###PAYMENT_ARTICLE_OPTION###');
@@ -790,7 +793,9 @@ class BasketController extends BaseController
             if (empty($allowedArticles) || in_array($paymentArticle->getUid(), $allowedArticles)) {
                 $selected = '';
 
-                if ($paymentArticle->getUid() == $currentPaymentArticle->getArticle()->getUid()) {
+                if ($currentPaymentArticle !== null
+                    && $paymentArticle->getUid() == $currentPaymentArticle->getArticle()->getUid()
+                ) {
                     $selected = $activeFlag;
                     $priceNet = MoneyViewHelper::format($paymentArticle->getPriceNet(), $this->currency);
                     $priceGross = MoneyViewHelper::format($paymentArticle->getPriceGross(), $this->currency);
@@ -819,10 +824,14 @@ class BasketController extends BaseController
             }
         }
 
-        $basketArray['###PAYMENT_SELECT_BOX###'] = $this->cObj->substituteMarker(
+        $selectMarker = [
+            '###OPTIONS###' => $options,
+            '###PREFIX###' => $this->prefixId,
+        ];
+
+        $basketArray['###PAYMENT_SELECT_BOX###'] = $this->cObj->substituteMarkerArray(
             $paymentSelectTemplate,
-            '###OPTIONS###',
-            $options
+            $selectMarker
         );
         $basketArray['###PAYMENT_PRICE_GROSS###'] = $priceGross;
         $basketArray['###PAYMENT_PRICE_NET###'] = $priceNet;
