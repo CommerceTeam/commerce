@@ -51,6 +51,7 @@ class BackendUserUtility implements SingletonInterface
             && isset($row['perms_groupid']) && isset($row['perms_group'])
             && isset($row['perms_everybody']) && isset($backendUser->groupList)
         ) {
+            /** @noinspection PhpInternalEntityUsedInspection */
             if ($backendUser->user['uid'] == $row['perms_userid']) {
                 $out |= $row['perms_user'];
             }
@@ -146,6 +147,7 @@ class BackendUserUtility implements SingletonInterface
      */
     public function getCategoryPermsClause($perms)
     {
+        /** @noinspection PhpInternalEntityUsedInspection */
         if (is_array($this->getBackendUser()->user)) {
             $backenduser = $this->getBackendUser();
             if ($backenduser->isAdmin()) {
@@ -153,6 +155,7 @@ class BackendUserUtility implements SingletonInterface
             }
             $perms = (int) $perms;
             // Make sure it's int.
+            /** @noinspection PhpInternalEntityUsedInspection */
             $str = ' ( (tx_commerce_categories.perms_everybody & ' . $perms . ' = ' . $perms .
                 ') OR (tx_commerce_categories.perms_userid = ' . $backenduser->user['uid'] .
                 ' AND tx_commerce_categories.perms_user & ' . $perms . ' = ' . $perms . ')';
