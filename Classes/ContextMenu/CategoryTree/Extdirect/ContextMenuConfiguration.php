@@ -15,12 +15,20 @@ namespace CommerceTeam\Commerce\ContextMenu\CategoryTree\Extdirect;
 use CommerceTeam\Commerce\Tree\CategoryTree\ArticleNode;
 use CommerceTeam\Commerce\Tree\CategoryTree\CategoryNode;
 use CommerceTeam\Commerce\Tree\CategoryTree\ProductNode;
+use CommerceTeam\Commerce\ContextMenu\CategoryTree\ContextMenuDataProvider;
 
 /**
  * Context Menu of the Page Tree
  */
-class ContextMenuConfiguration extends \TYPO3\CMS\Backend\ContextMenu\Extdirect\AbstractExtdirectContextMenu
+class ContextMenuConfiguration
 {
+    /**
+     * Data Provider
+     *
+     * @var ContextMenuDataProvider
+     */
+    protected $dataProvider = null;
+
     /**
      * @var array
      */
@@ -29,6 +37,23 @@ class ContextMenuConfiguration extends \TYPO3\CMS\Backend\ContextMenu\Extdirect\
         \CommerceTeam\Commerce\Tree\CategoryTree\CategoryNode::class,
         \CommerceTeam\Commerce\Tree\CategoryTree\ProductNode::class,
     ];
+
+    /**
+     * @param ContextMenuDataProvider $dataProvider
+     * @return void
+     */
+    public function setDataProvider(ContextMenuDataProvider $dataProvider)
+    {
+        $this->dataProvider = $dataProvider;
+    }
+
+    /**
+     * @return ContextMenuDataProvider
+     */
+    public function getDataProvider()
+    {
+        return $this->dataProvider;
+    }
 
     /**
      * Sets the data provider
@@ -71,5 +96,17 @@ class ContextMenuConfiguration extends \TYPO3\CMS\Backend\ContextMenu\Extdirect\
             $actions = $actionCollection->toArray();
         }
         return $actions;
+    }
+
+    /**
+     * Unused for this implementation
+     *
+     * @see getActionsForNodeArray()
+     * @param \TYPO3\CMS\Backend\Tree\TreeNode $node
+     * @return array
+     */
+    public function getActionsForNode(\TYPO3\CMS\Backend\Tree\TreeNode $node)
+    {
+        return [];
     }
 }
