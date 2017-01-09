@@ -90,23 +90,6 @@ class FolderRepository
     }
 
     /**
-     * Find the extension folders.
-     *
-     * @param string $module Module
-     * @param int $pid Page id
-     * @param string $title Title
-     *
-     * @return array rows of found extension folders
-     * @deprecated since Version 5 will be removed in 6. Please use only getFolder instead
-     */
-    public static function getFolders($module = 'commerce', $pid = 0, $title = '')
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $row = self::getFolder($title, $pid, $module);
-        return isset($row['uid']) ? [$row['uid'] => $row] : [];
-    }
-
-    /**
      * Find folder by module and title takes pid into account.
      *
      * @param string $title Title
