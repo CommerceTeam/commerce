@@ -221,7 +221,7 @@ class BackendUserUtility implements SingletonInterface
     /**
      * Get database connection.
      *
-     * @return \TYPO3\CMS\Dbal\Database\DatabaseConnection
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
      */
     protected function getDatabaseConnection()
     {
