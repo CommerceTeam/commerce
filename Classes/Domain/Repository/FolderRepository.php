@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  */
 
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -116,12 +117,16 @@ class FolderRepository
      */
     public static function getFolder($title, $pid = 0, $module = 'commerce')
     {
-        $row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid, pid, title',
-            'pages',
-            'doktype = 254 AND tx_commerce_foldername = \'' . strtolower($title) . '\' AND pid = ' . (int) $pid .
-            ' AND module = \'' . $module . '\' ' . \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('pages')
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('pages')
+            ->createQueryBuilder();
+        $row = $queryBuilder->select('uid', 'pid', 'title')
+            ->from('pages')
+            ->where('doktype = 254 AND tx_commerce_foldername = \'' . strtolower($title) . '\' AND pid = ' .
+                (int) $pid . ' AND module = \'' . $module . '\' ' .
+                \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('pages'))
+            ->execute()
+            ->fetch();
         $row = is_array($row) ? $row : [];
 
         return $row;
@@ -139,16 +144,17 @@ class FolderRepository
      */
     public static function createFolder($title, $pid = 0, $module = 'commerce')
     {
-        $sorting = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'sorting',
-            'pages',
-            'pid = ' . $pid,
-            '',
-            'sorting DESC'
-        );
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('pages');
+        $queryBuilder = $connection->createQueryBuilder();
+        $sorting = $queryBuilder->select('sorting')
+            ->from('pages')
+            ->where('pid = ' . $pid)
+            ->orderBy('sorting', 'DESC')
+            ->execute()
+            ->fetch();
         $sorting = is_array($sorting) ? $sorting : [];
 
-        self::getDatabaseConnection()->exec_INSERTquery(
+        $connection->insert(
             'pages',
             [
                 'sorting' => isset($sorting['sorting']) ? $sorting['sorting'] + 1 : 10111,
@@ -162,10 +168,23 @@ class FolderRepository
                 'title' => $title,
                 'tx_commerce_foldername' => strtolower($title),
                 'module' => $module,
+            ],
+            [
+                \PDO::PARAM_INT,
+                \PDO::PARAM_INT,
+                \PDO::PARAM_INT,
+                \PDO::PARAM_INT,
+                \PDO::PARAM_INT,
+                \PDO::PARAM_INT,
+                \PDO::PARAM_INT,
+                \PDO::PARAM_INT,
+                \PDO::PARAM_STR,
+                \PDO::PARAM_STR,
+                \PDO::PARAM_STR,
             ]
         );
 
-        return self::getDatabaseConnection()->sql_insert_id();
+        return (int)$connection->lastInsertId('pages');
     }
 
 
@@ -334,16 +353,5 @@ class FolderRepository
         $articlePriceRepository->addRecord($priceData);
 
         return $articleUid;
-    }
-
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Dbal\Database\DatabaseConnection
-     */
-    protected static function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 }
