@@ -289,4 +289,12 @@ class TcaAttributeFields extends AbstractItemProvider implements FormDataProvide
             ['tx_commerce_categories', 'tx_commerce_products', 'tx_commerce_articles']
         );
     }
+
+    /**
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
+    }
 }

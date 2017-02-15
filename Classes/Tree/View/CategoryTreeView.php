@@ -181,6 +181,70 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
     }
 
     /**
+     * Getting the tree data: Counting elements in resource
+     *
+     * @param mixed $res Data handle
+     * @return int number of items
+     * @access private
+     * @see getDataInit()
+     */
+    public function getDataCount(&$res)
+    {
+        if ($res instanceof \mysqli_result) {
+            return $res->num_rows;
+        } else {
+            return parent::getDataCount($res);
+        }
+    }
+
+    /**
+     * Getting the tree data: next entry
+     *
+     * @param mixed $res Data handle
+     *
+     * @return array item data array OR FALSE if end of elements.
+     * @access private
+     * @see getDataInit()
+     */
+    public function getDataNext(&$res)
+    {
+        if (is_array($this->data)) {
+            if ($res < 0) {
+                $row = false;
+            } else {
+                list(, $row) = each($this->dataLookup[$res][$this->subLevelID]);
+            }
+            return $row;
+        } else {
+            if ($res instanceof \mysqli_result) {
+                while ($row = $this->getDatabaseConnection()->sql_fetch_assoc($res)) {
+                    BackendUtility::workspaceOL($this->table, $row, $this->BE_USER->workspace, true);
+                    if (is_array($row)) {
+                        break;
+                    }
+                }
+            } else {
+                $row = parent::getDataNext($res);
+            }
+            return $row;
+        }
+    }
+
+    /**
+     * Getting the tree data: frees data handle
+     *
+     * @param mixed $res Data handle
+     * @return void
+     * @access private
+     */
+    public function getDataFree(&$res)
+    {
+        if (!is_array($this->data)) {
+            $this->getDatabaseConnection()->sql_free_result($res);
+        }
+    }
+
+    /**
      * Returns the number of records having the parent id, $uid
      *
      * @param int $uid Id to count subitems for
@@ -205,5 +269,13 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
                 $where
             );
         }
+    }
+
+    /**
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
     }
 }

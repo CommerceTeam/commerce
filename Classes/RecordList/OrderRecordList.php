@@ -123,12 +123,46 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
     protected $iconRegistry;
 
     /**
+     * Query part for either a list of ids "pid IN (1,2,3)" or a single id "pid = 123" from
+     * which to select/search etc. (when search-levels are set high). See start()
+     *
+     * @var string
+     */
+    public $pidSelect = '';
+
+    /**
      * OrderRecordList constructor.
      */
     public function __construct()
     {
         parent::__construct();
         $this->iconRegistry = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
+    }
+
+    /**
+     * Initializes the list generation
+     *
+     * @param int $id Page id for which the list is rendered. Must be >= 0
+     * @param string $table Tablename - if extended mode where only one table is listed at a time.
+     * @param int $pointer Browsing pointer.
+     * @param string $search Search word, if any
+     * @param int $levels Number of levels to search down the page tree
+     * @param int $showLimit Limit of records to be listed.
+     * @return void
+     */
+    public function start($id, $table, $pointer, $search = '', $levels = 0, $showLimit = 0)
+    {
+        parent::start($id, $table, $pointer, $search, $levels, $showLimit);
+        if ($this->searchLevels > 0) {
+            $allowedMounts = $this->getSearchableWebmounts($this->id, $this->searchLevels, $this->perms_clause);
+            $pidList = implode(',', $this->getDatabaseConnection()->cleanIntArray($allowedMounts));
+            $this->pidSelect = 'pid IN (' . $pidList . ')';
+        } elseif ($this->searchLevels < 0) {
+            // Search everywhere
+            $this->pidSelect = '1=1';
+        } else {
+            $this->pidSelect = 'pid=' . (int)$id;
+        }
     }
 
     /**
@@ -391,7 +425,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 
         // Finding the total amount of records on the page
         // (API function from TYPO3\CMS\Recordlist\RecordList\AbstractDatabaseRecordList)
-        $this->setTotalItems($queryParts);
+        $this->setTotalItems($table, $id, $queryParts);
 
         // Init:
         $dbCount = 0;
@@ -1628,6 +1662,22 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
     }
 
     /**
+     * Set the total items for the record list
+     *
+     * @param string $table Table name
+     * @param int $pageId Only used to build the search constraints, $this->pidList is used for restrictions
+     * @param array $constraints Additional constraints for where clause
+     */
+    public function setTotalItems(string $table, int $pageId, array $constraints)
+    {
+        $this->totalItems = $this->getDatabaseConnection()->exec_SELECTcountRows(
+            '*',
+            $constraints['FROM'],
+            $constraints['WHERE']
+        );
+    }
+
+    /**
      * Makes the list of fields to select for a table.
      *
      * @param string $table Table name
@@ -1722,5 +1772,13 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 
         // Create and return header table row:
         return $this->addElement(1, '', $theData, '', '');
+    }
+
+    /**
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
     }
 }

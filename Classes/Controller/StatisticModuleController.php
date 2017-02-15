@@ -17,6 +17,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
@@ -286,14 +287,15 @@ abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseS
 
         // If access to Web>List for user, then link to that module.
         if ($backendUser->check('modules', 'web_list')) {
+            $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+
             // @todo fix to index.php entry point
             $href = 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
                 rawurlencode(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI'));
-            $buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '">' .
-                \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
-                    'apps-filetree-folder-list',
-                    ['title' => $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1)]
-                ) . '</a>';
+            $buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '" title="' .
+                $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1) . '">' .
+                $iconFactory->getIcon('apps-filetree-folder-list')->render() .
+                '</a>';
         }
 
         return $buttons;

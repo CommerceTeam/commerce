@@ -87,6 +87,14 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
     public $newRecordIcon = '';
 
     /**
+     * Query part for either a list of ids "pid IN (1,2,3)" or a single id "pid = 123" from
+     * which to select/search etc. (when search-levels are set high). See start()
+     *
+     * @var string
+     */
+    public $pidSelect = '';
+
+    /**
      * CategoryRecordList constructor.
      */
     public function __construct()
@@ -94,6 +102,32 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         parent::__construct();
         $this->backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
         $this->previewPageId = (int)ConfigurationUtility::getInstance()->getExtConf('previewPageID');
+    }
+
+    /**
+     * Initializes the list generation
+     *
+     * @param int $id Page id for which the list is rendered. Must be >= 0
+     * @param string $table Tablename - if extended mode where only one table is listed at a time.
+     * @param int $pointer Browsing pointer.
+     * @param string $search Search word, if any
+     * @param int $levels Number of levels to search down the page tree
+     * @param int $showLimit Limit of records to be listed.
+     * @return void
+     */
+    public function start($id, $table, $pointer, $search = '', $levels = 0, $showLimit = 0)
+    {
+        parent::start($id, $table, $pointer, $search, $levels, $showLimit);
+        if ($this->searchLevels > 0) {
+            $allowedMounts = $this->getSearchableWebmounts($this->id, $this->searchLevels, $this->perms_clause);
+            $pidList = implode(',', $this->getDatabaseConnection()->cleanIntArray($allowedMounts));
+            $this->pidSelect = 'pid IN (' . $pidList . ')';
+        } elseif ($this->searchLevels < 0) {
+            // Search everywhere
+            $this->pidSelect = '1=1';
+        } else {
+            $this->pidSelect = 'pid=' . (int)$id;
+        }
     }
 
     /**
@@ -439,7 +473,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
         // Finding the total amount of records on the page
         // (API function from TYPO3\CMS\Recordlist\RecordList\AbstractDatabaseRecordList)
-        $this->setTotalItems($queryParts);
+        $this->setTotalItems($table, $id, $queryParts);
 
         // Init:
         $dbCount = 0;
@@ -755,6 +789,22 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         }
         // Return query:
         return $queryParts;
+    }
+
+    /**
+     * Set the total items for the record list
+     *
+     * @param string $table Table name
+     * @param int $pageId Only used to build the search constraints, $this->pidList is used for restrictions
+     * @param array $constraints Additional constraints for where clause
+     */
+    public function setTotalItems(string $table, int $pageId, array $constraints)
+    {
+        $this->totalItems = $this->getDatabaseConnection()->exec_SELECTcountRows(
+            '*',
+            $constraints['FROM'],
+            $constraints['WHERE']
+        );
     }
 
     /**
@@ -1203,7 +1253,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         // "Show" link (only tx_commerce_categories and tx_commerce_products elements)
         // @todo test url generation
         if ($table == 'tx_commerce_categories' || $table == 'tx_commerce_products') {
-            $params = '&tx_commerce_pi1[catUid]=';
+            $pid = \CommerceTeam\Commerce\Utility\ConfigurationUtility::getInstance()->getConfiguration('previewPageID');
+
+            $params = '&id=' . $pid . '&tx_commerce_pi1[catUid]=';
             if ($table == 'tx_commerce_categories') {
                 if ($row['l18n_parent']) {
                     $params .= $row['l18n_parent'] . '&L=' . $row['sys_language_uid'];
@@ -2023,5 +2075,15 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         // of the times) These class do not inherit from any common class,
         // but they all seem to have a "doc" member
         return $this->getController()->doc;
+    }
+
+    /**
+     * Get database connection.
+     *
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
     }
 }
