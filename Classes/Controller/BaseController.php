@@ -21,6 +21,7 @@ use CommerceTeam\Commerce\Domain\Model\Product;
 use CommerceTeam\Commerce\Factory\HookFactory;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use CommerceTeam\Commerce\ViewHelpers\MoneyViewHelper;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -243,7 +244,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     protected function init(array $conf = [])
     {
-        if ($this->getFrontendController()->beUserLogin) {
+        if ($this->getTypoScriptFrontendController()->beUserLogin) {
             $this->workspace = $this->getBackendUser()->workspace;
         }
 
@@ -260,7 +261,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 
         \CommerceTeam\Commerce\Utility\GeneralUtility::initializeFeUserBasket();
 
-        $this->pid = $this->getFrontendController()->id;
+        $this->pid = $this->getTypoScriptFrontendController()->id;
         $this->basketHashValue = $this->getBasket()->getBasketHashValue();
         $this->piVars['basketHashValue'] = $this->basketHashValue;
         $this->argSeparator = ini_get('arg_separator.output');
@@ -345,15 +346,17 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     public function generateLanguageMarker()
     {
-        if (is_array($this->LOCAL_LANG[$this->getFrontendController()->tmpl->setup['config.']['language']])
+        if (is_array($this->LOCAL_LANG[$this->getTypoScriptFrontendController()->tmpl->setup['config.']['language']])
             && is_array($this->LOCAL_LANG['default'])
         ) {
-            $markerArr = $this->LOCAL_LANG[$this->getFrontendController()->tmpl->setup['config.']['language']] +
+            $markerArr = $this->LOCAL_LANG[$this->getTypoScriptFrontendController()
+                    ->tmpl->setup['config.']['language']] +
                 $this->LOCAL_LANG['default'];
         } elseif (is_array($this->LOCAL_LANG['default'])) {
             $markerArr = $this->LOCAL_LANG['default'];
         } else {
-            $markerArr = $this->LOCAL_LANG[$this->getFrontendController()->tmpl->setup['config.']['language']];
+            $markerArr = $this->LOCAL_LANG[$this->getTypoScriptFrontendController()
+                ->tmpl->setup['config.']['language']];
         }
 
         foreach (array_keys($markerArr) as $languageKey) {
@@ -1502,7 +1505,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                         $typoscriptConfig['format.']['thousands_sep']
                     );
                 }
-                // pass through
+                // passthrough
 
             case 'STDWRAP':
                 if (is_array($typoscriptConfig['parseFunc.'])) {
@@ -1834,7 +1837,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 $product = GeneralUtility::makeInstance(
                     \CommerceTeam\Commerce\Domain\Model\Product::class,
                     $myProductId,
-                    $this->getFrontendController()->sys_language_uid
+                    $this->getTypoScriptFrontendController()->sys_language_uid
                 );
                 $product->loadData();
 
@@ -2281,10 +2284,22 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      * Get database connection.
      *
      * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @deprecated
      */
     protected function getDatabaseConnection()
     {
         return $GLOBALS['TYPO3_DB'];
+    }
+
+    /**
+     * @param $table
+     *
+     * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
+     */
+    protected function getQueryBuilderForTable($table)
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable($table);
     }
 
     /**
@@ -2335,7 +2350,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     protected function getFrontendUser()
     {
-        return $this->getFrontendController()->fe_user;
+        return $this->getTypoScriptFrontendController()->fe_user;
     }
 
     /**

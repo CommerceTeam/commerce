@@ -619,7 +619,7 @@ class BasketController extends BaseController
         $basketArray['###URL_CHECKOUT###'] = $this->cObj->lastTypoLinkUrl;
         $basketArray['###NO_STOCK_MESSAGE###'] = $this->noStock;
         $basketArray['###BASKET_LASTPRODUCTURL###'] = $this->cObj->stdWrap(
-            $this->getFrontendController()->fe_user->getKey('ses', 'tx_commerce_lastproducturl'),
+            $this->getTypoScriptFrontendController()->fe_user->getKey('ses', 'tx_commerce_lastproducturl'),
             $this->conf['lastProduct']
         );
 
@@ -660,7 +660,7 @@ class BasketController extends BaseController
         $this->deliveryProduct = GeneralUtility::makeInstance(
             \CommerceTeam\Commerce\Domain\Model\Product::class,
             $this->conf['delProdId'],
-            $this->getFrontendController()->sys_language_uid
+            $this->getTypoScriptFrontendController()->sys_language_uid
         );
         $this->deliveryProduct->loadData();
 
@@ -755,7 +755,7 @@ class BasketController extends BaseController
         $this->paymentProduct = GeneralUtility::makeInstance(
             \CommerceTeam\Commerce\Domain\Model\Product::class,
             $this->conf['payProdId'],
-            $this->getFrontendController()->sys_language_uid
+            $this->getTypoScriptFrontendController()->sys_language_uid
         );
         $this->paymentProduct->loadData();
         $this->paymentProduct->loadArticles();
@@ -880,7 +880,7 @@ class BasketController extends BaseController
                     $attribute = GeneralUtility::makeInstance(
                         \CommerceTeam\Commerce\Domain\Model\Attribute::class,
                         $attributeUid,
-                        $this->getFrontendController()->sys_language_uid
+                        $this->getTypoScriptFrontendController()->sys_language_uid
                     );
                     $attribute->loadData();
 

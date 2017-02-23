@@ -45,7 +45,7 @@ class Ccvs extends \CreditCardValidationSolution
         if (is_object($this->getBackendUser())) {
             $languageKey = $this->getBackendUser()->uc['lang'];
         } else {
-            $languageKey = $this->getFrontendController()->config['config']['language'];
+            $languageKey = $this->getTypoScriptFrontendController()->config['config']['language'];
         }
         $this->language->init($languageKey);
         $this->language->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_ccsv.xlf');
@@ -144,7 +144,7 @@ class Ccvs extends \CreditCardValidationSolution
      *
      * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
      */
-    protected function getFrontendController()
+    protected function getTypoScriptFrontendController()
     {
         return $GLOBALS['TSFE'];
     }

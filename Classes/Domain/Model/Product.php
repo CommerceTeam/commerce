@@ -502,9 +502,9 @@ class Product extends AbstractEntity
         }
 
         $where .= ' AND article_type_uid = 1';
-        $where .= $this->getFrontendController()->sys_page->enableFields(
+        $where .= $this->getTypoScriptFrontendController()->sys_page->enableFields(
             $table,
-            $this->getFrontendController()->showHiddenRecords
+            $this->getTypoScriptFrontendController()->showHiddenRecords
         );
         $groupBy = '';
         $orderBy = 'sorting';
@@ -637,7 +637,7 @@ class Product extends AbstractEntity
                     $overwriteValues['unit'] = $attributeDataRow['attributes_unit'];
                     $overwriteValues['internal_title'] = $attributeDataRow['attributes_internal_title'];
 
-                    $languageOverlayRecord = $this->getFrontendController()->sys_page->getRecordOverlay(
+                    $languageOverlayRecord = $this->getTypoScriptFrontendController()->sys_page->getRecordOverlay(
                         'tx_commerce_attributes',
                         $overwriteValues,
                         $this->lang_uid,
@@ -683,9 +683,9 @@ class Product extends AbstractEntity
                         $parentTable,
                         'l18n_parent = '. $attributeDataRow['parent_uid'] .
                         ' AND sys_language_uid = ' . $this->lang_uid .
-                        $this->getFrontendController()->sys_page->enableFields(
+                        $this->getTypoScriptFrontendController()->sys_page->enableFields(
                             $parentTable,
-                            $this->getFrontendController()->showHiddenRecords
+                            $this->getTypoScriptFrontendController()->showHiddenRecords
                         )
                     );
 
@@ -745,7 +745,7 @@ class Product extends AbstractEntity
                     // Value lists must be localized.
                     // So overwrite current row with localization record
                     if ($this->lang_uid) {
-                        $valueListArrayRow = $this->getFrontendController()->sys_page->getRecordOverlay(
+                        $valueListArrayRow = $this->getTypoScriptFrontendController()->sys_page->getRecordOverlay(
                             'tx_commerce_attribute_values',
                             $valueListArrayRow,
                             $this->lang_uid,
@@ -878,13 +878,13 @@ class Product extends AbstractEntity
         }
 
         // Get enabled rows only
-        $selectWhere[] = ' 1 ' . $this->getFrontendController()->sys_page->enableFields(
+        $selectWhere[] = ' 1 ' . $this->getTypoScriptFrontendController()->sys_page->enableFields(
             'tx_commerce_attributes',
-            $this->getFrontendController()->showHiddenRecords
+            $this->getTypoScriptFrontendController()->showHiddenRecords
         );
-        $selectWhere[] = ' 1 ' . $this->getFrontendController()->sys_page->enableFields(
+        $selectWhere[] = ' 1 ' . $this->getTypoScriptFrontendController()->sys_page->enableFields(
             $parentTable,
-            $this->getFrontendController()->showHiddenRecords
+            $this->getTypoScriptFrontendController()->showHiddenRecords
         );
 
         // Order rows by given sorting table
@@ -1144,10 +1144,10 @@ class Product extends AbstractEntity
                     // Language overlay
                     if ($this->lang_uid > 0) {
                         $proofSql = '';
-                        if (is_object($this->getFrontendController()->sys_page)) {
-                            $proofSql = $this->getFrontendController()->sys_page->enableFields(
+                        if (is_object($this->getTypoScriptFrontendController()->sys_page)) {
+                            $proofSql = $this->getTypoScriptFrontendController()->sys_page->enableFields(
                                 'tx_commerce_attributes',
-                                $this->getFrontendController()->showHiddenRecords
+                                $this->getTypoScriptFrontendController()->showHiddenRecords
                             );
                         }
                         $attributeData = $database->exec_SELECTgetSingleRow(
@@ -1158,7 +1158,7 @@ class Product extends AbstractEntity
 
                         // Result should contain only one Dataset
                         if (!empty($attributeData)) {
-                            $attributeData = $this->getFrontendController()->sys_page->getRecordOverlay(
+                            $attributeData = $this->getTypoScriptFrontendController()->sys_page->getRecordOverlay(
                                 'tx_commerce_attributes',
                                 $attributeData,
                                 $this->lang_uid,
@@ -1202,7 +1202,7 @@ class Product extends AbstractEntity
                                     'uid = ' . $value['uid_valuelist']
                                 );
                                 if ($this->lang_uid > 0) {
-                                    $row = $this->getFrontendController()->sys_page->getRecordOverlay(
+                                    $row = $this->getTypoScriptFrontendController()->sys_page->getRecordOverlay(
                                         'tx_commerce_attribute_values',
                                         $row,
                                         $this->lang_uid,
@@ -1346,7 +1346,7 @@ class Product extends AbstractEntity
                 $attribute = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     \CommerceTeam\Commerce\Domain\Model\Attribute::class,
                     $attributeUid,
-                    $this->getFrontendController()->sys_language_uid
+                    $this->getTypoScriptFrontendController()->sys_language_uid
                 );
                 $attribute->loadData();
                 $attributeValues[$attributeUid] = $selected = $attribute->getFirstAttributeValueUid($possible);
@@ -1439,8 +1439,8 @@ class Product extends AbstractEntity
             if ($this->getT3verOid() > 0
                 && $this->getT3verOid() != $this->uid
                 && (
-                    is_object($this->getFrontendController())
-                    && $this->getFrontendController()->beUserLogin
+                    is_object($this->getTypoScriptFrontendController())
+                    && $this->getTypoScriptFrontendController()->beUserLogin
                 )
             ) {
                 $uidToLoadFrom = $this->getT3verOid();

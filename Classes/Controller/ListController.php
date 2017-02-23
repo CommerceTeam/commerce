@@ -278,7 +278,7 @@ class ListController extends BaseController
             $tmpCategory = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $this->cat,
-                $this->getFrontendController()->sys_language_uid
+                $this->getTypoScriptFrontendController()->sys_language_uid
             );
             $accessible = $tmpCategory->isAccessible();
         }
@@ -289,7 +289,7 @@ class ListController extends BaseController
             $tmpCategory = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $this->cat,
-                $this->getFrontendController()->sys_language_uid
+                $this->getTypoScriptFrontendController()->sys_language_uid
             );
         }
         if (!isset($this->piVars['catUid'])) {
@@ -302,11 +302,11 @@ class ListController extends BaseController
 
         $categorySubproducts = $this->category->getProductUids();
 
-        $frontend = $this->getFrontendController();
+        $frontend = $this->getTypoScriptFrontendController();
 
         if (!$this->conf['singleProduct']
             && (int) $this->piVars['showUid']
-            && !$this->getFrontendController()->beUserLogin
+            && !$this->getTypoScriptFrontendController()->beUserLogin
         ) {
             if (is_array($categorySubproducts)) {
                 if (!in_array($this->piVars['showUid'], $categorySubproducts)) {
@@ -334,7 +334,7 @@ class ListController extends BaseController
             $this->masterCategoryObj = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $this->master_cat,
-                $this->getFrontendController()->sys_language_uid
+                $this->getTypoScriptFrontendController()->sys_language_uid
             );
             $this->masterCategoryObj->loadData();
             /*
@@ -364,7 +364,7 @@ class ListController extends BaseController
             $this->category = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $this->cat,
-                $this->getFrontendController()->sys_language_uid
+                $this->getTypoScriptFrontendController()->sys_language_uid
             );
             $this->category->loadData();
         }
@@ -516,7 +516,7 @@ class ListController extends BaseController
             $this->product = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Product::class,
                 $productId,
-                $this->getFrontendController()->sys_language_uid
+                $this->getTypoScriptFrontendController()->sys_language_uid
             );
             $this->product->loadData();
 
@@ -540,7 +540,7 @@ class ListController extends BaseController
                 $this->master_cat = $this->product->getMasterparentCategory();
 
                 // Write the current page to the session to have a back to last product link
-                $this->getFrontendController()->fe_user->setKey(
+                $this->getTypoScriptFrontendController()->fe_user->setKey(
                     'ses',
                     'tx_commerce_lastproducturl',
                     $this->pi_linkTP_keepPIvars_url([], 1)
@@ -844,7 +844,7 @@ class ListController extends BaseController
                             $attribute = GeneralUtility::makeInstance(
                                 \CommerceTeam\Commerce\Domain\Model\Attribute::class,
                                 $attributeUid,
-                                $this->getFrontendController()->sys_language_uid
+                                $this->getTypoScriptFrontendController()->sys_language_uid
                             );
                             $attribute->loadData();
 
@@ -965,7 +965,7 @@ class ListController extends BaseController
                         $attribute = GeneralUtility::makeInstance(
                             \CommerceTeam\Commerce\Domain\Model\Attribute::class,
                             $attrUid,
-                            $this->getFrontendController()->sys_language_uid
+                            $this->getTypoScriptFrontendController()->sys_language_uid
                         );
                         $attribute->loadData();
 

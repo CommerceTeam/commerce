@@ -83,7 +83,7 @@ abstract class AbstractRepository implements SingletonInterface
      */
     public function getData($uid, $langUid = -1, $translationMode = false)
     {
-        $frontend = $this->getFrontendController();
+        $frontend = $this->getTypoScriptFrontendController();
 
         if ($translationMode == false) {
             $translationMode = $this->translationMode;
@@ -298,8 +298,8 @@ abstract class AbstractRepository implements SingletonInterface
         if (TYPO3_MODE === 'FE') {
             $showHiddenRecords = $showHiddenRecords ?
                 $showHiddenRecords :
-                $this->getFrontendController()->showHiddenRecords;
-            $result = $this->getFrontendController()->sys_page->enableFields($tableName, $showHiddenRecords);
+                $this->getTypoScriptFrontendController()->showHiddenRecords;
+            $result = $this->getTypoScriptFrontendController()->sys_page->enableFields($tableName, $showHiddenRecords);
         } else {
             $result = \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($tableName);
         }
@@ -327,6 +327,7 @@ abstract class AbstractRepository implements SingletonInterface
      * Get database connection.
      *
      * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @deprecated
      */
     protected function getDatabaseConnection()
     {
@@ -334,11 +335,22 @@ abstract class AbstractRepository implements SingletonInterface
     }
 
     /**
+     * @param $table
+     *
+     * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
+     */
+    protected function getQueryBuilderForTable($table)
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable($table);
+    }
+
+    /**
      * Get typoscript frontend controller.
      *
      * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
      */
-    protected function getFrontendController()
+    protected function getTypoScriptFrontendController()
     {
         return $GLOBALS['TSFE'];
     }

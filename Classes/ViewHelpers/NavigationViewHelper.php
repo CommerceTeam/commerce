@@ -291,13 +291,13 @@ class NavigationViewHelper
 
         $this->nodeArrayAdditionalFields = GeneralUtility::trimExplode(',', $this->mConf['additionalFields'], 0);
 
-        $this->pid = $this->mConf['overridePid'] ? $this->mConf['overridePid'] : $this->getFrontendController()->id;
+        $this->pid = $this->mConf['overridePid'] ? $this->mConf['overridePid'] : $this->getTypoScriptFrontendController()->id;
         $this->gpVars = GeneralUtility::_GPmerged($this->prefixId);
 
         \CommerceTeam\Commerce\Utility\GeneralUtility::initializeFeUserBasket();
 
         $this->gpVars['basketHashValue'] = $this->getBasket()->getBasketHashValue();
-        $this->pageRootline = $this->getFrontendController()->rootLine;
+        $this->pageRootline = $this->getTypoScriptFrontendController()->rootLine;
         $this->menuType = $this->mConf['1'];
         $this->entryLevel = (int) $this->mConf['entryLevel'];
 
@@ -350,13 +350,13 @@ class NavigationViewHelper
          */
         $hash = md5(
             'tx_commerce_navigation:' . implode('-', $this->mConf) . ':' . $usergroups . ':' .
-            $this->getFrontendController()->linkVars . ':' . GeneralUtility::getIndpEnv('HTTP_HOST')
+            $this->getTypoScriptFrontendController()->linkVars . ':' . GeneralUtility::getIndpEnv('HTTP_HOST')
         );
 
         /*
          * Render Menue Array and store in cache, if possible
          */
-        if ($this->getFrontendController()->no_cache) {
+        if ($this->getTypoScriptFrontendController()->no_cache) {
             // Build directly and don't sore, if no_cache=1'
             $this->mTree = $this->makeArrayPostRender(
                 $this->pid,
@@ -711,7 +711,7 @@ class NavigationViewHelper
                 /*
                  * Add Pages Overlay to Array, if sys language uid set
                  */
-                if ($this->getFrontendController()->sys_language_uid) {
+                if ($this->getTypoScriptFrontendController()->sys_language_uid) {
                     $nodeArray['_PAGES_OVERLAY'] = htmlspecialchars(strip_tags($dataRow['title']));
                 }
                 $nodeArray['parent_id'] = $uidRoot;
@@ -844,7 +844,7 @@ class NavigationViewHelper
                 }
 
                 $nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' .
-                    $this->generateChash($nodeArray['_ADD_GETVARS'] . $this->getFrontendController()->linkVars);
+                    $this->generateChash($nodeArray['_ADD_GETVARS'] . $this->getTypoScriptFrontendController()->linkVars);
 
                 $treeList[$row['uid_local']] = $nodeArray;
             }
@@ -937,7 +937,7 @@ class NavigationViewHelper
                 /*
                  * Add Pages Overlay to Array, if sys language uid set
                  */
-                if ($this->getFrontendController()->sys_language_uid) {
+                if ($this->getTypoScriptFrontendController()->sys_language_uid) {
                     $nodeArray['_PAGES_OVERLAY'] = htmlspecialchars(strip_tags($dataRow['title']));
                 }
 
@@ -970,7 +970,7 @@ class NavigationViewHelper
                 }
 
                 $nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' .
-                    $this->generateChash($nodeArray['_ADD_GETVARS'] . $this->getFrontendController()->linkVars);
+                    $this->generateChash($nodeArray['_ADD_GETVARS'] . $this->getTypoScriptFrontendController()->linkVars);
 
                 if ($this->gpVars['manufacturer']) {
                     $nodeArray['_ADD_GETVARS'] .= '&' . $this->prefixId . '[manufacturer]=' .
@@ -1126,13 +1126,13 @@ class NavigationViewHelper
 
         $row = $this->getRepository($this->repositoryNames[$tableName])->findByUid($uid);
 
-        if ($this->getFrontendController()->sys_language_uid && $row) {
-            $langUid = $this->getFrontendController()->sys_language_uid;
+        if ($this->getTypoScriptFrontendController()->sys_language_uid && $row) {
+            $langUid = $this->getTypoScriptFrontendController()->sys_language_uid;
 
             /*
              * Get Overlay, if available
              */
-            $row = $this->getFrontendController()->sys_page->getRecordOverlay(
+            $row = $this->getTypoScriptFrontendController()->sys_page->getRecordOverlay(
                 $tableName,
                 $row,
                 $langUid,
@@ -1289,7 +1289,7 @@ class NavigationViewHelper
         $this->mConf = $this->processConf($conf);
         $this->pid = $this->mConf['overridePid'] ?
             (int)$this->mConf['overridePid'] :
-            $this->getFrontendController()->id;
+            $this->getTypoScriptFrontendController()->id;
         $this->gpVars = GeneralUtility::_GPmerged($this->prefixId);
 
         \CommerceTeam\Commerce\Utility\GeneralUtility::initializeFeUserBasket();
@@ -1299,7 +1299,7 @@ class NavigationViewHelper
             $this->category = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Category::class,
                 (int)$this->mConf['category'],
-                $this->getFrontendController()->sys_language_uid
+                $this->getTypoScriptFrontendController()->sys_language_uid
             );
             $this->category->loadData();
         }
@@ -1320,7 +1320,7 @@ class NavigationViewHelper
             $product = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Product::class,
                 (int)$this->gpVars['showUid'],
-                $this->getFrontendController()->sys_language_uid
+                $this->getTypoScriptFrontendController()->sys_language_uid
             );
             $product->loadData();
 
@@ -1332,7 +1332,7 @@ class NavigationViewHelper
             $category = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Category::class,
                 (int)$this->gpVars['catUid'],
-                $this->getFrontendController()->sys_language_uid
+                $this->getTypoScriptFrontendController()->sys_language_uid
             );
             $category->loadData();
 
@@ -1342,7 +1342,7 @@ class NavigationViewHelper
                 $addGetvars .= $this->separator . $this->prefixId . '[basketHashValue]=' .
                     $this->gpVars['basketHashValue'];
             }
-            $cHash = $this->generateChash($addGetvars . $this->getFrontendController()->linkVars);
+            $cHash = $this->generateChash($addGetvars . $this->getTypoScriptFrontendController()->linkVars);
 
             /*
              * Currentyl no Navtitle in tx_commerce_products
@@ -1388,7 +1388,7 @@ class NavigationViewHelper
             $category = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Category::class,
                 (int)$categoryUid,
-                $this->getFrontendController()->sys_language_uid
+                $this->getTypoScriptFrontendController()->sys_language_uid
             );
             $category->loadData();
 
@@ -1405,7 +1405,7 @@ class NavigationViewHelper
                 $additionalParams .= $this->separator . $this->prefixId . '[basketHashValue]=' .
                     $this->gpVars['basketHashValue'];
             }
-            $cHash = $this->generateChash($additionalParams . $this->getFrontendController()->linkVars);
+            $cHash = $this->generateChash($additionalParams . $this->getTypoScriptFrontendController()->linkVars);
 
             if ($this->mConf['showProducts'] == 1 && $this->gpVars['showUid'] > 0) {
                 $itemState = 'NO';
@@ -1600,7 +1600,7 @@ class NavigationViewHelper
                 $manufacturerTitle = htmlspecialchars(strip_tags($product->getManufacturerTitle()));
                 $addGet = $this->separator . $this->prefixId . '[catUid]=' . $categoryUid .
                     $this->separator . $this->prefixId . '[manufacturer]=' . $productRow['manufacturer_uid'];
-                $cHash = $this->generateChash($addGet . $this->getFrontendController()->linkVars);
+                $cHash = $this->generateChash($addGet . $this->getTypoScriptFrontendController()->linkVars);
                 $addGet .= $this->separator . 'cHash=' . $cHash;
 
                 $aLevel = [
@@ -1742,7 +1742,7 @@ class NavigationViewHelper
      *
      * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
      */
-    protected function getFrontendController()
+    protected function getTypoScriptFrontendController()
     {
         return $GLOBALS['TSFE'];
     }
@@ -1754,7 +1754,7 @@ class NavigationViewHelper
      */
     protected function getFrontendUser()
     {
-        return $this->getFrontendController()->fe_user;
+        return $this->getTypoScriptFrontendController()->fe_user;
     }
 
     /**

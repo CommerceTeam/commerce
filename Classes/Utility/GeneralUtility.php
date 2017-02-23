@@ -414,8 +414,8 @@ class GeneralUtility
      */
     public static function getBasketStoragePid()
     {
-        if (self::getFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi2.']['basketStoragePid']) {
-            $basketStoragePid = (int) self::getFrontendController()
+        if (self::getTypoScriptFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi2.']['basketStoragePid']) {
+            $basketStoragePid = (int) self::getTypoScriptFrontendController()
                 ->tmpl
                     ->setup['plugin.']['tx_commerce_pi2.']['basketStoragePid'];
         } else {
@@ -431,7 +431,7 @@ class GeneralUtility
      *
      * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
      */
-    protected static function getFrontendController()
+    protected static function getTypoScriptFrontendController()
     {
         return $GLOBALS['TSFE'];
     }
@@ -443,7 +443,7 @@ class GeneralUtility
      */
     protected static function getFrontendUser()
     {
-        return self::getFrontendController()->fe_user;
+        return self::getTypoScriptFrontendController()->fe_user;
     }
 
     /**

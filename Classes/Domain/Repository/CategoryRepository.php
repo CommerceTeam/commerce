@@ -146,7 +146,7 @@ class CategoryRepository extends AbstractRepository
         }
 
         $database = $this->getDatabaseConnection();
-        $frontend = $this->getFrontendController();
+        $frontend = $this->getTypoScriptFrontendController();
         $this->uid = $uid;
         if (is_object($frontend->sys_page)) {
             $additionalWhere = $frontend->sys_page->enableFields(
@@ -222,7 +222,7 @@ class CategoryRepository extends AbstractRepository
             return [];
         }
 
-        $frontend = $this->getFrontendController();
+        $frontend = $this->getTypoScriptFrontendController();
         if ($languageUid == 0 && $frontend->sys_language_uid) {
             $languageUid = $frontend->sys_language_uid;
         }
@@ -301,7 +301,7 @@ class CategoryRepository extends AbstractRepository
             return [];
         }
 
-        $frontend = $this->getFrontendController();
+        $frontend = $this->getTypoScriptFrontendController();
         if ($languageUid == 0 && $frontend->sys_language_uid) {
             $languageUid = $frontend->sys_language_uid;
         }

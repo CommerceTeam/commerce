@@ -398,10 +398,10 @@ class AbstractEntity
      */
     public function setPageTitle($field = 'title')
     {
-        $title = $this->$field . ' : ' . $this->getFrontendController()->page['title'];
-        $this->getFrontendController()->page['title'] = $title;
+        $title = $this->$field . ' : ' . $this->getTypoScriptFrontendController()->page['title'];
+        $this->getTypoScriptFrontendController()->page['title'] = $title;
         // set pagetitle for indexed search also
-        $this->getFrontendController()->indexedDocTitle = $title;
+        $this->getTypoScriptFrontendController()->indexedDocTitle = $title;
     }
 
 
@@ -430,7 +430,7 @@ class AbstractEntity
      *
      * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
      */
-    protected function getFrontendController()
+    protected function getTypoScriptFrontendController()
     {
         return $GLOBALS['TSFE'];
     }

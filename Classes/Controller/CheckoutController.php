@@ -163,7 +163,7 @@ class CheckoutController extends BaseController
     {
         parent::init($conf);
 
-        $this->conf['basketPid'] = $this->getFrontendController()->id;
+        $this->conf['basketPid'] = $this->getTypoScriptFrontendController()->id;
 
         /**
          * Static info tables.
@@ -402,6 +402,7 @@ class CheckoutController extends BaseController
             if (!$this->conf['randomUser']
                 && !GeneralUtility::validEmail($this->piVars[(int) $this->piVars['address_uid']]['email'])
             ) {
+                /** @noinspection PhpInternalEntityUsedInspection */
                 $this->piVars[(int) $this->piVars['address_uid']]['email'] = $feUser->user['email'];
             }
             $this->piVars[(int) $this->piVars['address_uid']]['uid'] = (int) $this->piVars['address_uid'];
@@ -460,6 +461,7 @@ class CheckoutController extends BaseController
             $feUser->writeUC('');
         }
 
+        /** @noinspection PhpInternalEntityUsedInspection */
         if ($feUser->sesData_change && $feUser->id) {
             if (empty($feUser->sesData)) {
                 // Remove session-data
@@ -533,7 +535,7 @@ class CheckoutController extends BaseController
      */
     public function getBillingAddress($withTitle = 1)
     {
-        $frontendController = $this->getFrontendController();
+        $frontendController = $this->getTypoScriptFrontendController();
 
         $this->debug($this->sessionData, 'sessionData', __FILE__ . ' ' . __LINE__);
         if ($this->conf['billing.']['subpartMarker.']['containerWrap']) {
@@ -578,6 +580,7 @@ class CheckoutController extends BaseController
             $addressMgm->cObj = $this->cObj;
             $addressMgm->templateCode = $this->templateCode;
             $addressMgm->init($addressManagerConf, false);
+            /** @noinspection PhpInternalEntityUsedInspection */
             $addressMgm->addresses = $addressMgm->getAddresses(
                 (int) $this->getFrontendUser()->user['uid'],
                 $this->conf['billing.']['addressType']
@@ -685,7 +688,7 @@ class CheckoutController extends BaseController
      */
     public function getDeliveryAddress($withTitle = 1)
     {
-        $frontendController = $this->getFrontendController();
+        $frontendController = $this->getTypoScriptFrontendController();
         $this->debug($this->sessionData, 'sessionData', __FILE__ . ' ' . __LINE__);
 
         if (!$this->validateAddress('billing')) {
@@ -747,6 +750,7 @@ class CheckoutController extends BaseController
             $addressMgm->cObj = $this->cObj;
             $addressMgm->templateCode = $this->templateCode;
             $addressMgm->init($addressManagerConf, false);
+            /** @noinspection PhpInternalEntityUsedInspection */
             $addressMgm->addresses = $addressMgm->getAddresses(
                 (int) $this->getFrontendUser()->user['uid'],
                 $this->conf['delivery.']['addressType']
@@ -889,7 +893,7 @@ class CheckoutController extends BaseController
                 }
             }
 
-            $formAction = $this->pi_getPageLink($this->getFrontendController()->id);
+            $formAction = $this->pi_getPageLink($this->getTypoScriptFrontendController()->id);
             if (method_exists($paymentObj, 'getProvider')) {
                 /**
                  * Payment provider.
@@ -953,7 +957,7 @@ class CheckoutController extends BaseController
             $template = $this->cObj->getSubpart($this->templateCode, '###LISTING###');
         }
 
-        $frontendController = $this->getFrontendController();
+        $frontendController = $this->getTypoScriptFrontendController();
 
         $basket = $this->getBasket();
         $this->debug($basket, '$basket', __FILE__ . ' ' . __LINE__);
@@ -1253,6 +1257,7 @@ class CheckoutController extends BaseController
 
         $basket->finishOrder();
 
+        /** @noinspection PhpInternalEntityUsedInspection */
         GeneralUtility::removeSingletonInstance(\CommerceTeam\Commerce\Domain\Model\Basket::class, $basket);
 
         // create new basket to remove all values from old one
@@ -1262,6 +1267,7 @@ class CheckoutController extends BaseController
          * @var \CommerceTeam\Commerce\Domain\Model\Basket $basket
          */
         $basket = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Basket::class);
+        /** @noinspection PhpInternalEntityUsedInspection */
         $basket->setSessionId(md5($feUser->id . ':' . rand(0, PHP_INT_MAX)));
         $basket->loadData();
 
@@ -1537,7 +1543,7 @@ class CheckoutController extends BaseController
                         break;
 
                     case 'username':
-                        if ($this->getFrontendController()->loginUser) {
+                        if ($this->getTypoScriptFrontendController()->loginUser) {
                             break;
                         }
                         if (!$this->checkUserName($value)) {
@@ -1858,7 +1864,7 @@ class CheckoutController extends BaseController
 
         // Check if a uid is set, so address handling can be used.
         // Only possible if user is logged in
-        if ($this->sessionData[$type]['uid'] && $this->getFrontendController()->loginUser) {
+        if ($this->sessionData[$type]['uid'] && $this->getTypoScriptFrontendController()->loginUser) {
             $uid = $this->sessionData[$type]['uid'];
         } else {
             // Create
@@ -1883,7 +1889,9 @@ class CheckoutController extends BaseController
                 }
             }
 
+            /** @noinspection PhpInternalEntityUsedInspection */
             if (isset($this->getFrontendUser()->user['uid'])) {
+                /** @noinspection PhpInternalEntityUsedInspection */
                 $dataArray[$config['userConnection']] = $this->getFrontendUser()->user['uid'];
             } else {
                 // Create new user if no user is logged in and the option is set
@@ -1935,6 +1943,7 @@ class CheckoutController extends BaseController
                     $frontendUserRepository = GeneralUtility::makeInstance(FrontendUserRepository::class);
                     $dataArray[$config['userConnection']] = $frontendUserRepository->addRecord($feuData);
 
+                    /** @noinspection PhpInternalEntityUsedInspection */
                     $this->getFrontendUser()->user['uid'] = $dataArray[$config['userConnection']];
 
                     foreach ($hooks as $hookObj) {
@@ -2050,14 +2059,14 @@ class CheckoutController extends BaseController
                     $step . '-' . $fieldName,
                     '',
                     $fieldConfig['select'],
-                    $this->getFrontendController()->tmpl->setup['config.']['language']
+                    $this->getTypoScriptFrontendController()->tmpl->setup['config.']['language']
                 );
                 break;
 
             case 'static_info_country':
                 $nameArray = $this->staticInfo->initCountries(
                     $fieldConfig['country_association'],
-                    $this->getFrontendController()->tmpl->setup['config.']['language'],
+                    $this->getTypoScriptFrontendController()->tmpl->setup['config.']['language'],
                     1,
                     $fieldConfig['select']
                 );
@@ -2314,12 +2323,12 @@ class CheckoutController extends BaseController
     public function sendUserMail($orderUid, array $orderData)
     {
         $hooks = HookFactory::getHooks('Controller/CheckoutController', 'sendUserMail');
-        $frontendController = $this->getFrontendController();
 
         if (strlen($this->sessionData['billing']['email'])) {
             // If user has email in the formular, use this
             $userMail = $this->sessionData['billing']['email'];
         } elseif (is_array($this->getFrontendUser()->user) && strlen($this->getFrontendUser()->user['email'])) {
+            /** @noinspection PhpInternalEntityUsedInspection */
             $userMail = $this->getFrontendUser()->user['email'];
         } else {
             return false;
@@ -2398,7 +2407,7 @@ class CheckoutController extends BaseController
                 // Check if charset ist set by TS
                 // Otherwise set to default Charset
                 if (!$this->conf['usermail.']['charset']) {
-                    $this->conf['usermail.']['charset'] = $frontendController->renderCharset;
+                    $this->conf['usermail.']['charset'] = 'utf-8';
                 }
 
                 // Checck if mailencoding ist set
@@ -2407,17 +2416,18 @@ class CheckoutController extends BaseController
                     $this->conf['usermail.']['encoding'] = '8bit';
                 }
 
+                $charsetConverter = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
                 // Convert Text to charset
-                $frontendController->csConvObj->initCharset($frontendController->renderCharset);
-                $frontendController->csConvObj->initCharset(strtolower($this->conf['usermail.']['charset']));
-                $plainMessage = $frontendController->csConvObj->conv(
+                $charsetConverter->initCharset('utf-8');
+                $charsetConverter->initCharset(strtolower($this->conf['usermail.']['charset']));
+                $plainMessage = $charsetConverter->conv(
                     $plainMessage,
-                    $frontendController->renderCharset,
+                    'utf-8',
                     strtolower($this->conf['usermail.']['charset'])
                 );
-                $subject = $frontendController->csConvObj->conv(
+                $subject = $charsetConverter->conv(
                     $subject,
-                    $frontendController->renderCharset,
+                    'utf-8',
                     strtolower($this->conf['usermail.']['charset'])
                 );
 
@@ -2482,15 +2492,18 @@ class CheckoutController extends BaseController
     public function sendAdminMail($orderUid, array $orderData)
     {
         $hooks = HookFactory::getHooks('Controller/CheckoutController', 'sendAdminMail');
-        $frontendController = $this->getFrontendController();
 
+        /** @noinspection PhpInternalEntityUsedInspection */
         if (is_array($this->getFrontendUser()->user && strlen($this->getFrontendUser()->user['email']))) {
+            /** @noinspection PhpInternalEntityUsedInspection */
             $userMail = $this->getFrontendUser()->user['email'];
         } else {
             $userMail = $this->sessionData['billing']['email'];
         }
 
+        /** @noinspection PhpInternalEntityUsedInspection */
         if (is_array($this->getFrontendUser()->user && strlen($this->getFrontendUser()->user['name']))) {
+            /** @noinspection PhpInternalEntityUsedInspection */
             $userName = $this->getFrontendUser()->user['name'] . ' ' . $this->getFrontendUser()->user['surname'];
         } else {
             $userName = $this->sessionData['billing']['name'] . ' ' . $this->sessionData['billing']['surname'];
@@ -2560,7 +2573,7 @@ class CheckoutController extends BaseController
             // Check if charset ist set by TS
             // Otherwise set to default Charset
             if (!$this->conf['adminmail.']['charset']) {
-                $this->conf['adminmail.']['charset'] = $frontendController->renderCharset;
+                $this->conf['adminmail.']['charset'] = 'utf-8';
             }
 
             // Checck if mailencoding ist set
@@ -2570,20 +2583,22 @@ class CheckoutController extends BaseController
             }
 
             // Convert Text to charset
-            $frontendController->csConvObj->initCharset($frontendController->renderCharset);
-            $frontendController->csConvObj->initCharset(strtolower($this->conf['adminmail.']['charset']));
-            $plainMessage = $frontendController->csConvObj->conv(
+            $charsetConverter = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
+
+            $charsetConverter->initCharset('utf-8');
+            $charsetConverter->initCharset(strtolower($this->conf['adminmail.']['charset']));
+            $plainMessage = $charsetConverter->conv(
                 $plainMessage,
-                $frontendController->renderCharset,
+                'utf-8',
                 strtolower($this->conf['adminmail.']['charset'])
             );
-            $subject = $frontendController->csConvObj->conv(
+            $subject = $charsetConverter->conv(
                 $subject,
-                $frontendController->renderCharset,
+                'utf-8',
                 strtolower($this->conf['adminmail.']['charset'])
             );
-            $usernameMailencoded = $frontendController->csConvObj->specCharsToASCII(
-                $frontendController->renderCharset,
+            $usernameMailencoded = $charsetConverter->specCharsToASCII(
+                'utf-8',
                 $userName
             );
 
@@ -2821,7 +2836,7 @@ class CheckoutController extends BaseController
         $orderData['paymenttype'] = $this->getPaymentType(true);
         $orderData['sum_price_net'] = $basket->getSumNet();
         $orderData['sum_price_gross'] = $basket->getSumGross();
-        $orderData['order_sys_language_uid'] = $this->getFrontendController()->sys_language_uid;
+        $orderData['order_sys_language_uid'] = $this->getTypoScriptFrontendController()->sys_language_uid;
         $orderData['pid'] = $pid;
         $orderData['order_id'] = $orderId;
         $orderData['crdate'] = $GLOBALS['EXEC_TIME'];
@@ -2829,7 +2844,9 @@ class CheckoutController extends BaseController
         $orderData['cu_iso_3_uid'] = $this->conf['currencyId'];
         $orderData['comment'] = htmlspecialchars(strip_tags($this->piVars['comment']));
 
+        /** @noinspection PhpInternalEntityUsedInspection */
         if (is_array($this->getFrontendUser()->user)) {
+            /** @noinspection PhpInternalEntityUsedInspection */
             $orderData['cust_fe_user'] = $this->getFrontendUser()->user['uid'];
         }
 
@@ -2972,6 +2989,7 @@ class CheckoutController extends BaseController
          */
         $tceMain = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
         $tceMain->bypassWorkspaceRestrictions = true;
+        // @todo fix for TYPO3 9
         $tceMain->recInsertAccessCache['tx_commerce_orders'][$pid] = 1;
         $tceMain->recInsertAccessCache['tx_commerce_order_articles'][$pid] = 1;
 
@@ -3000,10 +3018,12 @@ class CheckoutController extends BaseController
             }
             // Object is initialized
             $backendUser->start();
+            /** @noinspection PhpInternalEntityUsedInspection */
             $backendUser->setBeUserByName('_fe_commerce');
             // Checking if there's a user logged in
             $backendUser->backendCheckLogin();
 
+            /** @noinspection PhpInternalEntityUsedInspection */
             $backendUser->groupData['tables_modify'] .= ',tx_commerce_orders,tx_commerce_order_articles';
 
             $GLOBALS['BE_USER'] = $backendUser;

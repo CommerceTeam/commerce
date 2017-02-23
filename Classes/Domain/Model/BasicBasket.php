@@ -299,7 +299,8 @@ class BasicBasket
     {
         $result = false;
 
-        if (!$this->getFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi1.']['dontUseBasketHashValue']
+        if (!$this->getTypoScriptFrontendController()
+                ->tmpl->setup['plugin.']['tx_commerce_pi1.']['dontUseBasketHashValue']
             && !empty($this->basketItems)
         ) {
             $result = \TYPO3\CMS\Core\Utility\GeneralUtility::shortMD5(serialize($this->basketItems));
@@ -624,7 +625,7 @@ class BasicBasket
                 $article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     \CommerceTeam\Commerce\Domain\Model\Article::class,
                     $articleUid,
-                    $this->getFrontendController()->sys_language_uid
+                    $this->getTypoScriptFrontendController()->sys_language_uid
                 );
                 $article->loadData('basket');
 
@@ -654,7 +655,7 @@ class BasicBasket
                     $articleUid,
                     $quantity,
                     $priceid,
-                    $this->getFrontendController()->sys_language_uid
+                    $this->getTypoScriptFrontendController()->sys_language_uid
                 );
 
                 if ($basketItem->article) {
@@ -928,7 +929,7 @@ class BasicBasket
      *
      * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
      */
-    protected function getFrontendController()
+    protected function getTypoScriptFrontendController()
     {
         return $GLOBALS['TSFE'];
     }
@@ -940,6 +941,6 @@ class BasicBasket
      */
     protected function getFrontendUser()
     {
-        return $this->getFrontendController()->fe_user;
+        return $this->getTypoScriptFrontendController()->fe_user;
     }
 }

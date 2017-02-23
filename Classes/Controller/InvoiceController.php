@@ -90,8 +90,9 @@ class InvoiceController extends BaseController
      */
     public function main($content, array $conf = [])
     {
-        $frontend = $this->getFrontendController();
-        $backendUser = $this->getBackendUser();
+        $frontend = $this->getTypoScriptFrontendController();
+        /** @noinspection PhpInternalEntityUsedInspection */
+        $backendUser = $this->getBackendUser()->user;
 
         $this->conf = $conf;
         $this->pi_setPiVarDefaults();
@@ -100,15 +101,17 @@ class InvoiceController extends BaseController
         // Checking backend user login
         $this->invoiceBackendOnly(ConfigurationUtility::getInstance()->getExtConf('invoiceBackendOnly'));
 
+        /** @noinspection PhpInternalEntityUsedInspection */
+        $user = $this->getFrontendUser()->user;
         // Check for the logged in USER
         // It could be an FE USer, a BE User or an automated script
-        if (empty($this->getFrontendUser()->user)
-            && !$backendUser->user['uid']
+        if (empty($user)
+            && !$backendUser['uid']
             && $_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']
         ) {
             return $this->pi_getLL('not_logged_in');
-        } elseif ($this->getFrontendUser()->user && !$backendUser->user['uid']) {
-            $this->user = $this->getFrontendUser()->user;
+        } elseif ($user && !$backendUser['uid']) {
+            $this->user = $user;
         }
 
         // If it's an automated process, no caching
@@ -269,6 +272,7 @@ class InvoiceController extends BaseController
      */
     protected function invoiceBackendOnly($enabled = false)
     {
+        /** @noinspection PhpInternalEntityUsedInspection */
         if ($enabled && !$this->getBackendUser()->user['uid'] && $_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) {
             /**
              * Error message.
@@ -419,7 +423,7 @@ class InvoiceController extends BaseController
      * @param int $articleType Optional, articleTypeID
      * @param string $prefix Prefix
      *
-     * @return array System Articles
+     * @return string System Articles
      */
     protected function getOrderSystemArticles($orderUid, $articleType = 0, $prefix = '')
     {

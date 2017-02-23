@@ -13,7 +13,7 @@
 $EM_CONF['commerce'] = [
     'title' => 'Commerce',
     'description' => 'TYPO3 commerce shopping system',
-    'version' => '6.0.0',
+    'version' => '7.0.0',
     'category' => 'module',
     'state' => 'stable',
     'author' => 'Ingo Schmitt,Volker Graubaum,Thomas Hempel,Sebastian Fischer',
@@ -25,7 +25,7 @@ $EM_CONF['commerce'] = [
     'constraints' => [
         'depends' => [
             'php' => '5.5.0-',
-            'typo3' => '7.6.0-7.9.99',
+            'typo3' => '8.6.0-8.9.99',
             'tt_address' => '3.0.0-',
             'static_info_tables' => '6.2.1-',
         ],

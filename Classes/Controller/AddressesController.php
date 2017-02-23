@@ -92,7 +92,7 @@ class AddressesController extends BaseController
     {
         $this->init($conf);
 
-        if (!$this->getFrontendController()->loginUser) {
+        if (!$this->getTypoScriptFrontendController()->loginUser) {
             return $this->noUser();
         }
 
@@ -104,7 +104,7 @@ class AddressesController extends BaseController
 
         if ($formValid
             && isset($this->piVars['check'])
-            && (int) $this->piVars['backpid'] != $this->getFrontendController()->id
+            && (int) $this->piVars['backpid'] != $this->getTypoScriptFrontendController()->id
         ) {
             unset($this->piVars['check']);
             header(
@@ -225,7 +225,9 @@ class AddressesController extends BaseController
         );
 
         // Check for logged in user
+        /** @noinspection PhpInternalEntityUsedInspection */
         if (!empty($this->getFrontendUser()->user)) {
+            /** @noinspection PhpInternalEntityUsedInspection */
             $this->user = $this->getFrontendUser()->user;
         }
 
@@ -366,11 +368,12 @@ class AddressesController extends BaseController
                     $fields = $fieldConfig['label'] . ' AS label,';
                     $fields .= $fieldConfig['value'] . ' AS value';
 
-                    $value = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                        $fields,
-                        $table,
-                        $select
-                    );
+                    $value = $this->getQueryBuilderForTable($table)
+                        ->select($fields)
+                        ->from($table)
+                        ->where($select)
+                        ->execute()
+                        ->fetch();
                     $value = is_array($value) ? $value : [];
 
                     $valueHidden = $value['value'];
@@ -403,10 +406,10 @@ class AddressesController extends BaseController
 
             // Create a pivars array for merging with link to edit page
             if ($this->conf['editAddressPid'] > 0) {
-                $piArray = ['backpid' => $this->getFrontendController()->id];
+                $piArray = ['backpid' => $this->getTypoScriptFrontendController()->id];
                 $linkTarget = $this->conf['editAddressPid'];
             } else {
-                $piArray = ['backpid' => $this->getFrontendController()->id];
+                $piArray = ['backpid' => $this->getTypoScriptFrontendController()->id];
                 $linkTarget = $this->conf['addressMgmPid'];
             }
 
@@ -482,7 +485,7 @@ class AddressesController extends BaseController
 
         // Create a pivars array for merging with link to edit page
         if ($this->conf['editAddressPid'] > 0) {
-            $piArray = ['backpid' => $this->getFrontendController()->id];
+            $piArray = ['backpid' => $this->getTypoScriptFrontendController()->id];
             $linkTarget = $this->conf['editAddressPid'];
         } else {
             $piArray = [];
@@ -889,7 +892,7 @@ class AddressesController extends BaseController
                     '',
                     '',
                     $fieldConfig['select'],
-                    $this->getFrontendController()->tmpl->setup['config.']['language']
+                    $this->getTypoScriptFrontendController()->tmpl->setup['config.']['language']
                 );
                 break;
 
@@ -978,14 +981,13 @@ class AddressesController extends BaseController
             $select = $fieldConfig['select'] . $this->cObj->enableFields($fieldConfig['table']);
             $fields = $fieldConfig['label'] . ' AS label,' . $fieldConfig['value'] . ' AS value';
 
-            $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                $fields,
-                $fieldConfig['table'],
-                $select,
-                '',
-                $fieldConfig['orderby']
-            );
-            foreach ($rows as $row) {
+            $queryResult = $this->getQueryBuilderForTable($fieldConfig['table'])
+                ->select($fields)
+                ->from($fieldConfig['table'])
+                ->where($select)
+                ->orderBy($fieldConfig['orderby'])
+                ->execute();
+            while ($row = $queryResult->fetch()) {
                 $result .= '<option name="' . $row['value'] . '" value="' . $row['value'] . '"';
                 if ($row['value'] === $fieldConfig['default']) {
                     $result .= ' selected="selected"';
@@ -1181,7 +1183,7 @@ class AddressesController extends BaseController
 
             $addressRepository->updateAddressOfUser(
                 (int) $this->piVars['addressid'],
-                (int) $this->getFrontendUser()->user['uid'],
+                (int) $this->user['uid'],
                 $newData
             );
 
@@ -1226,6 +1228,7 @@ class AddressesController extends BaseController
      */
     public function getAddresses($userId, $addressType = 0)
     {
+        $table = 'tt_address';
         $where = 'tx_commerce_fe_user_id = ' . (int) $userId .
             \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tt_address');
 
@@ -1249,17 +1252,16 @@ class AddressesController extends BaseController
             }
         }
 
-        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            'tt_address',
-            $where,
-            '',
-            'tx_commerce_is_main_address desc'
-        );
+        $queryResult = $this->getQueryBuilderForTable($table)
+            ->select('*')
+            ->from($table)
+            ->where($where)
+            ->orderBy('tx_commerce_is_main_address', 'DESC')
+            ->execute();
 
         $result = [];
-        foreach ($rows as $address) {
-            $result[$address['uid']] = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($address);
+        while ($row = $queryResult->fetch()) {
+            $result[$row['uid']] = \CommerceTeam\Commerce\Utility\GeneralUtility::removeXSSStripTagsArray($row);
         }
 
         return $result;

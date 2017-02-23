@@ -103,7 +103,7 @@ class Creditcard extends PaymentAbstract
                         break;
 
                     case 'username':
-                        if ($this->getFrontendController()->loginUser) {
+                        if ($this->getTypoScriptFrontendController()->loginUser) {
                             break;
                         }
                         if (!$this->parentObject->checkUserName($value)) {
@@ -167,7 +167,7 @@ class Creditcard extends PaymentAbstract
      *
      * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
      */
-    protected function getFrontendController()
+    protected function getTypoScriptFrontendController()
     {
         return $GLOBALS['TSFE'];
     }
