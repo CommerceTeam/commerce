@@ -68,39 +68,15 @@ call_user_func(function ($packageKey) {
     // Add frontend plugins to content.default static template
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
         $packageKey,
-        'Classes/Controller/ListController.php',
+        '',
         '_pi1',
         'list_type',
         1
     );
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
-        $packageKey,
-        'Classes/Controller/BasketController.php',
-        '_pi2',
-        'list_type',
-        0
-    );
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
-        $packageKey,
-        'Classes/Controller/CheckoutController.php',
-        '_pi3',
-        'list_type',
-        0
-    );
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
-        $packageKey,
-        'Classes/Controller/AddressesController.php',
-        '_pi4',
-        'list_type',
-        0
-    );
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
-        $packageKey,
-        'Classes/Controller/InvoiceController.php',
-        '_pi6',
-        'list_type',
-        0
-    );
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($packageKey, '', '_pi2');
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($packageKey, '', '_pi3');
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($packageKey, '', '_pi4');
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($packageKey, '', '_pi6');
 
     if (!is_array($typo3ConfVars['SYS']['caching']['cacheConfigurations']['commerce_navigation'])) {
         $typo3ConfVars['SYS']['caching']['cacheConfigurations']['commerce_navigation'] = [
@@ -258,6 +234,9 @@ call_user_func(function ($packageKey) {
     // @todo check if needed
     $scOptions['t3lib/class.t3lib_tcemain.php']['processVersionSwapClass']['commerce'] =
         \CommerceTeam\Commerce\Hooks\VersionHook::class;
+
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['processedFilesChecksum'] =
+        \CommerceTeam\Commerce\Updates\TceformsUpdateWizard::class;
 
     // @todo check if needed
     $scOptions['t3lib/class.t3lib_tceforms_inline.php']['tceformsInlineHook']['commerce'] =

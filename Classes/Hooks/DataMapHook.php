@@ -547,6 +547,7 @@ class DataMapHook
      */
     protected function postProcessCategory($status, $table, $id, array &$fieldArray, DataHandler $pObj)
     {
+        /** @noinspection PhpInternalEntityUsedInspection */
         $backendUserData = $this->getBackendUser()->user;
 
         // Will be called for every Category that is in the datamap - so at this time

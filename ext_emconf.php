@@ -13,7 +13,7 @@
 $EM_CONF['commerce'] = [
     'title' => 'Commerce',
     'description' => 'TYPO3 commerce shopping system',
-    'version' => '7.0.0',
+    'version' => '6.0.0',
     'category' => 'module',
     'state' => 'stable',
     'author' => 'Ingo Schmitt,Volker Graubaum,Thomas Hempel,Sebastian Fischer',
