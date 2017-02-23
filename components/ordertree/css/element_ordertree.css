@@ -100,31 +100,31 @@
   border: 1px solid #9eb2c5;
 }
 .x-dd-drop-nodrop .x-dd-drop-icon {
-  background-image: url(../../../../../../typo3/sysext/t3skin/images/icons/apps/pagetree-drag-place-denied.png);
+  background-image: url(../../../../../../typo3/sysext/backend/Resources/Public/Images/pagetree-drag-place-denied.png);
 }
-.x-tree-drop-ok-append.commerce-ordertree-copy .x-dd-drop-icon {
-  background-image: url(../../../../../../typo3/sysext/t3skin/images/icons/apps/pagetree-drag-new-inside.png);
+.x-tree-drop-ok-append.typo3-pagetree-copy .x-dd-drop-icon {
+  background-image: url(../../../../../../typo3/sysext/backend/Resources/Public/Images/pagetree-drag-new-inside.png);
 }
-.x-tree-drop-ok-below.commerce-ordertree-copy .x-dd-drop-icon {
-  background-image: url(../../../../../../typo3/sysext/t3skin/images/icons/apps/pagetree-drag-copy-below.png);
+.x-tree-drop-ok-below.typo3-pagetree-copy .x-dd-drop-icon {
+  background-image: url(../../../../../../typo3/sysext/backend/Resources/Public/Images/pagetree-drag-copy-below.png);
 }
-.x-tree-drop-ok-above.commerce-ordertree-copy .x-dd-drop-icon {
-  background-image: url(../../../../../../typo3/sysext/t3skin/images/icons/apps/pagetree-drag-copy-above.png);
+.x-tree-drop-ok-above.typo3-pagetree-copy .x-dd-drop-icon {
+  background-image: url(../../../../../../typo3/sysext/backend/Resources/Public/Images/pagetree-drag-copy-above.png);
 }
-.x-tree-drop-ok-between.commerce-ordertree-copy .x-dd-drop-icon {
-  background-image: url(../../../../../../typo3/sysext/t3skin/images/icons/apps/pagetree-drag-new-between.png);
+.x-tree-drop-ok-between.typo3-pagetree-copy .x-dd-drop-icon {
+  background-image: url(../../../../../../typo3/sysext/backend/Resources/Public/Images/pagetree-drag-new-between.png);
 }
 .x-tree-drop-ok-append .x-dd-drop-icon {
-  background-image: url(../../../../../../typo3/sysext/t3skin/images/icons/apps/pagetree-drag-move-into.png);
+  background-image: url(../../../../../../typo3/sysext/backend/Resources/Public/Images/pagetree-drag-move-into.png);
 }
 .x-tree-drop-ok-between .x-dd-drop-icon {
-  background-image: url(../../../../../../typo3/sysext/t3skin/images/icons/apps/pagetree-drag-move-between.png);
+  background-image: url(../../../../../../typo3/sysext/backend/Resources/Public/Images/pagetree-drag-move-between.png);
 }
 .x-tree-drop-ok-below .x-dd-drop-icon {
-  background-image: url(../../../../../../typo3/sysext/t3skin/images/icons/apps/pagetree-drag-move-below.png);
+  background-image: url(../../../../../../typo3/sysext/backend/Resources/Public/Images/pagetree-drag-move-below.png);
 }
 .x-tree-drop-ok-above .x-dd-drop-icon {
-  background-image: url(../../../../../../typo3/sysext/t3skin/images/icons/apps/pagetree-drag-move-above.png);
+  background-image: url(../../../../../../typo3/sysext/backend/Resources/Public/Images/pagetree-drag-move-above.png);
 }
 #commerce-ordertree .x-tree-node .x-tree-drag-insert-below,
 .x-tree-node div.x-tree-drag-insert-below,
@@ -219,10 +219,6 @@
 .commerce-ordertree-deletionDropZone-restoreText {
   display: inline-block;
   padding: 4px 4px 4px 18px;
-  background: transparent url(../../../../../../typo3/sysext/t3skin/images/spinner/d5d5d5.gif) no-repeat 0 3px;
-}
-.commerce-ordertree-deletionDropZone-proxyOver .x-dd-drop-icon {
-  background-image: url(../../../../../../typo3/sysext/t3skin/images/icons/actions/edit-delete.png);
 }
 #commerce-ordertree .commerce-ordertree-deletionDropZone-activateProxyOver {
   background-color: #644d2d;

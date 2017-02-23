@@ -52,7 +52,9 @@ class MetaInformation extends \TYPO3\CMS\Backend\Template\Components\MetaInforma
         } else {
             // On root-level of page tree
             // Make Icon
-            $iconImg = '<span title="' . htmlspecialchars('Commerce') . '">'
+            $iconImg = '<span title="' .
+                htmlspecialchars('Commerce') .
+                '">'
                 . $iconFactory->getIcon('apps-pagetree-root', Icon::SIZE_SMALL)->render() . '</span>';
             if ($this->getBackendUser()->isAdmin()) {
                 $theIcon = BackendUtility::wrapClickMenuOnIcon($iconImg, 'pages', 0);

@@ -259,13 +259,7 @@ class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordList
                             }
                         }
                         $headerColumns[$fCol] .= $parentObject->addSortLink(
-                            $language->sL(
-                                BackendUtility::getItemLabel(
-                                    $table,
-                                    $fCol,
-                                    'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xlf:|'
-                                )
-                            ),
+                            $language->sL(BackendUtility::getItemLabel($table, $fCol)),
                             $fCol,
                             $table
                         );

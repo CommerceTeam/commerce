@@ -12,15 +12,12 @@ namespace CommerceTeam\Commerce\Template;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use CommerceTeam\Commerce\Template\Components\DocHeaderComponent;
-
 class ModuleTemplate extends \TYPO3\CMS\Backend\Template\ModuleTemplate
 {
     /**
      * DocHeaderComponent
      *
-     * @var DocHeaderComponent
+     * @var \CommerceTeam\Commerce\Template\Components\DocHeaderComponent
      */
     protected $docHeaderComponent;
 
@@ -31,6 +28,8 @@ class ModuleTemplate extends \TYPO3\CMS\Backend\Template\ModuleTemplate
     public function __construct()
     {
         parent::__construct();
-        $this->docHeaderComponent = GeneralUtility::makeInstance(DocHeaderComponent::class);
+        $this->docHeaderComponent = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \CommerceTeam\Commerce\Template\Components\DocHeaderComponent::class
+        );
     }
 }

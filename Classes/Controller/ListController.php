@@ -258,8 +258,11 @@ class ListController extends BaseController
                 'template',
                 's_template'
             );
-            if ($this->cObj->fileResource($this->conf['templateFile'])) {
-                $this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
+            $templateCode = (string) file_get_contents(
+                $this->getTypoScriptFrontendController()->tmpl->getFileName($this->conf['templateFile'])
+            );
+            if ($templateCode) {
+                $this->templateCode = $templateCode;
             }
         }
 
@@ -443,7 +446,9 @@ class ListController extends BaseController
         $this->init($conf);
 
         // Get the template
-        $this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
+        $this->templateCode = (string) file_get_contents(
+            $this->getTypoScriptFrontendController()->tmpl->getFileName($this->conf['templateFile'])
+        );
 
         $this->template = [];
         $this->markerArray = [];

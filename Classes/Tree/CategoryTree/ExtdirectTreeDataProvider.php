@@ -20,7 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Data Provider of the Page Tree
  */
-class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTree
+class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
 {
     /**
      * Data Provider
@@ -52,8 +52,10 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
     protected function initDataProvider()
     {
         /** @var $dataProvider \CommerceTeam\Commerce\Tree\CategoryTree\DataProvider */
-        $dataProvider = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Tree\CategoryTree\DataProvider::class);
-        $this->setDataProvider($dataProvider);
+        $dataProvider = GeneralUtility::makeInstance(
+            \CommerceTeam\Commerce\Tree\CategoryTree\DataProvider::class
+        );
+        $this->dataProvider = $dataProvider;
     }
 
     /**
@@ -258,6 +260,20 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractExtJsTre
             ]
         ];
         return $configuration;
+    }
+
+
+    /**
+     * Fetches the subnodes of the given node
+     *
+     * @param \TYPO3\CMS\Backend\Tree\TreeNode $node
+     * @return \TYPO3\CMS\Backend\Tree\TreeNodeCollection
+     */
+    public function getNodes(\TYPO3\CMS\Backend\Tree\TreeNode $node)
+    {
+        /** @var \TYPO3\CMS\Backend\Tree\TreeNodeCollection $treeCollection */
+        $treeCollection = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\TreeNodeCollection::class);
+        return $treeCollection;
     }
 
 

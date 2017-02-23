@@ -169,7 +169,7 @@ class ExistingArticleContainer
             ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.translationsOfRecord')
         );
         $titleOrig = BackendUtility::getRecordTitle($this->table, $article, false, true);
-        $title = GeneralUtility::slashJS(GeneralUtility::fixed_lgd_cs($titleOrig, 30), true);
+        $title = str_replace('\\', '\\\\', GeneralUtility::fixed_lgd_cs($titleOrig, 30));
         $warningText = $this->getLanguageService()->getLL($actionName . 'Warning') . ' "' . $title . '" ' . '['
             . $this->table . ':' . $article['uid'] . ']' . $refCountMsg;
 

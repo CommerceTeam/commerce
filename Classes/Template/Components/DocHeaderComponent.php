@@ -12,8 +12,6 @@ namespace CommerceTeam\Commerce\Template\Components;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 class DocHeaderComponent extends \TYPO3\CMS\Backend\Template\Components\DocHeaderComponent
 {
     /**
@@ -22,6 +20,6 @@ class DocHeaderComponent extends \TYPO3\CMS\Backend\Template\Components\DocHeade
     public function __construct()
     {
         parent::__construct();
-        $this->metaInformation = GeneralUtility::makeInstance(MetaInformation::class);
+        $this->metaInformation = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MetaInformation::class);
     }
 }

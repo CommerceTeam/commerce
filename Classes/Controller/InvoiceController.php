@@ -142,7 +142,9 @@ class InvoiceController extends BaseController
         }
 
         // Grab the template
-        $this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
+        $this->templateCode = (string) file_get_contents(
+            $this->getTypoScriptFrontendController()->tmpl->getFileName($this->conf['templateFile'])
+        );
         if (empty($this->templateCode)) {
             return $this->error(
                 'init',

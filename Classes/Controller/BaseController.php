@@ -271,7 +271,9 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $this->error('init', __LINE__, 'Template File not defined in TS: ');
         }
 
-        $this->templateCode = (string) $this->cObj->fileResource($this->conf['templateFile']);
+        $this->templateCode = (string) file_get_contents(
+            $this->getTypoScriptFrontendController()->tmpl->getFileName($this->conf['templateFile'])
+        );
         if ($this->conf['useRootlineInformationToUrl']) {
             $this->useRootlineInformationToUrl = $this->conf['useRootlineInformationToUrl'];
         }
@@ -2309,8 +2311,19 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      * Get typoscript frontend controller.
      *
      * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+     * @deprecated Replace with getTypoScriptFrontendController
      */
     protected function getFrontendController()
+    {
+        return $this->getTypoScriptFrontendController();
+    }
+
+    /**
+     * Get typoscript frontend controller.
+     *
+     * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+     */
+    protected function getTypoScriptFrontendController()
     {
         return $GLOBALS['TSFE'];
     }

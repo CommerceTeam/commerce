@@ -220,7 +220,9 @@ class AddressesController extends BaseController
         $this->fieldList = $this->parseFieldList($this->conf['formFields.']);
 
         // Get the template
-        $this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
+        $this->templateCode = (string) file_get_contents(
+            $this->getTypoScriptFrontendController()->tmpl->getFileName($this->conf['templateFile'])
+        );
 
         // Check for logged in user
         if (!empty($this->getFrontendUser()->user)) {
@@ -927,7 +929,7 @@ class AddressesController extends BaseController
         if (isset($fieldConfig['default']) && empty($fieldValue)) {
             $value = $fieldConfig['default'];
         } else {
-            $value = \TYPO3\CMS\Core\Utility\GeneralUtility::removeXSS(strip_tags($fieldValue));
+            $value = htmlspecialchars(strip_tags($fieldValue));
         }
 
         $result = '<input type="text" name="' . $this->prefixId . '[' . $fieldName . ']" value="' . $value . '" ';
@@ -1144,7 +1146,7 @@ class AddressesController extends BaseController
         }
 
         foreach ($this->fieldList as $name) {
-            $newData[$name] = \TYPO3\CMS\Core\Utility\GeneralUtility::removeXSS(strip_tags($this->piVars[$name]));
+            $newData[$name] = htmlspecialchars(strip_tags($this->piVars[$name]));
             if (!$new) {
                 $this->addresses[(int) $this->piVars['addressid']][$name] = $newData[$name];
             }

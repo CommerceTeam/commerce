@@ -41,7 +41,7 @@ class GeneralUtility
         }
 
         if (is_string($input)) {
-            return (string) \TYPO3\CMS\Core\Utility\GeneralUtility::removeXSS(strip_tags($input));
+            return htmlspecialchars(strip_tags($input));
         }
 
         if (is_array($input)) {
@@ -50,7 +50,7 @@ class GeneralUtility
                 if (is_array($value)) {
                     $returnValue[$key] = self::removeXSSStripTagsArray($value);
                 } else {
-                    $returnValue[$key] = \TYPO3\CMS\Core\Utility\GeneralUtility::removeXSS(strip_tags($value));
+                    $returnValue[$key] = htmlspecialchars(strip_tags($value));
                 }
             }
 

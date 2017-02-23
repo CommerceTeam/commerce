@@ -257,7 +257,9 @@ class CheckoutController extends BaseController
         }
 
         // Get the template
-        $this->templateCode = $content . $this->cObj->fileResource($this->conf['templateFile']);
+        $this->templateCode = $content . file_get_contents(
+            $this->getTypoScriptFrontendController()->tmpl->getFileName($this->conf['templateFile'])
+        );
 
         $this->debug($this->currentStep, '$this->currentSteps', __FILE__ . ' ' . __LINE__);
 
@@ -1003,7 +1005,7 @@ class CheckoutController extends BaseController
         }
 
         $comment = isset($this->piVars['comment']) ?
-            GeneralUtility::removeXSS(strip_tags($this->piVars['comment'])) :
+            htmlspecialchars(strip_tags($this->piVars['comment'])) :
             '';
 
         // Use new version with label and field
@@ -1794,7 +1796,7 @@ class CheckoutController extends BaseController
             $fieldMarkerArray['###FIELD_INPUT###'] = $this->getInputField(
                 $fieldName,
                 $config['sourceFields.'][$arrayName],
-                GeneralUtility::removeXSS(strip_tags($this->sessionData[$step][$fieldName])),
+                htmlspecialchars(strip_tags($this->sessionData[$step][$fieldName])),
                 $step
             );
             $fieldMarkerArray['###FIELD_NAME###'] = $this->prefixId . '[' . $step . '][' . $fieldName . ']';
@@ -2346,7 +2348,11 @@ class CheckoutController extends BaseController
                 $userMailObj->staticInfo = &$this->staticInfo;
                 $userMailObj->currency = $this->currency;
                 $userMailObj->showCurrency = $this->conf['usermail.']['showCurrency'];
-                $userMailObj->templateCode = $this->cObj->fileResource($this->conf['usermail.']['templateFile']);
+                $userMailObj->templateCode = (string) file_get_contents(
+                    $this->getTypoScriptFrontendController()->tmpl->getFileName(
+                        $this->conf['usermail.']['templateFile']
+                    )
+                );
                 $userMailObj->generateLanguageMarker();
                 $userMailObj->userData = $this->userData;
 
@@ -2368,8 +2374,10 @@ class CheckoutController extends BaseController
 
                 $htmlContent = '';
                 if ($this->conf['usermail.']['useHtml'] == '1' && $this->conf['usermail.']['templateFileHtml']) {
-                    $userMailObj->templateCode = $this->cObj->fileResource(
-                        $this->conf['usermail.']['templateFileHtml']
+                    $userMailObj->templateCode = (string) file_get_contents(
+                        $this->getTypoScriptFrontendController()->tmpl->getFileName(
+                            $this->conf['usermail.']['templateFileHtml']
+                        )
                     );
                     $htmlContent = $userMailObj->generateMail($orderUid, $orderData, $userMarker);
                     $userMailObj->isHtmlMail = true;
@@ -2502,7 +2510,11 @@ class CheckoutController extends BaseController
             $adminMailObj->staticInfo = &$this->staticInfo;
             $adminMailObj->currency = $this->currency;
             $adminMailObj->showCurrency = $this->conf['adminmail.']['showCurrency'];
-            $adminMailObj->templateCode = $this->cObj->fileResource($this->conf['adminmail.']['templateFile']);
+            $adminMailObj->templateCode = (string) file_get_contents(
+                $this->getTypoScriptFrontendController()->tmpl->getFileName(
+                    $this->conf['adminmail.']['templateFile']
+                )
+            );
             $adminMailObj->generateLanguageMarker();
             $adminMailObj->userData = $this->userData;
 
@@ -2523,7 +2535,11 @@ class CheckoutController extends BaseController
 
             $htmlContent = '';
             if ($this->conf['adminmail.']['useHtml'] == '1' && $this->conf['adminmail.']['templateFileHtml']) {
-                $adminMailObj->templateCode = $this->cObj->fileResource($this->conf['adminmail.']['templateFileHtml']);
+                $adminMailObj->templateCode = (string) file_get_contents(
+                    $this->getTypoScriptFrontendController()->tmpl->getFileName(
+                        $this->conf['adminmail.']['templateFileHtml']
+                    )
+                );
                 $htmlContent = $adminMailObj->generateMail($orderUid, $orderData, []);
                 $adminMailObj->isHtmlMail = true;
 
@@ -2811,7 +2827,7 @@ class CheckoutController extends BaseController
         $orderData['crdate'] = $GLOBALS['EXEC_TIME'];
         $orderData['tstamp'] = $GLOBALS['EXEC_TIME'];
         $orderData['cu_iso_3_uid'] = $this->conf['currencyId'];
-        $orderData['comment'] = GeneralUtility::removeXSS(strip_tags($this->piVars['comment']));
+        $orderData['comment'] = htmlspecialchars(strip_tags($this->piVars['comment']));
 
         if (is_array($this->getFrontendUser()->user)) {
             $orderData['cust_fe_user'] = $this->getFrontendUser()->user['uid'];

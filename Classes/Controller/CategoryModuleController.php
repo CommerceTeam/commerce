@@ -19,7 +19,9 @@ use TYPO3\CMS\Backend\Clipboard\Clipboard;
 use TYPO3\CMS\Backend\Template\Components\Buttons\LinkButton;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
@@ -69,17 +71,18 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
      */
     public function init()
     {
-        $this->iconFactory = $this->moduleTemplate->getIconFactory();
-        $backendUser = $this->getBackendUserAuthentication();
         $this->perms_clause = \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1);
-        // Get session data
-        $sessionData = $backendUser->getSessionData(CategoryModuleController::class);
-        $this->search_field = !empty($sessionData['search_field']) ? $sessionData['search_field'] : '';
-
         // In commerce context all categories and products are stored in only one folder so no need to use get vars
         $this->id = FolderRepository::initFolders('Products', FolderRepository::initFolders());
 
+        $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+        $backendUser = $this->getBackendUserAuthentication();
+        //$this->perms_clause = $backendUser->getPagePermsClause(1);
+        // Get session data
+        $sessionData = $backendUser->getSessionData(__CLASS__);
+        $this->search_field = !empty($sessionData['search_field']) ? $sessionData['search_field'] : '';
         // GPvars:
+        //$this->id = (int)GeneralUtility::_GP('id');
         $this->pointer = max(GeneralUtility::_GP('pointer'), 0);
         $this->imagemode = GeneralUtility::_GP('imagemode');
         $this->table = GeneralUtility::_GP('table');
@@ -94,7 +97,10 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         // Set up menus:
         $this->menuConfig();
         // Store session data
-        $backendUser->setAndSaveSessionData(CategoryModuleController::class, $sessionData);
+        $backendUser->setAndSaveSessionData(self::class, $sessionData);
+        $this->getPageRenderer()->addInlineLanguageLabelFile(
+            'EXT:lang/Resources/Private/Language/locallang_mod_web_list.xlf'
+        );
 
         // Get category uid from control
         // @todo reduce usage to only either defVals or control but not both
@@ -215,13 +221,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         }
         // Clipboard is initialized:
         // Start clipboard
-        /**
-         * Clipboard.
-         *
-         * @var Clipboard $clipObj
-         */
-        $clipObj = GeneralUtility::makeInstance(Clipboard::class);
-        $dbList->clipObj = $clipObj;
+        $dbList->clipObj = GeneralUtility::makeInstance(Clipboard::class);
         // Initialize - reads the clipboard content from the user session
         $dbList->clipObj->initializeClipboard();
         // Clipboard actions are handled:
@@ -274,8 +274,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                     $tce->stripslashes_values = 0;
                     $tce->start(array(), $cmd);
                     $tce->process_cmdmap();
-                    if (isset($cmd['tx_commerce_categories'])
-                        || isset($cmd['tx_commerce_products'])) {
+                    if (isset($cmd['tx_commerce_categories']) || isset($cmd['tx_commerce_products'])) {
                         BackendUtility::setUpdateSignal('updateCategoryTree');
                     }
                     $tce->printLogErrorMessages(GeneralUtility::getIndpEnv('REQUEST_URI'));
@@ -359,20 +358,29 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
 
                     return list ? list : idList;
                 }
+                
+                if (top.fsMod) top.fsMod.recentIds["commerce_category"] = ' . (int)$this->categoryUid . ';
                 '
             );
 
             // Setting up the context sensitive menu:
-            $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/ClickMenu');
+            $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/ContextMenu');
         }
         // access
         // Begin to compile the whole page, starting out with page header:
+        if (!$this->categoryUid) {
+            $title = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
+        } else {
+            $title = $this->pageinfo['title'];
+        }
         /** @noinspection PhpInternalEntityUsedInspection */
-        $this->body = $this->moduleTemplate->header(!$this->id ? 'Commerce' : $this->pageinfo['title']);
+        $this->body = $this->moduleTemplate->header($title);
+        $this->moduleTemplate->setTitle($title);
 
         if (!empty($dbList->HTMLcode)) {
             $output = $dbList->HTMLcode;
         } else {
+            $output = '';
             /** @var FlashMessage $flashMessage */
             $flashMessage = GeneralUtility::makeInstance(
                 FlashMessage::class,
@@ -380,12 +388,11 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                 '',
                 FlashMessage::INFO
             );
-            $severityClass = sprintf('alert %s', $flashMessage->getClass());
-            $messageContent = htmlspecialchars($flashMessage->getMessage());
-            if ($flashMessage->getTitle() !== '') {
-                $messageContent = sprintf('<h4>%s</h4>', htmlspecialchars($flashMessage->getTitle())) . $messageContent;
-            }
-            $output = sprintf('<li class="%s">%s</li>', htmlspecialchars($severityClass), $messageContent);
+            /** @var $flashMessageService \TYPO3\CMS\Core\Messaging\FlashMessageService */
+            $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
+            /** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
+            $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
+            $defaultFlashMessageQueue->enqueue($flashMessage);
         }
 
         $this->body .= '<form action="' . htmlspecialchars($dbList->listURL()) . '" method="post" name="dblistForm">';
@@ -507,7 +514,9 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             $searchButton
                 ->setHref('#')
                 ->setClasses('t3js-toggle-search-toolbox')
-                ->setTitle($lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.title.searchIcon'))
+                ->setTitle($lang->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.title.searchIcon'
+                ))
                 ->setIcon($this->iconFactory->getIcon('actions-search', Icon::SIZE_SMALL));
             $this->moduleTemplate->getDocHeaderComponent()->getButtonBar()->addButton(
                 $searchButton,

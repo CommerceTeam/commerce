@@ -59,7 +59,7 @@ define(['jquery'], function($) {
 	 */
 	FormElementCategoryTree.deactivateRemovedItem = function(value) {
 		$('[data-value="' + value + '"]').parent().removeClass('bg-success').parent().removeClass('active');
-	}
+	};
 
 	/**
 	 * Open or close subtree based on element state
@@ -129,7 +129,7 @@ define(['jquery'], function($) {
 	FormElementCategoryTree.closeSubtree = function($treeElement, $parent, $submenu) {
 		$treeElement.removeClass('list-tree-control-open').addClass('list-tree-control-closed');
 		$treeElement.data('pm', $treeElement.data('pm').replace('0_1_', '0_0_'));
-		$parent.removeClass('list-tree-control-open')
+		$parent.removeClass('list-tree-control-open');
 		$submenu.css('display', 'none');
 
 		FormElementCategoryTree.storeTreeState($treeElement);

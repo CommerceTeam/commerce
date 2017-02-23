@@ -115,7 +115,9 @@ class BasketController extends BaseController
         if (empty($this->conf['templateFile'])) {
             $this->error('init', __LINE__, 'Template File not defined in TS: ');
         }
-        $this->setTemplateCode($this->cObj->fileResource($this->conf['templateFile']));
+        $this->templateCode = (string) file_get_contents(
+            $this->getTypoScriptFrontendController()->tmpl->getFileName($this->conf['templateFile'])
+        );
         if (empty($this->getTemplateCode())) {
             $this->error(
                 'init',

@@ -18,6 +18,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  * Extended Functionality for the Clickmenu when commerce-tables are hit
@@ -531,13 +532,13 @@ class ClickmenuUtility extends ClickMenu
     {
         $language = $this->getLanguageService();
 
-        $url = ExtensionManagementUtility::extRelPath('version') . 'cm1/index.php?id=' .
+        $url = PathUtility::getRelativePathTo('version') . 'cm1/index.php?id=' .
             ($table == 'pages' ? $uid : $this->rec['pid']) .
             '&table=' . rawurlencode($table) . '&uid=' . $uid . '&sendToReview=1';
 
         return $this->clickMenu->linkItem(
             $language->sL('LLL:EXT:version/Resources/Private/Language/locallang.xlf:title_review', 1),
-            $this->excludeIcon('<img src="' . ExtensionManagementUtility::extRelPath('version') .
+            $this->excludeIcon('<img src="' . PathUtility::getRelativePathTo('version') .
                 'cm1/cm_icon.gif" width="15" height="12" border="0" align="top" alt="" />'),
             $this->clickMenu->urlRefForCM($url),
             1
