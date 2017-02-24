@@ -254,13 +254,17 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
             $dblist->setDispFields();
             // Render versioning selector:
             if (ExtensionManagementUtility::isLoaded('version')) {
+                /** @noinspection PhpInternalEntityUsedInspection */
                 $dblist->HTMLcode .= $this->moduleTemplate->getVersionSelector($this->id);
             }
             // Render the list of tables:
             $dblist->generateList();
             $listUrl = $dblist->listURL();
-            // Add JavaScript functions to the page:
 
+            /** @noinspection PhpInternalEntityUsedInspection */
+            $requestUri = $this->moduleTemplate->redirectUrls($listUrl);
+
+            // Add JavaScript functions to the page:
             $this->moduleTemplate->addJavaScriptCode(
                 'OrdersModuleController',
                 '
@@ -286,7 +290,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
 						top.content.nav_frame.refresh_nav();
 					}
 				}
-				' . $this->moduleTemplate->redirectUrls($listUrl) . '
+				' . $requestUri . '
 				' . $dblist->CBfunctions() . '
 				function editRecords(table,idList,addParams,CBflag) {	//
 					window.location.href="'
@@ -330,6 +334,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
         } else {
             $title = $this->pageinfo['title'];
         }
+        /** @noinspection PhpInternalEntityUsedInspection */
         $this->body = $this->moduleTemplate->header($title);
         $this->moduleTemplate->setTitle($title);
 

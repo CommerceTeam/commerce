@@ -70,6 +70,7 @@ class GeneralUtility
         $basket = self::getBasket();
 
         if (!is_object($basket) || !$basket->getSessionId()) {
+            /** @noinspection PhpInternalEntityUsedInspection */
             \TYPO3\CMS\Core\Utility\GeneralUtility::removeSingletonInstance(
                 \CommerceTeam\Commerce\Domain\Model\Basket::class,
                 $basket
@@ -89,6 +90,7 @@ class GeneralUtility
             }
 
             if (empty($basketId)) {
+                /** @noinspection PhpInternalEntityUsedInspection */
                 $basketId = md5($feUser->id . ':' . rand(0, PHP_INT_MAX));
                 $feUser->setKey('ses', $commerceBasketIdKey, $basketId);
                 self::setCookie($basketId);
@@ -211,11 +213,12 @@ class GeneralUtility
      */
     public static function generateSessionKey($key)
     {
-        $frontendUser = self::getFrontendUser();
+        /** @noinspection PhpInternalEntityUsedInspection */
+        $frontendUserData = self::getFrontendUser()->user;
         if (ConfigurationUtility::getInstance()->getExtConf('userSessionMd5Encrypt')) {
-            $sessionKey = md5($key . ':' . $frontendUser->user['uid']);
+            $sessionKey = md5($key . ':' . $frontendUserData['uid']);
         } else {
-            $sessionKey = $key . ':' . $frontendUser->user['uid'];
+            $sessionKey = $key . ':' . $frontendUserData['uid'];
         }
 
         $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Utility/GeneralUtility', 'generateSessionKey');

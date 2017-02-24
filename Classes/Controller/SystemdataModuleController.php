@@ -135,6 +135,9 @@ abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\Base
         $this->access = is_array($this->pageinfo);
 
         if ($this->id && $this->access) {
+            /** @noinspection PhpInternalEntityUsedInspection */
+            $requestUri = $this->moduleTemplate->redirectUrls(GeneralUtility::getIndpEnv('REQUEST_URI'));
+
             // JavaScript
             $this->moduleTemplate->addJavaScriptCode(
                 'SystemdataModuleController',
@@ -158,7 +161,7 @@ abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\Base
                         top.content.nav_frame.refresh_nav();
                     }
                 }
-                ' . $this->moduleTemplate->redirectUrls(GeneralUtility::getIndpEnv('REQUEST_URI')) . '
+                ' . $requestUri . '
                 function editRecords(table, idList, addParams, CBflag) {
                     window.location.href = "'
                 . BackendUtility::getModuleUrl(

@@ -352,6 +352,7 @@ class PermissionModuleController extends ActionController
         $options = [];
         $options[''] = '';
         // If there are a hierarchy of page ids, then...
+        /** @noinspection PhpInternalEntityUsedInspection */
         if ($this->getBackendUserAuthentication()->user['uid'] && !empty($tree->orig_ids_hierarchy)) {
             // Init:
             $labelRecursive = LocalizationUtility::translate(

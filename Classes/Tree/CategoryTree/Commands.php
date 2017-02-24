@@ -392,6 +392,7 @@ class Commands
         }
         $qtip = str_replace(' - ', '<br />', htmlspecialchars(BackendUtility::titleAttribForPages($record, '', false)));
         $prefix = '';
+        /** @noinspection PhpInternalEntityUsedInspection */
         $lockInfo = BackendUtility::isRecordLocked('tx_commerce_categories', $record['uid']);
         if (is_array($lockInfo)) {
             $qtip .= '<br />' . htmlspecialchars($lockInfo['msg']);
@@ -487,6 +488,7 @@ class Commands
         }
         $qtip = str_replace(' - ', '<br />', htmlspecialchars(BackendUtility::titleAttribForPages($record, '', false)));
         $prefix = '';
+        /** @noinspection PhpInternalEntityUsedInspection */
         $lockInfo = BackendUtility::isRecordLocked('tx_commerce_products', $record['uid']);
         if (is_array($lockInfo)) {
             $qtip .= '<br />' . htmlspecialchars($lockInfo['msg']);
@@ -585,6 +587,7 @@ class Commands
         }
         $qtip = str_replace(' - ', '<br />', htmlspecialchars(BackendUtility::titleAttribForPages($record, '', false)));
         $prefix = '';
+        /** @noinspection PhpInternalEntityUsedInspection */
         $lockInfo = BackendUtility::isRecordLocked('tx_commerce_articles', $record['uid']);
         if (is_array($lockInfo)) {
             $qtip .= '<br />' . htmlspecialchars($lockInfo['msg']);

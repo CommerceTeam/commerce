@@ -405,6 +405,7 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
      */
     protected function returnCategoryMounts()
     {
+        /** @noinspection PhpInternalEntityUsedInspection */
         $groupData = $this->getBackendUser()->groupData;
 
         $mountpoints = (string)$groupData['tx_commerce_mountpoints'] != '' ?

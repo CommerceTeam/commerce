@@ -154,9 +154,11 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeData
     public function getNodeTypes()
     {
         $output = [];
+        /** @noinspection PhpInternalEntityUsedInspection */
+        $groupData = $this->getBackendUserAuthentication()->groupData;
         $allowedTables = GeneralUtility::trimExplode(
             ',',
-            $this->getBackendUserAuthentication()->groupData['tables_select']
+            $groupData['tables_select']
         );
         $isAdmin = $this->getBackendUserAuthentication()->isAdmin();
         // Early return if backend user may not create any doktype

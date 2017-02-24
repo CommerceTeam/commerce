@@ -291,7 +291,9 @@ class NavigationViewHelper
 
         $this->nodeArrayAdditionalFields = GeneralUtility::trimExplode(',', $this->mConf['additionalFields'], 0);
 
-        $this->pid = $this->mConf['overridePid'] ? $this->mConf['overridePid'] : $this->getTypoScriptFrontendController()->id;
+        $this->pid = $this->mConf['overridePid'] ?
+            $this->mConf['overridePid'] :
+            $this->getTypoScriptFrontendController()->id;
         $this->gpVars = GeneralUtility::_GPmerged($this->prefixId);
 
         \CommerceTeam\Commerce\Utility\GeneralUtility::initializeFeUserBasket();
@@ -315,8 +317,11 @@ class NavigationViewHelper
          * tree, so consider this we calculation the cache hash.
          */
         $usergroups = '';
-        if (is_array($this->getFrontendUser()->user)) {
-            $usergroups = $this->getFrontendUser()->user['usergroup'];
+        /** @noinspection PhpInternalEntityUsedInspection */
+        $frontendUserData = $this->getFrontendUser()->user;
+
+        if (is_array($frontendUserData)) {
+            $usergroups = $frontendUserData['usergroup'];
         }
 
         $this->cat = $this->getRootCategory();
@@ -484,7 +489,7 @@ class NavigationViewHelper
                 }
             }
 
-            if ($this->mConf['groupOptions.']['onOptions'] == 1 && $this->getFrontendUser()->user['usergroup'] != '') {
+            if ($this->mConf['groupOptions.']['onOptions'] == 1 && $frontendUserData['usergroup'] != '') {
                 $this->fixPathParents($this->pathParents, $keys[0]);
             }
 
@@ -562,14 +567,16 @@ class NavigationViewHelper
     public function getRootCategory()
     {
         if ($this->mConf['groupOptions.']['onOptions'] == 1) {
+            /** @noinspection PhpInternalEntityUsedInspection */
+            $frontendUserData = $this->getFrontendUser()->user;
             $catOptionsCount = count($this->mConf['groupOptions.']);
             $chosenCatUid = [];
             for ($i = 1; $i <= $catOptionsCount; ++$i) {
                 $chosenGroups = GeneralUtility::trimExplode(',', $this->mConf['groupOptions.'][$i . '.']['group']);
-                if ($this->getFrontendUser()->user['usergroup'] == '') {
+                if ($frontendUserData['usergroup'] == '') {
                     return $this->mConf['category'];
                 }
-                $feGroups = explode(',', $this->getFrontendUser()->user['usergroup']);
+                $feGroups = explode(',', $frontendUserData['usergroup']);
 
                 foreach ($chosenGroups as $group) {
                     if (in_array($group, $feGroups) === true) {
@@ -792,8 +799,10 @@ class NavigationViewHelper
 
                         $this->arrayMerge($nodeArray['--subLevel--'], $arraySubChild);
 
+                        /** @noinspection PhpInternalEntityUsedInspection */
+                        $frontendUserData = $this->getFrontendUser()->user;
                         if ($this->mConf['groupOptions.']['onOptions'] == 1
-                            && $this->getFrontendUser()->user['usergroup'] != ''
+                            && $frontendUserData['usergroup'] != ''
                         ) {
                             $arraySubChild = $this->makeSubChildArrayPostRender(
                                 $uidPage,

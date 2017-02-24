@@ -2323,13 +2323,14 @@ class CheckoutController extends BaseController
     public function sendUserMail($orderUid, array $orderData)
     {
         $hooks = HookFactory::getHooks('Controller/CheckoutController', 'sendUserMail');
+        /** @noinspection PhpInternalEntityUsedInspection */
+        $frontendUserData = $this->getFrontendUser()->user;
 
         if (strlen($this->sessionData['billing']['email'])) {
             // If user has email in the formular, use this
             $userMail = $this->sessionData['billing']['email'];
-        } elseif (is_array($this->getFrontendUser()->user) && strlen($this->getFrontendUser()->user['email'])) {
-            /** @noinspection PhpInternalEntityUsedInspection */
-            $userMail = $this->getFrontendUser()->user['email'];
+        } elseif (is_array($frontendUserData) && strlen($frontendUserData['email'])) {
+            $userMail = $frontendUserData['email'];
         } else {
             return false;
         }

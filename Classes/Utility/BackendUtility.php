@@ -2115,8 +2115,10 @@ class BackendUtility
     public static function getCategoryPermsClause($perms)
     {
         $backendUser = self::getBackendUserAuthentication();
+        /** @noinspection PhpInternalEntityUsedInspection */
+        $backendUserData = $backendUser->user;
 
-        if (is_array($backendUser->user)) {
+        if (is_array($backendUserData)) {
             if ($backendUser->isAdmin()) {
                 return ' 1 = 1';
             }
@@ -2126,7 +2128,8 @@ class BackendUtility
                 // Everybody
                 '(tx_commerce_categories.perms_everybody & ' . $perms . ' = ' . $perms . ')' .
                 // User
-                'OR(tx_commerce_categories.perms_userid = ' . $backendUser->user['uid'] .
+                /** @noinspection PhpInternalEntityUsedInspection */
+                'OR(tx_commerce_categories.perms_userid = ' . $backendUserData['uid'] .
                     ' AND tx_commerce_categories.perms_user & ' . $perms . ' = ' . $perms . ')';
             if ($backendUser->groupList) {
                 // Group (if any is set)
@@ -2182,6 +2185,7 @@ class BackendUtility
 
         // Check if user is owner of category and the owner may do the current operation
         if (isset($record['perms_userid']) && isset($record['perms_user'])
+            /** @noinspection PhpInternalEntityUsedInspection */
             && ($record['perms_userid'] == $backendUser->user['uid'])
             && (($record['perms_user'] & $mask) == $mask)
         ) {
