@@ -99,11 +99,7 @@ abstract class AbstractRepository implements SingletonInterface
             $langUid = $frontend->sys_language_uid;
         }
 
-        $returnData = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            '*',
-            $this->databaseTable,
-            'uid = ' . $uid . $this->enableFields()
-        );
+        $returnData = $this->findByUid($uid);
 
         // Result should contain only one Dataset
         if (!empty($returnData)) {
@@ -168,13 +164,24 @@ abstract class AbstractRepository implements SingletonInterface
      *
      * @return array
      */
-    public function findByUid($uid, $additionalWhere = '')
+    public function findByUid($uid, $additionalWhere = ''): array
     {
-        $result = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            '*',
-            $this->databaseTable,
-            'uid = ' . (int) $uid . $this->enableFields() . ($additionalWhere ? ' AND ' . $additionalWhere : '')
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            );
+
+        if ($additionalWhere !== '') {
+            $queryBuilder->andWhere($additionalWhere);
+        }
+
+        $result = $queryBuilder->execute()->fetch();
         return is_array($result) ? $result : [];
     }
 
@@ -191,13 +198,19 @@ abstract class AbstractRepository implements SingletonInterface
             return false;
         }
 
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid',
-            $this->databaseTable,
-            'uid = ' . (int) $uid
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('uid')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute();
 
-        return is_array($row);
+        return $result->rowCount() > 0;
     }
 
     /**
@@ -211,21 +224,23 @@ abstract class AbstractRepository implements SingletonInterface
      */
     public function isAccessible($uid)
     {
-        $return = false;
-        $uid = (int) $uid;
-        if ($uid) {
-            $count = $this->getDatabaseConnection()->exec_SELECTcountRows(
-                '*',
-                $this->databaseTable,
-                'uid = ' . $uid . $this->enableFields()
-            );
-
-            if ($count == 1) {
-                $return = true;
-            }
+        if (!$uid) {
+            return false;
         }
 
-        return $return;
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('uid')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute();
+
+        return $result->rowCount() > 0;
     }
 
     /**
@@ -264,8 +279,21 @@ abstract class AbstractRepository implements SingletonInterface
         }
 
         $result = true;
-        $this->getDatabaseConnection()->exec_UPDATEquery($this->databaseTable, 'uid = ' . (int) $uid, $data);
-        if ($this->getDatabaseConnection()->sql_error()) {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->update($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            );
+        foreach ($data as $field => $value) {
+            $queryBuilder->set($field, $value);
+        }
+        $queryResult = $queryBuilder->execute();
+
+        if ($queryResult->errorCode()) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'updateRecord (AbstractRepository): invalid sql.',
@@ -317,9 +345,13 @@ abstract class AbstractRepository implements SingletonInterface
      */
     public function addRecord($data)
     {
-        $databaseConnection = $this->getDatabaseConnection();
-        $databaseConnection->exec_INSERTquery($this->databaseTable, $data);
-        return $databaseConnection->sql_insert_id();
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->insert($this->databaseTable)
+            ->values($data)
+            ->execute();
+
+        return $queryBuilder->getConnection()->lastInsertId();
     }
 
 
@@ -335,14 +367,19 @@ abstract class AbstractRepository implements SingletonInterface
     }
 
     /**
-     * @param $table
+     * @param string $table
      *
      * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
      */
-    protected function getQueryBuilderForTable($table)
+    protected function getQueryBuilderForTable($table): \TYPO3\CMS\Core\Database\Query\QueryBuilder
     {
-        return GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable($table);
+        $queryBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Database\ConnectionPool::class
+        )->getQueryBuilderForTable($table);
+        $queryBuilder->setRestrictions(\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer::class
+        ));
+        return $queryBuilder;
     }
 
     /**
