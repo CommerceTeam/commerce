@@ -1,19 +1,19 @@
 <?php
 namespace CommerceTeam\Commerce\Updates;
 
-/**
- * This file is part of the TYPO3 commerce project.
+/*
+ * This file is part of the TYPO3 Commerce project.
+ *
  * It is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License, either version 2
  * of the License, or any later version.
+ *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
- * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use Doctrine\DBAL\Driver\Statement;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Domain\Model\File;
 
 /**
  * Upgrade wizard which goes through all files referenced in the tt_content.image filed
@@ -23,7 +23,6 @@ use TYPO3\CMS\Extbase\Domain\Model\File;
  */
 class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
 {
-
     /**
      * Number of records fetched per database query
      * Used to prevent memory overflows for huge databases
@@ -152,29 +151,24 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
     /**
      * @var array
      */
-    protected $recordOffset = array();
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        /** @var $logManager \TYPO3\CMS\Core\Log\LogManager */
-        $logManager = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class);
-        $this->logger = $logManager->getLogger(__CLASS__);
-    }
+    protected $recordOffset = [];
 
     /**
      * Initialize the storage repository.
      */
-    public function init()
+    public function initialize()
     {
+        /** @var $logManager \TYPO3\CMS\Core\Log\LogManager */
+        $logManager = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class);
+        $this->logger = $logManager->getLogger(__CLASS__);
+
         /** @var $storageRepository \TYPO3\CMS\Core\Resource\StorageRepository */
         $storageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\StorageRepository::class);
         $storages = $storageRepository->findAll();
         $this->storage = $storages[0];
+
         $this->registry = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Registry::class);
-        $this->recordOffset = $this->registry->get($this->registryNamespace, 'recordOffset', array());
+        $this->recordOffset = $this->registry->get($this->registryNamespace, 'recordOffset', []);
     }
 
     /**
@@ -184,7 +178,7 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
      *
      * @return boolean TRUE if an update is needed, FALSE otherwise
      */
-    public function checkForUpdate(&$description)
+    public function checkForUpdate(&$description): boolean
     {
         $description = 'This update wizard goes through all files that are referenced in the commerce tables'
             . 'and adds the files to the new File Index.<br />'
@@ -224,14 +218,15 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
      *
      * @return boolean TRUE on success, FALSE on error
      */
-    public function performUpdate(array &$dbQueries, &$customMessages)
+    public function performUpdate(array &$dbQueries, &$customMessages): boolean
     {
         if ($this->versionNumber < 6000000) {
             // Nothing to do
             return true;
         }
+
         try {
-            $this->init();
+            $this->initialize();
             $finishedFields = $this->getFinishedFields();
             foreach ($this->tables as $table => $tableConfiguration) {
                 // find all additional fields we should get from the database
@@ -289,12 +284,12 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
      *
      * @return array
      */
-    protected function getFinishedFields()
+    protected function getFinishedFields(): array
     {
         $className = \CommerceTeam\Commerce\Updates\TceformsUpdateWizard::class;
 
         return isset($GLOBALS['TYPO3_CONF_VARS']['INSTALL']['wizardDone'][$className]) ?
-            explode(',', $GLOBALS['TYPO3_CONF_VARS']['INSTALL']['wizardDone'][$className]) : array();
+            explode(',', $GLOBALS['TYPO3_CONF_VARS']['INSTALL']['wizardDone'][$className]) : [];
     }
 
     /**
@@ -306,10 +301,10 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
      * @param array $relationFields
      * @param int $limit Maximum number records to select
      *
+     * @return Statement
      * @throws \RuntimeException
-     * @return \Doctrine\DBAL\Driver\Statement|int
      */
-    protected function getRecordsFromTable($table, $fieldToMigrate, $relationFields, $limit)
+    protected function getRecordsFromTable($table, $fieldToMigrate, $relationFields, $limit): Statement
     {
         $fields = implode(',', array_merge($relationFields, array('uid', 'pid')));
         $deletedCheck = isset($GLOBALS['TCA'][$table]['ctrl']['delete']) ?
@@ -345,16 +340,16 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
      * @return array A list of performed database queries
      * @throws \Exception
      */
-    protected function migrateField($table, $row, $fieldname, $fieldConfiguration, &$customMessages)
+    protected function migrateField($table, $row, $fieldname, $fieldConfiguration, &$customMessages): array
     {
-        $titleTextContents = array();
-        $alternativeTextContents = array();
-        $captionContents = array();
-        $linkContents = array();
+        $titleTextContents = [];
+        $alternativeTextContents = [];
+        $captionContents = [];
+        $linkContents = [];
 
         $fieldItems = GeneralUtility::trimExplode(',', $row[$fieldname], true);
         if (empty($fieldItems) || is_numeric($row[$fieldname])) {
-            return array();
+            return [];
         }
         if (isset($fieldConfiguration['titleTexts'])) {
             $titleTextField = $fieldConfiguration['titleTexts'];
@@ -374,7 +369,7 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
             $linkContents = explode(LF, $row[$linkField]);
         }
         $fileadminDirectory = rtrim($GLOBALS['TYPO3_CONF_VARS']['BE']['fileadminDir'], '/') . '/';
-        $databaseQueries = array();
+        $databaseQueries = [];
         $i = 0;
 
         if (!PATH_site) {
@@ -385,7 +380,6 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
 
         $sysFileQueryBuilder = $this->getQueryBuilderForTable('sys_file');
         $sysFileReferenceQueryBuilder = $this->getQueryBuilderForTable('sys_file_reference');
-
 
         foreach ($fieldItems as $item) {
             $fileUid = null;
@@ -431,7 +425,7 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
                 try {
                     // if the source file does not exist, we should just continue, but leave a message in the docs;
                     // ideally, the user would be informed after the update as well.
-                    /** @var File $file */
+                    /** @var \TYPO3\CMS\Extbase\Domain\Model\File $file */
                     $file = $this->storage->getFile($fieldConfiguration['targetPath'] . $item);
                     $fileUid = $file->getUid();
                 } catch (\InvalidArgumentException $e) {
@@ -459,7 +453,6 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
 
             if ($fileUid > 0) {
                 $fields = array(
-                    // TODO add sorting/sorting_foreign
                     'fieldname' => $fieldname,
                     'table_local' => 'sys_file',
                     // the sys_file_reference record should always placed on the same page
@@ -517,13 +510,13 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
     }
 
     /**
-     * @param $table
+     * @param string $table
      *
      * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
      */
-    protected function getQueryBuilderForTable($table)
+    protected function getQueryBuilderForTable($table): \TYPO3\CMS\Core\Database\Query\QueryBuilder
     {
-        return GeneralUtility::makeInstance(ConnectionPool::class)
+        return GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
             ->getQueryBuilderForTable($table);
     }
 }
