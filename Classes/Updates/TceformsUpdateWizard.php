@@ -11,7 +11,7 @@ namespace CommerceTeam\Commerce\Updates;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\File;
 
@@ -44,11 +44,6 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
      * @var \TYPO3\CMS\Core\Log\Logger
      */
     protected $logger;
-
-    /**
-     * @var DatabaseConnection
-     */
-    protected $database;
 
     /**
      * Table fields to migrate
@@ -152,7 +147,7 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
     /**
      * @var string
      */
-    protected $registryNamespace = 'TceformsUpdateWizard';
+    protected $registryNamespace = 'CommerceTceformsUpdateWizard';
 
     /**
      * @var array
@@ -167,7 +162,6 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
         /** @var $logManager \TYPO3\CMS\Core\Log\LogManager */
         $logManager = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class);
         $this->logger = $logManager->getLogger(__CLASS__);
-        $this->database = $GLOBALS['TYPO3_DB'];
     }
 
     /**
@@ -176,10 +170,10 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
     public function init()
     {
         /** @var $storageRepository \TYPO3\CMS\Core\Resource\StorageRepository */
-        $storageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\StorageRepository');
+        $storageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\StorageRepository::class);
         $storages = $storageRepository->findAll();
         $this->storage = $storages[0];
-        $this->registry = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
+        $this->registry = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Registry::class);
         $this->recordOffset = $this->registry->get($this->registryNamespace, 'recordOffset', array());
     }
 
@@ -192,8 +186,8 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
      */
     public function checkForUpdate(&$description)
     {
-        $description = 'This update wizard goes through all files that are referenced in the tt_content.image and '
-            . 'pages.media / pages_language_overlay.media field and adds the files to the new File Index.<br />'
+        $description = 'This update wizard goes through all files that are referenced in the commerce tables'
+            . 'and adds the files to the new File Index.<br />'
             . 'It also moves the files from uploads/ to the fileadmin/_migrated/ path.<br /><br />'
             . 'This update wizard can be called multiple times in case it didn\'t finish after running once.';
 
@@ -266,16 +260,16 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
                     }
 
                     do {
-                        $limit = $this->recordOffset[$table] . ',' . self::RECORDS_PER_QUERY;
-                        $records = $this->getRecordsFromTable($table, $fieldToMigrate, $fieldsToGet, $limit);
-                        foreach ($records as $record) {
+                        $limit = self::RECORDS_PER_QUERY;
+                        $queryResult = $this->getRecordsFromTable($table, $fieldToMigrate, $fieldsToGet, $limit);
+                        while ($record = $queryResult->fetch()) {
                             $this->migrateField($table, $record, $fieldToMigrate, $fieldConfiguration, $customMessages);
                         }
                         $this->registry->set($this->registryNamespace, 'recordOffset', $this->recordOffset);
-                    } while (count($records) === self::RECORDS_PER_QUERY);
+                    } while ($queryResult->rowCount() === self::RECORDS_PER_QUERY);
 
                     // add the field to the "finished fields" if things didn't fail above
-                    if (is_array($records)) {
+                    if (!$queryResult->errorCode()) {
                         $finishedFields[] = $fieldKey;
                     }
                 }
@@ -297,7 +291,7 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
      */
     protected function getFinishedFields()
     {
-        $className = 'TYPO3\\CMS\\Install\\Updates\\TceformsUpdateWizard';
+        $className = \CommerceTeam\Commerce\Updates\TceformsUpdateWizard::class;
 
         return isset($GLOBALS['TYPO3_CONF_VARS']['INSTALL']['wizardDone'][$className]) ?
             explode(',', $GLOBALS['TYPO3_CONF_VARS']['INSTALL']['wizardDone'][$className]) : array();
@@ -313,21 +307,30 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
      * @param int $limit Maximum number records to select
      *
      * @throws \RuntimeException
-     * @return array
+     * @return \Doctrine\DBAL\Driver\Statement|int
      */
     protected function getRecordsFromTable($table, $fieldToMigrate, $relationFields, $limit)
     {
         $fields = implode(',', array_merge($relationFields, array('uid', 'pid')));
         $deletedCheck = isset($GLOBALS['TCA'][$table]['ctrl']['delete']) ?
             ' AND ' . $GLOBALS['TCA'][$table]['ctrl']['delete'] . '=0' : '';
-        $where = $fieldToMigrate . ' IS NOT NULL' . ' AND ' . $fieldToMigrate . ' != \'\'' . ' AND CAST(CAST('
+        $where = $fieldToMigrate . ' IS NOT NULL AND ' . $fieldToMigrate . ' != \'\'' . ' AND CAST(CAST('
             . $fieldToMigrate . ' AS DECIMAL) AS CHAR) <> CAST(' . $fieldToMigrate . ' AS CHAR)' . $deletedCheck;
-        $result = $this->database->exec_SELECTgetRows($fields, $table, $where, '', 'uid', $limit);
-        if ($result === null) {
-            throw new \RuntimeException('Database query failed. Error was: ' . $this->database->sql_error());
+
+        $queryResult = $this->getQueryBuilderForTable($table)
+            ->select($fields)
+            ->from($table)
+            ->where($where)
+            ->orderBy('uid')
+            ->setFirstResult($this->recordOffset[$table])
+            ->setMaxResults($limit)
+            ->execute();
+
+        if ($queryResult->errorCode() === null) {
+            throw new \RuntimeException('Database query failed. Error was: ' . $queryResult->errorInfo());
         }
 
-        return $result;
+        return $queryResult;
     }
 
     /**
@@ -371,7 +374,7 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
             $linkContents = explode(LF, $row[$linkField]);
         }
         $fileadminDirectory = rtrim($GLOBALS['TYPO3_CONF_VARS']['BE']['fileadminDir'], '/') . '/';
-        $queries = array();
+        $databaseQueries = array();
         $i = 0;
 
         if (!PATH_site) {
@@ -379,6 +382,10 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
         }
 
         $storageUid = (int)$this->storage->getUid();
+
+        $sysFileQueryBuilder = $this->getQueryBuilderForTable('sys_file');
+        $sysFileReferenceQueryBuilder = $this->getQueryBuilderForTable('sys_file_reference');
+
 
         foreach ($fieldItems as $item) {
             $fileUid = null;
@@ -395,12 +402,21 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
                 // see if the file already exists in the storage
                 $fileSha1 = sha1_file($sourcePath);
 
-                $existingFileRecord = $this->database->exec_SELECTgetSingleRow(
-                    'uid',
-                    'sys_file',
-                    'sha1=' . $this->database->fullQuoteStr($fileSha1, 'sys_file') .
-                    ' AND storage=' . $storageUid
-                );
+                $existingFileRecord = $sysFileQueryBuilder
+                    ->select('uid')
+                    ->from('sys_file')
+                    ->andWhere(
+                        $sysFileQueryBuilder->expr()->eq(
+                            'sha1',
+                            $sysFileQueryBuilder->createNamedParameter($fileSha1, \PDO::PARAM_STR)
+                        ),
+                        $sysFileQueryBuilder->expr()->eq(
+                            'storage',
+                            $sysFileQueryBuilder->createNamedParameter($storageUid, \PDO::PARAM_INT)
+                        )
+                    )
+                    ->execute()
+                    ->fetch();
                 // the file exists, the file does not have to be moved again
                 if (is_array($existingFileRecord)) {
                     $fileUid = $existingFileRecord['uid'];
@@ -469,8 +485,11 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
                 if (isset($linkField)) {
                     $fields['link'] = trim($linkContents[$i]);
                 }
-                $this->database->exec_INSERTquery('sys_file_reference', $fields);
-                $queries[] = str_replace(LF, ' ', $this->database->debug_lastBuiltQuery);
+                $sysFileReferenceQueryBuilder
+                    ->insert('sys_file_reference')
+                    ->values($fields);
+                $databaseQueries[] = $sysFileReferenceQueryBuilder->getSQL();
+                $sysFileReferenceQueryBuilder->execute();
                 ++$i;
             }
         }
@@ -478,12 +497,33 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
         // Update referencing table's original field to now contain the count of references,
         // but only if all new references could be set
         if ($i === count($fieldItems)) {
-            $this->database->exec_UPDATEquery($table, 'uid=' . $row['uid'], array($fieldname => $i));
-            $queries[] = str_replace(LF, ' ', $this->database->debug_lastBuiltQuery);
+            $tableQueryBuilder = $this->getQueryBuilderForTable($table);
+            $tableQueryBuilder
+                ->update($table)
+                ->where(
+                    $tableQueryBuilder->expr()->eq(
+                        'uid',
+                        $tableQueryBuilder->createNamedParameter($row['uid'], \PDO::PARAM_INT)
+                    )
+                )
+                ->set($fieldname, $i);
+            $databaseQueries[] = $tableQueryBuilder->getSQL();
+            $tableQueryBuilder->execute();
         } else {
             $this->recordOffset[$table]++;
         }
 
-        return $queries;
+        return $databaseQueries;
+    }
+
+    /**
+     * @param $table
+     *
+     * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
+     */
+    protected function getQueryBuilderForTable($table)
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable($table);
     }
 }
