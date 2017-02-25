@@ -10,7 +10,7 @@ create_address_pid = 0
 # cat=pageIds/other/30; type=String; label=Exclude Folder from Statistic: Defines which Folder should not be included in Statistics, separate with comma and no whitespace.
 excludeStatisticFolders = 0
 
-# cat=pageIds/other/30; type=int; label=BasketStoragePid: Defines the page ID to store basket items in
+# cat=pageIds/other/30; type=int; label=BasketStoragePid: Defines the page ID to store basket items in this is important in case the installation houses different stores with separate categories
 BasketStoragePid = 0
 
 
