@@ -18,21 +18,11 @@ namespace CommerceTeam\Commerce\Payment;
 class Ccvs extends \CreditCardValidationSolution
 {
     /**
-     * @var string
-     */
-    public $CCVSCheckNumber = '';
-
-    /**
      * Language service.
      *
      * @var \TYPO3\CMS\Lang\LanguageService
      */
     public $language;
-
-    /**
-     * @var string
-     */
-    public $CCVSError = '';
 
     /**
      * Constructor.
@@ -85,7 +75,7 @@ class Ccvs extends \CreditCardValidationSolution
      * @link       http://www.analysisandsolutions.com/donate/
      * @license    http://www.analysisandsolutions.com/software/license.htm Simple Public License
      */
-    public function validateCreditCard(
+    public function validate(
         $Number,
         $CheckNumber,
         $Accepted = [],
@@ -93,30 +83,31 @@ class Ccvs extends \CreditCardValidationSolution
         $Month = 0,
         $Year = 0
     ) {
-        $this->CCVSCheckNumber = trim($CheckNumber);
+        $CheckNumber = trim($CheckNumber);
 
+        // First validate to get the CCVSType to check the CheckNumber afterwards
         $result = parent::validateCreditCard($Number, 'en', $Accepted, $RequireExp, $Month, $Year);
 
         /* Check CheckNumber. */
         if (!empty($this->CCVSType)) {
             switch ($this->CCVSType) {
                 case 'American Express':
-                    if (strlen($this->CCVSCheckNumber) != 4) {
-                        $this->CCVSError = sprintf($this->language->getLL('ErrCheckNumber'), $this->CCVSCheckNumber);
+                    if (strlen($CheckNumber) != 4) {
+                        $this->CCVSError = sprintf($this->language->getLL('ErrCheckNumber'), $CheckNumber);
                         return false;
                     }
                     break;
 
                 case 'MasterCard':
-                    if (strlen($this->CCVSCheckNumber) != 3) {
-                        $this->CCVSError = sprintf($this->language->getLL('ErrCheckNumber'), $this->CCVSCheckNumber);
+                    if (strlen($CheckNumber) != 3) {
+                        $this->CCVSError = sprintf($this->language->getLL('ErrCheckNumber'), $CheckNumber);
                         return false;
                     }
                     break;
 
                 case 'Visa':
-                    if (strlen($this->CCVSCheckNumber) != 3) {
-                        $this->CCVSError = sprintf($this->language->getLL('ErrCheckNumber'), $this->CCVSCheckNumber);
+                    if (strlen($CheckNumber) != 3) {
+                        $this->CCVSError = sprintf($this->language->getLL('ErrCheckNumber'), $CheckNumber);
                         return false;
                     }
                     break;
@@ -125,7 +116,6 @@ class Ccvs extends \CreditCardValidationSolution
 
         return $result;
     }
-
 
     /**
      * Get backend user.

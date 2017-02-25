@@ -446,7 +446,7 @@ class BasketItem
     /**
      * Gets the master parent category.
      *
-     * @return array category
+     * @return int category
      */
     public function getProductMasterparentCategorie()
     {

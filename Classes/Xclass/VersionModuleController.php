@@ -42,21 +42,22 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
             $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
             $language = $this->getLanguageService();
 
+            $onClickAction = 'onclick="' . htmlspecialchars(
+                BackendUtility::editOnClick('&edit[' . $table . '][' . $row['uid'] . ']=edit')
+            ) . '"';
+
             // Edit link:
-            $adminLink = '<a href="#" onclick="'
-                . htmlspecialchars(
-                    BackendUtility::editOnClick('&edit[' . $table . '][' . $row['uid'] . ']=edit')
-                )
-                . '" title="' . $language->sL('LLL:EXT:lang/locallang_core.xlf:cm.edit') . '">'
-                . $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render() . '</a>';
+            $adminLink = '<a href="#" ' . $onClickAction . ' title="' .
+                $language->sL('LLL:EXT:lang/locallang_core.xlf:cm.edit') . '">' .
+                $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render() . '</a>';
 
             // Delete link:
             $adminLink .= '<a href="' .
                 htmlspecialchars(BackendUtility::getLinkToDataHandlerAction(
                     '&cmd[' . $table . '][' . $row['uid'] . '][delete]=1'
-                ))
-                . '" title="' . $language->sL('LLL:EXT:lang/locallang_core.xlf:cm.delete', true) . '">'
-                . $iconFactory->getIcon('actions-edit-delete', Icon::SIZE_SMALL)->render() . '</a>';
+                )) .
+                '" title="' . $language->sL('LLL:EXT:lang/locallang_core.xlf:cm.delete', true) . '">' .
+                $iconFactory->getIcon('actions-edit-delete', Icon::SIZE_SMALL)->render() . '</a>';
 
             if ($row['pid'] == -1) {
                 // get page TSconfig
@@ -81,23 +82,25 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
                 );
                 $product->loadData();
 
-                $getVars = ($sysLanguageUid > 0 ? '&L=' . $sysLanguageUid : '')
-                    . '&ADMCMD_vPrev[' . rawurlencode($table . ':' . $row['t3ver_oid']) . ']=' . $row['uid']
-                    . '&no_cache=1&tx_commerce_pi1[showUid]=' . $product->getUid()
-                    . '&tx_commerce_pi1[catUid]=' . current($product->getMasterparentCategory());
+                $getVars = ($sysLanguageUid > 0 ? '&L=' . $sysLanguageUid : '') .
+                    '&ADMCMD_vPrev[' . rawurlencode($table . ':' . $row['t3ver_oid']) . ']=' . $row['uid'] .
+                    '&no_cache=1&tx_commerce_pi1[showUid]=' . $product->getUid() .
+                    '&tx_commerce_pi1[catUid]=' . $product->getMasterparentCategory();
 
-                $adminLink .= '<a href="#" onclick="'
-                    . htmlspecialchars(
-                        BackendUtility::viewOnClick(
-                            $previewPageId,
-                            '',
-                            BackendUtility::BEgetRootLine($row['_REAL_PID']),
-                            '',
-                            '',
-                            $getVars
-                        )
-                    ) .
-                    '">' . $iconFactory->getIcon('actions-document-view', Icon::SIZE_SMALL)->render() . '</a>';
+                $onClickAction = 'onclick="' . htmlspecialchars(
+                    BackendUtility::viewOnClick(
+                        $previewPageId,
+                        '',
+                        BackendUtility::BEgetRootLine($row['_REAL_PID']),
+                        '',
+                        '',
+                        $getVars
+                    )
+                ) . '"';
+
+                $adminLink .= '<a href="#" ' . $onClickAction . '>' .
+                    $iconFactory->getIcon('actions-document-view', Icon::SIZE_SMALL)->render() .
+                    '</a>';
             }
 
             return $adminLink;

@@ -21,7 +21,6 @@ use CommerceTeam\Commerce\Domain\Model\Product;
 use CommerceTeam\Commerce\Factory\HookFactory;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use CommerceTeam\Commerce\ViewHelpers\MoneyViewHelper;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -1495,17 +1494,6 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                     $output = $this->cObj->cObjGetSingle('IMG_RESOURCE', $typoscriptConfig);
                 }
                 break;
-
-            case 'NUMBERFORMAT':
-                if ($typoscriptConfig['format']) {
-                    $value = number_format(
-                        (float) $value,
-                        $typoscriptConfig['format.']['decimals'],
-                        $typoscriptConfig['format.']['dec_point'],
-                        $typoscriptConfig['format.']['thousands_sep']
-                    );
-                }
-                // passthrough
 
             case 'STDWRAP':
                 if (is_array($typoscriptConfig['parseFunc.'])) {

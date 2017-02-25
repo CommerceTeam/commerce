@@ -853,7 +853,9 @@ class NavigationViewHelper
                 }
 
                 $nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' .
-                    $this->generateChash($nodeArray['_ADD_GETVARS'] . $this->getTypoScriptFrontendController()->linkVars);
+                    $this->generateChash(
+                        $nodeArray['_ADD_GETVARS'] . $this->getTypoScriptFrontendController()->linkVars
+                    );
 
                 $treeList[$row['uid_local']] = $nodeArray;
             }
@@ -979,7 +981,9 @@ class NavigationViewHelper
                 }
 
                 $nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' .
-                    $this->generateChash($nodeArray['_ADD_GETVARS'] . $this->getTypoScriptFrontendController()->linkVars);
+                    $this->generateChash(
+                        $nodeArray['_ADD_GETVARS'] . $this->getTypoScriptFrontendController()->linkVars
+                    );
 
                 if ($this->gpVars['manufacturer']) {
                     $nodeArray['_ADD_GETVARS'] .= '&' . $this->prefixId . '[manufacturer]=' .
