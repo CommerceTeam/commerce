@@ -82,7 +82,7 @@ class FeuserDaoObject extends BasicDaoObject
      *
      * @return int
      */
-    public function getTx_commerce_tt_address_id()
+    public function getTxCommerceTtAddressId()
     {
         return $this->tx_commerce_tt_address_id;
     }
@@ -94,7 +94,7 @@ class FeuserDaoObject extends BasicDaoObject
      *
      * @return void
      */
-    public function setTx_commerce_tt_address_id($value)
+    public function setTxCommerceTtAddressId($value)
     {
         $this->tx_commerce_tt_address_id = (int) $value;
     }

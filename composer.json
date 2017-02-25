@@ -21,7 +21,10 @@
 	"autoload": {
 		"psr-4": {
 			"CommerceTeam\\Commerce\\": "Classes/"
-		}
+		},
+		"files": [
+			"Resources/PHP/ccvs-php/ccvs.inc"
+		]
 	},
 	"repositories": [
 		{

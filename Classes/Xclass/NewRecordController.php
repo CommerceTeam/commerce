@@ -17,6 +17,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  * Class NewRecordController
@@ -229,7 +230,7 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
                                             $thisTitle = $EM_CONF[$_EXTKEY]['title'];
                                         }
                                         $iconFile[$_EXTKEY] = '<img ' . 'src="'
-                                            . ExtensionManagementUtility::extRelPath($_EXTKEY)
+                                            . PathUtility::getRelativePathTo($_EXTKEY)
                                             . $GLOBALS['TYPO3_LOADED_EXT'][$_EXTKEY]['ext_icon']
                                             . '" ' . 'width="16" height="16" ' . 'alt="' . $thisTitle . '" />';
                                     }
@@ -332,7 +333,7 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
     /**
      * Add commerce parameters.
      *
-     * @param string $urlParameters Parameters
+     * @param array $urlParameters Parameters
      * @param string $table Table
      *
      * @return array

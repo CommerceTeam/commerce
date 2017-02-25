@@ -456,6 +456,10 @@ class GeneralUtility
      */
     public static function getBasket()
     {
-        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Basket::class);
+        /** @var \CommerceTeam\Commerce\Domain\Model\Basket $basket */
+        $basket = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \CommerceTeam\Commerce\Domain\Model\Basket::class
+        );
+        return $basket;
     }
 }

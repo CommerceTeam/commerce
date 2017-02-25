@@ -121,7 +121,7 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
                 . 'data-fieldchanged-values="{tableName: \'' . htmlspecialchars($table) . '\', uid: '
                 . $this->data['vanillaUid'] . ', fieldName: \'' . $field . '\', element: \''
                 . $parameterArray['itemFormElName'] . '\'}" '
-                . $this->getValidationDataAsDataAttribute($config)
+                . $this->getValidationDataAsJsonString($config)
                 . $selector_itemListStyle
                 . '>';
             $itemsToSelect[] = $tree;
@@ -244,9 +244,11 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
      * @param string $fName Form element name
      * @param string $mode Mode "db", "file" (internal_type for the "group" type) OR blank (then for the "select" type)
      * @param string $allowed Commalist of "allowed
-     * @param array $itemArray The array of items. For "select" and "group"/"file" this is just a set of value. For "db" its an array of arrays with table/uid pairs.
+     * @param array $itemArray The array of items. For "select" and "group"/"file" this is just a set of value.
+     *  For "db" its an array of arrays with table/uid pairs.
      * @param string $selector Alternative selector box.
-     * @param array $params An array of additional parameters, eg: "size", "info", "headers" (array with "selector" and "items"), "noBrowser", "thumbnails
+     * @param array $params An array of additional parameters, eg: "size", "info", "headers" (array with "selector"
+     *  and "items"), "noBrowser", "thumbnails
      * @param string $onFocus On focus attribute string
      * @param string $table (optional) Table name processing for
      * @param string $field (optional) Field of table name processing for
@@ -290,7 +292,8 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
                             $pUid = $pp['table'] . '_' . $pp['id'];
                             $uidList[] = $pUid;
                             $title = htmlspecialchars($pTitle);
-                            $opt[] = '<option value="' . htmlspecialchars($pUid) . '" title="' . $title . '">' . $title . '</option>';
+                            $opt[] = '<option value="' . htmlspecialchars($pUid) . '" title="' . $title . '">' .
+                                $title . '</option>';
                         }
                     }
                     break;
@@ -301,7 +304,8 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
                         $itemParts = explode('|', $item);
                         $uidList[] = ($pUid = ($pTitle = $itemParts[0]));
                         $title = htmlspecialchars(rawurldecode($itemParts[1]));
-                        $opt[] = '<option value="' . htmlspecialchars(rawurldecode($itemParts[0])) . '" title="' . $title . '">' . $title . '</option>';
+                        $opt[] = '<option value="' . htmlspecialchars(rawurldecode($itemParts[0])) . '" title="' .
+                            $title . '">' . $title . '</option>';
                     }
                     break;
                 case 'folder':
@@ -309,7 +313,8 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
                         $pParts = explode('|', $pp);
                         $uidList[] = ($pUid = ($pTitle = $pParts[0]));
                         $title = htmlspecialchars(rawurldecode($pParts[0]));
-                        $opt[] = '<option value="' . htmlspecialchars(rawurldecode($pParts[0])) . '" title="' . $title . '">' . $title . '</option>';
+                        $opt[] = '<option value="' . htmlspecialchars(rawurldecode($pParts[0])) . '" title="' .
+                            $title . '">' . $title . '</option>';
                     }
                     break;
                 default:
@@ -318,25 +323,30 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
                         $uidList[] = ($pUid = $pParts[0]);
                         $pTitle = $pParts[1];
                         $title = htmlspecialchars(rawurldecode($pTitle));
-                        $opt[] = '<option value="' . htmlspecialchars(rawurldecode($pUid)) . '" title="' . $title . '">' . $title . '</option>';
+                        $opt[] = '<option value="' . htmlspecialchars(rawurldecode($pUid)) . '" title="' .
+                            $title . '">' . $title . '</option>';
                     }
             }
         }
         // Create selector box of the options
-        $sSize = $params['autoSizeMax']
-            ? MathUtility::forceIntegerInRange(
+        $sSize = $params['autoSizeMax'] ?
+            MathUtility::forceIntegerInRange(
                 $itemArrayC + 1,
                 MathUtility::forceIntegerInRange($params['size'], 1),
                 $params['autoSizeMax']
-            )
-            : $params['size'];
+            ) :
+            $params['size'];
         if (!$selector) {
             $isMultiple = $params['maxitems'] != 1 && $params['size'] != 1;
-            $selector = '<select id="' . StringUtility::getUniqueId('tceforms-multiselect-') . '" '
-                . ($params['noList'] ? 'style="display: none"' : 'size="' . $sSize . '" class="form-control tceforms-multiselect"')
-                . ($isMultiple ? ' multiple="multiple"' : '')
-                . ' data-formengine-input-name="' . htmlspecialchars($fName) . '" ' . $this->getValidationDataAsDataAttribute($config) . $onFocus . $params['style'] . $disabled . '>' . implode('', $opt)
-                . '</select>';
+            $selector = '<select id="' . StringUtility::getUniqueId('tceforms-multiselect-') . '" ' .
+                ($params['noList'] ?
+                    'style="display: none"' :
+                    'size="' . $sSize . '" class="form-control tceforms-multiselect"') .
+                ($isMultiple ? ' multiple="multiple"' : '') .
+                ' data-formengine-input-name="' . htmlspecialchars($fName) . '" ' .
+                $this->getValidationDataAsJsonString($config) . $onFocus . $params['style'] . $disabled . '>' .
+                implode('', $opt) .
+                '</select>';
         }
         $icons = array(
             'L' => array(),
@@ -354,9 +364,12 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
                     if ($this->data['inlineParentConfig']['foreign_table'] === $table
                         && $this->data['inlineParentConfig']['foreign_unique'] === $field
                     ) {
-                        $objectPrefix = $inlineStackProcessor->getCurrentStructureDomObjectIdPrefix($this->data['inlineFirstPid']) . '-' . $table;
+                        $objectPrefix = $inlineStackProcessor->getCurrentStructureDomObjectIdPrefix(
+                            $this->data['inlineFirstPid']
+                        ) . '-' . $table;
                         $aOnClickInline = $objectPrefix . '|inline.checkUniqueElement|inline.setUniqueElement';
-                        $rOnClickInline = 'inline.revertUnique(' . GeneralUtility::quoteJSvalue($objectPrefix) . ',null,' . GeneralUtility::quoteJSvalue($uid) . ');';
+                        $rOnClickInline = 'inline.revertUnique(' . GeneralUtility::quoteJSvalue($objectPrefix) .
+                            ',null,' . GeneralUtility::quoteJSvalue($uid) . ');';
                     }
                 }
                 if (is_array($config['appearance']) && isset($config['appearance']['elementBrowserType'])) {
@@ -369,14 +382,18 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
                 } else {
                     $elementBrowserAllowed = $allowed;
                 }
-                $aOnClick = 'setFormValueOpenBrowser(' . GeneralUtility::quoteJSvalue($elementBrowserType) . ','
-                    . GeneralUtility::quoteJSvalue(($fName . '|||' . $elementBrowserAllowed . '|' . $aOnClickInline)) . '); return false;';
+                $aOnClick = 'setFormValueOpenBrowser(' . GeneralUtility::quoteJSvalue($elementBrowserType) . ',' .
+                    GeneralUtility::quoteJSvalue(($fName . '|||' . $elementBrowserAllowed . '|' . $aOnClickInline)) .
+                    '); return false;';
                 $icons['R'][] = '
 					<a href="#"
 						onclick="' . htmlspecialchars($aOnClick) . '"
 						class="btn btn-default"
-						title="' . htmlspecialchars($languageService->sL('LLL:EXT:lang/locallang_core.xlf:labels.browse_' . ($mode == 'db' ? 'db' : 'file'))) . '">
-						' . $this->iconFactory->getIcon('actions-insert-record', Icon::SIZE_SMALL)->render() . '
+						title="' .
+                        htmlspecialchars($languageService->sL(
+                            'LLL:EXT:lang/locallang_core.xlf:labels.browse_' . ($mode == 'db' ? 'db' : 'file')
+                        )) .
+                    '">' . $this->iconFactory->getIcon('actions-insert-record', Icon::SIZE_SMALL)->render() . '
 					</a>';
             }
             if (!$params['dontShowMoveIcons']) {
@@ -385,31 +402,38 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
 						<a href="#"
 							class="btn btn-default t3-btn-moveoption-top"
 							data-fieldname="' . $fName . '"
-							title="' . htmlspecialchars($languageService->sL('LLL:EXT:lang/locallang_core.xlf:labels.move_to_top')) . '">
-							' . $this->iconFactory->getIcon('actions-move-to-top', Icon::SIZE_SMALL)->render() . '
+							title="' .
+                        htmlspecialchars($languageService->sL('LLL:EXT:lang/locallang_core.xlf:labels.move_to_top')) .
+                        '">' . $this->iconFactory->getIcon('actions-move-to-top', Icon::SIZE_SMALL)->render() . '
 						</a>';
                 }
                 $icons['L'][] = '
 					<a href="#"
 						class="btn btn-default t3-btn-moveoption-up"
 						data-fieldname="' . $fName . '"
-						title="' . htmlspecialchars($languageService->sL('LLL:EXT:lang/locallang_core.xlf:labels.move_up')) . '">
+						title="' .
+                    htmlspecialchars($languageService->sL('LLL:EXT:lang/locallang_core.xlf:labels.move_up')) .
+                    '">
 						' . $this->iconFactory->getIcon('actions-move-up', Icon::SIZE_SMALL)->render() . '
 					</a>';
                 $icons['L'][] = '
 					<a href="#"
 						class="btn btn-default t3-btn-moveoption-down"
 						data-fieldname="' . $fName . '"
-						title="' . htmlspecialchars($languageService->sL('LLL:EXT:lang/locallang_core.xlf:labels.move_down')) . '">
-						' . $this->iconFactory->getIcon('actions-move-down', Icon::SIZE_SMALL)->render() . '
+						title="' .
+                    htmlspecialchars($languageService->sL('LLL:EXT:lang/locallang_core.xlf:labels.move_down')) .
+                    '">' . $this->iconFactory->getIcon('actions-move-down', Icon::SIZE_SMALL)->render() . '
 					</a>';
                 if ($sSize >= 5) {
                     $icons['L'][] = '
 						<a href="#"
 							class="btn btn-default t3-btn-moveoption-bottom"
 							data-fieldname="' . $fName . '"
-							title="' . htmlspecialchars($languageService->sL('LLL:EXT:lang/locallang_core.xlf:labels.move_to_bottom')) . '">
-							' . $this->iconFactory->getIcon('actions-move-to-bottom', Icon::SIZE_SMALL)->render() . '
+							title="' .
+                        htmlspecialchars(
+                            $languageService->sL('LLL:EXT:lang/locallang_core.xlf:labels.move_to_bottom')
+                        ) .
+                        '">' . $this->iconFactory->getIcon('actions-move-to-bottom', Icon::SIZE_SMALL)->render() . '
 						</a>';
                 }
             }
@@ -419,21 +443,32 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
                 foreach ($clipElements as $elValue) {
                     if ($mode == 'db') {
                         list($itemTable, $itemUid) = explode('|', $elValue);
-                        $recordTitle = BackendUtility::getRecordTitle($itemTable, BackendUtility::getRecordWSOL($itemTable, $itemUid));
+                        $recordTitle = BackendUtility::getRecordTitle(
+                            $itemTable,
+                            BackendUtility::getRecordWSOL($itemTable, $itemUid)
+                        );
                         $itemTitle = GeneralUtility::quoteJSvalue($recordTitle);
                         $elValue = $itemTable . '_' . $itemUid;
                     } else {
                         // 'file', 'file_reference' and 'folder' mode
                         $itemTitle = 'unescape(' . GeneralUtility::quoteJSvalue(rawurlencode(basename($elValue))) . ')';
                     }
-                    $aOnClick .= 'setFormValueFromBrowseWin(' . GeneralUtility::quoteJSvalue($fName) . ',unescape('
-                        . GeneralUtility::quoteJSvalue(rawurlencode(str_replace('%20', ' ', $elValue))) . '),' . $itemTitle . ',' . $itemTitle . ');';
+                    $aOnClick .= 'setFormValueFromBrowseWin(' . GeneralUtility::quoteJSvalue($fName) . ',unescape(' .
+                        GeneralUtility::quoteJSvalue(
+                            rawurlencode(str_replace('%20', ' ', $elValue))
+                        ) . '),' . $itemTitle . ',' . $itemTitle . ');';
                 }
                 $aOnClick .= 'return false;';
                 $icons['R'][] = '
 					<a href="#"
 						onclick="' . htmlspecialchars($aOnClick) . '"
-						title="' . htmlspecialchars(sprintf($languageService->sL('LLL:EXT:lang/locallang_core.xlf:labels.clipInsert_' . ($mode == 'db' ? 'db' : 'file')), count($clipElements))) . '">
+						title="' .
+                    htmlspecialchars(sprintf(
+                        $languageService->sL(
+                            'LLL:EXT:lang/locallang_core.xlf:labels.clipInsert_' . ($mode == 'db' ? 'db' : 'file')
+                        ),
+                        count($clipElements)
+                    )) . '">
 						' . $this->iconFactory->getIcon('actions-document-paste-into', Icon::SIZE_SMALL)->render() . '
 					</a>';
             }
@@ -444,8 +479,9 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
 					class="btn btn-default t3-btn-removeoption"
 					onClick="' . $rOnClickInline . '"
 					data-fieldname="' . $fName . '"
-					title="' . htmlspecialchars($languageService->sL('LLL:EXT:lang/locallang_core.xlf:labels.remove_selected')) . '">
-					' . $this->iconFactory->getIcon('actions-selection-delete', Icon::SIZE_SMALL)->render() . '
+					title="' .
+                htmlspecialchars($languageService->sL('LLL:EXT:lang/locallang_core.xlf:labels.remove_selected')) .
+                '">' . $this->iconFactory->getIcon('actions-selection-delete', Icon::SIZE_SMALL)->render() . '
 				</a>';
         }
 
@@ -455,7 +491,11 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
             // In case we have thumbnails, check if only images are allowed.
             // In this case, render them below the field, instead of to the right
             $allowedExtensionList = $params['allowed'];
-            $imageExtensionList = GeneralUtility::trimExplode(',', strtolower($GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']), true);
+            $imageExtensionList = GeneralUtility::trimExplode(
+                ',',
+                strtolower($GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']),
+                true
+            );
             $imagesOnly = true;
             foreach ($allowedExtensionList as $allowedExtension) {
                 if (!ArrayUtility::inArray($imageExtensionList, $allowedExtension)) {
@@ -478,15 +518,33 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
                     $thumbnails .= '
 						<tr>
 							<td class="col-icon">
-								' . ($config['internal_type'] === 'db'
-                            ? BackendUtility::wrapClickMenuOnIcon($thumbnail['image'], $thumbnail['table'], $thumbnail['uid'], 1, '', '+copy,info,edit,view')
-                            : $thumbnail['image']) . '
+								' . ($config['internal_type'] === 'db' ?
+                            BackendUtility::wrapClickMenuOnIcon(
+                                $thumbnail['image'],
+                                $thumbnail['table'],
+                                $thumbnail['uid'],
+                                1,
+                                '',
+                                '+copy,info,edit,view'
+                            ) :
+                            $thumbnail['image']) . '
 							</td>
 							<td class="col-title">
-								' . ($config['internal_type'] === 'db'
-                            ? BackendUtility::wrapClickMenuOnIcon($thumbnail['name'], $thumbnail['table'], $thumbnail['uid'], 1, '', '+copy,info,edit,view')
-                            : $thumbnail['name']) . '
-								' . ($config['internal_type'] === 'db' ? ' <span class="text-muted">[' . $thumbnail['uid'] . ']</span>' : '') . '
+								' . ($config['internal_type'] === 'db' ?
+                            BackendUtility::wrapClickMenuOnIcon(
+                                $thumbnail['name'],
+                                $thumbnail['table'],
+                                $thumbnail['uid'],
+                                1,
+                                '',
+                                '+copy,info,edit,view'
+                            ) :
+                            $thumbnail['name']) . '
+								' . (
+                                    $config['internal_type'] === 'db' ?
+                                    ' <span class="text-muted">[' . $thumbnail['uid'] . ']</span>' :
+                                    ''
+                                ) . '
 							</td>
 						</tr>
 						';
@@ -502,7 +560,9 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
             foreach ($params['allowedTables'] as $key => $item) {
                 if (is_array($item)) {
                     if (empty($params['readOnly'])) {
-                        $allowedTables .= '<a href="#" onClick="' . htmlspecialchars($item['onClick']) . '" class="btn btn-default">' . $item['icon'] . ' ' . htmlspecialchars($item['name']) . '</a> ';
+                        $allowedTables .= '<a href="#" onClick="' . htmlspecialchars($item['onClick']) .
+                            '" class="btn btn-default">' . $item['icon'] . ' ' . htmlspecialchars($item['name']) .
+                            '</a> ';
                     } else {
                         $allowedTables .= '<span>' . htmlspecialchars($item['name']) . '</span> ';
                     }
@@ -529,27 +589,6 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
         // Rightbox
         $rightbox = ($params['rightbox'] ?: '');
 
-        // Hook: dbFileIcons_postProcess (requested by FAL-team for use with the "fal" extension)
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['dbFileIcons'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['dbFileIcons'] as $classRef) {
-                $hookObject = GeneralUtility::getUserObj($classRef);
-                if (!$hookObject instanceof DatabaseFileIconsHookInterface) {
-                    throw new \UnexpectedValueException('$hookObject must implement interface ' . DatabaseFileIconsHookInterface::class, 1290167704);
-                }
-                $additionalParams = array(
-                    'mode' => $mode,
-                    'allowed' => $allowed,
-                    'itemArray' => $itemArray,
-                    'onFocus' => $onFocus,
-                    'table' => $table,
-                    'field' => $field,
-                    'uid' => $uid,
-                    'config' => $GLOBALS['TCA'][$table]['columns'][$field]
-                );
-                $hookObject->dbFileIcons_postProcess($params, $selector, $thumbnails, $icons, $rightbox, $fName, $uidList, $additionalParams, $this);
-            }
-        }
-
         // Output
         $str = '
 			' . ($params['headers']['selector'] ? '<label>' . $params['headers']['selector'] . '</label>' : '') . '
@@ -561,8 +600,10 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
                 ? '<div class="help-block">' . $allowedList . $disallowedList . ' </div>'
                 : '') . '
 				</div>
-				' . (!empty($icons['L']) ? '<div class="form-wizards-items"><div class="btn-group-vertical">' . implode('', $icons['L']) . '</div></div>' : '') . '
-				' . (!empty($icons['R']) ? '<div class="form-wizards-items"><div class="btn-group-vertical">' . implode('', $icons['R']) . '</div></div>' : '') . '
+				' . (!empty($icons['L']) ? '<div class="form-wizards-items"><div class="btn-group-vertical">' .
+                implode('', $icons['L']) . '</div></div>' : '') . '
+				' . (!empty($icons['R']) ? '<div class="form-wizards-items"><div class="btn-group-vertical">' .
+                implode('', $icons['R']) . '</div></div>' : '') . '
 			</div>
 			';
         if ($rightbox) {
@@ -570,8 +611,10 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
 				<div class="form-multigroup-wrap t3js-formengine-field-group">
 					<div class="form-multigroup-item form-multigroup-element">' . $str . '</div>
 					<div class="form-multigroup-item form-multigroup-element">
-						' . ($params['headers']['items'] ? '<label>' . $params['headers']['items'] . '</label>' : '') . '
-						' . ($params['headers']['selectorbox'] ? '<div class="form-multigroup-item-wizard">' . $params['headers']['selectorbox'] . '</div>' : '') . '
+						' . ($params['headers']['items'] ? '<label>' . $params['headers']['items'] . '</label>' : '') .
+                '
+						' . ($params['headers']['selectorbox'] ? '<div class="form-multigroup-item-wizard">' .
+                $params['headers']['selectorbox'] . '</div>' : '') . '
 						' . $rightbox . '
 					</div>
 				</div>
@@ -580,7 +623,8 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
         $str .= $thumbnails;
 
         // Creating the hidden field which contains the actual value as a comma list.
-        $str .= '<input type="hidden" name="' . $fName . '" value="' . htmlspecialchars(implode(',', $uidList)) . '" />';
+        $str .= '<input type="hidden" name="' . $fName . '" value="' .
+            htmlspecialchars(implode(',', $uidList)) . '" />';
         return $str;
     }
 

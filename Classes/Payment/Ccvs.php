@@ -12,8 +12,6 @@ namespace CommerceTeam\Commerce\Payment;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-require_once dirname(__FILE__) . '/../../Resources/PHP/ccvs-php/ccvs.inc';
-
 /**
  * Class \CommerceTeam\Commerce\Payment\Ccvs
  */

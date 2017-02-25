@@ -669,21 +669,21 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $lang = $this->getLanguageService();
         // Setting form-elements, if applicable:
-        $formElements = array('', '');
+        $formElements = ['', ''];
         if ($formFields) {
-            $formElements = array(
+            $formElements = [
                 '<form action="' . htmlspecialchars($this->listURL('', '-1', 'firstElementNumber,search_field')) .
                 '" method="post">',
                 '</form>'
-            );
+            ];
         }
         // Make level selector:
-        $opt = array();
+        $opt = [];
         $parts = explode('|', $lang->sL(
             'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xlf:labels.enterSearchLevels'
         ));
         foreach ($parts as $kv => $label) {
-            $opt[] = '<option value="' . $kv . '"' . ($kv === $this->searchLevels ? ' selected="selected"' : '') .
+            $opt[] = '<option value="' . $kv . '" ' . ($kv === $this->searchLevels ? 'selected="selected"' : '') .
                 '>' . htmlspecialchars($label) . '</option>';
         }
         $lMenu = '<select class="form-control" name="search_levels" title="' .

@@ -23,6 +23,7 @@ class ExtdirectTreeCommands
 {
     /**
      * @param array|\stdClass $nodeData
+     *
      * @return NodeInterface
      */
     protected function getNode($nodeData)
@@ -43,7 +44,9 @@ class ExtdirectTreeCommands
             default:
                 $type = CategoryNode::class;
         }
-        return GeneralUtility::makeInstance($type, (array)$nodeData);
+        /** @var NodeInterface $node */
+        $node = GeneralUtility::makeInstance($type, (array)$nodeData);
+        return $node;
     }
 
     /**
@@ -189,7 +192,7 @@ class ExtdirectTreeCommands
      * Sets a temporary mount point
      *
      * @param \stdClass $nodeData
-     * @return array
+     * @return string
      */
     public static function setTemporaryMountPoint($nodeData)
     {

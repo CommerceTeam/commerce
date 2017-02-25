@@ -75,7 +75,7 @@ class Payment extends Wirecard
     /**
      * Get status.
      *
-     * @return array
+     * @return string
      */
     public function getStatus()
     {

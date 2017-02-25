@@ -54,8 +54,9 @@ class ExistingArticleContainer
         $this->data = $data;
         $this->iconFactory = $iconFactory;
 
-        $this->clear = '<span class="btn btn-default disabled">'
-            . $this->iconFactory->getIcon('empty-empty', Icon::SIZE_SMALL)->render() . '</span>';
+        $this->clear = '<span class="btn btn-default disabled">' .
+            $this->iconFactory->getIcon('empty-empty', Icon::SIZE_SMALL)->render() .
+            '</span>';
 
         $this->backendUtility = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
     }
@@ -64,6 +65,7 @@ class ExistingArticleContainer
      * @param array $articles
      * @param array $article
      * @param int $i
+     *
      * @return string
      */
     public function renderArticleRow($articles, $article, $i)
@@ -80,9 +82,9 @@ class ExistingArticleContainer
         $viewBigAction = $this->getViewBigAction($article);
 
         $toolTip = BackendUtility::getRecordToolTip($article, $this->table) . ' title="id=' . $articleUid . '"';
-        $iconImg = '<span ' . $toolTip . '>'
-            . $this->iconFactory->getIconForRecord($this->table, $article, Icon::SIZE_SMALL)->render()
-            . '</span>';
+        $iconImg = '<span ' . $toolTip . '>' .
+            $this->iconFactory->getIconForRecord($this->table, $article, Icon::SIZE_SMALL)->render() .
+            '</span>';
 
         $fields = htmlspecialchars($article['title']);
 
@@ -92,7 +94,7 @@ class ExistingArticleContainer
                 if ($attribute['uid_valuelist'] == 0) {
                     // if the attribute has no value, create a select box with valid values
                     $valueList .= '<td><select name="updateData[' .
-                        $articleUid . '][' . (int) $attribute['uid_foreign'] . ']" class="form-control"/>';
+                        $articleUid . '][' . (int) $attribute['uid_foreign'] . ']" class="form-control">';
                     $valueList .= '<option value="0" selected="selected"></option>';
                     foreach ($attribute['valueList'] as $attrValueUid => $attrValueData) {
                         $valueList .= '<option value="' . (int) $attrValueUid . '">'
@@ -114,15 +116,15 @@ class ExistingArticleContainer
         $output .= '<tr data-uid="' . $articleUid . '">
             <td class="col-icon">' . $iconImg . '</td>
             <td nowrap="nowrap" class="col-title">' . $fields . '</td>
-            <td class="col-control">'
-            . $editAction
-            . $hideAction
-            . $deleteAction
-            . $viewBigAction
-            . $moveUpAction
-            . $moveDownAction
-            . '</td>'
-            . $valueList .
+            <td class="col-control">' .
+            $editAction .
+            $hideAction .
+            $deleteAction .
+            $viewBigAction .
+            $moveUpAction .
+            $moveDownAction .
+            '</td>' .
+            $valueList .
         '</tr>';
 
         return $output;
@@ -133,17 +135,17 @@ class ExistingArticleContainer
      *
      * @param array $article
      *
-     * @return array
+     * @return string
      */
     protected function getEditAction($article)
     {
         $params = '&edit[' . $this->table . '][' . $article['uid'] . ']=edit';
         $iconIdentifier = 'actions-open';
-        $editAction = '<a class="btn btn-default" href="#" onclick="'
-            . htmlspecialchars(BackendUtility::editOnClick($params, '', -1)) . '" title="'
-            . $this->getLanguageService()->getLL('edit', true) . '">'
-            . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render()
-            . '</a>';
+        $editAction = '<a class="btn btn-default" href="#" onclick="' .
+            htmlspecialchars(BackendUtility::editOnClick($params, '', -1)) . '" title="' .
+            $this->getLanguageService()->getLL('edit', true) . '">' .
+            $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render() .
+            '</a>';
 
         return $editAction;
     }
@@ -151,9 +153,9 @@ class ExistingArticleContainer
     /**
      * Delete link
      *
-     * @param $article
+     * @param array $article
      *
-     * @return array
+     * @return string
      */
     protected function getDeleteAction($article)
     {
@@ -190,10 +192,10 @@ class ExistingArticleContainer
     /**
      * Hide link
      *
-     * @param $article
-     * @param $articleUid
+     * @param array $article
+     * @param int $articleUid
      *
-     * @return array
+     * @return string
      */
     protected function getHideAction($article, $articleUid)
     {
@@ -223,13 +225,13 @@ class ExistingArticleContainer
     /**
      * Move up link
      *
-     * @param $articles
-     * @param $i
-     * @param $article
-     * @param $articleUid
+     * @param array $articles
+     * @param int $i
+     * @param array $article
+     * @param int $articleUid
      * @param $clear
      *
-     * @return array
+     * @return string
      */
     protected function getMoveUpAction($articles, $i, $article, $articleUid, $clear)
     {
@@ -243,13 +245,14 @@ class ExistingArticleContainer
                 $moveItTo = (int)$article['pid'];
             }
             $params = '&cmd[' . $this->table . '][' . $articleUid . '][move]=' . $moveItTo;
-            $moveUpAction = '<a class="btn btn-default" href="#" onclick="'
-                . htmlspecialchars('return jumpToUrl('
-                . BackendUtility::getLinkToDataHandlerAction($params, -1)
-                . ');')
-                . '" title="'
-                . $this->getLanguageService()->getLL('moveUp', true) . '">'
-                . $this->iconFactory->getIcon('actions-move-up', Icon::SIZE_SMALL)->render() . '</a>';
+            $moveUpAction = '<a class="btn btn-default" href="#" onclick="' .
+                htmlspecialchars(
+                    'return jumpToUrl(' . BackendUtility::getLinkToDataHandlerAction($params, -1) . ');'
+                ) .
+                '" title="' .
+                $this->getLanguageService()->getLL('moveUp', true) . '">' .
+                $this->iconFactory->getIcon('actions-move-up', Icon::SIZE_SMALL)->render() .
+                '</a>';
         } else {
             $moveUpAction = $clear;
         }
@@ -260,25 +263,26 @@ class ExistingArticleContainer
     /**
      * Move down link
      *
-     * @param $articles
-     * @param $i
-     * @param $articleUid
-     * @param $clear
+     * @param array $articles
+     * @param int $i
+     * @param int $articleUid
+     * @param string $clear
      *
-     * @return array
+     * @return string
      */
     protected function getMoveDownAction($articles, $i, $articleUid, $clear)
     {
         // at least one following article must exist
         if (isset($articles[$i + 1])) {
             $params = '&cmd[' . $this->table . '][' . $articleUid . '][move]=-' . (int)$articles[$i + 1]['uid'];
-            $moveDownAction = '<a class="btn btn-default" href="#" onclick="'
-                . htmlspecialchars('return jumpToUrl('
-                . BackendUtility::getLinkToDataHandlerAction($params, -1)
-                . ');')
-                . '" title="'
-                . $this->getLanguageService()->getLL('moveDown', true) . '">'
-                . $this->iconFactory->getIcon('actions-move-down', Icon::SIZE_SMALL)->render() . '</a>';
+            $moveDownAction = '<a class="btn btn-default" href="#" onclick="' .
+                htmlspecialchars(
+                    'return jumpToUrl(' . BackendUtility::getLinkToDataHandlerAction($params, -1) . ');'
+                ) .
+                '" title="' .
+                $this->getLanguageService()->getLL('moveDown', true) . '">' .
+                $this->iconFactory->getIcon('actions-move-down', Icon::SIZE_SMALL)->render() .
+                '</a>';
         } else {
             $moveDownAction = $clear;
         }
@@ -287,21 +291,23 @@ class ExistingArticleContainer
     }
 
     /**
-     * @param $article
+     * @param array $article
      *
      * @return string
      */
     protected function getViewBigAction($article)
     {
         // "Info": (All records)
-        $onClick = 'top.launchView(' . GeneralUtility::quoteJSvalue($this->table) . ', ' . (int)$article['uid']
-            . '); return false;';
-        $viewBigAction = '<a class="btn btn-default" href="#" onclick="' . htmlspecialchars($onClick) . '" title="'
-            . $this->getLanguageService()->getLL('showInfo', true) . '">'
-            . $this->iconFactory->getIcon('actions-document-info', Icon::SIZE_SMALL)->render() . '</a>';
+        $onClick = 'top.launchView(' . GeneralUtility::quoteJSvalue($this->table) . ', ' . (int)$article['uid'] .
+            '); return false;';
+        $viewBigAction = '<a class="btn btn-default" href="#" onclick="' . htmlspecialchars($onClick) . '" title="' .
+            $this->getLanguageService()->getLL('showInfo', true) . '">' .
+            $this->iconFactory->getIcon('actions-document-info', Icon::SIZE_SMALL)->render() .
+            '</a>';
 
         return $viewBigAction;
     }
+
 
     /**
      * Returns LanguageService

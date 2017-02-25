@@ -61,7 +61,7 @@ class FeuserObserver
         /**
          * Frontend user data access object.
          *
-         * @var FeuserDao
+         * @var FeuserDao $feuserDao
          */
         $feuserDao = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\FeuserDao::class, $id);
 

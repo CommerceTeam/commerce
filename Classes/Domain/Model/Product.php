@@ -989,7 +989,7 @@ class Product extends AbstractEntity
     /**
      * Get category master parent category.
      *
-     * @return array uid of category
+     * @return int uid of category
      */
     public function getMasterparentCategory()
     {

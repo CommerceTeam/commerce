@@ -1253,7 +1253,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         // "Show" link (only tx_commerce_categories and tx_commerce_products elements)
         // @todo test url generation
         if ($table == 'tx_commerce_categories' || $table == 'tx_commerce_products') {
-            $pid = \CommerceTeam\Commerce\Utility\ConfigurationUtility::getInstance()->getConfiguration('previewPageID');
+            $pid = \CommerceTeam\Commerce\Utility\ConfigurationUtility::getInstance()
+                ->getConfiguration('previewPageID');
 
             $params = '&id=' . $pid . '&tx_commerce_pi1[catUid]=';
             if ($table == 'tx_commerce_categories') {

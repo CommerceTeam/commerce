@@ -12,6 +12,8 @@ namespace CommerceTeam\Commerce\Dao;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * This class handles basic object persistence using the Dao design pattern.
  * It defines parsing and database storage of an object.
@@ -118,11 +120,18 @@ abstract class BasicDao
      */
     public function get($propertyName)
     {
+        $value = null;
+
         $properties = get_object_vars($this->object);
-        if (method_exists($this->object, 'get' . ucfirst($propertyName))) {
-            $value = call_user_func([$this->object, 'get' . ucfirst($propertyName)], null);
-        } else {
-            $value = $properties[$propertyName];
+        if (array_key_exists($propertyName, $properties)) {
+            $camelCasePropertyName = GeneralUtility::underscoredToUpperCamelCase($propertyName);
+            if (method_exists($this->object, 'get' . ucfirst($propertyName))) {
+                $value = call_user_func([$this->object, 'get' . ucfirst($propertyName)], null);
+            } elseif (method_exists($this->object, 'get' . ucfirst($camelCasePropertyName))) {
+                $value = call_user_func([$this->object, 'get' . ucfirst($camelCasePropertyName)], null);
+            } else {
+                $value = $this->object->$propertyName;
+            }
         }
 
         return $value;
@@ -140,8 +149,11 @@ abstract class BasicDao
     {
         $properties = get_object_vars($this->object);
         if (array_key_exists($propertyName, $properties)) {
+            $camelCasePropertyName = GeneralUtility::underscoredToUpperCamelCase($propertyName);
             if (method_exists($this->object, 'set' . ucfirst($propertyName))) {
                 call_user_func([$this->object, 'set' . ucfirst($propertyName)], $value);
+            } elseif (method_exists($this->object, 'get' . ucfirst($camelCasePropertyName))) {
+                call_user_func([$this->object, 'set' . ucfirst($camelCasePropertyName)], $value);
             } else {
                 $this->object->$propertyName = $value;
             }

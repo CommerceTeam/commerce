@@ -342,6 +342,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
             $output = $dblist->HTMLcode;
         } else {
             $output = '';
+            /** @var FlashMessage $flashMessage */
             $flashMessage = GeneralUtility::makeInstance(
                 FlashMessage::class,
                 $lang->getLL('noRecordsOnThisPage'),

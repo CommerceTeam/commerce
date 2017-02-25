@@ -71,6 +71,43 @@ call_user_func(function ($packageKey) {
             \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
             ['source' => 'EXT:commerce/Resources/Public/Icons/Table/folder.gif']
         );
+        $iconRegistry->registerIcon(
+            'orders-add',
+            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_add.gif']
+        );
+        $iconRegistry->registerIcon(
+            'orders-add-int',
+            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_add_int.gif']
+        );
+        $iconRegistry->registerIcon(
+            'orders-add-user',
+            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_add_user.gif']
+        );
+        $iconRegistry->registerIcon(
+            'orders-add-user-int',
+            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_add_user_int.gif']
+        );
+        $iconRegistry->registerIcon(
+            'orders-int',
+            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_int.gif']
+        );
+        $iconRegistry->registerIcon(
+            'orders-user',
+            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_user.gif']
+        );
+        $iconRegistry->registerIcon(
+            'orders-user-int',
+            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_user_int.gif']
+        );
+
+        // add contains type to display commerce folders with custom icon
         $GLOBALS['TCA']['pages']['ctrl']['typeicon_classes']['contains-commerce'] =
             'apps-pagetree-folder-contains-commerce';
 

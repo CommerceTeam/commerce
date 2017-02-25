@@ -100,7 +100,7 @@ class ClickmenuUtility extends ClickMenu
                 GeneralUtility::devLog('Clickmenu not allowed for user.', 'commerce', 1);
             }
 
-            return '';
+            return [];
         }
 
         // Configure the parent clickmenu

@@ -2014,12 +2014,22 @@ class CheckoutController extends BaseController
     {
         if ($this->conf[$type . '.']['sourceFields.'][$field . '.']['table']) {
             $table = $this->conf[$type . '.']['sourceFields.'][$field . '.']['table'];
-            $select = $this->conf[$type . '.']['sourceFields.'][$field . '.']['value'] . ' = \'' . $value . '\'';
-            $fields = $this->conf[$type . '.']['sourceFields.'][$field . '.']['label'];
-            $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow($fields, $table, $select);
-            $row = is_array($row) ? $row : [];
+            $label = $this->conf[$type . '.']['sourceFields.'][$field . '.']['label'];
 
-            return $row[$fields];
+            $queryBuilder = $this->getQueryBuilderForTable($table);
+            $row = $queryBuilder
+                ->select($label)
+                ->from($table)
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        $this->conf[$type . '.']['sourceFields.'][$field . '.']['value'],
+                        $value
+                    )
+                )
+                ->execute()
+                ->fetch();
+
+            return is_array($row) && isset($row[$label]) ? $row[$label] : '';
         }
 
         return $value;
@@ -2157,8 +2167,6 @@ class CheckoutController extends BaseController
      */
     protected function getSelectInputField($fieldName, array $fieldConfig, $fieldValue = '', $step = '')
     {
-        $database = $this->getDatabaseConnection();
-
         $result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step .
             '][' . $fieldName . ']">';
 
@@ -2178,12 +2186,20 @@ class CheckoutController extends BaseController
         } else {
             // Try to fetch data from database
             $table = $fieldConfig['table'];
-            $select = $fieldConfig['select'] . $this->cObj->enableFields($fieldConfig['table']);
             $fields = $fieldConfig['label'] . ' AS label, ' . $fieldConfig['value'] . ' AS value';
             $orderby = ($fieldConfig['orderby']) ? $fieldConfig['orderby'] : '';
-            $rows = $database->exec_SELECTgetRows($fields, $table, $select, '', $orderby);
 
-            foreach ($rows as $row) {
+            $queryBuilder = $this->getQueryBuilderForTable($table);
+            $result = $queryBuilder
+                ->select($fields)
+                ->from($table)
+                ->where(
+                    $fieldConfig['select']
+                )
+                ->orderBy($orderby)
+                ->execute();
+
+            while ($row = $result->fetch()) {
                 $result .= '<option value="' . $row['value'] . '"';
                 if ($fieldValue === $row['value']) {
                     $result .= ' selected="selected"';
@@ -2769,11 +2785,21 @@ class CheckoutController extends BaseController
                 && strlen($fieldConfig['table'])
             ) {
                 $table = $fieldConfig['table'];
-                $select = $fieldConfig['value'] . ' = ' . $this->getDatabaseConnection()->fullQuoteStr($value, $table) .
-                    $this->cObj->enableFields($table);
                 $fields = $fieldConfig['label'] . ' AS label,';
                 $fields .= $fieldConfig['value'] . ' AS value';
-                $value = $this->getDatabaseConnection()->exec_SELECTgetSingleRow($fields, $table, $select);
+
+                $queryBuilder = $this->getQueryBuilderForTable($table);
+                $value = $queryBuilder
+                    ->select($fields)
+                    ->from($table)
+                    ->where(
+                        $queryBuilder->expr()->eq(
+                            $fieldConfig['value'],
+                            $queryBuilder->createNamedParameter($value)
+                        )
+                    )
+                    ->execute()
+                    ->fetch();
                 $value = is_array($value) ? $value : [];
 
                 $newdata[$key] = $value['label'];
@@ -2816,8 +2842,12 @@ class CheckoutController extends BaseController
     ) {
         // Save addresses with reference to the pObj - which is an instance of pi3
         $uids = [];
-        $types = $this->getDatabaseConnection()->exec_SELECTgetRows('name', 'tx_commerce_address_types', '1');
-        foreach ($types as $type) {
+        $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_address_types');
+        $types = $queryBuilder
+            ->select('name')
+            ->from('tx_commerce_address_types')
+            ->execute();
+        while ($type = $types->fetch()) {
             $uids[$type['name']] = $this->handleAddress($type['name']);
         }
 
@@ -2986,7 +3016,7 @@ class CheckoutController extends BaseController
         /**
          * Tce Main.
          *
-         * @var \TYPO3\CMS\Core\DataHandling\DataHandler
+         * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tceMain
          */
         $tceMain = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
         $tceMain->bypassWorkspaceRestrictions = true;

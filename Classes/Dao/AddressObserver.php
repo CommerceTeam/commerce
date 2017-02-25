@@ -64,7 +64,7 @@ class AddressObserver
         /**
          * Address data access object.
          *
-         * @var AddressDao
+         * @var AddressDao $addressDao
          */
         $addressDao = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Dao\AddressDao::class, $id);
 
@@ -133,16 +133,6 @@ class AddressObserver
         return $msg;
     }
 
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected static function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
 
     /**
      * Get language service.

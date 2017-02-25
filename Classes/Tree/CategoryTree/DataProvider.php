@@ -15,6 +15,7 @@ namespace CommerceTeam\Commerce\Tree\CategoryTree;
 use CommerceTeam\Commerce\Factory\HookFactory;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNodeCollection;
+use TYPO3\CMS\Backend\Tree\TreeNodeCollection;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -379,6 +380,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                     $refNode->setLeaf(false);
                     $reference = $refNode->getChildNodes();
                     if ($reference == null) {
+                        /** @var TreeNodeCollection $reference */
                         $reference = GeneralUtility::makeInstance(PagetreeNodeCollection::class);
                         $refNode->setChildNodes($reference);
                     }
