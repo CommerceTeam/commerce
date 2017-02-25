@@ -2008,9 +2008,10 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         }
 
         $subpartArray = [];
-        if ($this->conf['disableArticleViewForProductlist'] == 1
-            && !$this->piVars['showUid']
+        if (!method_exists($this, 'makeArticleView')
             || $this->conf['disableArticleView'] == 1
+            || $this->conf['disableArticleViewForProductlist'] == 1
+            && !$this->piVars['showUid']
         ) {
             $subpartArray['###' . strtoupper($articleSubpart) . '###'] = '';
         } else {
@@ -2120,27 +2121,6 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         }
 
         return $markerArray;
-    }
-
-    /**
-     * Make article view.
-     *
-     * @param string $kind Kind
-     * @param array $articles Articles
-     * @param Product $product Product
-     * @param string $articleMarker Article marker
-     * @param string $articleTemplate Article template
-     *
-     * @return string
-     */
-    public function makeArticleView(
-        $kind,
-        array $articles,
-        Product $product,
-        $articleMarker = '',
-        $articleTemplate = ''
-    ) {
-        return '';
     }
 
     /**

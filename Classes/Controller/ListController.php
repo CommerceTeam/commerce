@@ -712,16 +712,15 @@ class ListController extends BaseController
      * @param string $viewKind Kind of view for choosing the right template
      * @param array $conf TSconfig for handling the articles
      * @param Product $product The parent product
-     * @param array|string $templateMarkerArray Current template marker array
+     * @param array $templateMarkers Current template marker array
      * @param string $template Template text
-     *
      * @return string the content for a single product
      */
     public function makeArticleView(
         $viewKind,
         array $conf,
         Product $product,
-        $templateMarkerArray = '',
+        $templateMarkers = [],
         $template = ''
     ) {
         $hooks = HookFactory::getHooks('Controller/ListController', 'makeArticleView');
@@ -736,8 +735,8 @@ class ListController extends BaseController
         $templateMarker = [];
         $templateMarkerNostock = [];
         $templateMarkerMoreThanMax = [];
-        if (is_array($templateMarkerArray)) {
-            foreach ($templateMarkerArray as $v) {
+        if (is_array($templateMarkers)) {
+            foreach ($templateMarkers as $v) {
                 $templateMarker[] = '###' . strtoupper($v) . '###';
                 $templateMarkerNostock[] = '###' . strtoupper($v) . '_NOSTOCK###';
                 $templateMarkerMoreThanMax[] = '###' . strtoupper($v) . '_MORETHANMAX###';
