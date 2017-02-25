@@ -124,7 +124,7 @@ class GeneralUtility
      *
      * @param string $basketId Basket id
      */
-    protected function setCookie($basketId)
+    protected static function setCookie($basketId)
     {
         setcookie(
             'commerceBasketId-' . self::getBasketStoragePid(),
@@ -417,10 +417,9 @@ class GeneralUtility
      */
     public static function getBasketStoragePid()
     {
-        if (self::getTypoScriptFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi2.']['basketStoragePid']) {
-            $basketStoragePid = (int) self::getTypoScriptFrontendController()
-                ->tmpl
-                    ->setup['plugin.']['tx_commerce_pi2.']['basketStoragePid'];
+        $setup = self::getTypoScriptFrontendController()->tmpl->setup;
+        if ($setup['plugin.']['tx_commerce_pi2.']['basketStoragePid']) {
+            $basketStoragePid = (int) $setup['plugin.']['tx_commerce_pi2.']['basketStoragePid'];
         } else {
             $basketStoragePid = ConfigurationUtility::getInstance()->getExtConf('BasketStoragePid');
         }
