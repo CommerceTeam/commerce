@@ -1410,6 +1410,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 break;
 
             case 'RELATION':
+                GeneralUtility::deprecationLog('Commerce: deprecated switch case as of verion 6 will be removed in 7.');
                 $singleValue = explode(',', $value);
 
                 foreach ($singleValue as $uid) {
@@ -1431,6 +1432,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 break;
 
             case 'MMRELATION':
+                GeneralUtility::deprecationLog('Commerce: deprecated switch case as of verion 6 will be removed in 7.');
+
                 $local = 'uid_local';
                 $foreign = 'uid_foreign';
                 if ($typoscriptConfig['switchFields']) {
@@ -2132,6 +2135,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      * @param string $prefix Prefix
      *
      * @return string
+     *
+     * @deprecated method as of verion 6 will be removed in 7.
      */
     public function renderTable(array $data, array $typoscript, $template, $prefix)
     {
