@@ -49,7 +49,7 @@ class Pi4Hook
     public function afterAddressSave($uid)
     {
         // notify address observer
-        \CommerceTeam\Commerce\Dao\AddressObserver::update('new', $uid);
+        \CommerceTeam\Commerce\Dao\AddressObserver::update($uid);
     }
 
     /**
@@ -64,6 +64,6 @@ class Pi4Hook
     public function afterAddressEdit($uid)
     {
         // notify address observer
-        \CommerceTeam\Commerce\Dao\AddressObserver::update('update', $uid);
+        \CommerceTeam\Commerce\Dao\AddressObserver::update($uid);
     }
 }

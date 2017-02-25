@@ -27,6 +27,7 @@ Removed properties
 
 FolderRepository::initFolders $parentTitle
 FolderRepository::initFolders $executeUpdateUtility
+AddressObserver::update $_ removed the unused parameter. Only the uid will be accepted.
 
 
 Changed methods

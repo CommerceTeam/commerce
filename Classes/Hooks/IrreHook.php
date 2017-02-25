@@ -13,32 +13,12 @@ namespace CommerceTeam\Commerce\Hooks;
  */
 
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
-use TYPO3\CMS\Backend\Form\Element\InlineElement;
 
 /**
  * Class \CommerceTeam\Commerce\Hook\IrreHooks
  */
 class IrreHook implements \TYPO3\CMS\Backend\Form\Element\InlineElementHookInterface
 {
-    /**
-     * Parent object.
-     *
-     * @var InlineElement
-     */
-    protected $parentObject;
-
-    /**
-     * Initializes this hook object.
-     *
-     * @param InlineElement $parentObject Calling object
-     *
-     * @return void
-     */
-    public function init(&$parentObject)
-    {
-        $this->parentObject = $parentObject;
-    }
-
     /**
      * Pre-processing to define which control items are enabled or disabled.
      *
