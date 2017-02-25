@@ -9,21 +9,10 @@
 Since Version 6
 ===============
 
-
-Removed database fields
------------------------
-
-
-
 Removed Files
 -------------
 
 Hooks/SrfeuserregisterPi1Hook.php the commerce team does not advocates to use this extension and the hook if here by removed.
-
-
-Removed constansts
-------------------
-
 
 
 Removed functions
@@ -40,38 +29,8 @@ FolderRepository::initFolders $parentTitle
 FolderRepository::initFolders $executeUpdateUtility
 
 
-Changed modules
----------------
-
-
-
-Changed configuration
----------------------
-
-
-
-Changed class
--------------
-
-
 Changed methods
 ---------------
 
 Ccvs::validateCreditCard now respects the parameter of the super method. To be able to check with a checksum please use Ccvs::validate instead
 FolderRepository::initFolders order introduced in 5.0 is now the default and no fallback handling will be available anymore.
-
-
-Renamed classes
----------------
-
-
-
-Renamed functions
------------------
-
-
-
-Renamed tables
---------------
-
-

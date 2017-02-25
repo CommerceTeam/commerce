@@ -1438,14 +1438,20 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                     $local = 'uid_foreign';
                 }
 
-                $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                    'DISTINCT(' . $foreign . ')',
-                    $typoscriptConfig['tableMM'],
-                    $local . ' = ' . (int) $uid . '  ' . $typoscriptConfig['table.']['addWhere'],
-                    '',
-                    'sorting'
-                );
-                foreach ($rows as $row) {
+                $queryBrowser = $this->getQueryBuilderForTable($typoscriptConfig['tableMM']);
+                $rows = $queryBrowser
+                    ->select('DISTINCT(' . $foreign . ')')
+                    ->from($typoscriptConfig['tableMM'])
+                    ->where(
+                        $queryBrowser->expr()->eq(
+                            $local,
+                            $queryBrowser->createNamedParameter($uid, \PDO::PARAM_INT)
+                        )
+                    )
+                    ->andWhere($typoscriptConfig['table.']['addWhere'])
+                    ->orderBy('sorting')
+                    ->execute();
+                while ($row = $rows->fetch()) {
                     $data = $this->pi_getRecord($typoscriptConfig['table'], $row[$foreign]);
                     if ($data) {
                         $singleOutput = $this->renderTable(
