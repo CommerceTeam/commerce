@@ -1290,7 +1290,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                     $deleteAction = $this->spaceIcon;
                 } else {
                     $titleOrig = BackendUtility::getRecordTitle($table, $row, false, true);
-                    $title = GeneralUtility::slashJS(GeneralUtility::fixed_lgd_cs($titleOrig, $this->fixedL), true);
+                    $title = str_replace('\\', '\\\\', GeneralUtility::fixed_lgd_cs($titleOrig, $this->fixedL));
                     $warningText = $this->getLanguageService()->getLL($actionName . 'Warning') . ' "' . $title .
                         '" ' . '[' . $table . ':' . $row['uid'] . ']' . $refCountMsg;
 

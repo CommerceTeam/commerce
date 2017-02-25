@@ -310,7 +310,7 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
                     . '"><i class="fa fa-caret-square-o-right"></i></a>'
                 : '';
             $out .= '
-				<li' . ($classAttr ? ' class="' . trim($classAttr) . '"' : '') . '>
+				<li ' . ($classAttr ? 'class="' . trim($classAttr) . '"' : '') . '>
 					<span class="list-tree-group' . $selected . '">
 						' . $cEbullet . $treeItem['HTML']
                 . $this->wrapTitle(
@@ -417,5 +417,19 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
         }
 
         return $mountpoints;
+    }
+
+    /**
+     * @param $table
+     *
+     * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
+     */
+    protected function getQueryBuilderForTable($table): \TYPO3\CMS\Core\Database\Query\QueryBuilder
+    {
+        /** @var \TYPO3\CMS\Core\Database\Query\QueryBuilder $queryBuilder */
+        $queryBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Database\ConnectionPool::class
+        )->getQueryBuilderForTable($table);
+        return $queryBuilder;
     }
 }

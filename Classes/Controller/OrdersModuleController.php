@@ -325,7 +325,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
             );
 
             // Setting up the context sensitive menu:
-            $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/ClickMenu');
+            $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/ContextMenu');
         }
         // access
         // Begin to compile the whole page, starting out with page header:

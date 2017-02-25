@@ -285,11 +285,11 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
             $icon = $this->iconFactory->getIconForRecord('tx_commerce_products', $row, Icon::SIZE_SMALL)->render();
             $selected = '';
             if (!empty($this->linkParts) && (int)$this->linkParts['product'] === (int)$row['uid']) {
-                $selected = ' class="active"';
+                $selected = 'class="active"';
             }
             // Putting list element HTML together:
             $out .= '
-				<li' . $selected . '>
+				<li ' . $selected . '>
 					<span class="list-tree-group">
 						<span class="list-tree-icon">
 							' . $icon . '

@@ -216,8 +216,7 @@ class ArticleAjaxController
 
         $moduleConfig = BackendUtility::getModTSconfig($product->getPid(), 'mod.commerce.category');
         if ($moduleConfig) {
-            $moduleConfig = BackendUtility::implodeTSParams($moduleConfig['properties']);
-            $defaultTax = (int) $moduleConfig['defaultTaxValue'];
+            $defaultTax = (int) $moduleConfig['properties']['defaultTaxValue'];
             if ($defaultTax > 0) {
                 $articleData['tax'] = $defaultTax;
             }

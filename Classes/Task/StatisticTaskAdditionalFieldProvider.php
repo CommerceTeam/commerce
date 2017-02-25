@@ -27,15 +27,18 @@ class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\Addit
     protected $submittedData = [];
 
     /**
+     * @var string
+     */
+    protected $languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:';
+
+    /**
      * Aggregation.
      *
      * @var array
      */
     protected $aggregation = [
-        'completeAggregation' =>
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:tx_commerce_task_statistictask.completeAggregation',
-        'incrementalAggregation' =>
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:tx_commerce_task_statistictask.incrementalAggregation',
+        'completeAggregation' => 'tx_commerce_task_statistictask.completeAggregation',
+        'incrementalAggregation' => 'tx_commerce_task_statistictask.incrementalAggregation',
     ];
 
     /**
@@ -144,7 +147,7 @@ class StatisticTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\Addit
         foreach ($valuesAndLabels as $value => $label) {
             $selected = $value == $selectedValue ? ' selected="selected"' : '';
             $options[] = '<option value="' . $value . '"' . $selected . '>' .
-                $this->getLanguageService()->sL($label) . '</option>';
+                $this->getLanguageService()->sL($this->languageFile . $label) . '</option>';
         }
 
         return '<select name="' . $fieldName . '" id="' . $fieldId . '">' . implode('', $options) . '</select>';

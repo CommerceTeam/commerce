@@ -77,7 +77,7 @@ class CategoryTreeElementCategoryTreeView extends ElementBrowserCategoryTreeView
             }
 
             $out .= '
-				<li' . ($classAttr ? ' class="' . trim($classAttr) . '"' : '') . '>
+				<li ' . ($classAttr ? 'class="' . trim($classAttr) . '"' : '') . '>
 					<span class="list-tree-group' . $selected . '">
 						' . $treeItem['HTML']
                 . $this->wrapTitle(

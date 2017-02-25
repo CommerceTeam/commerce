@@ -2286,12 +2286,15 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     protected function getQueryBuilderForTable($table): \TYPO3\CMS\Core\Database\Query\QueryBuilder
     {
+        /** @var \TYPO3\CMS\Core\Database\Query\QueryBuilder $queryBuilder */
         $queryBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
             \TYPO3\CMS\Core\Database\ConnectionPool::class
         )->getQueryBuilderForTable($table);
-        $queryBuilder->setRestrictions(\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        /** @var \TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionContainerInterface $restrictionContainer */
+        $restrictionContainer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
             \TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer::class
-        ));
+        );
+        $queryBuilder->setRestrictions($restrictionContainer);
         return $queryBuilder;
     }
 

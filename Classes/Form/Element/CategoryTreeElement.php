@@ -14,11 +14,9 @@ namespace CommerceTeam\Commerce\Form\Element;
 
 use CommerceTeam\Commerce\Tree\View\CategoryTreeElementCategoryTreeView;
 use TYPO3\CMS\Backend\Clipboard\Clipboard;
-use TYPO3\CMS\Backend\Form\DatabaseFileIconsHookInterface;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 use TYPO3\CMS\Backend\Form\InlineStackProcessor;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -498,7 +496,7 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
             );
             $imagesOnly = true;
             foreach ($allowedExtensionList as $allowedExtension) {
-                if (!ArrayUtility::inArray($imageExtensionList, $allowedExtension)) {
+                if (!in_array($allowedExtension, $imageExtensionList)) {
                     $imagesOnly = false;
                     break;
                 }
