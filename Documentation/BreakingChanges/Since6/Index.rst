@@ -20,7 +20,8 @@ Removed functions
 
 FolderRepository::getFolders should not be used anymore, please use ::getFolder instead
 BaseController::renderValue.NUMBERFORMAT this type of formating is possible via stdWrap.numberFormat and takes the configuration decimals, dec_point, thousands_sep so just replace NUMBERFORMAT with stdWrap.numberFormat = 1 and add stdWrap.numberFormat.deci... and so on
-
+BaseController::makeArticleView added method_exists before calling it as this method is only used in ListController
+BaseController::renderSingleView becauset it is only implemented and called in ListController
 
 Removed properties
 ------------------

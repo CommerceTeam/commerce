@@ -2139,21 +2139,6 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     }
 
     /**
-     * Render single view.
-     *
-     * @param Product $product Product
-     * @param Category $category Category
-     * @param string $subpartName Subpart
-     * @param string $subpartNameNostock Subport no stock
-     *
-     * @return string
-     */
-    public function renderSingleView(Product $product, Category $category, $subpartName, $subpartNameNostock)
-    {
-        return '';
-    }
-
-    /**
      * Multi substitution function.
      *
      * @param string $content The content stream, typically HTML template
