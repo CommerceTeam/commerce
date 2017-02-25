@@ -25,16 +25,16 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
      * @var array
      */
     public $fieldArray = [
-        'uid',
-        'pid',
-        'title',
-        'navtitle',
-        't3ver_id',
-        't3ver_state',
-        'hidden',
-        'starttime',
-        'endtime',
-        'fe_group',
+        't.uid',
+        't.pid',
+        't.title',
+        't.navtitle',
+        't.t3ver_id',
+        't.t3ver_state',
+        't.hidden',
+        't.starttime',
+        't.endtime',
+        't.fe_group',
     ];
 
     /**
@@ -179,13 +179,13 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
                 ->add($workspaceRestriction);
 
             $result = $queryBuilder
-                ->select($this->table . '.' . implode(', ' . $this->table . '.', $this->fieldArray))
-                ->from($this->table)
+                ->select($this->fieldArray)
+                ->from($this->table, 't')
                 ->innerJoin('t', 'tx_commerce_categories_parent_category_mm', 'mm', 't.uid = mm.uid_local')
                 ->where(
                     $queryBuilder->expr()->eq(
                         $this->parentField,
-                        $queryBuilder->createNamedParameter($parentId, \PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter($parentId, \PDO::PARAM_INT)
                     )
                 )
                 ->orderBy('t.' . $this->orderByFields)
@@ -221,12 +221,12 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
 
             $count = $queryBuilder
                 ->count('t.uid')
-                ->from($this->table)
+                ->from($this->table, 't')
                 ->innerJoin('t', 'tx_commerce_categories_parent_category_mm', 'mm', 't.uid = mm.uid_local')
                 ->where(
                     $queryBuilder->expr()->eq(
                         $this->parentField,
-                        $queryBuilder->createNamedParameter($uid, \PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
                     )
                 )
                 ->execute()

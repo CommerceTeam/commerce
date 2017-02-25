@@ -242,13 +242,13 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
                 ->add($workspaceRestriction);
 
             $result = $queryBuilder
-                ->select('t.uid, t.title, mm.uid_foreign AS parent_category')
-                ->from($this->table)
+                ->select('t.uid', 't.title', 'mm.uid_foreign AS parent_category')
+                ->from($this->table, 't')
                 ->innerJoin('t', 'tx_commerce_categories_parent_category_mm', 'mm', 't.uid = mm.uid_local')
                 ->where(
                     $queryBuilder->expr()->eq(
                         $this->parentField,
-                        $queryBuilder->createNamedParameter($parentId, \PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter($parentId, \PDO::PARAM_INT)
                     )
                 )
                 ->orderBy('t.' . $this->orderByFields)
@@ -284,12 +284,12 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
 
             $count = $queryBuilder
                 ->count('t.uid')
-                ->from($this->table)
+                ->from($this->table, 't')
                 ->innerJoin('t', 'tx_commerce_categories_parent_category_mm', 'mm', 't.uid = mm.uid_local')
                 ->where(
                     $queryBuilder->expr()->eq(
                         $this->parentField,
-                        $queryBuilder->createNamedParameter($uid, \PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
                     )
                 )
                 ->execute()
