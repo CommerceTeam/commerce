@@ -36,42 +36,11 @@ class FolderRepository
      * @param string $title Folder title as named in pages table
      * @param int $pid Parent Page id
      * @param string $module Extension module
-     * @param bool $parentTitle Deprecated parameter do not use it to create folders on the fly
-     * @param bool $executeUpdateUtility Deprecated parameter
      *
      * @return int
      */
-    public static function initFolders(
-        $title = 'Commerce',
-        $pid = 0,
-        $module = 'commerce',
-        $parentTitle = false,
-        $executeUpdateUtility = false
-    ) {
-        if ($parentTitle) {
-            GeneralUtility::deprecationLog(
-                'Creating parent folder is not supported anymore. Please change your code to use createFolder.
-                    Parameter will get removed in version 6.'
-            );
-        }
-
-        if ($executeUpdateUtility) {
-            GeneralUtility::deprecationLog(
-                'Executing update utility is not supported anymore. Please change your code to call it on your own.
-                    Parameter will get removed in version 6.'
-            );
-        }
-
-        if (is_string($pid) && is_int($module)) {
-            GeneralUtility::deprecationLog(
-                'Parameter $pid and $module swapped position. Fallback handling will get removed in version 6.'
-            );
-            $temp = $pid;
-            $pid = $module;
-            $module = $temp;
-            unset($temp);
-        }
-
+    public static function initFolders($title = 'Commerce', $pid = 0, $module = 'commerce')
+    {
         $cacheHash = $title . '|' . $module . '|' . $pid;
         if (!isset(static::$folderIds[$cacheHash])) {
             $folder = self::getFolder($title, $pid, $module);
