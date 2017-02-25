@@ -14,8 +14,10 @@ namespace CommerceTeam\Commerce\ViewHelpers;
 
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
+use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -103,6 +105,8 @@ class OrderEditFunc
      */
     public function orderArticles(array $parameter)
     {
+        /** @var IconFactory $iconFactory */
+        $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $language = $this->getLanguageService();
         $settingsFactory = ConfigurationUtility::getInstance();
 
@@ -110,9 +114,7 @@ class OrderEditFunc
         $orderArticleTable = 'tx_commerce_order_articles';
         $orderTable = 'tx_commerce_orders';
 
-        /*
-         * GET Storage PID and order_id from Data
-         */
+        // GET Storage PID and order_id from Data
         $orderStoragePid = $parameter['row']['pid'];
         $orderId = $parameter['row']['order_id'];
 
@@ -123,9 +125,6 @@ class OrderEditFunc
         // @todo TS config of fields in list
         $fieldRows = ['amount', 'title', 'article_number', 'price_net', 'price_gross'];
 
-        /*
-         * Taken from class.db_list_extra.php
-         */
         $titleCol = $settingsFactory->getTcaValue($orderArticleTable . '.ctrl.label');
 
         // Check if Orders in this folder are editable
@@ -187,7 +186,6 @@ class OrderEditFunc
 
             $out .= '<td class="c-headLineTable"></td></tr>';
 
-            // @todo Switch to moneylib to use formating
             $cc = 0;
             $iOut = '';
             foreach ($orderArticles as $row) {
@@ -208,10 +206,6 @@ class OrderEditFunc
                 $row['price_net'] = MoneyViewHelper::format($row['price_net'] / 100, '');
                 $row['price_gross'] = MoneyViewHelper::format($row['price_gross'] / 100, '');
 
-                /*
-                 * Not very nice to render html_code directly
-                 * @todo change rendering html code here
-                 */
                 $iOut .= '<tr>';
                 foreach ($fieldRows as $field) {
                     $wrap = ['', ''];
@@ -238,7 +232,7 @@ class OrderEditFunc
                                     '"';
                                 $wrap = [
                                     '<b><a href="#" ' . $onclickAction . '>' .
-                                    IconUtility::getSpriteIcon('actions-document-open'),
+                                    $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render(),
                                     '</a></b>',
                                 ];
                             }
@@ -393,28 +387,29 @@ class OrderEditFunc
      * Renders the invoice adresss.
      *
      * @param array $parameter Parameter
-     * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj Form engine
      *
      * @return string HTML-Content
      */
-    public function invoiceAddress(array $parameter, \TYPO3\CMS\Backend\Form\FormEngine $fobj)
+    public function invoiceAddress(array $parameter)
     {
-        return $this->address($parameter, $fobj, 'tt_address', $parameter['itemFormElValue']);
+        return $this->address($parameter, null, 'tt_address', $parameter['itemFormElValue']);
     }
 
     /**
      * Renders the crdate.
      *
      * @param array $parameter Parameter
-     * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj Form engine
      *
      * @return string HTML-Content
      */
-    public function crdate(array $parameter, \TYPO3\CMS\Backend\Form\FormEngine $fObj)
+    public function crdate(array $parameter)
     {
         $parameter['itemFormElValue'] = date('d.m.y', $parameter['itemFormElValue']);
+        $parameter['renderType'] = 'none';
 
-        return $fObj->getSingleField_typeNone_render([], $parameter['itemFormElValue']);
+        /** @var NodeFactory $nodeFactory */
+        $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
+        return $nodeFactory->create($parameter)->render()['html'];
     }
 
     /**
@@ -422,13 +417,12 @@ class OrderEditFunc
      * Renders the invoice adresss.
      *
      * @param array $parameter Parameter
-     * @param \TYPO3\CMS\Backend\Form\FormEngine $fobj Form engine
      *
      * @return string HTML-Content
      */
-    public function deliveryAddress(array $parameter, \TYPO3\CMS\Backend\Form\FormEngine $fobj)
+    public function deliveryAddress(array $parameter)
     {
-        return $this->address($parameter, $fobj, 'tt_address', $parameter['itemFormElValue']);
+        return $this->address($parameter, null, 'tt_address', $parameter['itemFormElValue']);
     }
 
     /**
@@ -436,13 +430,13 @@ class OrderEditFunc
      * Renders an address block.
      *
      * @param array $parameter Parameter
-     * @param \TYPO3\CMS\Backend\Form\FormEngine $_ Form engine
+     * @param null $_ Form engine
      * @param string $table Table
      * @param int $uid Record UID
      *
      * @return string HTML-Content
      */
-    public function address(array $parameter, \TYPO3\CMS\Backend\Form\FormEngine $_, $table, $uid)
+    public function address(array $parameter, $_, $table, $uid)
     {
         /**
          * Intialize Template Class
@@ -453,24 +447,13 @@ class OrderEditFunc
          */
         $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
 
+        $fields = 'uid,' . ConfigurationUtility::getInstance()->getTcaValue($table . '.interface.showRecordFieldList');
         $content = '';
 
         /*
          * First select Data from Database
          */
-        if (($data = BackendUtility::getRecord(
-            $table,
-            $uid,
-            'uid,' . ConfigurationUtility::getInstance()->getTcaValue($table . '.interface.showRecordFieldList')
-        ))) {
-            /*
-             * We should get just one Result
-             * So Render Result as $arr for template::table()
-             */
-
-            /*
-             * TYPO3 Core API's Page 63
-             */
+        if ($data = BackendUtility::getRecord($table, $uid, $fields)) {
             $params = '&edit[' . $table . '][' . $uid . ']=edit';
 
             $onclickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params)) . '"';
@@ -487,9 +470,7 @@ class OrderEditFunc
                  * and LL Names
                  */
                 if (GeneralUtility::inList($showRecordFieldList, $key)) {
-                    /*
-                     * Get The label
-                     */
+                    // Get The label
                     $translatedLabel = $this->getLanguageService()->sL(BackendUtility::getItemLabel($table, $key));
                     $display[$key] = [$translatedLabel, htmlspecialchars($value)];
                 }
@@ -504,13 +485,70 @@ class OrderEditFunc
                     'defCol' => ['<td>', '</td>'],
                 ],
             ];
-            $content .= $doc->table($display, $tableLayout);
+            $content .= $this->table($display, $tableLayout);
         }
 
         $content .= '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' .
-            htmlspecialchars($parameter['itemFormElValue']) . '">';
+            htmlspecialchars($parameter['itemFormElValue']) .
+            '">';
 
         return $content;
+    }
+
+    /**
+     * Returns a table based on the input $data
+     *
+     * @param array $data Multidim array with first levels = rows, second levels = cells
+     * @param array $layout If set, then this provides an alternative layout array instead of $this->tableLayout
+     * @return string The HTML table.
+     * @internal
+     * @deprecated since TYPO3 CMS 7, will be removed in TYPO3 CMS 8
+     */
+    public function table($data, $layout = null)
+    {
+        GeneralUtility::logDeprecatedFunction();
+        $result = '';
+        if (is_array($data)) {
+            $tableLayout = is_array($layout) ? $layout : [
+                'defRow' => [
+                    'defCol' => ['<td valign="top">', '</td>']
+                ]
+            ];
+            $rowCount = 0;
+            foreach ($data as $tableRow) {
+                if ($rowCount % 2) {
+                    $layout = is_array($tableLayout['defRowOdd']) ?
+                        $tableLayout['defRowOdd'] :
+                        $tableLayout['defRow'];
+                } else {
+                    $layout = is_array($tableLayout['defRowEven']) ?
+                        $tableLayout['defRowEven'] :
+                        $tableLayout['defRow'];
+                }
+                $rowLayout = is_array($tableLayout[$rowCount]) ? $tableLayout[$rowCount] : $layout;
+                $rowResult = '';
+                if (is_array($tableRow)) {
+                    $cellCount = 0;
+                    foreach ($tableRow as $tableCell) {
+                        $cellWrap = is_array($layout[$cellCount]) ? $layout[$cellCount] : $layout['defCol'];
+                        $cellWrap = is_array($rowLayout['defCol']) ? $rowLayout['defCol'] : $cellWrap;
+                        $cellWrap = is_array($rowLayout[$cellCount]) ? $rowLayout[$cellCount] : $cellWrap;
+                        $rowResult .= $cellWrap[0] . $tableCell . $cellWrap[1];
+                        $cellCount++;
+                    }
+                }
+                $rowWrap = is_array($layout['tr']) ? $layout['tr'] : ['<tr>', '</tr>'];
+                $rowWrap = is_array($rowLayout['tr']) ? $rowLayout['tr'] : $rowWrap;
+                $result .= $rowWrap[0] . $rowResult . $rowWrap[1];
+                $rowCount++;
+            }
+            $tableWrap = is_array($tableLayout['table']) ? $tableLayout['table'] : [
+                '<table border="0" cellspacing="0" cellpadding="0" class="typo3-dblist" id="typo3-tmpltable">',
+                '</table>'
+            ];
+            $result = $tableWrap[0] . $result . $tableWrap[1];
+        }
+        return $result;
     }
 
     /**

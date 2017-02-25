@@ -100,14 +100,21 @@ class FolderRepository
      */
     public static function getFolder($title, $pid = 0, $module = 'commerce')
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable('pages')
-            ->createQueryBuilder();
+        $queryBuilder = self::getQueryBuilderForTable('pages');
         $row = $queryBuilder->select('uid', 'pid', 'title')
             ->from('pages')
-            ->where('doktype = 254 AND tx_commerce_foldername = \'' . strtolower($title) . '\' AND pid = ' .
-                (int) $pid . ' AND module = \'' . $module . '\' ' .
-                \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('pages'))
+            ->where(
+                $queryBuilder->expr()->eq('doktype', $queryBuilder->createNamedParameter(254, \PDO::PARAM_INT)),
+                $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT)),
+                $queryBuilder->expr()->eq(
+                    'tx_commerce_foldername',
+                    $queryBuilder->createNamedParameter(strtolower($title), \PDO::PARAM_STR)
+                ),
+                $queryBuilder->expr()->eq(
+                    'module',
+                    $queryBuilder->createNamedParameter($module, \PDO::PARAM_STR)
+                )
+            )
             ->execute()
             ->fetch();
         $row = is_array($row) ? $row : [];
@@ -127,11 +134,17 @@ class FolderRepository
      */
     public static function createFolder($title, $pid = 0, $module = 'commerce')
     {
+        /** @var \TYPO3\CMS\Core\Database\Connection $connection */
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('pages');
-        $queryBuilder = $connection->createQueryBuilder();
+        $queryBuilder = self::getQueryBuilderForTable('pages');
         $sorting = $queryBuilder->select('sorting')
             ->from('pages')
-            ->where('pid = ' . $pid)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT)
+                )
+            )
             ->orderBy('sorting', 'DESC')
             ->execute()
             ->fetch();
@@ -336,5 +349,20 @@ class FolderRepository
         $articlePriceRepository->addRecord($priceData);
 
         return $articleUid;
+    }
+
+
+    /**
+     * @param $table
+     *
+     * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
+     */
+    protected static function getQueryBuilderForTable($table): \TYPO3\CMS\Core\Database\Query\QueryBuilder
+    {
+        /** @var \TYPO3\CMS\Core\Database\Query\QueryBuilder $queryBuilder */
+        $queryBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Database\ConnectionPool::class
+        )->getQueryBuilderForTable($table);
+        return $queryBuilder;
     }
 }

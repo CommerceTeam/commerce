@@ -228,7 +228,7 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
             $where = 'mm.uid_foreign = ' . $db->fullQuoteStr($parentId, $this->table)
                 . CoreBackendUtility::deleteClause($this->table)
                 . CoreBackendUtility::versioningPlaceholderClause($this->table) . $this->clause;
-            return $db->exec_SELECTquery(
+            $result = $db->exec_SELECTquery(
                 'uid, mm.uid_foreign AS parent_category, title',
                 $this->table
                 . ' INNER JOIN tx_commerce_categories_parent_category_mm AS mm
@@ -237,6 +237,8 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
                 '',
                 $this->table . '.' . $this->orderByFields
             );
+
+            return $result;
         }
     }
 
