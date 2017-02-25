@@ -351,7 +351,7 @@ abstract class AbstractRepository implements SingletonInterface
             ->values($data)
             ->execute();
 
-        return $queryBuilder->getConnection()->lastInsertId();
+        return $queryBuilder->getConnection()->lastInsertId($this->databaseTable);
     }
 
 
