@@ -126,11 +126,12 @@ class SystemdataModuleManufacturerController extends SystemdataModuleController
         while (($row = $this->getDatabaseConnection()->sql_fetch_assoc($result))) {
             // edit action
             $params = '&edit[' . $this->table . '][' . $row['uid'] . ']=edit';
+            $onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, '', -1)) . '"';
             $iconIdentifier = 'actions-open';
-            $editAction = '<a class="btn btn-default" href="#" onclick="'
-                . htmlspecialchars(BackendUtility::editOnClick($params, '', -1))
-                . '" title="' . $this->getLanguageService()->getLL('edit', true) . '">'
-                . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render() . '</a>';
+            $editAction = '<a class="btn btn-default" href="#" ' . $onClickAction .
+                ' title="' . $this->getLanguageService()->getLL('edit', true) . '">' .
+                $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render() .
+                '</a>';
 
             // hide action
             $hiddenField = $GLOBALS['TCA'][$this->table]['ctrl']['enablecolumns']['disabled'];
@@ -145,11 +146,12 @@ class SystemdataModuleManufacturerController extends SystemdataModuleController
             }
             $hideTitle = $this->getLanguageService()->getLL('hide', true);
             $unhideTitle = $this->getLanguageService()->getLL('unHide', true);
-            $hideAction = '<a class="btn btn-default t3js-record-hide" data-state="' . $state . '" href="#"'
-                . ' data-params="' . htmlspecialchars($params) . '"'
-                . ' title="' . $unhideTitle . '"'
-                . ' data-toggle-title="' . $hideTitle . '">'
-                . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render() . '</a>';
+            $hideAction = '<a class="btn btn-default t3js-record-hide" data-state="' . $state . '" href="#"' .
+                ' data-params="' . htmlspecialchars($params) . '"' .
+                ' title="' . $unhideTitle . '"' .
+                ' data-toggle-title="' . $hideTitle . '">' .
+                $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render() .
+                '</a>';
 
             // delete action
             $actionName = 'delete';
@@ -165,22 +167,22 @@ class SystemdataModuleManufacturerController extends SystemdataModuleController
             );
             $titleOrig = BackendUtility::getRecordTitle($this->table, $row, false, true);
             $title = GeneralUtility::slashJS(GeneralUtility::fixed_lgd_cs($titleOrig, $this->fixedL), true);
-            $warningText = $this->getLanguageService()->getLL($actionName . 'Warning') . ' "' . $title . '" '
-                . '[' . $this->table . ':' . $row['uid'] . ']' . $refCountMsg;
+            $warningText = $this->getLanguageService()->getLL($actionName . 'Warning') . ' "' . $title . '" ' .
+                '[' . $this->table . ':' . $row['uid'] . ']' . $refCountMsg;
 
             $params = 'cmd[' . $this->table . '][' . $row['uid'] . '][delete]=1';
             $icon = $this->iconFactory->getIcon('actions-edit-' . $actionName, Icon::SIZE_SMALL)->render();
             $linkTitle = $this->getLanguageService()->getLL($actionName, true);
-            $deleteAction = '<a class="btn btn-default t3js-record-delete" href="#" '
-                . ' data-l10parent="' . htmlspecialchars($row['l10n_parent']) . '"'
-                . ' data-params="' . htmlspecialchars($params) . '" data-title="' . htmlspecialchars($titleOrig) . '"'
-                . ' data-message="' . htmlspecialchars($warningText) . '" title="' . $linkTitle . '"'
-                . '>' . $icon . '</a>';
+            $deleteAction = '<a class="btn btn-default t3js-record-delete" href="#" ' .
+                ' data-l10parent="' . htmlspecialchars($row['l10n_parent']) . '"' .
+                ' data-params="' . htmlspecialchars($params) . '" data-title="' . htmlspecialchars($titleOrig) . '"' .
+                ' data-message="' . htmlspecialchars($warningText) . '" title="' . $linkTitle . '"' .
+                '>' . $icon . '</a>';
 
             $toolTip = BackendUtility::getRecordToolTip($row, $this->table);
-            $iconImg = '<span ' . $toolTip . '>'
-                . $this->iconFactory->getIconForRecord($this->table, $row, Icon::SIZE_SMALL)->render()
-                . '</span>';
+            $iconImg = '<span ' . $toolTip . '>' .
+                $this->iconFactory->getIconForRecord($this->table, $row, Icon::SIZE_SMALL)->render() .
+                '</span>';
 
             $output .= '<tr data-uid="' . $row['uid'] . '">';
             $output .= '<td class="col-icon">' . $iconImg . '</td>';

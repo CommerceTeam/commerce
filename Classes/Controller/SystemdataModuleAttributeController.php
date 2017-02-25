@@ -157,11 +157,12 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
         while (($attribute = $this->getDatabaseConnection()->sql_fetch_assoc($result))) {
             // Edit link
             $params = '&edit[' . $this->table . '][' . $attribute['uid'] . ']=edit';
+            $onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, '', -1)) . '"';
             $iconIdentifier = 'actions-open';
-            $editAction = '<a class="btn btn-default" href="#" onclick="'
-                . htmlspecialchars(BackendUtility::editOnClick($params, '', -1))
-                . '" title="' . $this->getLanguageService()->getLL('edit', true) . '">'
-                . $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render() . '</a>';
+            $editAction = '<a class="btn btn-default" href="#" ' . $onClickAction .
+                ' title="' . $this->getLanguageService()->getLL('edit', true) . '">' .
+                $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render() .
+                '</a>';
 
             // Delete link
             $actionName = 'delete';
@@ -177,8 +178,8 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
             );
             $titleOrig = BackendUtility::getRecordTitle($this->table, $attribute, false, true);
             $title = GeneralUtility::slashJS(GeneralUtility::fixed_lgd_cs($titleOrig, 30), true);
-            $warningText = $this->getLanguageService()->getLL($actionName . 'Warning') . ' "' . $title . '" '
-                . '[' . $this->table . ':' . $attribute['uid'] . ']' . $refCountMsg;
+            $warningText = $this->getLanguageService()->getLL($actionName . 'Warning') . ' "' . $title . '" ' .
+                '[' . $this->table . ':' . $attribute['uid'] . ']' . $refCountMsg;
 
             $params = 'cmd[' . $this->table . '][' . $attribute['uid'] . '][delete]=1';
             $icon = $this->iconFactory->getIcon('actions-edit-' . $actionName, Icon::SIZE_SMALL)->render();

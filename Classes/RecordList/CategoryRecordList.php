@@ -969,7 +969,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                     $elFromTable = $this->clipObj->elFromTable($table);
                     if (!empty($elFromTable) && $this->overlayEditLockPermissions($table)) {
                         $href = htmlspecialchars($this->clipObj->pasteUrl($table, $this->id));
-                        $onClick = htmlspecialchars(
+                        $onClick = ' onclick="' . htmlspecialchars(
                             'return '
                             . $this->clipObj->confirmMsg(
                                 'tx_commerce_categories',
@@ -977,11 +977,11 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                                 'into',
                                 $elFromTable
                             )
-                        );
-                        $cells['pasteAfter'] = '<a class="btn btn-default" href="' . $href . '" onclick="' . $onClick
-                            . '" title="' . $lang->getLL('clip_paste', true) . '">'
-                            . $this->iconFactory->getIcon('actions-document-paste-after', Icon::SIZE_SMALL)->render()
-                            . '</a>';
+                        ) . '"';
+                        $cells['pasteAfter'] = '<a class="btn btn-default" href="' . $href . '" ' . $onClick .
+                            ' title="' . $lang->getLL('clip_paste', true) . '">' .
+                            $this->iconFactory->getIcon('actions-document-paste-after', Icon::SIZE_SMALL)->render() .
+                            '</a>';
                     }
                     // If the numeric clipboard pads are enabled, display the control icons for that:
                     if ($this->clipObj->current != 'normal') {

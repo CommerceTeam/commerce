@@ -189,7 +189,7 @@ class WizardController
         // Creating content
         $this->content = '';
         $this->content .= $this->doc->startPage($this->head);
-        $this->content .= $this->doc->header($this->head);
+        $this->content .= '<h1 class="t3js-title-inlineedit">' . htmlspecialchars($this->head) . '</h1>';
 
         // Id a positive id is supplied, ask for the page record
         // with permission information contained:
@@ -242,7 +242,7 @@ class WizardController
                 1
             );
 
-                // Acquiring TSconfig for this module/parent page:
+            // Acquiring TSconfig for this module/parent page:
             $this->web_list_modTSconfig_pid = \TYPO3\CMS\Backend\Utility\BackendUtility::getModTSconfig(
                 (int) $this->pageinfo['pid'],
                 'mod.web_list'
@@ -253,12 +253,12 @@ class WizardController
                 1
             );
 
-                // Set header-HTML and return_url
+            // Set header-HTML and return_url
             $this->code = $this->doc->getHeader('pages', $this->pageinfo, $this->pageinfo['_thePath']) . '<br />';
 
             $this->regularNew();
 
-                // Create go-back link.
+            // Create go-back link.
             if ($this->returnUrl) {
                 $this->code .= '<br />
                     <a href="' . htmlspecialchars($this->returnUrl) . '" class="typo3-goBack" title="' .
@@ -369,13 +369,13 @@ class WizardController
     protected function linkWrap($code, $table, $pid)
     {
         $params = '&edit[' . $table . '][' . $pid . ']=new' . $this->compileDefVals($table);
-        $onClick = \TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick(
+        $onClick = 'onclick="' . htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick(
             $params,
             '',
             $this->returnUrl
-        );
+        )) . '"';
 
-        return '<a href="#" onclick="' . htmlspecialchars($onClick) . '">' . $code . '</a>';
+        return '<a href="#" ' . $onClick . '>' . $code . '</a>';
     }
 
     /**
