@@ -13,8 +13,9 @@ namespace CommerceTeam\Commerce\Tree\View;
  */
 
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility as CoreBackendUtility;
 use CommerceTeam\Commerce\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\Query\Restriction\BackendWorkspaceRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Recordlist\Tree\View\LinkParameterProviderInterface;
 
@@ -31,6 +32,11 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
      * @var string
      */
     public $table = 'tx_commerce_categories';
+
+    /**
+     * @var string
+     */
+    public $parentField = 'mm.uid_foreign';
 
     /**
      * whether the page ID should be shown next to the title, activate through
@@ -224,19 +230,29 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
             }
             return $parentId;
         } else {
-            $db = $this->getDatabaseConnection();
-            $where = 'mm.uid_foreign = ' . $db->fullQuoteStr($parentId, $this->table)
-                . CoreBackendUtility::deleteClause($this->table)
-                . CoreBackendUtility::versioningPlaceholderClause($this->table) . $this->clause;
-            $result = $db->exec_SELECTquery(
-                'uid, mm.uid_foreign AS parent_category, title',
-                $this->table
-                . ' INNER JOIN tx_commerce_categories_parent_category_mm AS mm
-                    ON ' . $this->table . '.uid = mm.uid_local',
-                $where,
-                '',
-                $this->table . '.' . $this->orderByFields
-            );
+            $queryBuilder = $this->getQueryBuilderForTable($this->table);
+
+            /** @var BackendWorkspaceRestriction $workspaceRestriction */
+            $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
+            /** @var DeletedRestriction $deleteRestriction */
+            $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+            $queryBuilder->getRestrictions()
+                ->removeAll()
+                ->add($deleteRestriction)
+                ->add($workspaceRestriction);
+
+            $result = $queryBuilder
+                ->select('t.uid, t.title, mm.uid_foreign AS parent_category')
+                ->from($this->table)
+                ->innerJoin('t', 'tx_commerce_categories_parent_category_mm', 'mm', 't.uid = mm.uid_local')
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        $this->parentField,
+                        $queryBuilder->createNamedParameter($parentId, \PDO::PARAM_STR)
+                    )
+                )
+                ->orderBy('t.' . $this->orderByFields)
+                ->execute();
 
             return $result;
         }
@@ -246,8 +262,8 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
      * Returns the number of records having the parent id, $uid
      *
      * @param int $uid Id to count subitems for
+     *
      * @return int
-     * @access private
      */
     public function getCount($uid)
     {
@@ -255,17 +271,31 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
             $res = $this->getDataInit($uid);
             return $this->getDataCount($res);
         } else {
-            $db = $this->getDatabaseConnection();
-            $where = 'mm.uid_foreign = ' . $db->fullQuoteStr($uid, $this->table)
-                . CoreBackendUtility::deleteClause($this->table)
-                . CoreBackendUtility::versioningPlaceholderClause($this->table) . $this->clause;
-            return $db->exec_SELECTcountRows(
-                'uid',
-                $this->table
-                . ' INNER JOIN tx_commerce_categories_parent_category_mm AS mm
-                    ON ' . $this->table . '.uid = mm.uid_local',
-                $where
-            );
+            $queryBuilder = $this->getQueryBuilderForTable($this->table);
+
+            /** @var BackendWorkspaceRestriction $workspaceRestriction */
+            $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
+            /** @var DeletedRestriction $deleteRestriction */
+            $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+            $queryBuilder->getRestrictions()
+                ->removeAll()
+                ->add($deleteRestriction)
+                ->add($workspaceRestriction);
+
+            $count = $queryBuilder
+                ->count('t.uid')
+                ->from($this->table)
+                ->innerJoin('t', 'tx_commerce_categories_parent_category_mm', 'mm', 't.uid = mm.uid_local')
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        $this->parentField,
+                        $queryBuilder->createNamedParameter($uid, \PDO::PARAM_STR)
+                    )
+                )
+                ->execute()
+                ->fetchColumn();
+
+            return $count;
         }
     }
 

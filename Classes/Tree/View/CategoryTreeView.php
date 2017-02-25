@@ -12,7 +12,8 @@ namespace CommerceTeam\Commerce\Tree\View;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\Query\Restriction\BackendWorkspaceRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -48,7 +49,10 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
      */
     public $table = 'tx_commerce_categories';
 
-    public $parentField = 'tx_commerce_categories_parent_category_mm.uid_foreign';
+    /**
+     * @var string
+     */
+    public $parentField = 'mm.uid_foreign';
 
     /**
      * @var bool
@@ -148,11 +152,10 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
      *
      * @param int $parentId parent item id
      *
-     * @return mixed Data handle (
+     * @return \Doctrine\DBAL\Driver\Statement|int Data handle (
      *  Tables: An sql-resource,
      *  arrays: A parentId integer. -1 is returned if there were NO subLevel.
      * )
-     * @access private
      */
     public function getDataInit($parentId)
     {
@@ -164,83 +167,31 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
             }
             return $parentId;
         } else {
-            $db = $this->getDatabaseConnection();
-            $where = $this->parentField . '=' . $db->fullQuoteStr($parentId, $this->table)
-                . BackendUtility::deleteClause($this->table)
-                . BackendUtility::versioningPlaceholderClause($this->table) . $this->clause;
-            return $db->exec_SELECTquery(
-                $this->table . '.' . implode(', ' . $this->table . '.', $this->fieldArray),
-                $this->table
-                . ' INNER JOIN tx_commerce_categories_parent_category_mm ON ' . $this->table . '.uid = 
-                    tx_commerce_categories_parent_category_mm.uid_local',
-                $where,
-                '',
-                $this->orderByFields
-            );
-        }
-    }
+            $queryBuilder = $this->getQueryBuilderForTable($this->table);
 
-    /**
-     * Getting the tree data: Counting elements in resource
-     *
-     * @param mixed $res Data handle
-     * @return int number of items
-     * @access private
-     * @see getDataInit()
-     */
-    public function getDataCount(&$res)
-    {
-        if ($res instanceof \mysqli_result) {
-            return $res->num_rows;
-        } else {
-            return parent::getDataCount($res);
-        }
-    }
+            /** @var BackendWorkspaceRestriction $workspaceRestriction */
+            $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
+            /** @var DeletedRestriction $deleteRestriction */
+            $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+            $queryBuilder->getRestrictions()
+                ->removeAll()
+                ->add($deleteRestriction)
+                ->add($workspaceRestriction);
 
-    /**
-     * Getting the tree data: next entry
-     *
-     * @param mixed $res Data handle
-     *
-     * @return array item data array OR FALSE if end of elements.
-     * @access private
-     * @see getDataInit()
-     */
-    public function getDataNext(&$res)
-    {
-        if (is_array($this->data)) {
-            if ($res < 0) {
-                $row = false;
-            } else {
-                list(, $row) = each($this->dataLookup[$res][$this->subLevelID]);
-            }
-            return $row;
-        } else {
-            if ($res instanceof \mysqli_result) {
-                while ($row = $this->getDatabaseConnection()->sql_fetch_assoc($res)) {
-                    BackendUtility::workspaceOL($this->table, $row, $this->BE_USER->workspace, true);
-                    if (is_array($row)) {
-                        break;
-                    }
-                }
-            } else {
-                $row = parent::getDataNext($res);
-            }
-            return $row;
-        }
-    }
+            $result = $queryBuilder
+                ->select($this->table . '.' . implode(', ' . $this->table . '.', $this->fieldArray))
+                ->from($this->table)
+                ->innerJoin('t', 'tx_commerce_categories_parent_category_mm', 'mm', 't.uid = mm.uid_local')
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        $this->parentField,
+                        $queryBuilder->createNamedParameter($parentId, \PDO::PARAM_STR)
+                    )
+                )
+                ->orderBy('t.' . $this->orderByFields)
+                ->execute();
 
-    /**
-     * Getting the tree data: frees data handle
-     *
-     * @param mixed $res Data handle
-     * @return void
-     * @access private
-     */
-    public function getDataFree(&$res)
-    {
-        if (!is_array($this->data)) {
-            $this->getDatabaseConnection()->sql_free_result($res);
+            return $result;
         }
     }
 
@@ -248,8 +199,8 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
      * Returns the number of records having the parent id, $uid
      *
      * @param int $uid Id to count subitems for
+     *
      * @return int
-     * @access private
      */
     public function getCount($uid)
     {
@@ -257,25 +208,45 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
             $res = $this->getDataInit($uid);
             return $this->getDataCount($res);
         } else {
-            $db = $this->getDatabaseConnection();
-            $where = $this->parentField . '=' . $db->fullQuoteStr($uid, $this->table)
-                . BackendUtility::deleteClause($this->table)
-                . BackendUtility::versioningPlaceholderClause($this->table) . $this->clause;
-            return $db->exec_SELECTcountRows(
-                'uid',
-                $this->table
-                . ' INNER JOIN tx_commerce_categories_parent_category_mm ON ' . $this->table . '.uid = 
-                    tx_commerce_categories_parent_category_mm.uid_local',
-                $where
-            );
+            $queryBuilder = $this->getQueryBuilderForTable($this->table);
+
+            /** @var BackendWorkspaceRestriction $workspaceRestriction */
+            $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
+            /** @var DeletedRestriction $deleteRestriction */
+            $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+            $queryBuilder->getRestrictions()
+                ->removeAll()
+                ->add($deleteRestriction)
+                ->add($workspaceRestriction);
+
+            $count = $queryBuilder
+                ->count('t.uid')
+                ->from($this->table)
+                ->innerJoin('t', 'tx_commerce_categories_parent_category_mm', 'mm', 't.uid = mm.uid_local')
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        $this->parentField,
+                        $queryBuilder->createNamedParameter($uid, \PDO::PARAM_STR)
+                    )
+                )
+                ->execute()
+                ->fetchColumn();
+
+            return $count;
         }
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @param $table
+     *
+     * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
      */
-    protected function getDatabaseConnection()
+    protected function getQueryBuilderForTable($table): \TYPO3\CMS\Core\Database\Query\QueryBuilder
     {
-        return $GLOBALS['TYPO3_DB'];
+        /** @var \TYPO3\CMS\Core\Database\Query\QueryBuilder $queryBuilder */
+        $queryBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Database\ConnectionPool::class
+        )->getQueryBuilderForTable($table);
+        return $queryBuilder;
     }
 }
