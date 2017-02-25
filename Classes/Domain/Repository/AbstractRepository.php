@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionContainerInterface;
 use TYPO3\CMS\Core\SingletonInterface;
 
 /**
@@ -377,11 +378,13 @@ abstract class AbstractRepository implements SingletonInterface
         $queryBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
             \TYPO3\CMS\Core\Database\ConnectionPool::class
         )->getQueryBuilderForTable($table);
-        /** @var \TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionContainerInterface $restrictionContainer */
-        $restrictionContainer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            \TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer::class
-        );
-        $queryBuilder->setRestrictions($restrictionContainer);
+        if (TYPO3_MODE == 'FE') {
+            /** @var QueryRestrictionContainerInterface $restrictionContainer */
+            $restrictionContainer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                \TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer::class
+            );
+            $queryBuilder->setRestrictions($restrictionContainer);
+        }
         return $queryBuilder;
     }
 

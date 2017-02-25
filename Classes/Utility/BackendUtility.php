@@ -421,7 +421,7 @@ class BackendUtility
      *
      * @return int value of the last part from the key
      */
-    public function getUidFromKey($key, array &$keyData)
+    public static function getUidFromKey($key, array &$keyData)
     {
         if (strpos($key, '_') === false) {
             $uid = $key;

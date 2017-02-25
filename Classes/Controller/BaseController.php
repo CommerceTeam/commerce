@@ -2281,7 +2281,9 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     protected function getTimeTracker()
     {
-        return $GLOBALS['TT'];
+        /** @var \TYPO3\CMS\Core\TimeTracker\TimeTracker $timeTracker */
+        $timeTracker = GeneralUtility::makeInstance(\TYPO3\CMS\Core\TimeTracker\TimeTracker::class);
+        return $timeTracker;
     }
 
     /**
