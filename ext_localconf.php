@@ -195,9 +195,6 @@ call_user_func(function ($packageKey) {
         \CommerceTeam\Commerce\Hooks\Pi4Hook::class;
     $typo3ConfVars['EXTCONF']['commerce/Controller/AddressesController']['saveAddress']['commerce'] =
         \CommerceTeam\Commerce\Hooks\Pi4Hook::class;
-    // Add hook to create or update address data to sr_feuser_register create and edit feuser process
-    $typo3ConfVars['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess']['commerce'] =
-        \CommerceTeam\Commerce\Hooks\SrfeuserregisterPi1Hook::class;
 
 
     // register for RteHtmlParser::TS_links_rte and ContentObjectRenderer::resolveMixedLinkParameter
