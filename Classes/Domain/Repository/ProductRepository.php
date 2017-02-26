@@ -115,7 +115,7 @@ class ProductRepository extends AbstractRepository
      *
      * @param int $uid Product uid
      * @param array|int $correlationtypes Correlation types
-     * @todo get in sync with articleRepository::getAttributes
+     *
      * @return array of Article UID
      */
     public function getAttributes($uid, $correlationtypes)
@@ -127,17 +127,30 @@ class ProductRepository extends AbstractRepository
                 $correlationtypes = [$correlationtypes];
             }
 
+            $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+            $result = $queryBuilder
+                ->select('at.*')
+                ->from($this->databaseTable, 'p')
+                ->innerJoin('p', $this->databaseAttributeRelationTable, 'mm', 'p.uid = mm.uid_local')
+                ->innerJoin('mm', 'tx_commerce_attributes', 'at', 'mm.uid_foreign = at.uid')
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'p.uid',
+                        $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->in(
+                        'mm.uid_correlationtype',
+                        $correlationtypes
+                    )
+                )
+                ->groupBy('at.uid')
+                ->orderBy('mm.sorting')
+                ->execute();
+
             $attributeUids = [];
-            $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                'DISTINCT(uid_foreign) AS uid, ' . $this->databaseAttributeRelationTable . '.sorting',
-                $this->databaseAttributeRelationTable,
-                'uid_local = ' . $uid . ' AND uid_correlationtype IN (' . implode(',', $correlationtypes) . ')',
-                '',
-                $this->databaseAttributeRelationTable . '.sorting'
-            );
-            if (!empty($rows)) {
-                foreach ($rows as $data) {
-                    $attributeUids[] = (int) $data['uid'];
+            if ($result->rowCount()) {
+                while ($row = $result->fetch()) {
+                    $attributeUids[] = (int) $row['uid'];
                 }
                 $return = $attributeUids;
             }

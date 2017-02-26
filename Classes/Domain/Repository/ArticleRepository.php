@@ -193,19 +193,23 @@ class ArticleRepository extends AbstractRepository
      */
     public function getAttributes($uid)
     {
-        $attributes = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'tx_commerce_attributes.*',
-            $this->databaseTable
-            . ' INNER JOIN ' . $this->databaseAttributeRelationTable . ' ON ' . $this->databaseTable . '.uid = '
-            . $this->databaseAttributeRelationTable . '.uid_local'
-            . ' INNER JOIN tx_commerce_attributes ON ' . $this->databaseAttributeRelationTable
-            . '.uid_foreign = tx_commerce_attributes.uid',
-            $this->databaseTable . '.uid = ' . (int) $uid,
-            '',
-            $this->databaseAttributeRelationTable . '.sorting'
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('at.*')
+            ->from($this->databaseTable, 'ar')
+            ->innerJoin('ar', $this->databaseAttributeRelationTable, 'mm', 'ar.uid = mm.uid_local')
+            ->innerJoin('mm', 'tx_commerce_attributes', 'at', 'mm.uid_foreign = at.uid')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'ar.uid',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy('mm.sorting')
+            ->execute()
+            ->fetchAll();
 
-        return $attributes;
+        return is_array($result) ? $result : [];
     }
 
     /**

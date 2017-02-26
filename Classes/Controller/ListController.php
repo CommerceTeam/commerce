@@ -704,7 +704,7 @@ class ListController extends BaseController
      * Renders different view, based on viewKind and number of articles.
      *
      * @param string $viewKind Kind of view for choosing the right template
-     * @param array $conf TSconfig for handling the articles
+     * @param mixed $_ TSconfig for handling the articles
      * @param Product $product The parent product
      * @param array $templateMarkers Current template marker array
      * @param string $template Template text
@@ -712,7 +712,7 @@ class ListController extends BaseController
      */
     public function makeArticleView(
         $viewKind,
-        array $conf,
+        $_,
         Product $product,
         $templateMarkers = [],
         $template = ''
