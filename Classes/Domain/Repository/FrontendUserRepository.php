@@ -95,4 +95,19 @@ class FrontendUserRepository extends AbstractRepository
             ->execute()
             ->fetchColumn();
     }
+
+    /**
+     * @return int
+     */
+    public function findHighestTimestamp()
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        return (int) $queryBuilder
+            ->addSelectLiteral(
+                $queryBuilder->expr()->max('tstamp')
+            )
+            ->from($this->databaseTable)
+            ->execute()
+            ->fetchColumn();
+    }
 }

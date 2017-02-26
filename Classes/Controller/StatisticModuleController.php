@@ -150,9 +150,6 @@ abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseS
             $this->content .= $this->getSubModuleContent();
             $this->getButtons();
             $this->generateMenu();
-        } else {
-            // If no access or if ID == zero
-            $this->content .= $this->doc->header($language->getLL('statistic'));
         }
 
         $docHeaderButtons = $this->getButtons();

@@ -81,6 +81,26 @@ class OrderArticleRepository extends AbstractRepository
     }
 
     /**
+     * @param int $timestamp
+     *
+     * @return \Doctrine\DBAL\Driver\Statement
+     */
+    public function findDistinctCreationDatesSince($timestamp)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        return $queryBuilder
+            ->selectLiteral('DISTINCT crdate')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->gt(
+                    'tstamp',
+                    $queryBuilder->createNamedParameter($timestamp, \PDO::PARAM_INT)
+                )
+            )
+            ->execute();
+    }
+
+    /**
      * @return int
      */
     public function findHighestCreationDate()

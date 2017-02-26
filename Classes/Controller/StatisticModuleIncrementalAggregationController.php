@@ -12,6 +12,11 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository;
+use CommerceTeam\Commerce\Domain\Repository\NewClientsRepository;
+use CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\SalesFiguresRepository;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class StatisticModuleIncrementalAggregationController extends StatisticModuleController
@@ -21,21 +26,20 @@ class StatisticModuleIncrementalAggregationController extends StatisticModuleCon
      */
     public function getSubModuleContent()
     {
-        $database = $this->getDatabaseConnection();
-
         $result = '';
-        if (GeneralUtility::_POST('incrementalaggregation')) {
-            $lastAggregationRow = $database->exec_SELECTgetSingleRow('MAX(tstamp)', 'tx_commerce_salesfigures', '1');
-            $lastAggregationTimeValue = 0;
-            if ($lastAggregationRow && $lastAggregationRow[0] != null) {
-                $lastAggregationTimeValue = $lastAggregationRow[0];
-            }
+        if (GeneralUtility::_GP('incrementalaggregation')) {
+            /** @var OrderArticleRepository $orderArticleRepository */
+            $orderArticleRepository = $this->getObjectManager()->get(OrderArticleRepository::class);
+            /** @var SalesFiguresRepository $salesFiguresRepository */
+            $salesFiguresRepository = $this->getObjectManager()->get(SalesFiguresRepository::class);
+            /** @var NewClientsRepository $newClientsRepository */
+            $newClientsRepository = $this->getObjectManager()->get(NewClientsRepository::class);
+            /** @var FrontendUserRepository $frontendUserRepository */
+            $frontendUserRepository = $this->getObjectManager()->get(FrontendUserRepository::class);
 
-            $endrow = $database->exec_SELECTgetSingleRow('MAX(crdate)', 'tx_commerce_order_articles', '1');
-            $endtime2 = 0;
-            if ($endrow && $endrow[0] != null) {
-                $endtime2 = $endrow[0];
-            }
+            $lastAggregationTimeValue = $salesFiguresRepository->findHighestTimestamp();
+            $endtime2 = $orderArticleRepository->findHighestCreationDate();
+
             $starttime = $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
 
             if ($starttime <= $this->statistics->firstSecondOfDay($endtime2) and $endtime2 != null) {
@@ -49,14 +53,12 @@ class StatisticModuleIncrementalAggregationController extends StatisticModuleCon
                 $result .= 'No new Orders<br />';
             }
 
-            $changeWhere = 'tstamp > ' . (
-                $lastAggregationTimeValue -
-                ($this->statistics->getDaysBack() * 24 * 60 * 60)
+            $changeResult = $orderArticleRepository->findDistinctCreationDatesSince(
+                $lastAggregationTimeValue - ($this->statistics->getDaysBack() * 24 * 60 * 60)
             );
-            $changeres = $database->exec_SELECTquery('DISTINCT crdate', 'tx_commerce_order_articles', $changeWhere);
             $changeDaysArray = [];
             $changes = 0;
-            while ($changeres && ($changerow = $database->sql_fetch_assoc($changeres))) {
+            while ($changerow = $changeResult->fetch()) {
                 $starttime = $this->statistics->firstSecondOfDay($changerow['crdate']);
                 $endtime = $this->statistics->lastSecondOfDay($changerow['crdate']);
 
@@ -73,15 +75,8 @@ class StatisticModuleIncrementalAggregationController extends StatisticModuleCon
 
             $result .= $changes . ' Days changed<br />';
 
-            $lastAggregationRow = $database->exec_SELECTgetSingleRow('MAX(tstamp)', 'tx_commerce_newclients', '1');
-            if ($lastAggregationRow && $lastAggregationRow[0] != null) {
-                $lastAggregationTimeValue = $lastAggregationRow[0];
-            }
-
-            $endrow = $database->exec_SELECTgetSingleRow('MAX(crdate)', 'fe_users', '1');
-            if ($endrow && $endrow[0] != null) {
-                $endtime2 = $endrow[0];
-            }
+            $lastAggregationTimeValue = $newClientsRepository->findHighestTimestamp();
+            $endtime2 = $frontendUserRepository->findHighestTimestamp();
             if ($lastAggregationTimeValue <= $endtime2 && $endtime2 != null && $lastAggregationTimeValue != null) {
                 $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
@@ -101,11 +96,20 @@ class StatisticModuleIncrementalAggregationController extends StatisticModuleCon
         } else {
             $language = $this->getLanguageService();
 
+            $onClickAction = 'onClick="window.location.href=\'' . BackendUtility::getModuleUrl(
+                $this->moduleName,
+                [
+                    'id' => $this->id,
+                    'SET' => [
+                        'function' => self::class
+                    ],
+                    'incrementalaggregation' => $language->getLL('incremental_aggregation'),
+                ]
+            ) . '\'"';
+
             $result = $language->getLL('may_take_long_periode') . '<br /><br />';
-            $result .= sprintf(
-                '<input type="submit" name="incrementalaggregation" value="%s" />',
-                $language->getLL('incremental_aggregation')
-            );
+            $result .= '<input type="submit" name="fullaggregation" value="' .
+                $language->getLL('incremental_aggregation') .  '" ' . $onClickAction . ' />';
         }
 
         return $result;
