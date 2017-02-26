@@ -305,4 +305,17 @@ abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseS
      * @return mixed
      */
     abstract protected function getSubModuleContent();
+
+
+    /**
+     * @return \TYPO3\CMS\Extbase\Object\ObjectManager
+     */
+    protected function getObjectManager(): \TYPO3\CMS\Extbase\Object\ObjectManager
+    {
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Extbase\Object\ObjectManager::class
+        );
+        return $objectManager;
+    }
 }

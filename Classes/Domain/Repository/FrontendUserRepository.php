@@ -59,4 +59,40 @@ class FrontendUserRepository extends AbstractRepository
         $row = is_array($row) ? $row : [];
         return $row;
     }
+
+    /**
+     * @return int
+     */
+    public function findHighestCreationDate()
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        return (int) $queryBuilder
+            ->addSelectLiteral(
+                $queryBuilder->expr()->max('crdate')
+            )
+            ->from($this->databaseTable)
+            ->execute()
+            ->fetchColumn();
+    }
+
+    /**
+     * @return int
+     */
+    public function findLowestCreationDate()
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        return (int) $queryBuilder
+            ->addSelectLiteral(
+                $queryBuilder->expr()->min('crdate')
+            )
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->gt(
+                    'crdate',
+                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchColumn();
+    }
 }

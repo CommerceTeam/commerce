@@ -12,6 +12,11 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository;
+use CommerceTeam\Commerce\Domain\Repository\NewClientsRepository;
+use CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\SalesFiguresRepository;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class StatisticModuleCompleteAggregationController extends StatisticModuleController
@@ -21,42 +26,33 @@ class StatisticModuleCompleteAggregationController extends StatisticModuleContro
      */
     public function getSubModuleContent()
     {
-        $database = $this->getDatabaseConnection();
+        /** @var OrderArticleRepository $orderArticleRepository */
+        $orderArticleRepository = $this->getObjectManager()->get(OrderArticleRepository::class);
+        /** @var FrontendUserRepository $frontendUserRepository */
+        $frontendUserRepository = $this->getObjectManager()->get(FrontendUserRepository::class);
 
         $result = '';
-        if (GeneralUtility::_POST('fullaggregation')) {
-            $endrow = $database->exec_SELECTgetSingleRow('MAX(crdate)', 'tx_commerce_order_articles', '1');
-            $endtime2 = 0;
-            if ($endrow && $endrow[0] != null) {
-                $endtime2 = $endrow[0];
-            }
-
+        if (GeneralUtility::_GP('fullaggregation')) {
+            $endtime2 = $orderArticleRepository->findHighestCreationDate();
             $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
-            $startrow = $database->exec_SELECTgetSingleRow(
-                'MIN(crdate)',
-                'tx_commerce_order_articles',
-                'crdate > 0 AND deleted = 0'
-            );
-            if ($startrow && $startrow[0] != null) {
-                $starttime = $startrow[0];
-                $database->sql_query('TRUNCATE tx_commerce_salesfigures');
+            $starttime = $orderArticleRepository->findLowestCreationDate();
+            if ($starttime > 0) {
+                /** @var SalesFiguresRepository $salesFiguresRepository */
+                $salesFiguresRepository = $this->getObjectManager()->get(SalesFiguresRepository::class);
+                $salesFiguresRepository->truncate();
                 $result .= $this->statistics->doSalesAggregation($starttime, $endtime);
             } else {
                 $result .= 'no sales data available';
             }
 
-            $endrow = $database->exec_SELECTgetSingleRow('MAX(crdate)', 'fe_users', '1');
-            if ($endrow && $endrow[0] != null) {
-                $endtime2 = $endrow[0];
-            }
-
+            $endtime2 = $frontendUserRepository->findHighestCreationDate();
             $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
-            $startrow = $database->exec_SELECTgetSingleRow('MIN(crdate)', 'fe_users', 'crdate > 0 AND deleted = 0');
-            if ($startrow && $startrow[0] != null) {
-                $starttime = $startrow[0];
-                $database->sql_query('TRUNCATE tx_commerce_newclients');
+            $starttime = $frontendUserRepository->findLowestCreationDate();
+            if ($starttime > 0) {
+                $newClientsRepository = $this->getObjectManager()->get(NewClientsRepository::class);
+                $newClientsRepository->truncate();
                 $result = $this->statistics->doClientAggregation($starttime, $endtime);
             } else {
                 $result .= '<br />no client data available';
@@ -64,11 +60,20 @@ class StatisticModuleCompleteAggregationController extends StatisticModuleContro
         } else {
             $language = $this->getLanguageService();
 
+            $onClickAction = 'onClick="window.location.href=\'' . BackendUtility::getModuleUrl(
+                $this->moduleName,
+                [
+                    'id' => $this->id,
+                    'SET' => [
+                        'function' => self::class
+                    ],
+                    'fullaggregation' => $language->getLL('complete_aggregation'),
+                ]
+            ) . '\'"';
+
             $result = $language->getLL('may_take_long_periode') . '<br /><br />';
-            $result .= sprintf(
-                '<input type="submit" name="fullaggregation" value="%s" />',
-                $language->getLL('complete_aggregation')
-            );
+            $result .= '<input type="submit" name="fullaggregation" value="' .
+                $language->getLL('complete_aggregation') .  '" ' . $onClickAction . ' />';
         }
 
         return $result;
