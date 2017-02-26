@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\ManufacturerRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -57,14 +58,17 @@ class SystemdataModuleManufacturerController extends SystemdataModuleController
         }
         $headerRow .= '</td><td class="col-control"></td></tr>';
 
-        $result = $this->fetchManufacturer();
+        /** @var ManufacturerRepository $manufacturerRepository */
+        $manufacturerRepository = $this->getObjectManager()->get(ManufacturerRepository::class);
+        $result = $manufacturerRepository->findByPid($this->id);
         $manufacturerRows = $this->renderRows($result, $fields);
 
         $tableHeader = '<a>' . $this->getLanguageService()->sL(
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:' . $this->table
-        )
-            . ' (<span class="t3js-table-total-items">'
-            . $this->getDatabaseConnection()->sql_num_rows($result) . '</span>)</a>';
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_manufacturer'
+        ) .
+            ' (<span class="t3js-table-total-items">' .
+            $result->rowCount() .
+            '</span>)</a>';
 
         if (!$manufacturerRows) {
             $out .= '<span class="label label-info">'
@@ -96,34 +100,18 @@ class SystemdataModuleManufacturerController extends SystemdataModuleController
     }
 
     /**
-     * Fetch manufacturer
-     *
-     * @return \mysqli_result
-     */
-    protected function fetchManufacturer()
-    {
-        return $this->getDatabaseConnection()->exec_SELECTquery(
-            '*',
-            $this->table,
-            'pid = ' . (int) $this->id . ' AND deleted = 0',
-            '',
-            'title'
-        );
-    }
-
-    /**
      * Render manufacturer row.
      *
-     * @param \mysqli_result $result Result
+     * @param \Doctrine\DBAL\Driver\Statement $result Result
      * @param array $fields Fields
      *
      * @return string
      */
-    protected function renderRows(\mysqli_result $result, array $fields)
+    protected function renderRows(\Doctrine\DBAL\Driver\Statement $result, array $fields)
     {
         $output = '';
 
-        while (($row = $this->getDatabaseConnection()->sql_fetch_assoc($result))) {
+        while ($row = $result->fetch()) {
             // edit action
             $params = '&edit[' . $this->table . '][' . $row['uid'] . ']=edit';
             $onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, '', -1)) . '"';
@@ -166,7 +154,7 @@ class SystemdataModuleManufacturerController extends SystemdataModuleController
                 ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.translationsOfRecord')
             );
             $titleOrig = BackendUtility::getRecordTitle($this->table, $row, false, true);
-            $title = GeneralUtility::slashJS(GeneralUtility::fixed_lgd_cs($titleOrig, $this->fixedL), true);
+            $title = str_replace('\\', '\\\\', GeneralUtility::fixed_lgd_cs($titleOrig, $this->fixedL));
             $warningText = $this->getLanguageService()->getLL($actionName . 'Warning') . ' "' . $title . '" ' .
                 '[' . $this->table . ':' . $row['uid'] . ']' . $refCountMsg;
 

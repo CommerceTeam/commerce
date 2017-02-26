@@ -357,6 +357,18 @@ abstract class AbstractRepository implements SingletonInterface
 
 
     /**
+     * @return \TYPO3\CMS\Extbase\Object\ObjectManager
+     */
+    protected function getObjectManager(): \TYPO3\CMS\Extbase\Object\ObjectManager
+    {
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Extbase\Object\ObjectManager::class
+        );
+        return $objectManager;
+    }
+
+    /**
      * Get database connection.
      *
      * @return \TYPO3\CMS\Core\Database\DatabaseConnection
@@ -375,12 +387,12 @@ abstract class AbstractRepository implements SingletonInterface
     protected function getQueryBuilderForTable($table): \TYPO3\CMS\Core\Database\Query\QueryBuilder
     {
         /** @var \TYPO3\CMS\Core\Database\Query\QueryBuilder $queryBuilder */
-        $queryBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        $queryBuilder = $this->getObjectManager()->get(
             \TYPO3\CMS\Core\Database\ConnectionPool::class
         )->getQueryBuilderForTable($table);
         if (TYPO3_MODE == 'FE') {
             /** @var QueryRestrictionContainerInterface $restrictionContainer */
-            $restrictionContainer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            $restrictionContainer = $this->getObjectManager()->get(
                 \TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer::class
             );
             $queryBuilder->setRestrictions($restrictionContainer);
