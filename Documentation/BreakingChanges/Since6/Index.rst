@@ -23,13 +23,19 @@ BaseController::renderValue.NUMBERFORMAT this type of formating is possible via 
 BaseController::makeArticleView added method_exists before calling it as this method is only used in ListController
 BaseController::renderSingleView becauset it is only implemented and called in ListController
 
-Removed properties
-------------------
+Removed parameter
+-----------------
 
 FolderRepository::initFolders $parentTitle
 FolderRepository::initFolders $executeUpdateUtility
 AddressObserver::update $_ removed the unused parameter. Only the uid will be accepted.
 FeuserObserver::update $_ removed the unused parameter. Only the uid will be accepted.
+
+
+Remove Properties
+-----------------
+
+ListController::product_array unused property. Replace with ListController::product->returnAssocArray()
 
 
 Changed methods

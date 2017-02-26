@@ -519,7 +519,6 @@ class ListController extends BaseController
                 $this->product_attributes = $this->product->getAttributes([ATTRIB_PRODUCT]);
                 $this->can_attributes = $this->product->getAttributes([ATTRIB_CAN]);
                 $this->shall_attributes = $this->product->getAttributes([ATTRIB_SHAL]);
-                $this->product_array = $this->product->returnAssocArray();
 
                 // Check if the product was inserted as plugin on a page,
                 // or if it was rendered as a leaf from the category view
