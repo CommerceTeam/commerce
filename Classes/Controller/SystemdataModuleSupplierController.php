@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\SupplierRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -61,14 +62,17 @@ class SystemdataModuleSupplierController extends SystemdataModuleController
             <td class="col-control"></td>
         </tr>';
 
-        $result = $this->fetchSupplier();
+        /** @var SupplierRepository $supplierRepository */
+        $supplierRepository = $this->getObjectManager()->get(SupplierRepository::class);
+        $result = $supplierRepository->findByPid($this->id);
         $supplierRows = $this->renderRows($result, $fields);
 
         $tableHeader = '<a>' . $this->getLanguageService()->sL(
             'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:' . $this->table
-        )
-            . ' (<span class="t3js-table-total-items">'
-            . $this->getDatabaseConnection()->sql_num_rows($result) . '</span>)</a>';
+        ) .
+            ' (<span class="t3js-table-total-items">' .
+            $result->rowCount() .
+            '</span>)</a>';
 
         if (!$supplierRows) {
             $out .= '<span class="label label-info">'
@@ -100,34 +104,18 @@ class SystemdataModuleSupplierController extends SystemdataModuleController
     }
 
     /**
-     * Fetch supplier
-     *
-     * @return \mysqli_result
-     */
-    protected function fetchSupplier()
-    {
-        return $this->getDatabaseConnection()->exec_SELECTquery(
-            '*',
-            $this->table,
-            'pid = ' . (int) $this->id . ' AND deleted = 0',
-            '',
-            'title'
-        );
-    }
-
-    /**
      * Render manufacturer row.
      *
-     * @param \mysqli_result $result Result
+     * @param \Doctrine\DBAL\Driver\Statement $result Result
      * @param array $fields Fields
      *
      * @return string
      */
-    protected function renderRows(\mysqli_result $result, array $fields)
+    protected function renderRows(\Doctrine\DBAL\Driver\Statement $result, array $fields)
     {
         $output = '';
 
-        while (($row = $this->getDatabaseConnection()->sql_fetch_assoc($result))) {
+        while ($row = $result->fetch()) {
             // edit action
             $params = '&edit[' . $this->table . '][' . $row['uid'] . ']=edit';
             $onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, '', -1)) . '"';
@@ -169,7 +157,7 @@ class SystemdataModuleSupplierController extends SystemdataModuleController
                 ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.translationsOfRecord')
             );
             $titleOrig = BackendUtility::getRecordTitle($this->table, $row, false, true);
-            $title = GeneralUtility::slashJS(GeneralUtility::fixed_lgd_cs($titleOrig, $this->fixedL), true);
+            $title = str_replace('\\', '\\\\', GeneralUtility::fixed_lgd_cs($titleOrig, $this->fixedL));
             $warningText = $this->getLanguageService()->getLL($actionName . 'Warning') . ' "' . $title . '" ' .
                 '[' . $this->table . ':' . $row['uid'] . ']' . $refCountMsg;
 

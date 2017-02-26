@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\SysRefindexRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
@@ -200,8 +201,7 @@ abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\Base
                 . ')) {
                         window.location.href = ' .
                 GeneralUtility::quoteJSvalue(BackendUtility::getModuleUrl('tce_db') . '&cmd[')
-                . ' + table + "][ " + id + "][delete]=1&redirect=" + escape(url) + "&vC='
-                . $this->getBackendUser()->veriCode() . '&prErr=1&uPT=1";
+                . ' + table + "][ " + id + "][delete]=1&redirect=" + escape(url) + "&prErr=1&uPT=1";
                     }
                     return false;
                 }
@@ -339,14 +339,9 @@ abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\Base
     protected function getReferenceCount($tableName, $uid)
     {
         if (!isset($this->referenceCount[$tableName][$uid])) {
-            $numberOfReferences = $this->getDatabaseConnection()->exec_SELECTcountRows(
-                '*',
-                'sys_refindex',
-                'ref_table = ' . $this->getDatabaseConnection()->fullQuoteStr($tableName, 'sys_refindex')
-                . ' AND ref_uid = ' . (int) $uid . ' AND deleted = 0'
-            );
-
-            $this->referenceCount[$tableName][$uid] = $numberOfReferences;
+            /** @var SysRefindexRepository $sysRefindexRepository */
+            $sysRefindexRepository = $this->getObjectManager()->get(SysRefindexRepository::class);
+            $this->referenceCount[$tableName][$uid] = $sysRefindexRepository->countByTablenameUid($tableName, $uid);
         }
 
         return $this->referenceCount[$tableName][$uid];
