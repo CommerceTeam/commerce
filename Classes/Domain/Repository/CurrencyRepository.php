@@ -33,13 +33,28 @@ class CurrencyRepository extends AbstractRepository
      */
     public function findByIso3($iso3)
     {
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'cu_symbol_left, cu_symbol_right, cu_sub_symbol_left, cu_sub_symbol_right, cu_decimal_point,
-                cu_thousands_point, cu_decimal_digits, cu_sub_divisor',
-            $this->databaseTable,
-            'cu_iso_3 = ' . $this->getDatabaseConnection()->fullQuoteStr(strtoupper($iso3), $this->databaseTable)
-        );
-        $row = is_array($row) ? $row : [];
-        return $row;
+        $queryBrowser = $this->getQueryBuilderForTable($this->databaseTable);
+        $row = $queryBrowser
+            ->select(
+                'cu_symbol_left',
+                'cu_symbol_right',
+                'cu_sub_symbol_left',
+                'cu_sub_symbol_right',
+                'cu_decimal_point',
+                'cu_thousands_point',
+                'cu_decimal_digits',
+                'cu_sub_divisor'
+            )
+            ->from($this->databaseTable)
+            ->where(
+                $queryBrowser->expr()->eq(
+                    'cu_iso_3',
+                    $queryBrowser->createNamedParameter(strtoupper($iso3), \PDO::PARAM_STR)
+                )
+            )
+            ->execute()
+            ->fetch();
+
+        return is_array($row) ? $row : [];
     }
 }

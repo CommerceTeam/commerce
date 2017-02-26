@@ -12,8 +12,10 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
+use CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository;
 use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 class SystemdataModuleAttributeController extends SystemdataModuleController
@@ -42,21 +44,24 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
             <td><strong>' . $this->getLanguageService()->getLL('title_values') . '</strong></td>
         </tr>';
 
-        $result = $this->fetchAttributes();
-        $attributeRows = $this->renderAttributeRows($result);
+        /** @var AttributeRepository $attributeRepository */
+        $attributeRepository = $this->getObjectManager()->get(AttributeRepository::class);
+        $result = $attributeRepository->findByPid($this->id);
+        $attributeRows = $this->renderRows($result);
 
         $tableHeader = '<a>' . $this->getLanguageService()->sL(
             'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:' . $this->table
-        )
-            . ' (<span class="t3js-table-total-items">'
-            . $this->getDatabaseConnection()->sql_num_rows($result) . '</span>)</a>';
+        ) .
+            ' (<span class="t3js-table-total-items">' .
+            $result->rowCount() .
+            '</span>)</a>';
 
         if (!$attributeRows) {
-            $out .= '<span class="label label-info">'
-                . htmlspecialchars($this->getLanguageService()->sL(
+            $out .= '<span class="label label-info">' .
+                htmlspecialchars($this->getLanguageService()->sL(
                     'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf:noAttribute'
-                ))
-                . '</span>';
+                )) .
+                '</span>';
         } else {
             $out .= '
 
@@ -81,68 +86,13 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
     }
 
     /**
-     * Fetch attributes from db.
-     *
-     * @return \mysqli_result
-     */
-    protected function fetchAttributes()
-    {
-        return $this->getDatabaseConnection()->exec_SELECTquery(
-            '*',
-            'tx_commerce_attributes',
-            'pid = ' . (int) $this->id .
-            ' AND hidden = 0 AND deleted = 0 and (sys_language_uid = 0 OR sys_language_uid = -1)',
-            '',
-            'internal_title, title'
-        );
-    }
-
-    /**
-     * Fetch attribute translation.
-     *
-     * @param int $uid Attribute uid
-     *
-     * @return \mysqli_result
-     */
-    protected function fetchAttributeTranslation($uid)
-    {
-        return $this->getDatabaseConnection()->exec_SELECTquery(
-            '*',
-            'tx_commerce_attributes',
-            'pid = ' . (int) $this->id .
-            ' AND hidden = 0 AND deleted = 0 AND sys_language_uid != 0 and l18n_parent =' . (int) $uid,
-            '',
-            'sys_language_uid'
-        );
-    }
-
-    /**
-     * Fetch the relation count.
-     *
-     * @param string $table Table
-     * @param int $uidForeign Foreign uid
-     *
-     * @return int
-     */
-    protected function fetchRelationCount($table, $uidForeign)
-    {
-        $count = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            '*',
-            $table,
-            'uid_foreign = ' . (int) $uidForeign
-        );
-
-        return $count;
-    }
-
-    /**
      * Render attribute rows.
      *
-     * @param \mysqli_result $result Result
+     * @param \Doctrine\DBAL\Driver\Statement $result Result
      *
      * @return string
      */
-    protected function renderAttributeRows(\mysqli_result $result)
+    protected function renderRows(\Doctrine\DBAL\Driver\Statement $result)
     {
         /**
          * Record list.
@@ -152,9 +102,14 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
         $recordList = GeneralUtility::makeInstance(\TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList::class);
         $recordList->initializeLanguages();
 
+        /** @var AttributeRepository $attributeRepository */
+        $attributeRepository = $this->getObjectManager()->get(AttributeRepository::class);
+        /** @var AttributeValueRepository $attributeValueRepository */
+        $attributeValueRepository = $this->getObjectManager()->get(AttributeValueRepository::class);
+
         $output = '';
 
-        while (($attribute = $this->getDatabaseConnection()->sql_fetch_assoc($result))) {
+        while ($attribute = $result->fetch()) {
             // Edit link
             $params = '&edit[' . $this->table . '][' . $attribute['uid'] . ']=edit';
             $onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, '', -1)) . '"';
@@ -177,7 +132,7 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
                 ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.translationsOfRecord')
             );
             $titleOrig = BackendUtility::getRecordTitle($this->table, $attribute, false, true);
-            $title = GeneralUtility::slashJS(GeneralUtility::fixed_lgd_cs($titleOrig, 30), true);
+            $title = str_replace('\\', '\\\\', GeneralUtility::fixed_lgd_cs($titleOrig, 30));
             $warningText = $this->getLanguageService()->getLL($actionName . 'Warning') . ' "' . $title . '" ' .
                 '[' . $this->table . ':' . $attribute['uid'] . ']' . $refCountMsg;
 
@@ -210,15 +165,15 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
                     htmlspecialchars($attribute['title']) . '</strong>';
             }
 
-            $catCount = $this->fetchRelationCount('tx_commerce_categories_attributes_mm', $attribute['uid']);
-            $proCount = $this->fetchRelationCount('tx_commerce_products_attributes_mm', $attribute['uid']);
-            $artCount = $this->fetchRelationCount('tx_commerce_articles_attributes_mm', $attribute['uid']);
+            $catCount = $attributeRepository->countCategoryRelations($attribute['uid']);
+            $proCount = $attributeRepository->countProductRelations($attribute['uid']);
+            $artCount = $attributeRepository->countArticleRelations($attribute['uid']);
 
             // Select language versions
-            $resLocalVersion = $this->fetchAttributeTranslation($attribute['uid']);
-            if ($this->getDatabaseConnection()->sql_num_rows($resLocalVersion)) {
+            $translationResult = $attributeRepository->findTranslationByParentUid($this->id, $attribute['uid']);
+            if ($translationResult->rowCount()) {
                 $fields .= '<table >';
-                while (($localAttributes = $this->getDatabaseConnection()->sql_fetch_assoc($resLocalVersion))) {
+                while ($localAttributes = $translationResult->fetch()) {
                     $fields .= '<tr><td>&nbsp;';
                     $fields .= '</td><td>';
                     if ($localAttributes['internal_title']) {
@@ -241,16 +196,10 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
 
             $valueList = '';
             if ($attribute['has_valuelist'] == 1) {
-                $values = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                    '*',
-                    'tx_commerce_attribute_values',
-                    'attributes_uid = ' . $attribute['uid'] . ' AND hidden = 0 AND deleted = 0',
-                    '',
-                    'sorting'
-                );
-                if (!empty($values)) {
+                $values = $attributeValueRepository->findByAttributeUid($attribute['uid']);
+                if ($values->rowCount()) {
                     $valueList .= '<table border="0">';
-                    foreach ($values as $value) {
+                    while ($value = $values->fetch()) {
                         $valueList .= '<tr><td>' . htmlspecialchars($value['value']) . '</td></tr>';
                     }
                     $valueList .= '</table>';

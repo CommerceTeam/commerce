@@ -43,6 +43,53 @@ class AttributeRepository extends AbstractRepository
     protected $correlationTypeDatabaseTable = 'tx_commerce_attribute_correlationtypes';
 
     /**
+     * @param int $pid
+     *
+     * @return \Doctrine\DBAL\Driver\Statement
+     */
+    public function findByPid($pid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        return $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy('title')
+            ->execute();
+    }
+
+    /**
+     * @param int $pid
+     * @param int $uid
+     *
+     * @return \Doctrine\DBAL\Driver\Statement|int
+     */
+    public function findTranslationByParentUid($pid, $uid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        return $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'l18n_parent',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy('sys_language_uid')
+            ->execute();
+    }
+
+    /**
      * @param int $productUid
      *
      * @return array
@@ -154,5 +201,71 @@ class AttributeRepository extends AbstractRepository
         }
 
         return $childAttributeList;
+    }
+
+    /**
+     * @param int $categoryUid
+     *
+     * @return int
+     */
+    public function countCategoryRelations($categoryUid)
+    {
+        $table = 'tx_commerce_categories_attributes_mm';
+        $queryBuilder = $this->getQueryBuilderForTable($table);
+        return (int) $queryBuilder
+            ->count('*')
+            ->from($table)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_foreign',
+                    $queryBuilder->createNamedParameter($categoryUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchColumn();
+    }
+
+    /**
+     * @param int $productUid
+     *
+     * @return int
+     */
+    public function countProductRelations($productUid)
+    {
+        $table = 'tx_commerce_products_attributes_mm';
+        $queryBuilder = $this->getQueryBuilderForTable($table);
+        return (int) $queryBuilder
+            ->count('*')
+            ->from($table)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_foreign',
+                    $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchColumn();
+    }
+
+    /**
+     * @param int $articleUid
+     *
+     * @return int
+     */
+    public function countArticleRelations($articleUid)
+    {
+        $table = 'tx_commerce_articles_attributes_mm';
+        $queryBuilder = $this->getQueryBuilderForTable($table);
+        return (int) $queryBuilder
+            ->count('*')
+            ->from($table)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_foreign',
+                    $queryBuilder->createNamedParameter($articleUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchColumn();
     }
 }

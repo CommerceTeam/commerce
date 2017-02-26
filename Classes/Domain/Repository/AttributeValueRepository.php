@@ -63,4 +63,25 @@ class AttributeValueRepository extends AbstractRepository
 
         return $values;
     }
+
+    /**
+     * @param int $attributeUid
+     *
+     * @return \Doctrine\DBAL\Driver\Statement|int
+     */
+    public function findByAttributeUid($attributeUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        return $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'attributes_uid',
+                    $queryBuilder->createNamedParameter($attributeUid, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy('sorting')
+            ->execute();
+    }
 }

@@ -68,7 +68,7 @@ class SystemdataModuleSupplierController extends SystemdataModuleController
         $supplierRows = $this->renderRows($result, $fields);
 
         $tableHeader = '<a>' . $this->getLanguageService()->sL(
-            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:' . $this->table
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:tx_commerce_supplier'
         ) .
             ' (<span class="t3js-table-total-items">' .
             $result->rowCount() .
