@@ -13,6 +13,8 @@ namespace CommerceTeam\Commerce\Controller;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use CommerceTeam\Commerce\Domain\Repository\SalesFiguresRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class StatisticModuleShowStatisticsController extends StatisticModuleController
 {
@@ -21,15 +23,11 @@ class StatisticModuleShowStatisticsController extends StatisticModuleController
      */
     public function getSubModuleContent()
     {
+        /** @var SalesFiguresRepository $salesFiguresRepository */
+        $salesFiguresRepository = $this->getObjectManager()->get(SalesFiguresRepository::class);
         $language = $this->getLanguageService();
-        $database = $this->getDatabaseConnection();
-
         $orderPageId = FolderRepository::initFolders('Orders', FolderRepository::initFolders());
 
-        $whereClause = '';
-        if ($this->id != $orderPageId) {
-            $whereClause = 'pid = ' . $this->id;
-        }
         $weekdays = [
             $language->getLL('sunday'),
             $language->getLL('monday'),
@@ -41,19 +39,15 @@ class StatisticModuleShowStatisticsController extends StatisticModuleController
         ];
 
         $tables = '';
-        if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('show')) {
-            $whereClause = $whereClause != '' ? $whereClause . ' AND' : '';
-            $whereClause .= ' month = ' . \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('month') . '  AND year = ' .
-                \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('year');
-
-            $tables .= '<h2>' . \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('month') . ' - ' .
-                \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('year') .
+        if (GeneralUtility::_GP('show')) {
+            $tables .= '<h2>' . GeneralUtility::_GP('month') . ' - ' .
+                GeneralUtility::_GP('year') .
                 '</h2><table><tr><th>Days</th><th>turnover</th><th>amount</th><th>orders</th></tr>';
-            $statRows = $database->exec_SELECTgetRows(
-                'SUM(pricegross) AS turnover, SUM(amount) AS salesfigures, SUM(orders) AS sumorders, day',
-                'tx_commerce_salesfigures',
-                $whereClause,
-                'day'
+
+            $statRows = $salesFiguresRepository->findDayInPidByMonthAndYear(
+                $this->id != $orderPageId ? $this->id : $orderPageId,
+                GeneralUtility::_GP('month'),
+                GeneralUtility::_GP('year')
             );
             $daystat = [];
             foreach ($statRows as $statRow) {
@@ -65,9 +59,9 @@ class StatisticModuleShowStatisticsController extends StatisticModuleController
                     0,
                     0,
                     0,
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('month') + 1,
+                    GeneralUtility::_GP('month') + 1,
                     0,
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('year')
+                    GeneralUtility::_GP('year')
                 )
             );
             for ($i = 1; $i <= $lastday; ++$i) {
@@ -85,13 +79,12 @@ class StatisticModuleShowStatisticsController extends StatisticModuleController
             $tables .= '</table>';
 
             $tables .= '<table><tr><th>Weekday</th><th>turnover</th><th>amount</th><th>orders</th></tr>';
-            $statRows = $database->exec_SELECTgetRows(
-                'SUM(pricegross) AS turnover, SUM(amount) AS salesfigures, SUM(orders) AS sumorders, dow',
-                'tx_commerce_salesfigures',
-                $whereClause,
-                'dow'
-            );
 
+            $statRows = $salesFiguresRepository->findDowInPidByMonthAndYear(
+                $this->id != $orderPageId ? $this->id : $orderPageId,
+                GeneralUtility::_GP('month'),
+                GeneralUtility::_GP('year')
+            );
             $daystat = [];
             foreach ($statRows as $statRow) {
                 $daystat[$statRow['dow']] = $statRow;
@@ -111,13 +104,12 @@ class StatisticModuleShowStatisticsController extends StatisticModuleController
             $tables .= '</table>';
 
             $tables .= '<table><tr><th>Hour</th><th>turnover</th><th>amount</th><th>orders</th></tr>';
-            $statRows = $database->exec_SELECTgetRows(
-                'SUM(pricegross) AS turnover, SUM(amount) AS salesfigures, SUM(orders) AS sumorders, hour',
-                'tx_commerce_salesfigures',
-                $whereClause,
-                'hour'
-            );
 
+            $statRows = $salesFiguresRepository->findHourInPidByMonthAndYear(
+                $this->id != $orderPageId ? $this->id : $orderPageId,
+                GeneralUtility::_GP('month'),
+                GeneralUtility::_GP('year')
+            );
             $daystat = [];
             foreach ($statRows as $statRow) {
                 $daystat[$statRow['hour']] = $statRow;
@@ -138,14 +130,11 @@ class StatisticModuleShowStatisticsController extends StatisticModuleController
             $tables .= '</table>';
         } else {
             $tables = '<table><tr><th>Month</th><th>turnover</th><th>amount</th><th>orders</th></tr>';
-            $statResult = $database->exec_SELECTquery(
-                'SUM(pricegross) AS turnover, SUM(amount) AS salesfigures, SUM(orders) AS sumorders, year, month',
-                'tx_commerce_salesfigures',
-                $whereClause,
-                'year, month'
-            );
 
-            while (($statRow = $database->sql_fetch_assoc($statResult))) {
+            $statResult = $salesFiguresRepository->findYearMonthInPid(
+                $this->id != $orderPageId ? $this->id : $orderPageId
+            );
+            foreach ($statResult as $statRow) {
                 $tablestemp = '<tr><td><a href="?id=' . $this->id . '&amp;month=' . $statRow['month'] .
                     '&amp;year=' . $statRow['year'] . '&amp;show=details">' . $statRow['month'] . '.' .
                     $statRow['year'] . '</a></td><td align="right">%01.2f</td><td align="right">' .

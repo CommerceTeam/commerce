@@ -26,13 +26,13 @@ class StatisticModuleCompleteAggregationController extends StatisticModuleContro
      */
     public function getSubModuleContent()
     {
-        /** @var OrderArticleRepository $orderArticleRepository */
-        $orderArticleRepository = $this->getObjectManager()->get(OrderArticleRepository::class);
-        /** @var FrontendUserRepository $frontendUserRepository */
-        $frontendUserRepository = $this->getObjectManager()->get(FrontendUserRepository::class);
-
         $result = '';
         if (GeneralUtility::_GP('fullaggregation')) {
+            /** @var OrderArticleRepository $orderArticleRepository */
+            $orderArticleRepository = $this->getObjectManager()->get(OrderArticleRepository::class);
+            /** @var FrontendUserRepository $frontendUserRepository */
+            $frontendUserRepository = $this->getObjectManager()->get(FrontendUserRepository::class);
+
             $endtime2 = $orderArticleRepository->findHighestCreationDate();
             $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
