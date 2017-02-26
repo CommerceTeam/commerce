@@ -12,6 +12,8 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\AddressRepository;
+use CommerceTeam\Commerce\Domain\Repository\CurrencyRepository;
 use CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository;
 use CommerceTeam\Commerce\Domain\Repository\OrderRepository;
 use CommerceTeam\Commerce\Factory\HookFactory;
@@ -166,11 +168,9 @@ class InvoiceController extends BaseController
         $this->content = '';
         $this->order = $this->getOrderData();
         if ($this->order) {
-            $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                'cu_iso_3',
-                'static_currencies',
-                'uid = ' . (int) $this->order['cu_iso_3_uid']
-            );
+            /** @var CurrencyRepository $currencyRepository */
+            $currencyRepository = $this->getObjectManager()->get(CurrencyRepository::class);
+            $row = $currencyRepository->findByIso3($this->order['cu_iso_3_uid']);
             $this->conf['currency'] = !empty($row) ? $row['cu_iso_3'] : $this->conf['currency'];
 
             $this->orderPayment = $this->getOrderSystemArticles((int) $this->order['uid'], '2', 'PAYMENT_');
@@ -360,40 +360,26 @@ class InvoiceController extends BaseController
      */
     protected function getAddressData($addressUid = 0, array $typoScript = [], $prefix = '')
     {
-        $database = $this->getDatabaseConnection();
-
         if (empty($typoScript)) {
             $typoScript = $this->conf['address.'];
         }
 
+        /** @var AddressRepository $addressRepository */
+        $addressRepository = $this->getObjectManager()->get(AddressRepository::class);
         if ($this->user) {
-            $queryString = 'tt_address.tx_commerce_fe_user_id=' . (int) $this->order['cust_fe_user'];
-            $queryString .= ' AND tt_address.tx_commerce_fe_user_id = fe_users.uid';
             if ($addressUid) {
-                $queryString .= ' AND tt_address.uid = ' . (int) $addressUid;
+                $row = $addressRepository->findByUserAndUid($this->order['cust_fe_user'], $addressUid);
             } else {
-                $queryString .= ' AND tt_address.tx_commerce_address_type_id = 1';
+                $row = $addressRepository->findByUserAndType($this->order['cust_fe_user'], 1);
             }
-            $row = $database->exec_SELECTgetSingleRow(
-                'tt_address.* ',
-                'tt_address, fe_users',
-                $queryString
-            );
-            $row = is_array($row) ? $row : [];
         } else {
-            $queryString = ' 1 = 1 ';
             if ($addressUid) {
-                $queryString .= ' AND tt_address.uid = ' . $addressUid;
+                $row = $addressRepository->findByUid($addressUid);
             } else {
-                $queryString .= ' AND tt_address.tx_commerce_address_type_id = 1';
+                $row = $addressRepository->findByType(1);
             }
-            $row = $database->exec_SELECTgetSingleRow(
-                'tt_address.*',
-                'tt_address',
-                $queryString
-            );
-            $row = is_array($row) ? $row : [];
         }
+
         $markerArray = $this->generateMarkerArray($row, $typoScript, $prefix, 'tt_address');
         $template = $this->cObj->getSubpart($this->templateCode, '###' . $prefix . 'DATA###');
         $content = $this->cObj->substituteMarkerArray($template, $markerArray, '###|###', 1);

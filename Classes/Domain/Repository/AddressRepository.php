@@ -28,6 +28,87 @@ class AddressRepository extends AbstractRepository
     protected $databaseTable = 'tt_address';
 
     /**
+     * @param int $type
+     *
+     * @return array
+     */
+    public function findByType($type)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'tx_commerce_address_type_id',
+                    $queryBuilder->createNamedParameter($type, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * @param int $userUid
+     * @param int $addressUid
+     *
+     * @return array
+     */
+    public function findByUserAndUid($userUid, $addressUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('a.*')
+            ->from($this->databaseTable, 'a')
+            ->innerJoin('a', 'fe_users', 'f', 'a.tx_commerce_fe_user_id = f.uid')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'a.tx_commerce_fe_user_id',
+                    $queryBuilder->createNamedParameter($userUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'a.uid',
+                    $queryBuilder->createNamedParameter($addressUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * @param int $userUid
+     * @param int $type
+     *
+     * @return array
+     */
+    public function findByUserAndType($userUid, $type)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('a.*')
+            ->from($this->databaseTable, 'a')
+            ->innerJoin('a', 'fe_users', 'f', 'a.tx_commerce_fe_user_id = f.uid')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'a.tx_commerce_fe_user_id',
+                    $queryBuilder->createNamedParameter($userUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'a.tx_commerce_address_type_id',
+                    $queryBuilder->createNamedParameter($type, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
      * Remove all "is main address" flags from addresses that are assigned to this user
      *
      * @param int $pid
