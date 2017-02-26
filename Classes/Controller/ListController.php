@@ -356,11 +356,7 @@ class ListController extends BaseController
         if ($this->cat != $this->category->getUid()) {
             // Only, if the category has been changed
             unset($this->category);
-            /*
-             * Category
-             *
-             * @var Category category
-             */
+            /** @var Category category */
             $this->category = GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Category::class,
                 $this->cat,
@@ -502,13 +498,11 @@ class ListController extends BaseController
 
         $result = false;
         if ($productId > 0) {
-            // Get not localized product
-            $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                'l18n_parent',
-                'tx_commerce_products',
-                'uid = ' . $productId
+            /** @var \CommerceTeam\Commerce\Domain\Repository\ProductRepository $productRepository */
+            $productRepository = $this->getObjectManager()->get(
+                \CommerceTeam\Commerce\Domain\Repository\ProductRepository::class
             );
-            $row = is_array($row) ? $row : [];
+            $row = $productRepository->findByUid($productId);
             if ($row['l18n_parent'] != 0) {
                 $productId = $row['l18n_parent'];
             }
