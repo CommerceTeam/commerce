@@ -41,6 +41,13 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
 	layout:'fit',
 
 	/**
+	 * Monitor resize
+	 *
+	 * @type {Boolean}
+	 */
+	monitorResize: true,
+
+	/**
 	 * Active tree
 	 *
 	 * @type {TYPO3.Components.PermissionTree.Tree}
@@ -55,6 +62,13 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
 	mainTree: null,
 
 	/**
+	 * Local cache for node paths
+	 *
+	 * @type {object}
+	 */
+	nodePaths: {},
+
+	/**
 	 * Initializes the application
 	 *
 	 * Set's the necessary language labels, configuration options and sprite icons by an
@@ -66,7 +80,8 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
 		TYPO3.Components.PermissionTree.DataProvider.loadResources(function(response) {
 			TYPO3.Components.PermissionTree.LLL = response['LLL'];
 			TYPO3.Components.PermissionTree.Configuration = response['Configuration'];
-			TYPO3.Components.PermissionTree.Sprites = response['Sprites'];
+			// @todo check provider
+			//TYPO3.Components.PermissionTree.Sprites = response['Sprites'];
 			TYPO3.Components.PermissionTree.Icons = response['Icons'];
 
 			this.mainTree = this.activeTree = new TYPO3.Components.PermissionTree.Tree({
@@ -77,18 +92,20 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
 				stateId: 'PermissionTree' + TYPO3.Components.PermissionTree.Configuration.temporaryMountPoint,
 				stateEvents: [],
 				autoScroll: true,
-				autoHeight: false,
-				plugins: new Ext.ux.state.TreePanel(),
+				autoHeight: true,
+				autoWidth: true,
+				plugins: [new Ext.ux.state.TreePanel()],
 				commandProvider: TYPO3.Components.PermissionTree.Actions,
-				contextMenuProvider: TYPO3.Components.PermissionTree.ContextMenuDataProvider,
+				// @todo remove extdirect provider too
+				//contextMenuProvider: TYPO3.Components.PermissionTree.ContextMenuDataProvider,
 				treeDataProvider: TYPO3.Components.PermissionTree.DataProvider,
+				monitorResize: true,
 				app: this,
 				listeners: {
 					resize: {
 						fn: function() {
-							var treeContainer = Ext.getCmp(this.id + '-treeContainer');
-							Ext.getCmp(this.id + '-filteringTree').setSize(treeContainer.getSize());
-							treeContainer.doLayout();
+							this.doLayout(true);
+							TYPO3.Backend.doLayout();
 						},
 						scope: this,
 						buffer: 250
@@ -103,7 +120,6 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
 				autoScroll: true,
 				autoHeight: false,
 				commandProvider: TYPO3.Components.PermissionTree.Actions,
-				contextMenuProvider: TYPO3.Components.PermissionTree.ContextMenuDataProvider,
 				treeDataProvider: TYPO3.Components.PermissionTree.DataProvider,
 				app: this
 			}).hide();
@@ -162,31 +178,11 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
 				}, this);
 			}
 
-			if (TYPO3.Components.PermissionTree.Configuration.indicator !== '') {
-				this.addIndicatorItems();
-			}
 			this.doLayout();
 
-			this.ownerCt.on('resize', function() {
-				this.doLayout();
-			});
 		}, this);
 
 		TYPO3.Components.PermissionTree.App.superclass.initComponent.apply(this, arguments);
-	},
-
-	/**
-	 * Adds the default indicator items
-	 *
-	 * @return {void}
-	 */
-	addIndicatorItems: function() {
-		this.addIndicator({
-			border: false,
-			id: this.id + '-indicatorBar-indicatorTitle',
-			cls: this.id + '-indicatorBar-item',
-			html: TYPO3.Components.PermissionTree.Configuration.indicator
-		});
 	},
 
 	/**
@@ -199,7 +195,7 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
 			border: false,
 			id: this.id + '-indicatorBar-temporaryMountPoint',
 			cls: this.id + '-indicatorBar-item',
-
+			scope: this,
 			listeners: {
 				afterrender: {
 					fn: function() {
@@ -318,8 +314,8 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
 		if (!isNaN(fsMod.recentIds['commerce_category']) && fsMod.recentIds['commerce_category'] !== '') {
 			this.select(fsMod.recentIds['commerce_category'], true);
 		}
-
-		TYPO3.Components.PermissionTree.DataProvider.getIndicators(function(response) {
+		// @todo remove indicator provider too
+		/*TYPO3.Components.PermissionTree.DataProvider.getIndicators(function(response) {
 			var indicators = Ext.getCmp(this.id + '-indicatorBar-indicatorTitle');
 			if (indicators) {
 				this.removeIndicator(indicators);
@@ -329,8 +325,7 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
 				TYPO3.Components.PermissionTree.Configuration.indicator = response.html;
 				this.addIndicatorItems();
 			}
-		}, this);
-
+		}, this);*/
 		this.activeTree.refreshTree();
 	},
 
@@ -351,8 +346,8 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
 	 * @param {Object} nodeData
 	 * @return {Boolean}
 	 */
-	select: function(pageId, nodeData) {
-		TYPO3.Components.PermissionTree.Commands.addRootlineOfNodeToStateHash(
+	select: function(nodeId, nodeData) {
+		/*TYPO3.Components.PermissionTree.Commands.addRootlineOfNodeToStateHash(
 			TYPO3.Backend.NavigationContainer.PermissionTree.mainTree.stateId,
 			pageId, function(stateHash) {
 				TYPO3.Backend.NavigationContainer.PermissionTree.mainTree.stateHash = stateHash;
@@ -360,7 +355,43 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
 			}
 		);
 
-		return true;
+		return true;*/
+		this.selectPageId(nodeId);
+	},
+
+	selectPageId: function(pageId, allResults) {
+		this.invokePageId(pageId, Ext.createDelegate(this.mainTree.selectPath, this.mainTree), allResults);
+	},
+
+	expandPageId: function(pageId, allResults) {
+		this.invokePageId(pageId, Ext.createDelegate(this.mainTree.expandPath, this.mainTree), allResults);
+	},
+
+	/**
+	 * @param {int} pageId
+	 * @param {Function} callback
+	 * @param {Boolean} allResults
+	 */
+	invokePageId: function(pageId, callback, allResults) {
+		if (typeof this.nodePaths[pageId] !== 'undefined') {
+			this.invokeNodePaths(this.nodePaths[pageId], pageId, callback, allResults);
+		} else {
+			var handler = function(nodePaths) {
+				this.nodePaths[pageId] = nodePaths;
+				this.invokeNodePaths(nodePaths, pageId, callback, allResults);
+			};
+			TYPO3.Components.PageTree.Commands.getNodePaths(pageId, handler, this);
+		}
+	},
+
+	invokeNodePaths: function(nodePaths, pageId, callback, allResults) {
+		if (!nodePaths.length) {
+			return;
+		}
+		if (!allResults) {
+			nodePaths = [nodePaths[0]];
+		}
+		Ext.each(nodePaths, function(nodePath) { callback('/root/' + nodePath.join('/')); });
 	},
 
 	/**
@@ -379,16 +410,20 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
  *
  * @return {TYPO3.Components.PermissionTree.App}
  */
-TYPO3.ModuleMenu.App.registerNavigationComponent('commerce-permissiontree', function() {
-	TYPO3.Backend.NavigationContainer.PermissionTree = new TYPO3.Components.PermissionTree.App();
+require(
+	[
+		'TYPO3/CMS/Backend/ModuleMenu'
+	],
+	function () {
+		// extjs loading bugfix
+		window.setTimeout(function() {
+			TYPO3.ModuleMenu.App.registerNavigationComponent('commerce-permissiontree', function () {
+				new TYPO3.Components.PermissionTree.App();
+			});
+		}, 5000);
+	}
+);
 
-		// compatibility code
-    top.nav = TYPO3.Backend.NavigationContainer.PermissionTree;
-    top.nav_frame = TYPO3.Backend.NavigationContainer.PermissionTree;
-    top.content.nav_frame = TYPO3.Backend.NavigationContainer.PermissionTree;
-
-	return TYPO3.Backend.NavigationContainer.PermissionTree;
-});
 
 // XTYPE Registration
 Ext.reg('TYPO3.Components.PermissionTree.App', TYPO3.Components.PermissionTree.App);
