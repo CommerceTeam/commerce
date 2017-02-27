@@ -109,7 +109,25 @@ TYPO3.Components.OrderTree.TopPanel = Ext.extend(Ext.Panel, {
 	 * @return {void}
 	 */
 	initComponent: function() {
+		this.currentlyShownPanel = new Ext.Panel({
+			id: this.id + '-defaultPanel',
+			cls: this.id + '-item commerce-ordertree-toppanel-item',
+			border: false
+		});
+		this.items = [this.currentlyShownPanel];
+
 		TYPO3.Components.OrderTree.TopPanel.superclass.initComponent.apply(this, arguments);
+
+		//this.addDragDropNodeInsertionFeature();
+
+		if (!TYPO3.Components.CategoryTree.Configuration.hideFilter
+			|| TYPO3.Components.CategoryTree.Configuration.hideFilter === '0'
+		) {
+			this.addFilterFeature();
+		}
+
+		this.getTopToolbar().addItem({xtype: 'tbfill'});
+		this.addRefreshTreeFeature();
 	},
 
 	/**
@@ -228,14 +246,15 @@ TYPO3.Components.OrderTree.TopPanel = Ext.extend(Ext.Panel, {
 
 			textField.setHideTrigger(false);
 			this.tree.hide();
-			this.app.ownerCt.getEl().mask('', 'x-mask-loading-message');
-			this.app.ownerCt.getEl().addClass('t3-mask-loading');
+			// @todo check if still needed
+			//this.app.ownerCt.getEl().mask('', 'x-mask-loading-message');
+			//this.app.ownerCt.getEl().addClass('t3-mask-loading');
 			this.filteringTree.show().refreshTree(function() {
 				if (selectedNode) {
 					this.app.select(selectedNode.attributes.nodeData.id, selectedNode.attributes.nodeData, false);
 				}
 				textField.focus();
-				this.app.ownerCt.getEl().unmask();
+				//this.app.ownerCt.getEl().unmask();
 			}, this);
 		}
 

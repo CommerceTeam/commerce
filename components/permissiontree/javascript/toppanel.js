@@ -246,14 +246,15 @@ TYPO3.Components.PermissionTree.TopPanel = Ext.extend(Ext.Panel, {
 
 			textField.setHideTrigger(false);
 			this.tree.hide();
-			this.app.ownerCt.getEl().mask('', 'x-mask-loading-message');
-			this.app.ownerCt.getEl().addClass('t3-mask-loading');
+			// @todo check if still needed
+			//this.app.ownerCt.getEl().mask('', 'x-mask-loading-message');
+			//this.app.ownerCt.getEl().addClass('t3-mask-loading');
 			this.filteringTree.show().refreshTree(function() {
 				if (selectedNode) {
 					this.app.select(selectedNode.attributes.nodeData.id, selectedNode.attributes.nodeData, false);
 				}
 				textField.focus();
-				this.app.ownerCt.getEl().unmask();
+				//this.app.ownerCt.getEl().unmask();
 			}, this);
 		}
 
