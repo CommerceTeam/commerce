@@ -60,6 +60,33 @@ call_user_func(function ($packageKey) {
         $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
             \TYPO3\CMS\Core\Imaging\IconRegistry::class
         );
+
+        $iconRegistry->registerIcon(
+            'module-commerce',
+            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/mod_main.gif']
+        );
+        $iconRegistry->registerIcon(
+            'module-commerce-category',
+            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/mod_category.gif']
+        );
+        $iconRegistry->registerIcon(
+            'module-commerce-orders',
+            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/mod_orders.gif']
+        );
+        $iconRegistry->registerIcon(
+            'module-commerce-systemdata',
+            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/mod_systemdata.gif']
+        );
+        $iconRegistry->registerIcon(
+            'module-commerce-statistic',
+            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/mod_statistic.gif']
+        );
+
         $iconRegistry->registerIcon(
             'extensions-commerce-globus',
             \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
@@ -112,38 +139,21 @@ call_user_func(function ($packageKey) {
             'apps-pagetree-folder-contains-commerce';
 
         // positioning of main module is not considered in the core
-        // that's why we need to use the following loop to add the main module
+        // that's why we need to add our own main module
         if (!isset($GLOBALS['TBE_MODULES']['commerce'])) {
-            $tbeModules = [];
-            foreach ($GLOBALS['TBE_MODULES'] as $key => $val) {
-                $tbeModules[$key] = $val;
-                if ($key == 'file') {
-                    $tbeModules['commerce'] = 'category';
-                }
-            }
-            $GLOBALS['TBE_MODULES'] = $tbeModules;
-        }
+            $GLOBALS['TBE_MODULES'] = array_slice($GLOBALS['TBE_MODULES'], 0, 2, true) +
+                ['commerce' => 'category'] +
+                array_slice($GLOBALS['TBE_MODULES'], 2, count($GLOBALS['TBE_MODULES']) - 2, true);
 
-        // Main module
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-            $packageKey,
-            '',
-            '',
-            '',
-            [
-                'script' => '_DISPATCH',
+            // Main module to house commerce modules
+            $GLOBALS['TBE_MODULES']['_configuration']['commerce'] = [
                 'access' => 'user,group',
                 'name' => $packageKey,
+                'iconIdentifier' => 'module-commerce',
+                'labels' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_main.xlf',
                 'workspaces' => 'online',
-                'icon' => 'EXT:commerce/Resources/Public/Icons/mod_main.gif',
-                'labels' => [
-                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_main.xlf',
-                    'tabs_images' => [
-                        'tab' => 'EXT:commerce/Resources/Public/Icons/mod_main.gif'
-                    ],
-                ],
-            ]
-        );
+            ];
+        }
 
         // Category module
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
@@ -155,13 +165,8 @@ call_user_func(function ($packageKey) {
                 'routeTarget' => \CommerceTeam\Commerce\Controller\CategoryModuleController::class . '::mainAction',
                 'access' => 'user,group',
                 'name' => 'commerce_category',
-                'icon' => 'EXT:commerce/Resources/Public/Icons/mod_category.gif',
-                'labels' => [
-                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_category.xlf',
-                    'tabs_images' => [
-                        'tab' => 'EXT:commerce/Resources/Public/Icons/mod_category.gif'
-                    ],
-                ],
+                'iconIdentifier' => 'module-commerce-category',
+                'labels' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_category.xlf',
             ]
         );
         // Category navigation frame
@@ -220,13 +225,8 @@ call_user_func(function ($packageKey) {
                 'routeTarget' => \CommerceTeam\Commerce\Controller\OrdersModuleController::class . '::mainAction',
                 'access' => 'user,group',
                 'name' => 'commerce_order',
-                'icon' => 'EXT:commerce/Resources/Public/Icons/mod_orders.gif',
-                'labels' => [
-                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xlf',
-                    'tabs_images' => [
-                        'tab' => 'EXT:commerce/Resources/Public/Icons/mod_orders.gif'
-                    ],
-                ],
+                'iconIdentifier' => 'module-commerce-orders',
+                'labels' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xlf',
             ]
         );
         // Order navigation frame
@@ -247,17 +247,12 @@ call_user_func(function ($packageKey) {
             '',
             '',
             [
-                'routeTarget' => \CommerceTeam\Commerce\Controller\SystemdataModuleAttributeController::class
-                    . '::mainAction',
+                'routeTarget' => \CommerceTeam\Commerce\Controller\SystemdataModuleAttributeController::class .
+                    '::mainAction',
                 'access' => 'user,group',
                 'name' => 'commerce_systemdata',
-                'icon' => 'EXT:commerce/Resources/Public/Icons/mod_systemdata.gif',
-                'labels' => [
-                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf',
-                    'tabs_images' => [
-                        'tab' => 'EXT:commerce/Resources/Public/Icons/mod_systemdata.gif'
-                    ],
-                ],
+                'iconIdentifier' => 'module-commerce-systemdata',
+                'labels' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xlf',
                 'navigationFrameModule' => 'commerce_systemdata_navigation',
             ]
         );
@@ -290,17 +285,12 @@ call_user_func(function ($packageKey) {
             '',
             '',
             [
-                'routeTarget' => \CommerceTeam\Commerce\Controller\StatisticModuleShowStatisticsController::class
-                    . '::mainAction',
+                'routeTarget' => \CommerceTeam\Commerce\Controller\StatisticModuleShowStatisticsController::class .
+                    '::mainAction',
                 'access' => 'user,group',
                 'name' => 'commerce_statistic',
-                'icon' => 'EXT:commerce/Resources/Public/Icons/mod_statistic.gif',
-                'labels' => [
-                    'll_ref' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf',
-                    'tabs_images' => [
-                        'tab' => 'EXT:commerce/Resources/Public/Icons/mod_statistic.gif'
-                    ],
-                ],
+                'iconIdentifier' => 'module-commerce-statistic',
+                'labels' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf',
             ]
         );
 
