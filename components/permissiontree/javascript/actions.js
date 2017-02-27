@@ -280,16 +280,15 @@ TYPO3.Components.PermissionTree.Actions = {
 				}
 
 				TYPO3.Components.PermissionTree.Configuration.temporaryMountPoint = response;
-				TYPO3.Backend.NavigationContainer.PermissionTree.addTemporaryMountPointIndicator();
+				Ext.getCmp('commerce-permissiontree-tree').app.addTemporaryMountPointIndicator();
 
-				var selectedNode = TYPO3.Backend.NavigationContainer.PermissionTree.getSelected();
+				var selectedNode = Ext.getCmp('commerce-permissiontree-tree').app.getSelected();
 				tree.stateId = 'PermissionTree' + TYPO3.Components.PermissionTree.Configuration.temporaryMountPoint;
 				tree.refreshTree(function() {
 					var nodeIsSelected = false;
 					if (selectedNode) {
 						nodeIsSelected = TYPO3.Backend.NavigationContainer.PermissionTree.select(
-							selectedNode.attributes.nodeData.id,
-							selectedNode.attributes.nodeData
+							selectedNode.attributes.nodeData.id
 						);
 					}
 
@@ -313,15 +312,21 @@ TYPO3.Components.PermissionTree.Actions = {
 	 */
 	editPageProperties: function(node) {
 		node.select();
-		var returnUrl = TYPO3.Backend.ContentContainer.src;
+		var returnUrl = TYPO3.Backend.ContentContainer.getUrl();
 		if (returnUrl.indexOf('returnUrl') !== -1) {
 			returnUrl = TYPO3.Utility.getParameterFromUrl(returnUrl, 'returnUrl');
 		} else {
 			returnUrl = encodeURIComponent(returnUrl);
 		}
 
+		var decodeReturnUrl = decodeURIComponent(returnUrl);
+		var editPageId = TYPO3.Utility.getParameterFromUrl(decodeReturnUrl, 'id');
+		if (parseInt(editPageId, 10) !== parseInt(node.attributes.nodeData.id, 10)) {
+			returnUrl = encodeURIComponent(TYPO3.Utility.updateQueryStringParameter(decodeReturnUrl, 'id', node.attributes.nodeData.id));
+		}
+
 		TYPO3.Backend.ContentContainer.setUrl(
-			TYPO3.settings.FormEngine.moduleUrl + '&edit[pages][' + node.attributes.nodeData.id + ']=edit&returnUrl=' + returnUrl
+			TYPO3.settings.FormEngine.moduleUrl + '&edit[' + node.attributes.nodeData.type + '][' + node.attributes.nodeData.id + ']=edit&returnUrl=' + returnUrl
 		);
 	},
 
@@ -345,7 +350,7 @@ TYPO3.Components.PermissionTree.Actions = {
 	 * @return {void}
 	 */
 	openInfoPopUp: function(node) {
-		launchView('pages', node.attributes.nodeData.id);
+		launchView(node.attributes.nodeData.type, node.attributes.nodeData.id);
 	},
 
 	/**
@@ -357,7 +362,7 @@ TYPO3.Components.PermissionTree.Actions = {
 	openHistoryPopUp: function(node) {
 		node.select();
 		TYPO3.Backend.ContentContainer.setUrl(
-			TYPO3.settings.RecordHistory.moduleUrl + '&element=pages:' + node.attributes.nodeData.id
+			TYPO3.settings.RecordHistory.moduleUrl + '&element=' + node.attributes.nodeData.type + ':' + node.attributes.nodeData.id
 		);
 	},
 
@@ -709,7 +714,7 @@ TYPO3.Components.PermissionTree.Actions = {
 		node.select();
 		if (tree.stateHash) {
 			tree.stateHash.lastSelectedNode = node.id;
-		} else {
+		}/* else {
 			TYPO3.Components.PermissionTree.Commands.addRootlineOfNodeToStateHash(
 				TYPO3.Backend.NavigationContainer.PermissionTree.mainTree.stateId,
 				node.attributes.nodeData.id,
@@ -719,7 +724,7 @@ TYPO3.Components.PermissionTree.Actions = {
 					TYPO3.Backend.NavigationContainer.PermissionTree.mainTree.refreshTree();
 				}
 			);
-		}
+		}*/
 
 		fsMod.recentIds['commerce_category'] = node.id;
 

@@ -280,16 +280,15 @@ TYPO3.Components.CategoryTree.Actions = {
 				}
 
 				TYPO3.Components.CategoryTree.Configuration.temporaryMountPoint = response;
-				TYPO3.Backend.NavigationContainer.CategoryTree.addTemporaryMountPointIndicator();
+				Ext.getCmp('commerce-categorytree-tree').app.addTemporaryMountPointIndicator();
 
-				var selectedNode = TYPO3.Backend.NavigationContainer.CategoryTree.getSelected();
+				var selectedNode = Ext.getCmp('commerce-categorytree-tree').app.getSelected();
 				tree.stateId = 'CategoryTree' + TYPO3.Components.CategoryTree.Configuration.temporaryMountPoint;
 				tree.refreshTree(function() {
 					var nodeIsSelected = false;
 					if (selectedNode) {
 						nodeIsSelected = TYPO3.Backend.NavigationContainer.CategoryTree.select(
-							selectedNode.attributes.nodeData.id,
-							selectedNode.attributes.nodeData
+							selectedNode.attributes.nodeData.id
 						);
 					}
 
@@ -313,11 +312,17 @@ TYPO3.Components.CategoryTree.Actions = {
 	 */
 	editPageProperties: function(node) {
 		node.select();
-		var returnUrl = TYPO3.Backend.ContentContainer.src;
+		var returnUrl = TYPO3.Backend.ContentContainer.getUrl();
 		if (returnUrl.indexOf('returnUrl') !== -1) {
 			returnUrl = TYPO3.Utility.getParameterFromUrl(returnUrl, 'returnUrl');
 		} else {
 			returnUrl = encodeURIComponent(returnUrl);
+		}
+
+		var decodeReturnUrl = decodeURIComponent(returnUrl);
+		var editPageId = TYPO3.Utility.getParameterFromUrl(decodeReturnUrl, 'id');
+		if (parseInt(editPageId, 10) !== parseInt(node.attributes.nodeData.id, 10)) {
+			returnUrl = encodeURIComponent(TYPO3.Utility.updateQueryStringParameter(decodeReturnUrl, 'id', node.attributes.nodeData.id));
 		}
 
 		TYPO3.Backend.ContentContainer.setUrl(
@@ -709,7 +714,7 @@ TYPO3.Components.CategoryTree.Actions = {
 		node.select();
 		if (tree.stateHash) {
 			tree.stateHash.lastSelectedNode = node.id;
-		} else {
+		}/* else {
 			TYPO3.Components.CategoryTree.Commands.addRootlineOfNodeToStateHash(
 				TYPO3.Backend.NavigationContainer.CategoryTree.mainTree.stateId,
 				node.attributes.nodeData.id,
@@ -719,7 +724,7 @@ TYPO3.Components.CategoryTree.Actions = {
 					TYPO3.Backend.NavigationContainer.CategoryTree.mainTree.refreshTree();
 				}
 			);
-		}
+		}*/
 
 		fsMod.recentIds['commerce_category'] = node.id;
 
