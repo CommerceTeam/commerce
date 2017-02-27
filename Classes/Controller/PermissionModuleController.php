@@ -235,9 +235,9 @@ class PermissionModuleController extends ActionController
         $beGroupArray = BackendUtility::getGroupNames();
         $this->view->assign('beGroups', $beGroupArray);
 
-        /** @var $tree CategoryTreeView */
+        /** @var CategoryTreeView $tree */
         $tree = GeneralUtility::makeInstance(CategoryTreeView::class);
-        $tree->init();
+        $tree->init('', 'sorting');
         $tree->addField('perms_user', true);
         $tree->addField('perms_group', true);
         $tree->addField('perms_everybody', true);
@@ -343,7 +343,7 @@ class PermissionModuleController extends ActionController
         // Initialize tree object:
         /** @var CategoryTreeView $tree */
         $tree = GeneralUtility::makeInstance(CategoryTreeView::class);
-        $tree->init();
+        $tree->init('', 'sorting');
         $tree->addField('perms_userid', true);
         $tree->makeHTML = 0;
         $tree->setRecs = 1;

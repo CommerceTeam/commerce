@@ -60,19 +60,6 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
     public $ext_showNavTitle = false;
 
     /**
-     * Init function
-     * REMEMBER to feed a $clause which will filter out non-readable pages!
-     *
-     * @param string $clause Part of where query which will filter out non-readable pages.
-     * @param string $orderByFields Record ORDER BY field
-     * @return void
-     */
-    public function init($clause = '', $orderByFields = '')
-    {
-        parent::init(' AND deleted=0 ' . $clause, $this->table . '.sorting');
-    }
-
-    /**
      * Returns TRUE/FALSE if the next level for $id should be expanded - and all levels should, so we always return 1.
      *
      * @param int $id ID (uid) to test for (see extending classes where this is checked against session data)
@@ -169,17 +156,19 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
         } else {
             $queryBuilder = $this->getQueryBuilderForTable($this->table);
 
-            /** @var BackendWorkspaceRestriction $workspaceRestriction */
-            $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
             /** @var DeletedRestriction $deleteRestriction */
             $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+            /** @var BackendWorkspaceRestriction $workspaceRestriction */
+            $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
+
             $queryBuilder->getRestrictions()
                 ->removeAll()
                 ->add($deleteRestriction)
                 ->add($workspaceRestriction);
 
+            call_user_func_array([$queryBuilder, 'select'], $this->fieldArray);
+
             $result = $queryBuilder
-                ->select($this->fieldArray)
                 ->from($this->table, 't')
                 ->innerJoin('t', 'tx_commerce_categories_parent_category_mm', 'mm', 't.uid = mm.uid_local')
                 ->where(
