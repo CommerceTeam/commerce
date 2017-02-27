@@ -20,6 +20,10 @@ page.includeCSS {
 }
 
 
+[globalString = LIT:css_styled_content = {$plugin.tx_commerce_lib.useRenderingExtension}]
+[else]
+[end]
+
 # -----------------------------------------------------------------------
 lib.tx_commerce {
 	# switch on StockHandling
