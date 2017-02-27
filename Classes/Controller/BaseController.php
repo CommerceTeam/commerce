@@ -1939,19 +1939,15 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $markerArray = $this->generateMarkerArray(
             $data,
             $localTs,
-            '',
+            'PRODUCT_',
             'tx_commerce_products'
         );
-        $markerArrayUp = [];
-        foreach ($markerArray as $k => $v) {
-            $markerArrayUp[strtoupper($k)] = $v;
-        }
         $markerArray = $this->cObj->fillInMarkerArray(
             [],
-            $markerArrayUp,
-            implode(',', array_keys($markerArrayUp)),
+            $markerArray,
+            implode(',', array_keys($markerArray)),
             false,
-            'PRODUCT_'
+            ''
         );
 
         $this->can_attributes = $product->getAttributes([ATTRIB_CAN]);
@@ -2028,7 +2024,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         }
 
         /*
-         * Get The Checapest Price
+         * Get The Cheapest Price
          */
         $cheapestArticleUid = $product->getCheapestArticle();
         /**
