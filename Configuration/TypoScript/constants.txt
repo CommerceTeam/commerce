@@ -81,7 +81,7 @@ plugin.tx_commerce_lib {
 	# cat=plugin.commerce: General/EmpytCategories/b6; type=boolean; label=Hide Categories if cateory and subcategories are empty
 	hideEmptyCategories = 0
 
-	# cat=plugin.commerce: General/EmpytCategories/b6; options=[css_styled_content,fluid_styled_Content]; label=Choose which rendering extension to use as base for image output
+	# cat=plugin.commerce: General/Rendering/b7; type=options[css_styled_content,fluid_styled_Content]; label=Rendering extension: Choose which rendering extension to use as base for image output
 	useRenderingExtension = css_styled_content
 }
 
