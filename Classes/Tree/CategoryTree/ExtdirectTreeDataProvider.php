@@ -20,7 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Data Provider of the Page Tree
  */
-class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
+class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTree
 {
     /**
      * Data Provider
@@ -55,7 +55,7 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeData
         $dataProvider = GeneralUtility::makeInstance(
             \CommerceTeam\Commerce\Tree\CategoryTree\DataProvider::class
         );
-        $this->dataProvider = $dataProvider;
+        $this->setDataProvider($dataProvider);
     }
 
     /**
@@ -156,10 +156,7 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeData
         $output = [];
         /** @noinspection PhpInternalEntityUsedInspection */
         $groupData = $this->getBackendUserAuthentication()->groupData;
-        $allowedTables = GeneralUtility::trimExplode(
-            ',',
-            $groupData['tables_select']
-        );
+        $allowedTables = GeneralUtility::trimExplode(',', $groupData['tables_select']);
         $isAdmin = $this->getBackendUserAuthentication()->isAdmin();
         // Early return if backend user may not create any doktype
         if (!$isAdmin && empty($allowedTables)) {
@@ -191,23 +188,6 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeData
     }
 
     /**
-     * Returns
-     *
-     * @return array
-     */
-    public function getIndicators()
-    {
-        /** @var $indicatorProvider \TYPO3\CMS\Backend\Tree\Pagetree\Indicator */
-        $indicatorProvider = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\Pagetree\Indicator::class);
-        $indicatorHtmlArr = $indicatorProvider->getAllIndicators();
-        $indicator = [
-            'html' => implode(' ', $indicatorHtmlArr),
-            '_COUNT' => count($indicatorHtmlArr)
-        ];
-        return $indicator;
-    }
-
-    /**
      * Returns the language labels, sprites and configuration options for the pagetree
      *
      * @return array
@@ -216,10 +196,9 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeData
     {
         $lang = $this->getLanguageService();
         $backendUser = $this->getBackendUserAuthentication();
-        $file = 'LLL:EXT:lang/locallang_core.xlf:';
+        $file = 'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:';
         $backendFile = 'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:';
         $commerceFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_tree.xlf:';
-        $indicators = $this->getIndicators();
         $configuration = [
             'LLL' => [
                 'copyHint' => $lang->sL($file . 'tree.copyHint', true),
@@ -244,7 +223,6 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeData
                 'disableIconLinkToContextmenu' => $backendUser->getTSConfigVal(
                     'options.pageTree.disableIconLinkToContextmenu'
                 ),
-                'indicator' => $indicators['html'],
                 'temporaryMountPoint' => Commands::getMountPointPath()
             ],
             'Icons' => [
@@ -262,20 +240,6 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeData
             ]
         ];
         return $configuration;
-    }
-
-
-    /**
-     * Fetches the subnodes of the given node
-     *
-     * @param \TYPO3\CMS\Backend\Tree\TreeNode $node
-     * @return \TYPO3\CMS\Backend\Tree\TreeNodeCollection
-     */
-    public function getNodes(\TYPO3\CMS\Backend\Tree\TreeNode $node)
-    {
-        /** @var \TYPO3\CMS\Backend\Tree\TreeNodeCollection $treeCollection */
-        $treeCollection = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Tree\TreeNodeCollection::class);
-        return $treeCollection;
     }
 
 
