@@ -200,7 +200,7 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
 						var element = Ext.fly(this.id + '-indicatorBar-temporaryMountPoint-clear');
 						var me = this;
 						element.on('click', function() {
-							top.TYPO3.Storage.Persistent.unset('pageTree_temporaryMountPoint').done(
+							top.TYPO3.Storage.Persistent.unset('permissionTree_temporaryMountPoint').done(
 								function() {
 									TYPO3.Components.PermissionTree.Configuration.temporaryMountPoint = null;
 									me.removeIndicator(me.temporaryMountPointInfoIndicator);
@@ -378,7 +378,7 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
 				this.nodePaths[pageId] = nodePaths;
 				this.invokeNodePaths(nodePaths, pageId, callback, allResults);
 			};
-			TYPO3.Components.PageTree.Commands.getNodePaths(pageId, handler, this);
+			TYPO3.Components.PermissionTree.Commands.getNodePaths(pageId, handler, this);
 		}
 	},
 
