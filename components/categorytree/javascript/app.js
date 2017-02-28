@@ -80,8 +80,6 @@ TYPO3.Components.CategoryTree.App = Ext.extend(Ext.Panel, {
 		TYPO3.Components.CategoryTree.DataProvider.loadResources(function(response) {
 			TYPO3.Components.CategoryTree.LLL = response['LLL'];
 			TYPO3.Components.CategoryTree.Configuration = response['Configuration'];
-			// @todo check provider
-			//TYPO3.Components.CategoryTree.Sprites = response['Sprites'];
 			TYPO3.Components.CategoryTree.Icons = response['Icons'];
 
 			this.mainTree = this.activeTree = new TYPO3.Components.CategoryTree.Tree({
@@ -96,8 +94,6 @@ TYPO3.Components.CategoryTree.App = Ext.extend(Ext.Panel, {
 				autoWidth: true,
 				plugins: [new Ext.ux.state.TreePanel()],
 				commandProvider: TYPO3.Components.CategoryTree.Actions,
-				// @todo remove extdirect provider too
-				//contextMenuProvider: TYPO3.Components.CategoryTree.ContextMenuDataProvider,
 				treeDataProvider: TYPO3.Components.CategoryTree.DataProvider,
 				monitorResize: true,
 				app: this,
@@ -314,18 +310,6 @@ TYPO3.Components.CategoryTree.App = Ext.extend(Ext.Panel, {
 		if (!isNaN(fsMod.recentIds['commerce_category']) && fsMod.recentIds['commerce_category'] !== '') {
 			this.select(fsMod.recentIds['commerce_category'], true);
 		}
-		// @todo remove indicator provider too
-		/*TYPO3.Components.CategoryTree.DataProvider.getIndicators(function(response) {
-			var indicators = Ext.getCmp(this.id + '-indicatorBar-indicatorTitle');
-			if (indicators) {
-				this.removeIndicator(indicators);
-			}
-
-			if (response._COUNT > 0) {
-				TYPO3.Components.CategoryTree.Configuration.indicator = response.html;
-				this.addIndicatorItems();
-			}
-		}, this);*/
 		this.activeTree.refreshTree();
 	},
 
