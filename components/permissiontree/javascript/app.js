@@ -96,8 +96,6 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
 				autoWidth: true,
 				plugins: [new Ext.ux.state.TreePanel()],
 				commandProvider: TYPO3.Components.PermissionTree.Actions,
-				// @todo remove extdirect provider too
-				//contextMenuProvider: TYPO3.Components.PermissionTree.ContextMenuDataProvider,
 				treeDataProvider: TYPO3.Components.PermissionTree.DataProvider,
 				monitorResize: true,
 				app: this,
@@ -339,10 +337,10 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
 	},
 
 	/**
-	 * Selects a node defined by the page id. If the second parameter is set, we
+	 * Selects a node defined by the node id. If the second parameter is set, we
 	 * store the new location into the state hash.
 	 *
-	 * @param {int} pageId
+	 * @param {int} nodeId
 	 * @param {Object} nodeData
 	 * @return {Boolean}
 	 */
@@ -411,9 +409,7 @@ TYPO3.Components.PermissionTree.App = Ext.extend(Ext.Panel, {
  * @return {TYPO3.Components.PermissionTree.App}
  */
 require(
-	[
-		'TYPO3/CMS/Backend/ModuleMenu'
-	],
+	[],
 	function () {
 		// extjs loading bugfix
 		window.setTimeout(function() {

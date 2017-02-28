@@ -22,6 +22,7 @@ use TYPO3\CMS\Backend\ContextMenu\ContextMenuActionCollection;
 
 /**
  * Context Menu Data Provider for the Page Tree
+ * @todo replace with new 'TYPO3/CMS/Backend/ModuleMenu' compatible version
  */
 class ContextMenuDataProvider
 {

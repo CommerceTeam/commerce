@@ -19,6 +19,7 @@ use CommerceTeam\Commerce\ContextMenu\CategoryTree\ContextMenuDataProvider;
 
 /**
  * Context Menu of the Page Tree
+ * @todo replace with new 'TYPO3/CMS/Backend/ModuleMenu' compatible version
  */
 class ContextMenuConfiguration
 {
