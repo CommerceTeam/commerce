@@ -415,7 +415,7 @@ require(
 		// extjs loading bugfix
 		window.setTimeout(function() {
 			TYPO3.ModuleMenu.App.registerNavigationComponent('commerce-ordertree', function () {
-				new TYPO3.Components.OrderTree.App();
+				return new TYPO3.Components.OrderTree.App();
 			});
 		}, 5000);
 	}

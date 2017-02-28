@@ -414,7 +414,7 @@ require(
 		// extjs loading bugfix
 		window.setTimeout(function() {
 			TYPO3.ModuleMenu.App.registerNavigationComponent('commerce-permissiontree', function () {
-				new TYPO3.Components.PermissionTree.App();
+				return new TYPO3.Components.PermissionTree.App();
 			});
 		}, 5000);
 	}

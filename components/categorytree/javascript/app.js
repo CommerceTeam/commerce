@@ -403,7 +403,7 @@ require(
 		// extjs loading bugfix
 		window.setTimeout(function() {
 			TYPO3.ModuleMenu.App.registerNavigationComponent('commerce-categorytree', function () {
-				new TYPO3.Components.CategoryTree.App();
+				return new TYPO3.Components.CategoryTree.App();
 			});
 		}, 5000);
 	}
