@@ -111,13 +111,13 @@ abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseS
         $this->doc->form = '<form action="" method="POST" name="editform">';
 
         // JavaScript
-        $this->doc->JScode = $this->doc->wrapScriptTags('
+        $this->doc->JScode = GeneralUtility::wrapJS('
             script_ended = 0;
             function jumpToUrl(URL) {
                 document.location = URL;
             }
         ');
-        $this->doc->postCode = $this->doc->wrapScriptTags('
+        $this->doc->postCode = GeneralUtility::wrapJS('
             script_ended = 1;
             if (top.fsMod) {
                 top.fsMod.recentIds["commerce_category"] = ' . (int) $this->id . ';

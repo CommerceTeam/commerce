@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\Form\FormDataProvider;
 
 use TYPO3\CMS\Backend\Form\FormDataProvider\AbstractItemProvider;
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Resolve category tree items, set processed item list in processedTca, sanitize and resolve database field
@@ -41,7 +42,11 @@ class TcaSelectItems extends AbstractItemProvider implements FormDataProviderInt
 
             $result['databaseRow'][$fieldName] = $this->getSelectedItems($result, $fieldName);
 
-            $fieldConfig['config']['maxitems'] = $this->sanitizeMaxItems($fieldConfig['config']['maxitems']);
+            $fieldConfig['config']['maxitems'] = MathUtility::forceIntegerInRange(
+                $fieldConfig['config']['maxitems'],
+                0,
+                99999
+            );
             $result['processedTca']['columns'][$fieldName] = $fieldConfig;
         }
 
