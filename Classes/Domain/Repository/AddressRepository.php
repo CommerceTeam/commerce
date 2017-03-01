@@ -119,39 +119,84 @@ class AddressRepository extends AbstractRepository
      */
     public function removeIsMainAddress($pid, $feUserUid, $addressType)
     {
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            $this->getDatabaseConnection(),
-            'pid = ' . (int) $pid
-            . ' AND tx_commerce_fe_user_id = ' . (int) $feUserUid
-            . ' AND tx_commerce_address_type_id = ' . (int) $addressType,
-            ['tx_commerce_is_main_address' => 0]
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder->getRestrictions()->removeAll();
+
+        $queryBuilder
+            ->update($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'tx_commerce_fe_user_id',
+                    $queryBuilder->createNamedParameter($feUserUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'tx_commerce_address_type_id',
+                    $queryBuilder->createNamedParameter($addressType, \PDO::PARAM_INT)
+                )
+            )
+            ->set('tx_commerce_is_main_address', 0)
+            ->execute();
     }
 
     /**
      * @param int $addressUid
      * @param int $userUid
      * @param array $data
+     *
+     * @return void
      */
     public function updateAddressOfUser($addressUid, $userUid, $data)
     {
-        $sWhere = 'uid = ' . (int) $addressUid . ' AND tx_commerce_fe_user_id = ' . (int) $userUid;
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder->getRestrictions()->removeAll();
 
-        $this->getDatabaseConnection()->exec_UPDATEquery('tt_address', $sWhere, $data);
+        $queryBuilder
+            ->update($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($addressUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'tx_commerce_fe_user_id',
+                    $queryBuilder->createNamedParameter($userUid, \PDO::PARAM_INT)
+                )
+            );
+
+        foreach ($data as $row => $value) {
+            $queryBuilder->set($row, $value);
+        }
+
+        $queryBuilder->execute();
     }
 
     /**
-     * @param int $uid
-     * @return string
+     * Set address record to deleted
+     *
+     * @param int $uid Identifier of the address record
+     *
+     * @return string Error message if query went wrong
      */
     public function deleteAddress($uid)
     {
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            'tt_address',
-            'uid = ' . (int) $uid,
-            ['deleted' => 1]
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder->getRestrictions()->removeAll();
 
-        return $this->getDatabaseConnection()->sql_error();
+        $result = $queryBuilder
+            ->update($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->set('deleted', 1)
+            ->execute();
+
+        return $result->errorInfo();
     }
 }
