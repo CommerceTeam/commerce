@@ -33,49 +33,62 @@ class ArticlePriceRepository extends AbstractRepository
 
     /**
      * Get data.
-     * Special Implementation for prices, as they don't have a localisation'
+     * Special Implementation for prices, as they don't have a localisation
      *
      * @param int $uid UID for Data
      * @param int $langUid Language Uid
      * @param bool $translationMode Translation Mode for recordset
      *
      * @return array assoc array with data
-     * @todo implement access_check concering category tree
      */
     public function getData($uid, $langUid = -1, $translationMode = false)
     {
-        $returnData = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            $this->databaseTable,
-            'uid = ' . (int)$uid . $this->enableFields()
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute();
 
         // Result should contain only one Dataset
-        if (count($returnData) == 1) {
-            return reset($returnData);
+        if ($result->rowCount() == 1) {
+            return $result->fetch();
         }
 
         $this->error(
-            'exec_SELECTquery(\'*\', \'' . $this->databaseTable . '\', \'uid = '
-            . $uid . '\'); returns no or more than one Result'
+            'SELECT \'*\' FROM \'' . $this->databaseTable . '\' WHERE \'uid = '
+            . $uid . '\'; returns no or more than one Result'
         );
 
         return [];
     }
 
     /**
-     * @param int $articleUid
+     * @param int $articleUid Uid of the article to get the price off
+     *
      * @return array
      */
-    public function findByArticleUid($articleUid)
+    public function findByArticleUid($articleUid): array
     {
-        $prices = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            'tx_commerce_article_prices',
-            'uid_article = ' . (int) $articleUid
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $prices = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_article',
+                    $queryBuilder->createNamedParameter($articleUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
 
-        return $prices;
+        return is_array($prices) ? $prices : [];
     }
 
     /**
@@ -85,15 +98,19 @@ class ArticlePriceRepository extends AbstractRepository
      */
     public function deleteByArticleUids(array $articleUids)
     {
-        $updateValues = [
-            'tstamp' => $GLOBALS['EXEC_TIME'],
-            'deleted' => 1,
-        ];
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder->getRestrictions()->removeAll();
 
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            $this->databaseTable,
-            'uid_article IN (' . implode(',', $articleUids) . ')',
-            $updateValues
-        );
+        $queryBuilder
+            ->update($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->in(
+                    'uid_article',
+                    $articleUids
+                )
+            )
+            ->set('deleted', 1)
+            ->set('tstamp', $GLOBALS['EXEC_TIME'])
+            ->execute();
     }
 }

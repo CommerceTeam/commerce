@@ -139,6 +139,7 @@ class AddressRepository extends AbstractRepository
                 )
             )
             ->set('tx_commerce_is_main_address', 0)
+            ->set('tstamp', $GLOBALS['EXEC_TIME'])
             ->execute();
     }
 
@@ -171,6 +172,7 @@ class AddressRepository extends AbstractRepository
             $queryBuilder->set($row, $value);
         }
 
+        $queryBuilder->set('tstamp', $GLOBALS['EXEC_TIME']);
         $queryBuilder->execute();
     }
 
@@ -195,6 +197,7 @@ class AddressRepository extends AbstractRepository
                 )
             )
             ->set('deleted', 1)
+            ->set('tstamp', $GLOBALS['EXEC_TIME'])
             ->execute();
 
         return $result->errorInfo();
