@@ -32,18 +32,31 @@ class OrderRepository extends AbstractRepository
      */
     public function findByOrderIdAndUser($orderId, $userId = 0)
     {
-        $queryString = 'order_id = ' . $this->getDatabaseConnection()->fullQuoteStr($orderId, $this->databaseTable);
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'order_id',
+                    $queryBuilder->createNamedParameter($orderId, \PDO::PARAM_STR)
+                )
+            );
+
         if ($userId) {
-            $queryString .= ' AND cust_fe_user = ' . (int) $userId;
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq(
+                    'cust_fe_user',
+                    $queryBuilder->createNamedParameter($userId, \PDO::PARAM_INT)
+                )
+            );
         }
 
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            '*',
-            $this->databaseTable,
-            $queryString . $this->enableFields('tx_commerce_orders')
-        );
-        $row = is_array($row) ? $row : [];
-        return $row;
+        $result = $queryBuilder
+            ->execute()
+            ->fetch();
+
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -56,10 +69,23 @@ class OrderRepository extends AbstractRepository
      */
     public function updateByOrderId($orderId, array $data)
     {
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            $this->databaseTable,
-            'order_id = ' . $this->getDatabaseConnection()->fullQuoteStr($orderId, $this->databaseTable),
-            $data
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder->getRestrictions()->removeAll();
+
+        $queryBuilder
+            ->update($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'order_id',
+                    $queryBuilder->createNamedParameter($orderId, \PDO::PARAM_STR)
+                )
+            );
+
+        foreach ($data as $field => $value) {
+            $queryBuilder->set($field, $value);
+        }
+
+        $queryBuilder->set('tstamp', $GLOBALS['EXEC_TIME']);
+        $queryBuilder->execute();
     }
 }

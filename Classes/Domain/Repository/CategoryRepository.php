@@ -77,12 +77,23 @@ class CategoryRepository extends AbstractRepository
      */
     public function getSystemCategoryUid()
     {
-        $category = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid',
-            $this->databaseTable,
-            'uname = \'SYSTEM\' AND parent_category = \'\' AND deleted = 0'
-        );
-        return is_array($category) && isset($category['uid']) ? $category['uid'] : 0;
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('uid')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uname',
+                    $queryBuilder->createNamedParameter('SYSTEM', \PDO::PARAM_STR)
+                ),
+                $queryBuilder->expr()->eq(
+                    'parent_category',
+                    $queryBuilder->createNamedParameter('', \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+        return is_array($result) && isset($result['uid']) ? $result['uid'] : 0;
     }
 
     /**
@@ -94,20 +105,32 @@ class CategoryRepository extends AbstractRepository
      */
     public function getParentCategory($uid)
     {
-        $result = 0;
+        $parentUid = 0;
         if ($uid && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
             $this->uid = $uid;
-            $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                'uid_foreign',
-                $this->databaseParentCategoryRelationTable,
-                'uid_local = ' . $uid . ' AND is_reference = 0'
-            );
-            if (!empty($row)) {
-                $result = $row['uid_foreign'];
+
+            $queryBuilder = $this->getQueryBuilderForTable($this->databaseParentCategoryRelationTable);
+            $result = $queryBuilder
+                ->select('uid_foreign')
+                ->from($this->databaseParentCategoryRelationTable)
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'is_reference',
+                        $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'uid_local',
+                        $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                    )
+                )
+                ->execute();
+
+            if ($result->rowCount() > 0) {
+                $parentUid = $result->fetch()['uid_foreign'];
             }
         }
 
-        return $result;
+        return $parentUid;
     }
 
     /**
@@ -121,15 +144,21 @@ class CategoryRepository extends AbstractRepository
     {
         $result = [];
         if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) && $uid) {
-            $result = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                'perms_everybody, perms_user, perms_group, perms_userid, perms_groupid, editlock',
-                $this->databaseTable,
-                'uid = ' . $uid
-            );
-            $result = is_array($result) ? $result : [];
+            $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+            $result = $queryBuilder
+                ->select('perms_everybody', 'perms_user', 'perms_group', 'perms_userid', 'perms_groupid', 'editlock')
+                ->from($this->databaseTable)
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'uid',
+                        $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                    )
+                )
+                ->execute()
+                ->fetch();
         }
 
-        return $result;
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -264,12 +293,22 @@ class CategoryRepository extends AbstractRepository
                 } else {
                     // Check if a localised product is available for this category
                     // @todo Check if this is correct in Multi Tree Sites
-                    $translationCount = $this->getDatabaseConnection()->exec_SELECTcountRows(
-                        'uid',
-                        $this->databaseTable,
-                        'l18n_parent = ' . $row['uid_local'] . ' AND sys_language_uid = ' . $this->lang_uid
-                        . $this->enableFields()
-                    );
+                    $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+                    $translationCount = $queryBuilder
+                        ->count('uid')
+                        ->from($this->databaseTable)
+                        ->where(
+                            $queryBuilder->expr()->eq(
+                                'l18n_parent',
+                                $queryBuilder->createNamedParameter($row['uid_local'], \PDO::PARAM_INT)
+                            ),
+                            $queryBuilder->expr()->eq(
+                                'sys_language_uid',
+                                $queryBuilder->createNamedParameter($this->lang_uid, \PDO::PARAM_INT)
+                            )
+                        )
+                        ->execute()
+                        ->fetchColumn();
 
                     if ($translationCount > 0) {
                         $data[] = $row['uid_local'];
@@ -445,11 +484,20 @@ class CategoryRepository extends AbstractRepository
      */
     public function findRelationByForeignUid($foreignUid)
     {
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            $this->databaseParentCategoryRelationTable,
-            'uid_foreign = ' . (int) $foreignUid
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseParentCategoryRelationTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseParentCategoryRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_foreign',
+                    $queryBuilder->createNamedParameter($foreignUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -462,8 +510,17 @@ class CategoryRepository extends AbstractRepository
      */
     public function findAttributesByCategoryUid($categoryUid, array $excludeAttributes = null)
     {
-        // build the basic query
-        $where = 'uid_local = ' . $categoryUid;
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        $queryBuilder
+            ->select('*')
+            ->from($this->databaseAttributeRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($categoryUid, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy('sorting');
 
         // should we exclude some attributes
         if (is_array($excludeAttributes) && !empty($excludeAttributes)) {
@@ -471,18 +528,19 @@ class CategoryRepository extends AbstractRepository
             foreach ($excludeAttributes as $excludeAttribute) {
                 $excludeUids[] = (int) $excludeAttribute['uid_foreign'];
             }
-            $where .= ' AND uid_foreign NOT IN (' . implode(',', $excludeUids) . ')';
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->notIn(
+                    'uid_foreign',
+                    $excludeUids
+                )
+            );
         }
 
-        // execute the query
-        $result = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            $this->databaseAttributeRelationTable,
-            $where,
-            '',
-            'sorting'
-        );
-        return $result;
+        $result = $queryBuilder
+            ->execute()
+            ->fetchAll();
+
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -493,16 +551,18 @@ class CategoryRepository extends AbstractRepository
      */
     public function deleteByUids(array $categoryUids)
     {
-        $updateValues = [
-            'tstamp' => $GLOBALS['EXEC_TIME'],
-            'deleted' => 1,
-        ];
-
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            $this->databaseTable,
-            'uid IN (' . implode(',', $categoryUids) . ')',
-            $updateValues
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->update($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->in(
+                    'uid',
+                    $categoryUids
+                )
+            )
+            ->set('deleted', 1)
+            ->set('tstamp', $GLOBALS['EXEC_TIME'])
+            ->execute();
     }
 
     /**
@@ -513,15 +573,17 @@ class CategoryRepository extends AbstractRepository
      */
     public function deleteTranslationByParentUids(array $categoryUids)
     {
-        $updateValues = [
-            'tstamp' => $GLOBALS['EXEC_TIME'],
-            'deleted' => 1,
-        ];
-
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            $this->databaseTable,
-            'l18n_parent IN (' . implode(',', $categoryUids) . ')',
-            $updateValues
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->update($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->in(
+                    'l18n_parent',
+                    $categoryUids
+                )
+            )
+            ->set('deleted', 1)
+            ->set('tstamp', $GLOBALS['EXEC_TIME'])
+            ->execute();
     }
 }

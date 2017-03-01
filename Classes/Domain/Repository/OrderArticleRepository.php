@@ -33,11 +33,19 @@ class OrderArticleRepository extends AbstractRepository
      */
     public function findByOrderId($orderId)
     {
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            $this->databaseTable,
-            'order_id = ' . $this->getDatabaseConnection()->fullQuoteStr($orderId, $this->databaseTable)
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'order_id',
+                    $queryBuilder->createNamedParameter($orderId, \PDO::PARAM_STR)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -50,12 +58,23 @@ class OrderArticleRepository extends AbstractRepository
      */
     public function findByOrderIdInPage($orderId, $pageId)
     {
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            $this->databaseTable,
-            'pid = ' . $pageId . $this->enableFields() .
-            ' AND order_id = ' . $this->getDatabaseConnection()->fullQuoteStr($orderId, $this->databaseTable)
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'order_id',
+                    $queryBuilder->createNamedParameter($orderId, \PDO::PARAM_STR)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -66,18 +85,23 @@ class OrderArticleRepository extends AbstractRepository
      */
     public function findByOrderIdAndType($orderUid, $articleType = 0)
     {
-        $where = 'order_uid = ' . (int) $orderUid . ' ';
-        if ($articleType) {
-            $where .= ' AND article_type_uid = ' . (int) $articleType . ' ';
-        }
-
-        $rows = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            'tx_commerce_order_articles',
-            $where . $this->enableFields()
-        );
-
-        return $rows;
+        $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_order_articles');
+        $result = $queryBuilder
+            ->select('*')
+            ->from('tx_commerce_order_articles')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'order_uid',
+                    $queryBuilder->createNamedParameter($orderUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'article_type_uid',
+                    $queryBuilder->createNamedParameter($articleType, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
     }
 
     /**

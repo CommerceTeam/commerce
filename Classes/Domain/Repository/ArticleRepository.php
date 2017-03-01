@@ -68,15 +68,21 @@ class ArticleRepository extends AbstractRepository
      */
     public function getHighestSortingByProductUid($productUid)
     {
-        $sorting = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid, sorting',
-            $this->databaseTable,
-            'uid_product = ' . (int) $productUid . $this->enableFields(),
-            '',
-            'sorting DESC'
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('uid', 'sorting')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy('sorting', 'DESC')
+            ->execute()
+            ->fetch();
 
-        return is_array($sorting) && isset($sorting['sorting']) ? $sorting['sorting'] : 0;
+        return is_array($result) && isset($result['sorting']) ? $result['sorting'] : 0;
     }
 
     /**
@@ -108,15 +114,33 @@ class ArticleRepository extends AbstractRepository
         if ($uid > 0) {
             $priceUidList = [];
 
-            $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                'uid,fe_group',
-                'tx_commerce_article_prices',
-                'uid_article = ' . $uid . ' AND price_scale_amount_start <= ' . $count
-                . ' AND price_scale_amount_end >= ' . $count . $additionalWhere
-                . $this->enableFields('tx_commerce_article_prices'),
-                '',
-                $orderField
-            );
+            $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_article_prices');
+            $queryBuilder
+                ->select('uid', 'fe_group')
+                ->from('tx_commerce_article_prices')
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'uid_article',
+                        $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->lte(
+                        'price_scale_amount_start',
+                        $queryBuilder->createNamedParameter($count, \PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->gte(
+                        'price_scale_amount_end',
+                        $queryBuilder->createNamedParameter($count, \PDO::PARAM_INT)
+                    )
+                )
+                ->orderBy($orderField);
+
+            if ($additionalWhere) {
+                $queryBuilder->andWhere($additionalWhere);
+            }
+
+            $rows = $queryBuilder
+                ->execute()
+                ->fetchAll();
 
             if (!empty($rows)) {
                 foreach ($rows as $data) {
@@ -158,12 +182,22 @@ class ArticleRepository extends AbstractRepository
         if ($uid > 0) {
             $priceUidList = [];
 
-            $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                'uid,price_scale_amount_start, price_scale_amount_end',
-                'tx_commerce_article_prices',
-                'uid_article = ' . $uid . ' AND price_scale_amount_start >= ' . (int) $count
-                . $this->enableFields('tx_commerce_article_prices')
-            );
+            $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_article_prices');
+            $rows = $queryBuilder
+                ->select('uid', 'price_scale_amount_start', 'price_scale_amount_end')
+                ->from('tx_commerce_article_prices')
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'uid_article',
+                        $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->gte(
+                        'price_scale_amount_start',
+                        $queryBuilder->createNamedParameter($count, \PDO::PARAM_INT)
+                    )
+                )
+                ->execute()
+                ->fetchAll();
 
             if (!empty($rows)) {
                 foreach ($rows as $data) {
@@ -173,8 +207,8 @@ class ArticleRepository extends AbstractRepository
                 return $priceUidList;
             } else {
                 $this->error(
-                    'exec_SELECTquery(\'uid\', \'tx_commerce_article_prices\', \'uid_article = \' . ' . $uid .
-                    '); returns no Result'
+                    'SELECT uid FROM tx_commerce_article_prices WHERE uid_article = ' . $uid .
+                    ' AND price_scale_amount_start >= ' . $count . '; # returns no Result'
                 );
 
                 return [];
@@ -218,12 +252,19 @@ class ArticleRepository extends AbstractRepository
      */
     public function getAttributeRelationsByArticleUid($uid)
     {
-        $attributeRelations = (array)$this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            $this->databaseAttributeRelationTable,
-            'uid_local = ' . (int) $uid
-        );
-        return $attributeRelations;
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseAttributeRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
     }
 
     /**

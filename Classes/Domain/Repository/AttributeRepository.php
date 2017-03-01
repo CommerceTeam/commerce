@@ -137,13 +137,13 @@ class AttributeRepository extends AbstractRepository
      */
     public function findAllCorrelationTypes()
     {
-        $correlationTypes = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            $this->correlationTypeDatabaseTable,
-            ''
-        );
-
-        return $correlationTypes;
+        $queryBuilder = $this->getQueryBuilderForTable($this->correlationTypeDatabaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->correlationTypeDatabaseTable)
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -155,18 +155,23 @@ class AttributeRepository extends AbstractRepository
      */
     public function getAttributeValueUids($uid)
     {
-        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid',
-            $this->childDatabaseTable,
-            'attributes_uid = ' . (int) $uid . $this->enableFields(),
-            '',
-            'sorting'
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('uid')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'attributes_uid',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy('sorting')
+            ->execute();
 
         $attributeValueList = [];
-        if (!empty($rows)) {
-            foreach ($rows as $data) {
-                $attributeValueList[] = $data['uid'];
+        if ($result->rowCount() > 0) {
+            while ($row = $result->fetch()) {
+                $attributeValueList[] = $row['uid'];
             }
         }
 
@@ -185,17 +190,22 @@ class AttributeRepository extends AbstractRepository
         $childAttributeList = [];
         $uid = (int) $uid;
         if ($uid) {
-            $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                'uid',
-                $this->databaseTable,
-                'parent = ' . $uid . $this->enableFields(),
-                '',
-                'sorting'
-            );
+            $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+            $result = $queryBuilder
+                ->select('uid')
+                ->from($this->databaseTable)
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'parent',
+                        $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                    )
+                )
+                ->orderBy('sorting')
+                ->execute();
 
-            if (!empty($rows)) {
-                foreach ($rows as $data) {
-                    $childAttributeList[] = $data['uid'];
+            if ($result->rowCount() > 0) {
+                while ($row = $result->fetch()) {
+                    $childAttributeList[] = $row['uid'];
                 }
             }
         }

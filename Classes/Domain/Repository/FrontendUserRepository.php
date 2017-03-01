@@ -12,6 +12,9 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Class \CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository
  */
@@ -33,13 +36,27 @@ class FrontendUserRepository extends AbstractRepository
      */
     public function findByAddressId($addressId)
     {
-        $row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid',
-            $this->databaseTable,
-            'tx_commerce_tt_address_id = ' . $addressId . ' AND deleted = 0'
-        );
-        $row = is_array($row) ? $row : [];
-        return $row;
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add($deleteRestriction);
+
+        $result = $queryBuilder
+            ->select('uid')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'tx_commerce_tt_address_id',
+                    $queryBuilder->createNamedParameter($addressId, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -50,14 +67,24 @@ class FrontendUserRepository extends AbstractRepository
      */
     public function findByUsernameInFolder($username, $folderId)
     {
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid',
-            $this->databaseTable,
-            'username = ' . $this->getDatabaseConnection()->fullQuoteStr($username, $this->databaseTable)
-            . ' AND pid = ' . $folderId . $this->enableFields()
-        );
-        $row = is_array($row) ? $row : [];
-        return $row;
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('uid')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($folderId, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'username',
+                    $queryBuilder->createNamedParameter($username, \PDO::PARAM_STR)
+                )
+            )
+            ->execute()
+            ->fetch();
+
+        return is_array($result) ? $result : [];
     }
 
     /**

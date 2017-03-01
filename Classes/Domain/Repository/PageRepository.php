@@ -33,13 +33,24 @@ class PageRepository extends AbstractRepository
      */
     public function findEditFolderByUid($uid)
     {
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'tx_commerce_foldereditorder',
-            $this->databaseTable,
-            'tx_commerce_foldereditorder = 1 AND uid = ' . (int) $uid
-        );
-        $row = is_array($row) ? $row : [];
-        return $row;
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('tx_commerce_foldereditorder')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'tx_commerce_foldereditorder',
+                    $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -51,17 +62,22 @@ class PageRepository extends AbstractRepository
      */
     public function findLanguageUidsByUid($pageUid)
     {
-        $locale = array_keys(
-            (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-                'sys_language_uid',
-                'pages_language_overlay',
-                'pid = ' . (int) $pageUid,
-                '',
-                '',
-                '',
-                'sys_language_uid'
+        $queryBuilder = $this->getQueryBuilderForTable('pages_language_overlay');
+        $result = $queryBuilder
+            ->select('sys_language_uid')
+            ->from('pages_language_overlay')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($pageUid, \PDO::PARAM_INT)
+                )
             )
-        );
+            ->execute();
+
+        $locale = [];
+        while ($row = $result->fetch()) {
+            $locale[$row['sys_language_uid']] = $row;
+        }
 
         return $locale;
     }

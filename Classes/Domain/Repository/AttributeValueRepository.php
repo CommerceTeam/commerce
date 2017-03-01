@@ -70,6 +70,7 @@ class AttributeValueRepository extends AbstractRepository
 
     /**
      * @param array $uids
+     *
      * @return array
      */
     public function findByUids(array $uids)
