@@ -12,7 +12,8 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Database Class for tx_commerce_products. All database calle should
@@ -40,12 +41,31 @@ class AttributeValueRepository extends AbstractRepository
      */
     public function findByAttributeInPage($attributeUid, $pageId)
     {
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            $this->databaseTable,
-            'pid = ' . $pageId . ' AND attributes_uid = ' . $attributeUid .
-            BackendUtility::deleteClause($this->databaseTable)
-        );
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add($deleteRestriction);
+
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'attributes_uid',
+                    $queryBuilder->createNamedParameter($attributeUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+
+        return is_array($result) ? $result :[];
     }
 
     /**
@@ -55,13 +75,21 @@ class AttributeValueRepository extends AbstractRepository
     public function findByUids(array $uids)
     {
         $uids = array_map('intval', $uids);
-        $values = (array)$this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid, value',
-            $this->databaseTable,
-            'uid IN (' . implode(',', $uids) . ')' . $this->enableFields()
-        );
 
-        return $values;
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('uid', 'value')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->in(
+                    'uid',
+                    $uids
+                )
+            )
+            ->execute()
+            ->fetchAll();
+
+        return is_array($result) ? $result : [];
     }
 
     /**
