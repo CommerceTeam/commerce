@@ -61,8 +61,8 @@ class ArticlePriceRepository extends AbstractRepository
         }
 
         $this->error(
-            'SELECT \'*\' FROM \'' . $this->databaseTable . '\' WHERE \'uid = '
-            . $uid . '\'; returns no or more than one Result'
+            'SELECT * FROM tx_commerce_article_prices WHERE uid = '
+            . $uid . '; # returns no or more than one Result'
         );
 
         return [];
