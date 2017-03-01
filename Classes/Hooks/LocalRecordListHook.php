@@ -18,6 +18,7 @@ use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  * Class \CommerceTeam\Commerce\Hook\LocalRecordListHooks
@@ -164,7 +165,7 @@ class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordList
                                         $tmpTypoScript['properties']['newContentWiz.']['overrideWithExtension'];
                                     $newContentWizScriptPath =
                                         (ExtensionManagementUtility::isLoaded($tmpTypoScript)) ?
-                                        (ExtensionManagementUtility::extRelPath($tmpTypoScript) .
+                                        (PathUtility::getRelativePathTo($tmpTypoScript) .
                                             'mod1/db_new_content_el.php') :
                                         'sysext/cms/layout/db_new_content_el.php';
 

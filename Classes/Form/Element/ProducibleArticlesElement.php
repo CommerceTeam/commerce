@@ -312,9 +312,11 @@ class ProducibleArticlesElement extends AbstractFormElement
                 // create the row
                 $resultRows .= '<tr>
                     <td class="col-icon">' . $this->getCreateAction($attributeValue) . '</td>
-                    <td>' . GeneralUtility::removeXSS(implode('</td><td>', $labelData)) . '</td>';
+                    <td>' . str_replace('|', '</td><td>', htmlspecialchars(implode('|', $labelData))) . '</td>';
                 if (!empty($extraRowData)) {
-                    $resultRows .= '<td>' . GeneralUtility::removeXSS(implode('</td><td>', $extraRowData)) . '</td>';
+                    $resultRows .= '<td>' .
+                        str_replace('|', '</td><td>', htmlspecialchars(implode('|', $extraRowData))) .
+                        '</td>';
                 }
                 $resultRows .= '</tr>';
             }
