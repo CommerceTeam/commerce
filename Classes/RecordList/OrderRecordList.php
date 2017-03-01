@@ -689,11 +689,12 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         $lMenu = '<select class="form-control" name="search_levels" title="' .
             $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.title.search_levels', true) . '" id="search_levels">' .
             implode('', $opt) . '</select>';
+
+        $style = 'style="display: ' . ($this->searchString == '' ? 'none' : 'block') . ';"';
         // Table with the search box:
         $content = '<div class="db_list-searchbox-form db_list-searchbox-toolbar module-docheader-bar
             module-docheader-bar-search t3js-module-docheader-bar t3js-module-docheader-bar-search"
-            id="db_list-searchbox-toolbar" style="display: ' .
-            ($this->searchString == '' ? 'none' : 'block') . ';">
+            id="db_list-searchbox-toolbar" ' . $style . '>
 			' . $formElements[0] . '
                 <div id="typo3-dblist-search">
                     <div class="panel panel-default">
