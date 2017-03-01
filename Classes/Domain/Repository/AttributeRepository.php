@@ -96,15 +96,24 @@ class AttributeRepository extends AbstractRepository
      */
     public function findByProductUid($productUid)
     {
-        $attributes = (array)$this->getDatabaseConnection()->exec_SELECTgetRows(
-            'at.*',
-            $this->databaseTable . ' AS at
-            INNER JOIN tx_commerce_products_attributes_mm AS mm ON at.uid = mm.uid_foreign',
-            'mm.uid_local = ' . $productUid . ' AND mm.uid_correlationtype = 4'
-            . $this->enableFields($this->databaseTable, 'at')
-        );
-
-        return $attributes;
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('at.*')
+            ->from($this->databaseTable, 'at')
+            ->innerJoin('at', 'tx_commerce_products_attributes_mm', 'mm', 'at.uid = mm.uid_foreign')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'mm.uid_correlationtype',
+                    $queryBuilder->createNamedParameter(4, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'mm.uid_local',
+                    $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -114,22 +123,28 @@ class AttributeRepository extends AbstractRepository
      */
     public function findByArticleUid($articleUid)
     {
-        // @todo fix this query to realy get attributes of article
-        $attributes = (array)$this->getDatabaseConnection()->exec_SELECTgetRows(
-            'at.*, pmm.uid_correlationtype',
-            $this->databaseTable . ' AS at
-            INNER JOIN tx_commerce_articles_attributes_mm AS amm ON at.uid = amm.uid_foreign
-            INNER JOIN tx_commerce_articles AS a ON amm.uid_local = a.uid
-            INNER JOIN tx_commerce_products AS p ON a.uid_product = p.uid
-            INNER JOIN tx_commerce_products_attributes_mm AS pmm 
-                ON (p.uid = pmm.uid_local AND at.uid = pmm.uid_foreign)',
-            'a.uid = ' . (int)$articleUid
-            . $this->enableFields($this->databaseTable, 'at')
-            . $this->enableFields('tx_commerce_articles', 'a')
-            . $this->enableFields('tx_commerce_products', 'p')
-        );
-
-        return $attributes;
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('at.*', 'pmm.uid_correlationtype')
+            ->from($this->databaseTable, 'at')
+            ->innerJoin('at', 'tx_commerce_articles_attributes_mm', 'amm', 'at.uid = amm.uid_foreign')
+            ->innerJoin('amm', 'tx_commerce_articles', 'a', 'amm.uid_local = a.uid')
+            ->innerJoin('a', 'tx_commerce_products', 'p', 'a.uid_product = p.uid')
+            ->innerJoin(
+                'p',
+                'tx_commerce_products_attributes_mm',
+                'pmm',
+                'p.uid = pmm.uid_local AND at.uid = pmm.uid_foreign'
+            )
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'a.uid',
+                    $queryBuilder->createNamedParameter($articleUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
     }
 
     /**

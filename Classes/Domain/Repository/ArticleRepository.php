@@ -274,13 +274,23 @@ class ArticleRepository extends AbstractRepository
      */
     public function findAttributeRelationsByArticleAndAttribute($articleUid, $attributeUid)
     {
-        $relations = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            $this->databaseAttributeRelationTable,
-            'uid_local = ' . (int) $articleUid . ' AND uid_foreign = ' . (int) $attributeUid
-        );
-
-        return $relations;
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseAttributeRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($articleUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'uid_foreign',
+                    $queryBuilder->createNamedParameter($attributeUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -300,23 +310,40 @@ class ArticleRepository extends AbstractRepository
 
         if ($uid > 0) {
             // First select attribute, to detecxt if is valuelist
-            $database = $this->getDatabaseConnection();
-
-            $returnData = $database->exec_SELECTgetSingleRow(
-                'DISTINCT uid, has_valuelist',
-                'tx_commerce_attributes',
-                'uid = ' . (int) $attributeUid . $this->enableFields('tx_commerce_attributes')
-            );
+            $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_attributes');
+            $returnData = $queryBuilder
+                ->select('uid', 'has_valuelist')
+                ->from('tx_commerce_attributes')
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'uid',
+                        $queryBuilder->createNamedParameter($attributeUid, \PDO::PARAM_INT)
+                    )
+                )
+                ->groupBy('uid', 'has_valuelist')
+                ->execute()
+                ->fetch();
             if (!empty($returnData)) {
                 if ($returnData['has_valuelist'] == 1) {
                     // Attribute has a valuelist, so do separate query
-                    $valueData = $database->exec_SELECTgetSingleRow(
-                        'DISTINCT tx_commerce_attribute_values.value, tx_commerce_attribute_values.uid',
-                        $this->databaseAttributeRelationTable . ', tx_commerce_attribute_values',
-                        $this->databaseAttributeRelationTable . '.uid_valuelist = tx_commerce_attribute_values.uid'.
-                        ' AND uid_local = ' . $uid .
-                        ' AND uid_foreign = ' . $attributeUid
-                    );
+                    $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+                    $valueData = $queryBuilder
+                        ->select('v.value', 'v.uid')
+                        ->from($this->databaseAttributeRelationTable, 'mm')
+                        ->innerJoin('mm', 'tx_commerce_attribute_values', 'v', 'mm.uid_valuelist = v.uid')
+                        ->where(
+                            $queryBuilder->expr()->eq(
+                                'uid_local',
+                                $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                            ),
+                            $queryBuilder->expr()->eq(
+                                'uid_foreign',
+                                $queryBuilder->createNamedParameter($attributeUid, \PDO::PARAM_INT)
+                            )
+                        )
+                        ->groupBy('v.value', 'v.uid')
+                        ->execute()
+                        ->fetch();
                     if (!empty($valueData)) {
                         if ($valueListAsUid == true) {
                             return $valueData['uid'];
@@ -326,11 +353,23 @@ class ArticleRepository extends AbstractRepository
                     }
                 } else {
                     // attribute has no valuelist, so do normal query
-                    $valueData = $database->exec_SELECTgetSingleRow(
-                        'DISTINCT value_char, default_value',
-                        $this->databaseAttributeRelationTable,
-                        'uid_local = ' . $uid . ' AND uid_foreign = ' . $attributeUid
-                    );
+                    $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+                    $valueData = $queryBuilder
+                        ->select('value_char', 'default_value')
+                        ->from($this->databaseAttributeRelationTable)
+                        ->where(
+                            $queryBuilder->expr()->eq(
+                                'uid_local',
+                                $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                            ),
+                            $queryBuilder->expr()->eq(
+                                'uid_foreign',
+                                $queryBuilder->createNamedParameter($attributeUid, \PDO::PARAM_INT)
+                            )
+                        )
+                        ->groupBy('value_char', 'default_value')
+                        ->execute()
+                        ->fetch();
                     if (!empty($valueData)) {
                         if ($valueData['value_char']) {
                             return $valueData['value_char'];
@@ -372,18 +411,19 @@ class ArticleRepository extends AbstractRepository
         $characterValue = '',
         $defaultValue = 0.00
     ) {
-        $data['uid_local'] = $articleUid;
-        $data['uid_foreign'] = $attributeUid;
-        $data['uid_product'] = $productUid;
-        $data['sorting'] = $sorting;
-        $data['uid_valuelist'] = $valueList;
-        $data['value_char'] = $characterValue;
-        $data['default_value'] = $defaultValue;
-
-        $this->getDatabaseConnection()->exec_INSERTquery(
-            $this->databaseAttributeRelationTable,
-            $data
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        $queryBuilder
+            ->insert($this->databaseAttributeRelationTable)
+            ->values([
+                'uid_local' => $articleUid,
+                'uid_foreign' => $attributeUid,
+                'uid_product' => $productUid,
+                'sorting' => $sorting,
+                'uid_valuelist' => $valueList,
+                'value_char' => $characterValue,
+                'default_value' => $defaultValue,
+            ])
+            ->execute();
     }
 
     /**
@@ -395,16 +435,21 @@ class ArticleRepository extends AbstractRepository
      */
     public function getSupplierName($supplierUid)
     {
-        $database = $this->getDatabaseConnection();
-
         if ($supplierUid > 0) {
-            $returnData = $database->exec_SELECTgetSingleRow(
-                'title',
-                'tx_commerce_supplier',
-                'uid = ' . (int) $supplierUid
-            );
-            if (!empty($returnData)) {
-                return $returnData['title'];
+            $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_supplier');
+            $result = $queryBuilder
+                ->select('title')
+                ->from('tx_commerce_supplier')
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'uid',
+                        $queryBuilder->createNamedParameter($supplierUid, \PDO::PARAM_INT)
+                    )
+                )
+                ->execute()
+                ->fetch();
+            if (is_array($result) && !empty($result)) {
+                return $result['title'];
             }
         }
 
@@ -420,32 +465,43 @@ class ArticleRepository extends AbstractRepository
      */
     public function findByClassname($classname)
     {
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            '*',
-            'tx_commerce_articles',
-            'classname = ' . $this->getDatabaseConnection()->fullQuoteStr($classname, $this->databaseTable)
-            . $this->enableFields()
-        );
-
-        return is_array($row) ? $row : [];
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'classname',
+                    $queryBuilder->createNamedParameter($classname, \PDO::PARAM_STR)
+                )
+            )
+            ->execute()
+            ->fetch();
+        return is_array($result) ? $result : [];
     }
 
     /**
      * @param int $productUid
      * @param string $orderBy
+     *
      * @return array
      */
     public function findByProductUid($productUid, $orderBy = 'sorting')
     {
-        $articles = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            $this->databaseTable,
-            'uid_product = ' . $productUid . $this->enableFields(),
-            '',
-            $orderBy
-        );
-
-        return $articles;
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_product',
+                    $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy($orderBy)
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -458,17 +514,25 @@ class ArticleRepository extends AbstractRepository
      */
     public function findUidsByProductUid($productUid, $orderBy = 'sorting')
     {
-        $articles = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid',
-            $this->databaseTable,
-            'uid_product = ' . $productUid . $this->enableFields(),
-            '',
-            $orderBy,
-            '',
-            'uid'
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('uid')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_product',
+                    $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy($orderBy)
+            ->execute();
 
-        return array_keys($articles);
+        $articles = [];
+        while ($row = $result->fetch()) {
+            $articles[] = $row['uid'];
+        }
+
+        return $articles;
     }
 
     /**
@@ -478,27 +542,49 @@ class ArticleRepository extends AbstractRepository
      */
     public function updateRelation($articleUid, $attributeUid, array $data)
     {
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            'tx_commerce_articles_attributes_mm',
-            'uid_local = ' . (int) $articleUid . ' AND uid_foreign = ' . (int) $attributeUid,
-            $data
-        );
+        $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_articles_attributes_mm');
+        $queryBuilder
+            ->update('tx_commerce_articles_attributes_mm')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($articleUid)
+                ),
+                $queryBuilder->expr()->eq(
+                    'uid_foreign',
+                    $queryBuilder->createNamedParameter($attributeUid)
+                )
+            );
+
+        foreach ($data as $field => $value) {
+            $queryBuilder->set($field, $value);
+        }
+
+        $queryBuilder
+            ->execute();
     }
 
     /**
      * @param int $productUidFrom
      * @param int $productUidTo
+     *
      * @return string
      */
     public function updateProductUid($productUidFrom, $productUidTo)
     {
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            $this->databaseTable,
-            'uid_product = ' . (int) $productUidFrom,
-            ['uid_product' => (int) $productUidTo]
-        );
-
-        return $this->getDatabaseConnection()->sql_error();
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->update($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_product',
+                    $queryBuilder->createNamedParameter($productUidFrom)
+                )
+            )
+            ->set('uid_product', $productUidTo)
+            ->set('tstamp', $GLOBALS['EXEC_TIME'])
+            ->execute();
+        return $result->errorInfo();
     }
 
     /**
@@ -507,10 +593,20 @@ class ArticleRepository extends AbstractRepository
      */
     public function removeAttributeRelation($articleUid, $attributeId)
     {
-        $this->getDatabaseConnection()->exec_DELETEquery(
-            $this->databaseAttributeRelationTable,
-            'uid_local = ' . (int) $articleUid . ' AND uid_foreign = ' . (int) $attributeId
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        $queryBuilder
+            ->delete($this->databaseAttributeRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($articleUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'uid_foreign',
+                    $queryBuilder->createNamedParameter($attributeId, \PDO::PARAM_INT)
+                )
+            )
+            ->execute();
     }
 
     /**
@@ -520,15 +616,23 @@ class ArticleRepository extends AbstractRepository
      */
     public function deleteByUids(array $articleUids)
     {
-        $updateValues = [
-            'tstamp' => $GLOBALS['EXEC_TIME'],
-            'deleted' => 1,
-        ];
-
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            $this->databaseTable,
-            'uid IN (' . implode(',', $articleUids) . ') OR l18n_parent IN (' . implode(',', $articleUids) . ')',
-            $updateValues
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->update($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->in(
+                        'uid',
+                        $articleUids
+                    ),
+                    $queryBuilder->expr()->in(
+                        'l18n_parent',
+                        $articleUids
+                    )
+                )
+            )
+            ->set('deleted', 1)
+            ->set('tstamp', $GLOBALS['EXEC_TIME'])
+            ->execute();
     }
 }

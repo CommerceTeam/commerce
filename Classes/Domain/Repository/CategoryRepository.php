@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  */
 
 use CommerceTeam\Commerce\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 
 /**
  * Database Class for tx_commerce_categories. All database calls should
@@ -174,35 +175,31 @@ class CategoryRepository extends AbstractRepository
             return [];
         }
 
-        $database = $this->getDatabaseConnection();
-        $frontend = $this->getTypoScriptFrontendController();
         $this->uid = $uid;
-        if (is_object($frontend->sys_page)) {
-            $additionalWhere = $frontend->sys_page->enableFields(
-                $this->databaseTable,
-                $frontend->showHiddenRecords
-            );
-        } else {
-            $additionalWhere = ' AND ' . $this->databaseTable . '.deleted = 0';
-        }
 
-        $result = $database->exec_SELECT_mm_query(
-            'uid_foreign',
-            $this->databaseTable,
-            $this->databaseParentCategoryRelationTable,
-            $this->databaseTable,
-            ' AND ' . $this->databaseParentCategoryRelationTable . '.uid_local = ' . $uid . ' ' . $additionalWhere
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder->getRestrictions()->removeByType(
+            HiddenRestriction::class
         );
 
-        if ($result) {
-            $data = [];
-            while (($row = $database->sql_fetch_assoc($result))) {
-                // @todo access_check for data sets
+        $result = $queryBuilder
+            ->select('d.uid')
+            ->from($this->databaseTable, 's')
+            ->innerJoin('s', $this->databaseParentCategoryRelationTable, 'mm', 's.uid = mm.uid_local')
+            ->innerJoin('mm', $this->databaseTable, 'd', 'mm.uid_foreign = d.uid')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    's.uid',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute();
+
+        $data = [];
+        if ($result->rowCount() > 0) {
+            while ($row = $result->fetch()) {
                 $data[] = $row['uid_foreign'];
             }
-            $database->sql_free_result($result);
-
-            return $data;
         }
 
         return [];
@@ -223,14 +220,21 @@ class CategoryRepository extends AbstractRepository
         }
 
         $this->uid = $uid;
-        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            't1.title, t1.uid, t2.flag, t2.uid as sys_language',
-            $this->databaseTable . ' AS t1 LEFT JOIN sys_language AS t2 ON t1.sys_language_uid = t2.uid',
-            'l18n_parent = ' . $uid . ' AND deleted = 0'
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('c.title', 'c.uid', 's.flag', 's.uid AS sys_language')
+            ->from($this->databaseTable, 'c')
+            ->leftJoin('c', 'sys_language', 's', 'c.sys_language_uid = s.uid')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'c.l18n_parent',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute();
 
         $uids = [];
-        foreach ($rows as $row) {
+        while ($row = $result->fetch()) {
             $uids[] = $row;
         }
 
@@ -272,22 +276,25 @@ class CategoryRepository extends AbstractRepository
             $localOrderField = $hookObject->categoryOrder($localOrderField, $this);
         }
 
-        $result = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid_local',
-            $this->databaseTable
-            . ' INNER JOIN ' . $this->databaseParentCategoryRelationTable
-            . ' AS mm ON ' . $this->databaseTable . '.uid = mm.uid_local'
-            . ' INNER JOIN ' . $this->databaseTable . ' AS parent ON mm.uid_foreign = parent.uid',
-            'parent.uid = ' . $uid . $this->enableFields(),
-            '',
-            $localOrderField
-        );
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('mm.uid_local')
+            ->from($this->databaseTable, 's')
+            ->innerJoin('s', $this->databaseParentCategoryRelationTable, 'mm', 's.uid = mm.uid_local')
+            ->innerJoin('mm', $this->databaseTable, 'd', 'mm.uid_foreign = d.uid')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'd.uid',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy($localOrderField)
+            ->execute();
 
         $return = [];
-        if ($result) {
+        if ($result->rowCount()) {
             $data = [];
-            foreach ($result as $row) {
-                // @todo access_check for datasets
+            while ($row = $result->fetch()) {
                 if ($languageUid == 0) {
                     $data[] = $row['uid_local'];
                 } else {
@@ -400,14 +407,25 @@ class CategoryRepository extends AbstractRepository
                 if ($languageUid == 0) {
                     $return[] = (int) $row['uid'];
                 } else {
+                    $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_products');
+                    $translationCount = $queryBuilder
+                        ->count('uid')
+                        ->from('tx_commerce_products')
+                        ->where(
+                            $queryBuilder->expr()->eq(
+                                'l18n_parent',
+                                $queryBuilder->createNamedParameter($row['uid'], \PDO::PARAM_INT)
+                            ),
+                            $queryBuilder->expr()->eq(
+                                'sys_language_uid',
+                                $queryBuilder->createNamedParameter($this->lang_uid, \PDO::PARAM_INT)
+                            )
+                        )
+                        ->execute()
+                        ->fetchColumn();
+
                     // Check if a localized product for current language is available
-                    $lresult = $database->exec_SELECTquery(
-                        'uid',
-                        'tx_commerce_products',
-                        'l18n_parent = ' . (int) $row['uid'] . ' AND sys_language_uid = ' . $this->lang_uid
-                        . $this->enableFields('tx_commerce_products')
-                    );
-                    if ($database->sql_num_rows($lresult)) {
+                    if ($translationCount) {
                         $return[] = (int) $row['uid'];
                     }
                 }
@@ -461,18 +479,24 @@ class CategoryRepository extends AbstractRepository
      */
     public function findByParentCategoryUid($parentCategoryUid)
     {
-        $categories = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            $this->databaseTable . '.*',
-            $this->databaseTable
-            . ' INNER JOIN ' . $this->databaseParentCategoryRelationTable . ' AS mm ON '
-            . $this->databaseTable . '.uid = mm.uid_local',
-            'mm.uid_foreign = ' . (int) $parentCategoryUid . $this->enableFields()
-            . ' AND ' . BackendUtility::getCategoryPermsClause(1),
-            '',
-            $this->categoryOrderField
-        );
+        $permissionClause = str_replace($this->databaseTable, 'c', BackendUtility::getCategoryPermsClause(1));
 
-        return $categories;
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('c.*')
+            ->from($this->databaseTable, 'c')
+            ->innerJoin('c', $this->databaseParentCategoryRelationTable, 'mm', 'c.uid = mm.uid_local')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'mm.uid_foreign',
+                    $queryBuilder->createNamedParameter($parentCategoryUid, \PDO::PARAM_INT)
+                )
+            )
+            ->andWhere($permissionClause)
+            ->orderBy('c.sorting')
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
     }
 
     /**
