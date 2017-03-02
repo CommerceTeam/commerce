@@ -369,17 +369,6 @@ abstract class AbstractRepository implements SingletonInterface
     }
 
     /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     * @deprecated
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
      * @param $table
      *
      * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder

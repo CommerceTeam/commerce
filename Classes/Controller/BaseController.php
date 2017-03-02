@@ -2253,18 +2253,6 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     }
 
     /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     * @deprecated since 6.0.0 will be removed in 7.0.0
-     */
-    protected function getDatabaseConnection()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
      * @param $table
      *
      * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder

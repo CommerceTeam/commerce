@@ -603,16 +603,6 @@ class OrderEditFunc
     }
 
     /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
      * Get language service.
      *
      * @return \TYPO3\CMS\Lang\LanguageService

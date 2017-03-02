@@ -915,16 +915,6 @@ class BasicBasket
 
 
     /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
      * Get typoscript frontend controller.
      *
      * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController

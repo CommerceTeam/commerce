@@ -18,6 +18,13 @@ Hooks/SrfeuserregisterPi1Hook.php the commerce team does not advocates to use th
 Removed functions
 -----------------
 
+BaseController::getDatabaseConnection removed as not used in any controller anymore
+OrderEditFunc::getDatabaseConnection all queries are replaced with repository calls
+ArticleHook::getDatabaseConnection all queries are replaced with repository calls
+AbstractRepository::getDatabaseConnection all queries are migrated to doctrine dbal queryBuilder
+BasicBasket::getDatabaseConnection moved to Basket::getDatabaseConnection as it is only used in that class
+AbstractEntity::getDatabaseConnection to Product::getDatabaseConnection as it is only used in that class
+
 FolderRepository::getFolders should not be used anymore, please use ::getFolder instead
 BaseController::renderValue.NUMBERFORMAT this type of formating is possible via stdWrap.numberFormat and takes the configuration decimals, dec_point, thousands_sep so just replace NUMBERFORMAT with stdWrap.numberFormat = 1 and add stdWrap.numberFormat.deci... and so on
 BaseController::makeArticleView added method_exists before calling it as this method is only used in ListController

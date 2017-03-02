@@ -633,10 +633,14 @@ class Commands
 
 
     /**
+     * Get database connection.
+     *
      * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @deprecated since 6.0.0 will be removed in 7.0.0
      */
-    protected static function getDatabaseConnection()
+    protected function getDatabaseConnection()
     {
+        GeneralUtility::logDeprecatedFunction();
         return $GLOBALS['TYPO3_DB'];
     }
 
