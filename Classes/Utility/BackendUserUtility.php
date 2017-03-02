@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Utility;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\BackendUsergroupRepository;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -143,7 +144,6 @@ class BackendUserUtility implements SingletonInterface
      * @param int $perms Permission mask to use, see function description
      *
      * @return string Part of where clause. Prefix " AND " to this.
-     * @todo Define visibility
      */
     public function getCategoryPermsClause($perms)
     {
@@ -183,7 +183,6 @@ class BackendUserUtility implements SingletonInterface
      * This is not checked due to performance.
      *
      * @return array
-     * @todo Define visibility
      */
     public function returnWebmounts()
     {
@@ -191,17 +190,19 @@ class BackendUserUtility implements SingletonInterface
             return [ 0 ];
         }
 
-        $groups = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'tx_commerce_mountpoints',
-            'be_groups',
-            'uid IN (' . $this->getBackendUser()->groupList . ')'
-        );
-
         $mountPoints = [];
-        foreach ($groups as $group) {
-            $mount = current($group);
-            if (!empty($mount)) {
-                $mountPoints = array_merge($mountPoints, GeneralUtility::trimExplode(',', $mount));
+        if (!empty($this->getBackendUser()->groupList)) {
+            /** @var BackendUsergroupRepository $backendUsergroupRepository */
+            $backendUsergroupRepository = GeneralUtility::makeInstance(BackendUsergroupRepository::class);
+            $groups = $backendUsergroupRepository->findByGroupList(
+                GeneralUtility::intExplode(',', $this->getBackendUser()->groupList, true)
+            );
+
+            foreach ($groups as $group) {
+                $mount = current($group);
+                if (!empty($mount)) {
+                    $mountPoints = array_merge($mountPoints, GeneralUtility::trimExplode(',', $mount));
+                }
             }
         }
 
@@ -219,18 +220,5 @@ class BackendUserUtility implements SingletonInterface
     protected function getBackendUser()
     {
         return $GLOBALS['BE_USER'];
-    }
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     *
-     * @deprecated since 6.0.0 will be removed in 7.0.0
-     */
-    protected function getDatabaseConnection()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
     }
 }

@@ -366,8 +366,9 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
                             $this->data['inlineFirstPid']
                         ) . '-' . $table;
                         $aOnClickInline = $objectPrefix . '|inline.checkUniqueElement|inline.setUniqueElement';
-                        $rOnClickInline = 'inline.revertUnique(' . GeneralUtility::quoteJSvalue($objectPrefix) .
-                            ',null,' . GeneralUtility::quoteJSvalue($uid) . ');';
+                        $rOnClickInline = 'onClick="inline.revertUnique(' .
+                            GeneralUtility::quoteJSvalue($objectPrefix) .
+                            ',null,' . GeneralUtility::quoteJSvalue($uid) . ');"';
                     }
                 }
                 if (is_array($config['appearance']) && isset($config['appearance']['elementBrowserType'])) {
@@ -380,12 +381,13 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
                 } else {
                     $elementBrowserAllowed = $allowed;
                 }
-                $aOnClick = 'setFormValueOpenBrowser(' . GeneralUtility::quoteJSvalue($elementBrowserType) . ',' .
+                $aOnClick = 'onclick="' . htmlspecialchars(
+                    'setFormValueOpenBrowser(' . GeneralUtility::quoteJSvalue($elementBrowserType) . ',' .
                     GeneralUtility::quoteJSvalue(($fName . '|||' . $elementBrowserAllowed . '|' . $aOnClickInline)) .
-                    '); return false;';
+                    '); return false;'
+                ) . '"';
                 $icons['R'][] = '
-					<a href="#"
-						onclick="' . htmlspecialchars($aOnClick) . '"
+					<a href="#" ' . $aOnClick . '
 						class="btn btn-default"
 						title="' .
                         htmlspecialchars($languageService->sL(
@@ -456,10 +458,9 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
                             rawurlencode(str_replace('%20', ' ', $elValue))
                         ) . '),' . $itemTitle . ',' . $itemTitle . ');';
                 }
-                $aOnClick .= 'return false;';
+                $aOnClick .= 'onclick="' . htmlspecialchars('return false;') . '"';
                 $icons['R'][] = '
-					<a href="#"
-						onclick="' . htmlspecialchars($aOnClick) . '"
+					<a href="#" ' . $aOnClick . '
 						title="' .
                     htmlspecialchars(sprintf(
                         $languageService->sL(
@@ -474,8 +475,7 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
         if (!$params['readOnly'] && !$params['noDelete']) {
             $icons['L'][] = '
 				<a href="#"
-					class="btn btn-default t3-btn-removeoption"
-					onClick="' . $rOnClickInline . '"
+					class="btn btn-default t3-btn-removeoption" ' . $rOnClickInline . '
 					data-fieldname="' . $fName . '"
 					title="' .
                 htmlspecialchars($languageService->sL('LLL:EXT:lang/locallang_core.xlf:labels.remove_selected')) .
@@ -558,8 +558,9 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
             foreach ($params['allowedTables'] as $key => $item) {
                 if (is_array($item)) {
                     if (empty($params['readOnly'])) {
-                        $allowedTables .= '<a href="#" onClick="' . htmlspecialchars($item['onClick']) .
-                            '" class="btn btn-default">' . $item['icon'] . ' ' . htmlspecialchars($item['name']) .
+                        $onClick = 'onClick="' . htmlspecialchars($item['onClick']) . '"';
+                        $allowedTables .= '<a href="#" ' . $onClick . ' class="btn btn-default">' .
+                            $item['icon'] . ' ' . htmlspecialchars($item['name']) .
                             '</a> ';
                     } else {
                         $allowedTables .= '<span>' . htmlspecialchars($item['name']) . '</span> ';
