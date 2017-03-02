@@ -32,7 +32,7 @@ AddressObserver::update $_ removed the unused parameter. Only the uid will be ac
 FeuserObserver::update $_ removed the unused parameter. Only the uid will be accepted.
 
 
-Remove Properties
+Remove properties
 -----------------
 
 ListController::product_array unused property. Replace with ListController::product->returnAssocArray()
@@ -43,3 +43,7 @@ Changed methods
 
 Ccvs::validateCreditCard now respects the parameter of the super method. To be able to check with a checksum please use Ccvs::validate instead
 FolderRepository::initFolders order introduced in 5.0 is now the default and no fallback handling will be available anymore.
+
+Changed hooks
+-------------
+Domain/Repository/CategoryRepository::getChildProducts ->productQueryPreHook first Parameter changed from $queryArray to $queryBuilder all changes made to the different array keys need to be changed to modify the queryBuilder

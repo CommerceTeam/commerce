@@ -288,7 +288,7 @@ class CategoryRepository extends AbstractRepository
                     $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
                 )
             )
-            ->orderBy($localOrderField)
+            ->orderBy(str_replace($this->databaseTable, 's', $localOrderField))
             ->execute();
 
         $return = [];
@@ -364,46 +364,31 @@ class CategoryRepository extends AbstractRepository
             $localOrderField = $hookObject->productOrder($localOrderField, $this);
         }
 
-        $whereClause = 'tx_commerce_products_categories_mm.uid_foreign = ' . $uid;
-
-        if (is_object($frontend->sys_page)) {
-            $whereClause .= $this->enableFields('tx_commerce_products');
-            $whereClause .= $this->enableFields('tx_commerce_articles');
-            $whereClause .= $this->enableFields('tx_commerce_article_prices');
-        }
-
-        $queryArray = [
-            'SELECT' => 'tx_commerce_products.uid',
-            'FROM' => 'tx_commerce_products
-                INNER JOIN tx_commerce_products_categories_mm 
-                    ON tx_commerce_products.uid = tx_commerce_products_categories_mm.uid_local
-                INNER JOIN tx_commerce_articles 
-                    ON tx_commerce_products.uid = tx_commerce_articles.uid_product
-                INNER JOIN tx_commerce_article_prices 
-                    ON tx_commerce_articles.uid = tx_commerce_article_prices.uid_article',
-            'WHERE' => $whereClause,
-            'GROUPBY' => 'tx_commerce_products.uid',
-            'ORDERBY' => $localOrderField,
-            'LIMIT' => '',
-        ];
+        $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_products');
+        $queryBuilder
+            ->select('p.uid')
+            ->from('tx_commerce_products', 'p')
+            ->innerJoin('p', 'tx_commerce_products_categories_mm', 'mm', 'p.uid = mm.uid_local')
+            ->innerJoin('p', 'tx_commerce_articles', 'a', 'p.uid = a.uid_product')
+            ->innerJoin('a', 'tx_commerce_article_prices', 'ap', 'a.uid = ap.uid_article')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'mm.uid_foreign',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->groupBy('p.uid')
+            ->orderBy(str_replace('tx_commerce_products', 'p', $localOrderField));
 
         if (is_object($hookObject) && method_exists($hookObject, 'productQueryPreHook')) {
-            $queryArray = $hookObject->productQueryPreHook($queryArray, $this);
+            $queryBuilder = $hookObject->productQueryPreHook($queryBuilder, $this);
         }
 
-        $database = $this->getDatabaseConnection();
+        $result = $queryBuilder->execute();
 
         $return = [];
-        $rows = $database->exec_SELECTgetRows(
-            $queryArray['SELECT'],
-            $queryArray['FROM'],
-            $queryArray['WHERE'],
-            $queryArray['GROUPBY'],
-            $queryArray['ORDERBY'],
-            $queryArray['LIMIT']
-        );
-        if (!empty($rows)) {
-            foreach ($rows as $row) {
+        if ($result->rowCount() > 0) {
+            while ($row = $result->fetch()) {
                 if ($languageUid == 0) {
                     $return[] = (int) $row['uid'];
                 } else {
@@ -452,13 +437,19 @@ class CategoryRepository extends AbstractRepository
     public function getCategoryRootline($categoryUid, $clause = '', array $result = [])
     {
         if (!empty($categoryUid) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($categoryUid)) {
-            $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                'tx_commerce_categories.uid, mm.uid_foreign AS parent',
-                'tx_commerce_categories
-                    INNER JOIN tx_commerce_categories_parent_category_mm AS mm
-                        ON tx_commerce_categories.uid = mm.uid_local',
-                'tx_commerce_categories.uid = ' . $categoryUid . $this->enableFields()
-            );
+            $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+            $row = $queryBuilder
+                ->select('s.uid', 'mm.uid_foreign AS parent')
+                ->from($this->databaseTable, 's')
+                ->innerJoin('s', 'tx_commerce_categories_parent_category_mm', 'mm', 's.uid = mm.uid_local')
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        's.uid',
+                        $queryBuilder->createNamedParameter($categoryUid, \PDO::PARAM_INT)
+                    )
+                )
+                ->execute()
+                ->fetch();
 
             if (!empty($row) && $row['parent'] != $categoryUid) {
                 $result = $this->getCategoryRootline((int) $row['parent'], $clause, $result);
