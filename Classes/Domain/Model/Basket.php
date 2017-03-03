@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Domain\Model;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\BasketRepository;
 use CommerceTeam\Commerce\Factory\HookFactory;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use CommerceTeam\Commerce\Utility\GeneralUtility;
@@ -62,6 +63,11 @@ class Basket extends BasicBasket implements SingletonInterface
     protected $basketStoragePid;
 
     /**
+     * @var BasketRepository
+     */
+    protected $basketRepository;
+
+    /**
      * Constructor for a commerce basket.
      * Loads configuration data.
      */
@@ -70,6 +76,7 @@ class Basket extends BasicBasket implements SingletonInterface
         if (ConfigurationUtility::getInstance()->getExtConf('basketType') == 'persistent') {
             $this->storageType = 'persistent';
         }
+        $this->basketRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(BasketRepository::class);
     }
 
     /**
@@ -123,17 +130,7 @@ class Basket extends BasicBasket implements SingletonInterface
      */
     protected function finishOrderInDatabase()
     {
-        $updateArray = [
-            'finished_time' => $GLOBALS['EXEC_TIME'],
-        ];
-
-        $database = $this->getDatabaseConnection();
-
-        $database->exec_UPDATEquery(
-            'tx_commerce_baskets',
-            'sid = ' . $database->fullQuoteStr($this->getSessionId(), 'tx_commerce_baskets') . ' AND finished_time = 0',
-            $updateArray
-        );
+        $this->basketRepository->setOrderToFinished($this->getSessionId());
     }
 
     /**
@@ -195,23 +192,8 @@ class Basket extends BasicBasket implements SingletonInterface
      */
     protected function loadDataFromDatabase()
     {
-        $where = '';
-        if ($this->getBasketStoragePid()) {
-            $where .= ' AND pid = ' . $this->getBasketStoragePid();
-        }
-
-        $database = $this->getDatabaseConnection();
-
-        $rows = $database->exec_SELECTgetRows(
-            '*',
-            'tx_commerce_baskets',
-            'sid = ' . $database->fullQuoteStr($this->getSessionId(), 'tx_commerce_baskets') .
-            ' AND finished_time = 0' . $where,
-            '',
-            'pos'
-        );
-
-        if (is_array($rows) && !empty($rows)) {
+        $rows = $this->basketRepository->findUnfinishedBySessionId($this->getSessionId(), $this->getBasketStoragePid());
+        if (!empty($rows)) {
             $hooks = HookFactory::getHooks('Domain/Model/Basket', 'loadDataFromDatabase');
 
             $basketReadonly = false;
@@ -253,18 +235,8 @@ class Basket extends BasicBasket implements SingletonInterface
      */
     protected function loadPersistentDataFromDatabase($sessionId)
     {
-        $database = $this->getDatabaseConnection();
-
-        $rows = $database->exec_SELECTgetRows(
-            '*',
-            'tx_commerce_baskets',
-            'sid = ' . $database->fullQuoteStr($sessionId, 'tx_commerce_baskets') .
-            ' AND finished_time = 0 AND pid = ' . $this->getBasketStoragePid(),
-            '',
-            'pos'
-        );
-
-        if (is_array($rows) && !empty($rows)) {
+        $rows = $this->basketRepository->findUnfinishedBySessionId($sessionId, $this->getBasketStoragePid());
+        if (!empty($rows)) {
             $hooks = HookFactory::getHooks('Domain/Model/Basket', 'loadPersistentDataFromDatabase');
 
             foreach ($rows as $returnData) {
@@ -332,12 +304,7 @@ class Basket extends BasicBasket implements SingletonInterface
      */
     protected function storeDataToDatabase()
     {
-        $database = $this->getDatabaseConnection();
-
-        $database->exec_DELETEquery(
-            'tx_commerce_baskets',
-            'sid = ' . $database->fullQuoteStr($this->getSessionId(), 'tx_commerce_baskets') . ' AND finished_time = 0'
-        );
+        $this->basketRepository->deleteBySessionId($this->getSessionId());
         $hooks = HookFactory::getHooks('Domain/Model/Basket', 'storeDataToDatabase');
 
         // Get array keys from basket items to store correct position in basket
@@ -378,7 +345,7 @@ class Basket extends BasicBasket implements SingletonInterface
                 }
             }
 
-            $database->exec_INSERTquery('tx_commerce_baskets', $insertData);
+            $this->basketRepository->insert($insertData);
         }
 
         $basketItem = $this->basketItems[$oneuid];
@@ -400,18 +367,5 @@ class Basket extends BasicBasket implements SingletonInterface
         }
 
         return $this->basketStoragePid;
-    }
-
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     * @deprecated since 6.0.0 will be removed in 7.0.0
-     */
-    protected function getDatabaseConnection()
-    {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
     }
 }

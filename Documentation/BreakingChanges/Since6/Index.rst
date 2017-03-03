@@ -25,6 +25,7 @@ AbstractRepository::getDatabaseConnection all queries are migrated to doctrine d
 BasicBasket::getDatabaseConnection moved to Basket::getDatabaseConnection as it is only used in that class
 AbstractEntity::getDatabaseConnection to Product::getDatabaseConnection as it is only used in that class
 BackendUserUtility::getDatabaseConnection query was moved to BackendUsergroupRepository
+Basket::getDatabaseConnection querie were moved to BasketRepository
 
 FolderRepository::getFolders should not be used anymore, please use ::getFolder instead
 BaseController::renderValue.NUMBERFORMAT this type of formating is possible via stdWrap.numberFormat and takes the configuration decimals, dec_point, thousands_sep so just replace NUMBERFORMAT with stdWrap.numberFormat = 1 and add stdWrap.numberFormat.deci... and so on
