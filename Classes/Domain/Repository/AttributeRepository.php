@@ -14,8 +14,7 @@ namespace CommerceTeam\Commerce\Domain\Repository;
 
 /**
  * Database class for tx_commerce_attributes. All database calls should
- * be made by this class. In most cases you should use the methodes
- * provided by tx_commerce_attribute to get informations for articles.
+ * be made by this class.
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\AttributeRepository
  */
@@ -156,6 +155,7 @@ class AttributeRepository extends AbstractRepository
         $result = $queryBuilder
             ->select('*')
             ->from($this->correlationTypeDatabaseTable)
+            ->orderBy('uid')
             ->execute()
             ->fetchAll();
         return is_array($result) ? $result : [];
@@ -226,6 +226,20 @@ class AttributeRepository extends AbstractRepository
         }
 
         return $childAttributeList;
+    }
+
+    /**
+     * @return int
+     */
+    public function countAttributes()
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->count('*')
+            ->from($this->databaseTable)
+            ->execute()
+            ->fetchColumn();
+        return (int) $result;
     }
 
     /**

@@ -93,19 +93,10 @@ class TcaAttributeFields extends AbstractItemProvider implements FormDataProvide
     {
         $template = GeneralUtility::makeInstance(MarkerBasedTemplateService::class);
 
-        $correlationTypes = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid, title',
-            'tx_commerce_attribute_correlationtypes',
-            '1',
-            '',
-            'uid'
-        );
-
-        $attributeCount = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            '*',
-            'tx_commerce_attributes',
-            '1'
-        );
+        /** @var AttributeRepository $attributeRepository */
+        $attributeRepository = GeneralUtility::makeInstance(AttributeRepository::class);
+        $correlationTypes = $attributeRepository->findAllCorrelationTypes();
+        $attributeCount = $attributeRepository->countAttributes();
 
         $root = &$result['processedTca']['columns']['attributes']['config']['ds']['sheets']['sDEF']['ROOT']['el'];
         if ($attributeCount) {
