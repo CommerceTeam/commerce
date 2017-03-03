@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\Tree\CategoryTree;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\SysDomainRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
@@ -324,16 +325,9 @@ class Commands
      */
     public static function getDomainName($uid)
     {
-        $whereClause = 'pid=' . (int)$uid . BackendUtility::deleteClause('sys_domain')
-            . BackendUtility::BEenableFields('sys_domain');
-        $domain = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'domainName',
-            'sys_domain',
-            $whereClause,
-            '',
-            'sorting'
-        );
-        return !empty($domain) ? htmlspecialchars($domain['domainName']) : '';
+        /** @var SysDomainRepository $sysDomainRepository */
+        $sysDomainRepository = GeneralUtility::makeInstance(SysDomainRepository::class);
+        return $sysDomainRepository->findFirstByPid($uid);
     }
 
 
