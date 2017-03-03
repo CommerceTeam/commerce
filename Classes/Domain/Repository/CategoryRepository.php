@@ -601,4 +601,77 @@ class CategoryRepository extends AbstractRepository
             ->set('tstamp', $GLOBALS['EXEC_TIME'])
             ->execute();
     }
+
+    /**
+     * @param array $uidList
+     *
+     * @return array
+     */
+    public function findUntranslatedByUidList(array $uidList)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('uid')
+            ->addSelectLiteral('CONCAT(uid, \'|\', title) AS value')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->in(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->in(
+                    'uid',
+                    $uidList
+                )
+            )
+            ->groupBy('uid')
+            ->execute();
+
+        $return =  [];
+        if ($result->rowCount()) {
+            while ($row = $result->fetch()) {
+                $return[$row['uid']] = $row;
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * @param string $mmTable
+     * @param int $uid
+     *
+     * @return array
+     */
+    public function findUntranslatedByRelationTable($mmTable, $uid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('c.uid')
+            ->addSelectLiteral('CONCAT(c.uid, \'|\', c.title) AS value')
+            ->from($this->databaseTable, 'c')
+            ->innerJoin('c', $mmTable, 'mm', 'c.uid = mm.uid_foreign')
+            ->where(
+                $queryBuilder->expr()->in(
+                    'sys_language_uid',
+                    [-1, 0]
+                ),
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->groupBy('c.uid')
+            ->orderBy('c.sorting')
+            ->execute();
+
+        $return =  [];
+        if ($result->rowCount()) {
+            while ($row = $result->fetch()) {
+                $return[$row['uid']] = $row;
+            }
+        }
+
+        return $return;
+    }
 }

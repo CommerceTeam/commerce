@@ -115,12 +115,8 @@ call_user_func(function ($packageKey) {
         $typo3ConfVars['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord']
             [\CommerceTeam\Commerce\Form\FormDataProvider\TcaSelectItems::class] =
         [
-            'depends' => [
-                \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems::class,
-            ],
-            'before' => [
-                \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectTreeItems::class,
-            ],
+            'depends' => [\TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems::class],
+            'before' => [\TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectTreeItems::class],
         ];
 
         // Add existing articles control for product

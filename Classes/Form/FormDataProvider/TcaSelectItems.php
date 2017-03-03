@@ -12,8 +12,10 @@ namespace CommerceTeam\Commerce\Form\FormDataProvider;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
 use TYPO3\CMS\Backend\Form\FormDataProvider\AbstractItemProvider;
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
@@ -61,52 +63,27 @@ class TcaSelectItems extends AbstractItemProvider implements FormDataProviderInt
     protected function getSelectedItems(array $result, $fieldName)
     {
         $fieldConfig = $result['processedTca']['columns'][$fieldName]['config'];
-        $foreignTable = $fieldConfig['foreign_table'];
+        if ($fieldConfig['foreign_table'] !== 'tx_commerce_categories') {
+            return [];
+        }
+
+        /** @var CategoryRepository $categoryRepository */
+        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
         $mmTable = isset($fieldConfig['MM']) ? $fieldConfig['MM'] : '';
 
         $rows = [];
         if ($mmTable !== '') {
-            $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                $foreignTable . '.uid, CONCAT(' . $foreignTable . '.uid, \'|\', ' . $foreignTable . '.title) AS value',
-                $foreignTable . '
-                INNER JOIN ' . $mmTable . ' ON ' . $foreignTable . '.uid = ' . $mmTable . '.uid_foreign',
-                $mmTable . '.uid_local = ' . (int) $result['databaseRow']['uid']
-                . ' AND ' . $foreignTable . '.deleted = 0',
-                $foreignTable . '.uid',
-                '',
-                '',
-                'uid'
-            );
+            $rows = $categoryRepository->findUntranslatedByRelationTable($mmTable, $result['databaseRow']['uid']);
         } elseif ($result['databaseRow']['tx_commerce_mountpoints']) {
             // this is the case for be_user and be_group mounts where the selected categories are stored as uid list
-            $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                'uid, CONCAT(uid, \'|\', title) AS value',
-                $foreignTable,
-                'uid IN (' . $result['databaseRow']['tx_commerce_mountpoints'] . ') AND deleted = 0',
-                'uid',
-                '',
-                '',
-                'uid'
-            );
+            $uidList = GeneralUtility::intExplode(',', $result['databaseRow']['tx_commerce_mountpoints'], true);
+            $rows = $categoryRepository->findUntranslatedByUidList($uidList);
         }
 
         $defaultValues = isset($result['databaseRow'][$fieldName]) ? $result['databaseRow'][$fieldName] : null;
         if (empty($rows) && !empty($defaultValues)) {
-            if (is_array($defaultValues)) {
-                $where = 'uid IN (' . implode(',', $defaultValues) . ')';
-            } else {
-                $where = 'uid = ' . (int) $defaultValues;
-            }
-
-            $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                'uid, CONCAT(uid, \'|\', title) AS value',
-                $foreignTable,
-                $where . ' AND deleted = 0',
-                '',
-                '',
-                '',
-                'uid'
-            );
+            $uidList = is_array($defaultValues) ? $defaultValues : [$defaultValues];
+            $rows = $categoryRepository->findUntranslatedByUidList($uidList);
         }
 
         return $rows;
@@ -121,17 +98,5 @@ class TcaSelectItems extends AbstractItemProvider implements FormDataProviderInt
     protected function isTargetRenderType(array $fieldConfig)
     {
         return $fieldConfig['config']['renderType'] == 'commerceCategoryTree';
-    }
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     * @deprecated since 6.0.0 will be removed in 7.0.0
-     */
-    protected function getDatabaseConnection()
-    {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
     }
 }
