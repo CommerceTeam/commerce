@@ -1358,7 +1358,13 @@ class DataMapHook
             if (!empty($uidList)) {
                 // Insert/Update relations and remove all remaining
                 $this->belib->saveRelations($productUid, $uidList, 'tx_commerce_products_attributes_mm', true, false);
-                $this->belib->updateXML('attributes', 'tx_commerce_products', $productUid, 'product', $catList);
+                $this->belib->updateXML(
+                    'attributes',
+                    'tx_commerce_products',
+                    $productUid,
+                    'product',
+                    $catList
+                );
                 $delete = false;
             }
         }

@@ -41,6 +41,7 @@ class ContextMenuConfiguration
 
     /**
      * @param ContextMenuDataProvider $dataProvider
+     *
      * @return void
      */
     public function setDataProvider(ContextMenuDataProvider $dataProvider)
@@ -103,10 +104,11 @@ class ContextMenuConfiguration
      * Unused for this implementation
      *
      * @see getActionsForNodeArray()
-     * @param \TYPO3\CMS\Backend\Tree\TreeNode $node
+     * @param \TYPO3\CMS\Backend\Tree\TreeNode $_
+     *
      * @return array
      */
-    public function getActionsForNode(\TYPO3\CMS\Backend\Tree\TreeNode $node)
+    public function getActionsForNode(\TYPO3\CMS\Backend\Tree\TreeNode $_)
     {
         return [];
     }

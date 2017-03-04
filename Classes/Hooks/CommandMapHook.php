@@ -613,7 +613,7 @@ class CommandMapHook
         if ($fromCategorUid && $toCategoryUid) {
             /** @var ProductRepository $productRepository */
             $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
-            $productRepository->removeCategoryRelation($productUid, $fromCategorUid);
+            $productRepository->deleteCategoryRelation($productUid, $fromCategorUid);
             $productRepository->addCategoryRelation($productUid, $toCategoryUid);
         }
     }

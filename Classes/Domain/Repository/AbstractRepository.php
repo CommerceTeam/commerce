@@ -187,6 +187,23 @@ abstract class AbstractRepository implements SingletonInterface
     }
 
     /**
+     * @param string $table
+     * @param string $where
+     *
+     * @return int
+     */
+    public function countWithTableAndWhere($table, $where)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($table);
+        return (int) $queryBuilder
+            ->count('*')
+            ->from($table)
+            ->where($where)
+            ->execute()
+            ->fetchColumn();
+    }
+
+    /**
      * Checks if one given UID is available.
      *
      * @param int $uid Uid
@@ -317,9 +334,12 @@ abstract class AbstractRepository implements SingletonInterface
      * @param bool|int $showHiddenRecords Show hidden records
      *
      * @return string
+     * @deprecated method is not used anymore please use queryBuilder restrictions
      */
     public function enableFields($tableName = '', $as = '', $showHiddenRecords = 0)
     {
+        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
         if (empty($tableName)) {
             $tableName = $this->databaseTable;
         }
@@ -342,6 +362,7 @@ abstract class AbstractRepository implements SingletonInterface
 
     /**
      * @param array $data field values for use for new record
+     *
      * @return int uid of the new record
      */
     public function addRecord($data)
@@ -353,6 +374,52 @@ abstract class AbstractRepository implements SingletonInterface
             ->execute();
 
         return $queryBuilder->getConnection()->lastInsertId($this->databaseTable);
+    }
+
+    /**
+     * @param string $table
+     * @param array $data
+     */
+    public function insertWithTable($table, array $data)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($table);
+        $queryBuilder
+            ->insert($table)
+            ->values($data)
+            ->execute();
+    }
+
+    /**
+     * @param string $table
+     * @param string $where
+     * @param array $data
+     */
+    public function updateWithTable($table, $where, array $data)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($table);
+        $queryBuilder
+            ->update($table)
+            ->where($where);
+
+        foreach ($data as $field => $value) {
+            $queryBuilder->set($field, $value);
+        }
+
+        $queryBuilder
+            ->execute();
+    }
+
+    /**
+     * @param string $table
+     * @param string $where
+     */
+    public function deleteWithTable($table, $where)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($table);
+        $queryBuilder
+            ->delete($table)
+            ->where($where)
+            ->execute();
     }
 
 

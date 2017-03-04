@@ -52,13 +52,6 @@ class ProductRepository extends AbstractRepository
     public $databaseProductsRelatedTable = 'tx_commerce_products_related_mm';
 
     /**
-     * Sorting field.
-     *
-     * @var string
-     */
-    public $orderField = 'sorting';
-
-    /**
      * Gets all articles form database related to this product.
      *
      * @param int $uid Product uid
@@ -70,7 +63,7 @@ class ProductRepository extends AbstractRepository
         $return = [];
         $uid = (int) $uid;
         if ($uid) {
-            $orderField = $this->orderField;
+            $orderField = 'sorting';
             $hookObject = \CommerceTeam\Commerce\Factory\HookFactory::getHook(
                 'Domain/Repository/ProductRepository',
                 'getArticles'
@@ -170,6 +163,7 @@ class ProductRepository extends AbstractRepository
 
     /**
      * @param int $uid
+     *
      * @return array
      */
     public function getAttributeRelations($uid)
@@ -184,6 +178,31 @@ class ProductRepository extends AbstractRepository
                     $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
                 )
             )
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * @param int $uid
+     *
+     * @return array
+     */
+    public function getUniqueAttributeRelations($uid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        $result = $queryBuilder
+            ->addSelectLiteral('DISTINCT *')
+            ->from($this->databaseAttributeRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy('sorting')
+            ->addOrderBy('uid_foreign', 'DESC')
+            ->addOrderBy('uid_correlationtype')
             ->execute()
             ->fetchAll();
         return is_array($result) ? $result : [];
@@ -437,82 +456,49 @@ class ProductRepository extends AbstractRepository
 
     /**
      * @param int $productUid
-     * @param int $categorUid
+     * @param string $andWhere
+     *
+     * @return array|mixed
      */
-    public function addCategoryRelation($productUid, $categorUid)
+    public function findRootlineProductByUid($productUid, $andWhere = '')
     {
-        $queryBuilder = $this->getQueryBuilderForTable($this->databaseCategoryRelationTable);
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
         $queryBuilder
-            ->insert($this->databaseCategoryRelationTable)
-            ->values(
-                [
-                    'uid_local' => $productUid,
-                    'uid_foreign' => $categorUid,
-                ]
+            ->select(
+                'c.ts_config',
+                'c.t3ver_oid',
+                'c.t3ver_wsid',
+                'c.t3ver_state',
+                'c.t3ver_stage',
+                'c.perms_userid',
+                'c.perms_groupid',
+                'c.perms_user',
+                'c.perms_group',
+                'c.perms_everybody',
+                'mm.uid_foreign AS pid',
+                'p.uid',
+                'p.hidden',
+                'p.title'
             )
-            ->execute();
-    }
-
-    /**
-     * @param int $productUid
-     * @param int $categoryUid
-     */
-    public function removeCategoryRelation($productUid, $categoryUid)
-    {
-        $queryBuilder = $this->getQueryBuilderForTable($this->databaseCategoryRelationTable);
-        $queryBuilder
-            ->delete($this->databaseCategoryRelationTable)
+            ->from($this->databaseTable, 'p')
+            ->innerJoin('p', 'pages', 'pa', 'p.pid = pa.uid')
+            ->innerJoin('p', $this->databaseCategoryRelationTable, 'mm', 'p.uid = mm.uid_local')
+            ->innerJoin('mm', 'tx_commerce_categories', 'c', 'mm.uid_foreign = c.uid')
             ->where(
                 $queryBuilder->expr()->eq(
-                    'uid_local',
+                    'uid',
                     $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    'uid_foreign',
-                    $queryBuilder->createNamedParameter($categoryUid, \PDO::PARAM_INT)
                 )
-            )
-            ->execute();
-    }
+            );
 
-    /**
-     * @param int $productUid
-     * @param array $data
-     *
-     * @return string
-     */
-    public function addAttributeRelation($productUid, $data)
-    {
-        $data['uid_local'] = (int) $productUid;
+        if ($andWhere !== '') {
+            $queryBuilder->andWhere($andWhere);
+        }
 
-        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
         $result = $queryBuilder
-            ->insert($this->databaseAttributeRelationTable)
-            ->values($data)
-            ->execute();
-        return $result->errorInfo();
-    }
-
-    /**
-     * @param int $productUidFrom
-     * @param int $productUidTo
-     *
-     * @return string
-     */
-    public function updateAttributeRelation($productUidFrom, $productUidTo)
-    {
-        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
-        $result = $queryBuilder
-            ->update($this->databaseAttributeRelationTable)
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'uid_local',
-                    $queryBuilder->createNamedParameter($productUidFrom, \PDO::PARAM_INT)
-                )
-            )
-            ->set('uid_local', $productUidTo)
-            ->execute();
-        return $result->errorInfo();
+            ->execute()
+            ->fetch();
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -587,6 +573,130 @@ class ProductRepository extends AbstractRepository
     }
 
     /**
+     * @param int $uid
+     *
+     * @return array
+     */
+    public function findPreviousByUid($uid)
+    {
+        $row = $this->findByUid($uid);
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->lt(
+                    'sorting',
+                    $queryBuilder->createNamedParameter($row['sorting'], \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy('sorting', 'DESC')
+            ->execute()
+            ->fetch();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * @return array
+     */
+    public function findLatestProduct()
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->orderBy('uid', 'DESC')
+            ->execute()
+            ->fetch();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * @param int $parentUid
+     * @param int $sysLanguageUid
+     *
+     * @return array
+     */
+    public function findTranslationsByParentUidAndLanguage($parentUid, $sysLanguageUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter($sysLanguageUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'l18n_parent',
+                    $queryBuilder->createNamedParameter($parentUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * @param int $productUid
+     * @param int $categorUid
+     */
+    public function addCategoryRelation($productUid, $categorUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseCategoryRelationTable);
+        $queryBuilder
+            ->insert($this->databaseCategoryRelationTable)
+            ->values(
+                [
+                    'uid_local' => $productUid,
+                    'uid_foreign' => $categorUid,
+                ]
+            )
+            ->execute();
+    }
+
+    /**
+     * @param int $productUid
+     * @param array $data
+     *
+     * @return string
+     */
+    public function addAttributeRelation($productUid, $data)
+    {
+        $data['uid_local'] = (int) $productUid;
+
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        $result = $queryBuilder
+            ->insert($this->databaseAttributeRelationTable)
+            ->values($data)
+            ->execute();
+        return $result->errorInfo();
+    }
+
+    /**
+     * @param int $productUidFrom
+     * @param int $productUidTo
+     *
+     * @return string
+     */
+    public function updateAttributeRelation($productUidFrom, $productUidTo)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        $result = $queryBuilder
+            ->update($this->databaseAttributeRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($productUidFrom, \PDO::PARAM_INT)
+                )
+            )
+            ->set('uid_local', $productUidTo)
+            ->execute();
+        return $result->errorInfo();
+    }
+
+    /**
      * Set delete flag and timestamp to current date for given products uids
      *
      * @param array $productUids
@@ -626,6 +736,28 @@ class ProductRepository extends AbstractRepository
             )
             ->set('deleted', 1)
             ->set('tstamp', $GLOBALS['EXEC_TIME'])
+            ->execute();
+    }
+
+    /**
+     * @param int $productUid
+     * @param int $categoryUid
+     */
+    public function deleteCategoryRelation($productUid, $categoryUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseCategoryRelationTable);
+        $queryBuilder
+            ->delete($this->databaseCategoryRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'uid_foreign',
+                    $queryBuilder->createNamedParameter($categoryUid, \PDO::PARAM_INT)
+                )
+            )
             ->execute();
     }
 }

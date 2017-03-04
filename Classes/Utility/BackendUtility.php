@@ -12,9 +12,12 @@ namespace CommerceTeam\Commerce\Utility;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\ArticlePriceRepository;
 use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
 use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use CommerceTeam\Commerce\Domain\Repository\PageRepository;
 use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -55,27 +58,22 @@ class BackendUtility
             return [];
         }
 
-        $database = self::getDatabaseConnection();
+        /** @var AttributeRepository $attributeRepository */
+        $attributeRepository = GeneralUtility::makeInstance(AttributeRepository::class);
+        $correlationTypes = $attributeRepository->findAllCorrelationTypes();
 
-        // get all correlation types
-        $correlationTypes = $database->exec_SELECTgetRows(
-            '*',
-            'tx_commerce_attribute_correlationtypes',
-            ''
-        );
-
+        /** @var ProductRepository $productRepository */
+        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
         // get all attributes for the product
-        $relations = $database->exec_SELECTgetRows(
-            'distinct *',
-            'tx_commerce_products_attributes_mm',
-            'uid_local = ' . (int) $productUid,
-            '',
-            'sorting, uid_foreign DESC, uid_correlationtype ASC'
-        );
+        $relations = $productRepository->getUniqueAttributeRelations($productUid);
 
         // prepare result array
         if ($separateCorrelationType1) {
-            $result = ['ct1' => [], 'rest' => [], 'grouped' => []];
+            $result = [
+                'ct1' => [],
+                'rest' => [],
+                'grouped' => [],
+            ];
             foreach ($correlationTypes as $correlationType) {
                 $result['grouped']['ct_' . $correlationType['uid']] = [];
             }
@@ -86,30 +84,11 @@ class BackendUtility
         foreach ($relations as $relation) {
             if ($addAttributeData) {
                 // fetch the data from the attribute table
-                $attribute = $database->exec_SELECTgetSingleRow(
-                    '*',
-                    'tx_commerce_attributes',
-                    'uid = ' . $relation['uid_foreign'] . $this->enableFields('tx_commerce_attributes'),
-                    '',
-                    'uid'
-                );
-                $attribute = is_array($attribute) ? $attribute : '';
-                $relation['attributeData'] = $attribute;
+                $attribute = $attributeRepository->findByUid($relation['uid_foreign']);
+                $relation['attributeData'] = !empty($attribute) ? $attribute : '';
                 if ($attribute['has_valuelist'] && $getValueListData) {
                     // fetch values for this valuelist entry
-                    $values = $database->exec_SELECTgetRows(
-                        '*',
-                        'tx_commerce_attribute_values',
-                        'attributes_uid = ' . $attribute['uid'] . $this->enableFields('tx_commerce_attribute_values'),
-                        '',
-                        'uid'
-                    );
-                    $vlData = [];
-                    foreach ($values as $value) {
-                        $vlData[$value['uid']] = $value;
-                    }
-
-                    $relation['valueList'] = $vlData;
+                    $relation['valueList'] = $attributeRepository->findValuesByAttribute($attribute['uid']);
                 }
 
                 $relation['has_valuelist'] = $attribute['has_valuelist'] ? '1' : '0';
@@ -161,21 +140,15 @@ class BackendUtility
                     $cUidList[] = $cUid;
                 }
 
-                $categories = self::getDatabaseConnection()->exec_SELECTgetRows(
-                    'uid_foreign',
-                    'tx_commerce_categories_parent_category_mm',
-                    'uid_local=' . (int) $cUid,
-                    '',
-                    'uid_foreign'
-                );
-
-                foreach ($categories as $relData) {
+                /** @var CategoryRepository $categoryRepository */
+                $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+                $categories = $categoryRepository->getParentCategories($cUid);
+                foreach ($categories as $category) {
                     if ($recursive) {
-                        $this->getParentCategories($relData['uid_foreign'], $cUidList, $cUid, $excludeUid);
+                        $this->getParentCategories($category, $cUidList, $cUid, $excludeUid);
                     } else {
-                        $cUid = $relData['uid_foreign'];
-                        if (!in_array($cUid, $cUidList) && $cUid != $dontAdd) {
-                            $cUidList[] = $cUid;
+                        if (!in_array($category, $cUidList) && $category != $dontAdd) {
+                            $cUidList[] = $category;
                         }
                     }
                 }
@@ -288,8 +261,13 @@ class BackendUtility
      */
     public function getAttributesForArticle($articleUid, $ct = null, array $excludeAttributes = [])
     {
-        // build the basic query
-        $where = 'uid_local = ' . $articleUid;
+        // should we exclude some attributes
+        $excludeList = [];
+        if (is_array($excludeAttributes) && !empty($excludeAttributes)) {
+            foreach ($excludeAttributes as $excludeAttribute) {
+                $excludeList[] = (int) $excludeAttribute['uid_foreign'];
+            }
+        }
 
         if ($ct != null) {
             /** @var ProductRepository $productRepository */
@@ -305,39 +283,17 @@ class BackendUtility
                     }
                 }
                 if (!empty($ctAttributes)) {
-                    $where .= ' AND uid_foreign IN (' . implode(',', $ctAttributes) . ')';
+                    $excludeList = array_merge($excludeList, $ctAttributes);
                 }
             }
         }
 
-        // should we exclude some attributes
-        if (is_array($excludeAttributes) && !empty($excludeAttributes)) {
-            $eAttributes = [];
-            foreach ($excludeAttributes as $excludeAttribute) {
-                $eAttributes[] = (int) $excludeAttribute['uid_foreign'];
-            }
-            $where .= ' AND uid_foreign NOT IN (' . implode(',', $eAttributes) . ')';
-        }
-
-        // execute the query
-        $result = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            'tx_commerce_articles_attributes_mm AS mm 
-                INNER JOIN tx_commerce_attributes ON mm.uid_foreign = tx_commerce_attributes.uid',
-            $where . $this->enableFields('tx_commerce_attributes')
-        );
-
+        /** @var AttributeRepository $attributeRepository */
+        $attributeRepository = GeneralUtility::makeInstance(AttributeRepository::class);
+        $result = $attributeRepository->findByArticleAndExcludingListed($articleUid, $excludeList);
         foreach ($result as &$row) {
             if ($row['has_valuelist']) {
-                $row['valueList'] = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                    '*',
-                    'tx_commerce_attribute_values',
-                    'attributes_uid = ' . $row['uid'] . $this->enableFields('tx_commerce_attribute_values'),
-                    '',
-                    '',
-                    '',
-                    'uid'
-                );
+                $row['valueList'] = $attributeRepository->findValuesByAttribute($row['uid']);
             }
         }
 
@@ -358,10 +314,11 @@ class BackendUtility
         $hashData = [];
 
         if (!empty($fullAttributeList)) {
-            $attributes = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                '*',
-                'tx_commerce_articles_attributes_mm',
-                'uid_local = ' . (int) $articleUid . ' AND uid_foreign IN (' . implode(',', $fullAttributeList) . ')'
+            /** @var ArticleRepository $articleRepository */
+            $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+            $attributes = $articleRepository->getAttributeRelationsByArticleAndAttributeUid(
+                $articleUid,
+                $fullAttributeList
             );
 
             foreach ($attributes as $attributeData) {
@@ -399,12 +356,9 @@ class BackendUtility
 
         $hash = $this->getArticleHash($articleUid, $fullAttributeList);
 
-        // update the article
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            'tx_commerce_articles',
-            'uid = ' . (int) $articleUid,
-            ['attribute_hash' => $hash]
-        );
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $articleRepository->updateAttributeHash($articleUid, $hash);
     }
 
     /* Diverse */
@@ -521,7 +475,25 @@ class BackendUtility
         $delWhere = [];
         $counter = 1;
 
-        $database = self::getDatabaseConnection();
+        /** @var AttributeRepository|CategoryRepository|ProductRepository $repository */
+        $repository = null;
+        switch ($relationTable) {
+            case 'tx_commerce_articles_attributes_mm':
+                $repository = GeneralUtility::makeInstance(AttributeRepository::class);
+                break;
+            case 'tx_commerce_categories_attributes_mm':
+                $repository = GeneralUtility::makeInstance(AttributeRepository::class);
+                break;
+            case 'tx_commerce_categories_parent_category_mm':
+                $repository = GeneralUtility::makeInstance(CategoryRepository::class);
+                break;
+            case 'tx_commerce_products_categories_mm':
+                $repository = GeneralUtility::makeInstance(ProductRepository::class);
+                break;
+            case 'tx_commerce_products_attributes_mm':
+                $repository = GeneralUtility::makeInstance(AttributeRepository::class);
+                break;
+        }
 
         if (is_array($relationData)) {
             foreach ($relationData as $relation) {
@@ -542,12 +514,12 @@ class BackendUtility
                 $dataArray['sorting'] = $counter;
                 ++$counter;
 
-                $exists = $database->exec_SELECTcountRows('uid_local', $relationTable, $where);
+                $exists = $repository->countWithTableAndWhere($relationTable, $where);
 
                 if ($exists) {
-                    $database->exec_UPDATEquery($relationTable, $where, ['sorting' => $counter]);
+                    $repository->updateWithTable($relationTable, $where, ['sorting' => $counter]);
                 } else {
-                    $database->exec_INSERTquery($relationTable, $dataArray);
+                    $repository->insertWithTable($relationTable, $dataArray);
                 }
 
                 if (isset($relation['uid_foreign'])) {
@@ -565,7 +537,7 @@ class BackendUtility
             if (!empty($delWhere)) {
                 $where = ' AND NOT ((' . implode(') OR (', $delWhere) . '))';
             }
-            $database->exec_DELETEquery($relationTable, 'uid_local = ' . $uidLocal . $where);
+            $repository->deleteWithTable($relationTable, 'uid_local = ' . $uidLocal . $where);
         }
     }
 
@@ -586,39 +558,28 @@ class BackendUtility
      */
     public function updateArticleXML(array $articleRelations, $add = false, $articleUid = null, $productUid = null)
     {
-        $database = self::getDatabaseConnection();
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
 
         $xmlData = [];
         if ($add && is_numeric($articleUid)) {
-            $xmlData = $database->exec_SELECTgetSingleRow(
-                'attributesedit',
-                'tx_commerce_articles',
-                'uid = ' . (int) $articleUid
-            );
-            $xmlData = is_array($xmlData) ? $xmlData : ['attributesedit' => ''];
-            $xmlData = GeneralUtility::xml2array($xmlData['attributesedit']);
+            $xmlData = $articleRepository->findByUid($articleUid);
+            if (is_array($xmlData)) {
+                $xmlData = GeneralUtility::xml2array($xmlData['attributesedit']);
+            } else {
+                $xmlData = '';
+            }
         }
 
         $relationData = [];
         /*
-         * Build Relation Data
+         * Get Relation Data
          */
-        if ($productUid) {
-            $relationData = $database->exec_SELECTgetRows(
-                'tx_commerce_articles_attributes_mm.*',
-                'tx_commerce_articles, tx_commerce_articles_attributes_mm',
-                'tx_commerce_articles.uid = tx_commerce_articles_attributes_mm.uid_local
-                    AND tx_commerce_articles.uid_product = ' . (int) $productUid
-            );
-        }
-
         if ($articleUid) {
-            $relationData = $database->exec_SELECTgetRows(
-                'tx_commerce_articles_attributes_mm.*',
-                'tx_commerce_articles, tx_commerce_articles_attributes_mm',
-                'tx_commerce_articles.uid = tx_commerce_articles_attributes_mm.uid_local
-                    AND tx_commerce_articles.uid = ' . (int) $articleUid
-            );
+            $relationData = $articleRepository->getAttributeRelationsByArticleUid($articleUid);
+        }
+        if ($productUid) {
+            $relationData = $articleRepository->getAttributeRelationsByProductUid($productUid);
         }
 
         if (!empty($relationData)) {
@@ -642,17 +603,9 @@ class BackendUtility
         $xmlData = GeneralUtility::array2xml($xmlData, '', 0, 'T3FlexForms');
 
         if ($articleUid) {
-            $database->exec_UPDATEquery(
-                'tx_commerce_articles',
-                'uid = ' . $articleUid . ' AND deleted = 0',
-                ['attributesedit' => $xmlData]
-            );
+            $articleRepository->updateRecord($articleUid, ['attributesedit' => $xmlData]);
         } elseif ($productUid) {
-            $database->exec_UPDATEquery(
-                'tx_commerce_articles',
-                'uid_product = ' . $productUid . ' AND deleted = 0',
-                ['attributesedit' => $xmlData]
-            );
+            $articleRepository->updateByProductUid($productUid, ['attributesedit' => $xmlData]);
         }
     }
 
@@ -663,34 +616,38 @@ class BackendUtility
      * @param string $xmlField Fieldname where the FlexForm values are stored
      * @param string $table Table in which the FlexForm values are stored
      * @param int $uid UID of the entity inside the table
-     * @param string $type Type of data we are handling (category, product)
+     * @param string $_ Type of data we are handling (category, product)
      * @param array $ctList A list of correlationtype UID we should handle
      * @param bool $rebuild Wether the xmlData should be rebuild or not
      *
      * @return array
      */
-    public function updateXML($xmlField, $table, $uid, $type, array $ctList, $rebuild = false)
+    public function updateXML($xmlField, $table, $uid, $_, array $ctList, $rebuild = false)
     {
-        $xmlData = $this->getDatabaseConnection()->exec_SELECTgetSingleRow($xmlField, $table, 'uid = ' . (int) $uid);
-        $xmlData = is_array($xmlData) ? $xmlData : [$xmlField => ''];
-        $xmlData = GeneralUtility::xml2array($xmlData[$xmlField]);
-        if (!is_array($xmlData)) {
-            $xmlData = [];
-        }
+        /** @var ProductRepository $productRepository */
+        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        /** @var CategoryRepository $categoryRepository */
+        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
 
         $relList = null;
-        switch (strtolower($type)) {
-            case 'category':
-                /** @var CategoryRepository $categoryRepository */
-                $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+        switch ($table) {
+            case 'tx_commerce_categories':
                 $relList = $categoryRepository->findAttributesByCategoryUid($uid);
+                $xmlData = $categoryRepository->findByUid($uid);
                 break;
 
-            case 'product':
+            case 'tx_commerce_products':
                 $relList = $this->getAttributesForProduct($uid);
+                $xmlData = $productRepository->findByUid($uid);
                 break;
 
             default:
+                $xmlData = [$xmlField => ''];
+        }
+
+        $xmlData = GeneralUtility::xml2array($xmlData[$xmlField]);
+        if (!is_array($xmlData)) {
+            $xmlData = [];
         }
 
         $cTypes = [];
@@ -736,8 +693,11 @@ class BackendUtility
             $xmlData = '';
         }
 
-        // update database entry
-        $this->getDatabaseConnection()->exec_UPDATEquery($table, 'uid = ' . $uid, [$xmlField => $xmlData]);
+        if ($table === 'tx_commerce_products') {
+            $productRepository->updateRecord($uid, [$xmlField => $xmlData]);
+        } elseif ($table === 'tx_commerce_categories') {
+            $categoryRepository->updateRecord($uid, [$xmlField => $xmlData]);
+        }
 
         return [$xmlField => $xmlData];
     }
@@ -835,11 +795,9 @@ class BackendUtility
      */
     public function getProductsOfCategory($categoryUid)
     {
-        return (array) self::getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            'tx_commerce_products_categories_mm',
-            'uid_foreign = ' . (int) $categoryUid
-        );
+        /** @var ProductRepository $productRepository */
+        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        return $productRepository->findByCategoryUid($categoryUid);
     }
 
     /**
@@ -942,11 +900,9 @@ class BackendUtility
      */
     public function savePriceFlexformWithArticle($priceUid, $articleUid, array $priceDataArray)
     {
-        $prices = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'prices',
-            'tx_commerce_articles',
-            'uid = ' . (int) $articleUid
-        );
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $prices = $articleRepository->findByUid($articleUid);
 
         if (strlen($prices['prices']) > 0) {
             $data = GeneralUtility::xml2array($prices['prices']);
@@ -976,13 +932,7 @@ class BackendUtility
 
         $xml = GeneralUtility::array2xml($data, '', 0, 'T3FlexForms');
 
-        $res = $this->getDatabaseConnection()->exec_UPDATEquery(
-            'tx_commerce_articles',
-            'uid = ' . (int) $articleUid,
-            ['prices' => $xml]
-        );
-
-        return (bool)$res;
+        return $articleRepository->updateRecord($articleUid, ['prices' => $xml]);
     }
 
     /**
@@ -1005,15 +955,9 @@ class BackendUtility
             $prep .= '- ';
         }
 
-        $foreignTable = ConfigurationUtility::getInstance()
-            ->getTcaValue('tx_commerce_orders.columns.newpid.config.foreign_table');
-        $rows = self::getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            $foreignTable,
-            'pid = ' . $pid . \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($foreignTable),
-            '',
-            'sorting'
-        );
+        /** @var PageRepository $pageRepository */
+        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
+        $rows = $pageRepository->findByUid($pid);
         if (!empty($rows)) {
             foreach ($rows as $returnData) {
                 $returnData['title'] = $prep . $returnData['title'];
@@ -1041,15 +985,15 @@ class BackendUtility
      */
     public function updatePriceXMLFromDatabase($articleUid)
     {
-        $database = self::getDatabaseConnection();
+        /** @var ArticlePriceRepository $articlePriceRepository */
+        $articlePriceRepository = GeneralUtility::makeInstance(ArticlePriceRepository::class);
+        $prices = $articlePriceRepository->findByArticleUid($articleUid);
 
-        $prices = $database->exec_SELECTgetRows(
-            '*',
-            'tx_commerce_article_prices',
-            'deleted = 0 AND uid_article = ' . (int) $articleUid
-        );
-
-        $data = ['data' => ['sDEF' => ['lDEF']]];
+        $data = [
+            'data' => [
+                'sDEF' => ['lDEF']
+            ]
+        ];
         $lDef = &$data['data']['sDEF']['lDEF'];
         foreach ($prices as $price) {
             $priceUid = $price['uid'];
@@ -1067,13 +1011,9 @@ class BackendUtility
 
         $xml = GeneralUtility::array2xml($data, '', 0, 'T3FlexForms');
 
-        $res = $database->exec_UPDATEquery(
-            'tx_commerce_articles',
-            'uid = ' . $articleUid,
-            ['prices' => $xml]
-        );
-
-        return (bool) $res;
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        return $articleRepository->updateRecord($articleUid, ['prices' => $xml]);
     }
 
     /**
@@ -1200,7 +1140,6 @@ class BackendUtility
     public function copyArticle($uid, $uidProduct, array $locale = [])
     {
         $backendUser = self::getBackendUserAuthentication();
-        $database = self::getDatabaseConnection();
 
         // check params
         if (!is_numeric($uid) || !is_numeric($uidProduct)) {
@@ -1228,7 +1167,9 @@ class BackendUtility
         }
 
         // get uid of the last article in the articles table
-        $article = $database->exec_SELECTgetSingleRow('uid', 'tx_commerce_articles', 'deleted = 0', '', 'uid DESC');
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $article = $articleRepository->findLatestArticle();
 
         // if there are no articles at all, abort.
         if (empty($article)) {
@@ -1302,14 +1243,11 @@ class BackendUtility
     public function copyPrices($uidFrom, $uidTo)
     {
         $backendUser = self::getBackendUserAuthentication();
-        $database = self::getDatabaseConnection();
 
         // select all existing prices of the article
-        $rows = $database->exec_SELECTgetRows(
-            'uid',
-            'tx_commerce_article_prices',
-            'deleted = 0 AND uid_article = ' . $uidFrom
-        );
+        /** @var ArticlePriceRepository $articlePriceRepository */
+        $articlePriceRepository = GeneralUtility::makeInstance(ArticlePriceRepository::class);
+        $rows = $articlePriceRepository->findByArticleUid($uidFrom);
 
         $newUid = 0;
         foreach ($rows as $row) {
@@ -1332,6 +1270,8 @@ class BackendUtility
             // invoke the copy manually so we can actually override the uid_product field
             $overrideArray = ['uid_article' => $uidTo];
 
+            // settings this user cache value prevents recursive copy actions that could happen
+            // due to hooks while database actions of copyRecord
             $backendUser->uc['txcommerce_copyProcess'] = 1;
             $backendUser->writeUC();
 
@@ -1359,21 +1299,16 @@ class BackendUtility
      */
     public function overwriteArticleAttributes($uidFrom, $uidTo, $languageUid = 0)
     {
-        $database = self::getDatabaseConnection();
-        // delete existing attributes
-        $table = 'tx_commerce_articles_attributes_mm';
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
 
         if ($languageUid != 0) {
             // we want to overwrite the attributes of the locale
             // replace $uidFrom and $uidTo with their localized versions
-            $uids = $uidFrom . ',' . $uidTo;
-            $rows = $database->exec_SELECTgetRows(
-                'uid, l18n_parent',
-                'tx_commerce_articles',
-                'sys_language_uid = ' . $languageUid . ' AND l18n_parent IN (' . $uids . ')'
-            );
+            $uids = [$uidFrom, $uidTo];
             $newFrom = $uidFrom;
             $newTo = $uidTo;
+            $rows = $articleRepository->findTranslationsByParentUidAndLanguage($uids, $languageUid);
 
             // get uids
             foreach ($rows as $row) {
@@ -1394,17 +1329,17 @@ class BackendUtility
             $uidTo = $newTo;
         }
 
-        $database->exec_DELETEquery(
-            $table,
-            'uid_local = ' . $uidTo
-        );
+        /** @var AttributeRepository $attributeRepository */
+        $attributeRepository = GeneralUtility::makeInstance(AttributeRepository::class);
+
+        // delete existing attributes
+        $attributeRepository->deleteAttributeRelationsByArticleUid($uidTo);
 
         // copy the attributes
-        $rows = $database->exec_SELECTgetRows('*', $table, 'uid_local = ' . $uidFrom . ' AND uid_valuelist = 0');
-
+        $rows = $attributeRepository->findEmptyAttributesByArticle($uidFrom);
         foreach ($rows as $origRelation) {
             $origRelation['uid_local'] = $uidTo;
-            $database->exec_INSERTquery($table, $origRelation);
+            $attributeRepository->insertRelation($origRelation);
         }
 
         return true;
@@ -1465,18 +1400,12 @@ class BackendUtility
         $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Utility/BackendUtility', 'copyProduct');
 
         $backendUser = self::getBackendUserAuthentication();
-        $database = self::getDatabaseConnection();
 
         if ($sorting == 0) {
             // get uid of the last product in the products table
-            $row = $database->exec_SELECTgetSingleRow(
-                'uid',
-                'tx_commerce_products',
-                'deleted = 0 AND pid != -1',
-                '',
-                'uid DESC',
-                '0,1'
-            );
+            /** @var ProductRepository $productRepository */
+            $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+            $row = $productRepository->findLatestProduct();
 
             // if there are no products at all, abort.
             if (empty($row)) {
@@ -1568,7 +1497,6 @@ class BackendUtility
         }
 
         $backendUser = self::getBackendUserAuthentication();
-        $database = self::getDatabaseConnection();
 
         $tableConfig = ConfigurationUtility::getInstance()->getTcaValue($table);
         if ($tableConfig && $uidCopied) {
@@ -1609,12 +1537,9 @@ class BackendUtility
                 $productUid = $article->getParentProductUid();
 
                 // load uid of the localized product
-                $row = $database->exec_SELECTgetSingleRow(
-                    'uid',
-                    'tx_commerce_products',
-                    'l18n_parent = ' . $productUid . ' AND sys_language_uid = ' . $languageUid
-                );
-                $row = is_array($row) ? $row : [];
+                /** @var ProductRepository $productRepository */
+                $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+                $row = $productRepository->findTranslationsByParentUidAndLanguage($productUid, $languageUid);
 
                 $rec[0]['uid_product'] = $row['uid'];
             }
@@ -1814,11 +1739,11 @@ class BackendUtility
         // First prepare user defined hooks
         $hooks = \CommerceTeam\Commerce\Factory\HookFactory::getHooks('Utility/BackendUtility', 'copyCategory');
 
-        $database = self::getDatabaseConnection();
-
         if (0 == $sorting) {
             // get uid of the last category in the category table
-            $row = $database->exec_SELECTgetSingleRow('uid', 'tx_commerce_categories', 'deleted = 0', '', 'uid DESC');
+            /** @var CategoryRepository $categoryRepository */
+            $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+            $row = $categoryRepository->findLatestCategory();
 
             // if there are no categories at all, abort.
             if (empty($row)) {
@@ -1947,29 +1872,29 @@ class BackendUtility
      * inserting a record on front of another.
      *
      * @param string $table Table from which we want to read
-     * @param int $uid Uid of the record that we want to move our element to
-     *      - in front of it
+     * @param int $uid Uid of the record that we want to move our element to in front of it
      *
      * @return int
      */
     public function getCopyPid($table, $uid)
     {
-        $database = self::getDatabaseConnection();
-
-        $row = $database->exec_SELECTgetSingleRow(
-            'uid',
-            $table,
-            'sorting < (SELECT sorting FROM ' . $table . ' WHERE uid = ' . $uid . ')',
-            '',
-            'sorting'
-        );
+        $row = [];
+        if ($table === 'tx_commerce_products') {
+            /** @var ProductRepository $productRepository */
+            $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+            $row = $productRepository->findPreviousByUid($uid);
+        } elseif ($table === 'tx_commerce_categories') {
+            /** @var CategoryRepository $categoryRepository */
+            $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+            $row = $categoryRepository->findPreviousByUid($uid);
+        }
 
         if (!empty($row)) {
+            $pid = -$row['uid'];
+        } else {
             // the item we want to skip is the item with the lowest
             // sorting - use pid of the 'Product' Folder
             $pid = FolderRepository::initFolders('Products', FolderRepository::initFolders());
-        } else {
-            $pid = -$row['uid'];
         }
 
         return $pid;
@@ -2075,18 +2000,14 @@ class BackendUtility
             return false;
         }
 
-        $database = self::getDatabaseConnection();
-
-        $rows = (array) $database->exec_SELECTgetRows(
-            'uid',
-            'tx_commerce_articles',
-            'deleted = 0 AND uid_product = ' . $prodUidFrom
-        );
         $success = true;
 
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $rows = $articleRepository->findByProductUid($prodUidFrom);
         foreach ($rows as $row) {
-            $succ = self::copyArticle($row['uid'], $prodUidTo, (array) $locale);
-            $success = $success ? $succ : $success;
+            $singleSuccess = self::copyArticle($row['uid'], $prodUidTo, (array) $locale);
+            $success = $success ? $singleSuccess : $success;
         }
 
         return $success;
@@ -2497,7 +2418,7 @@ class BackendUtility
     }
 
     /**
-     * Gets the cached page record for the rootline.
+     * Gets the cached category record for the rootline.
      *
      * @param int $uid Page id for which to create the root line.
      * @param string $clause Can be used to select other criteria. It would
@@ -2516,23 +2437,9 @@ class BackendUtility
         $ident = $uid . '-' . $clause . '-' . $workspaceOl;
 
         if (!isset($getCategoryForRootlineCache[$ident])) {
-            $row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
-                'mm.uid_foreign AS pid, tx_commerce_categories.uid, tx_commerce_categories.hidden,
-                    tx_commerce_categories.title,
-                    tx_commerce_categories.ts_config, tx_commerce_categories.t3ver_oid,
-                    tx_commerce_categories.t3ver_wsid, tx_commerce_categories.t3ver_state,
-                    tx_commerce_categories.t3ver_stage,
-                    tx_commerce_categories.perms_userid, tx_commerce_categories.perms_groupid,
-                    tx_commerce_categories.perms_user, tx_commerce_categories.perms_group,
-                    tx_commerce_categories.perms_everybody',
-                'tx_commerce_categories
-                    INNER JOIN pages ON tx_commerce_categories.pid = pages.uid
-                    INNER JOIN tx_commerce_categories_parent_category_mm AS mm
-                        ON tx_commerce_categories.uid = mm.uid_local',
-                'tx_commerce_categories.uid = ' . (int) $uid . ' ' .
-                \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('tx_commerce_categories') . ' ' . $clause
-            );
-
+            /** @var CategoryRepository $categoryRepository */
+            $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+            $row = $categoryRepository->findRootlineCategoryByUid($uid, $clause);
             if (!empty($row)) {
                 if ($workspaceOl) {
                     \TYPO3\CMS\Backend\Utility\BackendUtility::workspaceOL('tx_commerce_categories', $row);
@@ -2555,30 +2462,15 @@ class BackendUtility
      * @param bool $workspaceOl
      * @return array
      */
-    protected function getProductForRootline($uid, $clause, $workspaceOl)
+    protected static function getProductForRootline($uid, $clause, $workspaceOl)
     {
         static $getProductForRootlineCache = [];
         $ident = $uid . '-' . $clause . '-' . $workspaceOl;
 
         if (!isset($getCategoryForRootlineCache[$ident])) {
-            $row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
-                'mm.uid_foreign AS pid, tx_commerce_products.uid, tx_commerce_products.hidden,
-                    tx_commerce_products.title,
-                    tx_commerce_categories.ts_config, tx_commerce_categories.t3ver_oid,
-                    tx_commerce_categories.t3ver_wsid, tx_commerce_categories.t3ver_state,
-                    tx_commerce_categories.t3ver_stage,
-                    tx_commerce_categories.perms_userid, tx_commerce_categories.perms_groupid,
-                    tx_commerce_categories.perms_user, tx_commerce_categories.perms_group,
-                    tx_commerce_categories.perms_everybody',
-                'tx_commerce_products
-                    INNER JOIN pages ON tx_commerce_products.pid = pages.uid
-                    INNER JOIN tx_commerce_products_categories_mm AS mm
-                        ON tx_commerce_products.uid = mm.uid_local
-                    INNER JOIN tx_commerce_categories ON mm.uid_foreign = tx_commerce_categories.uid',
-                'tx_commerce_products.uid = ' . (int) $uid . ' ' . $clause .
-                \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('tx_commerce_products')
-            );
-
+            /** @var ProductRepository $productRepository */
+            $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+            $row = $productRepository->findRootlineProductByUid($uid, $clause);
             if (!empty($row)) {
                 if ($workspaceOl) {
                     \TYPO3\CMS\Backend\Utility\BackendUtility::workspaceOL('tx_commerce_products', $row);
@@ -2648,17 +2540,5 @@ class BackendUtility
     protected static function getBackendUserAuthentication()
     {
         return $GLOBALS['BE_USER'];
-    }
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     * @deprecated since 6.0.0 will be removed in 7.0.0
-     */
-    protected function getDatabaseConnection()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
     }
 }

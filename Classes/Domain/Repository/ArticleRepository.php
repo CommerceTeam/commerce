@@ -157,8 +157,7 @@ class ArticleRepository extends AbstractRepository
                 return $priceUidList;
             } else {
                 $this->error(
-                    'exec_SELECTquery(\'uid\', \'tx_commerce_article_prices\', \'uid_article = \' . ' . $uid .
-                    '); returns no Result'
+                    'SELECT uid FROM tx_commerce_article_prices WHERE uid_article = ' . $uid . '; # returns no Result'
                 );
 
                 return [];
@@ -247,10 +246,58 @@ class ArticleRepository extends AbstractRepository
     }
 
     /**
-     * @param int $uid
+     * @param int $articleUid
+     *
      * @return array
      */
-    public function getAttributeRelationsByArticleUid($uid)
+    public function getAttributeRelationsByArticleUid($articleUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        $result = $queryBuilder
+            ->select('mm.*')
+            ->from($this->databaseTable, 'a')
+            ->innerJoin('a', $this->databaseAttributeRelationTable, 'mm', 'a.uid = mm.uid_local')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'a.uid',
+                    $queryBuilder->createNamedParameter($articleUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * @param int $productUid
+     *
+     * @return array
+     */
+    public function getAttributeRelationsByProductUid($productUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        $result = $queryBuilder
+            ->select('mm.*')
+            ->from($this->databaseTable, 'a')
+            ->innerJoin('a', $this->databaseAttributeRelationTable, 'mm', 'a.uid = mm.uid_local')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'a.uid_product',
+                    $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * @param int $uid
+     * @param array $attributeList
+     *
+     * @return array
+     */
+    public function getAttributeRelationsByArticleAndAttributeUid($uid, array $attributeList)
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
         $result = $queryBuilder
@@ -260,32 +307,10 @@ class ArticleRepository extends AbstractRepository
                 $queryBuilder->expr()->eq(
                     'uid_local',
                     $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetchAll();
-        return is_array($result) ? $result : [];
-    }
-
-    /**
-     * @param int $articleUid
-     * @param int $attributeUid
-     * @return array
-     */
-    public function findAttributeRelationsByArticleAndAttribute($articleUid, $attributeUid)
-    {
-        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
-        $result = $queryBuilder
-            ->select('*')
-            ->from($this->databaseAttributeRelationTable)
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'uid_local',
-                    $queryBuilder->createNamedParameter($articleUid, \PDO::PARAM_INT)
                 ),
-                $queryBuilder->expr()->eq(
+                $queryBuilder->expr()->in(
                     'uid_foreign',
-                    $queryBuilder->createNamedParameter($attributeUid, \PDO::PARAM_INT)
+                    $attributeList
                 )
             )
             ->execute()
@@ -457,6 +482,32 @@ class ArticleRepository extends AbstractRepository
     }
 
     /**
+     * @param int $articleUid
+     * @param int $attributeUid
+     * @return array
+     */
+    public function findAttributeRelationsByArticleAndAttribute($articleUid, $attributeUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseAttributeRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($articleUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'uid_foreign',
+                    $queryBuilder->createNamedParameter($attributeUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
      * Find article by classname.
      *
      * @param string $classname Classname
@@ -536,15 +587,101 @@ class ArticleRepository extends AbstractRepository
     }
 
     /**
+     * @return array
+     */
+    public function findLatestArticle()
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->orderBy('uid', 'DESC')
+            ->execute()
+            ->fetch();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * @param array $parentUids
+     * @param int $sysLanguageUid
+     *
+     * @return array
+     */
+    public function findTranslationsByParentUidAndLanguage(array $parentUids, $sysLanguageUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter($sysLanguageUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->in(
+                    'l18n_parent',
+                    $parentUids
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * @param int $productUid
+     * @param array $data
+     */
+    public function updateByProductUid($productUid, $data)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->update($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_product',
+                    $queryBuilder->createNamedParameter($productUid)
+                )
+            );
+
+        foreach ($data as $field => $value) {
+            $queryBuilder->set($field, $value);
+        }
+
+        $queryBuilder->set('tstamp', $GLOBALS['EXEC_TIME'])
+            ->execute();
+    }
+
+    /**
+     * @param int $articleUid
+     * @param string $hash
+     */
+    public function updateAttributeHash($articleUid, $hash)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->update($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($articleUid)
+                )
+            )
+            ->set('attribute_hash', $hash)
+            ->set('tstamp', $GLOBALS['EXEC_TIME'])
+            ->execute();
+    }
+
+    /**
      * @param int $articleUid
      * @param int $attributeUid
      * @param array $data
      */
     public function updateRelation($articleUid, $attributeUid, array $data)
     {
-        $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_articles_attributes_mm');
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
         $queryBuilder
-            ->update('tx_commerce_articles_attributes_mm')
+            ->update($this->databaseAttributeRelationTable)
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid_local',

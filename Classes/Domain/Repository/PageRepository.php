@@ -25,6 +25,29 @@ class PageRepository extends AbstractRepository
     protected $databaseTable = 'pages';
 
     /**
+     * @param int $parentId
+     *
+     * @return array
+     */
+    public function findByPid($parentId)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($parentId, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy('sorting')
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
      * Find folder by uid that is editable.
      *
      * @param int $uid Page uid

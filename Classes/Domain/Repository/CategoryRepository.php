@@ -198,7 +198,7 @@ class CategoryRepository extends AbstractRepository
         $data = [];
         if ($result->rowCount() > 0) {
             while ($row = $result->fetch()) {
-                $data[] = $row['uid_foreign'];
+                $data[] = $row['uid'];
             }
         }
 
@@ -441,7 +441,7 @@ class CategoryRepository extends AbstractRepository
             $row = $queryBuilder
                 ->select('s.uid', 'mm.uid_foreign AS parent')
                 ->from($this->databaseTable, 's')
-                ->innerJoin('s', 'tx_commerce_categories_parent_category_mm', 'mm', 's.uid = mm.uid_local')
+                ->innerJoin('s', $this->databaseParentCategoryRelationTable, 'mm', 's.uid = mm.uid_local')
                 ->where(
                     $queryBuilder->expr()->eq(
                         's.uid',
@@ -559,50 +559,6 @@ class CategoryRepository extends AbstractRepository
     }
 
     /**
-     * Set delete flag and timestamp to current date for given translated products
-     * by translation parent
-     *
-     * @param array $categoryUids
-     */
-    public function deleteByUids(array $categoryUids)
-    {
-        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
-        $queryBuilder
-            ->update($this->databaseTable)
-            ->where(
-                $queryBuilder->expr()->in(
-                    'uid',
-                    $categoryUids
-                )
-            )
-            ->set('deleted', 1)
-            ->set('tstamp', $GLOBALS['EXEC_TIME'])
-            ->execute();
-    }
-
-    /**
-     * Set delete flag and timestamp to current date for given translated category
-     * by translation parent
-     *
-     * @param array $categoryUids
-     */
-    public function deleteTranslationByParentUids(array $categoryUids)
-    {
-        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
-        $queryBuilder
-            ->update($this->databaseTable)
-            ->where(
-                $queryBuilder->expr()->in(
-                    'l18n_parent',
-                    $categoryUids
-                )
-            )
-            ->set('deleted', 1)
-            ->set('tstamp', $GLOBALS['EXEC_TIME'])
-            ->execute();
-    }
-
-    /**
      * @param array $uidList
      *
      * @return array
@@ -673,5 +629,133 @@ class CategoryRepository extends AbstractRepository
         }
 
         return $return;
+    }
+
+    /**
+     * @param int $categoryUid
+     * @param string $andWhere
+     * @return array|mixed
+     */
+    public function findRootlineCategoryByUid($categoryUid, $andWhere = '')
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->select(
+                'c.uid',
+                'c.hidden',
+                'c.title',
+                'c.ts_config',
+                'c.t3ver_oid',
+                'c.t3ver_wsid',
+                'c.t3ver_state',
+                'c.t3ver_stage',
+                'c.perms_userid',
+                'c.perms_groupid',
+                'c.perms_user',
+                'c.perms_group',
+                'c.perms_everybody',
+                'mm.uid_foreign AS pid'
+            )
+            ->from($this->databaseTable, 'c')
+            ->innerJoin('c', 'pages', 'pa', 'c.pid = pa.uid')
+            ->innerJoin('c', $this->databaseParentCategoryRelationTable, 'mm', 'c.uid = mm.uid_local')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($categoryUid, \PDO::PARAM_INT)
+                )
+            );
+
+        if ($andWhere !== '') {
+            $queryBuilder->andWhere($andWhere);
+        }
+
+        $result = $queryBuilder
+            ->execute()
+            ->fetch();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * @param int $uid
+     *
+     * @return array
+     */
+    public function findPreviousByUid($uid)
+    {
+        $row = $this->findByUid($uid);
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->lt(
+                    'sorting',
+                    $queryBuilder->createNamedParameter($row['sorting'], \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy('sorting', 'DESC')
+            ->execute()
+            ->fetch();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * @return array
+     */
+    public function findLatestCategory()
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->orderBy('uid', 'DESC')
+            ->execute()
+            ->fetch();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Set delete flag and timestamp to current date for given translated products
+     * by translation parent
+     *
+     * @param array $categoryUids
+     */
+    public function deleteByUids(array $categoryUids)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->update($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->in(
+                    'uid',
+                    $categoryUids
+                )
+            )
+            ->set('deleted', 1)
+            ->set('tstamp', $GLOBALS['EXEC_TIME'])
+            ->execute();
+    }
+
+    /**
+     * Set delete flag and timestamp to current date for given translated category
+     * by translation parent
+     *
+     * @param array $categoryUids
+     */
+    public function deleteTranslationByParentUids(array $categoryUids)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->update($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->in(
+                    'l18n_parent',
+                    $categoryUids
+                )
+            )
+            ->set('deleted', 1)
+            ->set('tstamp', $GLOBALS['EXEC_TIME'])
+            ->execute();
     }
 }
