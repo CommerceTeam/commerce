@@ -12,6 +12,11 @@ namespace CommerceTeam\Commerce\Utility;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
+use CommerceTeam\Commerce\Domain\Repository\SysLanguageRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * ItemProc Methods for flexforms.
  *
@@ -27,36 +32,23 @@ class TceformsUtility
      */
     public function productsSelector(array &$data = [])
     {
-        $database = $this->getDatabaseConnection();
+        /** @var ProductRepository $productRepository */
+        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        /** @var SysLanguageRepository $sysLanguageRepository */
+        $sysLanguageRepository = GeneralUtility::makeInstance(SysLanguageRepository::class);
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
 
         $numArticleNumbersShow = 3;
 
-        $addWhere = 'tx_commerce_articles.article_type_uid = ' . NORMALARTICLETYPE;
-        $addWhere .= ' AND tx_commerce_products.deleted = 0 AND tx_commerce_articles.deleted = 0';
-        if ($data['row']['sys_language_uid'] > 0) {
-            $addWhere .= ' AND tx_commerce_products.sys_language_uid = ' . $data['row']['sys_language_uid'] . ' ';
-        }
-        $products = $database->exec_SELECTgetRows(
-            'DISTINCT tx_commerce_products.title, tx_commerce_products.uid, tx_commerce_products.sys_language_uid,
-                count(tx_commerce_articles.uid) as anzahl',
-            'tx_commerce_products
-                INNER JOIN tx_commerce_articles ON tx_commerce_products.uid = tx_commerce_articles.uid_product',
-            $addWhere,
-            'tx_commerce_products.title, tx_commerce_products.uid, tx_commerce_products.sys_language_uid',
-            'tx_commerce_products.title, tx_commerce_products.sys_language_uid'
-        );
-        $data['items'] = [];
         $items = [['', -1]];
+        $products = $productRepository->findSelectorProducts($data['row']['sys_language_uid']);
         foreach ($products as $product) {
             // Select Languages
             $language = '';
 
             if ($product['sys_language_uid'] > 0) {
-                $rowLanguage = $database->exec_SELECTgetSingleRow(
-                    'title',
-                    'sys_language',
-                    'uid = ' . $product['sys_language_uid']
-                );
+                $rowLanguage = $sysLanguageRepository->findByUid($product['sys_language_uid']);
                 if (!empty($rowLanguage)) {
                     $language = $rowLanguage['title'];
                 }
@@ -65,13 +57,7 @@ class TceformsUtility
             $title = $product['title'] . ($language ? ' [' . $language . '] ' : '');
 
             if ($product['anzahl'] > 0) {
-                $articles = $database->exec_SELECTgetRows(
-                    'eancode, l18n_parent, ordernumber',
-                    'tx_commerce_articles',
-                    'tx_commerce_articles.uid_product = ' . $product['uid'] .
-                    ' AND tx_commerce_articles.deleted = 0'
-                );
-
+                $articles = $articleRepository->findByProductUid($product['uid']);
                 if (!empty($articles)) {
                     $rowCount = count($articles);
                     $count = 0;
@@ -83,12 +69,7 @@ class TceformsUtility
                             break;
                         }
                         if ($article['l18n_parent'] > 0) {
-                            $articleTranslationParent = $database->exec_SELECTgetSingleRow(
-                                'eancode, ordernumber',
-                                'tx_commerce_articles',
-                                'tx_commerce_articles.uid = ' . $article['l18n_parent']
-                            );
-
+                            $articleTranslationParent = $articleRepository->findByUid($article['l18n_parent']);
                             if (!empty($articleTranslationParent)) {
                                 $article = $articleTranslationParent;
                             }
@@ -119,18 +100,5 @@ class TceformsUtility
         }
 
         $data['items'] = $items;
-    }
-
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     * @deprecated since 6.0.0 will be removed in 7.0.0
-     */
-    protected function getDatabaseConnection()
-    {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
     }
 }

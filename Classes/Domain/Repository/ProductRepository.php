@@ -639,6 +639,42 @@ class ProductRepository extends AbstractRepository
     }
 
     /**
+     * @param int $sysLanguageUid
+     *
+     * @return array
+     */
+    public function findSelectorProducts($sysLanguageUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->from($this->databaseTable, 'p')
+            ->innerJoin('p', 'tx_commerce_articles', 'a', 'p.uid = a.uid_product')
+            ->addSelectLiteral('DISTINCT p.title, p.uid, p.sys_language_uid, COUNT(a.uid) AS anzahl')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'a.article_type_uid',
+                    $queryBuilder->createNamedParameter(NORMALARTICLETYPE, \PDO::PARAM_INT)
+                )
+            )
+            ->groupBy('p.title', 'p.uid', 'p.sys_language_uid')
+            ->orderBy('p.title', 'p.sys_language_uid');
+
+        if ($sysLanguageUid > 0) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq(
+                    'p.sys_language_uid',
+                    $queryBuilder->createNamedParameter($sysLanguageUid, \PDO::PARAM_INT)
+                )
+            );
+        }
+
+        $result = $queryBuilder
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
      * @param int $productUid
      * @param int $categorUid
      */
