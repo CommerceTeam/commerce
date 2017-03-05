@@ -51,6 +51,7 @@ class StatisticModuleCompleteAggregationController extends StatisticModuleContro
 
             $starttime = $frontendUserRepository->findLowestCreationDate();
             if ($starttime > 0) {
+                /** @var NewClientsRepository $newClientsRepository */
                 $newClientsRepository = $this->getObjectManager()->get(NewClientsRepository::class);
                 $newClientsRepository->truncate();
                 $result = $this->statistics->doClientAggregation($starttime, $endtime);

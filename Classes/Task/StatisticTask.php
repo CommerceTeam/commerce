@@ -12,6 +12,10 @@ namespace CommerceTeam\Commerce\Task;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository;
+use CommerceTeam\Commerce\Domain\Repository\NewClientsRepository;
+use CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\SalesFiguresRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -100,19 +104,19 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      */
     protected function incrementalAggregation()
     {
-        $database = $this->getDatabaseConnection();
+        $result = '';
+        /** @var OrderArticleRepository $orderArticleRepository */
+        $orderArticleRepository = $this->getObjectManager()->get(OrderArticleRepository::class);
+        /** @var SalesFiguresRepository $salesFiguresRepository */
+        $salesFiguresRepository = $this->getObjectManager()->get(SalesFiguresRepository::class);
+        /** @var NewClientsRepository $newClientsRepository */
+        $newClientsRepository = $this->getObjectManager()->get(NewClientsRepository::class);
+        /** @var FrontendUserRepository $frontendUserRepository */
+        $frontendUserRepository = $this->getObjectManager()->get(FrontendUserRepository::class);
 
-        $lastAggregationTimerow = $database->exec_SELECTgetSingleRow('max(tstamp)', 'tx_commerce_salesfigures', '1');
-        $lastAggregationTimeValue = 0;
-        if ($lastAggregationTimerow && $lastAggregationTimerow[0] != null) {
-            $lastAggregationTimeValue = $lastAggregationTimerow[0];
-        }
+        $lastAggregationTimeValue = $salesFiguresRepository->findHighestTimestamp();
+        $endtime2 = $orderArticleRepository->findHighestCreationDate();
 
-        $endrow = $database->exec_SELECTgetSingleRow('max(crdate)', 'tx_commerce_order_articles', '1');
-        $endtime2 = 0;
-        if ($endrow && $endrow[0] != null) {
-            $endtime2 = $endrow[0];
-        }
         $starttime = $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
 
         if ($starttime <= $this->statistics->firstSecondOfDay($endtime2) && $endtime2 != null) {
@@ -134,15 +138,12 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             $this->log('No new Orders');
         }
 
-        $changerows = $database->exec_SELECTgetRows(
-            'distinct crdate',
-            'tx_commerce_order_articles',
-            'tstamp > ' . ($lastAggregationTimeValue - ($this->statistics->getDaysBack() * 24 * 60 * 60))
+        $changeResult = $orderArticleRepository->findDistinctCreationDatesSince(
+            $lastAggregationTimeValue - ($this->statistics->getDaysBack() * 24 * 60 * 60)
         );
         $changeDaysArray = [];
         $changes = 0;
-        $result = '';
-        foreach ($changerows as $changerow) {
+        while ($changerow = $changeResult->fetch()) {
             $starttime = $this->statistics->firstSecondOfDay($changerow['crdate']);
             $endtime = $this->statistics->lastSecondOfDay($changerow['crdate']);
 
@@ -164,19 +165,12 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
         $this->log($changes . ' Days changed');
 
-        $lastAggregationTimerow = $database->exec_SELECTgetSingleRow('max(tstamp)', 'tx_commerce_newclients', '1');
-        if ($lastAggregationTimerow && $lastAggregationTimerow[0] != null) {
-            $lastAggregationTimeValue = $lastAggregationTimerow[0];
-        }
+        $lastAggregationTimeValue = $newClientsRepository->findHighestTimestamp();
         $lastAggregationTimeValue = $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
-
-        $endrow = $database->exec_SELECTgetSingleRow('max(crdate)', 'fe_users', '1');
-        if ($endrow && $endrow[0] != null) {
-            $endtime2 = $endrow[0];
-        }
-
+        $endtime2 = $frontendUserRepository->findHighestTimestamp();
         if ($lastAggregationTimeValue <= $endtime2 and $endtime2 != null and $lastAggregationTimeValue != null) {
             $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
+
             $starttime = $this->statistics->firstSecondOfDay($lastAggregationTimeValue);
 
             $this->log(
@@ -191,7 +185,7 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
                 $this->log('Problems with CLient agregation');
             }
         } else {
-            $this->log('No new Customers ');
+            $this->log('No new Customers');
         }
     }
 
@@ -202,20 +196,19 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      */
     protected function completeAggregation()
     {
-        $database = $this->getDatabaseConnection();
+        /** @var OrderArticleRepository $orderArticleRepository */
+        $orderArticleRepository = $this->getObjectManager()->get(OrderArticleRepository::class);
+        /** @var FrontendUserRepository $frontendUserRepository */
+        $frontendUserRepository = $this->getObjectManager()->get(FrontendUserRepository::class);
 
-        $endrow = $database->exec_SELECTgetSingleRow('max(crdate)', 'tx_commerce_order_articles', '1');
-        $endtime2 = 0;
-        if ($endrow && $endrow[0] != null) {
-            $endtime2 = $endrow[0];
-        }
-
+        $endtime2 = $orderArticleRepository->findHighestCreationDate();
         $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
-        $startrow = $database->exec_SELECTgetSingleRow('min(crdate)', 'tx_commerce_order_articles', 'crdate > 0');
-        if ($startrow && $startrow[0] != null) {
-            $starttime = $startrow[0];
-            $database->sql_query('TRUNCATE tx_commerce_salesfigures');
+        $starttime = $orderArticleRepository->findLowestCreationDate();
+        if ($starttime > 0) {
+            /** @var SalesFiguresRepository $salesFiguresRepository */
+            $salesFiguresRepository = $this->getObjectManager()->get(SalesFiguresRepository::class);
+            $salesFiguresRepository->truncate();
             if (!$this->statistics->doSalesAggregation($starttime, $endtime)) {
                 $this->log('Problems with completeAggregation of Sales');
             }
@@ -223,17 +216,14 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             $this->log('no sales data available');
         }
 
-        $endrow = $database->exec_SELECTgetSingleRow('max(crdate)', 'fe_users', '1');
-        if ($endrow && $endrow[0] != null) {
-            $endtime2 = $endrow[0];
-        }
-
+        $endtime2 = $frontendUserRepository->findHighestCreationDate();
         $endtime = $endtime2 > mktime(0, 0, 0) ? mktime(0, 0, 0) : strtotime('+1 hour', $endtime2);
 
-        $startrow = $database->exec_SELECTgetSingleRow('min(crdate)', 'fe_users', 'crdate > 0 AND deleted = 0');
-        if ($startrow && $startrow[0] != null) {
-            $starttime = $startrow[0];
-            $database->sql_query('TRUNCATE tx_commerce_newclients');
+        $starttime = $frontendUserRepository->findLowestCreationDate();
+        if ($starttime > 0) {
+            /** @var NewClientsRepository $newClientsRepository */
+            $newClientsRepository = $this->getObjectManager()->get(NewClientsRepository::class);
+            $newClientsRepository->truncate();
             if (!$this->statistics->doClientAggregation($starttime, $endtime)) {
                 $this->log('Problems with completeAggregation of Clients');
             }
@@ -265,15 +255,15 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
 
     /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     * @deprecated since 6.0.0 will be removed in 7.0.0
+     * @return \TYPO3\CMS\Extbase\Object\ObjectManager
      */
-    protected function getDatabaseConnection()
+    protected function getObjectManager(): \TYPO3\CMS\Extbase\Object\ObjectManager
     {
-        GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Extbase\Object\ObjectManager::class
+        );
+        return $objectManager;
     }
 
     /**
