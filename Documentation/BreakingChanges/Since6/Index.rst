@@ -34,6 +34,7 @@ TceformsUtility::getDatabaseConnection query was moved to SysLanguageRepository 
 StatisticTask::getDatabaseConnection queries where moved to corresponding repositories
 OrdermailHook::getDatabaseConnection queries where moved to AddressRepository and MoveOrderMailRepository
 CommerceLinkHandler::getDatabaseConnection query was moved to ProductRepository
+DatabaseRowArticleData::getDatabaseConnection query was moved to SysRefindexRepository
 
 FolderRepository::getFolders should not be used anymore, please use ::getFolder instead
 BaseController::renderValue.NUMBERFORMAT this type of formating is possible via stdWrap.numberFormat and takes the configuration decimals, dec_point, thousands_sep so just replace NUMBERFORMAT with stdWrap.numberFormat = 1 and add stdWrap.numberFormat.deci... and so on

@@ -15,6 +15,7 @@ namespace CommerceTeam\Commerce\Form\FormDataProvider;
 use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
 use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
 use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
+use CommerceTeam\Commerce\Domain\Repository\SysRefindexRepository;
 use CommerceTeam\Commerce\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -158,23 +159,8 @@ class DatabaseRowArticleData implements FormDataProviderInterface
      */
     protected function getArticleReferenceCount($uid)
     {
-        return $this->getDatabaseConnection()->exec_SELECTcountRows(
-            '*',
-            'sys_refindex',
-            'deleted = 0 AND ref_table = \'tx_commerce_articles\' AND ref_uid = ' . (int) $uid
-        );
-    }
-
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     * @deprecated since 6.0.0 will be removed in 7.0.0
-     */
-    protected function getDatabaseConnection()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
+        /** @var SysRefindexRepository $referenceRepository */
+        $referenceRepository = GeneralUtility::makeInstance(SysRefindexRepository::class);
+        return $referenceRepository->countByTablenameUid('tx_commerce_articles', $uid);
     }
 }
