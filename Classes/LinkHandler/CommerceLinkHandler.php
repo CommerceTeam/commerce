@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\LinkHandler;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use CommerceTeam\Commerce\Tree\View\ElementBrowserCategoryTreeView;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
@@ -253,7 +254,7 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
         $out = '<h3>' . $this->getLanguageService()->getLL('linkhandler.products') . ':</h3>';
         // Create header for listing, showing the page title/icon:
         $mainPageRec = BackendUtility::getRecordWSOL('tx_commerce_categories', $expCategoryId);
-        $database = $this->getDatabaseConnection();
+
         $out .= '
 			<ul class="list-tree list-tree-root list-tree-root-clean">
 				<li class="list-tree-control-open">
@@ -265,19 +266,11 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
 					</span>
 					<ul>
 			';
-        $database->store_lastBuiltQuery = 1;
+
         // Look up tt_content elements from the expanded page:
-        $rows = $database->exec_SELECTgetRows(
-            'tx_commerce_products.uid, tx_commerce_products.hidden, tx_commerce_products.starttime,
-            tx_commerce_products.endtime, tx_commerce_products.title, tx_commerce_products.fe_group,
-            tx_commerce_products.description',
-            'tx_commerce_products
-            INNER JOIN tx_commerce_products_categories_mm AS mm ON tx_commerce_products.uid = mm.uid_local',
-            'mm.uid_foreign = ' . (int)$expCategoryId . BackendUtility::deleteClause('tx_commerce_products')
-            . BackendUtility::versioningPlaceholderClause('tx_commerce_products'),
-            '',
-            'tx_commerce_products.sorting'
-        );
+        /** @var ProductRepository $productRepository */
+        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        $rows = $productRepository->findByCategoryUid($expCategoryId);
         // Traverse list of records:
         $c = 0;
         foreach ($rows as $row) {
@@ -312,18 +305,6 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
 			';
 
         return $out;
-    }
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     * @deprecated since 6.0.0 will be removed in 7.0.0
-     */
-    protected function getDatabaseConnection()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
     }
 
 
