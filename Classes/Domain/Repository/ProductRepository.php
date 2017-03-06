@@ -733,6 +733,37 @@ class ProductRepository extends AbstractRepository
     }
 
     /**
+     * @param int $productUid
+     * @param int $attributeUid
+     * @param array $data
+     *
+     * @return string
+     */
+    public function updateAttributeRelationValues($productUid, $attributeUid, array $data)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        $queryBuilder
+            ->update($this->databaseAttributeRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'uid_foreign',
+                    $queryBuilder->createNamedParameter($attributeUid, \PDO::PARAM_INT)
+                )
+            );
+
+        foreach ($data as $field => $value) {
+            $queryBuilder->set($field, $value);
+        }
+
+        $result = $queryBuilder->execute();
+        return $result->errorInfo();
+    }
+
+    /**
      * Set delete flag and timestamp to current date for given products uids
      *
      * @param array $productUids
@@ -792,6 +823,28 @@ class ProductRepository extends AbstractRepository
                 $queryBuilder->expr()->eq(
                     'uid_foreign',
                     $queryBuilder->createNamedParameter($categoryUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute();
+    }
+
+    /**
+     * @param int $productUid
+     * @param int $attributeUid
+     */
+    public function deleteByProductAndAttribute($productUid, $attributeUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        $queryBuilder
+            ->delete($this->databaseAttributeRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'uid_foreign',
+                    $queryBuilder->createNamedParameter($attributeUid, \PDO::PARAM_INT)
                 )
             )
             ->execute();

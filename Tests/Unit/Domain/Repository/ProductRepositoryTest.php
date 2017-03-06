@@ -1,7 +1,7 @@
 <?php
 namespace CommerceTeam\Commerce\Tests\Unit\Domain\Repository;
 
-class ProductRepositoryTest
+class ProductRepositoryTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
 {
     protected function setUp()
     {
@@ -12,5 +12,6 @@ class ProductRepositoryTest
      */
     public function findByUid()
     {
+        $this->markTestSkipped();
     }
 }

@@ -772,4 +772,26 @@ class ArticleRepository extends AbstractRepository
             ->set('tstamp', $GLOBALS['EXEC_TIME'])
             ->execute();
     }
+
+    /**
+     * @param int $articleUid
+     * @param int $attributeUid
+     */
+    public function deleteByArticleAndAttribute($articleUid, $attributeUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        $queryBuilder
+            ->delete($this->databaseAttributeRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($articleUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'uid_foreign',
+                    $queryBuilder->createNamedParameter($attributeUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute();
+    }
 }
