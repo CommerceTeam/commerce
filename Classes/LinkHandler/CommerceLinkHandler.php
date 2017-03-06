@@ -397,7 +397,7 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
      * @param string $action [picking|rendering]
      *
      * @return string
-     * @deprecated Remove in version 6. This is only a temporary fix
+     * @deprecated Remove in version 7. This is only a temporary fix
      */
     protected function fixDeprecatedParameter($url, $action)
     {
