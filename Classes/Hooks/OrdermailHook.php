@@ -12,6 +12,8 @@ namespace CommerceTeam\Commerce\Hooks;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\AddressRepository;
+use CommerceTeam\Commerce\Domain\Repository\MoveOrderMailRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -138,13 +140,9 @@ class OrdermailHook
          * @var \TYPO3\CMS\Frontend\Page\PageRepository
          */
         $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
-
-        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            $this->tablename,
-            'sys_language_uid = 0 AND pid = ' . $pid . ' AND mailkind = ' . $mailkind .
-            \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($this->tablename)
-        );
+        /** @var MoveOrderMailRepository $moveOrderMailRepository */
+        $moveOrderMailRepository = GeneralUtility::makeInstance(MoveOrderMailRepository::class);
+        $rows = $moveOrderMailRepository->findByPidAndMailKind($pid, $mailkind);
 
         $templates = [];
         foreach ($rows as $row) {
@@ -287,7 +285,8 @@ class OrdermailHook
      */
     protected function generateMail($orderUid, array $orderData, $templateCode)
     {
-        $database = $this->getDatabaseConnection();
+        /** @var AddressRepository $addressRepository */
+        $addressRepository = GeneralUtility::makeInstance(AddressRepository::class);
 
         $markerArray = ['###ORDERID###' => $orderUid];
 
@@ -296,11 +295,7 @@ class OrdermailHook
         // Get The addresses
         $deliveryAdress = '';
         if ($orderData['cust_deliveryaddress']) {
-            $data = $database->exec_SELECTgetSingleRow(
-                '*',
-                'tt_address',
-                'uid = ' . (int) $orderData['cust_deliveryaddress']
-            );
+            $data = $addressRepository->findByUid($orderData['cust_deliveryaddress']);
             if (!empty($data)) {
                 $deliveryAdress = $this->makeAdressView($data, '###DELIVERY_ADDRESS###', $content);
             }
@@ -309,7 +304,7 @@ class OrdermailHook
 
         $billingAdress = '';
         if ($orderData['cust_invoice']) {
-            $data = $database->exec_SELECTgetSingleRow('*', 'tt_address', 'uid = ' . (int) $orderData['cust_invoice']);
+            $data = $addressRepository->findByUid($orderData['cust_invoice']);
             if (!empty($data)) {
                 $billingAdress = $this->makeAdressView($data, '###BILLING_ADDRESS###', $content);
                 $this->customermailadress = $data['email'];

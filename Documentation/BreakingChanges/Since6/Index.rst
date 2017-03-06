@@ -32,6 +32,7 @@ TcaSelectItems::getDatabaseConnection queries where moved to CategoryRepository
 BackendUtility::getDatabaseConnection queries where moved to corresponding repositories
 TceformsUtility::getDatabaseConnection query was moved to SysLanguageRepository and ProductRepository
 StatisticTask::getDatabaseConnection queries where moved to corresponding repositories
+OrdermailHook::getDatabaseConnection queries where moved to AddressRepository and MoveOrderMailRepository
 
 FolderRepository::getFolders should not be used anymore, please use ::getFolder instead
 BaseController::renderValue.NUMBERFORMAT this type of formating is possible via stdWrap.numberFormat and takes the configuration decimals, dec_point, thousands_sep so just replace NUMBERFORMAT with stdWrap.numberFormat = 1 and add stdWrap.numberFormat.deci... and so on
