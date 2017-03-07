@@ -1570,27 +1570,28 @@ class DataMapHook
                             } else {
                                 // if the article has already this attribute, we have to update so try
                                 // to select this attribute for this article
-                                $relationCount = $this->getDatabaseConnection()->exec_SELECTcountRows(
-                                    'uid_local, uid_foreign',
-                                    'tx_commerce_articles_attributes_mm',
-                                    'uid_local = ' . $article['uid'] . ' AND uid_foreign = ' . $attributeKey
+                                $relationCount = $articleRepository->countAttributeRelations(
+                                    $article['uid'],
+                                    $attributeKey
                                 );
-
                                 if ($relationCount) {
-                                    $this->getDatabaseConnection()->exec_UPDATEquery(
-                                        'tx_commerce_articles_attributes_mm',
-                                        'uid_local = ' . $article['uid'] . ' AND uid_foreign = ' . $attributeKey,
+                                    $articleRepository->updateRelation(
+                                        $article['uid'],
+                                        $attributeKey,
                                         array_merge($updateArrays[1], ['sorting' => $counter])
                                     );
                                 } else {
-                                    $this->getDatabaseConnection()->exec_INSERTquery(
+                                    $articleRepository->insertWithTable(
                                         'tx_commerce_articles_attributes_mm',
-                                        array_merge($updateArrays[1], [
-                                            'uid_local' => $article['uid'],
-                                            'uid_product' => $productUid,
-                                            'uid_foreign' => $attributeKey,
-                                            'sorting' => $counter,
-                                        ])
+                                        array_merge(
+                                            $updateArrays[1],
+                                            [
+                                                'uid_local' => $article['uid'],
+                                                'uid_product' => $productUid,
+                                                'uid_foreign' => $attributeKey,
+                                                'sorting' => $counter,
+                                            ]
+                                        )
                                     );
                                 }
                             }
@@ -1621,13 +1622,9 @@ class DataMapHook
         }
 
         // Check if we do have some localized products an call the method recursivly
-        $resLocalised = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid',
-            'tx_commerce_products',
-            'deleted = 0 AND l18n_parent = ' . $productUid
-        );
-        foreach ($resLocalised as $rowLocalised) {
-            $this->saveProductRelations($rowLocalised['uid'], $fieldArray);
+        $productTranslations = $productRepository->findTranslationsByParentUidAndLanguage($productUid);
+        foreach ($productTranslations as $productTranslation) {
+            $this->saveProductRelations($productTranslation['uid'], $fieldArray);
         }
     }
 

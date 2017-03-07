@@ -617,22 +617,29 @@ class ProductRepository extends AbstractRepository
      *
      * @return array
      */
-    public function findTranslationsByParentUidAndLanguage($parentUid, $sysLanguageUid)
+    public function findTranslationsByParentUidAndLanguage($parentUid, $sysLanguageUid = 0)
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
-        $result = $queryBuilder
+        $queryBuilder
             ->select('*')
             ->from($this->databaseTable)
             ->where(
                 $queryBuilder->expr()->eq(
-                    'sys_language_uid',
-                    $queryBuilder->createNamedParameter($sysLanguageUid, \PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
                     'l18n_parent',
                     $queryBuilder->createNamedParameter($parentUid, \PDO::PARAM_INT)
                 )
-            )
+            );
+
+        if ($sysLanguageUid > 0) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter($sysLanguageUid, \PDO::PARAM_INT)
+                )
+            );
+        }
+
+        $result = $queryBuilder
             ->execute()
             ->fetch();
         return is_array($result) ? $result : [];

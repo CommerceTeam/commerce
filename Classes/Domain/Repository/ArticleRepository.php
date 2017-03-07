@@ -629,6 +629,32 @@ class ArticleRepository extends AbstractRepository
     }
 
     /**
+     * @param int $articleUid
+     * @param int $attributeUid
+     *
+     * @return int
+     */
+    public function countAttributeRelations($articleUid, $attributeUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        return (int) $queryBuilder
+            ->count('*')
+            ->from($this->databaseAttributeRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($articleUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'uid_foreign',
+                    $queryBuilder->createNamedParameter($attributeUid. \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchColumn();
+    }
+
+    /**
      * @param int $productUid
      * @param array $data
      */
@@ -664,7 +690,7 @@ class ArticleRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($articleUid)
+                    $queryBuilder->createNamedParameter($articleUid, \PDO::PARAM_INT)
                 )
             )
             ->set('attribute_hash', $hash)
