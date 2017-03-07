@@ -137,4 +137,32 @@ class FrontendUserRepository extends AbstractRepository
             ->execute()
             ->fetchColumn();
     }
+
+    /**
+     * @param int $timestart
+     * @param int $timeend
+     *
+     * @return \Doctrine\DBAL\Driver\Statement
+     */
+    public function findInDateRange($timestart, $timeend)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('pid')
+            ->addSelectLiteral($queryBuilder->expr()->count('*'))
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->lte(
+                    'crdate',
+                    $queryBuilder->createNamedParameter($timestart, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->gte(
+                    'crdate',
+                    $queryBuilder->createNamedParameter($timeend, \PDO::PARAM_INT)
+                )
+            )
+            ->groupBy('pid')
+            ->execute();
+        return $result;
+    }
 }

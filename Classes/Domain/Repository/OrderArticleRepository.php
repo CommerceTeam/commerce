@@ -159,4 +159,47 @@ class OrderArticleRepository extends AbstractRepository
             ->execute()
             ->fetchColumn();
     }
+
+    /**
+     * @param int $timestart
+     * @param int $timeend
+     * @param array $excludePids
+     *
+     * @return \Doctrine\DBAL\Driver\Statement|int
+     */
+    public function findSalesFigures($timestart, $timeend, $excludePids)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('toa.pid')
+            ->addSelectLiteral(
+                $queryBuilder->expr()->sum('a.amount'),
+                $queryBuilder->expr()->sum('a.amount * a.price_gross'),
+                $queryBuilder->expr()->sum('a.amount * a.price_net'),
+                $queryBuilder->expr()->count('DISTINCT a.order_id')
+            )
+            ->from($this->databaseTable, 'a')
+            ->innerJoin('a', 'tx_commerce_orders', 'o', 'a.order_id = o.order_id')
+            ->where(
+                $queryBuilder->expr()->lte(
+                    'a.article_type_uid',
+                    $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->gte(
+                    'a.crdate',
+                    $queryBuilder->createNamedParameter($timestart, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->lte(
+                    'a.crdate',
+                    $queryBuilder->createNamedParameter($timeend, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->notIn(
+                    'a.pid',
+                    $excludePids
+                )
+            )
+            ->groupBy('a.pid')
+            ->execute();
+        return $result;
+    }
 }

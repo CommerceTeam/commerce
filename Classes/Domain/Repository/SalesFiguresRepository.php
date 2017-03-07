@@ -185,4 +185,63 @@ class SalesFiguresRepository extends AbstractRepository
             ->execute()
             ->fetchColumn();
     }
+
+    /**
+     * @param array $data field values for use for new record
+     *
+     * @return bool
+     */
+    public function insertRecord($data): bool
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->insert($this->databaseTable)
+            ->values($data)
+            ->execute();
+
+        return $result->errorCode() > 0;
+    }
+
+    /**
+     * @param int $year
+     * @param int $month
+     * @param int $day
+     * @param int $hour
+     * @param array $data
+     *
+     * @return bool
+     */
+    public function updateWithYearMonthDayHour($year, $month, $day, $hour, array $data): bool
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->update($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'year',
+                    $queryBuilder->createNamedParameter($year, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'month',
+                    $queryBuilder->createNamedParameter($month, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'day',
+                    $queryBuilder->createNamedParameter($day, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'hour',
+                    $queryBuilder->createNamedParameter($hour, \PDO::PARAM_INT)
+                )
+            );
+
+        foreach ($data as $field => $value) {
+            $queryBuilder->set($field, $value);
+        }
+
+        $result = $queryBuilder
+            ->execute();
+
+        return $result->errorCode() > 0;
+    }
 }

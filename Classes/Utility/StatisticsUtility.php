@@ -12,6 +12,12 @@ namespace CommerceTeam\Commerce\Utility;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository;
+use CommerceTeam\Commerce\Domain\Repository\NewClientsRepository;
+use CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\SalesFiguresRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * This class inculdes all methods for generating statistics data,
  * used for the statistics module and for the cli script.
@@ -24,7 +30,7 @@ class StatisticsUtility
      * List of exclude PIDs, PIDs whcih should not be used when calculation
      * the statistics. This List should be definable in Extension configuration.
      *
-     * @var string
+     * @var array
      */
     public $excludePids;
 
@@ -44,7 +50,9 @@ class StatisticsUtility
      */
     public function init($excludePids)
     {
-        $this->excludePids = $excludePids;
+        $this->excludePids = is_array($excludePids) ?
+            $excludePids :
+            GeneralUtility::intExplode(',', $excludePids, true);
     }
 
     /**
@@ -68,7 +76,10 @@ class StatisticsUtility
      */
     public function doSalesAggregation($starttime, $endtime)
     {
-        $database = $this->getDatabaseConnection();
+        /** @var OrderArticleRepository $orderArticleRepository */
+        $orderArticleRepository = GeneralUtility::makeInstance(OrderArticleRepository::class);
+        /** @var SalesFiguresRepository $salesFiguresRepository */
+        $salesFiguresRepository = GeneralUtility::makeInstance(SalesFiguresRepository::class);
 
         $hour = date('H', $starttime);
         $day = date('d', $starttime);
@@ -79,24 +90,9 @@ class StatisticsUtility
         $oldtimeend = mktime($hour, 59, 59, $month, $day, $year);
 
         while ($oldtimeend <= $endtime) {
-            $statres = $database->exec_SELECTquery(
-                'SUM(toa.amount),
-                    SUM(toa.amount * toa.price_gross),
-                    COUNT(distinct toa.order_id),
-                    toa.pid,
-                    SUM(toa.amount * toa.price_net)',
-                'tx_commerce_order_articles AS toa 
-                    INNER JOIN tx_commerce_orders AS tco ON toa.order_id = tco.order_id',
-                'toa.article_type_uid <= 1
-                    AND toa.crdate >= ' . $oldtimestart . '
-                    AND toa.crdate <= ' . $oldtimeend . '
-                    AND toa.pid NOT IN (' . $this->excludePids . ')
-                    AND tco.deleted = 0',
-                'toa.pid'
-            );
-
-            while (($statrow = $database->sql_fetch_row($statres))) {
-                $insertStatArray = [
+            $statResult = $orderArticleRepository->findSalesFigures($oldtimestart, $oldtimeend, $this->excludePids);
+            while ($statrow = $statResult->fetch()) {
+                $salesFigure = [
                     'pid' => $statrow[3],
                     'year' => date('Y', $oldtimeend),
                     'month' => date('m', $oldtimeend),
@@ -111,8 +107,8 @@ class StatisticsUtility
                     'tstamp' => $GLOBALS['EXEC_TIME'],
                 ];
 
-                $res = $database->exec_INSERTquery('tx_commerce_salesfigures', $insertStatArray);
-                if (!$res) {
+                $insertResult = $salesFiguresRepository->insertRecord($salesFigure);
+                if (!$insertResult) {
                     $result = false;
                 }
             }
@@ -135,7 +131,10 @@ class StatisticsUtility
      */
     public function doSalesUpdateAggregation($starttime, $endtime, $doOutput = true)
     {
-        $database = $this->getDatabaseConnection();
+        /** @var OrderArticleRepository $orderArticleRepository */
+        $orderArticleRepository = GeneralUtility::makeInstance(OrderArticleRepository::class);
+        /** @var SalesFiguresRepository $salesFiguresRepository */
+        $salesFiguresRepository = GeneralUtility::makeInstance(SalesFiguresRepository::class);
 
         $hour = date('H', $starttime);
         $day = date('d', $starttime);
@@ -146,23 +145,9 @@ class StatisticsUtility
         $oldtimeend = mktime($hour, 59, 59, $month, $day, $year);
 
         while ($oldtimeend <= $endtime) {
-            $statres = $database->exec_SELECTquery(
-                'SUM(toa.amount),
-                    SUM(toa.amount * toa.price_gross),
-                    COUNT(distinct toa.order_id),
-                    toa.pid,
-                    SUM(toa.amount * toa.price_net)',
-                'tx_commerce_order_articles AS toa 
-                    INNER JOIN tx_commerce_orders AS tco ON toa.order_id = tco.order_id',
-                'toa.article_type_uid <= 1
-                    AND toa.crdate >= ' . $oldtimestart . '
-                    AND toa.crdate <= ' . $oldtimeend . '
-                    AND toa.pid NOT IN (' . $this->excludePids . ')
-                    AND tco.deleted = 0',
-                'toa.pid'
-            );
-            while (($statrow = $database->sql_fetch_row($statres))) {
-                $updateStatArray = [
+            $statResult = $orderArticleRepository->findSalesFigures($oldtimestart, $oldtimeend, $this->excludePids);
+            while ($statrow = $statResult->fetch()) {
+                $salesFigure = [
                     'pid' => $statrow[3],
                     'year' => date('Y', $oldtimeend),
                     'month' => date('m', $oldtimeend),
@@ -175,12 +160,16 @@ class StatisticsUtility
                     'pricenet' => $statrow[4],
                     'tstamp' => $GLOBALS['EXEC_TIME'],
                 ];
-                $whereClause = 'year = ' . date('Y', $oldtimeend) . ' AND month = ' .
-                    date('m', $oldtimeend) . ' AND day = ' . date('d', $oldtimeend) . ' AND hour = ' .
-                    date('H', $oldtimeend);
-                $res = $database->exec_UPDATEquery('tx_commerce_salesfigures', $whereClause, $updateStatArray);
 
-                if (!$res) {
+                $insertResult = $salesFiguresRepository->updateWithYearMonthDayHour(
+                    date('Y', $oldtimeend),
+                    date('m', $oldtimeend),
+                    date('d', $oldtimeend),
+                    date('H', $oldtimeend),
+                    $salesFigure
+                );
+
+                if (!$insertResult) {
                     $stats = false;
                 }
                 if ($doOutput) {
@@ -207,7 +196,10 @@ class StatisticsUtility
      */
     public function doClientAggregation($starttime, $endtime)
     {
-        $database = $this->getDatabaseConnection();
+        /** @var FrontendUserRepository $frontendUserRepository */
+        $frontendUserRepository = GeneralUtility::makeInstance(FrontendUserRepository::class);
+        /** @var NewClientsRepository $newClientRepository */
+        $newClientRepository = GeneralUtility::makeInstance(NewClientsRepository::class);
 
         $hour = date('H', $starttime);
         $day = date('d', $starttime);
@@ -218,14 +210,9 @@ class StatisticsUtility
         $oldtimeend = mktime($hour, 59, 59, $month, $day, $year);
 
         while ($oldtimeend < $endtime) {
-            $statres = $database->exec_SELECTquery(
-                'COUNT(*), pid',
-                'fe_users',
-                'crdate >= ' . $oldtimestart . ' AND crdate <= ' . $oldtimeend,
-                'pid'
-            );
-            while (($statrow = $database->sql_fetch_row($statres))) {
-                $insertStatArray = [
+            $statResult = $frontendUserRepository->findInDateRange($oldtimestart, $oldtimeend);
+            while ($statrow = $statResult->fetch()) {
+                $newClient = [
                     'pid' => $statrow[1],
                     'year' => date('Y', $oldtimeend),
                     'month' => date('m', $oldtimeend),
@@ -237,7 +224,7 @@ class StatisticsUtility
                     'tstamp' => $GLOBALS['EXEC_TIME'],
                 ];
 
-                $database->exec_INSERTquery('tx_commerce_newclients', $insertStatArray);
+                $newClientRepository->addRecord($newClient);
             }
             $oldtimestart = mktime(++$hour, 0, 0, $month, $day, $year);
             $oldtimeend = mktime($hour, 59, 59, $month, $day, $year);
@@ -293,7 +280,7 @@ class StatisticsUtility
      */
     protected function getDatabaseConnection()
     {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+        GeneralUtility::logDeprecatedFunction();
         return $GLOBALS['TYPO3_DB'];
     }
 }
