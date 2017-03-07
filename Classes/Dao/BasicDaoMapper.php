@@ -11,6 +11,9 @@ namespace CommerceTeam\Commerce\Dao;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+use CommerceTeam\Commerce\Domain\Repository\AddressRepository;
+use CommerceTeam\Commerce\Domain\Repository\FrontendUserRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This class used by the Dao for database storage.
@@ -56,11 +59,18 @@ class BasicDaoMapper
     protected $error = [];
 
     /**
+     * @var FrontendUserRepository|AddressRepository
+     */
+    protected $repository;
+
+    /**
      * Constructor.
      *
      * @param BasicDaoParser $parser Parser
      * @param int $createPid Create pid
      * @param string $dbTable Table
+     *
+     * @throws \Exception
      */
     public function __construct(BasicDaoParser $parser, $createPid = 0, $dbTable = null)
     {
@@ -73,6 +83,19 @@ class BasicDaoMapper
 
         if (!empty($dbTable)) {
             $this->dbTable = $dbTable;
+        }
+
+        switch ($this->dbTable) {
+            case 'tt_address':
+                $this->repository = GeneralUtility::makeInstance(AddressRepository::class);
+                break;
+
+            case 'fe_users':
+                $this->repository = GeneralUtility::makeInstance(FrontendUserRepository::class);
+                break;
+
+            default:
+                throw new \Exception('Unsupported table ' . $this->dbTable . ' found in BasicDaoMapper', 1488868909540);
         }
     }
 
@@ -143,23 +166,19 @@ class BasicDaoMapper
         // set pid
         $this->parser->setPid($dbModel, $this->createPid);
 
-        // @todo extract db action into repository
-        $database = $this->getDatabaseConnection();
         // execute query
-        $database->exec_INSERTquery($this->dbTable, $dbModel);
+        $inserId = $this->repository->addRecord($dbModel);
 
         // any errors
-        $error = $database->sql_error();
-        if (!empty($error)) {
+        if (empty($inserId)) {
             $this->addError([
-                $error,
-                $database->INSERTquery($this->dbTable, $dbModel),
+                'insert ' . $this->dbTable . ' failed',
                 '$dbModel' => $dbModel,
             ]);
         }
 
         // set object id
-        $object->setId($database->sql_insert_id());
+        $object->setId($inserId);
     }
 
     /**
@@ -172,21 +191,15 @@ class BasicDaoMapper
      */
     protected function dbUpdate($uid, BasicDaoObject $object)
     {
-        $dbWhere = 'uid = ' . (int) $uid;
         $dbModel = $this->parser->parseObjectToModel($object);
 
-        // @todo extract db action into repository
-        $database = $this->getDatabaseConnection();
-
         // execute query
-        $database->exec_UPDATEquery($this->dbTable, $dbWhere, $dbModel);
+        $result = $this->repository->updateRecord($uid, $dbModel);
 
         // any errors
-        $error = $database->sql_error();
-        if (!empty($error)) {
+        if (!$result) {
             $this->addError([
-                $error,
-                $database->UPDATEquery($this->dbTable, $dbWhere, $dbModel),
+                'update ' . $this->dbTable . ' failed',
                 '$dbModel' => $dbModel,
             ]);
         }
@@ -202,18 +215,13 @@ class BasicDaoMapper
      */
     protected function dbDelete($uid, BasicDaoObject $object)
     {
-        // @todo extract db action into repsitory
-        $database = $this->getDatabaseConnection();
-
         // execute query
-        $database->exec_DELETEquery($this->dbTable, 'uid = ' . (int) $uid);
+        $error = $this->repository->deleteRecord($uid);
 
         // any errors
-        $error = $database->sql_error();
-        if (!empty($error)) {
+        if ($error) {
             $this->addError([
-                $error,
-                $database->DELETEquery($this->dbTable, 'uid = ' . (int) $uid),
+                'delete ' . $this->dbTable . ' failed',
             ]);
         }
 
@@ -231,14 +239,8 @@ class BasicDaoMapper
      */
     protected function dbSelectById($uid, BasicDaoObject $object)
     {
-        // @todo extract db action into repository
         // insert into object
-        $model = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            '*',
-            $this->dbTable,
-            'uid = ' . (int) $uid . 'AND deleted = 0'
-        );
-        $model = is_array($model) ? $model : [];
+        $model = $this->repository->findByUid($uid);
         if ($model) {
             // parse into object
             $this->parser->parseModelToObject($model, $object);
@@ -278,18 +280,5 @@ class BasicDaoMapper
     protected function getError()
     {
         return $this->error ?: false;
-    }
-
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     * @deprecated since 6.0.0 will be removed in 7.0.0
-     */
-    protected function getDatabaseConnection()
-    {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
     }
 }

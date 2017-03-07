@@ -377,6 +377,26 @@ abstract class AbstractRepository implements SingletonInterface
     }
 
     /**
+     * @param int $uid
+     *
+     * @return string
+     */
+    public function deleteRecord($uid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->delete($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute();
+        return $result->errorCode() ? $result->errorCode() : 0;
+    }
+
+    /**
      * @param string $table
      * @param array $data
      */
