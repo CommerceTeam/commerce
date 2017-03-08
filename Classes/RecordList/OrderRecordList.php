@@ -13,10 +13,16 @@ namespace CommerceTeam\Commerce\RecordList;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\OrderArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\OrderTypeRepository;
+use CommerceTeam\Commerce\Domain\Repository\PageRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+/** @noinspection PhpInternalEntityUsedInspection */
+use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -155,7 +161,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         parent::start($id, $table, $pointer, $search, $levels, $showLimit);
         if ($this->searchLevels > 0) {
             $allowedMounts = $this->getSearchableWebmounts($this->id, $this->searchLevels, $this->perms_clause);
-            $pidList = implode(',', $this->getDatabaseConnection()->cleanIntArray($allowedMounts));
+            $pidList = implode(',', array_map('intval', $allowedMounts));
             $this->pidSelect = 'pid IN (' . $pidList . ')';
         } elseif ($this->searchLevels < 0) {
             // Search everywhere
@@ -261,9 +267,9 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         }
         $backendUser = $this->getBackendUserAuthentication();
         $lang = $this->getLanguageService();
-        $db = $this->getDatabaseConnection();
         // Init
         $addWhere = '';
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
         $titleCol = $GLOBALS['TCA'][$table]['ctrl']['label'];
         $thumbsCol = $GLOBALS['TCA'][$table]['ctrl']['thumbnail'];
         $l10nEnabled = $GLOBALS['TCA'][$table]['ctrl']['languageField']
@@ -300,11 +306,10 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         if ($this->localizationView && $l10nEnabled) {
             $this->fieldArray[] = '_LOCALIZATION_';
             $this->fieldArray[] = '_LOCALIZATION_b';
-            $addWhere .= ' AND (
-				' . $GLOBALS['TCA'][$table]['ctrl']['languageField'] . '<=0
-				OR
-				' . $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] . ' = 0
-			)';
+            $addWhere = (string)$queryBuilder->expr()->orX(
+                $queryBuilder->expr()->lte($GLOBALS['TCA'][$table]['ctrl']['languageField'], 0),
+                $queryBuilder->expr()->eq($GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'], 0)
+            );
         }
 
         if (ConfigurationUtility::getInstance()->getExtConf('showArticleNumber') == 1) {
@@ -405,6 +410,8 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 $hookObject->getDBlistQuery($table, $id, $addWhere, $selFieldList, $this);
             }
         }
+        /** @noinspection PhpInternalEntityUsedInspection */
+        $additionalConstraints = empty($addWhere) ? [] : [QueryHelper::stripLogicalOperatorPrefix($addWhere)];
         // Create the SQL query for selecting the elements in the listing:
         // do not do paging when outputting as CSV
         if ($this->csvOutput) {
@@ -415,23 +422,23 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             $this->firstElementNumber = $this->firstElementNumber - 2;
             $this->iLimit = $this->iLimit + 2;
             // (API function from TYPO3\CMS\Recordlist\RecordList\AbstractDatabaseRecordList)
-            $queryParts = $this->makeQueryArray($table, $id, $addWhere, $selFieldList);
+            $queryBuilder = $this->getQueryBuilder($table, $id, $additionalConstraints);
             $this->firstElementNumber = $this->firstElementNumber + 2;
             $this->iLimit = $this->iLimit - 2;
         } else {
             // (API function from TYPO3\CMS\Recordlist\RecordList\AbstractDatabaseRecordList)
-            $queryParts = $this->makeQueryArray($table, $id, $addWhere, $selFieldList);
+            $queryBuilder = $this->getQueryBuilder($table, $id, $additionalConstraints);
         }
 
         // Finding the total amount of records on the page
         // (API function from TYPO3\CMS\Recordlist\RecordList\AbstractDatabaseRecordList)
-        $this->setTotalItems($table, $id, $queryParts);
+        $this->setTotalItems($table, $id, $additionalConstraints);
 
         // Init:
+        $queryResult = $queryBuilder->execute();
         $dbCount = 0;
         $out = '';
         $tableHeader = '';
-        $result = null;
         $listOnlyInSingleTableMode = $this->listOnlyInSingleTableMode && !$this->table;
         // If the count query returned any number of records, we perform the real query,
         // selecting records.
@@ -445,8 +452,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                     $this->showLimit = $this->totalItems;
                     $this->iLimit = $this->totalItems;
                 }
-                $result = $db->exec_SELECT_queryArray($queryParts);
-                $dbCount = $db->sql_num_rows($result);
+                $dbCount = $queryResult->rowCount();
             }
         }
         // If any records was selected, render the list:
@@ -506,14 +512,14 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 $prevPrevUid = 0;
                 // Get first two rows and initialize prevPrevUid and prevUid if on page > 1
                 if ($this->firstElementNumber > 2 && $this->iLimit > 0) {
-                    $row = $db->sql_fetch_assoc($result);
+                    $row = $queryResult->fetch();
                     $prevPrevUid = -((int)$row['uid']);
-                    $row = $db->sql_fetch_assoc($result);
+                    $row = $queryResult->fetch();
                     $prevUid = $row['uid'];
                 }
                 $accRows = array();
                 // Accumulate rows here
-                while ($row = $db->sql_fetch_assoc($result)) {
+                while ($row = $queryResult->fetch()) {
                     if (!$this->isRowListingConditionFulfilled($table, $row)) {
                         continue;
                     }
@@ -533,7 +539,6 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                         }
                     }
                 }
-                $db->sql_free_result($result);
                 $this->totalRowCount = count($accRows);
                 // CSV initiated
                 if ($this->csvOutput) {
@@ -818,6 +823,10 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         // Preparing and getting the data-array
         $theData = array();
         $localizationMarkerClass = '';
+        /** @var OrderArticleRepository $orderArticleRepository */
+        $orderArticleRepository = GeneralUtility::makeInstance(OrderArticleRepository::class);
+        /** @var OrderTypeRepository $orderTypeRepository */
+        $orderTypeRepository = GeneralUtility::makeInstance(OrderTypeRepository::class);
         foreach ($this->fieldArray as $fCol) {
             if ($fCol == 'sum_price_gross') {
                 if ($this->csvOutput) {
@@ -834,11 +843,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 $row[$fCol] = BackendUtility::date($row[$fCol]);
             } elseif ($fCol == 'articles') {
                 $result = [];
-                $articles = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                    'article_number, title',
-                    'tx_commerce_order_articles',
-                    'order_uid = ' . (int) $row['uid']
-                );
+                $articles = $orderArticleRepository->findByOrderUid($row['uid']);
                 foreach ($articles as $article) {
                     $articles[] = $article['article_number'] . ':' . $article['title'];
                 }
@@ -850,22 +855,14 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                     $theData[$fCol] = '<input type="checkbox" name="orderUid[]" value="' . $row['uid'] . '">';
                 }
             } elseif ($fCol == 'numarticles') {
-                $amount = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                    'sum(amount) AS amount',
-                    'tx_commerce_order_articles',
-                    'order_uid = ' . (int) $row['uid'] . ' AND article_type_uid = ' . NORMALARTICLETYPE
-                );
+                $amount = $orderArticleRepository->findAmountByOrderUidAndType($row['uid'], NORMALARTICLETYPE);
                 if (!empty($amount)) {
                     $theData[$fCol] = $amount['amount'];
                     $row[$fCol] = $amount['amount'];
                 }
             } elseif ($fCol == 'article_number') {
                 $articleNumber = [];
-                $articles = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                    $fCol,
-                    'tx_commerce_order_articles',
-                    'order_uid = ' . (int) $row['uid'] . ' AND article_type_uid = ' . NORMALARTICLETYPE
-                );
+                $articles = $orderArticleRepository->findByOrderUidAndType($row['uid'], NORMALARTICLETYPE);
                 foreach ($articles as $article) {
                     $articleNumber[] = $article[$fCol] ?
                         $article[$fCol] :
@@ -874,11 +871,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 $theData[$fCol] = implode(',', $articleNumber);
             } elseif ($fCol == 'article_name') {
                 $articleName = [];
-                $articles = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                    'title',
-                    'tx_commerce_order_articles',
-                    'order_uid = ' . (int) $row['uid'] . ' AND article_type_uid = ' . NORMALARTICLETYPE
-                );
+                $articles = $orderArticleRepository->findByOrderUidAndType($row['uid'], NORMALARTICLETYPE);
                 foreach ($articles as $article) {
                     $articleName[] = $article['title'] ?
                         $article['title'] :
@@ -886,11 +879,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 }
                 $theData[$fCol] = implode(',', $articleName);
             } elseif ($fCol == 'order_type_uid_noName') {
-                $type = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                    'title, icon',
-                    'tx_commerce_order_types',
-                    'uid = ' . (int) $row['order_type_uid_noName']
-                );
+                $type = $orderTypeRepository->findByUid($row['order_type_uid_noName']);
                 if (!empty($type)) {
                     if ($type['icon']) {
                         $filepath = ConfigurationUtility::getInstance()->getTcaValue(
@@ -1633,9 +1622,19 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             'WHERE' => $this->pidSelect . ' ' . $pC . BackendUtility::deleteClause($table) .
                 BackendUtility::versioningPlaceholderClause($table) . ' ' . $addWhere . ' ' . $search,
             'GROUPBY' => '',
-            'ORDERBY' => $this->getDatabaseConnection()->stripOrderBy($orderBy),
             'LIMIT' => $limit,
         ];
+        $tempOrderBy = [];
+        /** @noinspection PhpInternalEntityUsedInspection */
+        foreach (QueryHelper::parseOrderBy($orderBy) as $orderPair) {
+            list($fieldName, $order) = $orderPair;
+            if ($order !== null) {
+                $tempOrderBy[] = implode(' ', $orderPair);
+            } else {
+                $tempOrderBy[] = $fieldName;
+            }
+        }
+        $queryParts['ORDERBY'] = implode(',', $tempOrderBy);
         // Filter out records that are translated, if TSconfig mod.web_list.hideTranslations is set
         if ((
                 in_array($table, GeneralUtility::trimExplode(',', $this->hideTranslations))
@@ -1660,22 +1659,6 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         }
         // Return query:
         return $queryParts;
-    }
-
-    /**
-     * Set the total items for the record list
-     *
-     * @param string $table Table name
-     * @param int $pageId Only used to build the search constraints, $this->pidList is used for restrictions
-     * @param array $constraints Additional constraints for where clause
-     */
-    public function setTotalItems(string $table, int $pageId, array $constraints)
-    {
-        $this->totalItems = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            '*',
-            $constraints['FROM'],
-            $constraints['WHERE']
-        );
     }
 
     /**
@@ -1721,7 +1704,8 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         }
 
         $languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_orders.xlf:';
-        $database = $this->getDatabaseConnection();
+        /** @var PageRepository $pageRepository */
+        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
 
         $tableReadOnly = ConfigurationUtility::getInstance()->getTcaValue($table . '.ctrl.readOnly');
 
@@ -1733,16 +1717,10 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             switch ((string) $fCol) {
                 case '_CONTROL_':
                     if ($this->id && !$tableReadOnly) {
-                        $foreignTable = ConfigurationUtility::getInstance()
-                            ->getTcaValue('tx_commerce_orders.columns.newpid.config.foreign_table');
-                        $resParent = $database->exec_SELECTquery(
-                            'pid',
-                            $foreignTable,
-                            'uid = ' . $this->id . ' ' . BackendUtility::deleteClause($foreignTable)
-                        );
+                        $parentRow = $pageRepository->findByUid($this->id);
 
                         $moveToSelectorRow = '';
-                        if (($parentRow = $database->sql_fetch_assoc($resParent))) {
+                        if (!empty($parentRow)) {
                             // Get the pages below $orderPid
                             $ret = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderSelector(
                                 $this->orderPid,
@@ -1773,17 +1751,5 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 
         // Create and return header table row:
         return $this->addElement(1, '', $theData, '', '');
-    }
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     * @deprecated since 6.0.0 will be removed in 7.0.0
-     */
-    protected function getDatabaseConnection()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
     }
 }

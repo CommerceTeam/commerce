@@ -51,6 +51,88 @@ class OrderArticleRepository extends AbstractRepository
     /**
      * Find order articles by order id in page.
      *
+     * @param int $orderUid Order uid
+     *
+     * @return array
+     */
+    public function findByOrderUid($orderUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'order_uid',
+                    $queryBuilder->createNamedParameter($orderUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Find order articles by order id in page.
+     *
+     * @param int $orderUid Order uid
+     * @param int $articleType
+     *
+     * @return array
+     */
+    public function findByOrderUidAndType($orderUid, $articleType)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'order_uid',
+                    $queryBuilder->createNamedParameter($orderUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'article_type_uid',
+                    $queryBuilder->createNamedParameter($articleType, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Find order articles by order id in page.
+     *
+     * @param int $orderUid Order uid
+     * @param int $articleType
+     *
+     * @return array
+     */
+    public function findAmountByOrderUidAndType($orderUid, $articleType)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->addSelectLiteral($queryBuilder->expr()->sum('amount', 'amount'))
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'order_uid',
+                    $queryBuilder->createNamedParameter($orderUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'article_type_uid',
+                    $queryBuilder->createNamedParameter($articleType, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Find order articles by order id in page.
+     *
      * @param string $orderId Order Id
      * @param int $pageId Page id
      *
