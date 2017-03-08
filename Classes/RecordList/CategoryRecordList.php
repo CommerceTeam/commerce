@@ -13,7 +13,6 @@ namespace CommerceTeam\Commerce\RecordList;
  */
 
 use CommerceTeam\Commerce\Controller\CategoryModuleController;
-use CommerceTeam\Commerce\Domain\Repository\AbstractRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface;
@@ -23,6 +22,7 @@ use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+/** @noinspection PhpInternalEntityUsedInspection */
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -464,6 +464,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 $hookObject->getDBlistQuery($table, $id, $addWhere, $selFieldList, $this);
             }
         }
+        /** @noinspection PhpInternalEntityUsedInspection */
         $additionalConstraints = empty($addWhere) ? [] : [QueryHelper::stripLogicalOperatorPrefix($addWhere)];
         $selFieldList = GeneralUtility::trimExplode(',', $selFieldList, true);
 
@@ -778,6 +779,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             'LIMIT' => $limit,
         ];
         $tempOrderBy = [];
+        /** @noinspection PhpInternalEntityUsedInspection */
         foreach (QueryHelper::parseOrderBy($orderBy) as $orderPair) {
             list($fieldName, $order) = $orderPair;
             if ($order !== null) {
