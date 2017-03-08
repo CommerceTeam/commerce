@@ -957,7 +957,7 @@ class BackendUtility
 
         /** @var PageRepository $pageRepository */
         $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
-        $rows = $pageRepository->findByUid($pid);
+        $rows = $pageRepository->findByPid($pid);
         if (!empty($rows)) {
             foreach ($rows as $returnData) {
                 $returnData['title'] = $prep . $returnData['title'];
