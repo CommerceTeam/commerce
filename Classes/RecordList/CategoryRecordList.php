@@ -494,7 +494,6 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         $dbCount = 0;
         $out = '';
         $tableHeader = '';
-        $result = null;
         $listOnlyInSingleTableMode = $this->listOnlyInSingleTableMode && !$this->table;
         // If the count query returned any number of records, we perform the real query,
         // selecting records.
@@ -811,20 +810,6 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         }
         // Return query:
         return $queryParts;
-    }
-
-    /**
-     * Set the total items for the record list
-     *
-     * @param string $table Table name
-     * @param int $pageId Only used to build the search constraints, $this->pidList is used for restrictions
-     * @param array $constraints Additional constraints for where clause
-     */
-    public function setTotalItems(string $table, int $pageId, array $constraints)
-    {
-        /** @var AbstractRepository $repository */
-        $repository = GeneralUtility::makeInstance(AbstractRepository::class);
-        $this->totalItems = $repository->countWithTableAndWhere($constraints['FROM'], $constraints['WHERE']);
     }
 
     /**
@@ -1821,7 +1806,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @return array Array with key 0/1 with content for column 1 and 2
      */
-    public function smakeLocalizationPanel($table, array $row)
+    public function makeLocalizationPanel($table, $row)
     {
         // @todo check if still needed
         $tableControl = ConfigurationUtility::getInstance()->getTcaValue($table . '.ctrl');
