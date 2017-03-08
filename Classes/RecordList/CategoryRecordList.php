@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\RecordList;
  */
 
 use CommerceTeam\Commerce\Controller\CategoryModuleController;
+use CommerceTeam\Commerce\Domain\Repository\AbstractRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface;
@@ -21,6 +22,8 @@ use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -120,7 +123,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         parent::start($id, $table, $pointer, $search, $levels, $showLimit);
         if ($this->searchLevels > 0) {
             $allowedMounts = $this->getSearchableWebmounts($this->id, $this->searchLevels, $this->perms_clause);
-            $pidList = implode(',', $this->getDatabaseConnection()->cleanIntArray($allowedMounts));
+            $pidList = implode(',', array_map('intval', $allowedMounts));
             $this->pidSelect = 'pid IN (' . $pidList . ')';
         } elseif ($this->searchLevels < 0) {
             // Search everywhere
@@ -228,18 +231,22 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             ) {
                 $elFromTable = $this->clipObj->elFromTable('');
                 if (!empty($elFromTable)) {
-                    $onClick = 'return '
-                        . $this->clipObj->confirmMsg(
-                            'tx_commerce_categories',
-                            $this->categoryRow,
-                            'into',
-                            $elFromTable
-                        );
+                    $confirmMessage = $this->clipObj->confirmMsgText(
+                        'tx_commerce_categories',
+                        $this->categoryRow,
+                        'into',
+                        $elFromTable
+                    );
                     $pasteButton = $buttonBar->makeLinkButton()
                         ->setHref($this->clipObj->pasteUrl('', $this->id))
-                        ->setOnClick($onClick)
                         ->setTitle($lang->getLL('clip_paste'))
-                        ->setIcon($this->iconFactory->getIcon('actions-document-paste-after', Icon::SIZE_SMALL));
+                        ->setClasses('t3js-modal-trigger')
+                        ->setDataAttributes([
+                            'severity' => 'warning',
+                            'content' => $confirmMessage,
+                            'title' => $lang->getLL('clip_paste')
+                        ])
+                        ->setIcon($this->iconFactory->getIcon('actions-document-paste-into', Icon::SIZE_SMALL));
                     $buttonBar->addButton($pasteButton, ButtonBar::BUTTON_POSITION_LEFT, 40);
                 }
             }
@@ -326,18 +333,18 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         }
         $backendUser = $this->getBackendUserAuthentication();
         $lang = $this->getLanguageService();
-        $db = $this->getDatabaseConnection();
 
         $tableConfig = ConfigurationUtility::getInstance()->getTcaValue($table);
 
         // Init
         $addWhere = '';
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
         $titleCol = $tableConfig['ctrl']['label'];
         $thumbsCol = $tableConfig['ctrl']['thumbnail'];
         $l10nEnabled = $tableConfig['ctrl']['languageField'] &&
             $tableConfig['ctrl']['transOrigPointerField'] &&
             !$tableConfig['ctrl']['transOrigPointerTable'];
-        $tableCollapsed = (!$this->tablesCollapsed[$table]) ? false : true;
+        $tableCollapsed = (bool)$this->tablesCollapsed[$table];
         // prepare space icon
         $this->spaceIcon = '<span class="btn btn-default disabled">'
             . $this->iconFactory->getIcon('empty-empty', Icon::SIZE_SMALL)->render() . '</span>';
@@ -366,11 +373,13 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         if ($this->localizationView && $l10nEnabled) {
             $this->fieldArray[] = '_LOCALIZATION_';
             $this->fieldArray[] = '_LOCALIZATION_b';
-            $addWhere .= ' AND (
-                ' . $tableConfig['ctrl']['languageField'] . ' <= 0
-                OR
-                ' . $tableConfig['ctrl']['transOrigPointerField'] . ' = 0
-            )';
+            // Only restrict to the default language if no search request is in place
+            if ($this->searchString === '') {
+                $addWhere = (string)$queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->lte($tableConfig['ctrl']['languageField'], 0),
+                    $queryBuilder->expr()->eq($tableConfig['ctrl']['transOrigPointerField'], 0)
+                );
+            }
         }
         // Cleaning up:
         $this->fieldArray = array_unique(array_merge($this->fieldArray, $rowListArray));
@@ -416,11 +425,13 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         $fieldListFields = $this->makeFieldList($table, 1);
         if (empty($fieldListFields) && $GLOBALS['TYPO3_CONF_VARS']['BE']['debug']) {
             $message = sprintf(
-                $lang->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:missingTcaColumnsMessage', true),
+                htmlspecialchars($lang->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:missingTcaColumnsMessage', true)),
                 $table,
                 $table
             );
-            $messageTitle = $lang->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:missingTcaColumnsMessageTitle', true);
+            $messageTitle = htmlspecialchars(
+                $lang->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:missingTcaColumnsMessageTitle', true)
+            );
             /** @var FlashMessage $flashMessage */
             $flashMessage = GeneralUtility::makeInstance(
                 FlashMessage::class,
@@ -453,6 +464,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 $hookObject->getDBlistQuery($table, $id, $addWhere, $selFieldList, $this);
             }
         }
+        $additionalConstraints = empty($addWhere) ? [] : [QueryHelper::stripLogicalOperatorPrefix($addWhere)];
+        $selFieldList = GeneralUtility::trimExplode(',', $selFieldList, true);
+
         // Create the SQL query for selecting the elements in the listing:
         // do not do paging when outputting as CSV
         if ($this->csvOutput) {
@@ -463,19 +477,20 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             $this->firstElementNumber = $this->firstElementNumber - 2;
             $this->iLimit = $this->iLimit + 2;
             // (API function from TYPO3\CMS\Recordlist\RecordList\AbstractDatabaseRecordList)
-            $queryParts = $this->makeQueryArray($table, $id, $addWhere, $selFieldList);
+            $queryBuilder = $this->getQueryBuilder($table, $id, $additionalConstraints);
             $this->firstElementNumber = $this->firstElementNumber + 2;
             $this->iLimit = $this->iLimit - 2;
         } else {
             // (API function from TYPO3\CMS\Recordlist\RecordList\AbstractDatabaseRecordList)
-            $queryParts = $this->makeQueryArray($table, $id, $addWhere, $selFieldList);
+            $queryBuilder = $this->getQueryBuilder($table, $id, $additionalConstraints);
         }
 
         // Finding the total amount of records on the page
         // (API function from TYPO3\CMS\Recordlist\RecordList\AbstractDatabaseRecordList)
-        $this->setTotalItems($table, $id, $queryParts);
+        $this->setTotalItems($table, $id, $additionalConstraints);
 
         // Init:
+        $queryResult = $queryBuilder->execute();
         $dbCount = 0;
         $out = '';
         $tableHeader = '';
@@ -493,8 +508,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                     $this->showLimit = $this->totalItems;
                     $this->iLimit = $this->totalItems;
                 }
-                $result = $db->exec_SELECT_queryArray($queryParts);
-                $dbCount = $db->sql_num_rows($result);
+                $dbCount = $queryResult->rowCount();
             }
         }
         // If any records was selected, render the list:
@@ -553,15 +567,15 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 $prevPrevUid = 0;
                 // Get first two rows and initialize prevPrevUid and prevUid if on page > 1
                 if ($this->firstElementNumber > 2 && $this->iLimit > 0) {
-                    $row = $db->sql_fetch_assoc($result);
+                    $row = $queryResult->fetch();
                     $prevPrevUid = -((int)$row['uid']);
-                    $row = $db->sql_fetch_assoc($result);
+                    $row = $queryResult->fetch();
                     $prevUid = $row['uid'];
                 }
 
                 $accRows = [];
                 // Accumulate rows here
-                while (($row = $db->sql_fetch_assoc($result))) {
+                while ($row = $queryResult->fetch()) {
                     if (!$this->isRowListingConditionFulfilled($table, $row)) {
                         continue;
                     }
@@ -581,7 +595,6 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                         }
                     }
                 }
-                $db->sql_free_result($result);
                 $this->totalRowCount = count($accRows);
 
                 // CSV initiated
@@ -763,9 +776,18 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 ' ' . $addWhere . $categoryWhere .
                 ' ' . $search,
             'GROUPBY' => '',
-            'ORDERBY' => $this->getDatabaseConnection()->stripOrderBy($orderBy),
             'LIMIT' => $limit,
         ];
+        $tempOrderBy = [];
+        foreach (QueryHelper::parseOrderBy($orderBy) as $orderPair) {
+            list($fieldName, $order) = $orderPair;
+            if ($order !== null) {
+                $tempOrderBy[] = implode(' ', $orderPair);
+            } else {
+                $tempOrderBy[] = $fieldName;
+            }
+        }
+        $queryParts['ORDERBY'] = implode(',', $tempOrderBy);
         // Filter out records that are translated, if TSconfig mod.web_list.hideTranslations is set
         if ((
                 in_array($table, GeneralUtility::trimExplode(',', $this->hideTranslations))
@@ -800,11 +822,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      */
     public function setTotalItems(string $table, int $pageId, array $constraints)
     {
-        $this->totalItems = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            '*',
-            $constraints['FROM'],
-            $constraints['WHERE']
-        );
+        /** @var AbstractRepository $repository */
+        $repository = GeneralUtility::makeInstance(AbstractRepository::class);
+        $this->totalItems = $repository->countWithTableAndWhere($constraints['FROM'], $constraints['WHERE']);
     }
 
     /**
@@ -969,18 +989,19 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                     $elFromTable = $this->clipObj->elFromTable($table);
                     if (!empty($elFromTable) && $this->overlayEditLockPermissions($table)) {
                         $href = htmlspecialchars($this->clipObj->pasteUrl($table, $this->id));
-                        $onClick = ' onclick="' . htmlspecialchars(
-                            'return '
-                            . $this->clipObj->confirmMsg(
-                                'tx_commerce_categories',
-                                $this->categoryRow,
-                                'into',
-                                $elFromTable
-                            )
-                        ) . '"';
-                        $cells['pasteAfter'] = '<a class="btn btn-default" href="' . $href . '" ' . $onClick .
-                            ' title="' . $lang->getLL('clip_paste', true) . '">' .
-                            $this->iconFactory->getIcon('actions-document-paste-after', Icon::SIZE_SMALL)->render() .
+                        $confirmMessage = $this->clipObj->confirmMsgText(
+                            'tx_commerce_categories',
+                            $this->categoryRow,
+                            'into',
+                            $elFromTable
+                        );
+                        $cells['pasteAfter'] = '<a class="btn btn-default t3js-modal-trigger"' .
+                            ' href="' . $href . '"' .
+                            ' title="' . htmlspecialchars($lang->getLL('clip_paste')) . '"' .
+                            ' data-title="' . htmlspecialchars($lang->getLL('clip_paste')) . '"' .
+                            ' data-content="' . htmlspecialchars($confirmMessage) . '"' .
+                            ' data-severity="warning">' .
+                            $this->iconFactory->getIcon('actions-document-paste-into', Icon::SIZE_SMALL)->render() .
                             '</a>';
                     }
                     // If the numeric clipboard pads are enabled, display the control icons for that:
@@ -1742,23 +1763,29 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             // then add a "paste after" icon:
             $cells['pasteAfter'] = $isL10nOverlay || !$this->overlayEditLockPermissions($table, $row) ?
                 $this->spaceIcon :
-                '<a class="btn btn-default" href="' . htmlspecialchars($this->clipObj->pasteUrl($table, -$row['uid']))
-                . '" onclick="'
-                . htmlspecialchars(('return ' . $this->clipObj->confirmMsg($table, $row, 'after', $elFromTable)))
-                . '" title="' . $this->getLanguageService()->getLL('clip_pasteAfter', true) . '">'
-                . $this->iconFactory->getIcon('actions-document-paste-after', Icon::SIZE_SMALL)->render() . '</a>';
+                '<a class="btn btn-default t3js-modal-trigger"' .
+                ' href="' . htmlspecialchars($this->clipObj->pasteUrl($table, -$row['uid'])) . '"' .
+                ' title="' . htmlspecialchars($this->getLanguageService()->getLL('clip_pasteAfter')) . '"' .
+                ' data-title="' . htmlspecialchars($this->getLanguageService()->getLL('clip_pasteAfter')) . '"' .
+                ' data-content="' . htmlspecialchars(
+                    $this->clipObj->confirmMsgText($table, $row, 'after', $elFromTable)
+                ) . '"' .
+                ' data-severity="warning">' .
+                $this->iconFactory->getIcon('actions-document-paste-after', Icon::SIZE_SMALL)->render() . '</a>';
         }
 
         // Now, looking for elements in general:
         $elFromTable = $this->clipObj->elFromTable('');
         if ($table == 'tx_commerce_categories' && !empty($elFromTable)) {
-            $cells['pasteInto'] = '<a class="btn btn-default" href="'
-                . htmlspecialchars($this->clipObj->pasteUrl('', $row['uid']))
-                . '" onclick="' . htmlspecialchars(
-                    'return ' . $this->clipObj->confirmMsg($table, $row, 'into', $elFromTable)
-                )
-                . '" title="' . $this->getLanguageService()->getLL('clip_pasteInto', true) . '">'
-                . $this->iconFactory->getIcon('actions-document-paste-into', Icon::SIZE_SMALL)->render() . '</a>';
+            $cells['pasteInto'] = '<a class="btn btn-default t3js-modal-trigger"' .
+                ' href="' . htmlspecialchars($this->clipObj->pasteUrl('', $row['uid'])) . '"' .
+                ' title="' . htmlspecialchars($this->getLanguageService()->getLL('clip_pasteInto')) . '"' .
+                ' data-title="' . htmlspecialchars($this->getLanguageService()->getLL('clip_pasteInto')) . '"' .
+                ' data-content="' . htmlspecialchars(
+                    $this->clipObj->confirmMsgText($table, $row, 'into', $elFromTable)
+                ) . '"' .
+                ' data-severity="warning">' .
+                $this->iconFactory->getIcon('actions-document-paste-into', Icon::SIZE_SMALL)->render() . '</a>';
         }
 
         /**
@@ -2076,17 +2103,5 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         // of the times) These class do not inherit from any common class,
         // but they all seem to have a "doc" member
         return $this->getController()->doc;
-    }
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     * @deprecated since 6.0.0 will be removed in 7.0.0
-     */
-    protected function getDatabaseConnection()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
     }
 }

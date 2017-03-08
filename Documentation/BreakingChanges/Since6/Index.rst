@@ -38,6 +38,7 @@ DatabaseRowArticleData::getDatabaseConnection query was moved to SysRefindexRepo
 DataMapHook::getDatabaseConnection queries where moved to corresponding repositories
 BasicDaoMapper::getDatabaseConnection queries where moved to corresponding repositories
 StatisticsUtility::getDatabaseConnection queries where moved to corresponding repositories
+CategoryRecordList::getDatabaseConnection queries where changed to use queryBuilder
 
 FolderRepository::getFolders should not be used anymore, please use ::getFolder instead
 BaseController::renderValue.NUMBERFORMAT this type of formating is possible via stdWrap.numberFormat and takes the configuration decimals, dec_point, thousands_sep so just replace NUMBERFORMAT with stdWrap.numberFormat = 1 and add stdWrap.numberFormat.deci... and so on
