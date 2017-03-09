@@ -17,6 +17,10 @@ use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNodeCollection;
 use TYPO3\CMS\Backend\Tree\TreeNodeCollection;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Database\Query\Restriction\BackendWorkspaceRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -661,127 +665,146 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     /**
      * Returns the where clause for fetching pages
      *
+     * @param QueryBuilder $queryBuilder
      * @param int|array $id Category id
      * @param string $searchFilter Search filter
      * @param array $categoryUids
      *
-     * @return string
+     * @return QueryBuilder
      */
-    protected function getCategoryWhereClause($id, $searchFilter = '', array $categoryUids = [])
+    protected function setCategoryWhereClause($queryBuilder, $id, $searchFilter = '', array $categoryUids = [])
     {
-        $where = '';
+        $expressionBuilder = $queryBuilder->expr();
 
         if (is_numeric($id) && $id >= 0) {
-            $where .= ' AND uid_foreign = ' . (int) $id;
+            $queryBuilder->andWhere(
+                $expressionBuilder->eq('mm.uid_foreign', $queryBuilder->createNamedParameter($id, \PDO::PARAM_INT))
+            );
         }
 
         if ($searchFilter !== '') {
-            $searchWhere = [];
+            $searchParts = $expressionBuilder->orX();
             // in case a previous search for products or articles returned category uids
             if (!empty($categoryUids)) {
-                $searchWhere[] = 'tx_commerce_categories.uid IN (' . implode(',', $categoryUids) . ')';
+                $searchParts->add(
+                    $expressionBuilder->in('c.uid', $categoryUids)
+                );
             }
 
             if (is_numeric($searchFilter) && $searchFilter > 0) {
-                $searchWhere[] = 'tx_commerce_categories.uid = ' . (int) $searchFilter;
+                $queryBuilder->andWhere(
+                    $expressionBuilder->eq('c.uid', $queryBuilder->createNamedParameter($searchFilter, \PDO::PARAM_INT))
+                );
             }
 
-            $searchFilter = $this->getDatabaseConnection()->fullQuoteStr(
-                '%' . $searchFilter . '%',
-                'tx_commerce_categories'
+            $searchFilter = '%' . $queryBuilder->escapeLikeWildcards($searchFilter) . '%';
+            $searchParts->add(
+                $expressionBuilder->like(
+                    'c.title',
+                    $queryBuilder->createNamedParameter($searchFilter, \PDO::PARAM_STR)
+                )
             );
-            $searchWhere[] = 'tx_commerce_categories.title LIKE ' . $searchFilter;
 
-            $where .= ' AND (' . implode(' OR ', $searchWhere) . ')';
+            $queryBuilder->andWhere($searchParts);
         }
 
-        $where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1) .
-            BackendUtility::deleteClause('tx_commerce_categories') .
-            BackendUtility::versioningPlaceholderClause('tx_commerce_categories');
+        // @todo fix this
+        //$where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1);
 
-        return ltrim($where, ' AND ');
+        return $queryBuilder;
     }
 
     /**
      * Returns the where clause for fetching pages
      *
+     * @param QueryBuilder $queryBuilder
      * @param int $id Category id
      * @param string $searchFilter Search filter
      * @param array $productUids
      *
-     * @return string
+     * @return QueryBuilder
      */
-    protected function getProductWhereClause($id, $searchFilter = '', array $productUids = [])
+    protected function setProductWhereClause($queryBuilder, $id, $searchFilter = '', array $productUids = [])
     {
-        $where = '';
+        $expressionBuilder = $queryBuilder->expr();
 
         if (is_numeric($id) && $id >= 0) {
-            $where .= ' AND uid_foreign = ' . (int) $id;
+            $queryBuilder->andWhere(
+                $expressionBuilder->eq('mm.uid_foreign', $queryBuilder->createNamedParameter($id, \PDO::PARAM_INT))
+            );
         }
 
         if ($searchFilter !== '') {
-            $searchWhere = [];
+            $searchParts = $expressionBuilder->orX();
             // in case a previous search for articles returned product uids
             if (!empty($productUids)) {
-                $searchWhere[] = 'tx_commerce_products.uid IN (' . implode(',', $productUids) . ')';
+                $searchParts->add(
+                    $expressionBuilder->in('p.uid', $productUids)
+                );
             }
 
             if (is_numeric($searchFilter) && $searchFilter > 0) {
-                $searchWhere[] = 'tx_commerce_products.uid = ' . (int) $searchFilter;
+                $queryBuilder->andWhere(
+                    $expressionBuilder->eq('p.uid', $queryBuilder->createNamedParameter($searchFilter, \PDO::PARAM_INT))
+                );
             }
 
-            $searchFilter = $this->getDatabaseConnection()->fullQuoteStr(
-                '%' . $searchFilter . '%',
-                'tx_commerce_products'
+            $searchFilter = '%' . $queryBuilder->escapeLikeWildcards($searchFilter) . '%';
+            $searchParts->add(
+                $expressionBuilder->like(
+                    'p.title',
+                    $queryBuilder->createNamedParameter($searchFilter, \PDO::PARAM_STR)
+                )
             );
 
-            $searchWhere[] = 'tx_commerce_products.title LIKE ' . $searchFilter;
-
-            $where .= ' AND (' . implode(' OR ', $searchWhere) . ')';
+            $queryBuilder->andWhere($searchParts);
         }
 
-        $where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1) .
-            BackendUtility::deleteClause('tx_commerce_products') .
-            BackendUtility::versioningPlaceholderClause('tx_commerce_products');
+        // @todo fix this
+        //$where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1);
 
-        return ltrim($where, ' AND ');
+        return $queryBuilder;
     }
 
     /**
      * Returns the where clause for fetching pages
      *
+     * @param QueryBuilder $queryBuilder
      * @param int $id Product id
      * @param string $searchFilter Search filter
      *
-     * @return string
+     * @return QueryBuilder
      */
-    protected function getArticleWhereClause($id, $searchFilter = '')
+    protected function setArticleWhereClause($queryBuilder, $id, $searchFilter = '')
     {
-        $where = '';
+        $expressionBuilder = $queryBuilder->expr();
 
         if (is_numeric($id) && $id >= 0) {
-            $where .= ' AND uid_product = ' . (int) $id;
+            $queryBuilder->andWhere(
+                $expressionBuilder->eq('a.uid_product', $queryBuilder->createNamedParameter($id, \PDO::PARAM_INT))
+            );
         }
 
         if ($searchFilter !== '') {
-            $searchWhere = [];
+            $searchParts = $expressionBuilder->orX();
             if (is_numeric($searchFilter) && $searchFilter > 0) {
-                $searchWhere[] = 'tx_commerce_articles.uid = ' . (int) $searchFilter;
+                $searchParts->add(
+                    $expressionBuilder->eq('a.uid', $queryBuilder->createNamedParameter($searchFilter, \PDO::PARAM_INT))
+                );
             }
-            $searchFilter = $this->getDatabaseConnection()->fullQuoteStr(
-                '%' . $searchFilter . '%',
-                'tx_commerce_articles'
+
+            $searchFilter = '%' . $queryBuilder->escapeLikeWildcards($searchFilter) . '%';
+            $searchParts->add(
+                $expressionBuilder->like(
+                    'a.title',
+                    $queryBuilder->createNamedParameter($searchFilter, \PDO::PARAM_STR)
+                )
             );
 
-            $searchWhere[] = 'tx_commerce_articles.title LIKE ' . $searchFilter;
-
-            $where .= ' AND (' . implode(' OR ', $searchWhere) . ')';
+            $queryBuilder->andWhere($searchParts);
         }
 
-        $where .= ($where ? '' : '1 = 1') . BackendUtility::deleteClause('tx_commerce_articles') .
-            BackendUtility::versioningPlaceholderClause('tx_commerce_articles');
-
-        return ltrim($where, ' AND ');
+        return $queryBuilder;
     }
 
 
@@ -794,6 +817,13 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function getCategories($id, $searchFilter = '')
     {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_commerce_categories');
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+
         $where = '';
         // try to find articles and products with searchFilter to include the categories they are on to the result
         if ($searchFilter) {
@@ -808,24 +838,25 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                     $categoryUids[] = $category['uid'];
                 }
 
-                $where = $this->getCategoryWhereClause($id, $searchFilter, $categoryUids);
+                $queryBuilder = $this->setCategoryWhereClause($queryBuilder, $id, $searchFilter, $categoryUids);
             }
         }
         if ($where == '') {
-            $where = $this->getCategoryWhereClause($id, $searchFilter);
+            $queryBuilder = $this->setCategoryWhereClause($queryBuilder, $id, $searchFilter);
         }
 
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid, t3ver_wsid',
-            'tx_commerce_categories
-                INNER JOIN tx_commerce_categories_parent_category_mm ON
-                    tx_commerce_categories.uid = tx_commerce_categories_parent_category_mm.uid_local',
-            $where,
-            '',
-            'tx_commerce_categories.sorting',
-            '',
-            'uid'
-        );
+        $result = $queryBuilder
+            ->select('c.uid', 'c.t3ver_wsid')
+            ->from('tx_commerce_categories', 'c')
+            ->innerJoin('c', 'tx_commerce_categories_parent_category_mm', 'mm', 'c.uid = mm.uid_local')
+            ->orderBy('c.sorting')
+            ->execute();
+
+        $return = [];
+        while ($row = $result->fetch()) {
+            $return[$row['uid']] = $row;
+        }
+        return $return;
     }
 
     /**
@@ -838,6 +869,13 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function getProducts($categoryId, $searchFilter = '')
     {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_commerce_products');
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+
         $where = '';
         // try to find articles with searchFilter to include the products they are on to the result
         if ($searchFilter) {
@@ -849,24 +887,26 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
                     $productUids[] = $product['uid'];
                 }
 
-                $where = $this->getProductWhereClause($categoryId, $searchFilter, $productUids);
+                $queryBuilder = $this->setProductWhereClause($queryBuilder, $categoryId, $searchFilter, $productUids);
             }
         }
         if ($where == '') {
-            $where = $this->getProductWhereClause($categoryId, $searchFilter);
+            $queryBuilder = $this->setProductWhereClause($queryBuilder, $categoryId, $searchFilter);
         }
 
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'tx_commerce_products.uid AS uid, tx_commerce_products.t3ver_wsid',
-            'tx_commerce_products
-                INNER JOIN tx_commerce_products_categories_mm AS mm ON tx_commerce_products.uid = mm.uid_local
-                INNER JOIN tx_commerce_categories ON mm.uid_foreign = tx_commerce_categories.uid',
-            $where,
-            '',
-            'tx_commerce_products.sorting',
-            '',
-            'uid'
-        );
+        $result = $queryBuilder
+            ->select('p.uid', 'p.t3ver_wsid')
+            ->from('tx_commerce_products', 'p')
+            ->innerJoin('p', 'tx_commerce_products_categories_mm', 'mm', 'p.uid = mm.uid_local')
+            ->innerJoin('mm', 'tx_commerce_categories', 'c', 'mm.uid_foreign = c.uid')
+            ->orderBy('p.sorting')
+            ->execute();
+
+        $return = [];
+        while ($row = $result->fetch()) {
+            $return[$row['uid']] = $row;
+        }
+        return $return;
     }
 
     /**
@@ -879,16 +919,26 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function getArticles($productId, $searchFilter = '')
     {
-        $where = $this->getArticleWhereClause($productId, $searchFilter);
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid, t3ver_wsid',
-            'tx_commerce_articles',
-            $where,
-            '',
-            'tx_commerce_articles.sorting',
-            '',
-            'uid'
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_commerce_articles');
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+
+        $queryBuilder = $this->setArticleWhereClause($queryBuilder, $productId, $searchFilter);
+
+        $result = $queryBuilder
+            ->select('a.uid', 'a.t3ver_wsid')
+            ->from('tx_commerce_articles', 'a')
+            ->orderBy('a.sorting')
+            ->execute();
+
+        $return = [];
+        while ($row = $result->fetch()) {
+            $return[$row['uid']] = $row;
+        }
+        return $return;
     }
 
     /**
@@ -902,19 +952,28 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function searchCategoryWithMatchingArticle($searchFilter)
     {
-        $where = $this->getArticleWhereClause(-1, $searchFilter);
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'tx_commerce_categories.uid, tx_commerce_categories.t3ver_wsid',
-            'tx_commerce_articles
-                INNER JOIN tx_commerce_products_categories_mm AS mm ON
-                    tx_commerce_articles.uid_product = mm.uid_local
-                INNER JOIN tx_commerce_categories ON mm.uid_foreign = tx_commerce_categories.uid',
-            $where,
-            '',
-            'tx_commerce_categories.sorting',
-            '',
-            'uid'
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_commerce_categories');
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+
+        $queryBuilder = $this->setArticleWhereClause($queryBuilder, -1, $searchFilter);
+
+        $result = $queryBuilder
+            ->select('c.uid', 'c.t3ver_wsid')
+            ->from('tx_commerce_articles', 'a')
+            ->innerJoin('a', 'tx_commerce_products_categories_mm', 'mm', 'a.uid_product = mm.uid_local')
+            ->innerJoin('mm', 'tx_commerce_categories', 'c', 'mm.uid_foreign = c.uid')
+            ->orderBy('c.sorting')
+            ->execute();
+
+        $return = [];
+        while ($row = $result->fetch()) {
+            $return[$row['uid']] = $row;
+        }
+        return $return;
     }
 
     /**
@@ -928,19 +987,28 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function searchCategoryWithMatchingProduct($searchFilter)
     {
-        $where = $this->getProductWhereClause(-1, $searchFilter);
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'tx_commerce_categories.uid, tx_commerce_categories.t3ver_wsid',
-            'tx_commerce_categories
-                INNER JOIN tx_commerce_products_categories_mm AS mm ON
-                    tx_commerce_categories.uid = mm.uid_local
-                INNER JOIN tx_commerce_products ON mm.uid_foreign = tx_commerce_products.uid',
-            $where,
-            '',
-            'tx_commerce_categories.sorting',
-            '',
-            'uid'
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_commerce_categories');
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+
+        $queryBuilder = $this->setProductWhereClause($queryBuilder, -1, $searchFilter);
+
+        $result = $queryBuilder
+            ->select('c.uid', 'c.t3ver_wsid')
+            ->from('tx_commerce_categories', 'c')
+            ->innerJoin('c', 'tx_commerce_products_categories_mm', 'mm', 'c.uid = mm.uid_foreign')
+            ->innerJoin('mm', 'tx_commerce_products', 'p', 'mm.uid_local = p.uid')
+            ->orderBy('c.sorting')
+            ->execute();
+
+        $return = [];
+        while ($row = $result->fetch()) {
+            $return[$row['uid']] = $row;
+        }
+        return $return;
     }
 
     /**
@@ -954,18 +1022,27 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function searchProductWithMathingArticle($searchFilter)
     {
-        $where = $this->getArticleWhereClause(-1, $searchFilter);
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'tx_commerce_products.uid, tx_commerce_products.t3ver_wsid',
-            'tx_commerce_articles
-                INNER JOIN tx_commerce_products ON
-                    tx_commerce_articles.uid_product = tx_commerce_products.uid',
-            $where,
-            '',
-            'tx_commerce_products.sorting',
-            '',
-            'uid'
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_commerce_articles');
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+
+        $queryBuilder = $this->setArticleWhereClause($queryBuilder, -1, $searchFilter);
+
+        $result = $queryBuilder
+            ->select('p.uid', 'p.t3ver_wsid')
+            ->from('tx_commerce_articles', 'a')
+            ->innerJoin('a', 'tx_commerce_products', 'p', 'a.uid_product = p.uid')
+            ->orderBy('p.sorting')
+            ->execute();
+
+        $return = [];
+        while ($row = $result->fetch()) {
+            $return[$row['uid']] = $row;
+        }
+        return $return;
     }
 
 
@@ -977,21 +1054,22 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function hasNodeSubCategories($id)
     {
-        $where = $this->getCategoryWhereClause($id);
-        $category = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'tx_commerce_categories.uid',
-            'tx_commerce_categories
-                INNER JOIN tx_commerce_categories_parent_category_mm ON
-                    tx_commerce_categories.uid = tx_commerce_categories_parent_category_mm.uid_local',
-            $where,
-            '',
-            'tx_commerce_categories.sorting'
-        );
-        $returnValue = true;
-        if (empty($category) || !$category['uid']) {
-            $returnValue = false;
-        }
-        return $returnValue;
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_commerce_categories');
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+
+        $queryBuilder = $this->setCategoryWhereClause($queryBuilder, $id);
+
+        $count = $queryBuilder->count('c.uid')
+            ->from('tx_commerce_categories', 'c')
+            ->innerJoin('c', 'tx_commerce_categories_parent_category_mm', 'mm', 'c.uid = mm.uid_local')
+            ->execute()
+            ->fetchColumn(0);
+
+        return (bool)$count;
     }
 
     /**
@@ -1002,21 +1080,23 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function hasNodeSubProducts($id)
     {
-        $where = $this->getProductWhereClause($id);
-        $product = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'tx_commerce_products.uid',
-            'tx_commerce_products
-                INNER JOIN tx_commerce_products_categories_mm AS mm ON mm.uid_local = tx_commerce_products.uid
-                INNER JOIN tx_commerce_categories ON mm.uid_foreign = tx_commerce_categories.uid',
-            $where,
-            '',
-            'tx_commerce_products.sorting'
-        );
-        $returnValue = true;
-        if (empty($product) || !$product['uid']) {
-            $returnValue = false;
-        }
-        return $returnValue;
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_commerce_products');
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+
+        $queryBuilder = $this->setProductWhereClause($queryBuilder, $id);
+
+        $count = $queryBuilder->count('p.uid')
+            ->from('tx_commerce_products', 'p')
+            ->innerJoin('p', 'tx_commerce_products_categories_mm', 'mm', 'p.uid = mm.uid_local')
+            ->innerJoin('mm', 'tx_commerce_categories', 'c', 'mm.uid_foreign = c.uid')
+            ->execute()
+            ->fetchColumn(0);
+
+        return (bool)$count;
     }
 
     /**
@@ -1028,35 +1108,23 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function hasNodeSubArticles($id)
     {
-        $where = $this->getArticleWhereClause($id);
-        $article = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid',
-            'tx_commerce_articles',
-            $where,
-            '',
-            'sorting'
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_commerce_articles');
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
 
-        $returnValue = true;
-        if (empty($article) || !$article['uid']) {
-            $returnValue = false;
-        }
+        $queryBuilder = $this->setArticleWhereClause($queryBuilder, $id);
 
-        return $returnValue;
+        $count = $queryBuilder->count('a.uid')
+            ->from('tx_commerce_articles', 'a')
+            ->execute()
+            ->fetchColumn(0);
+
+        return (bool)$count;
     }
 
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     * @deprecated since 6.0.0 will be removed in 7.0.0
-     */
-    protected function getDatabaseConnection()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
-    }
 
     /**
      * Get backend user authentication

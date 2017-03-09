@@ -411,7 +411,6 @@ class Product extends AbstractEntity
         $first = true;
         $articleUids = [];
         if (is_array($attributes)) {
-            $database = $this->getDatabaseConnection();
             foreach ($attributes as $uidValuePair) {
                 // Initialize arrays to prevent warningn in array_intersect()
                 $next = [];
@@ -421,7 +420,7 @@ class Product extends AbstractEntity
                 if (is_string($uidValuePair['AttributeValue'])) {
                     $addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] .
                         ' AND tx_commerce_articles_attributes_mm.value_char = "' .
-                        $database->quoteStr(
+                        $this->getDatabaseConnection()->quoteStr(
                             $uidValuePair['AttributeValue'],
                             'tx_commerce_articles_attributes_mm'
                         ) . '" )';
@@ -431,7 +430,7 @@ class Product extends AbstractEntity
                 if (is_float($uidValuePair['AttributeValue']) || (int) $uidValuePair['AttributeValue']) {
                     $addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] .
                         ' AND tx_commerce_articles_attributes_mm.default_value IN ("' .
-                        $database->quoteStr(
+                        $this->getDatabaseConnection()->quoteStr(
                             $uidValuePair['AttributeValue'],
                             'tx_commerce_articles_attributes_mm'
                         ) . '" ) )';
@@ -440,7 +439,7 @@ class Product extends AbstractEntity
                 if (is_float($uidValuePair['AttributeValue']) || (int) $uidValuePair['AttributeValue']) {
                     $addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] .
                         ' AND tx_commerce_articles_attributes_mm.uid_valuelist IN ("' .
-                        $database->quoteStr(
+                        $this->getDatabaseConnection()->quoteStr(
                             $uidValuePair['AttributeValue'],
                             'tx_commerce_articles_attributes_mm'
                         ) . '") )';
@@ -448,7 +447,7 @@ class Product extends AbstractEntity
 
                 $addwhere = ' AND (0 ' . $addwheretmp . ') ';
 
-                $result = (array) $database->exec_SELECTgetRows(
+                $result = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
                     'DISTINCT tx_commerce_articles.uid',
                     'tx_commerce_articles
                     INNER JOIN tx_commerce_articles_attributes_mm AS mm ON tx_commerce_articles.uid = mm.uid_local
@@ -510,9 +509,7 @@ class Product extends AbstractEntity
         $orderBy = 'sorting';
         $limit = '';
 
-        $database = $this->getDatabaseConnection();
-
-        $rows = $database->exec_SELECTgetRows('uid', $table, $where, $groupBy, $orderBy, $limit);
+        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows('uid', $table, $where, $groupBy, $orderBy, $limit);
         $rawArticleUidList = [];
         foreach ($rows as $row) {
             $rawArticleUidList[] = $row['uid'];
@@ -573,8 +570,6 @@ class Product extends AbstractEntity
         $localizationAttributeValuesFallbackToDefault = false,
         $parentTable = 'tx_commerce_articles'
     ) {
-        $database = $this->getDatabaseConnection();
-
         // Early return if no product is given
         if (!$this->uid > 0) {
             return false;
@@ -589,7 +584,7 @@ class Product extends AbstractEntity
         }
 
         // Execute main query
-        $attributeDataArrayRessource = $database->sql_query(
+        $attributeDataArrayRessource = $this->getDatabaseConnection()->sql_query(
             $this->getAttributeMatrixQuery($parentTable, $mmTable, $sortingTable, $articleList, $attributeListInclude)
         );
 
@@ -602,7 +597,7 @@ class Product extends AbstractEntity
         $attributeLanguageOverlayBlacklist = [];
 
         // Compile target data array
-        while (($attributeDataRow = $database->sql_fetch_assoc($attributeDataArrayRessource))) {
+        while (($attributeDataRow = $this->getDatabaseConnection()->sql_fetch_assoc($attributeDataArrayRessource))) {
             // AttributeUid affected by this reord
             $currentUid = $attributeDataRow['attributes_uid'];
 
@@ -678,7 +673,7 @@ class Product extends AbstractEntity
                 if ($this->lang_uid) {
                     // Get uid of localized article
                     // (lang_uid = selected lang and l18n_parent = current article)
-                    $localizedArticleUid = $database->exec_SELECTgetRows(
+                    $localizedArticleUid = $this->getDatabaseConnection()->exec_SELECTgetRows(
                         'uid',
                         $parentTable,
                         'l18n_parent = '. $attributeDataRow['parent_uid'] .
@@ -700,7 +695,7 @@ class Product extends AbstractEntity
                             $selectFields[] = 'value_char';
                         }
                         // Fetch mm record with overlay values
-                        $localizedArticleAttributeValues = $database->exec_SELECTgetRows(
+                        $localizedArticleAttributeValues = $this->getDatabaseConnection()->exec_SELECTgetRows(
                             implode(', ', $selectFields),
                             $mmTable,
                             'uid_local = ' . $localizedArticleUid . ' AND uid_foreign = ' . $currentUid
@@ -728,7 +723,7 @@ class Product extends AbstractEntity
                 }
             } elseif ($attributeDataRow['uid_valuelist']) {
                 // Get value list rows
-                $valueListArrayRows = $database->exec_SELECTgetRows(
+                $valueListArrayRows = $this->getDatabaseConnection()->exec_SELECTgetRows(
                     '*',
                     'tx_commerce_attribute_values',
                     'uid IN (' . $attributeDataRow['uid_valuelist'] . ')'
@@ -766,7 +761,7 @@ class Product extends AbstractEntity
         }
 
         // Free resources of main query
-        $database->sql_free_result($attributeDataArrayRessource);
+        $this->getDatabaseConnection()->sql_free_result($attributeDataArrayRessource);
 
         // Return "I didn't found anything, so I'm not an array"
         // This hack is a re-implementation of the original matrix behaviour
@@ -825,8 +820,6 @@ class Product extends AbstractEntity
         $articleList = false,
         $attributeList = false
     ) {
-        $database = $this->getDatabaseConnection();
-
         $selectFields = [];
         $selectWhere = [];
 
@@ -891,7 +884,7 @@ class Product extends AbstractEntity
         $selectOrder = $sortingTable . '.sorting';
 
         // Compile query
-        $attributeMmQuery = $database->SELECTquery(
+        $attributeMmQuery = $this->getDatabaseConnection()->SELECTquery(
             'DISTINCT ' . implode(', ', $selectFields),
             implode(', ', $selectFrom),
             implode(' AND ', $selectWhere),
@@ -1123,8 +1116,7 @@ class Product extends AbstractEntity
                 $addwhere2 = ' AND tx_commerce_articles.uid in (' . $queryArticleList . ')';
             }
 
-            $database = $this->getDatabaseConnection();
-            $result = $database->exec_SELECT_mm_query(
+            $result = $this->getDatabaseConnection()->exec_SELECT_mm_query(
                 'DISTINCT tx_commerce_attributes.uid, tx_commerce_attributes.sys_language_uid,
                     tx_commerce_articles.uid AS article,
                     tx_commerce_attributes.title, tx_commerce_attributes.unit, tx_commerce_attributes.valueformat,
@@ -1139,8 +1131,8 @@ class Product extends AbstractEntity
 
             $addwhere = $addwhere2;
 
-            if ($database->sql_num_rows($result)) {
-                while (($data = $database->sql_fetch_assoc($result))) {
+            if ($this->getDatabaseConnection()->sql_num_rows($result)) {
+                while (($data = $this->getDatabaseConnection()->sql_fetch_assoc($result))) {
                     // Language overlay
                     if ($this->lang_uid > 0) {
                         $proofSql = '';
@@ -1150,7 +1142,7 @@ class Product extends AbstractEntity
                                 $this->getTypoScriptFrontendController()->showHiddenRecords
                             );
                         }
-                        $attributeData = $database->exec_SELECTgetSingleRow(
+                        $attributeData = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
                             '*',
                             'tx_commerce_attributes',
                             'uid = ' . $data['uid'] . ' ' . $proofSql
@@ -1184,7 +1176,7 @@ class Product extends AbstractEntity
                     $valuelist = [];
                     $attributeUid = $data['uid'];
 
-                    $attributeValueResult = $database->exec_SELECT_mm_query(
+                    $attributeValueResult = $this->getDatabaseConnection()->exec_SELECT_mm_query(
                         'DISTINCT tx_commerce_articles_attributes_mm.uid_valuelist',
                         'tx_commerce_articles',
                         'tx_commerce_articles_attributes_mm',
@@ -1193,10 +1185,10 @@ class Product extends AbstractEntity
                             AND tx_commerce_articles.uid_product = ' . $this->uid .
                         ' AND tx_commerce_attributes.uid = ' . $attributeUid . $addwhere
                     );
-                    if ($valueshown == false && $database->sql_num_rows($attributeValueResult)) {
-                        while (($value = $database->sql_fetch_assoc($attributeValueResult))) {
+                    if ($valueshown == false && $this->getDatabaseConnection()->sql_num_rows($attributeValueResult)) {
+                        while (($value = $this->getDatabaseConnection()->sql_fetch_assoc($attributeValueResult))) {
                             if ($value['uid_valuelist'] > 0) {
-                                $row = $database->exec_SELECTgetSingleRow(
+                                $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
                                     '*',
                                     'tx_commerce_attribute_values',
                                     'uid = ' . $value['uid_valuelist']
@@ -1263,8 +1255,6 @@ class Product extends AbstractEntity
         $values = [];
         $levelAttributes = [];
 
-        $database = $this->getDatabaseConnection();
-
         if ($this->uid > 0) {
             $articleList = $this->loadArticles();
 
@@ -1274,7 +1264,7 @@ class Product extends AbstractEntity
                 $addWhere = 'uid_local IN (' . $queryArticleList . ')';
             }
 
-            $articleAttributes = $database->exec_SELECTgetRows(
+            $articleAttributes = $this->getDatabaseConnection()->exec_SELECTgetRows(
                 'uid_local, uid_foreign, uid_valuelist',
                 'tx_commerce_articles_attributes_mm',
                 $addWhere,
@@ -1318,7 +1308,7 @@ class Product extends AbstractEntity
             if (!empty($attributeValuesList)) {
                 $attributeValuesList = array_unique($attributeValuesList);
                 $attributeValuesList = implode($attributeValuesList, ',');
-                $attributeValueSorts = $database->exec_SELECTgetRows(
+                $attributeValueSorts = $this->getDatabaseConnection()->exec_SELECTgetRows(
                     'sorting, uid',
                     'tx_commerce_attribute_values',
                     'uid IN (' . $attributeValuesList . ')'
