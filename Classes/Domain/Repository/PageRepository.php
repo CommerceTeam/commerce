@@ -104,4 +104,43 @@ class PageRepository extends AbstractRepository
 
         return $locale;
     }
+
+    /**
+     * @return int
+     */
+    public function countDifferingFolders()
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = (int) $queryBuilder
+            ->count('p.*')
+            ->from($this->databaseTable, 'p')
+            ->where(
+                $queryBuilder->expr()->neq(
+                    'p.tx_graytree_foldername',
+                    $queryBuilder->createNamedParameter('', \PDO::PARAM_STR)
+                ),
+                $queryBuilder->expr()->neq(
+                    'p.tx_commerce_foldername',
+                    'p.tx_graytree_foldername'
+                )
+            )
+            ->execute()
+            ->fetchColumn();
+        return $result;
+    }
+
+    public function migrateOldFolderColumns()
+    {
+        $queryBuilder = $this->getQueryBuilderForTable('pages');
+        $queryBuilder
+            ->update('pages', 'p')
+            ->where(
+                $queryBuilder->expr()->neq(
+                    'p.tx_graytree_foldername',
+                    $queryBuilder->createNamedParameter('', \PDO::PARAM_STR)
+                )
+            )
+            ->set('p.tx_commerce_foldername', 'p.tx_graytree_foldername')
+            ->execute();
+    }
 }

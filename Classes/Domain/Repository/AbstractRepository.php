@@ -442,6 +442,32 @@ abstract class AbstractRepository implements SingletonInterface
             ->execute();
     }
 
+    /**
+     * @param string $columnName
+     *
+     * @return bool
+     */
+    public function hasColumn($columnName)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $columns = $queryBuilder
+            ->getConnection()
+            ->getSchemaManager()
+            ->listTableColumns($this->databaseTable);
+        return in_array($columnName, $columns);
+    }
+
+    public function hasTable($tableName)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $tables = $queryBuilder
+            ->getConnection()
+            ->getSchemaManager()
+            ->listTableNames();
+
+        return in_array($tableName, $tables);
+    }
+
 
     /**
      * @return \TYPO3\CMS\Extbase\Object\ObjectManager

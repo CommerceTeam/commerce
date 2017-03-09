@@ -11,7 +11,13 @@ namespace CommerceTeam\Commerce\Utility;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\BackendUserRepository;
+use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use CommerceTeam\Commerce\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Update Class for DB Updates of version 0.11.0.
@@ -82,26 +88,14 @@ class UpdateUtility
      */
     public function createParentMmRecords()
     {
-        $database = $this->getDatabaseConnection();
         $countRecords = 0;
+        /** @var CategoryRepository $categoryRepository */
+        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
 
-        $rows = $database->exec_SELECTgetRows(
-            'uid',
-            'tx_commerce_categories',
-            'sys_language_uid = 0 AND l18n_parent = 0 AND uid NOT IN (
-                SELECT uid_local FROM tx_commerce_categories_parent_category_mm
-            ) AND tx_commerce_categories.deleted = 0'
-        );
-        foreach ($rows as $row) {
-            $data = [
-                'uid_local' => $row['uid'],
-                'uid_foreign' => 0,
-                'tablenames' => '',
-                'sorting' => 99,
-            ];
-
-            $database->exec_INSERTquery('tx_commerce_categories_parent_category_mm', $data);
-            ++$countRecords;
+        $result = $categoryRepository->findWithoutParentReference();
+        while ($row = $result->fetch()) {
+            $categoryRepository->insertParentRelation($row['uid'], 0, 99);
+            $countRecords++;
         }
 
         return $countRecords;
@@ -115,26 +109,28 @@ class UpdateUtility
      */
     public function createDefaultRights()
     {
-        $database = $this->getDatabaseConnection();
-        $countRecords = 1;
+        $countRecords = 0;
+        /** @var PageRepository $pageRepository */
+        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
+        /** @var CategoryRepository $categoryRepository */
+        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
 
         /*
          * Get data from folder
          */
-        $data = $database->exec_SELECTgetSingleRow(
-            'perms_userid, perms_groupid, perms_user, perms_group, perms_everybody',
-            'pages',
-            'uid = ' . FolderRepository::initFolders('Products', FolderRepository::initFolders())
-        );
+        $page = $pageRepository->findByUid(FolderRepository::initFolders('Products', FolderRepository::initFolders()));
+        $data = array_intersect_key($page, [
+            'perms_userid' => '',
+            'perms_groupid' => '',
+            'perms_user' => '',
+            'perms_group' => '',
+            'perms_everybody' => '',
+        ]);
 
-        $rows = $database->exec_SELECTgetRows(
-            'uid',
-            'tx_commerce_categories',
-            'perms_user = 0 OR perms_group = 0 OR perms_everybody = 0'
-        );
-        foreach ($rows as $row) {
-            $database->exec_UPDATEquery('tx_commerce_categories', 'uid = ' . $row['uid'], $data);
-            ++$countRecords;
+        $result = $categoryRepository->findWithoutPermissionsSet();
+        while ($row = $result->fetch()) {
+            $categoryRepository->updateRecord($row['uid'], $data);
+            $countRecords++;
         }
 
         return $countRecords;
@@ -149,28 +145,18 @@ class UpdateUtility
     public function createBackendUser()
     {
         $userId = 0;
-        $database = $this->getDatabaseConnection();
+        /** @var BackendUserRepository $backendUserRepository */
+        $backendUserRepository = GeneralUtility::makeInstance(BackendUserRepository::class);
 
-        $row = $database->exec_SELECTgetSingleRow('uid', 'be_users', 'username = \'_fe_commerce\'');
+        $row = $backendUserRepository->findByUsername('_fe_commerce');
         if (empty($row)) {
-            $data = [
+            $userId = $backendUserRepository->insertUser([
                 'pid' => 0,
                 'username' => '_fe_commerce',
-                'password' => 'MD5(RAND())',
+                'password' => md5(microtime() . uniqid() . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']),
                 'tstamp' => $GLOBALS['EXEC_TIME'],
                 'crdate' => $GLOBALS['EXEC_TIME'],
-            ];
-
-            $database->exec_INSERTquery(
-                'be_users',
-                $data,
-                [
-                    'password',
-                    'tstamp',
-                    'crdate',
-                ]
-            );
-            $userId = $this->getDatabaseConnection()->sql_insert_id();
+            ]);
         }
 
         return $userId;
@@ -183,21 +169,21 @@ class UpdateUtility
      */
     public function renameRelationTable()
     {
-        $this->getDatabaseConnection()->sql_query('
-            ALTER TABLE tx_commerce_articles_article_attributes_mm RENAME tx_commerce_articles_attributes_mm;
-        ');
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $articleRepository->migrateOldAttributeReferenceTable();
     }
 
     /**
-     * Update pages and set commerce_foldername to the same content as graytree_foldername
+     * Update pages and set tx_commerce_foldername to the same content as graytree_foldername
      *
      * @return void
      */
     public function migrateOldColumn()
     {
-        $this->getDatabaseConnection()->sql_query('
-            UPDATE pages SET tx_commerce_foldername = tx_graytree_foldername WHERE tx_graytree_foldername != \'\'
-        ');
+        /** @var PageRepository $pageRepository */
+        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
+        $pageRepository->migrateOldFolderColumns();
     }
 
 
@@ -238,15 +224,12 @@ class UpdateUtility
      */
     protected function isCategoryWithoutParentMm()
     {
-        $count = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            '*',
-            'tx_commerce_categories',
-            'uid NOT IN (
-                SELECT uid_local FROM tx_commerce_categories_parent_category_mm
-            ) AND tx_commerce_categories.deleted = 0 AND sys_language_uid = 0 AND l18n_parent = 0'
-        );
+        /** @var CategoryRepository $categoryRepository */
+        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
 
-        return $count > 0;
+        $result = $categoryRepository->findWithoutParentReference();
+
+        return $result->rowCount() > 0;
     }
 
     /**
@@ -256,13 +239,12 @@ class UpdateUtility
      */
     protected function isCategoryWithoutUserrights()
     {
-        $count = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            '*',
-            'tx_commerce_categories',
-            'perms_user = 0 AND perms_group = 0 AND perms_everybody = 0'
-        );
+        /** @var CategoryRepository $categoryRepository */
+        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
 
-        return $count > 0;
+        $result = $categoryRepository->findWithoutParentReference();
+
+        return $result->rowCount() > 0;
     }
 
     /**
@@ -272,13 +254,12 @@ class UpdateUtility
      */
     protected function isBackendUserSet()
     {
-        $count = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            '*',
-            'be_users',
-            'username = \'_fe_commerce\''
-        );
+        /** @var BackendUserRepository $backendUserRepository */
+        $backendUserRepository = GeneralUtility::makeInstance(BackendUserRepository::class);
 
-        return $count > 0;
+        $row = $backendUserRepository->findByUsername('_fe_commerce');
+
+        return empty($row);
     }
 
     /**
@@ -288,14 +269,9 @@ class UpdateUtility
      */
     protected function isOldRelationTable()
     {
-        $count = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            '*',
-            'information_schema.tables',
-            'table_schema = \'' . $GLOBALS['TYPO3_CONF_VARS']['DB']['database']
-            . '\' AND table_name = \'tx_commerce_articles_article_attributes_mm\''
-        );
-
-        return $count > 0;
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        return $articleRepository->hasTable('tx_commerce_articles_article_attributes_mm');
     }
 
     /**
@@ -305,48 +281,24 @@ class UpdateUtility
      */
     protected function isOldColumns()
     {
-        // Check if old column is present
-        $oldColumn = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            '*',
-            'information_schema.columns',
-            'table_schema = \'' . $GLOBALS['TYPO3_CONF_VARS']['DB']['database']
-            . '\' AND table_name = \'pages\' AND column_name = \'tx_graytree_foldername\''
-        );
+        /** @var PageRepository $pageRepository */
+        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
 
-        $newColumn = 0;
+        // Check if old column is present
+        $oldColumn = $pageRepository->hasColumn('tx_graytree_foldername');
+
+        $newColumn = false;
         // Old column is present so check if new column is present too
         if ($oldColumn) {
-            $newColumn = $this->getDatabaseConnection()->exec_SELECTcountRows(
-                '*',
-                'information_schema.columns',
-                'table_schema = \'' . $GLOBALS['TYPO3_CONF_VARS']['DB']['database']
-                . '\' AND table_name = \'pages\' AND column_name = \'tx_commerce_foldername\''
-            );
+            $newColumn = $pageRepository->hasColumn('tx_commerce_foldername');
         }
 
         $differingColumns = 0;
         // Old and new column are present so check if they differ
         if ($oldColumn && $newColumn) {
-            $differingColumns = $this->getDatabaseConnection()->exec_SELECTcountRows(
-                '*',
-                'pages',
-                'tx_graytree_foldername != \'\' AND tx_commerce_foldername != tx_graytree_foldername'
-            );
+            $differingColumns = $pageRepository->countDifferingFolders();
         }
 
         return $differingColumns > 0;
-    }
-
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     * @deprecated since 6.0.0 will be removed in 7.0.0
-     */
-    protected function getDatabaseConnection()
-    {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
     }
 }

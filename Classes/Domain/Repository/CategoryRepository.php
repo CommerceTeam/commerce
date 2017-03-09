@@ -716,6 +716,72 @@ class CategoryRepository extends AbstractRepository
     }
 
     /**
+     * @return \Doctrine\DBAL\Driver\Statement
+     */
+    public function findWithoutParentReference()
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('c.uid')
+            ->from($this->databaseTable, 'c')
+            ->leftJoin('c', $this->databaseParentCategoryRelationTable, 'mm', 'c.uid = mm.uid_local')
+            ->where(
+                $queryBuilder->expr()->isNull(
+                    'mm.uid_local'
+                )
+            )
+            ->execute();
+        return $result;
+    }
+
+    /**
+     * @return \Doctrine\DBAL\Driver\Statement
+     */
+    public function findWithoutPermissionsSet()
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->eq(
+                        'perms_user',
+                        $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'perms_group',
+                        $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'perms_everybody',
+                        $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    )
+                )
+            )
+            ->execute();
+        return $result;
+    }
+
+    /**
+     * @param int $childUid
+     * @param int $parentUid
+     * @param int $sorting
+     */
+    public function insertParentRelation($childUid, $parentUid, $sorting)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseParentCategoryRelationTable);
+        $queryBuilder
+            ->insert($this->databaseParentCategoryRelationTable)
+            ->values([
+                'uid_local' => $childUid,
+                'uid_foreign' => $parentUid,
+                'sorting' => $sorting
+            ])
+            ->execute();
+    }
+
+    /**
      * Set delete flag and timestamp to current date for given translated products
      * by translation parent
      *
