@@ -771,6 +771,65 @@ class ProductRepository extends AbstractRepository
     }
 
     /**
+     * @param int $productUid
+     * @param int $correlationType
+     *
+     * @return int
+     */
+    public function countProductAttributesByProductAndCorrelationType($productUid, $correlationType)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = (int) $queryBuilder
+            ->count('p.*')
+            ->from($this->databaseTable, 'p')
+            ->innerJoin('p', $this->databaseAttributeRelationTable, 'mm', 'p.uid = mm.uid_local')
+            ->innerJoin('mm', 'tx_commerce_attributes', 'a', 'mm.uid_foreign = a.uid')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'mm.uid_correlationtype',
+                    $queryBuilder->createNamedParameter($correlationType, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'p.uid',
+                    $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchColumn();
+        return $result;
+    }
+
+    /**
+     * @param int $productUid
+     * @param int $correlationType
+     *
+     * @return int
+     */
+    public function countCategoryAttributesByProductAndCorrelationType($productUid, $correlationType)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $result = (int) $queryBuilder
+            ->count('cm.*')
+            ->from($this->databaseCategoryRelationTable, 'cm')
+            ->innerJoin('cm', 'tx_commerce_categories', 'c', 'cm.uid_foreign = c.uid')
+            ->innerJoin('c', 'tx_commerce_categories_attributes_mm', 'mm', 'c.uid = mm.uid_local')
+            ->innerJoin('mm', 'tx_commerce_attributes', 'a', 'mm.uid_foreign = a.uid')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'mm.uid_correlationtype',
+                    $queryBuilder->createNamedParameter($correlationType, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'cn.uid_local',
+                    $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchColumn();
+        return $result;
+    }
+
+    /**
      * Set delete flag and timestamp to current date for given products uids
      *
      * @param array $productUids

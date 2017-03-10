@@ -12,7 +12,7 @@ namespace CommerceTeam\Commerce\Utility;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
 
 /**
  * Class DisplayConditionUtility
@@ -27,42 +27,20 @@ class DisplayConditionUtility
     {
         $count = 0;
         if (!empty($parameter['record']) && isset($parameter['record']['uid'])) {
-            $count = $this->getDatabaseConnection()->exec_SELECTcountRows(
-                '*',
-                'tx_commerce_products
-                INNER JOIN tx_commerce_products_attributes_mm AS mm ON tx_commerce_products.uid = mm.uid_local
-                INNER JOIN tx_commerce_attributes ON mm.uid_foreign = tx_commerce_attributes.uid',
-                'mm.uid_correlationtype = 4 AND tx_commerce_products.uid = ' . (int) $parameter['record']['uid']
-                . BackendUtility::deleteClause('tx_commerce_products')
-                . BackendUtility::deleteClause('tx_commerce_attributes')
+            /** @var ProductRepository $productRepository */
+            $productRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ProductRepository::class);
+            $count = $productRepository->countProductAttributesByProductAndCorrelationType(
+                $parameter['record']['uid'],
+                4
             );
 
             if (!$count) {
-                $count = $this->getDatabaseConnection()->exec_SELECTcountRows(
-                    '*',
-                    'tx_commerce_products_categories_mm AS cm
-                    INNER JOIN tx_commerce_categories ON cm.uid_foreign = tx_commerce_categories.uid
-                    INNER JOIN tx_commerce_categories_attributes_mm AS mm ON tx_commerce_categories.uid = mm.uid_local
-                    INNER JOIN tx_commerce_attributes ON mm.uid_foreign = tx_commerce_attributes.uid',
-                    'mm.uid_correlationtype = 4 AND cm.uid_local = ' . (int) $parameter['record']['uid']
-                    . BackendUtility::deleteClause('tx_commerce_categories')
-                    . BackendUtility::deleteClause('tx_commerce_attributes')
+                $count = $productRepository->countCategoryAttributesByProductAndCorrelationType(
+                    $parameter['record']['uid'],
+                    4
                 );
             }
         }
         return $count > 0;
-    }
-
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     * @deprecated since 6.0.0 will be removed in 7.0.0
-     */
-    protected function getDatabaseConnection()
-    {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
     }
 }
