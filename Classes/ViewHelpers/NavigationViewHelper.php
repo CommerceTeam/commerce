@@ -14,6 +14,8 @@ namespace CommerceTeam\Commerce\ViewHelpers;
 
 use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
 use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -695,18 +697,26 @@ class NavigationViewHelper
             $sorting = $hookObject->sortingOrder($sorting, $uidRoot, $mainTable, $tableMm, $mDepth, $path, $this);
         }
 
-        $sorting = str_replace('ORDER BY', '', $sorting);
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($mainTable);
+        $result = $queryBuilder
+            ->select('mm.*')
+            ->from($mainTable, 't')
+            ->innerJoin('t', $tableMm, 'mm', 't.uid = mm.uid_local')
+            ->where(
+                $queryBuilder->expr()->neq(
+                    'mm.uid_local',
+                    $queryBuilder->createNamedParameter('', \PDO::PARAM_STR)
+                ),
+                $queryBuilder->expr()->eq(
+                    'mm.uid_foreign',
+                    $queryBuilder->createNamedParameter($uidRoot, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy(str_replace($mainTable, 't', str_replace('ORDER BY', '', $sorting)))
+            ->execute();
 
-        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            $tableMm . '.*',
-            $tableMm . ',' . $mainTable,
-            $mainTable . '.deleted = 0 AND '. $mainTable . '.uid = ' . $tableMm . '.uid_local AND '
-            . $tableMm . '.uid_local <> "" AND ' . $tableMm . '.uid_foreign = ' . $uidRoot,
-            '',
-            $sorting
-        );
-
-        foreach ($rows as $row) {
+        while ($row = $result->fetch()) {
             $nodeArray = [];
             $dataRow = $this->getDataRow($row['uid_local'], $mainTable);
 
@@ -787,6 +797,7 @@ class NavigationViewHelper
                     );
 
                     if ($nodeArray['hasSubChild'] == 1 && $this->mConf['showProducts'] == 1) {
+                        // @todo check if $maxLevel is correct here
                         $arraySubChild = $this->makeSubChildArrayPostRender(
                             $uidPage,
                             $tableSubMain,
@@ -804,6 +815,7 @@ class NavigationViewHelper
                         if ($this->mConf['groupOptions.']['onOptions'] == 1
                             && $frontendUserData['usergroup'] != ''
                         ) {
+                            // @todo check if $maxLevel is correct here
                             $arraySubChild = $this->makeSubChildArrayPostRender(
                                 $uidPage,
                                 $tableSubMain,
@@ -862,6 +874,7 @@ class NavigationViewHelper
         }
 
         if ($treeList == null && $this->mConf['showProducts'] == 1) {
+            // @todo check if $maxLevel is correct here
             $treeList = $this->makeSubChildArrayPostRender(
                 $uidPage,
                 $tableSubMain,
@@ -899,10 +912,6 @@ class NavigationViewHelper
         $manufacturerUid = false
     ) {
         $treeList = [];
-        $sqlManufacturer = '';
-        if (is_numeric($manufacturerUid)) {
-            $sqlManufacturer = ' AND ' . $mainTable . '.manufacturer_uid = ' . (int) $manufacturerUid;
-        }
 
         $sorting = ' ORDER BY ' . $mainTable . '.sorting ';
 
@@ -917,18 +926,37 @@ class NavigationViewHelper
             $sorting = $hookObject->sortingOrder($sorting, $categoryUid, $mainTable, $mmTable, $mDepth, $path, $this);
         }
 
-        $sorting = str_replace('ORDER BY', '', $sorting);
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($mainTable);
 
-        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            $mmTable . '.*',
-            $mmTable . ',' . $mainTable,
-            $mainTable . '.deleted = 0 AND ' . $mainTable . '.uid = ' . $mmTable . '.uid_local AND '
-            . $mmTable . '.uid_local <> "" AND ' . $mmTable . '.uid_foreign = ' . (int) $categoryUid . $sqlManufacturer,
-            '',
-            $sorting
-        );
+        $queryBuilder
+            ->select('mm.*')
+            ->from($mainTable, 't')
+            ->innerJoin('t', $mmTable, 'mm', 't.uid = mm.uid_local')
+            ->where(
+                $queryBuilder->expr()->neq(
+                    'mm.uid_local',
+                    $queryBuilder->createNamedParameter('', \PDO::PARAM_STR)
+                ),
+                $queryBuilder->expr()->neq(
+                    'mm.uid_foreign',
+                    $queryBuilder->createNamedParameter($categoryUid, \PDO::PARAM_INT)
+                ) // $sqlManufacturer
+            )
+            ->orderBy(str_replace($mainTable, 't', str_replace('ORDER BY', '', $sorting)));
 
-        foreach ($rows as $row) {
+        if (is_numeric($manufacturerUid)) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq(
+                    't.manufacturer_uid',
+                    $queryBuilder->createNamedParameter($manufacturerUid, \PDO::PARAM_INT)
+                )
+            );
+        }
+
+        $result = $queryBuilder->execute();
+
+        while ($row = $result->fetch()) {
             $nodeArray = [];
             $dataRow = $this->getDataRow($row['uid_local'], $mainTable);
             if ($dataRow['deleted'] == '0') {
@@ -1255,7 +1283,7 @@ class NavigationViewHelper
         if ($menuArr[0]['CommerceMenu'] == true) {
             $availiableItemStates = $conf['parentObj']->mconf;
             /*
-             * @TODO: Try to get the expAll state from the TS Menue config and process it
+             * @todo Try to get the expAll state from the TS Menue config and process it
              * Data from TS Menue is stored in $conf['parentObj']->mconf['expAll']
              */
             foreach (array_keys($menuArr) as $mIndex) {
@@ -1739,18 +1767,6 @@ class NavigationViewHelper
         return $this->repositoryStack[$repositoryName];
     }
 
-
-    /**
-     * Get database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     * @deprecated since 6.0.0 will be removed in 7.0.0
-     */
-    protected function getDatabaseConnection()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
-    }
 
     /**
      * Get typoscript frontend controller.
