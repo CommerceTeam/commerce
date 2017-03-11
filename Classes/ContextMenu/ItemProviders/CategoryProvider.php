@@ -90,6 +90,13 @@ class CategoryProvider extends \TYPO3\CMS\Backend\ContextMenu\ItemProviders\Page
             'iconIdentifier' => 'actions-document-history-open',
             'callbackAction' => 'openHistoryPopUp',
         ],
+
+        'exportT3d' => [
+            'type' => 'divider',
+        ],
+        'importT3d' => [
+            'type' => 'divider',
+        ]
     ];
 
     /**
@@ -100,5 +107,15 @@ class CategoryProvider extends \TYPO3\CMS\Backend\ContextMenu\ItemProviders\Page
     public function canHandle(): bool
     {
         return $this->table === 'tx_commerce_categories';
+    }
+
+    /**
+     * Priority is set to lower then default value, in order to skip this provider if there is less generic provider available.
+     *
+     * @return int
+     */
+    public function getPriority(): int
+    {
+        return 100;
     }
 }
