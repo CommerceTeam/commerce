@@ -110,7 +110,8 @@ class CategoryProvider extends \TYPO3\CMS\Backend\ContextMenu\ItemProviders\Page
     }
 
     /**
-     * Priority is set to lower then default value, in order to skip this provider if there is less generic provider available.
+     * Priority is set to lower then default value, in order
+     * to skip this provider if there is less generic provider available.
      *
      * @return int
      */

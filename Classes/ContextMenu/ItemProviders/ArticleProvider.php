@@ -110,7 +110,8 @@ class ArticleProvider extends \TYPO3\CMS\Backend\ContextMenu\ItemProviders\PageP
     }
 
     /**
-     * Priority is set to lower then default value, in order to skip this provider if there is less generic provider available.
+     * Priority is set to lower then default value, in order
+     * to skip this provider if there is less generic provider available.
      *
      * @return int
      */
