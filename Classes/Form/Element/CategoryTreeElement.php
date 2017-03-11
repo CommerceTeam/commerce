@@ -188,7 +188,7 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
                 $field,
                 $parameterArray,
                 $parameterArray['itemFormElName'],
-                BackendUtility::getSpecConfParts($parameterArray['fieldConf']['defaultExtras'])
+                $parameterArray['fieldConf']['defaultExtras']
             ) . '</div>';
 
             $resultArray['requireJsModules'][] = 'TYPO3/CMS/Commerce/FormElementCategoryTree';
