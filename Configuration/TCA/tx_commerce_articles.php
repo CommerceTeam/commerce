@@ -385,7 +385,10 @@ return [
         '0' => [
             'columnsOverrides' => [
                 'description_extra' => [
-                    'defaultExtras' => 'richtext:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/]'
+                    'config' => [
+                        'enableRichtext' => true,
+                        'richtextConfiguration' => 'default',
+                    ]
                 ],
             ],
             'showitem' => '

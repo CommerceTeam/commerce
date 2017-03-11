@@ -404,10 +404,16 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
         '0' => [
             'columnsOverrides' => [
                 'description' => [
-                    'defaultExtras' => 'richtext:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/]'
+                    'config' => [
+                        'enableRichtext' => true,
+                        'richtextConfiguration' => 'default',
+                    ]
                 ],
                 'teaser' => [
-                    'defaultExtras' => 'richtext:rte_transform[mode=ts_css|imgpath=uploads/tx_commerce/rte/]'
+                    'config' => [
+                        'enableRichtext' => true,
+                        'richtextConfiguration' => 'default',
+                    ]
                 ],
             ],
             'showitem' => '

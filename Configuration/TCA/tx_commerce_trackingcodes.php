@@ -84,7 +84,10 @@ return [
         '0' => [
             'columnsOverrides' => [
                 'description' => [
-                    'defaultExtras' => 'richtext:rte_transform[mode=ts_css]'
+                    'config' => [
+                        'enableRichtext' => true,
+                        'richtextConfiguration' => 'default',
+                    ]
                 ],
             ],
             'showitem' => '
