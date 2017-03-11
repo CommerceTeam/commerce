@@ -12,6 +12,7 @@ Since Version 6
 Removed Files
 -------------
 
+WizardController.php This class is not needed anymore because specific allowed tables are controlled via page typoscript config now.
 Hooks/SrfeuserregisterPi1Hook.php the commerce team does not advocates to use this extension and the hook if here by removed.
 
 
