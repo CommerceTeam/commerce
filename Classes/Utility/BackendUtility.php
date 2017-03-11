@@ -1308,7 +1308,7 @@ class BackendUtility
             $uids = [$uidFrom, $uidTo];
             $newFrom = $uidFrom;
             $newTo = $uidTo;
-            $rows = $articleRepository->findTranslationsByParentUidAndLanguage($uids, $languageUid);
+            $rows = $articleRepository->findTranslationsByParentUidsAndLanguage($uids, $languageUid);
 
             // get uids
             foreach ($rows as $row) {

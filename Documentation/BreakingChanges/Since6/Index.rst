@@ -44,6 +44,8 @@ UpdateUtility::getDatabaseConnection queries where moved to corresponding reposi
 DataProvider::getDatabaseConnection queries where changed to use queryBuilder
 NavigationViewHelper::getDatabaseConnection queries where changed to use queryBuilder
 DisplayConditionUtility::getDatabaseConnection queries where moved to ProductRepository
+Product::getAttributeMatrixQuery queries where moved to corresponding repositories
+Product::getDatabaseConnection queries where moved to corresponding repositories
 
 FolderRepository::getFolders should not be used anymore, please use ::getFolder instead
 BaseController::renderValue.NUMBERFORMAT this type of formating is possible via stdWrap.numberFormat and takes the configuration decimals, dec_point, thousands_sep so just replace NUMBERFORMAT with stdWrap.numberFormat = 1 and add stdWrap.numberFormat.deci... and so on

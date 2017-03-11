@@ -39,7 +39,7 @@ class AttributeValueRepository extends AbstractRepository
      *
      * @return array
      */
-    public function findByAttributeInPage($attributeUid, $pageId)
+    public function findByAttributeInPage($attributeUid, $pageId): array
     {
         /** @var DeletedRestriction $deleteRestriction */
         $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
@@ -73,13 +73,13 @@ class AttributeValueRepository extends AbstractRepository
      *
      * @return array
      */
-    public function findByUids(array $uids)
+    public function findByUids(array $uids): array
     {
         $uids = array_map('intval', $uids);
 
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
         $result = $queryBuilder
-            ->select('uid', 'value')
+            ->select('*')
             ->from($this->databaseTable)
             ->where(
                 $queryBuilder->expr()->in(
@@ -96,7 +96,7 @@ class AttributeValueRepository extends AbstractRepository
     /**
      * @param int $attributeUid
      *
-     * @return \Doctrine\DBAL\Driver\Statement|int
+     * @return \Doctrine\DBAL\Driver\Statement
      */
     public function findByAttributeUid($attributeUid)
     {

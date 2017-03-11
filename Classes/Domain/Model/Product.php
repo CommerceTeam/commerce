@@ -12,7 +12,13 @@ namespace CommerceTeam\Commerce\Domain\Model;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
+use CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository;
+use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
 use CommerceTeam\Commerce\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Basic class for handling products
@@ -406,56 +412,82 @@ class Product extends AbstractEntity
      */
     public function getArticlesByAttributeArray(array $attributes, $proofUid = 1)
     {
-        $whereUid = $proofUid ? ' AND tx_commerce_articles.uid_product = ' . $this->uid : '';
-
         $first = true;
         $articleUids = [];
         if (is_array($attributes)) {
             foreach ($attributes as $uidValuePair) {
-                // Initialize arrays to prevent warningn in array_intersect()
-                $next = [];
-                $addwheretmp = '';
+                $queryBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable('tx_commerce_articles');
+
+                $queryBuilder
+                    ->select('a.uid')
+                    ->from('tx_commerce_articles', 'a')
+                    ->innerJoin('a', 'tx_commerce_articles_attributes_mm', 'mm', 'a.uid = mm.uid_local')
+                    ->innerJoin('mm', 'tx_commerce_attributes', 'at', 'mm.uid_foreign = at.uid')
+                    ->groupBy('a.uid');
+
+                if ($proofUid) {
+                    $queryBuilder->where(
+                        $queryBuilder->expr()->eq(
+                            'a.uid_product',
+                            $queryBuilder->createNamedParameter($this->uid, \PDO::PARAM_INT)
+                        )
+                    );
+                }
+
+                $searchParts = $queryBuilder->expr()->orX();
 
                 // attribute char is not used, thats why we check for id
                 if (is_string($uidValuePair['AttributeValue'])) {
-                    $addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] .
-                        ' AND tx_commerce_articles_attributes_mm.value_char = "' .
-                        $this->getDatabaseConnection()->quoteStr(
-                            $uidValuePair['AttributeValue'],
-                            'tx_commerce_articles_attributes_mm'
-                        ) . '" )';
+                    $searchParts->add(
+                        $queryBuilder->expr()->andX(
+                            $queryBuilder->expr()->eq(
+                                'at.uid',
+                                $queryBuilder->createNamedParameter($uidValuePair['AttributeUid'], \PDO::PARAM_INT)
+                            ),
+                            $queryBuilder->expr()->eq(
+                                'mm.value_char',
+                                $queryBuilder->createNamedParameter($uidValuePair['AttributeValue'], \PDO::PARAM_STR)
+                            )
+                        )
+                    );
                 }
 
                 // Nach dem charwert immer ueberpruefen, solange value_char noch nicht drin ist.
                 if (is_float($uidValuePair['AttributeValue']) || (int) $uidValuePair['AttributeValue']) {
-                    $addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] .
-                        ' AND tx_commerce_articles_attributes_mm.default_value IN ("' .
-                        $this->getDatabaseConnection()->quoteStr(
-                            $uidValuePair['AttributeValue'],
-                            'tx_commerce_articles_attributes_mm'
-                        ) . '" ) )';
+                    $searchParts->add(
+                        $queryBuilder->expr()->andX(
+                            $queryBuilder->expr()->eq(
+                                'at.uid',
+                                $queryBuilder->createNamedParameter($uidValuePair['AttributeUid'], \PDO::PARAM_INT)
+                            ),
+                            $queryBuilder->expr()->in(
+                                'mm.default_value',
+                                $uidValuePair['AttributeValue']
+                            )
+                        )
+                    );
+
+                    $searchParts->add(
+                        $queryBuilder->expr()->andX(
+                            $queryBuilder->expr()->eq(
+                                'at.uid',
+                                $queryBuilder->createNamedParameter($uidValuePair['AttributeUid'], \PDO::PARAM_INT)
+                            ),
+                            $queryBuilder->expr()->in(
+                                'mm.uid_valuelist',
+                                $uidValuePair['AttributeValue']
+                            )
+                        )
+                    );
                 }
 
-                if (is_float($uidValuePair['AttributeValue']) || (int) $uidValuePair['AttributeValue']) {
-                    $addwheretmp .= ' OR (tx_commerce_attributes.uid = ' . (int) $uidValuePair['AttributeUid'] .
-                        ' AND tx_commerce_articles_attributes_mm.uid_valuelist IN ("' .
-                        $this->getDatabaseConnection()->quoteStr(
-                            $uidValuePair['AttributeValue'],
-                            'tx_commerce_articles_attributes_mm'
-                        ) . '") )';
-                }
+                $result = $queryBuilder
+                    ->andWhere($searchParts)
+                    ->execute();
 
-                $addwhere = ' AND (0 ' . $addwheretmp . ') ';
-
-                $result = (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
-                    'DISTINCT tx_commerce_articles.uid',
-                    'tx_commerce_articles
-                    INNER JOIN tx_commerce_articles_attributes_mm AS mm ON tx_commerce_articles.uid = mm.uid_local
-                    INNER JOIN tx_commerce_attributes ON mm.uid_foreign = tx_commerce_attributes.uid',
-                    $addwhere . ' AND tx_commerce_articles.hidden = 0 AND tx_commerce_articles.deleted = 0' . $whereUid
-                );
-
-                foreach ($result as $data) {
+                $next = [];
+                while ($data = $result->fetch()) {
                     $next[] = $data['uid'];
                 }
 
@@ -491,33 +523,16 @@ class Product extends AbstractEntity
      */
     public function getArticlesByPrice($priceMin = 0, $priceMax = 0, $usePriceGrossInstead = 0, $proofUid = 1)
     {
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
         // first get all real articles, then create objects and check prices do not
-        // get prices directly from DB because we need to take (price) hooks into
-        // account
-        $table = 'tx_commerce_articles';
-        $where = '1=1';
-        if ($proofUid) {
-            $where .= ' AND tx_commerce_articles.uid_product = ' . $this->uid;
-        }
+        // get prices directly from DB because we need to take (price) hooks into account
 
-        $where .= ' AND article_type_uid = 1';
-        $where .= $this->getTypoScriptFrontendController()->sys_page->enableFields(
-            $table,
-            $this->getTypoScriptFrontendController()->showHiddenRecords
-        );
-        $groupBy = '';
-        $orderBy = 'sorting';
-        $limit = '';
-
-        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows('uid', $table, $where, $groupBy, $orderBy, $limit);
-        $rawArticleUidList = [];
-        foreach ($rows as $row) {
-            $rawArticleUidList[] = $row['uid'];
-        }
+        $result = $articleRepository->findByProductAndType($proofUid ? $this->uid : 0, 1);
 
         // Run price test
         $articleUidList = [];
-        foreach ($rawArticleUidList as $rawArticleUid) {
+        while ($rawArticleUid = $result->fetch()) {
             /**
              * Article.
              *
@@ -525,17 +540,17 @@ class Product extends AbstractEntity
              */
             $article = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                 \CommerceTeam\Commerce\Domain\Model\Article::class,
-                $rawArticleUid,
+                $rawArticleUid['uid'],
                 $this->lang_uid
             );
             $article->loadData();
             $myPrice = $usePriceGrossInstead ? $article->getPriceGross() : $article->getPriceNet();
-            if (($priceMin <= $myPrice) && ($myPrice <= $priceMax)) {
+            if ($priceMin <= $myPrice && $myPrice <= $priceMax) {
                 $articleUidList[] = $article->getUid();
             }
         }
 
-        return !empty($articleUidList) ? $articleUidList : [];
+        return $articleUidList;
     }
 
     /**
@@ -561,6 +576,7 @@ class Product extends AbstractEntity
      * @param string $parentTable Name of parent table
      *
      * @return mixed Array if attributes where found, else FALSE
+     * @throws \Exception
      */
     public function getAttributeMatrix(
         $articleList = false,
@@ -574,19 +590,23 @@ class Product extends AbstractEntity
         if (!$this->uid > 0) {
             return false;
         }
-
-        if ($parentTable == 'tx_commerce_articles') {
-            // mm table for article->attribute
-            $mmTable = 'tx_commerce_articles_attributes_mm';
-        } else {
-            // mm table for product->attribute
-            $mmTable = 'tx_commerce_products_attributes_mm';
+        if (!in_array($parentTable, ['tx_commerce_products', 'tx_commerce_articles'])) {
+            throw new \Exception('Unsupported table ' . $parentTable, 1489233522323);
         }
 
-        // Execute main query
-        $attributeDataArrayRessource = $this->getDatabaseConnection()->sql_query(
-            $this->getAttributeMatrixQuery($parentTable, $mmTable, $sortingTable, $articleList, $attributeListInclude)
-        );
+        /** @var AttributeValueRepository $attributeValueRepository */
+        $attributeValueRepository = GeneralUtility::makeInstance(AttributeValueRepository::class);
+
+        /** @var ArticleRepository|ProductRepository $repository */
+        if ($parentTable == 'tx_commerce_articles') {
+            $repository = GeneralUtility::makeInstance(ArticleRepository::class);
+
+            if ($articleList === false) {
+                $articleList = $this->loadArticles();
+            }
+        } else {
+            $repository = GeneralUtility::makeInstance(ProductRepository::class);
+        }
 
         // Accumulated result array
         $targetData = [];
@@ -596,8 +616,15 @@ class Product extends AbstractEntity
         // subsequent rows for the same attribute
         $attributeLanguageOverlayBlacklist = [];
 
+        // Execute main query
+        $result = $repository->findSortedAttributeByArticle(
+            $this->uid,
+            $articleList,
+            $attributeListInclude,
+            $sortingTable
+        );
         // Compile target data array
-        while (($attributeDataRow = $this->getDatabaseConnection()->sql_fetch_assoc($attributeDataArrayRessource))) {
+        while ($attributeDataRow = $result->fetch()) {
             // AttributeUid affected by this reord
             $currentUid = $attributeDataRow['attributes_uid'];
 
@@ -673,20 +700,14 @@ class Product extends AbstractEntity
                 if ($this->lang_uid) {
                     // Get uid of localized article
                     // (lang_uid = selected lang and l18n_parent = current article)
-                    $localizedArticleUid = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                        'uid',
-                        $parentTable,
-                        'l18n_parent = '. $attributeDataRow['parent_uid'] .
-                        ' AND sys_language_uid = ' . $this->lang_uid .
-                        $this->getTypoScriptFrontendController()->sys_page->enableFields(
-                            $parentTable,
-                            $this->getTypoScriptFrontendController()->showHiddenRecords
-                        )
+                    $localizedArticle = $repository->findTranslationsByParentUidAndLanguage(
+                        $attributeDataRow['parent_uid'],
+                        $this->lang_uid
                     );
 
                     // Fetch the article-attribute mm record with localized article uid
                     // and current attribute
-                    $localizedArticleUid = (int) $localizedArticleUid[0]['uid'];
+                    $localizedArticleUid = (int) $localizedArticle['uid'];
                     if ($localizedArticleUid > 0) {
                         $selectFields = [];
                         $selectFields[] = 'default_value';
@@ -695,11 +716,11 @@ class Product extends AbstractEntity
                             $selectFields[] = 'value_char';
                         }
                         // Fetch mm record with overlay values
-                        $localizedArticleAttributeValues = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                            implode(', ', $selectFields),
-                            $mmTable,
-                            'uid_local = ' . $localizedArticleUid . ' AND uid_foreign = ' . $currentUid
-                        );
+                        $localizedArticleAttributeValues =
+                            $repository->findAttributeValuesByArticleAndAttribute(
+                                $localizedArticleUid,
+                                $currentUid
+                            );
 
                         // Use value_char if set, else check for default_value, else use non
                         // localized value if enabled fallback
@@ -723,11 +744,7 @@ class Product extends AbstractEntity
                 }
             } elseif ($attributeDataRow['uid_valuelist']) {
                 // Get value list rows
-                $valueListArrayRows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                    '*',
-                    'tx_commerce_attribute_values',
-                    'uid IN (' . $attributeDataRow['uid_valuelist'] . ')'
-                );
+                $valueListArrayRows = $attributeValueRepository->findByUids($attributeDataRow['uid_valuelist']);
                 foreach ($valueListArrayRows as $valueListArrayRow) {
                     // Ignore row if this value list has already been calculated
                     // This might happen if method is called with multiple article uid's
@@ -760,9 +777,6 @@ class Product extends AbstractEntity
             }
         }
 
-        // Free resources of main query
-        $this->getDatabaseConnection()->sql_free_result($attributeDataArrayRessource);
-
         // Return "I didn't found anything, so I'm not an array"
         // This hack is a re-implementation of the original matrix behaviour
         if (empty($targetData)) {
@@ -789,110 +803,6 @@ class Product extends AbstractEntity
         }
 
         return $targetData;
-    }
-
-    /**
-     * Create query to get all attributes of articles or products
-     * This is a join over three tables:
-     *      parent table, either tx_commerce_articles or tx_commerce_products
-     *      corresponding mm table
-     *      tx_commerce_attributes.
-     *
-     * @param string $parentTable Name of the parent table,
-     *      either tx_commerce_articles or tx_commerce_products
-     * @param string $mmTable Name of the mm table,
-     *      either tx_commerce_articles_attributes_mm
-     *      or tx_commerce_products_attributes_mm
-     * @param string $sortingTable Name of table with .sorting field to order
-     *      records
-     * @param mixed $articleList Array of some restricted articles of this
-     *      product (shall, must, ...), FALSE for all articles of product,
-     *      FALSE if $parentTable = tx_commerce_products
-     * @param mixed $attributeList Array of restricted attributes,
-     *      FALSE for all attributes
-     *
-     * @return string Query to be executed
-     */
-    protected function getAttributeMatrixQuery(
-        $parentTable = 'tx_commerce_articles',
-        $mmTable = 'tx_commerce_articles_attributes_mm',
-        $sortingTable = 'tx_commerce_articles_attributes_mm',
-        $articleList = false,
-        $attributeList = false
-    ) {
-        $selectFields = [];
-        $selectWhere = [];
-
-        // Distinguish differences between product->attribute
-        // and article->attribute query
-        if ($parentTable == 'tx_commerce_articles') {
-            // Load full article list of product if not given
-            if ($articleList === false) {
-                $articleList = $this->loadArticles();
-            }
-            // Get article attributes of current product only
-            $selectWhere[] = $parentTable . '.uid_product = ' . $this->uid;
-            // value_char is only available in article->attribute mm table
-            $selectFields[] = $mmTable . '.value_char';
-            // Restrict article list if given
-            if (is_array($articleList) && !empty($articleList)) {
-                $selectWhere[] = $parentTable . '.uid IN (' . implode(',', $articleList) . ')';
-            }
-        } else {
-            // Get attributes of current product only
-            $selectWhere[] = $parentTable . '.uid = ' . $this->uid;
-        }
-
-        $selectFields[] = $parentTable . '.uid AS parent_uid';
-        $selectFields[] = 'tx_commerce_attributes.uid AS attributes_uid';
-        $selectFields[] = 'tx_commerce_attributes.pid AS attributes_pid';
-        $selectFields[] = 'tx_commerce_attributes.sys_language_uid AS attributes_sys_language_uid';
-        $selectFields[] = 'tx_commerce_attributes.title AS attributes_title';
-        $selectFields[] = 'tx_commerce_attributes.unit AS attributes_unit';
-        $selectFields[] = 'tx_commerce_attributes.valueformat AS attributes_valueformat';
-        $selectFields[] = 'tx_commerce_attributes.internal_title AS attributes_internal_title';
-        $selectFields[] = 'tx_commerce_attributes.icon AS attributes_icon';
-        $selectFields[] = $mmTable . '.default_value';
-        $selectFields[] = $mmTable . '.uid_valuelist';
-        $selectFields[] = $sortingTable . '.sorting';
-
-        $selectFrom = [];
-        $selectFrom[] = $parentTable;
-        $selectFrom[] = $mmTable;
-        $selectFrom[] = 'tx_commerce_attributes';
-
-        // mm join restriction
-        $selectWhere[] = $parentTable . '.uid = ' . $mmTable . '.uid_local';
-        $selectWhere[] = 'tx_commerce_attributes.uid = ' . $mmTable . '.uid_foreign';
-
-        // Restrict attribute list if given
-        if (is_array($attributeList) && !empty($attributeList)) {
-            $selectWhere[] = 'tx_commerce_attributes.uid IN (' . implode(',', $attributeList) . ')';
-        }
-
-        // Get enabled rows only
-        $selectWhere[] = ' 1 ' . $this->getTypoScriptFrontendController()->sys_page->enableFields(
-            'tx_commerce_attributes',
-            $this->getTypoScriptFrontendController()->showHiddenRecords
-        );
-        $selectWhere[] = ' 1 ' . $this->getTypoScriptFrontendController()->sys_page->enableFields(
-            $parentTable,
-            $this->getTypoScriptFrontendController()->showHiddenRecords
-        );
-
-        // Order rows by given sorting table
-        $selectOrder = $sortingTable . '.sorting';
-
-        // Compile query
-        $attributeMmQuery = $this->getDatabaseConnection()->SELECTquery(
-            'DISTINCT ' . implode(', ', $selectFields),
-            implode(', ', $selectFrom),
-            implode(' AND ', $selectWhere),
-            '',
-            $selectOrder
-        );
-
-        return ($attributeMmQuery);
     }
 
     /**
@@ -1095,6 +1005,10 @@ class Product extends AbstractEntity
         $showHiddenValues = true,
         $sortingTable = 'tx_commerce_articles_attributes_mm'
     ) {
+        /** @var AttributeRepository $attributeRepository */
+        $attributeRepository = GeneralUtility::makeInstance(AttributeRepository::class);
+        /** @var AttributeValueRepository $attributeValueRepository */
+        $attributeValueRepository = GeneralUtility::makeInstance(AttributeValueRepository::class);
         $return = [];
 
         // If no list is given, take complate arctile-list from product
@@ -1103,50 +1017,18 @@ class Product extends AbstractEntity
                 $articleList = $this->loadArticles();
             }
 
-            $addwhere = '';
-            if (is_array($attributesToInclude)) {
-                if (!is_null($attributesToInclude[0])) {
-                    $addwhere .= ' AND tx_commerce_attributes.uid in (' . implode(',', $attributesToInclude) . ')';
-                }
-            }
-
-            $addwhere2 = '';
-            if (is_array($articleList) && !empty($articleList)) {
-                $queryArticleList = implode(',', $articleList);
-                $addwhere2 = ' AND tx_commerce_articles.uid in (' . $queryArticleList . ')';
-            }
-
-            $result = $this->getDatabaseConnection()->exec_SELECT_mm_query(
-                'DISTINCT tx_commerce_attributes.uid, tx_commerce_attributes.sys_language_uid,
-                    tx_commerce_articles.uid AS article,
-                    tx_commerce_attributes.title, tx_commerce_attributes.unit, tx_commerce_attributes.valueformat,
-                    tx_commerce_attributes.internal_title, tx_commerce_attributes.icon, tx_commerce_attributes.iconmode,
-                    ' . $sortingTable . '.sorting',
-                'tx_commerce_articles',
-                'tx_commerce_articles_attributes_mm',
-                'tx_commerce_attributes',
-                ' AND tx_commerce_articles.uid_product = ' . $this->uid . ' ' . $addwhere . $addwhere2 . ' order by '.
-                $sortingTable . '.sorting'
+            $result = $attributeRepository->findSortedByProductArticleAndAttributes(
+                $this->uid,
+                $articleList,
+                $attributesToInclude,
+                $sortingTable
             );
 
-            $addwhere = $addwhere2;
-
-            if ($this->getDatabaseConnection()->sql_num_rows($result)) {
-                while (($data = $this->getDatabaseConnection()->sql_fetch_assoc($result))) {
+            if ($result->rowCount()) {
+                while ($data = $result->fetch()) {
                     // Language overlay
                     if ($this->lang_uid > 0) {
-                        $proofSql = '';
-                        if (is_object($this->getTypoScriptFrontendController()->sys_page)) {
-                            $proofSql = $this->getTypoScriptFrontendController()->sys_page->enableFields(
-                                'tx_commerce_attributes',
-                                $this->getTypoScriptFrontendController()->showHiddenRecords
-                            );
-                        }
-                        $attributeData = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                            '*',
-                            'tx_commerce_attributes',
-                            'uid = ' . $data['uid'] . ' ' . $proofSql
-                        );
+                        $attributeData = $attributeRepository->findByUid($data['uid']);
 
                         // Result should contain only one Dataset
                         if (!empty($attributeData)) {
@@ -1174,25 +1056,16 @@ class Product extends AbstractEntity
                     // Matrix and we need the arrayKeys in this case. Get the localized values
                     // from tx_commerce_articles_attributes_mm
                     $valuelist = [];
-                    $attributeUid = $data['uid'];
 
-                    $attributeValueResult = $this->getDatabaseConnection()->exec_SELECT_mm_query(
-                        'DISTINCT tx_commerce_articles_attributes_mm.uid_valuelist',
-                        'tx_commerce_articles',
-                        'tx_commerce_articles_attributes_mm',
-                        'tx_commerce_attributes',
-                        ' AND tx_commerce_articles_attributes_mm.uid_valuelist > 0
-                            AND tx_commerce_articles.uid_product = ' . $this->uid .
-                        ' AND tx_commerce_attributes.uid = ' . $attributeUid . $addwhere
+                    $attributeValueResult = $attributeRepository->findByProductArticleAndAttribute(
+                        $this->uid,
+                        $articleList,
+                        $data['uid']
                     );
-                    if ($valueshown == false && $this->getDatabaseConnection()->sql_num_rows($attributeValueResult)) {
-                        while (($value = $this->getDatabaseConnection()->sql_fetch_assoc($attributeValueResult))) {
+                    if ($valueshown == false && $attributeValueResult->rowCount()) {
+                        while ($value = $attributeValueResult->fetch()) {
                             if ($value['uid_valuelist'] > 0) {
-                                $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                                    '*',
-                                    'tx_commerce_attribute_values',
-                                    'uid = ' . $value['uid_valuelist']
-                                );
+                                $row = $attributeValueRepository->findByUid($value['uid_valuelist']);
                                 if ($this->lang_uid > 0) {
                                     $row = $this->getTypoScriptFrontendController()->sys_page->getRecordOverlay(
                                         'tx_commerce_attribute_values',
@@ -1222,7 +1095,7 @@ class Product extends AbstractEntity
                     }
 
                     if ($valueshown == true) {
-                        $return[$attributeUid] = [
+                        $return[$data['uid']] = [
                             'title' => $data['title'],
                             'unit' => $data['unit'],
                             'values' => $valuelist,
@@ -1233,12 +1106,10 @@ class Product extends AbstractEntity
                         ];
                     }
                 }
-
-                return $return;
             }
         }
 
-        return false;
+        return $return;
     }
 
     /**
@@ -1252,25 +1123,16 @@ class Product extends AbstractEntity
      */
     public function getSelectAttributeValueMatrix(array &$attributeValues = [])
     {
+        /** @var AttributeRepository $attributeRepository */
+        $attributeRepository = GeneralUtility::makeInstance(AttributeRepository::class);
+        /** @var AttributeValueRepository $attributeValueRepository */
+        $attributeValueRepository = GeneralUtility::makeInstance(AttributeValueRepository::class);
         $values = [];
         $levelAttributes = [];
 
         if ($this->uid > 0) {
             $articleList = $this->loadArticles();
-
-            $addWhere = '';
-            if (is_array($articleList) && !empty($articleList)) {
-                $queryArticleList = implode(',', $articleList);
-                $addWhere = 'uid_local IN (' . $queryArticleList . ')';
-            }
-
-            $articleAttributes = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                'uid_local, uid_foreign, uid_valuelist',
-                'tx_commerce_articles_attributes_mm',
-                $addWhere,
-                '',
-                'uid_local, sorting'
-            );
+            $articleAttributes = $attributeRepository->findByArticleUids($articleList);
 
             $levels = [];
             $article = false;
@@ -1293,7 +1155,7 @@ class Product extends AbstractEntity
                     $article = $articleAttribute['uid_local'];
                 }
                 $levels[] = $articleAttribute['uid_valuelist'];
-                $levelAttributes[] = $articleAttribute['uid_foreign'];
+                $levelAttributes[] = $articleAttribute['uid'];
             }
 
             $current = &$values;
@@ -1307,12 +1169,8 @@ class Product extends AbstractEntity
             // Get the sorting value for all attribute values
             if (!empty($attributeValuesList)) {
                 $attributeValuesList = array_unique($attributeValuesList);
-                $attributeValuesList = implode($attributeValuesList, ',');
-                $attributeValueSorts = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                    'sorting, uid',
-                    'tx_commerce_attribute_values',
-                    'uid IN (' . $attributeValuesList . ')'
-                );
+                $attributeValueSorts = $attributeValueRepository->findByUids($attributeValuesList);
+
                 foreach ($attributeValueSorts as $attributeValueSort) {
                     $attributeValueSortIndex[$attributeValueSort['uid']] = $attributeValueSort['sorting'];
                 }

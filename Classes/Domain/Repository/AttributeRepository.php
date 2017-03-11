@@ -220,6 +220,135 @@ class AttributeRepository extends AbstractRepository
         return is_array($result) ? $result : [];
     }
 
+
+    /**
+     * @param array $articleUids
+     *
+     * @return array
+     */
+    public function findByArticleUids($articleUids)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->select('at.*', 'mm.uid_local', 'mm.uid_valuelist')
+            ->from($this->databaseTable, 'at')
+            ->innerJoin('at', $this->databaseAttributeRelationTable, 'mm', 'at.uid = mm.uid_foreign')
+            ->orderBy('uid_local', 'sorting');
+
+        if (is_array($articleUids) && !empty($articleUids)) {
+            $queryBuilder->where(
+                $queryBuilder->expr()->in(
+                    'a.uid',
+                    $articleUids
+                )
+            );
+        }
+
+        $result = $queryBuilder
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * @param int $productUid
+     * @param array $articleList
+     * @param array $attributesToInclude
+     * @param string $sortingTable
+     *
+     * @return \Doctrine\DBAL\Driver\Statement
+     */
+    public function findSortedByProductArticleAndAttributes(
+        $productUid,
+        $articleList,
+        $attributesToInclude,
+        $sortingTable
+    ) {
+        $map = [
+            $this->databaseTable => 'at',
+            $this->databaseAttributeRelationTable => 'mm',
+            'tx_commerce_articles' => 'a'
+        ];
+
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->addSelectLiteral('DISTINCT at.uid, at.sys_language_uid, a.uid AS article, at.title, at.unit, 
+                at.valueformat, at.internal_title, at.icon, at.iconmode, ' . $map[$sortingTable] . '.sorting')
+            ->from($this->databaseTable, 'at')
+            ->innerJoin('at', $this->databaseAttributeRelationTable, 'mm', 'at.uid = mm.uid_foreign')
+            ->innerJoin('mm', 'tx_commerce_articles', 'a', 'mm.uid_local = a.uid')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'a.uid_product',
+                    $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy($map[$sortingTable]);
+
+        if (is_array($attributesToInclude) && !is_null($attributesToInclude[0])) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->in(
+                    'at.uid',
+                    $attributesToInclude
+                )
+            );
+        }
+
+        if (is_array($articleList) && !empty($articleList)) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->in(
+                    'a.uid',
+                    $articleList
+                )
+            );
+        }
+
+        return $queryBuilder->execute();
+    }
+
+    /**
+     * @param int $productUid
+     * @param array $articleList
+     * @param int $attributeUid
+     *
+     * @return \Doctrine\DBAL\Driver\Statement
+     */
+    public function findByProductArticleAndAttribute($productUid, $articleList, $attributeUid)
+    {
+
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->addSelectLiteral('DISTINCT mm.uid_valuelist')
+            ->from($this->databaseTable, 'at')
+            ->innerJoin('at', $this->databaseAttributeRelationTable, 'mm', 'at.uid = mm.uid_foreign')
+            ->innerJoin('mm', 'tx_commerce_articles', 'a', 'mm.uid_local = a.uid')
+            ->where(
+                $queryBuilder->expr()->gt(
+                    'mm.uid_valuelist',
+                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'a.uid_product',
+                    $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'at.uid',
+                    $queryBuilder->createNamedParameter($attributeUid, \PDO::PARAM_INT)
+                )
+            );
+
+        if (is_array($articleList) && !empty($articleList)) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->in(
+                    'a.uid',
+                    $articleList
+                )
+            );
+        }
+
+        return $queryBuilder->execute();
+    }
+
     /**
      * @return array
      */

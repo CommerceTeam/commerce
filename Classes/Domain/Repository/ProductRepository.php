@@ -683,6 +683,89 @@ class ProductRepository extends AbstractRepository
 
     /**
      * @param int $productUid
+     * @param array $_
+     * @param array $attributeUids
+     * @param string $sortingTable
+     *
+     * @return \Doctrine\DBAL\Driver\Statement
+     */
+    public function findSortedAttributeByArticle($productUid, $_, $attributeUids, $sortingTable)
+    {
+        $map = [
+            $this->databaseTable => 'p',
+            $this->databaseAttributeRelationTable => 'mm',
+            'tx_commerce_attributes' => 'at',
+        ];
+
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->select(
+                'a.uid AS parent_uid',
+                'at.uid AS attributes_uid',
+                'at.pid AS attributes_pid',
+                'at.sys_language_uid AS attributes_sys_language_uid',
+                'at.title AS attributes_title',
+                'at.unit AS attributes_unit',
+                'at.valueformat AS attributes_valueformat',
+                'at.internal_title AS attributes_internal_title',
+                'at.icon AS attributes_icon',
+                'mm.default_value',
+                'mm.uid_valuelist',
+                $map[$sortingTable] . '.sorting'
+            )
+            ->from($this->databaseTable, 'p')
+            ->innerJoin('p', $this->databaseAttributeRelationTable, 'mm', 'p.uid = mm.uid_local')
+            ->innerJoin('mm', 'tx_commerce_attributes', 'at', 'mm.uid_foreign = at.uid')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'p.uid',
+                    $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy($map[$sortingTable] . '.sorting');
+
+        // Restrict attribute list if given
+        if (is_array($attributeUids) && !empty($attributeUids)) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->in(
+                    'at.uid',
+                    $attributeUids
+                )
+            );
+        }
+
+        return $queryBuilder->execute();
+    }
+
+    /**
+     * @param int $articleUid
+     * @param int $attributeUid
+     *
+     * @return array
+     */
+    public function findAttributeValuesByArticleAndAttribute($articleUid, $attributeUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseAttributeRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($articleUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'uid_foreign',
+                    $queryBuilder->createNamedParameter($attributeUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * @param int $productUid
      * @param int $categorUid
      */
     public function addCategoryRelation($productUid, $categorUid)
