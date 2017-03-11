@@ -141,7 +141,7 @@ abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseS
         $this->pageinfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($this->id, $this->perms_clause);
         $access = is_array($this->pageinfo);
 
-        $this->content = $this->doc->header($language->getLL('statistic'));
+        $this->content = '<h1 class="t3js-title-inlineedit">' . $language->getLL('statistic', true) . '</h1>';
 
         // Checking access:
         if (($this->id && $access) || $backendUser->isAdmin()) {
@@ -151,22 +151,6 @@ abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseS
             $this->getButtons();
             $this->generateMenu();
         }
-
-        $docHeaderButtons = $this->getButtons();
-
-        $markers = [
-            'CSH' => $docHeaderButtons['csh'],
-            'CONTENT' => $this->content,
-        ];
-        $markers['FUNC_MENU'] = $this->doc->funcMenu(
-            '',
-            \TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu(
-                $this->id,
-                'SET[function]',
-                $this->MOD_SETTINGS['function'],
-                $this->MOD_MENU['function']
-            )
-        );
     }
 
     /**
