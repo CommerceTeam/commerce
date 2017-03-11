@@ -467,6 +467,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
         $arrayRepresentation['nodeData']['backgroundColor'] = htmlspecialchars($this->getBackgroundColor());
         $arrayRepresentation['nodeData']['stopPageTree'] = $this->getStopPageTree();
         $arrayRepresentation['nodeData']['serializeClassName'] = get_class($this);
+        $arrayRepresentation['nodeData']['table'] = 'tx_commerce_categories';
         return $arrayRepresentation;
     }
 

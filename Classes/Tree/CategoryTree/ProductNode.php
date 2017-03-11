@@ -77,6 +77,7 @@ class ProductNode extends CategoryNode implements NodeInterface
     {
         $arrayRepresentation = parent::toArray();
         $arrayRepresentation['nodeData']['category'] = $this->getCategory();
+        $arrayRepresentation['nodeData']['table'] = 'tx_commerce_products';
         return $arrayRepresentation;
     }
 
