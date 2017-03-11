@@ -321,4 +321,11 @@ call_user_func(function ($packageKey) {
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToInsertRecords('tx_commerce_categories');
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToInsertRecords('tx_commerce_products');
+
+    $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1489245663865] =
+        \CommerceTeam\Commerce\ContextMenu\ItemProviders\CategoryProvider::class;
+    $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1489245663866] =
+        \CommerceTeam\Commerce\ContextMenu\ItemProviders\ProductProvider::class;
+    $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1489245663867] =
+        \CommerceTeam\Commerce\ContextMenu\ItemProviders\ArticleProvider::class;
 }, 'commerce');
