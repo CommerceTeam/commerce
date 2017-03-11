@@ -438,14 +438,8 @@ class OrderEditFunc
      */
     public function address(array $parameter, $_, $table, $uid)
     {
-        /**
-         * Intialize Template Class
-         * as this class is included via alt_doc we don't have to require template.php
-         * in fact an require would cause an error.
-         *
-         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
-         */
-        $doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
+        /** @var IconFactory $iconFactory */
+        $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
 
         $fields = 'uid,' . ConfigurationUtility::getInstance()->getTcaValue($table . '.interface.showRecordFieldList');
         $content = '';
@@ -457,8 +451,17 @@ class OrderEditFunc
             $params = '&edit[' . $table . '][' . $uid . ']=edit';
 
             $onclickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params)) . '"';
-            $headerWrap = ['<b><a href="#" ' . $onclickAction . '>', '</a></b>'];
-            $content .= $doc->getHeader($table, $data, 'Local Lang definition is missing', 1, $headerWrap);
+            $iconImgTag = '<span>' .
+                $iconFactory->getIconForRecord($table, $data, Icon::SIZE_SMALL)->render() .
+                '</span>';
+            $content .= '<span class="typo3-moduleHeader">' .
+                BackendUtility::wrapClickMenuOnIcon($iconImgTag, $table, $data['uid']) .
+                '<b><a href="#" ' . $onclickAction . '>' .
+                htmlspecialchars(GeneralUtility::fixed_lgd_cs(
+                    strip_tags(BackendUtility::getRecordTitle($table, $data)),
+                    45
+                )) .
+                '</a></b>';
 
             $display = [];
             $showRecordFieldList = ConfigurationUtility::getInstance()
