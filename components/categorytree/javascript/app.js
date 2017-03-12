@@ -405,7 +405,7 @@ require(
 			TYPO3.ModuleMenu.App.registerNavigationComponent('commerce-categorytree', function () {
 				return new TYPO3.Components.CategoryTree.App();
 			});
-		}, 5000);
+		}, 1000);
 	}
 );
 
