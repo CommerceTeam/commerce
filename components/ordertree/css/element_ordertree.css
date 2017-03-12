@@ -255,3 +255,10 @@ body#commerce-ordertree {
 [id=commerce-ordertree-treeContainer] {
   background-color: #f5f5f5;
 }
+[id=commerce-ordertree-tree] {
+  height: 100%;
+}
+[id=commerce-ordertree-tree] .x-panel-body {
+  height: 100% !important;
+}
+

@@ -53,7 +53,6 @@ TYPO3.Components.CategoryTree.PageTreeNodeUI = Ext.extend(Ext.tree.TreeNodeUI, {
 			'<span class="x-tree-node-indent">', this.indentMarkup, "</span>",
 			'<img alt="" src="', this.emptyIcon, '" class="x-tree-ec-icon x-tree-elbow" />',
 //            '<img alt="" src="', a.icon || this.emptyIcon, '" class="x-tree-node-icon',(a.icon ? " x-tree-node-inline-icon" : ""),(a.iconCls ? " "+a.iconCls : ""),'" unselectable="on" />',
-			// @todo change table gathering
 			'<span class="t3js-contextmenutrigger" data-table="' + a.nodeData.table + '" data-uid="' + a.nodeData.id + '" data-context="tree" >' + a.spriteIconCode + '</span>', // TYPO3: add sprite icon code
 			(a.nodeData.stopPageTree ? '<span class="text-danger">+</span>' : ''),
 			cb ? ('<input class="x-tree-node-cb" type="checkbox" ' + (a.checked ? 'checked="checked" />' : '/>')) : '',
