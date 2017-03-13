@@ -17,12 +17,5 @@ This extension sets up a powerful shop being able to meet the current requiremen
 
 Current situation
 -----------------
-This extension is still in Beta-Mode, so slight changes are possible. Please report bugs at http://bugs.typo3.org. The mailing list is available at http://lists.typo3.org/cgi-bin/mailman/listinfo/typo3-project-commerce.
-
-
-Sponsors
---------
-The development of this extension was supported by the following companies:
-http://www.marketing-factory.de, e-netconsulting KG, n@work Internet Informationssysteme GmbH.
-Parts of this documentation are provided by the Open Source Press Verlag GmbH. The text is from the book Der TYPO3 Webshop by Andrea Herzog-Kienast and Franz Holzinger.
-Thanks to the sponsors.
+This extension is still in Beta-Mode, so slight changes are possible. Please report bugs at http://bugs.typo3.org.
+The mailing list is available at http://lists.typo3.org/cgi-bin/mailman/listinfo/typo3-project-commerce.
