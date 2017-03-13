@@ -486,14 +486,11 @@ class ProductRepository extends AbstractRepository
             ->innerJoin('mm', 'tx_commerce_categories', 'c', 'mm.uid_foreign = c.uid')
             ->where(
                 $queryBuilder->expr()->eq(
-                    'uid',
+                    'p.uid',
                     $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
-                )
+                ),
+                $andWhere
             );
-
-        if ($andWhere !== '') {
-            $queryBuilder->andWhere($andWhere);
-        }
 
         $result = $queryBuilder
             ->execute()

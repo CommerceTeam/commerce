@@ -112,7 +112,7 @@ class BackendUserUtility implements SingletonInterface
         }
         if ($id > 0) {
             $wM = $this->returnWebmounts();
-            $rL = BackendUtility::BEgetRootLine($id, ' AND ' . $readPerms);
+            $rL = BackendUtility::BEgetRootLine($id, $readPerms);
             foreach ($rL as $v) {
                 if ($v['uid'] && in_array($v['uid'], $wM)) {
                     return $v['uid'];

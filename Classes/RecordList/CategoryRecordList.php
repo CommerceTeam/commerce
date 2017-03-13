@@ -758,7 +758,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             ($this->firstElementNumber ? $this->firstElementNumber . ',' : '') . ($this->iLimit + 1) :
             '';
         // Filtering on displayable tx_commerce_categories (permissions):
-        $pC = ($table == 'tx_commerce_categories' && $this->perms_clause) ? ' AND ' . $this->perms_clause : '';
+        $pC = ($table == 'tx_commerce_categories' && $this->perms_clause) ? $this->perms_clause : '';
 
         // extra where for commerce
         $categoryWhere = sprintf($this->addWhere[$table], $this->categoryUid);

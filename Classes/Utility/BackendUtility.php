@@ -2337,10 +2337,6 @@ class BackendUtility
 
         $output = $fullOutput = '/';
 
-        $clause = trim($clause);
-        if ($clause !== '' && substr($clause, 0, 3) !== 'AND') {
-            $clause = 'AND ' . $clause;
-        }
         $data = self::BEgetRootLine($uid, $clause);
 
         foreach ($data as $record) {
