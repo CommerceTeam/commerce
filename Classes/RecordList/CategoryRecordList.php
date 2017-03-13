@@ -189,7 +189,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
             // Preview
             if ($this->previewPageId && $this->categoryUid) {
-                $params = '&tx_commerce_pi1[catUid]=' . $this->categoryUid;
+                $params = '&id=' . $this->previewPageId . '&tx_commerce_pi1[catUid]=' . $this->categoryUid;
                 /** @var $cacheHash CacheHashCalculator */
                 $cacheHash = GeneralUtility::makeInstance(CacheHashCalculator::class);
                 $cHash = $cacheHash->generateForParameters($params);
@@ -200,7 +200,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                     '',
                     BackendUtility::BEgetRootLine($this->id),
                     '',
-                    '/index.php?id=' . $this->previewPageId . $params
+                    '/index.php?' . $params
                 );
                 $viewButton = $buttonBar->makeLinkButton()
                     ->setHref('#')
