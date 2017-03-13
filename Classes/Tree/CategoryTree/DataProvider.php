@@ -709,7 +709,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         }
 
         // @todo fix this
-        //$where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1);
+        //$where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(Permission::PAGE_SHOW);
 
         return $queryBuilder;
     }
@@ -761,7 +761,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         }
 
         // @todo fix this
-        //$where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(1);
+        //$where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(Permission::PAGE_SHOW);
 
         return $queryBuilder;
     }

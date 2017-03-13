@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\Utility;
 
 use CommerceTeam\Commerce\Domain\Repository\BackendUsergroupRepository;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -80,7 +81,7 @@ class BackendUserUtility implements SingletonInterface
      * which was first found in the rootline of the input page $id.
      *
      * @param int $id Category ID to check
-     * @param string $readPerms Content of "getCategoryPermsClause(1)"
+     * @param string $readPerms Content of "getCategoryPermsClause(Permission::PAGE_SHOW)"
      *      (read-permissions) If not set, they will be internally calculated
      *      (but if you have the correct value right away you can save that
      *      database lookup!)
@@ -107,7 +108,7 @@ class BackendUserUtility implements SingletonInterface
             $id = (int) $checkRec['t3ver_oid'];
         }
         if (!$readPerms) {
-            $readPerms = $this->getCategoryPermsClause(1);
+            $readPerms = $this->getCategoryPermsClause(Permission::PAGE_SHOW);
         }
         if ($id > 0) {
             $wM = $this->returnWebmounts();
@@ -137,7 +138,7 @@ class BackendUserUtility implements SingletonInterface
      * If the user is 'admin' " 1=1" is returned (no effect)
      * If the user is not set at all (->user is not an array),
      * then " 1=0" is returned (will cause no selection results at all)
-     * The 95% use of this function is "->getCategoryPermsClause(1)" which will
+     * The 95% use of this function is "->getCategoryPermsClause(Permission::PAGE_SHOW)" which will
      * return WHERE clauses for *selecting* pages in backend listings
      * - in other words this will check read permissions.
      *

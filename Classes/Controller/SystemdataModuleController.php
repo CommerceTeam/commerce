@@ -21,6 +21,7 @@ use TYPO3\CMS\Backend\Template\Components\Buttons\LinkButton;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
@@ -120,7 +121,7 @@ abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\Base
     {
         parent::init();
         $this->id = FolderRepository::initFolders('Attributes', FolderRepository::initFolders());
-        $this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);
+        $this->perms_clause = $this->getBackendUser()->getPagePermsClause(Permission::PAGE_SHOW);
     }
 
     /**

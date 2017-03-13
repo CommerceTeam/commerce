@@ -19,6 +19,8 @@ use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Domain\Repository\PageRepository;
 use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
@@ -2025,15 +2027,16 @@ class BackendUtility
      * If the user is 'admin' " 1=1" is returned (no effect)
      * If the user is not set at all (->user is not an array), then " 1=0" is
      * returned (will cause no selection results at all) The 95% use of this
-     * function is "->getCategoryPermsClause(1)" which will return WHERE
+     * function is "->getCategoryPermsClause(Permission::PAGE_SHOW)" which will return WHERE
      * clauses for *selecting* categories in backend listings - in other words
      * this will check read permissions.
      *
      * @param int $perms Permission mask to use, see function description
+     * @param string $tableAlias
      *
      * @return string Part of where clause. Prefix " AND " to this.
      */
-    public static function getCategoryPermsClause($perms)
+    public static function getCategoryPermsClause($perms, $tableAlias = 'c')
     {
         $backendUser = self::getBackendUserAuthentication();
         /** @noinspection PhpInternalEntityUsedInspection */
@@ -2041,27 +2044,54 @@ class BackendUtility
 
         if (is_array($backendUserData)) {
             if ($backendUser->isAdmin()) {
-                return ' 1 = 1';
+                return ' 1=1';
             }
-            $perms = (int) $perms;
-            // Make sure it's integer.
-            $str = ' (' .
-                // Everybody
-                '(tx_commerce_categories.perms_everybody & ' . $perms . ' = ' . $perms . ')' .
-                // User
-                /** @noinspection PhpInternalEntityUsedInspection */
-                'OR(tx_commerce_categories.perms_userid = ' . $backendUserData['uid'] .
-                    ' AND tx_commerce_categories.perms_user & ' . $perms . ' = ' . $perms . ')';
-            if ($backendUser->groupList) {
-                // Group (if any is set)
-                $str .= 'OR(tx_commerce_categories.perms_groupid in (' . $backendUser->groupList .
-                    ') AND tx_commerce_categories.perms_group & ' . $perms . ' = ' . $perms . ')';
-            }
-            $str .= ')';
 
-            return $str;
+            // Make sure it's integer.
+            $perms = (int) $perms;
+            /** @var ExpressionBuilder $expressionBuilder */
+            $expressionBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_commerce_categories')
+                ->expr();
+
+            $constraint = $expressionBuilder->orX(
+                $expressionBuilder->comparison(
+                    $expressionBuilder->bitAnd($tableAlias . '.perms_everybody', $perms),
+                    ExpressionBuilder::EQ,
+                    $perms
+                ),
+                $expressionBuilder->andX(
+                    $expressionBuilder->eq($tableAlias . '.perms_userid', $backendUserData['uid']),
+                    $expressionBuilder->comparison(
+                        $expressionBuilder->bitAnd($tableAlias . '.perms_user', $perms),
+                        ExpressionBuilder::EQ,
+                        $perms
+                    )
+                )
+            );
+
+            // Group (if any is set)
+            if ($backendUser->groupList) {
+                $constraint->add(
+                    $expressionBuilder->andX(
+                        $expressionBuilder->in(
+                            $tableAlias . '.perms_groupid',
+                            GeneralUtility::intExplode(',', $backendUser->groupList)
+                        ),
+                        $expressionBuilder->comparison(
+                            $expressionBuilder->bitAnd($tableAlias . '.perms_group', $perms),
+                            ExpressionBuilder::EQ,
+                            $perms
+                        )
+                    )
+                );
+            }
+
+            $constraint = ' (' . (string)$constraint . ')';
+
+            return $constraint;
         } else {
-            return ' 1 = 0';
+            return ' 1=0';
         }
     }
 
@@ -2250,7 +2280,7 @@ class BackendUtility
      *
      * @param int    $id          Category uid for which to check read-access
      * @param string $permsClause Permission clause is typically a value
-     *                            generated with SELF->getCategoryPermsClause(1);
+     *                            generated with SELF->getCategoryPermsClause(Permission::PAGE_SHOW);
      *
      * @return array Returns category record if OK, otherwise false.
      */
@@ -2266,7 +2296,7 @@ class BackendUtility
                     return $pageinfo;
                 }
             } else {
-                $pageinfo = self::getCategoryForRootline($id, ($permsClause ? ' AND ' . $permsClause : ''), false);
+                $pageinfo = self::getCategoryForRootline($id, $permsClause, false);
                 \TYPO3\CMS\Backend\Utility\BackendUtility::workspaceOL('tx_commerce_categories', $pageinfo);
                 if (is_array($pageinfo)) {
                     \TYPO3\CMS\Backend\Utility\BackendUtility::fixVersioningPid('tx_commerce_categories', $pageinfo);

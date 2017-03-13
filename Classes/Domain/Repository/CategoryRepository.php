@@ -13,7 +13,9 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  */
 
 use CommerceTeam\Commerce\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
+use TYPO3\CMS\Core\Type\Bitmask\Permission;
 
 /**
  * Database Class for tx_commerce_categories. All database calls should
@@ -470,7 +472,7 @@ class CategoryRepository extends AbstractRepository
      */
     public function findByParentCategoryUid($parentCategoryUid)
     {
-        $permissionClause = str_replace($this->databaseTable, 'c', BackendUtility::getCategoryPermsClause(1));
+        $permissionClause = BackendUtility::getCategoryPermsClause(Permission::PAGE_SHOW, 'c');
 
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
         $result = $queryBuilder
@@ -661,14 +663,12 @@ class CategoryRepository extends AbstractRepository
             ->innerJoin('c', $this->databaseParentCategoryRelationTable, 'mm', 'c.uid = mm.uid_local')
             ->where(
                 $queryBuilder->expr()->eq(
-                    'uid',
+                    'c.uid',
                     $queryBuilder->createNamedParameter($categoryUid, \PDO::PARAM_INT)
-                )
+                ),
+                /** @noinspection PhpInternalEntityUsedInspection */
+                QueryHelper::stripLogicalOperatorPrefix($andWhere)
             );
-
-        if ($andWhere !== '') {
-            $queryBuilder->andWhere($andWhere);
-        }
 
         $result = $queryBuilder
             ->execute()

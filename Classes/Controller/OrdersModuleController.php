@@ -22,6 +22,7 @@ use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -72,7 +73,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
     {
         $this->iconFactory = $this->moduleTemplate->getIconFactory();
         $backendUser = $this->getBackendUserAuthentication();
-        $this->perms_clause = $backendUser->getPagePermsClause(1);
+        $this->perms_clause = $backendUser->getPagePermsClause(Permission::PAGE_SHOW);
         // Get session data
         $sessionData = $backendUser->getSessionData(CategoryModuleController::class);
         $this->search_field = !empty($sessionData['search_field']) ? $sessionData['search_field'] : '';

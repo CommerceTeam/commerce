@@ -16,6 +16,7 @@ use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use CommerceTeam\Commerce\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Query\Restriction\BackendWorkspaceRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Recordlist\Tree\View\LinkParameterProviderInterface;
 
@@ -79,7 +80,7 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
         //  - Filtering out deleted categories
         //  - categories with no access to
         //  - and sorting them correctly
-        parent::init(' AND ' . BackendUtility::getCategoryPermsClause(1) . ' ' . $clause, 'sorting');
+        parent::init(BackendUtility::getCategoryPermsClause(Permission::PAGE_SHOW) . ' ' . $clause, 'sorting');
         $this->title = 'Commerce';
 
         /** BackendUserUtility */
