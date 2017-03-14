@@ -2,8 +2,33 @@
 <dataset>
 	<tx_commerce_products>
 		<uid>1</uid>
-		<pid>0</pid>
-		<deleted>0</deleted>
-		<title>product1</title>
+		<pid>1</pid>
+		<title>product_default</title>
+	</tx_commerce_products>
+	<tx_commerce_products>
+		<uid>2</uid>
+		<pid>1</pid>
+		<l18n_parent>1</l18n_parent>
+		<sys_language_uid>1</sys_language_uid>
+		<title>product_translation_1</title>
+	</tx_commerce_products>
+	<tx_commerce_products>
+		<uid>3</uid>
+		<pid>1</pid>
+		<l18n_parent>1</l18n_parent>
+		<sys_language_uid>2</sys_language_uid>
+		<title>product_translation_2</title>
+	</tx_commerce_products>
+	<tx_commerce_products>
+		<uid>4</uid>
+		<pid>1</pid>
+		<deleted>1</deleted>
+		<title>deleted_product</title>
+	</tx_commerce_products>
+	<tx_commerce_products>
+		<uid>5</uid>
+		<pid>1</pid>
+		<fe_group>3,5</fe_group>
+		<title>deleted_product</title>
 	</tx_commerce_products>
 </dataset>

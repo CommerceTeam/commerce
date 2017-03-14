@@ -6,4 +6,10 @@ if (!defined('PHPUNIT_COMPOSER_INSTALL')) {
 }
 
 $file = realpath(__DIR__ . '/../../../../typo3_src/typo3/sysext/core/Build/FunctionalTestsBootstrap.php');
+/** @noinspection PhpIncludeInspection */
 require_once $file;
+
+/** @var \Composer\Autoload\ClassLoader $classLoader */
+$classLoader = require ORIGINAL_ROOT . 'typo3_src/vendor/autoload.php';
+$classLoader->addPsr4('CommerceTeam\\Commerce\\', [ORIGINAL_ROOT . 'typo3conf/ext/commerce/Classes']);
+$classLoader->addPsr4('CommerceTeam\\Commerce\\Tests\\', [ORIGINAL_ROOT . 'typo3conf/ext/commerce/Tests']);
