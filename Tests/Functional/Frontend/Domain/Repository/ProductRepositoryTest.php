@@ -103,7 +103,9 @@ class ProductRepositoryTest extends \CommerceTeam\Commerce\Tests\Functional\Fron
      */
     public function getTranslatedData()
     {
-        $response = $this->subject->getData(1, 1);
+        $GLOBALS['TSFE']->sys_language_uid = 1;
+
+        $response = $this->subject->getData(1);
         $this->assertEquals(
             array_merge($this->emptyProduct, [
                 'uid' => '1',
@@ -134,6 +136,34 @@ class ProductRepositoryTest extends \CommerceTeam\Commerce\Tests\Functional\Fron
     public function getDataOfAccessRestrictedProductLeadsToEmptyResult()
     {
         $response = $this->subject->getData(5);
+        $this->assertEquals(
+            [],
+            $response
+        );
+    }
+
+
+    /**
+     * @test
+     */
+    public function findByUid()
+    {
+        $response = $this->subject->findByUid(1);
+        $this->assertEquals(
+            array_merge($this->emptyProduct, [
+                'uid' => '1',
+                'title' => 'product_default',
+            ]),
+            $response
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function findByUidWithAccessRestriction()
+    {
+        $response = $this->subject->findByUid(5);
         $this->assertEquals(
             [],
             $response

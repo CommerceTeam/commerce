@@ -52,13 +52,6 @@ abstract class AbstractTestCase extends \TYPO3\CMS\Core\Tests\FunctionalTestCase
         \TYPO3\CMS\Core\Core\Bootstrap::getInstance()->initializeLanguageObject();
 
         $this->expectedLogEntries = 0;
-
-        $GLOBALS['TSFE'] = $this->getMock(
-            \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class,
-            [],
-            [$GLOBALS['TYPO3_CONF_VARS'], 1, 1]
-        );
-        $GLOBALS['TSFE']->sys_page = new \TYPO3\CMS\Frontend\Page\PageRepository();
     }
 
 
