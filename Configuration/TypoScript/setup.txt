@@ -20,9 +20,6 @@ page.includeCSS {
 }
 
 
-[globalString = LIT:css_styled_content = {$plugin.tx_commerce_lib.useRenderingExtension}]
-[else]
-[end]
 
 # -----------------------------------------------------------------------
 lib.tx_commerce {
@@ -45,6 +42,24 @@ lib.tx_commerce {
 	stdField_RTE.wrap = |
 	stdField_RTE.parseFunc < lib.parseFunc_RTE
 
+	stdImage = FAL_FILES
+	stdImage {
+		references {
+			table = tt_content
+			uid.field = uid
+			fieldName = images
+		}
+		begin = 0
+		maxItems = 1
+		renderObj = IMAGE
+		renderObj {
+			file {
+				import.data = file:current:publicUrl
+				treatIdAsReference = 1
+			}
+		}
+	}
+
 	attributes {
 		stdWrap < lib.tx_commerce.stdField
 		defaultField < lib.tx_commerce.stdField
@@ -61,13 +76,12 @@ lib.tx_commerce {
 
 			value < lib.tx_commerce.stdField
 
-			icon = IMAGE
-			icon {
-				defaultImgConf {
-					file.import.current = 1
-				}
-				file.maxW = 30
+			images < lib.tx_commerce.stdImage
+			images.references {
+				table = tx_commerce_attributes
+				fieldName = icon
 			}
+			images.renderObj.file.maxW = 30
 		}
 	}
 
@@ -90,6 +104,7 @@ lib.tx_commerce {
 
 		addToBasketLink = TypoLink
 		defaultQuantity = 0
+
 		fields {
 			# every column in this table could be  wraped with the
 			# stdWrap, IMAGETEXT, IMAGE
@@ -97,16 +112,14 @@ lib.tx_commerce {
 			title < lib.tx_commerce.stdField
 			description_extra < lib.tx_commerce.stdField_RTE
 
-			images = IMAGE
-			images {
-				defaultImgConf {
-					file.import.current = 1
-				}
-				file.maxW = 150
+			images < lib.tx_commerce.stdImage
+			images.references {
+				table = tx_commerce_articles
+				fieldName = images
 			}
+			images.renderObj.file.maxW = 150
 		}
 	}
-
 
 	products {
 		# Activate Edit Panel
@@ -134,30 +147,26 @@ lib.tx_commerce {
 
 			description < lib.tx_commerce.stdField_RTE
 
-			images = IMAGE
-			images {
-				defaultImgConf {
-					file.import.current = 1
-				}
-				file.import.current = 1
-				file.maxW = 150
+			images < lib.tx_commerce.stdImage
+			images.references {
+				table = tx_commerce_products
+				fieldName = images
 			}
+			images.renderObj.file.maxW = 150
 
 			teaser < lib.tx_commerce.stdField_RTE
 
-			teaserimages >
-			teaserimages = IMAGE
-			teaserimages {
-				wrap = <div class="com-category-teaser-img">|</div>
-
-				file.import.current = 1
-				file.maxW = 69
-
-				stdWrap {
-				  typolink.setCommerceValues = 1
-				  typolink.useCacheHash = 1
-				}
+			teaserimages < lib.tx_commerce.stdImage
+			teaserimages.references {
+				table = tx_commerce_products
+				fieldName = teaserimages
 			}
+			teaserimages.stdWrap {
+				typolink.setCommerceValues = 1
+				typolink.useCacheHash = 1
+				wrap = <div class="com-category-teaser-img">|</div>
+			}
+			teaserimages.renderObj.file.maxW = 69
 		}
 	}
 
@@ -176,6 +185,7 @@ lib.tx_commerce {
 
 			title.typolink.setCommerceValues = 1
 			title.typolink.useCacheHash = 1
+
 			subtitle < lib.tx_commerce.stdField
 			subtitle.wrap = <div class="com-category-subtitle">|</div>
 
@@ -184,21 +194,22 @@ lib.tx_commerce {
 
 			# feel free to add every other field from tx_commerce_categories
 
-			images = IMAGE
-			images.wrap = <div class="com-category-img">|</div>
-			images {
-				defaultImgConf {
-					file.import.current = 1
-				}
-				file.maxW = 150
+			images < lib.tx_commerce.stdImage
+			images.references {
+				table = tx_commerce_categories
+				fieldName = images
 			}
+			images.stdWrap.wrap = <div class="com-category-img">|</div>
+			images.renderObj.file.maxW = 150
 
 			teaser < lib.tx_commerce.stdField_RTE
-			teaserimages =IMAGE
-			teaserimages {
-				file.import.current = 1
-				file.maxW = 69
+
+			teaserimages < lib.tx_commerce.stdImage
+			teaserimages.references {
+				table = tx_commerce_categories
+				fieldName = teaserimages
 			}
+			teaserimages.renderObj.file.maxW = 69
 		}
 	}
 
@@ -250,7 +261,10 @@ lib.tx_commerce {
 
 		fields {
 			name < lib.tx_commerce.stdField
-			surename < lib.tx_commerce.stdField
+			surname < lib.tx_commerce.stdField
+			company < lib.tx_commerce.stdField
+			address < lib.tx_commerce.stdField
+			city < lib.tx_commerce.stdField
 			# feel free to add every other field from tt_adress
 		}
 	}
@@ -806,14 +820,18 @@ plugin.tx_commerce_pi6 {
 	templateFile = {$plugin.tx_commerce_pi6.templateFile}
 	currency = {$plugin.tx_commerce_lib.currency}
 	orderDateFormat = %d.%m.%y
+
 	# Add the Currency Sign to the invoice Output wherever a Currency is printed
-	showCurrencySign =1
+	showCurrencySign = 1
+
 	# set this to 1 if you are going to print pdfs
 	# decode = 1
 	invoiceheader = IMAGE
 	invoiceheader.file = fileadmin/images/someimage.gif
 	invoiceheader.file.width = 680
+
 	shopname.value = Your Shop
+
 	shopdetails = COA
 	shopdetails {
 		1 = TEXT
@@ -821,15 +839,18 @@ plugin.tx_commerce_pi6 {
 		2 = TEXT
 		2.value = tel: +123456789fax: +1234567890email: shop@yoursite.com
 	}
+
 	intro.value = Your order details are below:
 	intro.lang {
 		de = Sie haben sich für den(die) folgenden Artikel entschieden:
 	}
+
 	thankyou.value = Thank you for your order, and please visit us any time at http:#yoursite.com [^]
 	thankyou.lang {
 		de = Vielen Dank für das Vertrauen, das Sie uns mit Ihrem Einkauf auf www.yoursite.com entgegengebraucht haben!
 	}
 
+	address < lib.tx_commerce.tt_address
 	address {
 		stdWrap < lib.tx_commerce.stdField
 		stdWrap.wrap = |
@@ -837,18 +858,16 @@ plugin.tx_commerce_pi6 {
 		defaultField.wrap = |
 
 		fields {
-			surname < lib.tx_commerce.stdField
 			surname.wrap = |<br/>
-			company < lib.tx_commerce.stdField
 			company.wrap = |<br/>
-			address < lib.tx_commerce.stdField
 			address.wrap = |<br/>
-			city < lib.tx_commerce.stdField
 			city.wrap = |<br/>
  		}
 	}
+
 	addressDelivery < plugin.tx_commerce_pi6.address
 	addressDelivery.stdWrap.wrap = <div class="com-invoice-delivery">|</div>
+
 	addressBilling < plugin.tx_commerce_pi6.address
 	addressBilling.stdWrap.wrap = <div class="com-invoice-billing">|</div>
 

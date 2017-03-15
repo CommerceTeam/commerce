@@ -1504,6 +1504,14 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 }
                 break;
 
+            case 'FAL_FILES':
+                $output = $this->cObj->cObjGetSingle('FILES', $typoscriptConfig);
+                break;
+
+            case 'USER':
+                $output = $this->cObj->cObjGetSingle('USER', $typoscriptConfig);
+                break;
+
             case 'STDWRAP':
                 if (is_array($typoscriptConfig['parseFunc.'])) {
                     $output = $this->cObj->stdWrap($value, $typoscriptConfig);
