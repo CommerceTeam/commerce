@@ -311,7 +311,7 @@ abstract class AbstractRepository implements SingletonInterface
         }
         $queryResult = $queryBuilder->execute();
 
-        if ($queryResult->errorCode()) {
+        if (!$queryResult) {
             if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
                     'updateRecord (AbstractRepository): invalid sql.',

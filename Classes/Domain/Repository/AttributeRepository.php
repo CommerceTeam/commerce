@@ -233,12 +233,13 @@ class AttributeRepository extends AbstractRepository
             ->select('at.*', 'mm.uid_local', 'mm.uid_valuelist')
             ->from($this->databaseTable, 'at')
             ->innerJoin('at', $this->databaseAttributeRelationTable, 'mm', 'at.uid = mm.uid_foreign')
-            ->orderBy('uid_local', 'sorting');
+            ->orderBy('mm.uid_local', 'ASC')
+            ->addOrderBy('mm.sorting', 'ASC');
 
         if (is_array($articleUids) && !empty($articleUids)) {
             $queryBuilder->where(
                 $queryBuilder->expr()->in(
-                    'a.uid',
+                    'mm.uid_local',
                     $articleUids
                 )
             );

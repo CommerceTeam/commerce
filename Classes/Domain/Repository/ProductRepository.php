@@ -713,6 +713,7 @@ class ProductRepository extends AbstractRepository
             ->from($this->databaseTable, 'p')
             ->innerJoin('p', $this->databaseAttributeRelationTable, 'mm', 'p.uid = mm.uid_local')
             ->innerJoin('mm', 'tx_commerce_attributes', 'at', 'mm.uid_foreign = at.uid')
+            ->innerJoin('p', 'tx_commerce_articles', 'a', 'a.uid_product = p.uid')
             ->where(
                 $queryBuilder->expr()->eq(
                     'p.uid',
@@ -860,7 +861,7 @@ class ProductRepository extends AbstractRepository
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
         $result = (int) $queryBuilder
-            ->count('p.*')
+            ->count('*')
             ->from($this->databaseTable, 'p')
             ->innerJoin('p', $this->databaseAttributeRelationTable, 'mm', 'p.uid = mm.uid_local')
             ->innerJoin('mm', 'tx_commerce_attributes', 'a', 'mm.uid_foreign = a.uid')
@@ -889,7 +890,7 @@ class ProductRepository extends AbstractRepository
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
         $result = (int) $queryBuilder
-            ->count('cm.*')
+            ->count('*')
             ->from($this->databaseCategoryRelationTable, 'cm')
             ->innerJoin('cm', 'tx_commerce_categories', 'c', 'cm.uid_foreign = c.uid')
             ->innerJoin('c', 'tx_commerce_categories_attributes_mm', 'mm', 'c.uid = mm.uid_local')
@@ -900,7 +901,7 @@ class ProductRepository extends AbstractRepository
                     $queryBuilder->createNamedParameter($correlationType, \PDO::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
-                    'cn.uid_local',
+                    'cm.uid_local',
                     $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
                 )
             )
