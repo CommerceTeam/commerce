@@ -1,7 +1,7 @@
 <?php
-namespace CommerceTeam\Commerce\Tests;
+namespace CommerceTeam\Commerce\Tests\Functional\Frontend;
 
-class FunctionalTestCaseBootstrapUtility extends \TYPO3\CMS\Core\Tests\FunctionalTestCaseBootstrapUtility
+class TestCaseBootstrapUtility extends \TYPO3\CMS\Core\Tests\FunctionalTestCaseBootstrapUtility
 {
     /**
      * Bootstrap basic TYPO3

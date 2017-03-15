@@ -1,5 +1,5 @@
 <?php
-namespace CommerceTeam\Commerce\Tests\Functional;
+namespace CommerceTeam\Commerce\Tests\Functional\Frontend;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -49,7 +49,7 @@ abstract class AbstractTestCase extends \TYPO3\CMS\Core\Tests\FunctionalTestCase
         if (!defined('ORIGINAL_ROOT')) {
             $this->markTestSkipped('Functional tests must be called through phpunit on CLI');
         }
-        $bootstrapUtility = new \CommerceTeam\Commerce\Tests\FunctionalTestCaseBootstrapUtility();
+        $bootstrapUtility = new \CommerceTeam\Commerce\Tests\Functional\Frontend\TestCaseBootstrapUtility();
         $bootstrapUtility->setUp(
             get_class($this),
             $this->coreExtensionsToLoad,

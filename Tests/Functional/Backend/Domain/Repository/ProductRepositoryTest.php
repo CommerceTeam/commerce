@@ -1,5 +1,5 @@
 <?php
-namespace CommerceTeam\Commerce\Tests\Functional\Domain\Repository;
+namespace CommerceTeam\Commerce\Tests\Functional\Backend\Domain\Repository;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -17,7 +17,7 @@ namespace CommerceTeam\Commerce\Tests\Functional\Domain\Repository;
 /**
  * Test case for \CommerceTeam\Commerce\Domain\Repository\ProductRepository
  */
-class FrontendProductRepositoryTest extends \CommerceTeam\Commerce\Tests\Functional\AbstractTestCase
+class ProductRepositoryTest extends \CommerceTeam\Commerce\Tests\Functional\Backend\AbstractTestCase
 {
     /**
      * @var \CommerceTeam\Commerce\Domain\Repository\ProductRepository
@@ -135,7 +135,11 @@ class FrontendProductRepositoryTest extends \CommerceTeam\Commerce\Tests\Functio
     {
         $response = $this->subject->getData(5);
         $this->assertEquals(
-            [],
+            array_merge($this->emptyProduct, [
+                'uid' => '5',
+                'fe_group' => '3,5',
+                'title' => 'deleted_product',
+            ]),
             $response
         );
     }
