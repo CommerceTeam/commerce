@@ -10,7 +10,7 @@
 <phpunit
 	backupGlobals="true"
 	backupStaticAttributes="false"
-	bootstrap="../../../../typo3_src/components/testing_framework/Resources/Core/Build/FunctionalTestsBootstrap.php"
+	bootstrap="FunctionalTestsBootstrap.php"
 	colors="true"
 	convertErrorsToExceptions="true"
 	convertWarningsToExceptions="true"
