@@ -74,4 +74,4 @@ INSERT INTO tx_commerce_article_types (uid, pid, title) VALUES ('3', '0', 'deliv
 #
 # Add _fe_commerce if not exists
 #
-INSERT INTO be_users (pid, username, password, tstamp, crdate) VALUES ('0', '_fe_commerce', MD5(RAND()), UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(NOW()));
+# INSERT INTO be_users (pid, username, password, tstamp, crdate) VALUES ('0', '_fe_commerce', MD5(RAND()), UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(NOW()));
