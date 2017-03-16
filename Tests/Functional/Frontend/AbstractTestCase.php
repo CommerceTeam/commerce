@@ -14,10 +14,14 @@ namespace CommerceTeam\Commerce\Tests\Functional\Frontend;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Cache\Backend\NullBackend;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Functional test for the DataHandler
  */
-abstract class AbstractTestCase extends \TYPO3\CMS\Core\Tests\FunctionalTestCase
+abstract class AbstractTestCase extends \TYPO3\TestingFramework\Core\Functional\FunctionalTestCase
 {
     /**
      * @var int
@@ -49,27 +53,92 @@ abstract class AbstractTestCase extends \TYPO3\CMS\Core\Tests\FunctionalTestCase
         if (!defined('ORIGINAL_ROOT')) {
             $this->markTestSkipped('Functional tests must be called through phpunit on CLI');
         }
-        $bootstrapUtility = new \CommerceTeam\Commerce\Tests\Functional\Frontend\TestCaseBootstrapUtility();
-        $bootstrapUtility->setUp(
-            get_class($this),
-            $this->coreExtensionsToLoad,
-            $this->testExtensionsToLoad,
-            $this->pathsToLinkInTestInstance,
-            $this->configurationToUseInTestInstance,
-            $this->additionalFoldersToCreate
-        );
+
+        // Use a 7 char long hash of class name as identifier
+        $this->identifier = substr(sha1(get_class($this)), 0, 7);
+        $this->instancePath = ORIGINAL_ROOT . 'typo3temp/var/tests/functional-' . $this->identifier;
+
+        $testbase = new Testbase();
+        $testbase->defineTypo3ModeFe();
+        $testbase->setTypo3TestingContext();
+        if ($testbase->recentTestInstanceExists($this->instancePath)) {
+            // Reusing an existing instance. This typically happens for the second, third, ... test
+            // in a test case, so environment is set up only once per test case.
+            $testbase->setUpBasicTypo3Bootstrap($this->instancePath);
+            $testbase->initializeTestDatabaseAndTruncateTables();
+            $testbase->loadExtensionTables();
+        } else {
+            $testbase->removeOldInstanceIfExists($this->instancePath);
+            // Basic instance directory structure
+            $testbase->createDirectory($this->instancePath . '/fileadmin');
+            $testbase->createDirectory($this->instancePath . '/typo3temp/var/transient');
+            $testbase->createDirectory($this->instancePath . '/typo3temp/assets');
+            $testbase->createDirectory($this->instancePath . '/typo3conf/ext');
+            $testbase->createDirectory($this->instancePath . '/uploads');
+            // Additionally requested directories
+            foreach ($this->additionalFoldersToCreate as $directory) {
+                $testbase->createDirectory($this->instancePath . '/' . $directory);
+            }
+            $testbase->createLastRunTextfile($this->instancePath);
+            $testbase->setUpInstanceCoreLinks($this->instancePath);
+            $testbase->linkTestExtensionsToInstance($this->instancePath, $this->testExtensionsToLoad);
+            $testbase->linkPathsInTestInstance($this->instancePath, $this->pathsToLinkInTestInstance);
+            $localConfiguration['DB'] = $testbase->getOriginalDatabaseSettingsFromEnvironmentOrLocalConfiguration();
+            $originalDatabaseName = $localConfiguration['DB']['Connections']['Default']['dbname'];
+            // Append the unique identifier to the base database name to end up with a single database per test case
+            $localConfiguration['DB']['Connections']['Default']['dbname'] =
+                $originalDatabaseName . '_ft' . $this->identifier;
+            $testbase->testDatabaseNameIsNotTooLong($originalDatabaseName, $localConfiguration);
+            // Set some hard coded base settings for the instance. Those could be overruled by
+            // $this->configurationToUseInTestInstance if needed again.
+            $localConfiguration['SYS']['isInitialInstallationInProgress'] = false;
+            $localConfiguration['SYS']['isInitialDatabaseImportDone'] = true;
+            $localConfiguration['SYS']['displayErrors'] = '1';
+            $localConfiguration['SYS']['debugExceptionHandler'] = '';
+            $localConfiguration['SYS']['trustedHostsPattern'] = '.*';
+            // @todo: This should be moved over to DB/Connections/Default/initCommands
+            $localConfiguration['SYS']['setDBinit'] = 'SET SESSION sql_mode = \'STRICT_ALL_TABLES,' .
+                'ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_VALUE_ON_ZERO,NO_ENGINE_SUBSTITUTION,NO_ZERO_DATE,' .
+                'NO_ZERO_IN_DATE,ONLY_FULL_GROUP_BY\';';
+            $localConfiguration['SYS']['caching']['cacheConfigurations']['extbase_object']['backend'] =
+                NullBackend::class;
+            $testbase->setUpLocalConfiguration(
+                $this->instancePath,
+                $localConfiguration,
+                $this->configurationToUseInTestInstance
+            );
+            $defaultCoreExtensionsToLoad = [
+                'core',
+                'backend',
+                'frontend',
+                'lang',
+                'extbase',
+                'install',
+            ];
+            $testbase->setUpPackageStates(
+                $this->instancePath,
+                $defaultCoreExtensionsToLoad,
+                $this->coreExtensionsToLoad,
+                $this->testExtensionsToLoad
+            );
+            $testbase->setUpBasicTypo3Bootstrap($this->instancePath);
+            $testbase->setUpTestDatabase(
+                $localConfiguration['DB']['Connections']['Default']['dbname'],
+                $originalDatabaseName
+            );
+            $testbase->loadExtensionTables();
+            $testbase->createDatabaseStructure();
+        }
 
         $this->setUpBackendUserFromFixture(2);
         \TYPO3\CMS\Core\Core\Bootstrap::getInstance()->initializeLanguageObject();
 
         $this->expectedLogEntries = 0;
 
-        $GLOBALS['TSFE'] = $this->getMock(
-            \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class,
-            [],
-            [$GLOBALS['TYPO3_CONF_VARS'], 1, 1]
-        );
-        $GLOBALS['TSFE']->sys_page = new \TYPO3\CMS\Frontend\Page\PageRepository();
+        /** @var $tsfe \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
+        $tsfe = $this->createMock(\TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class);
+        $tsfe->sys_page = new \TYPO3\CMS\Frontend\Page\PageRepository();
+        $GLOBALS['TSFE'] = $tsfe;
     }
 
 
@@ -113,6 +182,18 @@ abstract class AbstractTestCase extends \TYPO3\CMS\Core\Tests\FunctionalTestCase
      */
     protected function getLogEntries()
     {
-        return $this->getDatabaseConnection()->exec_SELECTgetRows('*', 'sys_log', 'error IN (1,2)');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_log');
+        $result = $queryBuilder
+            ->select('*')
+            ->from('sys_log')
+            ->where(
+                $queryBuilder->expr()->in(
+                    'error',
+                    [1, 2]
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        return $result;
     }
 }

@@ -610,7 +610,7 @@ class ProductRepository extends AbstractRepository
 
     /**
      * @param int $parentUid
-     * @param int $sysLanguageUid
+     * @param int $sysLanguageUid if empty all translation get selected else only for the given language
      *
      * @return array
      */

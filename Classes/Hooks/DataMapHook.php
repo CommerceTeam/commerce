@@ -1188,14 +1188,13 @@ class DataMapHook
 
     /**
      * Save category relations.
-
      *
-*@param int $categoryUid Categor uid
+     * @param int $categoryUid Categor uid
      * @param array $fieldArray Field array
      * @param bool $saveAnyway Save anyway
      * @param bool $delete Delete
      * @param bool $updateXml Update xml
-
+     *
      * @return void
      */
     protected function saveCategoryRelations(

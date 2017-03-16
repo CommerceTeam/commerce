@@ -14,10 +14,13 @@ namespace CommerceTeam\Commerce\Tests\Functional\Backend;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Functional test for the DataHandler
  */
-abstract class AbstractTestCase extends \TYPO3\CMS\Core\Tests\FunctionalTestCase
+abstract class AbstractTestCase extends \TYPO3\TestingFramework\Core\Functional\FunctionalTestCase
 {
     /**
      * @var int
@@ -95,6 +98,18 @@ abstract class AbstractTestCase extends \TYPO3\CMS\Core\Tests\FunctionalTestCase
      */
     protected function getLogEntries()
     {
-        return $this->getDatabaseConnection()->exec_SELECTgetRows('*', 'sys_log', 'error IN (1,2)');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_log');
+        $result = $queryBuilder
+            ->select('*')
+            ->from('sys_log')
+            ->where(
+                $queryBuilder->expr()->in(
+                    'error',
+                    [1, 2]
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        return $result;
     }
 }

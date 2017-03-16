@@ -67,6 +67,7 @@ class ProductRepositoryTest extends \CommerceTeam\Commerce\Tests\Functional\Fron
         'uname' => '',
         'relatedpage' => '0',
         'relatedproducts' => null,
+        'l10n_state' => null,
     ];
 
     /**
