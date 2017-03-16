@@ -73,7 +73,7 @@ $tempColumns = [
 );
 
 /*
- * Put surename directly to name
+ * Put surname directly to name
  */
 $ttaddressparts = explode('name,', $GLOBALS['TCA']['tt_address']['interface']['showRecordFieldList']);
 $countto = count($ttaddressparts) - 1;

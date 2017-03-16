@@ -1472,13 +1472,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 break;
 
             case 'FILES':
-                $files = explode(',', $value);
-                foreach ($files as $v) {
-                    $file = $this->imgFolder . $v;
-                    $text = $this->cObj->stdWrap($file, $typoscriptConfig['linkStdWrap.']) . $v;
-                    $output .= $this->cObj->stdWrap($text, $typoscriptConfig['stdWrap.']);
-                }
-                $output = $this->cObj->stdWrap($output, $typoscriptConfig['allStdWrap.']);
+                $output = $this->cObj->cObjGetSingle('FILES', $typoscriptConfig);
                 break;
 
             case 'IMAGE':
@@ -1502,10 +1496,6 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                     $typoscriptConfig['file'] = $typoscriptConfig['imgPath'] . $value;
                     $output = $this->cObj->cObjGetSingle('IMG_RESOURCE', $typoscriptConfig);
                 }
-                break;
-
-            case 'FAL_FILES':
-                $output = $this->cObj->cObjGetSingle('FILES', $typoscriptConfig);
                 break;
 
             case 'USER':

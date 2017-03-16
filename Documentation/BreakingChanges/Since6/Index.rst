@@ -76,4 +76,10 @@ FolderRepository::initFolders order introduced in 5.0 is now the default and no 
 
 Changed hooks
 -------------
+
 Domain/Repository/CategoryRepository::getChildProducts ->productQueryPreHook first Parameter changed from $queryArray to $queryBuilder all changes made to the different array keys need to be changed to modify the queryBuilder
+
+Changed rendering
+-----------------
+
+BaseController::renderValue FILES changed to ignore $value and imgFolder. This was necessary to be able to render FAL files. This change also removed allStdWrap and linkStdWrap. Please have a look at TypoScript lib.tx_commerce.stdImage to see how images get rendered now.

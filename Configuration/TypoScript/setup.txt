@@ -42,7 +42,7 @@ lib.tx_commerce {
 	stdField_RTE.wrap = |
 	stdField_RTE.parseFunc < lib.parseFunc_RTE
 
-	stdImage = FAL_FILES
+	stdImage = FILES
 	stdImage {
 		references {
 			table = tt_content
