@@ -4,8 +4,11 @@ $languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
 
 return [
     'ctrl' => [
-        'title' => $languageFile . 'tx_commerce_address_types',
         'label' => 'title',
+        'tstamp' => 'tstamp',
+        'crdate' => 'crdate',
+        'cruser_id' => 'cruser_id',
+        'title' => $languageFile . 'tx_commerce_address_types',
         'readOnly' => 1,
         'adminOnly' => 1,
         'rootLevel' => 1,
@@ -13,6 +16,7 @@ return [
         'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'languageField' => 'sys_language_uid',
+        'translationSource' => 'l10n_source',
         'default_sortby' => 'ORDER BY crdate',
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_address_types.gif',
     ],

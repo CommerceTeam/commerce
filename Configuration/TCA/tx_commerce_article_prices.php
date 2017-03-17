@@ -4,7 +4,6 @@ $languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
 
 return [
     'ctrl' => [
-        'title' => $languageFile . 'tx_commerce_article_prices',
         'label' => 'price_net',
         'label_alt' => 'price_net,price_gross,purchase_price',
         'label_alt_force' => 1,
@@ -12,9 +11,10 @@ return [
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
-        'versioning' => '1',
-        'default_sortby' => 'ORDER BY crdate',
+        'title' => $languageFile . 'tx_commerce_article_prices',
         'delete' => 'deleted',
+        'versioningWS' => true,
+        'default_sortby' => 'ORDER BY crdate',
         'enablecolumns' => [
             'disabled' => 'hidden',
             'starttime' => 'starttime',

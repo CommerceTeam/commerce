@@ -5,18 +5,17 @@ $langFile = 'LLL:EXT:lang/Resources/Private/Language/locallang_tca.xlf:';
 
 return [
     'ctrl' => [
-        'title' => $languageFile . 'tx_commerce_supplier',
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
-        'versioning' => '1',
-        'default_sortby' => 'ORDER BY title,uid',
+        'title' => $languageFile . 'tx_commerce_supplier',
         'delete' => 'deleted',
+        'versioningWS' => true,
+        'default_sortby' => 'ORDER BY title,uid',
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
-        'dividers2tabs' => '1',
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_supplier.gif',
     ],
     'interface' => [

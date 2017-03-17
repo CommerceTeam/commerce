@@ -11,7 +11,7 @@ return [
         'adminOnly' => 1,
         'rootLevel' => 1,
         'is_static' => 1,
-        'versioning' => '1',
+        'versioningWS' => true,
         'languageField' => 'sys_language_uid',
         'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',

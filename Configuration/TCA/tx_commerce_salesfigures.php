@@ -4,11 +4,11 @@ $languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
 
 return [
     'ctrl' => [
-        'title' => $languageFile . 'tx_commerce_salesfigures',
         'label' => 'uid',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
+        'title' => $languageFile . 'tx_commerce_salesfigures',
         'default_sortby' => 'ORDER BY crdate',
         'readOnly' => '1',
         'adminOnly' => '1',

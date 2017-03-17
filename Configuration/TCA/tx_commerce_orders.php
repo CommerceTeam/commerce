@@ -4,14 +4,13 @@ $languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
 
 return [
     'ctrl' => [
-        'title' => $languageFile . 'tx_commerce_orders',
         'label' => 'order_id',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
-        'default_sortby' => 'ORDER BY crdate',
+        'title' => $languageFile . 'tx_commerce_orders',
         'delete' => 'deleted',
-        'dividers2tabs' => '1',
+        'default_sortby' => 'ORDER BY crdate',
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_orders.gif',
         'searchFields' => 'order_id, comment',
     ],

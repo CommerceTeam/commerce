@@ -5,18 +5,18 @@ $langFile = 'LLL:EXT:lang/Resources/Private/Language/locallang_tca.xlf:';
 
 $GLOBALS['TCA']['tx_commerce_products'] = [
     'ctrl' => [
-        'title' => $languageFile . 'tx_commerce_products',
         'label' => 'title',
+        'sortby' => 'sorting',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'sortby' => 'sorting',
         'cruser_id' => 'cruser_id',
-        'versioning' => '1',
+        'title' => $languageFile . 'tx_commerce_products',
+        'delete' => 'deleted',
+        'versioningWS' => true,
         'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'languageField' => 'sys_language_uid',
-        'versioningWS' => true,
-        'delete' => 'deleted',
+        'translationSource' => 'l10n_source',
         'thumbnail' => 'images',
         'enablecolumns' => [
             'disabled' => 'hidden',
@@ -25,7 +25,6 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
             'fe_group' => 'fe_group',
         ],
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_products.gif',
-        'dividers2tabs' => '1',
         'searchFields' => 'uid, title, subtitle, navtitle, description',
     ],
     'interface' => [

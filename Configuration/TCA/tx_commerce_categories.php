@@ -5,17 +5,18 @@ $langFile = 'LLL:EXT:lang/Resources/Private/Language/locallang_tca.xlf:';
 
 return [
     'ctrl' => [
-        'title' => $languageFile . 'tx_commerce_categories',
         'label' => 'title',
         'sortby' => 'sorting',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
-        'versioning' => '1',
-        'languageField' => 'sys_language_uid',
+        'title' => $languageFile . 'tx_commerce_categories',
+        'delete' => 'deleted',
+        'versioningWS' => true,
         'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
-        'delete' => 'deleted',
+        'languageField' => 'sys_language_uid',
+        'translationSource' => 'l10n_source',
         'enablecolumns' => [
             'disabled' => 'hidden',
             'starttime' => 'starttime',
@@ -23,7 +24,6 @@ return [
             'fe_group' => 'fe_group',
         ],
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_categories.gif',
-        'dividers2tabs' => '1',
         'searchFields' => 'uid, title, subtitle, navtitle, description',
     ],
     'interface' => [

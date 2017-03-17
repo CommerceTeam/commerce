@@ -5,15 +5,16 @@ $langFile = 'LLL:EXT:lang/Resources/Private/Language/locallang_tca.xlf:';
 
 return [
     'ctrl' => [
-        'title' => $languageFile . 'tx_commerce_moveordermails',
         'label' => 'name',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
-        'default_sortby' => 'ORDER BY crdate',
+        'title' => $languageFile . 'tx_commerce_moveordermails',
         'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'languageField' => 'sys_language_uid',
+        'translationSource' => 'l10n_source',
+        'default_sortby' => 'ORDER BY crdate',
         'enablecolumns' => [
             'disabled' => 'hidden',
             'starttime' => 'starttime',
@@ -21,7 +22,6 @@ return [
             'fe_group' => 'fe_group',
         ],
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_moveordermails.gif',
-        'dividers2tabs' => '1',
     ],
     'interface' => [
         'showRecordFieldList' => 'name, mailkind, mailtemplate, htmltemplate, mailcharset, sendername, senderemail,

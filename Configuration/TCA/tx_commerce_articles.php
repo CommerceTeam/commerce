@@ -12,25 +12,24 @@ if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['commerce']['simpleMode'
 
 return [
     'ctrl' => [
-        'title' => $languageFile . 'tx_commerce_articles',
         'label' => 'title',
+        'sortby' => 'sorting',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'sortby' => 'sorting',
         'cruser_id' => 'cruser_id',
-        'versioning' => '1',
-        'languageField' => 'sys_language_uid',
+        'title' => $languageFile . 'tx_commerce_articles',
+        'delete' => 'deleted',
+        'versioningWS' => true,
         'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
+        'languageField' => 'sys_language_uid',
         'default_sortby' => 'ORDER BY sorting,crdate',
-        'delete' => 'deleted',
         'enablecolumns' => [
             'disabled' => 'hidden',
             'starttime' => 'starttime',
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ],
-        'dividers2tabs' => '1',
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_articles.gif',
     ],
     'interface' => [
