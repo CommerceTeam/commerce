@@ -9,7 +9,7 @@ return [
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
         'title' => $languageFile . 'tx_commerce_address_types',
-        'readOnly' => 1,
+        'readOnly' => 0,
         'adminOnly' => 1,
         'rootLevel' => 1,
         'is_static' => 1,
@@ -25,43 +25,52 @@ return [
     ],
     'columns' => [
         'sys_language_uid' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.language',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'special' => 'languages',
                 'items' => [
                     [
-                        'LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages',
+                        'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
                         -1,
                         'flags-multiple'
                     ],
                 ],
                 'default' => 0,
-            ],
+            ]
         ],
         'l18n_parent' => [
-            'exclude' => 1,
+            'exclude' => true,
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.l18n_parent',
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['', 0],
+                    [
+                        '',
+                        0
+                    ]
                 ],
                 'foreign_table' => 'tx_commerce_address_types',
-                'foreign_table_where' => 'AND tx_commerce_address_types.pid = ###CURRENT_PID###
-                    AND tx_commerce_address_types.sys_language_uid IN (-1,0)',
+                'foreign_table_where' =>
+                    'AND tx_commerce_address_types.pid=###CURRENT_PID### 
+                     AND tx_commerce_address_types.sys_language_uid IN (-1,0)',
                 'default' => 0
-            ],
+            ]
+        ],
+        'l10n_source' => [
+            'config' => [
+                'type' => 'passthrough'
+            ]
         ],
         'l18n_diffsource' => [
             'config' => [
                 'type' => 'passthrough',
                 'default' => ''
-            ],
+            ]
         ],
 
         'title' => [
@@ -88,14 +97,22 @@ return [
     'types' => [
         '0' => [
             'showitem' => '
-                --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general;general,
-                title, name
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
+                    title, name,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
+                    --palette--;;language,
             '
         ],
     ],
     'palettes' => [
         'general' => [
             'showitem' => 'sys_language_uid, --linebreak--, l18n_parent'
+        ],
+        'language' => [
+            'showitem' => '
+            sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel,
+            l18n_parent
+            ',
         ],
     ],
 ];

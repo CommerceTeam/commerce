@@ -513,6 +513,9 @@
 			<trans-unit id="tx_commerce_address_types.title" xml:space="preserve">
 				<source>Title</source>
 			</trans-unit>
+			<trans-unit id="tx_commerce_address_types.name" xml:space="preserve">
+				<source>Name</source>
+			</trans-unit>
 			<trans-unit id="tt_address" xml:space="preserve">
 				<source>Address</source>
 			</trans-unit>
