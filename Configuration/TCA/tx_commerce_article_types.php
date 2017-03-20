@@ -4,22 +4,23 @@ $languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
 
 return [
     'ctrl' => [
-        'title' => $languageFile . 'tx_commerce_article_types',
         'label' => 'title',
         'tstamp' => 'tstamp',
-        'readOnly' => 1,
+        'crdate' => 'crdate',
+        'cruser_id' => 'cruser_id',
+        'title' => $languageFile . 'tx_commerce_article_types',
+        'delete' => 'deleted',
+        'readOnly' => 0,
         'adminOnly' => 1,
         'rootLevel' => 1,
-        'is_static' => 1,
-        'versioningWS' => true,
-        'languageField' => 'sys_language_uid',
         'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
-        'default_sortby' => 'ORDER BY crdate',
-        'delete' => 'deleted',
+        'languageField' => 'sys_language_uid',
+        'translationSource' => 'l10n_source',
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
+        'default_sortby' => 'ORDER BY crdate',
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_article_types.gif',
     ],
     'interface' => [
@@ -27,8 +28,8 @@ return [
     ],
     'columns' => [
         'hidden' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
                 'items' => [
@@ -36,46 +37,57 @@ return [
                         '0' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:hidden.I.0'
                     ]
                 ]
-            ],
+            ]
         ],
+
         'sys_language_uid' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.language',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'special' => 'languages',
                 'items' => [
                     [
-                        'LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages',
+                        'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
                         -1,
                         'flags-multiple'
                     ],
                 ],
                 'default' => 0,
-            ],
+            ]
         ],
         'l18n_parent' => [
-            'exclude' => 1,
+            'exclude' => true,
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.l18n_parent',
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['', 0],
+                    [
+                        '',
+                        0
+                    ]
                 ],
                 'foreign_table' => 'tx_commerce_article_types',
-                'foreign_table_where' => 'AND tx_commerce_article_types.pid = ###CURRENT_PID###
-                    AND tx_commerce_article_types.sys_language_uid IN (-1,0)',
+                'foreign_table_where' => '
+                    AND tx_commerce_article_types.pid=###CURRENT_PID### 
+                    AND tx_commerce_article_types.sys_language_uid IN (-1,0)
+                ',
                 'default' => 0
-            ],
+            ]
         ],
         'l18n_diffsource' => [
             'config' => [
                 'type' => 'passthrough',
                 'default' => ''
-            ],
+            ]
+        ],
+        'l10n_source' => [
+            'config' => [
+                'type' => 'passthrough'
+            ]
         ],
 
         'title' => [
@@ -91,14 +103,26 @@ return [
     'types' => [
         '0' => [
             'showitem' => '
-                --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general;general,
-                hidden, title
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
+                    title,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
+                    --palette--;;language,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
+                    --palette--;;hidden
             '
         ],
     ],
     'palettes' => [
-        'general' => [
-            'showitem' => 'sys_language_uid, --linebreak--, l18n_parent'
+        'hidden' => [
+            'showitem' => '
+                hidden;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:field.default.hidden
+            ',
+        ],
+        'language' => [
+            'showitem' => '
+            sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel,
+            l18n_parent
+            ',
         ],
     ],
 ];

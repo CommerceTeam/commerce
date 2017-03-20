@@ -24,8 +24,8 @@ return [
     ],
     'columns' => [
         'hidden' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
                 'items' => [
@@ -33,7 +33,7 @@ return [
                         '0' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:hidden.I.0'
                     ]
                 ]
-            ],
+            ]
         ],
 
         'title' => [
@@ -44,7 +44,7 @@ return [
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'required,trim',
-            ],
+            ]
         ],
         'street' => [
             'exclude' => 1,
@@ -54,7 +54,7 @@ return [
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'trim',
-            ],
+            ]
         ],
         'number' => [
             'exclude' => 1,
@@ -64,7 +64,7 @@ return [
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'trim',
-            ],
+            ]
         ],
         'zip' => [
             'exclude' => 1,
@@ -74,7 +74,7 @@ return [
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'trim',
-            ],
+            ]
         ],
         'city' => [
             'exclude' => 1,
@@ -84,7 +84,7 @@ return [
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'trim',
-            ],
+            ]
         ],
         'country' => [
             'exclude' => 1,
@@ -95,7 +95,7 @@ return [
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'static_countries',
                 'foreign_table_where' => 'ORDER BY static_countries.cn_short_en',
-            ],
+            ]
         ],
         'phone' => [
             'exclude' => 1,
@@ -105,7 +105,7 @@ return [
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'trim',
-            ],
+            ]
         ],
         'fax' => [
             'exclude' => 1,
@@ -115,7 +115,7 @@ return [
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'trim',
-            ],
+            ]
         ],
         'email' => [
             'exclude' => 1,
@@ -125,7 +125,7 @@ return [
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'trim',
-            ],
+            ]
         ],
         'internet' => [
             'exclude' => 1,
@@ -135,7 +135,7 @@ return [
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'trim',
-            ],
+            ]
         ],
         'contactperson' => [
             'exclude' => 1,
@@ -145,12 +145,11 @@ return [
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'trim',
-            ],
+            ]
         ],
         'logo' => [
             'exclude' => 1,
             'label' => $languageFile . 'tx_commerce_manufacturer.logo',
-            'l10n_mode' => 'mergeIfNotBlank',
             'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig('logo', [
                 'appearance' => [
                     'createNewRelationLinkTitle' =>
@@ -196,10 +195,14 @@ return [
     'types' => [
         '0' => [
             'showitem' => '
-                hidden, title, 
-                --palette--;' . $languageFile . 'palette.street;street,
-                --palette--;' . $languageFile . 'palette.city;city,
-                country, contactperson, phone, fax, email, internet, logo',
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
+                    title, 
+                    --palette--;' . $languageFile . 'palette.street;street,
+                    --palette--;' . $languageFile . 'palette.city;city,
+                    country, contactperson, phone, fax, email, internet, logo,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
+                    --palette--;;hidden
+            ',
         ],
     ],
     'palettes' => [
@@ -208,6 +211,11 @@ return [
         ],
         'city' => [
             'showitem' => 'zip, city'
+        ],
+        'hidden' => [
+            'showitem' => '
+                hidden;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:field.default.hidden
+            ',
         ],
     ],
 ];

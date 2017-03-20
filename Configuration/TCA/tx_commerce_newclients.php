@@ -27,7 +27,7 @@ return [
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ],
+            ]
         ],
         'month' => [
             'exclude' => 1,
@@ -38,7 +38,7 @@ return [
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ],
+            ]
         ],
         'day' => [
             'exclude' => 1,
@@ -49,7 +49,7 @@ return [
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ],
+            ]
         ],
         'dow' => [
             'exclude' => 1,
@@ -60,7 +60,7 @@ return [
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ],
+            ]
         ],
         'hour' => [
             'exclude' => 1,
@@ -71,7 +71,7 @@ return [
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ],
+            ]
         ],
         'registration' => [
             'exclude' => 1,
@@ -82,13 +82,14 @@ return [
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ],
+            ]
         ],
     ],
     'types' => [
         '0' => [
             'showitem' => '
-                year, month, day, dow, hour, registration
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
+                    year, month, day, dow, hour, registration
             '
         ],
     ],

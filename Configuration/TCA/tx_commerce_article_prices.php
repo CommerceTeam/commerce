@@ -29,8 +29,8 @@ return [
     ],
     'columns' => [
         'hidden' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
                 'items' => [
@@ -38,14 +38,14 @@ return [
                         '0' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:hidden.I.0'
                     ]
                 ]
-            ],
+            ]
         ],
         'starttime' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
             'config' => [
                 'type' => 'input',
-                'size' => '13',
+                'renderType' => 'inputDateTime',
                 'eval' => 'datetime',
                 'default' => 0
             ],
@@ -53,11 +53,11 @@ return [
             'l10n_display' => 'defaultAsReadonly'
         ],
         'endtime' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
             'config' => [
                 'type' => 'input',
-                'size' => '13',
+                'renderType' => 'inputDateTime',
                 'eval' => 'datetime',
                 'default' => 0,
                 'range' => [
@@ -68,22 +68,32 @@ return [
             'l10n_display' => 'defaultAsReadonly'
         ],
         'fe_group' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.fe_group',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'size' => 5,
-                'maxitems' => 50,
+                'maxitems' => 20,
                 'items' => [
-                    ['LLL:EXT:lang/locallang_general.xlf:LGL.hide_at_login', -1],
-                    ['LLL:EXT:lang/locallang_general.xlf:LGL.any_login', -2],
-                    ['LLL:EXT:lang/locallang_general.xlf:LGL.usergroups', '--div--'],
+                    [
+                        'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
+                        -1
+                    ],
+                    [
+                        'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
+                        -2
+                    ],
+                    [
+                        'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
+                        '--div--'
+                    ]
                 ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
                 'foreign_table_where' => 'ORDER BY fe_groups.title',
-            ],
+                'enableMultiSelectFilterTextfield' => true
+            ]
         ],
 
         'price_gross' => [
@@ -93,7 +103,7 @@ return [
                 'type' => 'input',
                 'size' => '30',
                 'eval' => 'nospace,double2',
-            ],
+            ]
         ],
 
         'price_net' => [
@@ -103,7 +113,7 @@ return [
                 'type' => 'input',
                 'size' => '30',
                 'eval' => 'nospace,double2',
-            ],
+            ]
         ],
 
         'purchase_price' => [
@@ -113,7 +123,7 @@ return [
                 'type' => 'input',
                 'size' => '30',
                 'eval' => 'nospace,double2',
-            ],
+            ]
         ],
 
         'price_scale_amount_start' => [
@@ -124,8 +134,8 @@ return [
                 'size' => '10',
                 'eval' => 'int,nospace,required',
                 'range' => ['lower' => 1],
-                'default' => '1',
-            ],
+                'default' => 1,
+            ]
         ],
 
         'price_scale_amount_end' => [
@@ -136,8 +146,8 @@ return [
                 'size' => '10',
                 'eval' => 'int,nospace,required',
                 'range' => ['lower' => 1],
-                'default' => '1',
-            ],
+                'default' => 1,
+            ]
         ],
 
         'uid_article' => [
@@ -148,29 +158,47 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_commerce_articles',
-            ],
+            ]
         ],
     ],
     'types' => [
         '0' => [
             'showitem' => '
-                --palette--;;price,
-                --palette--;;scale,
-                uid_article,
-                hidden,
-                --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access
-            ',
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
+                    --palette--;;price,
+                    --palette--;;scale,
+                    uid_article,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
+                    --palette--;;hidden,
+                    --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access
+            '
         ],
     ],
     'palettes' => [
+        'hidden' => [
+            'showitem' => '
+                hidden;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:field.default.hidden
+            ',
+        ],
         'access' => [
-            'showitem' => 'starttime, endtime, --linebreak--, fe_group',
+            'showitem' => '
+                starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,
+                endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel,
+                --linebreak--,
+                fe_group;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:fe_group_formlabel
+            ',
         ],
         'price' => [
-            'showitem' => 'price_gross, price_net, --linebreak--, purchase_price',
+            'showitem' => '
+                price_gross, price_net,
+                --linebreak--,
+                purchase_price
+            ',
         ],
         'scale' => [
-            'showitem' => 'price_scale_amount_start, price_scale_amount_end',
+            'showitem' => '
+                price_scale_amount_start, price_scale_amount_end
+            ',
         ],
     ],
 ];

@@ -25,7 +25,7 @@ return [
             'config' => [
                 'type' => 'user',
                 'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->deliveryAddress',
-            ],
+            ]
         ],
         'order_type_uid' => [
             'label' => $languageFile . 'tx_commerce_orders.order_type_uid',
@@ -37,31 +37,31 @@ return [
                 ],
                 'foreign_table' => 'tx_commerce_order_types',
                 'default' => '',
-            ],
+            ]
         ],
         'order_id' => [
             'label' => $languageFile . 'tx_commerce_orders.order_id',
             'config' => [
                 'type' => 'input',
                 'readOnly' => true,
-            ],
+            ]
         ],
 
         'tstamp' => [
             'label' => $languageFile . 'tx_commerce_orders.tstamp',
             'config' => [
                 'type' => 'input',
-                'readOnly' => true,
-            ],
+                'renderType' => 'inputDateTime',
+                'readOnly' => true
+            ]
         ],
         'crdate' => [
             'label' => $languageFile . 'tx_commerce_orders.crdate',
             'config' => [
                 'type' => 'input',
-                'readOnly' => true,
-                'format' => 'date',
-                'eval' => 'date',
-            ],
+                'renderType' => 'inputDateTime',
+                'readOnly' => true
+            ]
         ],
 
         'newpid' => [
@@ -71,7 +71,7 @@ return [
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'pages',
                 'itemsProcFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->orderStatus',
-            ],
+            ]
         ],
         'cust_fe_user' => [
             'label' => $languageFile . 'tx_commerce_orders.cust_fe_user',
@@ -96,7 +96,7 @@ return [
                         'JSopenParams' => 'height=350,width=580,status=0,menubar=0,scrollbars=1',
                     ],
                 ],
-            ],
+            ]
         ],
         'cust_invoice' => [
             'label' => $languageFile . 'tx_commerce_orders.cust_invoice',
@@ -112,21 +112,21 @@ return [
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_commerce_articles',
                 'foreign_table_where' => ' AND tx_commerce_articles.article_type_uid = 2',
-            ],
+            ]
         ],
         'sum_price_net' => [
             'label' => $languageFile . 'tx_commerce_orders.sum_price_net',
             'config' => [
                 'type' => 'user',
                 'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->orderArticles',
-            ],
+            ]
         ],
         'sum_price_gross' => [
             'label' => $languageFile . 'tx_commerce_orders.sum_price_gross',
             'config' => [
                 'type' => 'user',
                 'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->sumPriceGrossFormat',
-            ],
+            ]
         ],
         'payment_ref_id' => [
             'label' => $languageFile . 'tx_commerce_orders.payment_ref_id',
@@ -134,7 +134,7 @@ return [
                 'type' => 'input',
                 'readOnly' => true,
                 'pass_content' => 1,
-            ],
+            ]
         ],
         'cu_iso_3_uid' => [
             'label' => $languageFile . 'tx_commerce_orders.cu_iso_3_uid',
@@ -144,7 +144,7 @@ return [
                 'foreign_table' => 'static_currencies',
                 'foreign_table_where' => ' ',
                 'default' => '49',
-            ],
+            ]
         ],
         'comment' => [
             'label' => $languageFile . 'tx_commerce_orders.comment',
@@ -152,7 +152,7 @@ return [
                 'type' => 'text',
                 'cols' => '30',
                 'rows' => '5',
-            ],
+            ]
         ],
         'internalcomment' => [
             'label' => $languageFile . 'tx_commerce_orders.internalcomment',
@@ -160,7 +160,7 @@ return [
                 'type' => 'text',
                 'cols' => '30',
                 'rows' => '5',
-            ],
+            ]
         ],
         'order_sys_language_uid' => [
             'label' => 'LLL:EXT:lang/locallang_general.php:LGL.language',
@@ -173,7 +173,7 @@ return [
                     ['LLL:EXT:lang/locallang_general.php:LGL.allLanguages', -1],
                     ['LLL:EXT:lang/locallang_general.php:LGL.default_value', 0],
                 ],
-            ],
+            ]
         ],
         'pricefromnet' => [
             'label' => $languageFile . 'tx_commerce_orders.pricefromnet',
@@ -184,7 +184,7 @@ return [
                     ['LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:no', 0],
                     ['LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:yes', 1],
                 ],
-            ],
+            ]
         ],
 
     ],

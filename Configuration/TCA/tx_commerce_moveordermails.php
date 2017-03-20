@@ -29,8 +29,8 @@ return [
     ],
     'columns' => [
         'hidden' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
                 'items' => [
@@ -38,14 +38,14 @@ return [
                         '0' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:hidden.I.0'
                     ]
                 ]
-            ],
+            ]
         ],
         'starttime' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
             'config' => [
                 'type' => 'input',
-                'size' => '13',
+                'renderType' => 'inputDateTime',
                 'eval' => 'datetime',
                 'default' => 0
             ],
@@ -53,11 +53,11 @@ return [
             'l10n_display' => 'defaultAsReadonly'
         ],
         'endtime' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
             'config' => [
                 'type' => 'input',
-                'size' => '13',
+                'renderType' => 'inputDateTime',
                 'eval' => 'datetime',
                 'default' => 0,
                 'range' => [
@@ -68,55 +68,76 @@ return [
             'l10n_display' => 'defaultAsReadonly'
         ],
         'fe_group' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.fe_group',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'size' => 5,
-                'maxitems' => 50,
+                'maxitems' => 20,
                 'items' => [
-                    ['LLL:EXT:lang/locallang_general.xlf:LGL.hide_at_login', -1],
-                    ['LLL:EXT:lang/locallang_general.xlf:LGL.any_login', -2],
-                    ['LLL:EXT:lang/locallang_general.xlf:LGL.usergroups', '--div--'],
+                    [
+                        'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
+                        -1
+                    ],
+                    [
+                        'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
+                        -2
+                    ],
+                    [
+                        'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
+                        '--div--'
+                    ]
                 ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
                 'foreign_table_where' => 'ORDER BY fe_groups.title',
-            ],
+                'enableMultiSelectFilterTextfield' => true
+            ]
         ],
+
         'sys_language_uid' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.language',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'special' => 'languages',
                 'items' => [
                     [
-                        'LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages',
+                        'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
                         -1,
                         'flags-multiple'
                     ],
                 ],
                 'default' => 0,
-            ],
+            ]
         ],
         'l18n_parent' => [
-            'exclude' => 1,
+            'exclude' => true,
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.l18n_parent',
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['', 0],
+                    [
+                        '',
+                        0
+                    ]
                 ],
                 'foreign_table' => 'tx_commerce_moveordermails',
-                'foreign_table_where' => 'AND tx_commerce_moveordermails.pid = ###CURRENT_PID###
-                    AND tx_commerce_moveordermails.sys_language_uid IN (-1,0)',
+                'foreign_table_where' => '
+                    AND tx_commerce_moveordermails.pid=###CURRENT_PID### 
+                    AND tx_commerce_moveordermails.sys_language_uid IN (-1,0)
+                ',
                 'default' => 0
-            ],
+            ]
+        ],
+        'l10n_source' => [
+            'config' => [
+                'type' => 'passthrough'
+            ]
         ],
         'l18n_diffsource' => [
             'config' => [
@@ -132,7 +153,7 @@ return [
                 'type' => 'input',
                 'size' => '30',
                 'eval' => 'required,trim',
-            ],
+            ]
         ],
         'mailkind' => [
             'exclude' => 1,
@@ -146,7 +167,7 @@ return [
                 ],
                 'size' => 1,
                 'maxitems' => 1,
-            ],
+            ]
         ],
         'mailtemplate' => [
             'exclude' => 1,
@@ -244,7 +265,7 @@ return [
                 'size' => '30',
                 'eval' => 'required,trim',
                 'default' => 'utf-8',
-            ],
+            ]
         ],
         'sendername' => [
             'exclude' => 1,
@@ -253,7 +274,7 @@ return [
                 'type' => 'input',
                 'size' => '48',
                 'eval' => 'trim',
-            ],
+            ]
         ],
         'senderemail' => [
             'exclude' => 1,
@@ -262,7 +283,7 @@ return [
                 'type' => 'input',
                 'size' => '48',
                 'eval' => 'trim',
-            ],
+            ]
         ],
         'otherreceiver' => [
             'exclude' => 1,
@@ -271,7 +292,7 @@ return [
                 'type' => 'input',
                 'size' => '48',
                 'eval' => 'trim',
-            ],
+            ]
         ],
         'BCC' => [
             'exclude' => 1,
@@ -280,27 +301,43 @@ return [
                 'type' => 'input',
                 'size' => '48',
                 'eval' => 'trim',
-            ],
+            ]
         ],
     ],
     'types' => [
         '0' => [
             'showitem' => '
-                    --palette--;' . $languageFile . 'palette.general;general,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
                     name, mailkind, mailtemplate, htmltemplate,
                     mailcharset, sendername, senderemail, otherreceiver, BCC,
-                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,
-                    hidden,
+              --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
+                    --palette--;;language,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
+                    --palette--;;hidden,
                     --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access
-            '
+              '
         ],
     ],
     'palettes' => [
-        'general' => [
-            'showitem' => 'sys_language_uid, --linebreak--, l18n_parent',
+        'hidden' => [
+            'showitem' => '
+                hidden;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:field.default.hidden
+            ',
+        ],
+        'language' => [
+            'showitem' => '
+            sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel,
+            l18n_parent
+            ',
         ],
         'access' => [
-            'showitem' => 'starttime, endtime, --linebreak--, fe_group'
+            'showitem' => '
+                starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,
+                endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel,
+                --linebreak--,
+                fe_group;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:fe_group_formlabel,
+                --linebreak--,editlock
+            ',
         ],
     ],
 ];

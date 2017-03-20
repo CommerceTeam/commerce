@@ -1,7 +1,7 @@
 <?php
 
 $languageFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:';
-
+// @todo what is this for? No Usage in Classes/
 return [
     'ctrl' => [
         'label' => 'uid',
@@ -27,7 +27,7 @@ return [
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
-            ],
+            ]
         ],
         'trackingcodes_uid' => [
             'exclude' => 1,
@@ -39,7 +39,7 @@ return [
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
-            ],
+            ]
         ],
         'msg' => [
             'exclude' => 1,
@@ -49,13 +49,14 @@ return [
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'required,trim',
-            ],
+            ]
         ],
     ],
     'types' => [
         '0' => [
             'showitem' => '
-                orders_uid, trackingcodes_uid, msg
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
+                    orders_uid, trackingcodes_uid, msg
             '
         ],
     ],

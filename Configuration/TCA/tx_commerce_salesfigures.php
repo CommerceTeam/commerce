@@ -9,9 +9,9 @@ return [
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
         'title' => $languageFile . 'tx_commerce_salesfigures',
-        'default_sortby' => 'ORDER BY crdate',
         'readOnly' => '1',
         'adminOnly' => '1',
+        'default_sortby' => 'ORDER BY crdate',
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_salesfigures.gif',
     ],
     'interface' => [
@@ -27,7 +27,7 @@ return [
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ],
+            ]
         ],
         'month' => [
             'exclude' => 1,
@@ -38,7 +38,7 @@ return [
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ],
+            ]
         ],
         'day' => [
             'exclude' => 1,
@@ -49,7 +49,7 @@ return [
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ],
+            ]
         ],
         'dow' => [
             'exclude' => 1,
@@ -60,7 +60,7 @@ return [
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ],
+            ]
         ],
         'hour' => [
             'exclude' => 1,
@@ -71,7 +71,7 @@ return [
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ],
+            ]
         ],
         'pricegross' => [
             'exclude' => 1,
@@ -83,7 +83,7 @@ return [
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ],
+            ]
         ],
         'pricenet' => [
             'exclude' => 1,
@@ -94,7 +94,7 @@ return [
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ],
+            ]
         ],
         'amount' => [
             'exclude' => 1,
@@ -105,7 +105,7 @@ return [
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ],
+            ]
         ],
         'orders' => [
             'exclude' => 1,
@@ -116,13 +116,14 @@ return [
                 'max' => '11',
                 'eval' => 'int',
                 'default' => 0,
-            ],
+            ]
         ],
     ],
     'types' => [
         '0' => [
             'showitem' => '
-                year, month, day, dow, hour, pricegross, pricenet, amount, orders
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
+                    year, month, day, dow, hour, pricegross, pricenet, amount, orders
             '
         ],
     ],

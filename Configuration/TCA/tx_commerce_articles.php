@@ -39,8 +39,8 @@ return [
     ],
     'columns' => [
         'hidden' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
                 'items' => [
@@ -48,91 +48,112 @@ return [
                         '0' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:hidden.I.0'
                     ]
                 ]
-            ],
+            ]
         ],
         'starttime' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'input',
-                'size' => '13',
+                'renderType' => 'inputDateTime',
                 'eval' => 'datetime',
                 'default' => 0
-            ],
-            'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly'
+            ]
         ],
         'endtime' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'input',
-                'size' => '13',
+                'renderType' => 'inputDateTime',
                 'eval' => 'datetime',
                 'default' => 0,
                 'range' => [
                     'upper' => mktime(0, 0, 0, 1, 1, 2038)
                 ]
-            ],
-            'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly'
+            ]
         ],
         'fe_group' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.fe_group',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'size' => 5,
-                'maxitems' => 50,
+                'maxitems' => 20,
                 'items' => [
-                    ['LLL:EXT:lang/locallang_general.xlf:LGL.hide_at_login', -1],
-                    ['LLL:EXT:lang/locallang_general.xlf:LGL.any_login', -2],
-                    ['LLL:EXT:lang/locallang_general.xlf:LGL.usergroups', '--div--'],
+                    [
+                        'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
+                        -1
+                    ],
+                    [
+                        'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
+                        -2
+                    ],
+                    [
+                        'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
+                        '--div--'
+                    ]
                 ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
                 'foreign_table_where' => 'ORDER BY fe_groups.title',
-            ],
+                'enableMultiSelectFilterTextfield' => true
+            ]
         ],
+
         'sys_language_uid' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.language',
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'special' => 'languages',
                 'items' => [
                     [
-                        'LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages',
+                        'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
                         -1,
                         'flags-multiple'
                     ],
                 ],
                 'default' => 0,
-            ],
+            ]
         ],
         'l18n_parent' => [
-            'exclude' => 1,
+            'exclude' => true,
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'label' => 'LLL:EXT:lang/locallang_general.php:LGL.l18n_parent',
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['', 0],
+                    [
+                        '',
+                        0
+                    ]
                 ],
                 'foreign_table' => 'tx_commerce_articles',
-                'foreign_table_where' => 'AND tx_commerce_articles.pid = ###CURRENT_PID###
-                    AND tx_commerce_articles.sys_language_uid IN (-1,0)',
+                'foreign_table_where' => '
+                    AND tx_commerce_articles.pid=###CURRENT_PID### 
+                    AND tx_commerce_articles.sys_language_uid IN (-1,0)
+                ',
                 'default' => 0
-            ],
+            ]
+        ],
+        'l10n_source' => [
+            'config' => [
+                'type' => 'passthrough'
+            ]
         ],
         'l18n_diffsource' => [
             'config' => [
                 'type' => 'passthrough',
                 'default' => ''
-            ],
+            ]
         ],
 
         'title' => [
@@ -143,7 +164,7 @@ return [
                 'size' => '40',
                 'max' => '255',
                 'eval' => 'required,trim',
-            ],
+            ]
         ],
         'subtitle' => [
             'exclude' => 1,
@@ -153,7 +174,7 @@ return [
                 'size' => '40',
                 'max' => '255',
                 'eval' => 'trim',
-            ],
+            ]
         ],
         'navtitle' => [
             'exclude' => 1,
@@ -163,7 +184,7 @@ return [
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'trim',
-            ],
+            ]
         ],
         'images' => [
             'exclude' => 1,
@@ -219,7 +240,7 @@ return [
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'trim',
-            ],
+            ]
         ],
         'eancode' => [
             'exclude' => 1,
@@ -230,7 +251,7 @@ return [
                 'size' => '20',
                 'max' => '20',
                 'eval' => 'trim',
-            ],
+            ]
         ],
         'description_extra' => [
             'exclude' => 1,
@@ -252,7 +273,7 @@ return [
                         ]
                     ],
                 ],
-            ],
+            ]
         ],
         'plain_text' => [
             'exclude' => 1,
@@ -261,7 +282,7 @@ return [
                 'type' => 'text',
                 'cols' => '30',
                 'rows' => '10',
-            ],
+            ]
         ],
         'prices' => [
             'exclude' => 1,
@@ -275,7 +296,7 @@ return [
                 ],
                 'foreign_table' => 'tx_commerce_article_prices',
                 'foreign_field' => 'uid_article',
-            ],
+            ]
         ],
         'tax' => [
             'exclude' => 1,
@@ -285,7 +306,7 @@ return [
                 'type' => 'input',
                 'size' => '30',
                 'eval' => 'double2,nospace',
-            ],
+            ]
         ],
         'supplier_uid' => [
             'exclude' => 1,
@@ -301,7 +322,7 @@ return [
                         0,
                     ],
                 ],
-            ],
+            ]
         ],
         'article_type_uid' => [
             'exclude' => 1,
@@ -315,7 +336,7 @@ return [
                 'minitems' => 0,
                 'maxitems' => 1,
                 'default' => 1,
-            ],
+            ]
         ],
         'item_category' => [
             'exclude' => 1,
@@ -333,7 +354,7 @@ return [
                         'Digital',
                     ],
                 ],
-            ],
+            ]
         ],
         'relatedpage' => [
             'exclude' => 1,
@@ -345,7 +366,7 @@ return [
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
-            ],
+            ]
         ],
         'uid_product' => [
             'exclude' => 1,
@@ -358,7 +379,7 @@ return [
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
-            ],
+            ]
         ],
         'attributesedit' => [
             'label' => $languageFile . 'tx_commerce_products.edit_attributes',
@@ -368,7 +389,7 @@ return [
                 'ds' => [
                     'default' => 'FILE:EXT:commerce/Configuration/FlexForms/attributes.xml',
                 ],
-            ],
+            ]
         ],
         'classname' => [
             'label' => $languageFile . 'tx_commerce_articles.classname',
@@ -377,7 +398,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'readOnly' => true,
-            ],
+            ]
         ],
     ],
     'types' => [
@@ -391,19 +412,39 @@ return [
                 ],
             ],
             'showitem' => '
-                    title, subtitle, ordernumber, eancode, description_extra,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
+                    classname,  title, subtitle, ordernumber, eancode, description_extra,
                     images, plain_text, tax, supplier_uid, article_type_uid, item_category, relatedpage, products_uid,
                     article_attributes, ' . $attributeField . '
-                --div--;' . $languageFile . 'tx_commerce_articles.prices, prices,
-                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,
-                    hidden,
-                    --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access,
-                    classname',
+                --div--;' . $languageFile . 'tx_commerce_articles.prices,
+                    prices,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
+                    --palette--;;language,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
+                    --palette--;;hidden,
+                    --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access
+            ',
         ],
     ],
     'palettes' => [
+        'hidden' => [
+            'showitem' => '
+                hidden;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:field.default.hidden
+            ',
+        ],
+        'language' => [
+            'showitem' => '
+            sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel,
+            l18n_parent
+            ',
+        ],
         'access' => [
-            'showitem' => 'starttime, endtime, --linebreak--, fe_group'
+            'showitem' => '
+                starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,
+                endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel,
+                --linebreak--,
+                fe_group;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:fe_group_formlabel
+            ',
         ],
     ],
 ];

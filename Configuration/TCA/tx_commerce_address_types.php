@@ -9,14 +9,17 @@ return [
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
         'title' => $languageFile . 'tx_commerce_address_types',
+        'delete' => 'deleted',
         'readOnly' => 0,
         'adminOnly' => 1,
         'rootLevel' => 1,
-        'is_static' => 1,
         'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'languageField' => 'sys_language_uid',
         'translationSource' => 'l10n_source',
+        'enablecolumns' => [
+            'disabled' => 'hidden',
+        ],
         'default_sortby' => 'ORDER BY crdate',
         'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_address_types.gif',
     ],
@@ -24,6 +27,19 @@ return [
         'showRecordFieldList' => 'title, name, sys_language_uid, l18n_parent',
     ],
     'columns' => [
+        'hidden' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
+            'config' => [
+                'type' => 'check',
+                'items' => [
+                    '1' => [
+                        '0' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:hidden.I.0'
+                    ]
+                ]
+            ]
+        ],
+
         'sys_language_uid' => [
             'exclude' => true,
             'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.language',
@@ -101,12 +117,16 @@ return [
                     title, name,
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
                     --palette--;;language,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
+                    --palette--;;hidden
             '
         ],
     ],
     'palettes' => [
-        'general' => [
-            'showitem' => 'sys_language_uid, --linebreak--, l18n_parent'
+        'hidden' => [
+            'showitem' => '
+                hidden;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:field.default.hidden
+            ',
         ],
         'language' => [
             'showitem' => '
