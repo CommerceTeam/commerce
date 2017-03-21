@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2016-02-14T13:27:34Z" product-name="commerce">
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0" xmlns:t3="http://typo3.org/schemas/xliff">
+	<file t3:id="1490081766" source-language="en" datatype="plaintext" original="messages" date="2016-02-14T13:27:34Z" product-name="commerce">
 		<header/>
 		<body>
 			<trans-unit id="extension.title" xml:space="preserve">
@@ -378,32 +378,11 @@
 			<trans-unit id="tx_commerce_categories.ts_config" xml:space="preserve">
 				<source>Category TypoScript</source>
 			</trans-unit>
-			<trans-unit id="tx_commerce_trackingcodes" xml:space="preserve">
-				<source>Trackingcodes</source>
-			</trans-unit>
-			<trans-unit id="tx_commerce_trackingcodes.title" xml:space="preserve">
-				<source>Title</source>
-			</trans-unit>
-			<trans-unit id="tx_commerce_trackingcodes.description" xml:space="preserve">
-				<source>Description</source>
-			</trans-unit>
 			<trans-unit id="tx_commerce_order_types" xml:space="preserve">
 				<source>Order Types</source>
 			</trans-unit>
 			<trans-unit id="tx_commerce_order_types.title" xml:space="preserve">
 				<source>Icon</source>
-			</trans-unit>
-			<trans-unit id="tx_commerce_tracking" xml:space="preserve">
-				<source>Tracking</source>
-			</trans-unit>
-			<trans-unit id="tx_commerce_tracking.orders_uid" xml:space="preserve">
-				<source>Orders uid</source>
-			</trans-unit>
-			<trans-unit id="tx_commerce_tracking.trackingcodes_uid" xml:space="preserve">
-				<source>Trackingcodes uid</source>
-			</trans-unit>
-			<trans-unit id="tx_commerce_tracking.msg" xml:space="preserve">
-				<source>Message</source>
 			</trans-unit>
 			<trans-unit id="tx_commerce_orders" xml:space="preserve">
 				<source>Orders</source>

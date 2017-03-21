@@ -1,9 +1,9 @@
-mod.web_list.deniedNewTables := addToList(tx_commerce_address_types, tx_commerce_attribute_correlationtypes, tx_commerce_attribute_values, tx_commerce_baskets, tx_commerce_orders, tx_commerce_order_articles, tx_commerce_order_types, tx_commerce_salesfigures, tx_commerce_supplier, tx_commerce_tracking, tx_commerce_trackingcodes, tx_commerce_user_states)
+mod.web_list.deniedNewTables := addToList(tx_commerce_address_types, tx_commerce_attribute_correlationtypes, tx_commerce_attribute_values, tx_commerce_baskets, tx_commerce_orders, tx_commerce_order_articles, tx_commerce_order_types, tx_commerce_salesfigures, tx_commerce_supplier, tx_commerce_user_states)
 
 # module and foldername to match
 [CommerceTeam\Commerce\Configuration\TyposcriptConfig web_list, commerce]
-mod.web_list.allowedNewTables = tx_commerce_moveordermails, tx_commerce_newclients, tx_commerce_trackingcodes, tx_commerce_user_states, pages_language_overlay
-mod.web_list.deniedNewTables := removeFromList(tx_commerce_moveordermails, tx_commerce_newclients, tx_commerce_trackingcodes, tx_commerce_user_states)
+mod.web_list.allowedNewTables = tx_commerce_newclients, tx_commerce_user_states, pages_language_overlay
+mod.web_list.deniedNewTables := removeFromList(tx_commerce_moveordermails, tx_commerce_newclients, tx_commerce_user_states)
 [end]
 
 [CommerceTeam\Commerce\Configuration\TyposcriptConfig web_list, attributes]
@@ -15,7 +15,7 @@ mod.web_list.allowedNewTables = pages_language_overlay
 [products]
 
 [CommerceTeam\Commerce\Configuration\TyposcriptConfig web_list, 'orders,incoming,working,waiting,delivered']
-mod.web_list.allowedNewTables = pages_language_overlay
+mod.web_list.allowedNewTables = pages_language_overlay, tx_commerce_moveordermails
 [end]
 
 [CommerceTeam\Commerce\Configuration\TyposcriptConfig commerce_category, products]

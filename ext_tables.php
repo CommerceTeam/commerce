@@ -51,7 +51,6 @@ call_user_func(function ($packageKey) {
             tx_commerce_attributes = 1
             tx_commerce_attribute_values = 1
             tx_commerce_categories = 1
-            tx_commerce_trackingcodes = 1
             tx_commerce_moveordermails = 1
         }
         ');
