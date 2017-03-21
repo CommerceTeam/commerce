@@ -75,8 +75,7 @@ return [
         ],
         'pricegross' => [
             'exclude' => 1,
-            'label' =>
-                $languageFile . 'tx_commerce_salesfigures.pricegross',
+            'label' => $languageFile . 'tx_commerce_salesfigures.pricegross',
             'config' => [
                 'type' => 'input',
                 'size' => '11',

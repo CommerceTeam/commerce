@@ -18,7 +18,6 @@ return [
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'languageField' => 'sys_language_uid',
         'translationSource' => 'l10n_source',
-        'requestUpdate' => 'has_valuelist',
         'thumbnail' => 'icon',
         'default_sortby' => 'ORDER BY sorting,crdate',
         'enablecolumns' => [
@@ -275,6 +274,7 @@ return [
             'exclude' => 1,
             'label' => $languageFile . 'tx_commerce_attributes.has_valuelist',
             'displayCond' => 'FIELD:sys_language_uid:=:0',
+            'onChange' => 'reload',
             'config' => [
                 'type' => 'check',
             ],
@@ -317,9 +317,6 @@ return [
                     'showRemovedLocalizationRecords' => true,
                     'useSortable' => true,
                     'newRecordLinkTitle' => $languageFile . 'tx_commerce_attributes.add_value',
-                ],
-                'behaviour' => [
-                    'localizationMode' => 'select',
                 ],
             ],
         ],

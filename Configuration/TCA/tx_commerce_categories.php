@@ -196,23 +196,12 @@ return [
                 'rows' => '5',
                 'wizards' => [
                     '_PADDING' => 2,
-                    'RTE' => [
-                        'notNewRecords' => 1,
-                        'RTEonly' => 1,
-                        'type' => 'script',
-                        'title' => 'Full screen Rich Text Editing',
-                        'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_rte.gif',
-                        'module' => [
-                            'name' => 'wizard_rte'
-                        ]
-                    ],
                 ],
             ]
         ],
         'images' => [
             'exclude' => 1,
             'label' => $languageFile . 'tx_commerce_categories.images',
-            'l10n_mode' => 'mergeIfNotBlank',
             'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig('images', [
                 'appearance' => [
                     'createNewRelationLinkTitle' =>
@@ -282,7 +271,6 @@ return [
         ],
         'ts_config' => [
             'exclude' => 1,
-            'l10n_mode' => 'mergeIfNotBlank',
             'label' => $languageFile . 'tx_commerce_categories.ts_config',
             'config' => [
                 'type' => 'text',
@@ -313,7 +301,6 @@ return [
         'teaserimages' => [
             'exclude' => 1,
             'label' => $languageFile . 'tx_commerce_products.teaserimages',
-            'l10n_mode' => 'mergeIfNotBlank',
             'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig('teaserimages', [
                 'appearance' => [
                     'createNewRelationLinkTitle' =>
@@ -362,6 +349,13 @@ return [
                 'description' => [
                     'config' => [
                         'enableRichtext' => true,
+                        'fieldControl' => [
+                            'fullScreenRichtext' => [
+                                'options' => [
+                                    'title' => 'Full screen Rich Text Editing'
+                                ]
+                            ]
+                        ],
                         'richtextConfiguration' => 'default',
                     ]
                 ],

@@ -89,7 +89,8 @@ return [
             'label' => $languageFile . 'tx_commerce_basket.finished_time',
             'config' => [
                 'type' => 'input',
-                'eval' => 'date',
+                'renderType' => 'inputDateTime',
+                'readOnly' => true
             ],
         ],
         'readonly' => [

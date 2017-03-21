@@ -189,7 +189,6 @@ return [
         'images' => [
             'exclude' => 1,
             'label' => $languageFile . 'tx_commerce_articles.images',
-            'l10n_mode' => 'mergeIfNotBlank',
             'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig('images', [
                 'appearance' => [
                     'createNewRelationLinkTitle' =>
@@ -262,16 +261,6 @@ return [
                 'rows' => '5',
                 'wizards' => [
                     '_PADDING' => 2,
-                    'RTE' => [
-                        'notNewRecords' => 1,
-                        'RTEonly' => 1,
-                        'type' => 'script',
-                        'title' => 'Full screen Rich Text Editing',
-                        'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_rte.gif',
-                        'module' => [
-                            'name' => 'wizard_rte'
-                        ]
-                    ],
                 ],
             ]
         ],
@@ -407,6 +396,13 @@ return [
                 'description_extra' => [
                     'config' => [
                         'enableRichtext' => true,
+                        'fieldControl' => [
+                            'fullScreenRichtext' => [
+                                'options' => [
+                                    'title' => 'Full screen Rich Text Editing'
+                                ]
+                            ]
+                        ],
                         'richtextConfiguration' => 'default',
                     ]
                 ],

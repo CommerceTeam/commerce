@@ -198,16 +198,6 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
                 'rows' => '5',
                 'wizards' => [
                     '_PADDING' => 2,
-                    'RTE' => [
-                        'notNewRecords' => 1,
-                        'RTEonly' => 1,
-                        'type' => 'script',
-                        'title' => 'Full screen Rich Text Editing',
-                        'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_rte.gif',
-                        'module' => [
-                            'name' => 'wizard_rte'
-                        ]
-                    ],
                 ],
             ]
         ],
@@ -264,16 +254,6 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
                 'rows' => '5',
                 'wizards' => [
                     '_PADDING' => 2,
-                    'RTE' => [
-                        'notNewRecords' => 1,
-                        'RTEonly' => 1,
-                        'type' => 'script',
-                        'title' => 'Full screen Rich Text Editing',
-                        'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_rte.gif',
-                        'module' => [
-                            'name' => 'wizard_rte'
-                        ]
-                    ],
                 ],
             ]
         ],
@@ -423,12 +403,26 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
                 'description' => [
                     'config' => [
                         'enableRichtext' => true,
+                        'fieldControl' => [
+                            'fullScreenRichtext' => [
+                                'options' => [
+                                    'title' => 'Full screen Rich Text Editing'
+                                ]
+                            ]
+                        ],
                         'richtextConfiguration' => 'default',
                     ]
                 ],
                 'teaser' => [
                     'config' => [
                         'enableRichtext' => true,
+                        'fieldControl' => [
+                            'fullScreenRichtext' => [
+                                'options' => [
+                                    'title' => 'Full screen Rich Text Editing'
+                                ]
+                            ]
+                        ],
                         'richtextConfiguration' => 'default',
                     ]
                 ],
