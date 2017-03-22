@@ -1014,19 +1014,16 @@ class DataMapHook
     {
         if (!empty($fieldArray)) {
             if (isset($fieldArray['parent_category'])) {
-                $newId = '';
-                foreach ($dataHandler->substNEWwithIDs as $newId => $uid) {
-                    if ($uid == $id) {
-                        break;
-                    }
-                }
-                $categoryListUid = $newId ?: $id;
+                $categoryListUid = $this->unsubstitutedId ?: $id;
                 // get the list of parent categories and save the relations in the database
-                $categories = explode(',', $dataHandler->datamap[$table][$categoryListUid]['parent_category']);
+                if (!empty($dataHandler->datamap[$table][$categoryListUid]['parent_category'])) {
+                    $categories = explode(',', $dataHandler->datamap[$table][$categoryListUid]['parent_category']);
+                } else {
+                    $categories = [];
+                }
 
                 // preserve the 0 as root.
                 $preserve = [];
-
                 if (in_array(0, $categories)) {
                     $preserve[] = 0;
                 }
