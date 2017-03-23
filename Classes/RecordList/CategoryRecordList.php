@@ -22,8 +22,11 @@ use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 /** @noinspection PhpInternalEntityUsedInspection */
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
+use TYPO3\CMS\Core\Database\Query\Restriction\BackendWorkspaceRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -31,6 +34,7 @@ use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
+use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
 use TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface;
 
 /**
@@ -376,8 +380,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             // Only restrict to the default language if no search request is in place
             if ($this->searchString === '') {
                 $addWhere = (string)$queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->lte($tableConfig['ctrl']['languageField'], 0),
-                    $queryBuilder->expr()->eq($tableConfig['ctrl']['transOrigPointerField'], 0)
+                    $queryBuilder->expr()->lte('t.' . $tableConfig['ctrl']['languageField'], 0),
+                    $queryBuilder->expr()->eq('t.' . $tableConfig['ctrl']['transOrigPointerField'], 0)
                 );
             }
         }
@@ -812,6 +816,215 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         }
         // Return query:
         return $queryParts;
+    }
+
+    /**
+     * Set the total items for the record list
+     *
+     * @param string $table Table name
+     * @param int $pageId Only used to build the search constraints, $this->pidList is used for restrictions
+     * @param array $constraints Additional constraints for where clause
+     */
+    public function setTotalItems(string $table, int $pageId, array $constraints)
+    {
+        $queryParameters = $this->buildQueryParameters($table, $pageId, ['*'], $constraints);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable($queryParameters['table']);
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+        $queryBuilder
+            ->from($queryParameters['table'], 't')
+            ->where(...$queryParameters['where']);
+
+        $this->totalItems = (int)$queryBuilder->count('*')
+            ->execute()
+            ->fetchColumn();
+    }
+
+    /**
+     * Returns a QueryBuilder configured to select $fields from $table where the pid is restricted
+     * depending on the current searchlevel setting.
+     *
+     * @param string $table Table name
+     * @param int $pageId Page id Only used to build the search constraints, getPageIdConstraint() used for restrictions
+     * @param string[] $additionalConstraints Additional part for where clause
+     * @param string[] $fields Field list to select, * for all
+     * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
+     */
+    public function getQueryBuilder(
+        string $table,
+        int $pageId,
+        array $additionalConstraints = [],
+        array $fields = ['*']
+    ): QueryBuilder {
+        $queryParameters = $this->buildQueryParameters($table, $pageId, $fields, $additionalConstraints);
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable($queryParameters['table']);
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        /** @var $workspaceRestriction $workspaceRestriction */
+        $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add($deleteRestriction)
+            ->add($workspaceRestriction);
+        $queryBuilder
+            ->select(...$queryParameters['fields'])
+            ->from($queryParameters['table'], 't')
+            ->where(...$queryParameters['where']);
+
+        if (!empty($queryParameters['orderBy'])) {
+            foreach ($queryParameters['orderBy'] as $fieldNameAndSorting) {
+                list($fieldName, $sorting) = $fieldNameAndSorting;
+                $queryBuilder->addOrderBy($fieldName, $sorting);
+            }
+        }
+
+        if (!empty($queryParameters['firstResult'])) {
+            $queryBuilder->setFirstResult((int)$queryParameters['firstResult']);
+        }
+
+        if (!empty($queryParameters['maxResults'])) {
+            $queryBuilder->setMaxResults((int)$queryParameters['maxResults']);
+        }
+
+        if (!empty($queryParameters['groupBy'])) {
+            $queryBuilder->groupBy($queryParameters['groupBy']);
+        }
+
+        if ($table == 'tx_commerce_categories') {
+            $queryBuilder->innerJoin(
+                't',
+                'tx_commerce_categories_parent_category_mm',
+                'mm',
+                't.uid = mm.uid_local'
+            );
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq(
+                    'mm.uid_foreign',
+                    $queryBuilder->createNamedParameter($this->categoryUid, \PDO::PARAM_INT)
+                )
+            );
+        } elseif ($table == 'tx_commerce_products') {
+            $queryBuilder->innerJoin(
+                't',
+                'tx_commerce_products_categories_mm',
+                'mm',
+                't.uid = mm.uid_local'
+            );
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq(
+                    'mm.uid_foreign',
+                    $queryBuilder->createNamedParameter($this->categoryUid, \PDO::PARAM_INT)
+                )
+            );
+        }
+
+        return $queryBuilder;
+    }
+
+    /**
+     * Return the query parameters to select the records from a table $table with pid = $this->pidList
+     *
+     * @param string $table Table name
+     * @param int $pageId Page id Only used to build the search constraints, $this->pidList is used for restrictions
+     * @param string[] $fieldList List of fields to select from the table
+     * @param string[] $additionalConstraints Additional part for where clause
+     * @return array
+     */
+    protected function buildQueryParameters(
+        string $table,
+        int $pageId,
+        array $fieldList = ['*'],
+        array $additionalConstraints = []
+    ): array {
+        $expressionBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable($table)
+            ->expr();
+
+        $fieldList = array_map(
+            function ($field) {
+                return (strpos('.', $field) === false ? 't.' : '') . $field;
+            },
+            $fieldList
+        );
+
+        $parameters = [
+            'table' => $table,
+            'fields' => $fieldList,
+            'groupBy' => null,
+            'orderBy' => null,
+            'firstResult' => $this->firstElementNumber ?: null,
+            'maxResults' => $this->iLimit ? $this->iLimit : null,
+        ];
+
+        if ($this->sortField && in_array($this->sortField, $this->makeFieldList($table, 1))) {
+            $parameters['orderBy'][] = $this->sortRev ? [$this->sortField, 'DESC'] : [$this->sortField, 'ASC'];
+        } else {
+            $orderBy = $GLOBALS['TCA'][$table]['ctrl']['sortby'] ?: $GLOBALS['TCA'][$table]['ctrl']['default_sortby'];
+            $parameters['orderBy'] = QueryHelper::parseOrderBy((string)$orderBy);
+        }
+
+        if (is_array($parameters['orderBy'])) {
+            $parameters['orderBy'] = array_map(
+                function ($orderBy) {
+                    $orderBy[0] = 't.' . $orderBy[0];
+                    return $orderBy;
+                },
+                $parameters['orderBy']
+            );
+        }
+
+        // Build the query constraints
+        $constraints = [
+            'pidSelect' => str_replace($table, 't', $this->getPageIdConstraint($table)),
+            'search' => $this->makeSearchString($table, $pageId)
+        ];
+
+        // Filtering on displayable pages (permissions):
+        if ($table === 'tx_commerce_categories' && $this->perms_clause) {
+            $constraints['pagePermsClause'] = $this->perms_clause;
+        }
+
+        // Filter out records that are translated, if TSconfig mod.web_list.hideTranslations is set
+        if ((GeneralUtility::inList($this->hideTranslations, $table) || $this->hideTranslations === '*')
+            && !empty($GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'])
+            && $table !== 'pages_language_overlay'
+        ) {
+            $constraints['transOrigPointerField'] = $expressionBuilder->eq(
+                't.' . $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'],
+                0
+            );
+        }
+
+        $parameters['where'] = array_merge($constraints, $additionalConstraints);
+
+        $hookName = DatabaseRecordList::class;
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$hookName]['buildQueryParameters'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$hookName]['buildQueryParameters'] as $classRef) {
+                $hookObject = GeneralUtility::getUserObj($classRef);
+                if (method_exists($hookObject, 'buildQueryParametersPostProcess')) {
+                    $hookObject->buildQueryParametersPostProcess(
+                        $parameters,
+                        $table,
+                        $pageId,
+                        $additionalConstraints,
+                        $fieldList,
+                        $this
+                    );
+                }
+            }
+        }
+
+        // array_unique / array_filter used to eliminate empty and duplicate constraints
+        // the array keys are eliminated by this as well to facilitate argument unpacking
+        // when used with the querybuilder.
+        $parameters['where'] = array_unique(array_filter(array_values($parameters['where'])));
+
+        return $parameters;
     }
 
     /**

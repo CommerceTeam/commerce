@@ -106,10 +106,10 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
 
         // Get category uid from control
         // @todo reduce usage to only either defVals or control but not both
-        $controlFromGetPost = GeneralUtility::_GP('control');
+        $controlValue = GeneralUtility::_GP('control');
         $defaultValue = GeneralUtility::_GP('defVals');
-        if (is_array($controlFromGetPost) && isset($controlFromGetPost['categoryUid'])) {
-            $this->categoryUid = (int) $controlFromGetPost['categoryUid'];
+        if (is_array($controlValue) && isset($controlValue['categoryUid'])) {
+            $this->categoryUid = (int) $controlValue['categoryUid'];
         } elseif (is_array($defaultValue)
             && isset($defaultValue['tx_commerce_categories'])
             && isset($defaultValue['tx_commerce_categories']['uid'])
@@ -228,23 +228,23 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $dbList->clipObj->initializeClipboard();
         // Clipboard actions are handled:
         // CB is the clipboard command array
-        $clipboard = GeneralUtility::_GET('CB');
+        $CB = GeneralUtility::_GET('CB');
         if ($this->cmd == 'setCB') {
             // CBH is all the fields selected for the clipboard, CBC is the checkbox fields
             // which were checked. By merging we get a full array of checked/unchecked
             // elements This is set to the 'el' array of the CB after being parsed so only
             // the table in question is registered.
-            $clipboard['el'] = $dbList->clipObj->cleanUpCBC(
+            $CB['el'] = $dbList->clipObj->cleanUpCBC(
                 array_merge((array) GeneralUtility::_POST('CBH'), (array) GeneralUtility::_POST('CBC')),
                 $this->cmd_table
             );
         }
         if (!$this->MOD_SETTINGS['clipBoard']) {
             // If the clipboard is NOT shown, set the pad to 'normal'.
-            $clipboard['setP'] = 'normal';
+            $CB['setP'] = 'normal';
         }
         // Execute commands.
-        $dbList->clipObj->setCmd($clipboard);
+        $dbList->clipObj->setCmd($CB);
         // Clean up pad
         $dbList->clipObj->cleanCurrent();
         // Save the clipboard content
@@ -252,8 +252,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         // This flag will prevent the clipboard panel in being shown.
         // It is set, if the clickmenu-layer is active AND the extended view is not enabled.
         $dbList->dontShowClipControlPanels = (
-            !$this->MOD_SETTINGS['bigControlPanel']
-            && $dbList->clipObj->current == 'normal'
+            $dbList->clipObj->current === 'normal'
             && !$this->modTSconfig['properties']['showClipControlPanelsDespiteOfCMlayers']
         );
 
@@ -276,7 +275,10 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                     $tce->stripslashes_values = 0;
                     $tce->start(array(), $cmd);
                     $tce->process_cmdmap();
-                    if (isset($cmd['tx_commerce_categories']) || isset($cmd['tx_commerce_products'])) {
+                    if (isset($cmd['tx_commerce_categories'])
+                        || isset($cmd['tx_commerce_products'])
+                        || isset($cmd['tx_commerce_articles'])
+                    ) {
                         BackendUtility::setUpdateSignal('updateCategoryTree');
                     }
                     $tce->printLogErrorMessages(GeneralUtility::getIndpEnv('REQUEST_URI'));
