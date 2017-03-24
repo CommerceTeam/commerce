@@ -23,9 +23,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * User Class for displaying Orders.
  *
- * Class \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc
+ * Class \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper
  */
-class OrderEditFunc
+class OrderEditViewhelper
 {
     /**
      * Page info.

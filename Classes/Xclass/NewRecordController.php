@@ -50,9 +50,10 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
         }
 
         $lang = $this->getLanguageService();
+        // load additional language file
         $lang->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_newwizard.xlf');
         // Initialize array for accumulating table rows:
-        $this->tRows = array();
+        $this->tRows = [];
         // Get TSconfig for current page
         $pageTS = BackendUtility::getPagesTSconfig($this->id);
         // Finish initializing new pages options with TSconfig
@@ -75,13 +76,13 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
         $v = $GLOBALS['TCA'][$table];
         $pageIcon = $this->moduleTemplate->getIconFactory()->getIconForRecord(
             $table,
-            array(),
+            [],
             Icon::SIZE_SMALL
         )->render();
         $newPageIcon = $this->moduleTemplate->getIconFactory()->getIcon('actions-add', Icon::SIZE_SMALL)->render();
         $rowContent = '';
         // New pages INSIDE this pages
-        $newPageLinks = array();
+        $newPageLinks = [];
         if ($displayNewPagesIntoLink
             && $this->isTableAllowedForThisPage($this->pageinfo, 'tx_commerce_categories')
             && $this->getBackendUserAuthentication()->check('tables_modify', 'tx_commerce_categories')
@@ -110,7 +111,6 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
         ) {
             // we need to override the value so better save it
             $backup = (int) $this->pageinfo['uid'];
-
             // get parent category of current category to create new category on same level
             $this->pageinfo['uid'] = $categoryRepository->getParentCategory($backup);
 
@@ -119,8 +119,9 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
                 . $lang->sL('LLL:EXT:lang/locallang_core.xlf:db_new.php.after', true)
                 . ')',
                 'tx_commerce_categories',
-                -(int) $this->pageinfo['uid']
+                $this->pageinfo['pid']
             );
+
             // restore previous value
             $this->pageinfo['uid'] = $backup;
         }
@@ -143,8 +144,8 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
             $rowContent = '<ul class="list-tree"><li><ul>' . $rowContent . '</li></ul>';
         }
         // Compile table row
-        $startRows = array($rowContent);
-        $iconFile = array();
+        $startRows = [$rowContent];
+        $iconFile = [];
         // New tables (but not pages) INSIDE this pages
         $isAdmin = $this->getBackendUserAuthentication()->isAdmin();
         $newContentIcon = $this->moduleTemplate->getIconFactory()->getIcon(
@@ -222,16 +223,17 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
                                             'LLL:EXT:' . $_EXTKEY . '/' . $langFile . ':extension.title'
                                         );
                                         // If no localisation available, read title from ext_emconf.php
-                                        $extEmConfFile =
-                                            ExtensionManagementUtility::extPath($_EXTKEY) . 'ext_emconf.php';
+                                        $extPath = ExtensionManagementUtility::extPath($_EXTKEY);
+                                        $extEmConfFile = $extPath . 'ext_emconf.php';
                                         if (!$thisTitle && is_file($extEmConfFile)) {
                                             $EM_CONF = array();
-                                            //include $extEmConfFile;
+                                            include $extEmConfFile;
                                             $thisTitle = $EM_CONF[$_EXTKEY]['title'];
                                         }
                                         $iconFile[$_EXTKEY] = '<img ' . 'src="'
-                                            . PathUtility::getRelativePathTo($_EXTKEY)
-                                            . $GLOBALS['TYPO3_LOADED_EXT'][$_EXTKEY]['ext_icon']
+                                            . PathUtility::getAbsoluteWebPath(
+                                                ExtensionManagementUtility::getExtensionIcon($extPath, true)
+                                            )
                                             . '" ' . 'width="16" height="16" ' . 'alt="' . $thisTitle . '" />';
                                     }
                                 }
@@ -342,8 +344,7 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
     {
         if ($table == 'tx_commerce_categories') {
             $urlParameters['defVals'][$table]['parent_category'] = $this->pageinfo['uid'];
-        }
-        if ($table == 'tx_commerce_products') {
+        } elseif ($table == 'tx_commerce_products') {
             $urlParameters['defVals'][$table]['categories'] = [$this->pageinfo['uid']];
         }
 

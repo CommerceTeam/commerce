@@ -20,7 +20,7 @@ Removed functions
 -----------------
 
 BaseController::getDatabaseConnection removed as not used in any controller anymore
-OrderEditFunc::getDatabaseConnection all queries are replaced with repository calls
+OrderEditViewhelper::getDatabaseConnection all queries are replaced with repository calls
 ArticleHook::getDatabaseConnection all queries are replaced with repository calls
 AbstractRepository::getDatabaseConnection all queries are migrated to doctrine dbal queryBuilder
 BasicBasket::getDatabaseConnection moved to Basket::getDatabaseConnection as it is only used in that class
@@ -66,6 +66,12 @@ Remove properties
 -----------------
 
 ListController::product_array unused property. Replace with ListController::product->returnAssocArray()
+
+
+Renamed classes
+---------------
+
+OrderEditFunc renamed to OrderEditViewhelper
 
 
 Changed methods

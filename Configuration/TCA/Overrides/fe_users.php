@@ -47,7 +47,7 @@ $tempColumns = [
         'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:fe_users.tx_commerce_feuser_orders',
         'config' => [
             'type' => 'user',
-            'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->feUserOrders',
+            'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->feUserOrders',
         ],
     ],
 ];

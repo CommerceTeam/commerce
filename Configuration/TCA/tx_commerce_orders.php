@@ -24,7 +24,7 @@ return [
             'label' => $languageFile . 'tx_commerce_orders.cust_deliveryaddress',
             'config' => [
                 'type' => 'user',
-                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->deliveryAddress',
+                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->deliveryAddress',
             ]
         ],
         'order_type_uid' => [
@@ -72,7 +72,7 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'pages',
-                'itemsProcFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->orderStatus',
+                'itemsProcFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->orderStatus',
             ]
         ],
         'cust_fe_user' => [
@@ -102,7 +102,7 @@ return [
             'label' => $languageFile . 'tx_commerce_orders.cust_invoice',
             'config' => [
                 'type' => 'user',
-                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->invoiceAddress',
+                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->invoiceAddress',
             ],
         ],
         'paymenttype' => [
@@ -118,14 +118,14 @@ return [
             'label' => $languageFile . 'tx_commerce_orders.sum_price_net',
             'config' => [
                 'type' => 'user',
-                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->orderArticles',
+                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->orderArticles',
             ]
         ],
         'sum_price_gross' => [
             'label' => $languageFile . 'tx_commerce_orders.sum_price_gross',
             'config' => [
                 'type' => 'user',
-                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->sumPriceGrossFormat',
+                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->sumPriceGrossFormat',
             ]
         ],
         'payment_ref_id' => [

@@ -124,7 +124,7 @@ return [
             'label' => $languageFile . ':tx_commerce_order_articles.order_id',
             'config' => [
                 'type' => 'user',
-                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditFunc::class . '->articleOrderId',
+                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->articleOrderId',
                 'readOnly' => true,
             ]
         ],
