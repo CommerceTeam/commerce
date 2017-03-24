@@ -23,6 +23,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class MoneyViewHelper
 {
     /**
+     * @var array
+     */
+    protected static $cache = [];
+
+    /**
      * Use this function from TS, example:
      * price_net = stdWrap
      * price_net {
@@ -69,16 +74,7 @@ class MoneyViewHelper
             return false;
         }
 
-        /**
-         * Currency repository.
-         *
-         * @var \CommerceTeam\Commerce\Domain\Repository\CurrencyRepository
-         */
-        $currencyRepository = GeneralUtility::makeInstance(
-            \CommerceTeam\Commerce\Domain\Repository\CurrencyRepository::class
-        );
-        $currency = $currencyRepository->findByIso3($currencyKey);
-
+        $currency = self::getCurrency($currencyKey);
         if (empty($currency)) {
             return false;
         }
@@ -91,17 +87,36 @@ class MoneyViewHelper
         );
 
         if ($withSymbol) {
-            $wholeString = $formattedAmount;
-            if (!empty($currency['cu_symbol_left'])) {
-                $wholeString = $currency['cu_symbol_left'] . ' ' . $wholeString;
+            if ($currency['cu_symbol_left'] != '') {
+                $formattedAmount = $currency['cu_symbol_left'] . ' ' . $formattedAmount;
+            } elseif ($currency['cu_symbol_right'] != '') {
+                $formattedAmount .= ' ' . $currency['cu_symbol_right'];
             }
-            if (!empty($currency['cu_symbol_right'])) {
-                $wholeString .= ' ' . $currency['cu_symbol_right'];
-            }
-        } else {
-            $wholeString = $formattedAmount;
         }
 
-        return (string)$wholeString;
+        return (string)$formattedAmount;
+    }
+
+    /**
+     * Get currency taking cache into account
+     *
+     * @param $currencyKey
+     *
+     * @return array
+     */
+    protected static function getCurrency($currencyKey)
+    {
+        if (!isset(self::$cache[$currencyKey])) {
+            /**
+             * Currency repository.
+             *
+             * @var \CommerceTeam\Commerce\Domain\Repository\CurrencyRepository
+             */
+            $currencyRepository = GeneralUtility::makeInstance(
+                \CommerceTeam\Commerce\Domain\Repository\CurrencyRepository::class
+            );
+            self::$cache[$currencyKey] = $currencyRepository->findByIso3($currencyKey);
+        }
+        return self::$cache[$currencyKey];
     }
 }
