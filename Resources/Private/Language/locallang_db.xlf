@@ -396,6 +396,9 @@
 			<trans-unit id="tx_commerce_orders.order_id" xml:space="preserve">
 				<source>Order number</source>
 			</trans-unit>
+			<trans-unit id="tx_commerce_orders.newpid" xml:space="preserve">
+				<source>If not empty order gets moved to this folder</source>
+			</trans-unit>
 			<trans-unit id="tx_commerce_orders.cust_fe_user" xml:space="preserve">
 				<source>Customer feuser</source>
 			</trans-unit>

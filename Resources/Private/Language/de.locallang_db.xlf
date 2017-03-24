@@ -509,6 +509,10 @@
 				<source>Order number</source>
 				<target state="translated">Bestell-ID</target>
 			</trans-unit>
+			<trans-unit id="tx_commerce_orders.newpid" xml:space="preserve">
+				<source>If not empty order gets moved to this folder</source>
+				<target>Wenn nicht leer wir die Bestellung in diesen Ordner verschoben</target>
+			</trans-unit>
 			<trans-unit id="tx_commerce_orders.cust_fe_user" approved="yes">
 				<source>Customer feuser</source>
 				<target state="translated">Web-Site-Benutzer</target>

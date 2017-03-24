@@ -90,7 +90,7 @@ class OrderEditFunc
     public function sumPriceGrossFormat(array $parameter)
     {
         $content = '<input type="text" disabled name="' . $parameter['itemFormElName'] . '" value="' .
-            MoneyViewHelper::format($parameter['itemFormElValue'] / 100, '') . '">';
+            sprintf("%01.2f", $parameter['itemFormElValue'] / 100) . '">';
 
         return $content;
     }
@@ -203,8 +203,8 @@ class OrderEditFunc
                 $sum['price_net_value'] += $row['price_net'] / 100;
                 $sum['price_gross_value'] += $row['price_gross'] / 100;
 
-                $row['price_net'] = MoneyViewHelper::format($row['price_net'] / 100, '');
-                $row['price_gross'] = MoneyViewHelper::format($row['price_gross'] / 100, '');
+                $row['price_net'] = sprintf("%01.2f", $row['price_net'] / 100);
+                $row['price_gross'] = sprintf("%01.2f", $row['price_gross'] / 100);
 
                 $iOut .= '<tr>';
                 foreach ($fieldRows as $field) {
@@ -267,8 +267,8 @@ class OrderEditFunc
              * Cerate the summ row
              */
             $out .= '<tr>';
-            $sum['price_net'] = MoneyViewHelper::format($sum['price_net_value'], '');
-            $sum['price_gross'] = MoneyViewHelper::format($sum['price_gross_value'], '');
+            $sum['price_net'] = sprintf("%01.2f", $sum['price_net_value']);
+            $sum['price_gross'] = sprintf("%01.2f", $sum['price_gross_value']);
 
             foreach ($fieldRows as $field) {
                 switch ($field) {
@@ -376,10 +376,11 @@ class OrderEditFunc
             }
         }
 
-        $data['items'] = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderSelector(
+        $items = \CommerceTeam\Commerce\Utility\BackendUtility::getOrderFolderSelector(
             $orderPid,
             ConfigurationUtility::getInstance()->getExtConf('OrderFolderRecursiveLevel')
         );
+        $data['items'] = array_merge([['' => 0]], $items);
     }
 
     /**

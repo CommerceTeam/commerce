@@ -52,7 +52,8 @@ return [
             'config' => [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
-                'readOnly' => true
+                'readOnly' => true,
+                'eval' => 'datetime',
             ]
         ],
         'crdate' => [
@@ -60,12 +61,13 @@ return [
             'config' => [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
-                'readOnly' => true
+                'readOnly' => true,
+                'eval' => 'datetime',
             ]
         ],
 
         'newpid' => [
-            'label' => $languageFile . 'tx_commerce_orders.pid',
+            'label' => $languageFile . 'tx_commerce_orders.newpid',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
