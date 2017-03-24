@@ -3,6 +3,9 @@
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
 }
+#commerce-ordertree-topPanelItems {
+  background-color: #eee;
+}
 #commerce-ordertree {
   height: 100%;
 }

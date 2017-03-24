@@ -120,8 +120,8 @@ TYPO3.Components.OrderTree.TopPanel = Ext.extend(Ext.Panel, {
 
 		//this.addDragDropNodeInsertionFeature();
 
-		if (!TYPO3.Components.CategoryTree.Configuration.hideFilter
-			|| TYPO3.Components.CategoryTree.Configuration.hideFilter === '0'
+		if (!TYPO3.Components.OrderTree.Configuration.hideFilter
+			|| TYPO3.Components.OrderTree.Configuration.hideFilter === '0'
 		) {
 			this.addFilterFeature();
 		}
@@ -415,9 +415,9 @@ TYPO3.Components.OrderTree.TopPanel = Ext.extend(Ext.Panel, {
 				var clickedButton = this.dragData.item;
 
 				this.proxyElement.shadow = false;
-				this.proxyElement.innerHTML = '<div class="x-dd-drag-ghost-categorytree">' +
-					'<span class="x-dd-drag-ghost-categorytree-icon">' + clickedButton.initialConfig.html + '</span>' +
-					'<span class="x-dd-drag-ghost-categorytree-text">'  + clickedButton.title + '</span>' +
+				this.proxyElement.innerHTML = '<div class="x-dd-drag-ghost-ordertree">' +
+					'<span class="x-dd-drag-ghost-ordertree-icon">' + clickedButton.initialConfig.html + '</span>' +
+					'<span class="x-dd-drag-ghost-ordertree-text">'  + clickedButton.title + '</span>' +
 				'</div>';
 
 				this.proxy.update(this.proxyElement);
