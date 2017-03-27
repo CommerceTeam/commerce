@@ -1,0 +1,97 @@
+<f:if condition="{items}">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<f:translate id="LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:order_view.items.article_list"/>
+			<!-- add link to invoicepage
+			if ($settingsFactory->getExtConf('invoicePageID')) {
+                $theData[$titleCol] .= '<a href="../index.php?id=' . $settingsFactory->getExtConf('invoicePageID') .
+                    '&amp;tx_commerce_pi6[order_id]=' . $orderId . '&amp;type=' .
+                    $settingsFactory->getExtConf('invoicePageType') . '" target="_blank">' .
+                    $language->sL(
+                        'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:order_view.items.print_invoice',
+                        1
+                    ) . ' *</a>';
+            }
+
+            if ($orderEditable) {
+                                $params = '&edit[' . $orderArticleTable . '][' . $row['uid'] . ']=edit';
+                                $wrap = [
+                                    '<a href="#" onclick="' .
+                                    htmlspecialchars(BackendUtility::editOnClick($params)) . '">',
+                                    '</a>',
+                                ];
+                            }
+
+                                        $iOut .= '<td>';
+                            if ($orderEditable) {
+                                $params = '&edit[' . $orderArticleTable . '][' . $row['uid'] .
+                                    ']=edit&columnsOnly=amount';
+                                $onclickAction = 'onclick="' .
+                                    htmlspecialchars(BackendUtility::editOnClick($params)) .
+                                    '"';
+                                $wrap = [
+                                    '<b><a href="#" ' . $onclickAction . '>' .
+                                    $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render(),
+                                    '</a></b>',
+                                ];
+                            }
+			 -->
+		</div>
+		<div class="table-fit" id="recordlist-{table}" data-state="expanded">
+			<table>
+				<thead>
+				<tr>
+					<f:for each="{fields}" as="field">
+						<th><f:translate id="LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:{table}.{field}"/></th>
+					</f:for>
+				</tr>
+				</thead>
+				<tbody>
+				<f:for each="{items}" as="item">
+					<tr class="even">
+						<f:for each="{fields}" as="field">
+							<f:switch expression="{field}">
+								<f:case value="{titleField}">
+									<td>{item.{field}}</td>
+								</f:case>
+								<f:case value="amount">
+									<td>{item.{field}}</td>
+								</f:case>
+								<f:case value="price_net">
+									<td style="text-align: right"><f:format.number decimals="2">{item.{field}}</f:format.number></td>
+								</f:case>
+								<f:case value="price_gross">
+									<td style="text-align: right"><f:format.number decimals="2">{item.{field}}</f:format.number></td>
+								</f:case>
+								<f:case default="true">
+									<td>{item.{field}}</td>
+								</f:case>
+							</f:switch>
+						</f:for>
+					</tr>
+				</f:for>
+				</tbody>
+				<tfoot>
+				<tr>
+					<f:for each="{fields}" as="field">
+						<f:switch expression="{field}">
+							<f:case value="amount">
+								<td>{sum.{field}}</td>
+							</f:case>
+							<f:case value="price_net">
+								<td style="text-align: right"><f:format.number decimals="2">{sum.{field}}</f:format.number></td>
+							</f:case>
+							<f:case value="price_gross">
+								<td style="text-align: right"><f:format.number decimals="2">{sum.{field}}</f:format.number></td>
+							</f:case>
+							<f:case default="true">
+								<td>{sum.{field}}</td>
+							</f:case>
+						</f:switch>
+					</f:for>
+				</tr>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+</f:if>

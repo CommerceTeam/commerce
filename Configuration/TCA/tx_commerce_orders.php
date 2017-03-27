@@ -114,11 +114,12 @@ return [
                 'foreign_table_where' => ' AND tx_commerce_articles.article_type_uid = 2',
             ]
         ],
+        // @todo check if calculation and stored values are correct
         'sum_price_net' => [
             'label' => $languageFile . 'tx_commerce_orders.sum_price_net',
             'config' => [
                 'type' => 'user',
-                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->orderArticles',
+                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->sumPriceGrossFormat',
             ]
         ],
         'sum_price_gross' => [
@@ -126,6 +127,13 @@ return [
             'config' => [
                 'type' => 'user',
                 'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->sumPriceGrossFormat',
+            ]
+        ],
+        'articles' => [
+            'label' => $languageFile . 'tx_commerce_orders.articles',
+            'config' => [
+                'type' => 'user',
+                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->orderArticles',
             ]
         ],
         'payment_ref_id' => [

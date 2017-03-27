@@ -74,7 +74,7 @@ class OrderEditViewhelper
     public function sumPriceGrossFormat(array $parameter)
     {
         $content = '<input type="text" disabled name="' . $parameter['itemFormElName'] . '" value="' .
-            sprintf("%01.2f", $parameter['itemFormElValue'] / 100) . '">';
+            sprintf("%01.2f", $parameter['itemFormElValue']) . '">';
 
         return $content;
     }
@@ -91,12 +91,10 @@ class OrderEditViewhelper
     {
         /** @var IconFactory $iconFactory */
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-        $language = $this->getLanguageService();
         $settingsFactory = ConfigurationUtility::getInstance();
 
         $content = '';
         $orderArticleTable = 'tx_commerce_order_articles';
-        $orderTable = 'tx_commerce_orders';
 
         // GET Storage PID and order_id from Data
         $orderStoragePid = $parameter['row']['pid'];
@@ -107,9 +105,9 @@ class OrderEditViewhelper
          */
 
         // @todo TS config of fields in list
-        $fieldRows = ['amount', 'title', 'article_number', 'price_net', 'price_gross'];
+        $fields = ['amount', 'title', 'article_number', 'price_net', 'price_gross'];
 
-        $titleCol = $settingsFactory->getTcaValue($orderArticleTable . '.ctrl.label');
+        $titleField = $settingsFactory->getTcaValue($orderArticleTable . '.ctrl.label');
 
         // Check if Orders in this folder are editable
         /**
@@ -131,158 +129,44 @@ class OrderEditViewhelper
         $orderArticles = $orderArticleRepository->findByOrderIdInPage($orderId, $orderStoragePid);
 
         $sum = [];
-        $out = '';
+        $items = [];
+        $taxCache = [];
         if (!empty($orderArticles)) {
-            /*
-            * Only if we have a result
-            */
-            $theData[$titleCol] = '<span class="c-table">' .
-                $language->sL(
-                    'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:order_view.items.article_list',
-                    1
-                ) .
-                '</span> (' . count($orderArticles) . ')';
-
-            if ($settingsFactory->getExtConf('invoicePageID')) {
-                $theData[$titleCol] .= '<a href="../index.php?id=' . $settingsFactory->getExtConf('invoicePageID') .
-                    '&amp;tx_commerce_pi6[order_id]=' . $orderId . '&amp;type=' .
-                    $settingsFactory->getExtConf('invoicePageType') . '" target="_blank">' .
-                    $language->sL(
-                        'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:order_view.items.print_invoice',
-                        1
-                    ) . ' *</a>';
-            }
-
-            $out .= '
-                <tr>
-                    <td class="c-headLineTable" style="width: 95%;" colspan="' . (count($fieldRows) + 1) . '">' .
-                $theData[$titleCol] . '</td>
-                </tr>';
-
-            /*
-             * Header colum
-             */
-            foreach ($fieldRows as $field) {
-                $out .= '<td class="c-headLineTable"><b>' .
-                    $language->sL(BackendUtility::getItemLabel($orderArticleTable, $field)) .
-                    '</b></td>';
-            }
-
-            $out .= '<td class="c-headLineTable"></td></tr>';
-
-            $cc = 0;
             $iOut = '';
             foreach ($orderArticles as $row) {
-                ++$cc;
                 $sum['amount'] += $row['amount'];
+
+                if (!isset($taxCache[$row['tax']])) {
+                    $taxCache[$row['tax']] = 100 + $row['tax'];
+                }
 
                 if ($parameter['row']['pricefromnet'] == 1) {
                     $row['price_net'] = $row['price_net'] * $row['amount'];
-                    $row['price_gross'] = $row['price_net'] * (1 + (((float) $row['tax']) / 100));
+                    $row['price_gross'] = $row['price_net'] * $taxCache[$row['tax']] / 100;
                 } else {
                     $row['price_gross'] = $row['price_gross'] * $row['amount'];
-                    $row['price_net'] = $row['price_gross'] / (1 + (((float) $row['tax']) / 100));
+                    $row['price_net'] = $row['price_gross'] / $taxCache[$row['tax']] * 100;
                 }
 
-                $sum['price_net_value'] += $row['price_net'] / 100;
-                $sum['price_gross_value'] += $row['price_gross'] / 100;
+                $sum['price_net'] += $row['price_net'];
+                $sum['price_gross'] += $row['price_gross'];
 
-                $row['price_net'] = sprintf("%01.2f", $row['price_net'] / 100);
-                $row['price_gross'] = sprintf("%01.2f", $row['price_gross'] / 100);
-
-                $iOut .= '<tr>';
-                foreach ($fieldRows as $field) {
-                    $wrap = ['', ''];
-                    switch ($field) {
-                        case $titleCol:
-                            $iOut .= '<td>';
-                            if ($orderEditable) {
-                                $params = '&edit[' . $orderArticleTable . '][' . $row['uid'] . ']=edit';
-                                $wrap = [
-                                    '<a href="#" onclick="' .
-                                    htmlspecialchars(BackendUtility::editOnClick($params)) . '">',
-                                    '</a>',
-                                ];
-                            }
-                            break;
-
-                        case 'amount':
-                            $iOut .= '<td>';
-                            if ($orderEditable) {
-                                $params = '&edit[' . $orderArticleTable . '][' . $row['uid'] .
-                                    ']=edit&columnsOnly=amount';
-                                $onclickAction = 'onclick="' .
-                                    htmlspecialchars(BackendUtility::editOnClick($params)) .
-                                    '"';
-                                $wrap = [
-                                    '<b><a href="#" ' . $onclickAction . '>' .
-                                    $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render(),
-                                    '</a></b>',
-                                ];
-                            }
-                            break;
-
-                        case 'price_net':
-                            // fall through
-                        case 'price_gross':
-                            $iOut .= '<td style="text-align: right">';
-                            break;
-
-                        default:
-                            $iOut .= '<td>';
-                    }
-
-                    $iOut .= implode(
-                        BackendUtility::getProcessedValue($orderArticleTable, $field, $row[$field], 100),
-                        $wrap
-                    );
-                    $iOut .= '</td>';
-                }
-
-                /*
-                 * Trash icon
-                 */
-                $iOut .= '<td></td>
-					</tr>';
+                $row['price_net'] = $row['price_net'] / 100;
+                $row['price_gross'] = $row['price_gross'] / 100;
+                $items[] = $row;
             }
-
-            $out .= $iOut;
-            /*
-             * Cerate the summ row
-             */
-            $out .= '<tr>';
-            $sum['price_net'] = sprintf("%01.2f", $sum['price_net_value']);
-            $sum['price_gross'] = sprintf("%01.2f", $sum['price_gross_value']);
-
-            foreach ($fieldRows as $field) {
-                switch ($field) {
-                    case 'price_net':
-                        // fall through
-                    case 'price_gross':
-                        $out .= '<td class="c-headLineTable" style="text-align: right"><b>';
-                        break;
-
-                    default:
-                        $out .= '<td class="c-headLineTable"><b>';
-                }
-
-                if ($sum[$field] > 0) {
-                    $out .= BackendUtility::getProcessedValueExtra($orderArticleTable, $field, $sum[$field], 100);
-                }
-
-                $out .= '</b></td>';
-            }
-
-            $out .= '<td class="c-headLineTable"></td></tr>';
 
             /*
              * Always
              * Update sum_price_net and sum_price_gross
              * To Be shure everything is ok
              */
+            $sum['price_gross'] = $sum['price_gross'] / 100;
+            $sum['price_net'] = $sum['price_net'] / 100;
+
             $values = [
-                'sum_price_gross' => $sum['price_gross_value'] * 100,
-                'sum_price_net' => $sum['price_net_value'] * 100
+                'sum_price_gross' => $sum['price_gross'],
+                'sum_price_net' => $sum['price_net'],
             ];
             /**
              * Order repository.
@@ -295,14 +179,19 @@ class OrderEditViewhelper
             $orderRepository->updateByOrderId($orderId, $values);
         }
 
-        $out = '
-            <!--
-                DB listing of elements: "' . htmlspecialchars($orderTable) . '"
-            -->
-            <table border="0" cellpadding="0" cellspacing="0" class="typo3-dblist">
-                ' . $out . '
-            </table>';
-        $content .= $out;
+        /** @var StandaloneView $view */
+        $view = GeneralUtility::makeInstance(StandaloneView::class);
+        $view->setTemplateRootPaths([1 => 'EXT:commerce/Resources/Private/Backend/']);
+        $view->setTemplate('OrderItems');
+
+        $view->assign('table', 'tx_commerce_order_articles');
+        $view->assign('fields', $fields);
+        $view->assign('titleField', $titleField);
+        $view->assign('orderEditable', $orderEditable);
+        $view->assign('items', $items);
+        $view->assign('sum', $sum);
+
+        $content .= $view->render();
 
         return $content;
     }
