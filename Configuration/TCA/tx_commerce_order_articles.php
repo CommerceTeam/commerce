@@ -119,12 +119,10 @@ return [
                 'readOnly' => true,
             ]
         ],
-        // @todo Declaration for iproc function for selecting right value
         'order_id' => [
             'label' => $languageFile . ':tx_commerce_order_articles.order_id',
             'config' => [
-                'type' => 'user',
-                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->articleOrderId',
+                'type' => 'input',
                 'readOnly' => true,
             ]
         ],

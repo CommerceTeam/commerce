@@ -71,23 +71,6 @@ class OrderEditViewhelper
      *
      * @return string HTML-Content
      */
-    public function articleOrderId(array $parameter)
-    {
-        $content = htmlspecialchars($parameter['itemFormElValue']) .
-            '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' .
-            htmlspecialchars($parameter['itemFormElValue']) . '">';
-
-        return $content;
-    }
-
-    /**
-     * Article order_id
-     * Just a hidden field.
-     *
-     * @param array $parameter Parameter
-     *
-     * @return string HTML-Content
-     */
     public function sumPriceGrossFormat(array $parameter)
     {
         $content = '<input type="text" disabled name="' . $parameter['itemFormElName'] . '" value="' .
