@@ -1,0 +1,23 @@
+<div class="panel panel-default">
+	<div class="panel-heading"></div>
+	<div class="table-fit" id="recordlist-tt_address" data-state="expanded">
+		<table>
+			<f:for each="{address}" as="row" iteration="iteration">
+				<f:if condition="{iteration.isEven}">
+					<f:then>
+						<tr class="even">
+							<td><f:translate id="{row.label}"/></td>
+							<td>{row.value}</td>
+						</tr>
+					</f:then>
+					<f:else>
+						<tr class="odd">
+							<td><f:translate id="{row.label}"/></td>
+							<td>{row.value}</td>
+						</tr>
+					</f:else>
+				</f:if>
+			</f:for>
+		</table>
+	</div>
+</div>

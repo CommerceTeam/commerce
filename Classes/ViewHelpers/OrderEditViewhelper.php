@@ -19,6 +19,8 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * User Class for displaying Orders.
@@ -464,32 +466,28 @@ class OrderEditViewhelper
                 )) .
                 '</a></b>';
 
-            $display = [];
-            $showRecordFieldList = ConfigurationUtility::getInstance()
-                ->getTcaValue($table . '.interface.showRecordFieldList');
+            $showRecordFieldList = GeneralUtility::trimExplode(',', ConfigurationUtility::getInstance()
+                ->getTcaValue($table . '.interface.showRecordFieldList'));
             foreach ($data as $key => $value) {
-                /*
-                 * Walk through rowset,
-                 * get TCA values
-                 * and LL Names
-                 */
-                if (GeneralUtility::inList($showRecordFieldList, $key)) {
-                    // Get The label
-                    $translatedLabel = $this->getLanguageService()->sL(BackendUtility::getItemLabel($table, $key));
-                    $display[$key] = [$translatedLabel, htmlspecialchars($value)];
+                if (!in_array($key, $showRecordFieldList)) {
+                    unset($data[$key]);
+                } else {
+                    $data[$key] = [
+                        'value' => $data[$key],
+                        'label' => $GLOBALS['TCA'][$table]['columns'][$key]['label'],
+                    ];
                 }
             }
 
-            $tableLayout = [
-                'table' => ['<table>', '</table>'],
-                'defRowEven' => [
-                    'defCol' => ['<td>', '</td>'],
-                ],
-                'defRowOdd' => [
-                    'defCol' => ['<td>', '</td>'],
-                ],
-            ];
-            $content .= $this->table($display, $tableLayout);
+            /** @var StandaloneView $view */
+            $view = GeneralUtility::makeInstance(StandaloneView::class);
+            $view->setTemplateRootPaths([1 => 'EXT:commerce/Resources/Private/Backend/']);
+            $view->setTemplate('Address');
+
+            $view->assign('table', $table);
+            $view->assign('address', $data);
+
+            $content .= $view->render();
         }
 
         $content .= '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' .
@@ -497,62 +495,6 @@ class OrderEditViewhelper
             '">';
 
         return $content;
-    }
-
-    /**
-     * Returns a table based on the input $data
-     *
-     * @param array $data Multidim array with first levels = rows, second levels = cells
-     * @param array $layout If set, then this provides an alternative layout array instead of $this->tableLayout
-     * @return string The HTML table.
-     * @internal
-     * @deprecated since TYPO3 CMS 7, will be removed in TYPO3 CMS 8
-     */
-    public function table($data, $layout = null)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $result = '';
-        if (is_array($data)) {
-            $tableLayout = is_array($layout) ? $layout : [
-                'defRow' => [
-                    'defCol' => ['<td valign="top">', '</td>']
-                ]
-            ];
-            $rowCount = 0;
-            foreach ($data as $tableRow) {
-                if ($rowCount % 2) {
-                    $layout = is_array($tableLayout['defRowOdd']) ?
-                        $tableLayout['defRowOdd'] :
-                        $tableLayout['defRow'];
-                } else {
-                    $layout = is_array($tableLayout['defRowEven']) ?
-                        $tableLayout['defRowEven'] :
-                        $tableLayout['defRow'];
-                }
-                $rowLayout = is_array($tableLayout[$rowCount]) ? $tableLayout[$rowCount] : $layout;
-                $rowResult = '';
-                if (is_array($tableRow)) {
-                    $cellCount = 0;
-                    foreach ($tableRow as $tableCell) {
-                        $cellWrap = is_array($layout[$cellCount]) ? $layout[$cellCount] : $layout['defCol'];
-                        $cellWrap = is_array($rowLayout['defCol']) ? $rowLayout['defCol'] : $cellWrap;
-                        $cellWrap = is_array($rowLayout[$cellCount]) ? $rowLayout[$cellCount] : $cellWrap;
-                        $rowResult .= $cellWrap[0] . $tableCell . $cellWrap[1];
-                        $cellCount++;
-                    }
-                }
-                $rowWrap = is_array($layout['tr']) ? $layout['tr'] : ['<tr>', '</tr>'];
-                $rowWrap = is_array($rowLayout['tr']) ? $rowLayout['tr'] : $rowWrap;
-                $result .= $rowWrap[0] . $rowResult . $rowWrap[1];
-                $rowCount++;
-            }
-            $tableWrap = is_array($tableLayout['table']) ? $tableLayout['table'] : [
-                '<table border="0" cellspacing="0" cellpadding="0" class="typo3-dblist" id="typo3-tmpltable">',
-                '</table>'
-            ];
-            $result = $tableWrap[0] . $result . $tableWrap[1];
-        }
-        return $result;
     }
 
     /**
