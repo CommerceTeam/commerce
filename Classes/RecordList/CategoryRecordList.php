@@ -456,7 +456,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'] as
                      $classData) {
-                $hookObject = GeneralUtility::getUserObj($classData);
+                $hookObject = GeneralUtility::makeInstance($classData);
                 if (!$hookObject instanceof RecordListGetTableHookInterface) {
                     throw new \UnexpectedValueException(
                         '$hookObject must implement interface ' . RecordListGetTableHookInterface::class,
@@ -741,7 +741,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'] as
                      $classRef) {
-                $hookObjectsArr[] = GeneralUtility::getUserObj($classRef);
+                $hookObjectsArr[] = GeneralUtility::makeInstance($classRef);
             }
         }
 
@@ -1008,7 +1008,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         $hookName = DatabaseRecordList::class;
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$hookName]['buildQueryParameters'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$hookName]['buildQueryParameters'] as $classRef) {
-                $hookObject = GeneralUtility::getUserObj($classRef);
+                $hookObject = GeneralUtility::makeInstance($classRef);
                 if (method_exists($hookObject, 'buildQueryParametersPostProcess')) {
                     $hookObject->buildQueryParametersPostProcess(
                         $parameters,
@@ -1263,7 +1263,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                     )) {
                         $scOptions = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc'];
                         foreach ($scOptions['actions'] as $classData) {
-                            $hookObject = GeneralUtility::getUserObj($classData);
+                            $hookObject = GeneralUtility::makeInstance($classData);
                             if (!$hookObject instanceof RecordListHookInterface) {
                                 throw new \UnexpectedValueException(
                                     '$hookObject must implement interface ' . RecordListHookInterface::class,
@@ -1415,7 +1415,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'])) {
             $scOptions = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc'];
             foreach ($scOptions['actions'] as $classData) {
-                $hookObject = GeneralUtility::getUserObj($classData);
+                $hookObject = GeneralUtility::makeInstance($classData);
                 if (!$hookObject instanceof RecordListHookInterface) {
                     throw new \UnexpectedValueException(
                         '$hookObject must implement interface ' . RecordListHookInterface::class,
@@ -1828,7 +1828,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             }
             $scOptions = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'];
             foreach ($scOptions['typo3/class.db_list_extra.inc']['actions'] as $classData) {
-                $hookObject = GeneralUtility::getUserObj($classData);
+                $hookObject = GeneralUtility::makeInstance($classData);
                 if (!$hookObject instanceof RecordListHookInterface) {
                     throw new \UnexpectedValueException(
                         '$hookObject must implement interface ' . RecordListHookInterface::class,
@@ -2001,7 +2001,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'])) {
             $scOptions = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'];
             foreach ($scOptions['typo3/class.db_list_extra.inc']['actions'] as $classData) {
-                $hookObject = GeneralUtility::getUserObj($classData);
+                $hookObject = GeneralUtility::makeInstance($classData);
                 if (!$hookObject instanceof RecordListHookInterface) {
                     throw new \UnexpectedValueException(
                         '$hookObject must implement interface ' . RecordListHookInterface::class,

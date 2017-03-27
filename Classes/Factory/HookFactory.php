@@ -51,7 +51,7 @@ class HookFactory
 
         $extConf = &$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'];
         if (isset($extConf[$className][$hookName])) {
-            $result = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($extConf[$className][$hookName]);
+            $result = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($extConf[$className][$hookName]);
         }
 
         return $result;
@@ -76,7 +76,7 @@ class HookFactory
         $extConf = &$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'];
         if (is_array($extConf[$className][$hookName])) {
             foreach ($extConf[$className][$hookName] as $classRef) {
-                $result[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
+                $result[] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($classRef);
             }
         }
 

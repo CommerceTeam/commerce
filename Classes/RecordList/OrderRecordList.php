@@ -398,7 +398,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'])) {
             $getTable = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'];
             foreach ($getTable as $classData) {
-                $hookObject = GeneralUtility::getUserObj($classData);
+                $hookObject = GeneralUtility::makeInstance($classData);
                 if (!$hookObject instanceof RecordListGetTableHookInterface) {
                     throw new \UnexpectedValueException(
                         $classData . ' must implement interface ' . RecordListGetTableHookInterface::class,
@@ -1362,7 +1362,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             }
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'] as
                      $classData) {
-                $hookObject = GeneralUtility::getUserObj($classData);
+                $hookObject = GeneralUtility::makeInstance($classData);
                 if (!$hookObject instanceof RecordListHookInterface) {
                     throw new \UnexpectedValueException(
                         $classData . ' must implement interface ' . RecordListHookInterface::class,
@@ -1523,7 +1523,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'] as
                      $classRef) {
-                $hookObjectsArr[] = GeneralUtility::getUserObj($classRef);
+                $hookObjectsArr[] = GeneralUtility::makeInstance($classRef);
             }
         }
         // Set ORDER BY:
