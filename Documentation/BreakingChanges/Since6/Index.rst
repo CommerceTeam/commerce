@@ -60,6 +60,7 @@ FolderRepository::initFolders $parentTitle
 FolderRepository::initFolders $executeUpdateUtility
 AddressObserver::update $_ removed the unused parameter. Only the uid will be accepted.
 FeuserObserver::update $_ removed the unused parameter. Only the uid will be accepted.
+OrderEditViewhelper::address $_ removed the unused parameter.
 
 
 Remove properties

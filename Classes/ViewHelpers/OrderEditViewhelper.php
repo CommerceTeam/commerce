@@ -19,7 +19,6 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
@@ -395,7 +394,7 @@ class OrderEditViewhelper
      */
     public function invoiceAddress(array $parameter)
     {
-        return $this->address($parameter, null, 'tt_address', $parameter['itemFormElValue']);
+        return $this->address($parameter, 'tt_address', $parameter['itemFormElValue']);
     }
 
     /**
@@ -425,7 +424,7 @@ class OrderEditViewhelper
      */
     public function deliveryAddress(array $parameter)
     {
-        return $this->address($parameter, null, 'tt_address', $parameter['itemFormElValue']);
+        return $this->address($parameter, 'tt_address', $parameter['itemFormElValue']);
     }
 
     /**
@@ -433,13 +432,12 @@ class OrderEditViewhelper
      * Renders an address block.
      *
      * @param array $parameter Parameter
-     * @param null $_ Form engine
      * @param string $table Table
      * @param int $uid Record UID
      *
      * @return string HTML-Content
      */
-    public function address(array $parameter, $_, $table, $uid)
+    public function address(array $parameter, $table, $uid)
     {
         /** @var IconFactory $iconFactory */
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
