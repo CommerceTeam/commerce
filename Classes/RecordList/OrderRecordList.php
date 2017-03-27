@@ -21,8 +21,6 @@ use TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-/** @noinspection PhpInternalEntityUsedInspection */
-use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -411,7 +409,9 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             }
         }
         /** @noinspection PhpInternalEntityUsedInspection */
-        $additionalConstraints = empty($addWhere) ? [] : [QueryHelper::stripLogicalOperatorPrefix($addWhere)];
+        $additionalConstraints = empty($addWhere) ? [] : [
+            \TYPO3\CMS\Core\Database\Query\QueryHelper::stripLogicalOperatorPrefix($addWhere)
+        ];
         // Create the SQL query for selecting the elements in the listing:
         // do not do paging when outputting as CSV
         if ($this->csvOutput) {
@@ -1626,7 +1626,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         ];
         $tempOrderBy = [];
         /** @noinspection PhpInternalEntityUsedInspection */
-        foreach (QueryHelper::parseOrderBy($orderBy) as $orderPair) {
+        foreach (\TYPO3\CMS\Core\Database\Query\QueryHelper::parseOrderBy($orderBy) as $orderPair) {
             list($fieldName, $order) = $orderPair;
             if ($order !== null) {
                 $tempOrderBy[] = implode(' ', $orderPair);

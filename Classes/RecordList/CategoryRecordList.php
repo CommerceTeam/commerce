@@ -23,8 +23,6 @@ use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-/** @noinspection PhpInternalEntityUsedInspection */
-use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Database\Query\Restriction\BackendWorkspaceRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Imaging\Icon;
@@ -469,7 +467,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             }
         }
         /** @noinspection PhpInternalEntityUsedInspection */
-        $additionalConstraints = empty($addWhere) ? [] : [QueryHelper::stripLogicalOperatorPrefix($addWhere)];
+        $additionalConstraints = empty($addWhere) ? [] : [
+            \TYPO3\CMS\Core\Database\Query\QueryHelper::stripLogicalOperatorPrefix($addWhere)
+        ];
         $selFieldList = GeneralUtility::trimExplode(',', $selFieldList, true);
 
         // Create the SQL query for selecting the elements in the listing:
@@ -784,7 +784,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         ];
         $tempOrderBy = [];
         /** @noinspection PhpInternalEntityUsedInspection */
-        foreach (QueryHelper::parseOrderBy($orderBy) as $orderPair) {
+        foreach (\TYPO3\CMS\Core\Database\Query\QueryHelper::parseOrderBy($orderBy) as $orderPair) {
             list($fieldName, $order) = $orderPair;
             if ($order !== null) {
                 $tempOrderBy[] = implode(' ', $orderPair);
@@ -858,7 +858,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         int $pageId,
         array $additionalConstraints = [],
         array $fields = ['*']
-    ): QueryBuilder {
+    ) : QueryBuilder
+    {
         $queryParameters = $this->buildQueryParameters($table, $pageId, $fields, $additionalConstraints);
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -940,7 +941,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         int $pageId,
         array $fieldList = ['*'],
         array $additionalConstraints = []
-    ): array {
+    ) : array
+    {
         $expressionBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($table)
             ->expr();
@@ -965,7 +967,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             $parameters['orderBy'][] = $this->sortRev ? [$this->sortField, 'DESC'] : [$this->sortField, 'ASC'];
         } else {
             $orderBy = $GLOBALS['TCA'][$table]['ctrl']['sortby'] ?: $GLOBALS['TCA'][$table]['ctrl']['default_sortby'];
-            $parameters['orderBy'] = QueryHelper::parseOrderBy((string)$orderBy);
+            /** @noinspection PhpInternalEntityUsedInspection */
+            $parameters['orderBy'] = \TYPO3\CMS\Core\Database\Query\QueryHelper::parseOrderBy((string)$orderBy);
         }
 
         if (is_array($parameters['orderBy'])) {

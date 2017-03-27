@@ -13,7 +13,6 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  */
 
 use CommerceTeam\Commerce\Utility\BackendUtility;
-use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
 
@@ -640,6 +639,9 @@ class CategoryRepository extends AbstractRepository
      */
     public function findRootlineCategoryByUid($categoryUid, $andWhere = '')
     {
+        /** @noinspection PhpInternalEntityUsedInspection */
+        $andWhere = \TYPO3\CMS\Core\Database\Query\QueryHelper::stripLogicalOperatorPrefix($andWhere);
+
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
         $queryBuilder
             ->select(
@@ -666,8 +668,7 @@ class CategoryRepository extends AbstractRepository
                     'c.uid',
                     $queryBuilder->createNamedParameter($categoryUid, \PDO::PARAM_INT)
                 ),
-                /** @noinspection PhpInternalEntityUsedInspection */
-                QueryHelper::stripLogicalOperatorPrefix($andWhere)
+                $andWhere
             );
 
         $result = $queryBuilder
