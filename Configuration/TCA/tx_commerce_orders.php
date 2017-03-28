@@ -118,15 +118,15 @@ return [
         'sum_price_net' => [
             'label' => $languageFile . 'tx_commerce_orders.sum_price_net',
             'config' => [
-                'type' => 'user',
-                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->sumPriceGrossFormat',
+                'type' => 'input',
+                'eval' => \CommerceTeam\Commerce\Evaluation\FloatEvaluator::class,
             ]
         ],
         'sum_price_gross' => [
             'label' => $languageFile . 'tx_commerce_orders.sum_price_gross',
             'config' => [
-                'type' => 'user',
-                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->sumPriceGrossFormat',
+                'type' => 'input',
+                'eval' => \CommerceTeam\Commerce\Evaluation\FloatEvaluator::class,
             ]
         ],
         'articles' => [

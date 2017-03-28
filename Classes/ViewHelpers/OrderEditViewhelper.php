@@ -14,7 +14,6 @@ namespace CommerceTeam\Commerce\ViewHelpers;
 
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
-use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
@@ -55,29 +54,6 @@ class OrderEditViewhelper
      * @var string
      */
     protected $cmd_table;
-
-    /**
-     * Module settings.
-     *
-     * @var array
-     */
-    protected $MOD_SETTINGS = [];
-
-    /**
-     * Article order_id
-     * Just a hidden field.
-     *
-     * @param array $parameter Parameter
-     *
-     * @return string HTML-Content
-     */
-    public function sumPriceGrossFormat(array $parameter)
-    {
-        $content = '<input type="text" disabled name="' . $parameter['itemFormElName'] . '" value="' .
-            sprintf("%01.2f", $parameter['itemFormElValue']) . '">';
-
-        return $content;
-    }
 
     /**
      * Oder Articles
@@ -261,23 +237,6 @@ class OrderEditViewhelper
     }
 
     /**
-     * Renders the crdate.
-     *
-     * @param array $parameter Parameter
-     *
-     * @return string HTML-Content
-     */
-    public function crdate(array $parameter)
-    {
-        $parameter['itemFormElValue'] = date('d.m.y', $parameter['itemFormElValue']);
-        $parameter['renderType'] = 'none';
-
-        /** @var NodeFactory $nodeFactory */
-        $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
-        return $nodeFactory->create($parameter)->render()['html'];
-    }
-
-    /**
      * Invoice Adresss
      * Renders the invoice adresss.
      *
@@ -375,7 +334,6 @@ class OrderEditViewhelper
         $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
         $dblist->returnUrl = $this->returnUrl;
         $dblist->allFields = 1;
-        $dblist->localizationView = $this->MOD_SETTINGS['localization'];
         $dblist->showClipboard = 0;
 
         // CB is the clipboard command array
@@ -392,7 +350,7 @@ class OrderEditViewhelper
             );
         }
         $dblist->start(null, 'tx_commerce_orders', 0);
-
+        // @todo fix rendering of orders of the user
         $dblist->generateList();
 
         return $dblist->HTMLcode;
@@ -407,28 +365,5 @@ class OrderEditViewhelper
     protected function getBackendUser()
     {
         return $GLOBALS['BE_USER'];
-    }
-
-    /**
-     * Get language service.
-     *
-     * @return \TYPO3\CMS\Lang\LanguageService
-     */
-    protected function getLanguageService()
-    {
-        return $GLOBALS['LANG'];
-    }
-
-    /**
-     * Get controller document template.
-     *
-     * @return \TYPO3\CMS\Backend\Template\DocumentTemplate
-     */
-    protected function getControllerDocumentTemplate()
-    {
-        // $GLOBALS['SOBE'] might be any kind of PHP class (controller most
-        // of the times) These class do not inherit from any common class,
-        // but they all seem to have a "doc" member
-        return $GLOBALS['SOBE']->doc;
     }
 }

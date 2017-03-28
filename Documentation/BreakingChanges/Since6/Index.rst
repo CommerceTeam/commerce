@@ -53,6 +53,8 @@ BaseController::renderValue.NUMBERFORMAT this type of formating is possible via 
 BaseController::makeArticleView added method_exists before calling it as this method is only used in ListController
 BaseController::renderSingleView because it is only implemented and called in ListController
 OrderEditViewhelper::articleOrderId changed field to input and readOnly solves the same purpose
+OrderEditViewhelper::crdate there is no need to render it like this. TCA was modified to use core means.
+OrderEditViewhelper::sumPriceGrossFormat not needed anymore replaced with custom eval
 
 
 Removed parameter

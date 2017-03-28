@@ -30,7 +30,8 @@ return [
             'config' => [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
-                'readOnly' => true
+                'readOnly' => true,
+                'eval' => 'datetime',
             ]
         ],
         'article_uid' => [
