@@ -160,9 +160,8 @@ call_user_func(function ($packageKey) {
             'before' => [\TYPO3\CMS\Backend\Form\FormDataProvider\TcaCheckboxItems::class],
         ];
 
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][
-            \CommerceTeam\Commerce\Evaluation\FloatEvaluator::class
-        ] = '';
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals']
+            [\CommerceTeam\Commerce\Evaluation\FloatEvaluator::class] = '';
 
 
         // CLI Script configuration

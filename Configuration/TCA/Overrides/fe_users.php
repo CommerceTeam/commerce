@@ -46,8 +46,24 @@ $tempColumns = [
         'exclude' => 1,
         'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xlf:fe_users.tx_commerce_feuser_orders',
         'config' => [
-            'type' => 'user',
-            'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->feUserOrders',
+            'type' => 'inline',
+            'foreign_table' => 'tx_commerce_orders',
+            'foreign_field' => 'cust_fe_user',
+            'maxitems' => 10,
+            'appearance' => [
+                'enabledControls' => [
+                    'info' => true,
+                    'new' => false,
+                    'dragdrop' => false,
+                    'sort' => false,
+                    'hide' => true,
+                    'delete' => true,
+                    'localize' => false,
+                ],
+            ],
+            'behaviour' => [
+                'localizationMode' => 'select',
+            ],
         ],
     ],
 ];

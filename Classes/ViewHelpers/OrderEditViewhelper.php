@@ -28,34 +28,6 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
 class OrderEditViewhelper
 {
     /**
-     * Page info.
-     *
-     * @var array
-     */
-    protected $pageinfo;
-
-    /**
-     * Return url.
-     *
-     * @var string
-     */
-    protected $returnUrl;
-
-    /**
-     * Commands.
-     *
-     * @var string
-     */
-    protected $cmd;
-
-    /**
-     * Command table.
-     *
-     * @var string
-     */
-    protected $cmd_table;
-
-    /**
      * Oder Articles
      * Renders the List of aricles.
      *
@@ -315,45 +287,6 @@ class OrderEditViewhelper
             '">';
 
         return $content;
-    }
-
-    /**
-     * Frontend user orders.
-     *
-     * @return string
-     */
-    public function feUserOrders()
-    {
-        /**
-         * Order record list.
-         *
-         * @var \CommerceTeam\Commerce\RecordList\OrderRecordList $dblist
-         */
-        $dblist = GeneralUtility::makeInstance(\CommerceTeam\Commerce\RecordList\OrderRecordList::class);
-        $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
-        $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
-        $dblist->returnUrl = $this->returnUrl;
-        $dblist->allFields = 1;
-        $dblist->showClipboard = 0;
-
-        // CB is the clipboard command array
-        $clipBoardCommands = GeneralUtility::_GET('CB');
-        if ($this->cmd == 'setCB') {
-            // CBH is all the fields selected for the clipboard, CBC is the checkbox fields
-            // which were checked. By merging we get a full array of checked/unchecked
-            // elements
-            // This is set to the 'el' array of the CB after being parsed so only the table
-            // in question is registered.
-            $clipBoardCommands['el'] = $dblist->clipObj->cleanUpCBC(
-                array_merge(GeneralUtility::_POST('CBH'), GeneralUtility::_POST('CBC')),
-                $this->cmd_table
-            );
-        }
-        $dblist->start(null, 'tx_commerce_orders', 0);
-        // @todo fix rendering of orders of the user
-        $dblist->generateList();
-
-        return $dblist->HTMLcode;
     }
 
 
