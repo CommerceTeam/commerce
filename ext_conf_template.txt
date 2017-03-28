@@ -72,6 +72,9 @@ defEmailAddress = foo@bar.com
 # cat=order/other/30; type=int; label=OrderFolderRecursiveLevel: Defines the maximum recursions for the drop-down display of the order folder
 OrderFolderRecursiveLevel = 2
 
+# cat=order/other/30; type=String; label=orderArticleFields: Defines the order articles fields to be shown inside of the order records in backend form
+orderArticleFields = amount, title, article_number, price_net, price_gross
+
 # cat=order/other/100; type=String; label=Define the Charset for the csv Files in the order module
 BECSVCharset  = utf-8
 

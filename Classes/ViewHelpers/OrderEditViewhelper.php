@@ -95,9 +95,7 @@ class OrderEditViewhelper
         $orderStoragePid = $parameter['row']['pid'];
         $orderId = $parameter['row']['order_id'];
 
-        // @todo TS config of fields in list
-        $fields = ['amount', 'title', 'article_number', 'price_net', 'price_gross'];
-
+        $fields = GeneralUtility::trimExplode(',', $settingsFactory->getConfiguration('orderArticleFields'));
         $titleField = $settingsFactory->getTcaValue('tx_commerce_order_articles.ctrl.label');
 
         // Check if orders in this folder are editable
