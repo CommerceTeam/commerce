@@ -1,41 +1,13 @@
+{namespace c=CommerceTeam\Commerce\ViewHelpers}
 <f:if condition="{items}">
+	<f:if condition="{invoicePageId}">
+		<a href="../index.php?id={invoicePageId}&tx_commerce_pi6[order_id]={orderId}&type={invoicePageType}" target="_blank">
+			<f:translate id="LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:order_view.items.print_invoice"/> *
+		</a>
+	</f:if>
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<f:translate id="LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:order_view.items.article_list"/>
-			<!-- add link to invoicepage
-			if ($settingsFactory->getExtConf('invoicePageID')) {
-                $theData[$titleCol] .= '<a href="../index.php?id=' . $settingsFactory->getExtConf('invoicePageID') .
-                    '&amp;tx_commerce_pi6[order_id]=' . $orderId . '&amp;type=' .
-                    $settingsFactory->getExtConf('invoicePageType') . '" target="_blank">' .
-                    $language->sL(
-                        'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:order_view.items.print_invoice',
-                        1
-                    ) . ' *</a>';
-            }
-
-            if ($orderEditable) {
-                                $params = '&edit[' . $orderArticleTable . '][' . $row['uid'] . ']=edit';
-                                $wrap = [
-                                    '<a href="#" onclick="' .
-                                    htmlspecialchars(BackendUtility::editOnClick($params)) . '">',
-                                    '</a>',
-                                ];
-                            }
-
-                                        $iOut .= '<td>';
-                            if ($orderEditable) {
-                                $params = '&edit[' . $orderArticleTable . '][' . $row['uid'] .
-                                    ']=edit&columnsOnly=amount';
-                                $onclickAction = 'onclick="' .
-                                    htmlspecialchars(BackendUtility::editOnClick($params)) .
-                                    '"';
-                                $wrap = [
-                                    '<b><a href="#" ' . $onclickAction . '>' .
-                                    $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render(),
-                                    '</a></b>',
-                                ];
-                            }
-			 -->
 		</div>
 		<div class="table-fit" id="recordlist-{table}" data-state="expanded">
 			<table>
@@ -52,10 +24,20 @@
 						<f:for each="{fields}" as="field">
 							<f:switch expression="{field}">
 								<f:case value="{titleField}">
-									<td>{item.{field}}</td>
+									<td>
+										<f:if condition="{orderEditable}">
+											<f:then><c:be.link.editAction tableName="{table}" uids="{0: item.uid}">{item.{field}}</c:be.link.editAction></f:then>
+											<f:else>{item.{field}}</f:else>
+										</f:if>
+									</td>
 								</f:case>
 								<f:case value="amount">
-									<td>{item.{field}}</td>
+									<td>
+										<f:if condition="{orderEditable}">
+											<f:then><c:be.link.editAction tableName="{table}" uids="{0: item.uid}" columnsOnly="{0: 'amount'}">{item.{field}}</c:be.link.editAction></f:then>
+											<f:else>{item.{field}}</f:else>
+										</f:if>
+									</td>
 								</f:case>
 								<f:case value="price_net">
 									<td style="text-align: right"><f:format.number decimals="2">{item.{field}}</f:format.number></td>

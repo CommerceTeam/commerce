@@ -89,27 +89,18 @@ class OrderEditViewhelper
      */
     public function orderArticles(array $parameter)
     {
-        /** @var IconFactory $iconFactory */
-        $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $settingsFactory = ConfigurationUtility::getInstance();
-
-        $content = '';
-        $orderArticleTable = 'tx_commerce_order_articles';
 
         // GET Storage PID and order_id from Data
         $orderStoragePid = $parameter['row']['pid'];
         $orderId = $parameter['row']['order_id'];
 
-        /*
-         * Select Order_articles
-         */
-
         // @todo TS config of fields in list
         $fields = ['amount', 'title', 'article_number', 'price_net', 'price_gross'];
 
-        $titleField = $settingsFactory->getTcaValue($orderArticleTable . '.ctrl.label');
+        $titleField = $settingsFactory->getTcaValue('tx_commerce_order_articles.ctrl.label');
 
-        // Check if Orders in this folder are editable
+        // Check if orders in this folder are editable
         /**
          * Page repository.
          *
@@ -132,7 +123,6 @@ class OrderEditViewhelper
         $items = [];
         $taxCache = [];
         if (!empty($orderArticles)) {
-            $iOut = '';
             foreach ($orderArticles as $row) {
                 $sum['amount'] += $row['amount'];
 
@@ -188,10 +178,13 @@ class OrderEditViewhelper
         $view->assign('fields', $fields);
         $view->assign('titleField', $titleField);
         $view->assign('orderEditable', $orderEditable);
+        $view->assign('orderId', $orderId);
+        $view->assign('invoicePageId', $settingsFactory->getExtConf('invoicePageID'));
+        $view->assign('invoicePageType', $settingsFactory->getExtConf('invoicePageType'));
         $view->assign('items', $items);
         $view->assign('sum', $sum);
 
-        $content .= $view->render();
+        $content = $view->render();
 
         return $content;
     }

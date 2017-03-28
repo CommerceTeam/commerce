@@ -57,6 +57,8 @@ class PageRepository extends AbstractRepository
     public function findEditFolderByUid($uid)
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder->getRestrictions()->removeAll();
+
         $result = $queryBuilder
             ->select('tx_commerce_foldereditorder')
             ->from($this->databaseTable)
