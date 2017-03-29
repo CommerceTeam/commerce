@@ -19,19 +19,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
-/**
- * View helper which return page info icon as known from TYPO3 backend modules
- * Note: This view helper is experimental!
- *
- * = Examples =
- *
- * <code>
- * <f:be.pageInfo />
- * </code>
- * <output>
- * Page info icon with context menu
- * </output>
- */
 class EditActionViewHelper extends AbstractTagBasedViewHelper
 {
     /**

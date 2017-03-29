@@ -20,13 +20,25 @@ return [
             pricefromnet',
     ],
     'columns' => [
-        'cust_deliveryaddress' => [
-            'label' => $languageFile . 'tx_commerce_orders.cust_deliveryaddress',
+        'tstamp' => [
+            'label' => $languageFile . 'tx_commerce_orders.tstamp',
             'config' => [
-                'type' => 'user',
-                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->deliveryAddress',
+                'type' => 'input',
+                'renderType' => 'inputDateTime',
+                'readOnly' => true,
+                'eval' => 'datetime',
             ]
         ],
+        'crdate' => [
+            'label' => $languageFile . 'tx_commerce_orders.crdate',
+            'config' => [
+                'type' => 'input',
+                'renderType' => 'inputDateTime',
+                'readOnly' => true,
+                'eval' => 'datetime',
+            ]
+        ],
+
         'order_type_uid' => [
             'label' => $languageFile . 'tx_commerce_orders.order_type_uid',
             'config' => [
@@ -44,25 +56,6 @@ return [
             'config' => [
                 'type' => 'input',
                 'readOnly' => true,
-            ]
-        ],
-
-        'tstamp' => [
-            'label' => $languageFile . 'tx_commerce_orders.tstamp',
-            'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'readOnly' => true,
-                'eval' => 'datetime',
-            ]
-        ],
-        'crdate' => [
-            'label' => $languageFile . 'tx_commerce_orders.crdate',
-            'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'readOnly' => true,
-                'eval' => 'datetime',
             ]
         ],
 
@@ -102,8 +95,15 @@ return [
             'label' => $languageFile . 'tx_commerce_orders.cust_invoice',
             'config' => [
                 'type' => 'user',
-                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->invoiceAddress',
+                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->address',
             ],
+        ],
+        'cust_deliveryaddress' => [
+            'label' => $languageFile . 'tx_commerce_orders.cust_deliveryaddress',
+            'config' => [
+                'type' => 'user',
+                'userFunc' => \CommerceTeam\Commerce\ViewHelpers\OrderEditViewhelper::class . '->address',
+            ]
         ],
         'paymenttype' => [
             'label' => $languageFile . 'tx_commerce_orders.paymenttype',

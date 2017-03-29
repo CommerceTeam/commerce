@@ -1,5 +1,8 @@
+{namespace c=CommerceTeam\Commerce\ViewHelpers}
 <div class="panel panel-default">
-	<div class="panel-heading"></div>
+	<div class="panel-heading">
+		<c:be.recordIcon tableName="{table}" record="{data}"/>
+	</div>
 	<div class="table-fit" id="recordlist-{table}" data-state="expanded">
 		<table>
 			<f:for each="{address}" as="row" iteration="iteration">

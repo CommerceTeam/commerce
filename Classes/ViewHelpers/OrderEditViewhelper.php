@@ -15,8 +15,6 @@ namespace CommerceTeam\Commerce\ViewHelpers;
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Imaging\Icon;
-use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
@@ -145,16 +143,14 @@ class OrderEditViewhelper
      */
     public function orderStatus(array &$data)
     {
-        /*
-         * Create a new data item array
-         */
+        // Create a new data item array
         $data['items'] = [];
 
         // Find the right pid for the Ordersfolder
         $orderPid = FolderRepository::initFolders('Orders', FolderRepository::initFolders());
 
         /*
-         * Get the pages below $order_pid
+         * Get the pages below $orderPid
          */
 
         /*
@@ -196,80 +192,31 @@ class OrderEditViewhelper
     }
 
     /**
-     * Invoice Adresss
-     * Renders the invoice adresss.
+     * Renders an address block by uid
      *
      * @param array $parameter Parameter
      *
      * @return string HTML-Content
      */
-    public function invoiceAddress(array $parameter)
+    public function address(array $parameter)
     {
-        return $this->address($parameter, 'tt_address', $parameter['itemFormElValue']);
-    }
-
-    /**
-     * Invoice Adresss
-     * Renders the invoice adresss.
-     *
-     * @param array $parameter Parameter
-     *
-     * @return string HTML-Content
-     */
-    public function deliveryAddress(array $parameter)
-    {
-        return $this->address($parameter, 'tt_address', $parameter['itemFormElValue']);
-    }
-
-    /**
-     * Address
-     * Renders an address block.
-     *
-     * @param array $parameter Parameter
-     * @param string $table Table
-     * @param int $uid Record UID
-     *
-     * @return string HTML-Content
-     */
-    public function address(array $parameter, $table, $uid)
-    {
-        /** @var IconFactory $iconFactory */
-        $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-
+        $table = 'tt_address';
+        $uid = (int) $parameter['itemFormElValue'];
         $fields = 'uid,' . ConfigurationUtility::getInstance()->getTcaValue($table . '.interface.showRecordFieldList');
         $content = '';
 
         /*
-         * First select Data from Database
+         * If records is available in database
          */
         if ($data = BackendUtility::getRecord($table, $uid, $fields)) {
-            $params = '&edit[' . $table . '][' . $uid . ']=edit';
-
-            $onclickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params)) . '"';
-            $iconImgTag = '<span>' .
-                $iconFactory->getIconForRecord($table, $data, Icon::SIZE_SMALL)->render() .
-                '</span>';
-            $content .= '<span class="typo3-moduleHeader">' .
-                BackendUtility::wrapClickMenuOnIcon($iconImgTag, $table, $data['uid']) .
-                '<b><a href="#" ' . $onclickAction . '>' .
-                htmlspecialchars(GeneralUtility::fixed_lgd_cs(
-                    strip_tags(BackendUtility::getRecordTitle($table, $data)),
-                    45
-                )) .
-                '</a></b>';
-
-            $showRecordFieldList = GeneralUtility::trimExplode(',', ConfigurationUtility::getInstance()
-                ->getTcaValue($table . '.interface.showRecordFieldList'));
+            $address = [];
             foreach ($data as $key => $value) {
-                if (!in_array($key, $showRecordFieldList)) {
-                    unset($data[$key]);
-                } else {
-                    $data[$key] = [
-                        'value' => $data[$key],
-                        'label' => $GLOBALS['TCA'][$table]['columns'][$key]['label'],
-                    ];
-                }
+                $address[$key] = [
+                    'value' => $value,
+                    'label' => $GLOBALS['TCA'][$table]['columns'][$key]['label'],
+                ];
             }
+            unset($address['uid']);
 
             /** @var StandaloneView $view */
             $view = GeneralUtility::makeInstance(StandaloneView::class);
@@ -277,26 +224,14 @@ class OrderEditViewhelper
             $view->setTemplate('Address');
 
             $view->assign('table', $table);
-            $view->assign('address', $data);
+            $view->assign('data', $data);
+            $view->assign('address', $address);
 
             $content .= $view->render();
         }
 
-        $content .= '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' .
-            htmlspecialchars($parameter['itemFormElValue']) .
-            '">';
+        $content .= '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' . $uid . '">';
 
         return $content;
-    }
-
-
-    /**
-     * Get backend user.
-     *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-     */
-    protected function getBackendUser()
-    {
-        return $GLOBALS['BE_USER'];
     }
 }

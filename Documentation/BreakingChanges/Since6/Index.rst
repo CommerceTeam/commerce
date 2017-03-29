@@ -56,6 +56,8 @@ OrderEditViewhelper::articleOrderId changed field to input and readOnly solves t
 OrderEditViewhelper::crdate there is no need to render it like this. TCA was modified to use core means.
 OrderEditViewhelper::sumPriceGrossFormat not needed anymore replaced with custom eval
 OrderEditViewhelper::feUserOrders orders now are rendered as inline
+OrderEditViewhelper::invoiceAddress replaced by usage of ::address
+OrderEditViewhelper::deliveryAddress replaced by usage of ::address
 
 
 Removed parameter
