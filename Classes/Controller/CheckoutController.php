@@ -2895,7 +2895,7 @@ class CheckoutController extends BaseController
 
         $this->debug($orderData, '$orderData', __FILE__ . ' ' . __LINE__);
 
-        $tceMain = $this->getInstanceOfTceMain($pid);
+        $tceMain = $this->getInstanceOfTceMain();
         $data = [];
         if (isset($this->conf['lockOrderIdInGenerateOrderId']) && $this->conf['lockOrderIdInGenerateOrderId'] == 1) {
             $data['tx_commerce_orders'][(int) $this->orderUid] = $orderData;
@@ -2997,11 +2997,9 @@ class CheckoutController extends BaseController
     /**
      * Get an instance of DataHandler.
      *
-     * @param int $pid Page id
-     *
      * @return \TYPO3\CMS\Core\DataHandling\DataHandler
      */
-    public function getInstanceOfTceMain($pid)
+    public function getInstanceOfTceMain()
     {
         $hooks = HookFactory::getHooks('Controller/CheckoutController', 'getInstanceOfTceMain');
         foreach ($hooks as $hook) {
@@ -3020,9 +3018,6 @@ class CheckoutController extends BaseController
          */
         $tceMain = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
         $tceMain->bypassWorkspaceRestrictions = true;
-        // @todo fix for TYPO3 9
-        $tceMain->recInsertAccessCache['tx_commerce_orders'][$pid] = 1;
-        $tceMain->recInsertAccessCache['tx_commerce_order_articles'][$pid] = 1;
 
         return $tceMain;
     }
