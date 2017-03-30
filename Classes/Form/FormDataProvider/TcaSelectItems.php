@@ -86,7 +86,7 @@ class TcaSelectItems extends AbstractItemProvider implements FormDataProviderInt
             $rows = $categoryRepository->findUntranslatedByUidList($uidList);
         }
 
-        return $rows;
+        return array_keys($rows);
     }
 
     /**

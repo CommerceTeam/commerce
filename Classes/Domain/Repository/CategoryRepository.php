@@ -568,8 +568,7 @@ class CategoryRepository extends AbstractRepository
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
         $result = $queryBuilder
-            ->select('uid')
-            ->addSelectLiteral('CONCAT(uid, \'|\', title) AS value')
+            ->select('*')
             ->from($this->databaseTable)
             ->where(
                 $queryBuilder->expr()->in(
@@ -604,17 +603,16 @@ class CategoryRepository extends AbstractRepository
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
         $result = $queryBuilder
-            ->select('c.uid')
-            ->addSelectLiteral('CONCAT(c.uid, \'|\', c.title) AS value')
+            ->select('c.*')
             ->from($this->databaseTable, 'c')
             ->innerJoin('c', $mmTable, 'mm', 'c.uid = mm.uid_foreign')
             ->where(
                 $queryBuilder->expr()->in(
-                    'sys_language_uid',
+                    'c.sys_language_uid',
                     [-1, 0]
                 ),
                 $queryBuilder->expr()->eq(
-                    'uid_local',
+                    'mm.uid_local',
                     $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
                 )
             )
