@@ -82,6 +82,12 @@ Renamed classes
 OrderEditFunc renamed to OrderEditViewhelper
 
 
+Renamed controlls
+-----------------
+
+commerceCategoryTree to selectCommerceCategoryTree to reflect what it is doing
+
+
 Changed methods
 ---------------
 

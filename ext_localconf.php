@@ -108,7 +108,7 @@ call_user_func(function ($packageKey) {
 
         // Add category tree control with data provider
         $typo3ConfVars['SYS']['formEngine']['nodeRegistry']['1456642633182'] = [
-            'nodeName' => 'commerceCategoryTree',
+            'nodeName' => 'selectCommerceCategoryTree',
             'priority' => 100,
             'class' => \CommerceTeam\Commerce\Form\Element\CategoryTreeElement::class
         ];

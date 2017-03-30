@@ -308,14 +308,15 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
             'label' => $languageFile . 'tx_commerce_products.categories',
             'config' => [
                 'type' => 'select',
-                'renderType' => 'commerceCategoryTree',
+                'renderType' => 'selectCommerceCategoryTree',
+                'size' => 10,
+                'minitems' => 1,
+                'maxitems' => 20,
                 'foreign_table' => 'tx_commerce_categories',
                 'foreign_table_where' => 'AND tx_commerce_categories.sys_language_uid IN (-1,0)
                     ORDER BY tx_commerce_categories.sorting ASC',
                 'MM' => 'tx_commerce_products_categories_mm',
-                'size' => 10,
-                'minitems' => 1,
-                'maxitems' => 20,
+                'enableMultiSelectFilterTextfield' => true,
             ]
         ],
 

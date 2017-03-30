@@ -258,15 +258,16 @@ return [
             'label' => $languageFile . 'tx_commerce_categories.parent_category',
             'config' => [
                 'type' => 'select',
-                'renderType' => 'commerceCategoryTree',
+                'renderType' => 'selectCommerceCategoryTree',
+                'size' => 10,
+                'minitems' => 0,
+                'maxitems' => 20,
                 'foreign_table' => 'tx_commerce_categories',
                 'foreign_table_where' => 'AND tx_commerce_categories.sys_language_uid IN (-1,0)
                     AND tx_commerce_categories.uid != ###THIS_UID###
                     ORDER BY tx_commerce_categories.sorting ASC',
                 'MM' => 'tx_commerce_categories_parent_category_mm',
-                'size' => 10,
-                'minitems' => 0,
-                'maxitems' => 20,
+                'enableMultiSelectFilterTextfield' => true,
             ]
         ],
         'ts_config' => [
