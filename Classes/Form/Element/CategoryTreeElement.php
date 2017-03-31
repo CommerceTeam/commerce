@@ -216,7 +216,7 @@ class CategoryTreeElement extends SelectMultipleSideBySideElement implements Lin
         $resultArray = $this->mergeChildReturnIntoExistingResult($resultArray, $fieldWizardResult, false);
 
         $html = [];
-        $html[] = '<div class="formengine-field-item t3js-formengine-field-item">';
+        $html[] = '<div class="formengine-field-item t3js-formengine-field-item commerce-categorytree-element">';
         $html[] =   $fieldInformationHtml;
         $html[] =   '<div class="form-wizards-wrap">';
         $html[] =       '<div class="form-wizards-element">';

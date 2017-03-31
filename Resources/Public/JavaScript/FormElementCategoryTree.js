@@ -15,7 +15,7 @@
  * Module: TYPO3/CMS/Commerce/FormElementCategoryTree
  * Javascript functions regarding the category tree in category element
  */
-define(['jquery'], function($) {
+define(['TYPO3/CMS/Backend/FormEngine', 'jquery'], function(FormEngine, $) {
 	/**
 	 *
 	 * @type {{options: {containerSelector: string}}}
@@ -26,7 +26,7 @@ define(['jquery'], function($) {
 			containerSelector: '.t3js-commerce-categorytree-itemstoselect',
 			treeControll: '.list-tree-control',
 			itemTitleSelector: '.list-tree-title',
-			removeButtonSelector: '.commerce-categorytree-element .t3-btn-removeoption'
+			removeButtonSelector: '.commerce-categorytree-element .t3js-btn-removeoption'
 		}
 	};
 
@@ -42,7 +42,7 @@ define(['jquery'], function($) {
 	 */
 	FormElementCategoryTree.addItemToSelectbox = function(fieldName, $treeElement) {
 		$treeElement.parent().addClass('bg-success').parent().addClass('active');
-		TYPO3.FormEngine.setSelectOptionFromExternalSource(
+		FormEngine.setSelectOptionFromExternalSource(
 			fieldName,
 			$treeElement.data('value'),
 			$treeElement.text(),
@@ -58,6 +58,7 @@ define(['jquery'], function($) {
 	 * @param value
 	 */
 	FormElementCategoryTree.deactivateRemovedItem = function(value) {
+		console.log(value);
 		$('[data-value="' + value + '"]').parent().removeClass('bg-success').parent().removeClass('active');
 	};
 
@@ -170,7 +171,7 @@ define(['jquery'], function($) {
 					fieldChangedValues = $treeContainer.data('fieldchanged-values');
 
 				if (fieldName) {
-					$selectField = TYPO3.FormEngine.getFieldElement(fieldName, '_list', true);
+					$selectField = FormEngine.getFieldElement(fieldName, '_list', true);
 
 					var $treeElement = $(evt.target);
 					if ($treeElement.hasClass('list-tree-title')) {
@@ -186,7 +187,7 @@ define(['jquery'], function($) {
 			function () {
 				var $deleteButton = $(this),
 					fieldName = $deleteButton.data().fieldname;
-				$selectField = TYPO3.FormEngine.getFieldElement(fieldName, '_list', true);
+				$selectField = FormEngine.getFieldElement(fieldName, '_list', true);
 
 				FormElementCategoryTree.deactivateRemovedItem($selectField.children('option:selected').prop('value'));
 			}
