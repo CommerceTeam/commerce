@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\Form\Element;
 
 use CommerceTeam\Commerce\Tree\View\CategoryTreeElementCategoryTreeView;
 use TYPO3\CMS\Backend\Clipboard\Clipboard;
-use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
+use TYPO3\CMS\Backend\Form\Element\SelectMultipleSideBySideElement;
 use TYPO3\CMS\Backend\Form\InlineStackProcessor;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -23,8 +23,22 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Recordlist\Tree\View\LinkParameterProviderInterface;
 
-class CategoryTreeElement extends AbstractFormElement implements LinkParameterProviderInterface
+class CategoryTreeElement extends SelectMultipleSideBySideElement implements LinkParameterProviderInterface
 {
+    /**
+     * Default field controls for this element.
+     *
+     * @var array
+     */
+    protected $defaultFieldControl = [];
+
+    /**
+     * Default field wizards enabled for this element.
+     *
+     * @var array
+     */
+    protected $defaultFieldWizard = [];
+
     /**
      * @var array
      */
@@ -42,6 +56,38 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
      */
     public function render()
     {
+        $languageService = $this->getLanguageService();
+        $resultArray = $this->initializeResultArray();
+
+        $parameterArray = $this->data['parameterArray'];
+        $config = $parameterArray['fieldConf']['config'];
+        $elementName = $parameterArray['itemFormElName'];
+
+        if ($config['readOnly']) {
+            // Early return for the relatively simple read only case
+            return $this->renderReadOnly();
+        }
+
+        $possibleItems = $config['items'];
+        $selectedItems = $parameterArray['itemFormElValue'] ?: [];
+        $selectedItemsCount = count($selectedItems);
+
+        $maxItems = $config['maxitems'];
+        $autoSizeMax = MathUtility::forceIntegerInRange($config['autoSizeMax'], 0);
+        $size = 2;
+        if (isset($config['size'])) {
+            $size = (int)$config['size'];
+        }
+        if ($autoSizeMax >= 1) {
+            $size = MathUtility::forceIntegerInRange(
+                $selectedItemsCount + 1,
+                MathUtility::forceIntegerInRange($size, 1),
+                $autoSizeMax
+            );
+        }
+
+        // @todo continue from here
+
         $table = $this->data['tableName'];
         $field = $this->data['fieldName'];
         $parameterArray = $this->data['parameterArray'];
@@ -49,33 +95,34 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
         $config = $parameterArray['fieldConf']['config'];
 
         $html = '';
-        $disabled = '';
-        if ($config['readOnly']) {
-            $disabled = ' disabled="disabled"';
-        }
-        // Setting this hidden field (as a flag that JavaScript can read out)
-        if (!$disabled) {
-            $html .= '<input type="hidden" data-formengine-input-name="'
-                . htmlspecialchars($parameterArray['itemFormElName'])
-                . '" value="' . ($config['multiple'] ? 1 : 0) . '" />';
-        }
-        // Set max and min items:
-        $maxitems = max($config['maxitems'], 0);
-        if (!$maxitems) {
-            $maxitems = 100000;
-        }
+        $html .= '<input type="hidden" data-formengine-input-name="'
+            . htmlspecialchars($parameterArray['itemFormElName'])
+            . '" value="' . ($config['multiple'] ? 1 : 0) . '" />';
+
         // Get the array with selected items:
-        $this->items = $itemsArray = $parameterArray['itemFormElValue'] ?: [];
+        $this->items = $selectedItems ?: [];
 
         // Perform modification of the selected items array:
-        foreach ($itemsArray as $itemNumber => $itemValue) {
-            $itemArray = [0 => $itemValue['value']];
-
-            if (isset($parameterArray['fieldTSConfig']['altIcons.'][$itemValue['uid']])) {
-                $itemArray[2] = $parameterArray['fieldTSConfig']['altIcons.'][$itemValue['uid']];
+        $itemsArray = [];
+        foreach ($this->items as $itemNumber => $itemValue) {
+            $item = [];
+            foreach ($possibleItems as $possibleItem) {
+                if ($possibleItem[1] === $itemValue) {
+                    $item = $possibleItem;
+                }
             }
+            if (!empty($item)) {
+                $itemArray = [
+                    'id' => $item[1],
+                    'table' => 'tx_commerce_categories'
+                ];
 
-            $itemsArray[$itemNumber] = implode('|', $itemArray);
+                if (isset($parameterArray['fieldTSConfig']['altIcons.'][$item[1]])) {
+                    $itemArray['icon'] = $parameterArray['fieldTSConfig']['altIcons.'][$item[1]];
+                }
+
+                $itemsArray[$item[1]] = $itemArray;
+            }
         }
 
         // size must be at least two, as there are always maxitems > 1 (see parent function)
@@ -91,49 +138,47 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
         $itemsToSelect = [];
         $filterTextfield = [];
         $filterSelectbox = '';
-        if (!$disabled) {
-            $backendUser = $this->getBackendUserAuthentication();
-            $height = ($size * 18 + 14) - ($config['enableMultiSelectFilterTextfield'] ? 30 : 0);
+        $backendUser = $this->getBackendUserAuthentication();
+        $height = ($size * 18 + 14) - ($config['enableMultiSelectFilterTextfield'] ? 30 : 0);
 
-            // Put together the selector box:
-            $selector_itemListStyle = ' style="height: ' . $height . 'px; overflow-y: scroll; ' . (
-                isset($config['itemListStyle']) ?
+        // Put together the selector box:
+        $selector_itemListStyle = ' style="height: ' . $height . 'px; overflow-y: scroll; ' . (
+            isset($config['itemListStyle']) ?
                 htmlspecialchars($config['itemListStyle']) :
                 ''
             ) . '"';
 
-            /** @var CategoryTreeElementCategoryTreeView $categoryTree */
-            $categoryTree = GeneralUtility::makeInstance(CategoryTreeElementCategoryTreeView::class);
-            $categoryTree->setLinkParameterProvider($this);
-            $categoryTree->ext_showPageId = (bool)$backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
-            $categoryTree->ext_showNavTitle = (bool)$backendUser->getTSConfigVal('options.pageTree.showNavTitle');
-            $categoryTree->addField('navtitle');
-            $tree = $categoryTree->getBrowsableTree();
+        /** @var CategoryTreeElementCategoryTreeView $categoryTree */
+        $categoryTree = GeneralUtility::makeInstance(CategoryTreeElementCategoryTreeView::class);
+        $categoryTree->setLinkParameterProvider($this);
+        $categoryTree->ext_showPageId = (bool)$backendUser->getTSConfigVal('options.pageTree.showPageIdWithTitle');
+        $categoryTree->ext_showNavTitle = (bool)$backendUser->getTSConfigVal('options.pageTree.showNavTitle');
+        $categoryTree->addField('navtitle');
+        $tree = $categoryTree->getBrowsableTree();
 
-            $itemsToSelect[] = '<div data-relatedfieldname="'
-                . htmlspecialchars($parameterArray['itemFormElName']) . '" '
-                . 'data-exclusivevalues="' . htmlspecialchars($config['exclusiveKeys']) . '" '
-                . 'id="' . StringUtility::getUniqueId('tceforms-multiselect-') . '" '
-                . 'data-formengine-input-name="' . htmlspecialchars($parameterArray['itemFormElName']) . '" '
-                . 'class="form-control t3js-commerce-categorytree-itemstoselect" '
-                . 'data-fieldchanged-values="{tableName: \'' . htmlspecialchars($table) . '\', uid: '
-                . $this->data['vanillaUid'] . ', fieldName: \'' . $field . '\', element: \''
-                . $parameterArray['itemFormElName'] . '\'}" '
-                . $this->getValidationDataAsJsonString($config)
-                . $selector_itemListStyle
-                . '>';
-            $itemsToSelect[] = $tree;
-            $itemsToSelect[] = '</div>';
+        $itemsToSelect[] = '<div data-relatedfieldname="'
+            . htmlspecialchars($parameterArray['itemFormElName']) . '" '
+            . 'data-exclusivevalues="' . htmlspecialchars($config['exclusiveKeys']) . '" '
+            . 'id="' . StringUtility::getUniqueId('tceforms-multiselect-') . '" '
+            . 'data-formengine-input-name="' . htmlspecialchars($parameterArray['itemFormElName']) . '" '
+            . 'class="form-control t3js-commerce-categorytree-itemstoselect" '
+            . 'data-fieldchanged-values="{tableName: \'' . htmlspecialchars($table) . '\', uid: '
+            . $this->data['vanillaUid'] . ', fieldName: \'' . $field . '\', element: \''
+            . $parameterArray['itemFormElName'] . '\'}" '
+            . $this->getValidationDataAsJsonString($config)
+            . $selector_itemListStyle
+            . '>';
+        $itemsToSelect[] = $tree;
+        $itemsToSelect[] = '</div>';
 
-            // enable filter functionality via a text field
-            if ($config['enableMultiSelectFilterTextfield']) {
-                $filterTextfield[] = '<span class="input-group input-group-sm">';
-                $filterTextfield[] =    '<span class="input-group-addon">';
-                $filterTextfield[] =        '<span class="fa fa-filter"></span>';
-                $filterTextfield[] =    '</span>';
-                $filterTextfield[] =    '<input class="t3js-formengine-multiselect-filter-textfield form-control">';
-                $filterTextfield[] = '</span>';
-            }
+        // enable filter functionality via a text field
+        if ($config['enableMultiSelectFilterTextfield']) {
+            $filterTextfield[] = '<span class="input-group input-group-sm">';
+            $filterTextfield[] =    '<span class="input-group-addon">';
+            $filterTextfield[] =        '<span class="fa fa-filter"></span>';
+            $filterTextfield[] =    '</span>';
+            $filterTextfield[] =    '<input class="t3js-formengine-multiselect-filter-textfield form-control">';
+            $filterTextfield[] = '</span>';
         }
 
         if (!empty(trim($filterSelectbox)) && !empty($filterTextfield)) {
@@ -154,8 +199,8 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
             'style' => isset($config['selectedListStyle'])
                 ? ' style="' . htmlspecialchars($config['selectedListStyle']) . '"'
                 : '',
-            'dontShowMoveIcons' => $maxitems <= 1,
-            'maxitems' => $maxitems,
+            'dontShowMoveIcons' => $maxItems <= 1,
+            'maxitems' => $maxItems,
             'info' => '',
             'headers' => [
                 'selector' => $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.selected'),
@@ -164,7 +209,6 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
             ],
             'noBrowser' => 1,
             'rightbox' => implode(LF, $itemsToSelect),
-            'readOnly' => $disabled
         ];
         $html .= $this->dbFileIcons(
             $parameterArray['itemFormElName'],
@@ -176,23 +220,19 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
             $parameterArray['onFocus']
         );
 
-        $resultArray = $this->initializeResultArray();
-
         // Wizards:
-        if (!$disabled) {
-            $html = '<div class="commerce-categorytree-element">' . $this->renderWizards(
-                [$html],
-                $config['wizards'],
-                $table,
-                $this->data['databaseRow'],
-                $field,
-                $parameterArray,
-                $parameterArray['itemFormElName'],
-                $parameterArray['fieldConf']['defaultExtras']
-            ) . '</div>';
+        $html = '<div class="commerce-categorytree-element">' . $this->renderWizards(
+            [$html],
+            $config['wizards'],
+            $table,
+            $this->data['databaseRow'],
+            $field,
+            $parameterArray,
+            $parameterArray['itemFormElName'],
+            $parameterArray['fieldConf']['defaultExtras']
+        ) . '</div>';
 
-            $resultArray['requireJsModules'][] = 'TYPO3/CMS/Commerce/FormElementCategoryTree';
-        }
+        $resultArray['requireJsModules'][] = 'TYPO3/CMS/Commerce/FormElementCategoryTree';
 
         $resultArray['html'] = $html;
         return $resultArray;
@@ -270,10 +310,7 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
         $config = array()
     ) {
         $languageService = $this->getLanguageService();
-        $disabled = '';
-        if ($params['readOnly']) {
-            $disabled = ' disabled="disabled"';
-        }
+
         // INIT
         $uidList = array();
         $opt = array();
@@ -281,49 +318,16 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
         // Creating <option> elements:
         if (is_array($itemArray)) {
             $itemArrayC = count($itemArray);
-            switch ($mode) {
-                case 'db':
-                    foreach ($itemArray as $pp) {
-                        $pRec = BackendUtility::getRecordWSOL($pp['table'], $pp['id']);
-                        if (is_array($pRec)) {
-                            $pTitle = BackendUtility::getRecordTitle($pp['table'], $pRec, false, true);
-                            $pUid = $pp['table'] . '_' . $pp['id'];
-                            $uidList[] = $pUid;
-                            $title = htmlspecialchars($pTitle);
-                            $opt[] = '<option value="' . htmlspecialchars($pUid) . '" title="' . $title . '">' .
-                                $title . '</option>';
-                        }
-                    }
-                    break;
-                case 'file_reference':
-
-                case 'file':
-                    foreach ($itemArray as $item) {
-                        $itemParts = explode('|', $item);
-                        $uidList[] = ($pUid = ($pTitle = $itemParts[0]));
-                        $title = htmlspecialchars(rawurldecode($itemParts[1]));
-                        $opt[] = '<option value="' . htmlspecialchars(rawurldecode($itemParts[0])) . '" title="' .
-                            $title . '">' . $title . '</option>';
-                    }
-                    break;
-                case 'folder':
-                    foreach ($itemArray as $pp) {
-                        $pParts = explode('|', $pp);
-                        $uidList[] = ($pUid = ($pTitle = $pParts[0]));
-                        $title = htmlspecialchars(rawurldecode($pParts[0]));
-                        $opt[] = '<option value="' . htmlspecialchars(rawurldecode($pParts[0])) . '" title="' .
-                            $title . '">' . $title . '</option>';
-                    }
-                    break;
-                default:
-                    foreach ($itemArray as $pp) {
-                        $pParts = explode('|', $pp, 2);
-                        $uidList[] = ($pUid = $pParts[0]);
-                        $pTitle = $pParts[1];
-                        $title = htmlspecialchars(rawurldecode($pTitle));
-                        $opt[] = '<option value="' . htmlspecialchars(rawurldecode($pUid)) . '" title="' .
-                            $title . '">' . $title . '</option>';
-                    }
+            foreach ($itemArray as $pp) {
+                $pRec = BackendUtility::getRecordWSOL($pp['table'], $pp['id']);
+                if (is_array($pRec)) {
+                    $pTitle = BackendUtility::getRecordTitle($pp['table'], $pRec, false, true);
+                    $pUid = $pp['table'] . '_' . $pp['id'];
+                    $uidList[] = $pUid;
+                    $title = htmlspecialchars($pTitle);
+                    $opt[] = '<option value="' . htmlspecialchars($pUid) . '" title="' . $title . '">' .
+                        $title . '</option>';
+                }
             }
         }
         // Create selector box of the options
@@ -342,7 +346,7 @@ class CategoryTreeElement extends AbstractFormElement implements LinkParameterPr
                     'size="' . $sSize . '" class="form-control tceforms-multiselect"') .
                 ($isMultiple ? ' multiple="multiple"' : '') .
                 ' data-formengine-input-name="' . htmlspecialchars($fName) . '" ' .
-                $this->getValidationDataAsJsonString($config) . $onFocus . $params['style'] . $disabled . '>' .
+                $this->getValidationDataAsJsonString($config) . $onFocus . $params['style'] . '>' .
                 implode('', $opt) .
                 '</select>';
         }
