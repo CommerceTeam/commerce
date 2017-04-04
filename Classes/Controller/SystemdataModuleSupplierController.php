@@ -121,7 +121,7 @@ class SystemdataModuleSupplierController extends SystemdataModuleController
             $onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, '', -1)) . '"';
             $iconIdentifier = 'actions-open';
             $editAction = '<a class="btn btn-default" href="#" ' . $onClickAction .
-                ' title="' . $this->getLanguageService()->getLL('edit', true) . '">' .
+                ' title="' . htmlspecialchars($this->getLanguageService()->getLL('edit')) . '">' .
                 $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render() .
                 '</a>';
 
@@ -136,8 +136,8 @@ class SystemdataModuleSupplierController extends SystemdataModuleController
                 $params = 'data[' . $this->table . '][' . $row['uid'] . '][' . $hiddenField . ']=1';
                 $state = 'visible';
             }
-            $hideTitle = $this->getLanguageService()->getLL('hide', true);
-            $unhideTitle = $this->getLanguageService()->getLL('unHide', true);
+            $hideTitle = htmlspecialchars($this->getLanguageService()->getLL('hide'));
+            $unhideTitle = htmlspecialchars($this->getLanguageService()->getLL('unHide'));
             $hideAction = '<a class="btn btn-default t3js-record-hide" data-state="' . $state . '" href="#"'
                 . ' data-params="' . htmlspecialchars($params) . '"'
                 . ' title="' . $unhideTitle . '"'
@@ -149,12 +149,16 @@ class SystemdataModuleSupplierController extends SystemdataModuleController
             $refCountMsg = BackendUtility::referenceCount(
                 $this->table,
                 $row['uid'],
-                ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.referencesToRecord'),
+                ' ' . $this->getLanguageService()->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.referencesToRecord'
+                ),
                 $this->getReferenceCount($this->table, $row['uid'])
             ) . BackendUtility::translationCount(
                 $this->table,
                 $row['uid'],
-                ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.translationsOfRecord')
+                ' ' . $this->getLanguageService()->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.translationsOfRecord'
+                )
             );
             $titleOrig = BackendUtility::getRecordTitle($this->table, $row, false, true);
             $title = str_replace('\\', '\\\\', GeneralUtility::fixed_lgd_cs($titleOrig, $this->fixedL));
@@ -163,7 +167,7 @@ class SystemdataModuleSupplierController extends SystemdataModuleController
 
             $params = 'cmd[' . $this->table . '][' . $row['uid'] . '][delete]=1';
             $icon = $this->iconFactory->getIcon('actions-edit-' . $actionName, Icon::SIZE_SMALL)->render();
-            $linkTitle = $this->getLanguageService()->getLL($actionName, true);
+            $linkTitle = htmlspecialchars($this->getLanguageService()->getLL($actionName));
             $deleteAction = '<a class="btn btn-default t3js-record-delete" href="#" ' .
                 ' data-l10parent="' . htmlspecialchars($row['l10n_parent']) . '"' .
                 ' data-params="' . htmlspecialchars($params) . '" data-title="' . htmlspecialchars($titleOrig) . '"' .

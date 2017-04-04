@@ -168,7 +168,9 @@ class SystemdataNavigationFrameController extends BaseScriptClass
         $refreshButton = $buttonBar->makeLinkButton()
             ->setHref(GeneralUtility::getIndpEnv('REQUEST_URI'))
             ->setTitle(
-                $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.reload', true)
+                htmlspecialchars($this->getLanguageService()->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.reload'
+                ))
             )->setIcon($this->moduleTemplate->getIconFactory()->getIcon('actions-refresh', Icon::SIZE_SMALL));
         $buttonBar->addButton($refreshButton, ButtonBar::BUTTON_POSITION_RIGHT);
     }

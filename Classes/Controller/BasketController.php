@@ -203,7 +203,7 @@ class BasketController extends BaseController
                 $templateMarker = '###PRODUCT_BASKET_EMPTY###';
             }
 
-            $template = $this->cObj->getSubpart($this->getTemplateCode(), $templateMarker);
+            $template = $this->templateService->getSubpart($this->getTemplateCode(), $templateMarker);
 
             $markerArray = $this->languageMarker;
             $markerArray['###EMPTY_BASKET###'] = $this->cObj->cObjGetSingle(
@@ -223,9 +223,9 @@ class BasketController extends BaseController
                 }
             }
 
-            $this->setContent($this->cObj->substituteMarkerArray($template, $markerArray));
+            $this->setContent($this->templateService->substituteMarkerArray($template, $markerArray));
         }
-        $this->setContent($this->cObj->substituteMarkerArray($this->getContent(), $this->languageMarker));
+        $this->setContent($this->templateService->substituteMarkerArray($this->getContent(), $this->languageMarker));
 
         return $this->pi_wrapInBaseClass($content . $this->getContent());
     }
@@ -482,7 +482,7 @@ class BasketController extends BaseController
         $articleTypes = explode(',', $this->conf['regularArticleTypes']);
 
         $templateMarker = '###PRODUCT_BASKET_QUICKVIEW###';
-        $template = $this->cObj->getSubpart($this->getTemplateCode(), $templateMarker);
+        $template = $this->templateService->getSubpart($this->getTemplateCode(), $templateMarker);
 
         $basketArray = $this->languageMarker;
         $basketArray['###PRICE_GROSS###'] = MoneyViewHelper::format($this->basket->getSumGross(), $this->currency);
@@ -502,7 +502,7 @@ class BasketController extends BaseController
             }
         }
 
-        $this->setContent($this->cObj->substituteMarkerArray($template, $basketArray));
+        $this->setContent($this->templateService->substituteMarkerArray($template, $basketArray));
     }
 
     /**
@@ -512,14 +512,14 @@ class BasketController extends BaseController
      */
     public function generateBasket()
     {
-        $template = $this->cObj->getSubpart($this->getTemplateCode(), '###BASKET###');
+        $template = $this->templateService->getSubpart($this->getTemplateCode(), '###BASKET###');
 
         // Render locked information
         if ($this->basket->getReadOnly()) {
-            $basketSubpart = $this->cObj->getSubpart($template, 'BASKETLOCKED');
-            $template = $this->cObj->substituteSubpart($template, 'BASKETLOCKED', $basketSubpart);
+            $basketSubpart = $this->templateService->getSubpart($template, 'BASKETLOCKED');
+            $template = $this->templateService->substituteSubpart($template, 'BASKETLOCKED', $basketSubpart);
         } else {
-            $template = $this->cObj->substituteSubpart($template, 'BASKETLOCKED', '');
+            $template = $this->templateService->substituteSubpart($template, 'BASKETLOCKED', '');
         }
 
         $basketArray['###BASKET_PRODUCT_LIST###'] = $this->makeProductList();
@@ -528,38 +528,38 @@ class BasketController extends BaseController
         $hookObject = HookFactory::getHook('Controller/BasketController', 'generateBasket');
 
         // No delivery article is present, so draw selector
-        $contentDelivery = $this->cObj->getSubpart($this->getTemplateCode(), '###DELIVERYBOX###');
+        $contentDelivery = $this->templateService->getSubpart($this->getTemplateCode(), '###DELIVERYBOX###');
 
         if (is_object($hookObject) && method_exists($hookObject, 'makeDelivery')) {
             $contentDelivery = $hookObject->makeDelivery($this, $this->basket, $contentDelivery);
-            $template = $this->cObj->substituteSubpart($template, '###DELIVERYBOX###', $contentDelivery);
+            $template = $this->templateService->substituteSubpart($template, '###DELIVERYBOX###', $contentDelivery);
         } else {
             $deliveryArray = $this->makeDelivery();
-            $contentDelivery = $this->cObj->substituteMarkerArray($contentDelivery, $deliveryArray);
-            $template = $this->cObj->substituteSubpart($template, '###DELIVERYBOX###', $contentDelivery);
+            $contentDelivery = $this->templateService->substituteMarkerArray($contentDelivery, $deliveryArray);
+            $template = $this->templateService->substituteSubpart($template, '###DELIVERYBOX###', $contentDelivery);
         }
 
-        $contentPayment = $this->cObj->getSubpart($this->getTemplateCode(), '###PAYMENTBOX###');
+        $contentPayment = $this->templateService->getSubpart($this->getTemplateCode(), '###PAYMENTBOX###');
         if (is_object($hookObject) && method_exists($hookObject, 'makePayment')) {
             $contentPayment = $hookObject->makePayment($this, $this->basket, $contentPayment);
-            $template = $this->cObj->substituteSubpart($template, '###PAYMENTBOX###', $contentPayment);
+            $template = $this->templateService->substituteSubpart($template, '###PAYMENTBOX###', $contentPayment);
         } else {
             $paymentArray = $this->makePayment();
-            $contentPayment = $this->cObj->substituteMarkerArray($contentPayment, $paymentArray);
-            $template = $this->cObj->substituteSubpart($template, '###PAYMENTBOX###', $contentPayment);
+            $contentPayment = $this->templateService->substituteMarkerArray($contentPayment, $paymentArray);
+            $template = $this->templateService->substituteSubpart($template, '###PAYMENTBOX###', $contentPayment);
         }
 
-        $taxRateTemplate = $this->cObj->getSubpart($template, '###TAX_RATE_SUMS###');
+        $taxRateTemplate = $this->templateService->getSubpart($template, '###TAX_RATE_SUMS###');
         $taxRates = $this->basket->getTaxRateSums();
         $taxRateRows = '';
         foreach ($taxRates as $taxRate => $taxRateSum) {
             $taxRowArray = [];
             $taxRowArray['###TAX_RATE###'] = $taxRate;
             $taxRowArray['###TAX_RATE_SUM###'] = MoneyViewHelper::format($taxRateSum, $this->currency);
-            $taxRateRows .= $this->cObj->substituteMarkerArray($taxRateTemplate, $taxRowArray);
+            $taxRateRows .= $this->templateService->substituteMarkerArray($taxRateTemplate, $taxRowArray);
         }
 
-        $template = $this->cObj->substituteSubpart($template, '###TAX_RATE_SUMS###', $taxRateRows);
+        $template = $this->templateService->substituteSubpart($template, '###TAX_RATE_SUMS###', $taxRateRows);
 
         $basketArray['###BASKET_NET_PRICE###'] = MoneyViewHelper::format($this->basket->getSumNet(), $this->currency);
         $basketArray['###BASKET_GROSS_PRICE###'] = MoneyViewHelper::format(
@@ -641,11 +641,11 @@ class BasketController extends BaseController
             }
         }
 
-        $this->setContent($this->cObj->substituteMarkerArray($template, $basketArray));
+        $this->setContent($this->templateService->substituteMarkerArray($template, $basketArray));
 
         $markerArrayGlobal = $this->addFormMarker([]);
 
-        $this->setContent($this->cObj->substituteMarkerArray($this->getContent(), $markerArrayGlobal, '###|###'));
+        $this->setContent($this->templateService->substituteMarkerArray($this->getContent(), $markerArrayGlobal, '###|###'));
     }
 
     /**
@@ -664,8 +664,8 @@ class BasketController extends BaseController
         );
         $this->deliveryProduct->loadData();
 
-        $deliverySelectTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###DELIVERY_ARTICLE_SELECT###');
-        $deliveryOptionTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###DELIVERY_ARTICLE_OPTION###');
+        $deliverySelectTemplate = $this->templateService->getSubpart($this->getTemplateCode(), '###DELIVERY_ARTICLE_SELECT###');
+        $deliveryOptionTemplate = $this->templateService->getSubpart($this->getTemplateCode(), '###DELIVERY_ARTICLE_OPTION###');
 
         $currentDeliveryArticle = $this->basket->getDeliveryArticle();
 
@@ -724,13 +724,13 @@ class BasketController extends BaseController
                         $this->conf['fields.']['articles.']['fields.']['description_extra.']
                     ),
                 ];
-                $options .= $this->cObj->substituteMarkerArray($deliveryOptionTemplate, $markerArray, '###|###', true);
+                $options .= $this->templateService->substituteMarkerArray($deliveryOptionTemplate, $markerArray, '###|###', true);
 
                 $first = true;
             }
         }
 
-        $basketArray['###DELIVERY_SELECT_BOX###'] = $this->cObj->substituteMarker(
+        $basketArray['###DELIVERY_SELECT_BOX###'] = $this->templateService->substituteMarker(
             $deliverySelectTemplate,
             '###OPTIONS###',
             $options
@@ -760,8 +760,8 @@ class BasketController extends BaseController
         $this->paymentProduct->loadData();
         $this->paymentProduct->loadArticles();
 
-        $paymentSelectTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###PAYMENT_ARTICLE_SELECT###');
-        $paymentOptionTemplate = $this->cObj->getSubpart($this->getTemplateCode(), '###PAYMENT_ARTICLE_OPTION###');
+        $paymentSelectTemplate = $this->templateService->getSubpart($this->getTemplateCode(), '###PAYMENT_ARTICLE_SELECT###');
+        $paymentOptionTemplate = $this->templateService->getSubpart($this->getTemplateCode(), '###PAYMENT_ARTICLE_OPTION###');
 
         $currentPaymentArticle = $this->basket->getPaymentArticle();
 
@@ -820,7 +820,7 @@ class BasketController extends BaseController
                         $this->conf['fields.']['articles.']['fields.']['description_extra.']
                     ),
                 ];
-                $options .= $this->cObj->substituteMarkerArray($paymentOptionTemplate, $markerArray, '###|###', true);
+                $options .= $this->templateService->substituteMarkerArray($paymentOptionTemplate, $markerArray, '###|###', true);
 
                 $first = true;
             }
@@ -831,7 +831,7 @@ class BasketController extends BaseController
             '###PREFIX###' => $this->prefixId,
         ];
 
-        $basketArray['###PAYMENT_SELECT_BOX###'] = $this->cObj->substituteMarkerArray(
+        $basketArray['###PAYMENT_SELECT_BOX###'] = $this->templateService->substituteMarkerArray(
             $paymentSelectTemplate,
             $selectMarker
         );
@@ -869,7 +869,7 @@ class BasketController extends BaseController
             $attributeArray = $product->getAttributeMatrix([$article->getUid()], $this->selectAttributes);
 
             if (is_array($attributeArray)) {
-                $templateAttr = $this->cObj->getSubpart($this->getTemplateCode(), '###BASKET_SELECT_ATTRIBUTES###');
+                $templateAttr = $this->templateService->getSubpart($this->getTemplateCode(), '###BASKET_SELECT_ATTRIBUTES###');
 
                 foreach ($attributeArray as $attributeUid => $myAttribute) {
                     /**
@@ -889,7 +889,7 @@ class BasketController extends BaseController
                     $markerArray['###SELECT_ATTRIBUTES_VALUE###'] = $value['value'];
                     $markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $myAttribute['unit'];
 
-                    $attCode .= $this->cObj->substituteMarkerArray($templateAttr, $markerArray);
+                    $attCode .= $this->templateService->substituteMarkerArray($templateAttr, $markerArray);
                 }
             }
         }
@@ -975,7 +975,7 @@ class BasketController extends BaseController
         );
 
         $templateMarker = '###PRODUCT_BASKET_FORM_SMALL###';
-        $template = $this->cObj->getSubpart($this->getTemplateCode(), $templateMarker);
+        $template = $this->templateService->getSubpart($this->getTemplateCode(), $templateMarker);
 
         $markerArray = array_merge($markerArray, $this->languageMarker);
 
@@ -992,7 +992,7 @@ class BasketController extends BaseController
             }
         }
 
-        $content = $this->cObj->substituteMarkerArray($template, $markerArray);
+        $content = $this->templateService->substituteMarkerArray($template, $markerArray);
 
         return $content;
     }
@@ -1109,10 +1109,13 @@ class BasketController extends BaseController
                     }
                 }
 
-                $template = $this->cObj->getSubpart($this->getTemplateCode(), $templateMarker[$templateSelector]);
+                $template = $this->templateService->getSubpart(
+                    $this->getTemplateCode(),
+                    $templateMarker[$templateSelector]
+                );
                 ++$changerowcount;
 
-                $template = $this->cObj->substituteSubpart($template, '###PRODUCT_BASKET_FORM_SMALL###', '');
+                $template = $this->templateService->substituteSubpart($template, '###PRODUCT_BASKET_FORM_SMALL###', '');
                 $markerArray = array_merge($productMarkerArray, $articleMarkerArray);
 
                 foreach ($hooks as $hookObj) {
@@ -1121,7 +1124,7 @@ class BasketController extends BaseController
                     }
                 }
 
-                $tempContent = $this->cObj->substituteMarkerArray($template, $markerArray, '###|###', 1);
+                $tempContent = $this->templateService->substituteMarkerArray($template, $markerArray, '###|###', 1);
                 $content .= $this->substituteMarkerArrayNoCached(
                     $tempContent,
                     $this->languageMarker,

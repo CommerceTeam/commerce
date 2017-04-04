@@ -112,20 +112,25 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
     {
         $lang = $this->getLanguageService();
         if ($this->ext_showNavTitle && isset($row['navtitle']) && trim($row['navtitle']) !== '') {
-            $title = '<span title="' . $lang->sL('LLL:EXT:lang/locallang_tca.xlf:title', true) . ' '
-                     . htmlspecialchars(trim($row['title'])) . '">'
-                     . htmlspecialchars(GeneralUtility::fixed_lgd_cs($row['navtitle'], $titleLen))
-                     . '</span>';
+            $title = '<span title="' .
+                htmlspecialchars($lang->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_tca.xlf:title'
+                )) . ' ' . htmlspecialchars(trim($row['title'])) . '">' .
+                htmlspecialchars(GeneralUtility::fixed_lgd_cs($row['navtitle'], $titleLen)) . '</span>';
         } else {
             $title = htmlspecialchars(GeneralUtility::fixed_lgd_cs($row['title'], $titleLen));
             if (isset($row['navtitle']) && trim($row['navtitle']) !== '') {
                 $title = '<span title="'
-                     . $lang->sL('LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.nav_title', true)
-                     . ' ' . htmlspecialchars(trim($row['navtitle'])) . '">' . $title
-                     . '</span>';
+                    . htmlspecialchars($lang->sL(
+                        'LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.nav_title'
+                    ))
+                    . ' ' . htmlspecialchars(trim($row['navtitle'])) . '">' . $title
+                    . '</span>';
             }
             $title = trim($row['title']) === ''
-                ? '<em>[' . $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.no_title', true) . ']</em>'
+                ? '<em>[' . htmlspecialchars($lang->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.no_title'
+                )) . ']</em>'
                 : $title;
         }
         return $title;

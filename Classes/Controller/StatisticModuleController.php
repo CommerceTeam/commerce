@@ -76,7 +76,7 @@ abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseS
     public function __construct()
     {
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
-        $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_list.xlf');
+        $this->getLanguageService()->includeLLFile('EXT:lang/Resources/Private/Language/locallang_mod_web_list.xlf');
         $this->getLanguageService()->includeLLFile(
             'EXT:commerce/Resources/Private/Language/locallang_mod_statistic.xlf'
         );
@@ -141,7 +141,8 @@ abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseS
         $this->pageinfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($this->id, $this->perms_clause);
         $access = is_array($this->pageinfo);
 
-        $this->content = '<h1 class="t3js-title-inlineedit">' . $language->getLL('statistic', true) . '</h1>';
+        $this->content = '<h1 class="t3js-title-inlineedit">' .
+            htmlspecialchars($language->getLL('statistic')) . '</h1>';
 
         // Checking access:
         if (($this->id && $access) || $backendUser->isAdmin()) {
@@ -274,7 +275,9 @@ abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseS
             $href = 'db_list.php?id=' . $this->pageinfo['uid'] . '&returnUrl=' .
                 rawurlencode(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI'));
             $buttons['record_list'] = '<a href="' . htmlspecialchars($href) . '" title="' .
-                $language->sL('LLL:EXT:lang/locallang_core.php:labels.showList', 1) . '">' .
+                htmlspecialchars($language->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.showList'
+                )) . '">' .
                 $iconFactory->getIcon('apps-filetree-folder-list')->render() .
                 '</a>';
         }

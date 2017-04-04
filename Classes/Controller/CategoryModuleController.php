@@ -437,7 +437,11 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                         ($this->table ? '&table=' . $this->table : '') . $categoryParameter,
                         'id="checkLargeControl"'
                     ) .
-                    BackendUtility::wrapInHelp('xMOD_csh_corebe', 'list_options', $lang->getLL('largeControl', true)) .
+                    BackendUtility::wrapInHelp(
+                        'xMOD_csh_corebe',
+                        'list_options',
+                        htmlspecialchars($lang->getLL('largeControl'))
+                    ) .
                     '</label>' .
                     '</div>';
             }
@@ -458,7 +462,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                         BackendUtility::wrapInHelp(
                             'xMOD_csh_corebe',
                             'list_options',
-                            $lang->getLL('showClipBoard', true)
+                            htmlspecialchars($lang->getLL('showClipBoard'))
                         ) .
                         '</label>' .
                         '</div>';
@@ -480,7 +484,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
                     BackendUtility::wrapInHelp(
                         'xMOD_csh_corebe',
                         'list_options',
-                        $lang->getLL('localization', true)
+                        htmlspecialchars($lang->getLL('localization'))
                     ) .
                     '</label>' .
                     '</div>';

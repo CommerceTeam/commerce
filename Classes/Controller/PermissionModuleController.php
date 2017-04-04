@@ -179,7 +179,9 @@ class PermissionModuleController extends ActionController
                     '',
                     BackendUtility::BEgetRootLine((int)$this->pageInfo['uid'])
                 ))
-                ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.showPage'))
+                ->setTitle($this->getLanguageService()->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.showPage'
+                ))
                 ->setIcon($iconFactory->getIcon('actions-document-view', Icon::SIZE_SMALL))
                 ->setHref('#');
 

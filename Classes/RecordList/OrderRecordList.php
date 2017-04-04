@@ -194,7 +194,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             // Cache
             $clearCacheButton = $buttonBar->makeLinkButton()
                 ->setHref($this->listURL() . '&clear_cache=1')
-                ->setTitle($lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.clear_cache'))
+                ->setTitle($lang->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.clear_cache'))
                 ->setIcon($this->iconFactory->getIcon('actions-system-cache-clear', Icon::SIZE_SMALL));
             $buttonBar->addButton($clearCacheButton, ButtonBar::BUTTON_POSITION_RIGHT);
             if ($this->table && (!isset($module->modTSconfig['properties']['noExportRecordsLinks'])
@@ -204,7 +204,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 // CSV
                 $csvButton = $buttonBar->makeLinkButton()
                     ->setHref($this->listURL() . '&csv=1')
-                    ->setTitle($lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.csv'))
+                    ->setTitle($lang->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.csv'))
                     ->setIcon($this->iconFactory->getIcon('actions-document-export-csv', Icon::SIZE_SMALL));
                 $buttonBar->addButton($csvButton, ButtonBar::BUTTON_POSITION_LEFT, 40);
                 // Export
@@ -212,7 +212,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                     $url = BackendUtility::getModuleUrl('xMOD_tximpexp', array('tx_impexp[action]' => 'export'));
                     $exportButton = $buttonBar->makeLinkButton()
                         ->setHref($url . '&tx_impexp[list][]=' . rawurlencode($this->table . ':' . $this->id))
-                        ->setTitle($lang->sL('LLL:EXT:lang/locallang_core.xlf:rm.export'))
+                        ->setTitle($lang->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:rm.export'))
                         ->setIcon($this->iconFactory->getIcon('actions-document-export-t3d', Icon::SIZE_SMALL));
                     $buttonBar->addButton($exportButton, ButtonBar::BUTTON_POSITION_LEFT, 40);
                 }
@@ -221,7 +221,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             // Reload
             $reloadButton = $buttonBar->makeLinkButton()
                 ->setHref($this->listURL())
-                ->setTitle($lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.reload'))
+                ->setTitle($lang->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.reload'))
                 ->setIcon($this->iconFactory->getIcon('actions-refresh', Icon::SIZE_SMALL));
             $buttonBar->addButton($reloadButton, ButtonBar::BUTTON_POSITION_RIGHT);
             // Shortcut
@@ -371,11 +371,15 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         $fieldListFields = $this->makeFieldList($table, 1);
         if (empty($fieldListFields) && $GLOBALS['TYPO3_CONF_VARS']['BE']['debug']) {
             $message = sprintf(
-                $lang->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:missingTcaColumnsMessage', true),
+                htmlspecialchars($lang->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_mod_web_list.xlf:missingTcaColumnsMessage'
+                )),
                 $table,
                 $table
             );
-            $messageTitle = $lang->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:missingTcaColumnsMessageTitle', true);
+            $messageTitle = htmlspecialchars($lang->sL(
+                'LLL:EXT:lang/Resources/Private/Language/locallang_mod_web_list.xlf:missingTcaColumnsMessageTitle'
+            ));
             /** @var FlashMessage $flashMessage */
             $flashMessage = GeneralUtility::makeInstance(
                 FlashMessage::class,
@@ -457,7 +461,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         }
         // If any records was selected, render the list:
         if ($dbCount) {
-            $tableTitle = $lang->sL($GLOBALS['TCA'][$table]['ctrl']['title'], true);
+            $tableTitle = htmlspecialchars($lang->sL($GLOBALS['TCA'][$table]['ctrl']['title']));
             if ($tableTitle === '') {
                 $tableTitle = $table;
             }
@@ -468,9 +472,9 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                     . '</span> (<span class="t3js-table-total-items">' . $this->totalItems . '</span>)';
             } else {
                 $icon = $this->table
-                    ? '<span title="' . $lang->getLL('contractView', true) . '">' .
+                    ? '<span title="' . htmlspecialchars($lang->getLL('contractView')) . '">' .
                     $this->iconFactory->getIcon('actions-view-table-collapse', Icon::SIZE_SMALL)->render() . '</span>'
-                    : '<span title="' . $lang->getLL('expandView', true) . '">' .
+                    : '<span title="' . htmlspecialchars($lang->getLL('expandView')) . '">' .
                     $this->iconFactory->getIcon('actions-view-table-expand', Icon::SIZE_SMALL)->render() . '</span>';
                 $theData[$titleCol] = $this->linkWrapTable(
                     $table,
@@ -487,9 +491,9 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                         $this->listURL() . '&collapse[' . $table . ']=' .
                         ($tableCollapsed ? '0' : '1')
                     ));
-                    $title = $tableCollapsed
-                        ? $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.expandTable', true)
-                        : $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.collapseTable', true);
+                    $title = htmlspecialchars($tableCollapsed
+                        ? $lang->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.expandTable')
+                        : $lang->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.collapseTable'));
                     $icon = '<span class="collapseIcon">' . $this->iconFactory->getIcon(
                         ($tableCollapsed ? 'actions-view-list-expand' : 'actions-view-list-collapse'),
                         Icon::SIZE_SMALL
@@ -692,7 +696,9 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 '>' . htmlspecialchars($label) . '</option>';
         }
         $lMenu = '<select class="form-control" name="search_levels" title="' .
-            $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.title.search_levels', true) . '" id="search_levels">' .
+            htmlspecialchars($lang->sL(
+                'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.title.search_levels'
+            )) . '" id="search_levels">' .
             implode('', $opt) . '</select>';
 
         $style = 'style="display: ' . ($this->searchString == '' ? 'none' : 'block') . ';"';
@@ -707,31 +713,43 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                             <div class="form-inline form-inline-spaced">
                                 <div class="form-group">
 									<input class="form-control" type="search" placeholder="' .
-            $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.enterSearchString', true) .
-            '" title="' . $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.title.searchString', true) .
+            htmlspecialchars($lang->sL(
+                'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.enterSearchString'
+            )) .
+            '" title="' . htmlspecialchars($lang->sL(
+                'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.title.searchString'
+            )) .
             '" name="search_field" id="search_field" value="' . htmlspecialchars($this->searchString) . '" />
                                 </div>
                                 <div class="form-group">
 									<label for="search_levels">' .
-            $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.label.search_levels', true) .
+            htmlspecialchars($lang->sL(
+                'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.label.search_levels'
+            )) .
             ': </label>
 									' . $lMenu . '
                                 </div>
                                 <div class="form-group">
 									<label for="showLimit">' .
-            $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.label.limit', true) .
+            htmlspecialchars($lang->sL(
+                'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.label.limit'
+            )) .
             ': </label>
 							<input class="form-control" type="number" min="0" max="10000" placeholder="10" title="' .
-            $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.title.limit', true) .
+            htmlspecialchars($lang->sL(
+                'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.title.limit'
+            )) .
             '" name="showLimit" id="showLimit" value="' .
             htmlspecialchars(($this->showLimit ? $this->showLimit : '')) . '" />
                                 </div>
                                 <div class="form-group">
 									<button type="submit" class="btn btn-default" name="search" title="' .
-            $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.title.search', true) .
+            htmlspecialchars($lang->sL(
+                'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.title.search'
+            )) .
             '">
 										' . $iconFactory->getIcon('actions-search', Icon::SIZE_SMALL)->render() . ' ' .
-            $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.search', true) . '
+            htmlspecialchars($lang->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.search')) . '
                                     </button>
                                 </div>
                             </div>
@@ -1056,7 +1074,9 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                         ($table === 'tt_content' ? '#' . $row['uid'] : '')
                     )
                 ) . '" title="' .
-                $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.showPage', true) . '">'
+                htmlspecialchars($this->getLanguageService()->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.showPage'
+                )) . '">'
                 . $this->iconFactory->getIcon('actions-view', Icon::SIZE_SMALL)->render() . '</a>';
             $this->addActionToCellGroup($cells, $viewAction, 'view');
         }
@@ -1067,7 +1087,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             $overlayIdentifier = !$this->isEditable($table) ? 'overlay-readonly' : null;
             $editAction = '<a class="btn btn-default" href="#" onclick="' .
                 htmlspecialchars(BackendUtility::editOnClick($params, '', -1)) .
-                '" title="' . $this->getLanguageService()->getLL('edit', true) . '">' .
+                '" title="' . htmlspecialchars($this->getLanguageService()->getLL('edit')) . '">' .
                 $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL, $overlayIdentifier)->render() . '</a>';
         } else {
             $editAction = $this->spaceIcon;
@@ -1077,7 +1097,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         $onClick = 'top.launchView(' . GeneralUtility::quoteJSvalue($table) . ', ' . (int)$row['uid'] .
             '); return false;';
         $viewBigAction = '<a class="btn btn-default" href="#" onclick="' . htmlspecialchars($onClick) .
-            '" title="' . $this->getLanguageService()->getLL('showInfo', true) . '">' .
+            '" title="' . htmlspecialchars($this->getLanguageService()->getLL('showInfo')) . '">' .
             $this->iconFactory->getIcon('actions-document-info', Icon::SIZE_SMALL)->render() . '</a>';
         $this->addActionToCellGroup($cells, $viewBigAction, 'viewBig');
         // "Move" wizard link for pages/tt_content elements:
@@ -1085,10 +1105,9 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             $onClick = 'return jumpExt(' .
                 GeneralUtility::quoteJSvalue(BackendUtility::getModuleUrl('move_element') . '&table=' . $table .
                 '&uid=' . $row['uid']) . ');';
-            $linkTitleLL = $this->getLanguageService()->getLL(
-                'move_' . ($table === 'tt_content' ? 'record' : 'page'),
-                true
-            );
+            $linkTitleLL = htmlspecialchars($this->getLanguageService()->getLL(
+                'move_' . ($table === 'tt_content' ? 'record' : 'page')
+            ));
             $icon = (
                 $table == 'pages' ?
                 $this->iconFactory->getIcon('actions-page-move', Icon::SIZE_SMALL) :
@@ -1104,7 +1123,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             $moduleUrl = BackendUtility::getModuleUrl('record_history', array('element' => $table . ':' . $row['uid']));
             $onClick = 'return jumpExt(' . GeneralUtility::quoteJSvalue($moduleUrl) . ',\'#latest\');';
             $historyAction = '<a class="btn btn-default" href="#" onclick="' . htmlspecialchars($onClick) . '" title="'
-                . $this->getLanguageService()->getLL('history', true) . '">'
+                . htmlspecialchars($this->getLanguageService()->getLL('history')) . '">'
                 . $this->iconFactory->getIcon('actions-document-history-open', Icon::SIZE_SMALL)->render() . '</a>';
             $this->addActionToCellGroup($cells, $historyAction, 'history');
             // Versioning:
@@ -1125,7 +1144,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                         'table' => $table, 'uid' => $row['uid']
                     ));
                     $versionAction = '<a class="btn btn-default" href="' . htmlspecialchars($href) . '" title="'
-                        . $this->getLanguageService()->getLL('displayVersions', true) . '">'
+                        . htmlspecialchars($this->getLanguageService()->getLL('displayVersions')) . '">'
                         . $this->iconFactory->getIcon('actions-version-page-open', Icon::SIZE_SMALL)->render() . '</a>';
                     $this->addActionToCellGroup($cells, $versionAction, 'version');
                 }
@@ -1138,7 +1157,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 $href = BackendUtility::getModuleUrl('system_BeuserTxPermission') . '&id=' . $row['uid'] .
                     '&return_id=' . $row['uid'] . '&edit=1';
                 $permsAction = '<a class="btn btn-default" href="' . htmlspecialchars($href) . '" title="'
-                    . $this->getLanguageService()->getLL('permissions', true) . '">'
+                    . htmlspecialchars($this->getLanguageService()->getLL('permissions')) . '">'
                     . $this->iconFactory->getIcon('status-status-locked', Icon::SIZE_SMALL)->render() . '</a>';
                 $this->addActionToCellGroup($cells, $permsAction, 'perms');
             }
@@ -1185,7 +1204,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                         . htmlspecialchars(
                             'return jumpToUrl(' . BackendUtility::getLinkToDataHandlerAction($params, -1) . ');'
                         )
-                        . '" title="' . $this->getLanguageService()->getLL('moveUp', true) . '">'
+                        . '" title="' . htmlspecialchars($this->getLanguageService()->getLL('moveUp')) . '">'
                         . $this->iconFactory->getIcon('actions-move-up', Icon::SIZE_SMALL)->render() . '</a>';
                 } else {
                     $moveUpAction = $this->spaceIcon;
@@ -1200,7 +1219,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                         . htmlspecialchars(
                             'return jumpToUrl(' . BackendUtility::getLinkToDataHandlerAction($params, -1) . ');'
                         )
-                        . '" title="' . $this->getLanguageService()->getLL('moveDown', true) . '">'
+                        . '" title="' . htmlspecialchars($this->getLanguageService()->getLL('moveDown')) . '">'
                         . $this->iconFactory->getIcon('actions-move-down', Icon::SIZE_SMALL)->render() . '</a>';
                 } else {
                     $moveDownAction = $this->spaceIcon;
@@ -1219,11 +1238,12 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 if ($this->isRecordCurrentBackendUser($table, $row)) {
                     $hideAction = $this->spaceIcon;
                 } else {
-                    $hideTitle = $this->getLanguageService()->getLL('hide' . ($table == 'pages' ? 'Page' : ''), true);
-                    $unhideTitle = $this->getLanguageService()->getLL(
-                        'unHide' . ($table == 'pages' ? 'Page' : ''),
-                        true
-                    );
+                    $hideTitle = htmlspecialchars($this->getLanguageService()->getLL(
+                        'hide' . ($table == 'pages' ? 'Page' : '')
+                    ));
+                    $unhideTitle = htmlspecialchars($this->getLanguageService()->getLL(
+                        'unHide' . ($table == 'pages' ? 'Page' : '')
+                    ));
                     if ($row[$hiddenField]) {
                         $params = 'data[' . $table . '][' . $rowUid . '][' . $hiddenField . ']=0';
                         $hideAction = '<a class="btn btn-default t3js-record-hide" data-state="hidden" href="#"'
@@ -1264,14 +1284,14 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                         $table,
                         $row['uid'],
                         ' ' . $this->getLanguageService()->sL(
-                            'LLL:EXT:lang/locallang_core.xlf:labels.referencesToRecord'
+                            'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.referencesToRecord'
                         ),
                         $this->getReferenceCount($table, $row['uid'])
                     ) . BackendUtility::translationCount(
                         $table,
                         $row['uid'],
                         ' ' . $this->getLanguageService()->sL(
-                            'LLL:EXT:lang/locallang_core.xlf:labels.translationsOfRecord'
+                            'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.translationsOfRecord'
                         )
                     );
                 }
@@ -1286,7 +1306,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 
                     $params = 'cmd[' . $table . '][' . $row['uid'] . '][delete]=1';
                     $icon = $this->iconFactory->getIcon('actions-edit-' . $actionName, Icon::SIZE_SMALL)->render();
-                    $linkTitle = $this->getLanguageService()->getLL($actionName, true);
+                    $linkTitle = htmlspecialchars($this->getLanguageService()->getLL($actionName));
                     $deleteAction = '<a class="btn btn-default t3js-record-delete" href="#" '
                         . ' data-l10parent="' . htmlspecialchars($row['l10n_parent']) . '"'
                         . ' data-params="' . htmlspecialchars($params) . '" data-title="'
@@ -1307,7 +1327,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                         . htmlspecialchars(
                             'return jumpToUrl(' . BackendUtility::getLinkToDataHandlerAction($params, -1) . ');'
                         )
-                        . '" title="' . $this->getLanguageService()->getLL('prevLevel', true) . '">'
+                        . '" title="' . htmlspecialchars($this->getLanguageService()->getLL('prevLevel')) . '">'
                         . $this->iconFactory->getIcon('actions-move-left', Icon::SIZE_SMALL)->render() . '</a>';
                     $this->addActionToCellGroup($cells, $moveLeftAction, 'moveLeft');
                 }
@@ -1323,7 +1343,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                             . htmlspecialchars(
                                 'return jumpToUrl(' . BackendUtility::getLinkToDataHandlerAction($params, -1) . ');'
                             )
-                            . '" title="' . $this->getLanguageService()->getLL('nextLevel', true) . '">'
+                            . '" title="' . htmlspecialchars($this->getLanguageService()->getLL('nextLevel')) . '">'
                             . $this->iconFactory->getIcon('actions-move-right', Icon::SIZE_SMALL)->render() . '</a>';
                     } else {
                         $moveRightAction = $this->spaceIcon;
@@ -1502,7 +1522,9 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
 				</table>
 			</div>
 			<input type="submit" name="search" class="btn btn-default" value="'
-            . $lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.setFields', true) . '"/>
+            . htmlspecialchars($lang->sL(
+                'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.setFields'
+            )) . '"/>
 			' . $formElements[1];
         return '<div class="fieldSelectBox">' . $content . '</div>';
     }

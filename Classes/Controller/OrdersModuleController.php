@@ -387,7 +387,11 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
                         $this->table ? '&table=' . $this->table : '',
                         'id="checkLargeControl"'
                     ) .
-                    BackendUtility::wrapInHelp('xMOD_csh_corebe', 'list_options', $lang->getLL('largeControl', true)) .
+                    BackendUtility::wrapInHelp(
+                        'xMOD_csh_corebe',
+                        'list_options',
+                        htmlspecialchars($lang->getLL('largeControl'))
+                    ) .
                     '</label>' .
                     '</div>';
             }
@@ -408,7 +412,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
                         BackendUtility::wrapInHelp(
                             'xMOD_csh_corebe',
                             'list_options',
-                            $lang->getLL('showClipBoard', true)
+                            htmlspecialchars($lang->getLL('showClipBoard'))
                         ) .
                         '</label>' .
                         '</div>';
@@ -442,7 +446,9 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
             $searchButton
                 ->setHref('#')
                 ->setClasses('t3js-toggle-search-toolbox')
-                ->setTitle($lang->sL('LLL:EXT:lang/locallang_core.xlf:labels.title.searchIcon'))
+                ->setTitle($lang->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.title.searchIcon'
+                ))
                 ->setIcon($this->iconFactory->getIcon('actions-search', Icon::SIZE_SMALL));
             $this->moduleTemplate->getDocHeaderComponent()->getButtonBar()->addButton(
                 $searchButton,

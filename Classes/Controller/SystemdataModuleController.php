@@ -305,11 +305,11 @@ abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\Base
             $newRecordButton = $buttonBar->makeLinkButton();
             $newRecordButton->setHref('#')->setOnClick($onClick)
                 ->setTitle(
-                    $this->getLanguageService()->sL(
-                        'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newRecordGeneral',
-                        true
-                    )
-                )->setIcon($this->moduleTemplate->getIconFactory()->getIcon('actions-document-new', Icon::SIZE_SMALL));
+                    htmlspecialchars($this->getLanguageService()->sL(
+                        'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newRecordGeneral'
+                    ))
+                )
+                ->setIcon($this->moduleTemplate->getIconFactory()->getIcon('actions-document-new', Icon::SIZE_SMALL));
             $buttonBar->addButton($newRecordButton, ButtonBar::BUTTON_POSITION_LEFT, 10);
         }
 
@@ -317,8 +317,11 @@ abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\Base
         $refreshButton = $buttonBar->makeLinkButton()
             ->setHref(GeneralUtility::getIndpEnv('REQUEST_URI'))
             ->setTitle(
-                $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.reload', true)
-            )->setIcon($this->moduleTemplate->getIconFactory()->getIcon('actions-refresh', Icon::SIZE_SMALL));
+                htmlspecialchars($this->getLanguageService()->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.reload'
+                ))
+            )
+            ->setIcon($this->moduleTemplate->getIconFactory()->getIcon('actions-refresh', Icon::SIZE_SMALL));
         $buttonBar->addButton($refreshButton, ButtonBar::BUTTON_POSITION_RIGHT);
     }
 

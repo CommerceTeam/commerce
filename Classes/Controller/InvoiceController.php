@@ -137,9 +137,8 @@ class InvoiceController extends BaseController
         // If there is no order id, this plugin serves no pupose
         $this->order_id = $this->piVars['order_id'];
 
-        // @todo In case of a FE user this should not give a hint
         // about what's wrong, but instead redirect the user
-        if (empty($this->order_id)) {
+        if (empty($this->order_id) && (empty($user) || $backendUser['uid'])) {
             return $this->pi_wrapInBaseClass($this->pi_getLL('error_orderid'));
         }
         if (empty($this->conf['templateFile'])) {
@@ -160,8 +159,11 @@ class InvoiceController extends BaseController
 
         // Get subparts
         $templateMarker = '###TEMPLATE###';
-        $this->template['invoice'] = $this->cObj->getSubpart($this->templateCode, $templateMarker);
-        $this->template['item'] = $this->cObj->getSubpart($this->template['invoice'], '###LISTING_ARTICLE###');
+        $this->template['invoice'] = $this->templateService->getSubpart($this->templateCode, $templateMarker);
+        $this->template['item'] = $this->templateService->getSubpart(
+            $this->template['invoice'],
+            '###LISTING_ARTICLE###'
+        );
 
         // Markers and content, ready to be populated
         $markerArray = [];
@@ -239,18 +241,18 @@ class InvoiceController extends BaseController
             $this->content = $this->substituteMarkerArrayNoCached($this->template['invoice'], [], $subpartArray);
 
             // Buid content from template + array
-            $this->content = $this->cObj->substituteSubpart(
+            $this->content = $this->templateService->substituteSubpart(
                 $this->content,
                 '###LISTING_PAYMENT_ROW###',
                 $this->orderPayment
             );
-            $this->content = $this->cObj->substituteSubpart(
+            $this->content = $this->templateService->substituteSubpart(
                 $this->content,
                 '###LISTING_SHIPPING_ROW###',
                 $this->orderDelivery
             );
-            $this->content = $this->cObj->substituteMarkerArray($this->content, $markerArray);
-            $this->content = $this->cObj->substituteMarkerArray($this->content, $this->languageMarker);
+            $this->content = $this->templateService->substituteMarkerArray($this->content, $markerArray);
+            $this->content = $this->templateService->substituteMarkerArray($this->content, $this->languageMarker);
         } else {
             $this->content = $this->pi_getLL('error_nodata');
         }
@@ -343,7 +345,7 @@ class InvoiceController extends BaseController
                 (bool) $this->conf['showCurrencySign']
             );
             $markerArray['ARTICLE_POSITION'] = $orderpos++;
-            $out .= $this->cObj->substituteMarkerArray($this->template['item'], $markerArray, '###|###', 1);
+            $out .= $this->templateService->substituteMarkerArray($this->template['item'], $markerArray, '###|###', 1);
         }
 
         return $this->cObj->stdWrap($out, $typoScript);
@@ -381,9 +383,9 @@ class InvoiceController extends BaseController
         }
 
         $markerArray = $this->generateMarkerArray($row, $typoScript, $prefix, 'tt_address');
-        $template = $this->cObj->getSubpart($this->templateCode, '###' . $prefix . 'DATA###');
-        $content = $this->cObj->substituteMarkerArray($template, $markerArray, '###|###', 1);
-        $content = $this->cObj->substituteMarkerArray($content, $this->languageMarker);
+        $template = $this->templateService->getSubpart($this->templateCode, '###' . $prefix . 'DATA###');
+        $content = $this->templateService->substituteMarkerArray($template, $markerArray, '###|###', 1);
+        $content = $this->templateService->substituteMarkerArray($content, $this->languageMarker);
 
         return $this->cObj->stdWrap($content, $typoScript);
     }
@@ -419,7 +421,7 @@ class InvoiceController extends BaseController
 
         $content = '';
         foreach ($orderArticles as $orderArticle) {
-            $subpart = $this->cObj->getSubpart($this->templateCode, '###LISTING_' . $prefix . 'ROW###');
+            $subpart = $this->templateService->getSubpart($this->templateCode, '###LISTING_' . $prefix . 'ROW###');
             // @todo Use $markerArray = $this->generateMarkerArray($row, '', $prefix);
             $markerArray['###' . $prefix . 'AMOUNT###'] = $orderArticle['amount'];
             $markerArray['###' . $prefix . 'METHOD###'] = $orderArticle['title'];
@@ -428,7 +430,7 @@ class InvoiceController extends BaseController
                 $this->conf['currency'],
                 (bool) $this->conf['showCurrencySign']
             );
-            $content .= $this->cObj->substituteMarkerArray($subpart, $markerArray);
+            $content .= $this->templateService->substituteMarkerArray($subpart, $markerArray);
         }
 
         return $content;

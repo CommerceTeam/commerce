@@ -483,10 +483,10 @@ class CheckoutController extends BaseController
      */
     public function renderSteps($content)
     {
-        $myTemplate = $this->cObj->getSubpart($this->templateCode, '###CHECKOUT_STEPS_BAR###');
-        $activeTemplate = $this->cObj->getSubpart($myTemplate, '###CHECKOUT_ONE_STEP_ACTIVE###');
-        $actualTemplate = $this->cObj->getSubpart($myTemplate, '###CHECKOUT_ONE_STEP_ACTUAL###');
-        $inactiveTemplate = $this->cObj->getSubpart($myTemplate, '###CHECKOUT_ONE_STEP_INACTIVE###');
+        $myTemplate = $this->templateService->getSubpart($this->templateCode, '###CHECKOUT_STEPS_BAR###');
+        $activeTemplate = $this->templateService->getSubpart($myTemplate, '###CHECKOUT_ONE_STEP_ACTIVE###');
+        $actualTemplate = $this->templateService->getSubpart($myTemplate, '###CHECKOUT_ONE_STEP_ACTUAL###');
+        $inactiveTemplate = $this->templateService->getSubpart($myTemplate, '###CHECKOUT_ONE_STEP_INACTIVE###');
 
         $stepsToNumbers = array_flip($this->checkoutSteps);
         $currentStepNumber = $stepsToNumbers[$this->currentStep];
@@ -502,24 +502,44 @@ class CheckoutController extends BaseController
             }
             $label = sprintf($this->pi_getLL('label_step_' . $this->checkoutSteps[$i]), $i + 1);
             $lokContent = $this->cObj->stdWrap($label, $localTs);
-            $activeContent .= $this->cObj->substituteMarker($activeTemplate, '###LINKTOSTEP###', $lokContent);
+            $activeContent .= $this->templateService->substituteMarker(
+                $activeTemplate,
+                '###LINKTOSTEP###',
+                $lokContent
+            );
         }
 
         $label = sprintf($this->pi_getLL('label_step_' . $this->checkoutSteps[$i]), $i + 1);
         $lokContent = $this->cObj->stdWrap($label, $this->conf['actualStep.']);
-        $actualContent = $this->cObj->substituteMarker($actualTemplate, '###STEPNAME###', $lokContent);
+        $actualContent = $this->templateService->substituteMarker($actualTemplate, '###STEPNAME###', $lokContent);
 
         $stepCount = count($this->checkoutSteps);
         for ($i = ($currentStepNumber + 1); $i < $stepCount; ++$i) {
             $label = sprintf($this->pi_getLL('label_step_' . $this->checkoutSteps[$i]), $i + 1);
             $lokContent = $this->cObj->stdWrap($label, $this->conf['inactiveStep.']);
-            $inactiveContent .= $this->cObj->substituteMarker($inactiveTemplate, '###STEPNAME###', $lokContent);
+            $inactiveContent .= $this->templateService->substituteMarker(
+                $inactiveTemplate,
+                '###STEPNAME###',
+                $lokContent
+            );
         }
 
-        $myTemplate = $this->cObj->substituteSubpart($myTemplate, '###CHECKOUT_ONE_STEP_ACTIVE###', $activeContent);
-        $myTemplate = $this->cObj->substituteSubpart($myTemplate, '###CHECKOUT_ONE_STEP_INACTIVE###', $inactiveContent);
-        $myTemplate = $this->cObj->substituteSubpart($myTemplate, '###CHECKOUT_ONE_STEP_ACTUAL###', $actualContent);
-        $content = $this->cObj->substituteMarker($content, '###CHECKOUT_STEPS###', $myTemplate);
+        $myTemplate = $this->templateService->substituteSubpart(
+            $myTemplate,
+            '###CHECKOUT_ONE_STEP_ACTIVE###',
+            $activeContent
+        );
+        $myTemplate = $this->templateService->substituteSubpart(
+            $myTemplate,
+            '###CHECKOUT_ONE_STEP_INACTIVE###',
+            $inactiveContent
+        );
+        $myTemplate = $this->templateService->substituteSubpart(
+            $myTemplate,
+            '###CHECKOUT_ONE_STEP_ACTUAL###',
+            $actualContent
+        );
+        $content = $this->templateService->substituteMarker($content, '###CHECKOUT_STEPS###', $myTemplate);
 
         return $content;
     }
@@ -539,12 +559,12 @@ class CheckoutController extends BaseController
 
         $this->debug($this->sessionData, 'sessionData', __FILE__ . ' ' . __LINE__);
         if ($this->conf['billing.']['subpartMarker.']['containerWrap']) {
-            $template = $this->cObj->getSubpart(
+            $template = $this->templateService->getSubpart(
                 $this->templateCode,
                 strtoupper($this->conf['billing.']['subpartMarker.']['containerWrap'])
             );
         } else {
-            $template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_CONTAINER###');
+            $template = $this->templateService->getSubpart($this->templateCode, '###ADDRESS_CONTAINER###');
         }
 
         $markerArray['###ADDRESS_TITLE###'] = '';
@@ -674,9 +694,9 @@ class CheckoutController extends BaseController
 
         $this->currentStep = 'billing';
 
-        $content = $this->cObj->substituteMarkerArray($template, $markerArray);
+        $content = $this->templateService->substituteMarkerArray($template, $markerArray);
 
-        return $this->cObj->substituteMarkerArray($content, $this->languageMarker);
+        return $this->templateService->substituteMarkerArray($content, $this->languageMarker);
     }
 
     /**
@@ -697,12 +717,12 @@ class CheckoutController extends BaseController
         $this->validateAddress('delivery');
 
         if ($this->conf['delivery.']['subpartMarker.']['containerWrap']) {
-            $template = $this->cObj->getSubpart(
+            $template = $this->templateService->getSubpart(
                 $this->templateCode,
                 strtoupper($this->conf['delivery.']['subpartMarker.']['containerWrap'])
             );
         } else {
-            $template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_CONTAINER###');
+            $template = $this->templateService->getSubpart($this->templateCode, '###ADDRESS_CONTAINER###');
         }
 
         $markerArray['###ADDRESS_TITLE###'] = '';
@@ -805,8 +825,8 @@ class CheckoutController extends BaseController
 
         $this->currentStep = 'delivery';
 
-        return $this->cObj->substituteMarkerArray(
-            $this->cObj->substituteMarkerArray($template, $markerArray),
+        return $this->templateService->substituteMarkerArray(
+            $this->templateService->substituteMarkerArray($template, $markerArray),
             $this->languageMarker
         );
     }
@@ -837,12 +857,12 @@ class CheckoutController extends BaseController
         $paymentType = $this->getPaymentType();
 
         if ($this->conf[$paymentType . '.']['subpartMarker.']['listWrap']) {
-            $template = $this->cObj->getSubpart(
+            $template = $this->templateService->getSubpart(
                 $this->templateCode,
                 strtoupper($this->conf[$paymentType . '.']['subpartMarker.']['listWrap'])
             );
         } else {
-            $template = $this->cObj->getSubpart($this->templateCode, '###PAYMENT###');
+            $template = $this->templateService->getSubpart($this->templateCode, '###PAYMENT###');
         }
 
         // Fill standard markers
@@ -937,8 +957,8 @@ class CheckoutController extends BaseController
 
         $this->currentStep = 'payment';
 
-        return $this->cObj->substituteMarkerArray(
-            $this->cObj->substituteMarkerArray($template, $markerArray),
+        return $this->templateService->substituteMarkerArray(
+            $this->templateService->substituteMarkerArray($template, $markerArray),
             $this->languageMarker
         );
     }
@@ -954,7 +974,7 @@ class CheckoutController extends BaseController
     public function getListing($template = '')
     {
         if (!$template) {
-            $template = $this->cObj->getSubpart($this->templateCode, '###LISTING###');
+            $template = $this->templateService->getSubpart($this->templateCode, '###LISTING###');
         }
 
         $frontendController = $this->getTypoScriptFrontendController();
@@ -1034,8 +1054,8 @@ class CheckoutController extends BaseController
 
         $this->currentStep = 'listing';
 
-        return $this->cObj->substituteMarkerArray(
-            $this->cObj->substituteMarkerArray($template, $markerArray),
+        return $this->templateService->substituteMarkerArray(
+            $this->templateService->substituteMarkerArray($template, $markerArray),
             $this->languageMarker
         );
     }
@@ -1185,7 +1205,7 @@ class CheckoutController extends BaseController
         }
 
         // Start content rendering
-        $content = $this->cObj->getSubpart($this->templateCode, '###FINISH###');
+        $content = $this->templateService->getSubpart($this->templateCode, '###FINISH###');
 
         $markerArray['###LISTING_BASKET###'] = $this->makeBasketView(
             $basket,
@@ -1216,7 +1236,7 @@ class CheckoutController extends BaseController
             }
         }
 
-        $content = $this->cObj->substituteSubpart($content, '###DELIVERY_ADDRESS###', $deliveryAddress);
+        $content = $this->templateService->substituteSubpart($content, '###DELIVERY_ADDRESS###', $deliveryAddress);
 
         $billingAddress = '';
         if ($orderData['cust_invoice']) {
@@ -1227,7 +1247,7 @@ class CheckoutController extends BaseController
             }
         }
 
-        $content = $this->cObj->substituteSubpart($content, '###BILLING_ADDRESS###', $billingAddress);
+        $content = $this->templateService->substituteSubpart($content, '###BILLING_ADDRESS###', $billingAddress);
 
         $markerArray = $this->finishItRenderGoodBadMarker($markerArray);
 
@@ -1237,8 +1257,8 @@ class CheckoutController extends BaseController
             }
         }
 
-        $content = $this->cObj->substituteMarkerArray(
-            $this->cObj->substituteMarkerArray($content, $markerArray),
+        $content = $this->templateService->substituteMarkerArray(
+            $this->templateService->substituteMarkerArray($content, $markerArray),
             $this->languageMarker
         );
 
@@ -1395,7 +1415,10 @@ class CheckoutController extends BaseController
     {
         $basket = $this->getBasket();
 
-        $template = $this->cObj->getSubpart($this->templateCode, '###LISTING_BASKET_' . strtoupper($type) . '###');
+        $template = $this->templateService->getSubpart(
+            $this->templateCode,
+            '###LISTING_BASKET_' . strtoupper($type) . '###'
+        );
 
         $sumNet = $basket->getSumNet();
         $sumGross = $basket->getSumGross();
@@ -1450,7 +1473,7 @@ class CheckoutController extends BaseController
             }
         }
 
-        return $this->cObj->substituteMarkerArray($template, $markerArray);
+        return $this->templateService->substituteMarkerArray($template, $markerArray);
     }
 
     /**
@@ -1480,15 +1503,15 @@ class CheckoutController extends BaseController
             }
 
             if ($this->conf[$addressType . '.']['subpartMarker.']['listItem']) {
-                $template = $this->cObj->getSubpart(
+                $template = $this->templateService->getSubpart(
                     $this->templateCode,
                     strtoupper($this->conf[$addressType . '.']['subpartMarker.']['listItem'])
                 );
             } else {
-                $template = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_LIST###');
+                $template = $this->templateService->getSubpart($this->templateCode, '###ADDRESS_LIST###');
             }
 
-            return $this->cObj->substituteMarkerArray($template, $addressArray);
+            return $this->templateService->substituteMarkerArray($template, $addressArray);
         }
 
         return '';
@@ -1770,9 +1793,9 @@ class CheckoutController extends BaseController
 
         $this->dbFieldData = $this->sessionData[$step];
 
-        $fieldTemplate = $this->cObj->getSubpart($this->templateCode, '###SINGLE_INPUT###');
-        $fieldTemplateCheckbox = $this->cObj->getSubpart($this->templateCode, '###SINGLE_CHECKBOX###');
-        $fieldTemplateHidden = $this->cObj->getSubpart($this->templateCode, '###SINGLE_HIDDEN###');
+        $fieldTemplate = $this->templateService->getSubpart($this->templateCode, '###SINGLE_INPUT###');
+        $fieldTemplateCheckbox = $this->templateService->getSubpart($this->templateCode, '###SINGLE_CHECKBOX###');
+        $fieldTemplateHidden = $this->templateService->getSubpart($this->templateCode, '###SINGLE_HIDDEN###');
         // backward compatibility
         if ($fieldTemplateHidden == '') {
             $fieldTemplateHidden = $fieldTemplate;
@@ -1833,7 +1856,7 @@ class CheckoutController extends BaseController
                     );
                 }
             }
-            $fieldCode .= $this->cObj->substituteMarkerArray($fieldCodeTemplate, $fieldMarkerArray);
+            $fieldCode .= $this->templateService->substituteMarkerArray($fieldCodeTemplate, $fieldMarkerArray);
         }
 
         $this->getFrontendUser()->setKey(
@@ -2691,16 +2714,16 @@ class CheckoutController extends BaseController
         );
 
         // Since The first line of the mail is the Suibject, trim the template
-        $template = ltrim($this->cObj->getSubpart($this->templateCode, '###MAILCONTENT###'));
+        $template = ltrim($this->templateService->getSubpart($this->templateCode, '###MAILCONTENT###'));
 
         // Added replacing marker for new users
         $templateUser = '';
         if (!empty($this->userData)) {
-            $templateUser = trim($this->cObj->getSubpart($template, '###NEW_USER###'));
-            $templateUser = $this->cObj->substituteMarkerArray($templateUser, $this->userData, '###|###', 1);
+            $templateUser = trim($this->templateService->getSubpart($template, '###NEW_USER###'));
+            $templateUser = $this->templateService->substituteMarkerArray($templateUser, $this->userData, '###|###', 1);
         }
 
-        $content = $this->cObj->substituteSubpart($template, '###NEW_USER###', $templateUser);
+        $content = $this->templateService->substituteSubpart($template, '###NEW_USER###', $templateUser);
 
         $basketContent = $this->makeBasketView(
             $this->getBasket(),
@@ -2712,7 +2735,7 @@ class CheckoutController extends BaseController
             ]
         );
 
-        $content = $this->cObj->substituteSubpart($content, '###BASKET_VIEW###', $basketContent);
+        $content = $this->templateService->substituteSubpart($content, '###BASKET_VIEW###', $basketContent);
 
         /** @var AddressRepository $addressRepository */
         $addressRepository = GeneralUtility::makeInstance(AddressRepository::class);
@@ -2727,7 +2750,7 @@ class CheckoutController extends BaseController
             }
         }
 
-        $content = $this->cObj->substituteSubpart($content, '###DELIVERY_ADDRESS###', $deliveryAdress);
+        $content = $this->templateService->substituteSubpart($content, '###DELIVERY_ADDRESS###', $deliveryAdress);
 
         $billingAdress = '';
         if ($orderData['cust_invoice']) {
@@ -2739,7 +2762,7 @@ class CheckoutController extends BaseController
             }
         }
 
-        $content = $this->cObj->substituteSubpart($content, '###BILLING_ADDRESS###', $billingAdress);
+        $content = $this->templateService->substituteSubpart($content, '###BILLING_ADDRESS###', $billingAdress);
 
         // Hook to process marker array
         $hooks = HookFactory::getHooks('Controller/CheckoutController', 'generateMail');
@@ -2751,7 +2774,7 @@ class CheckoutController extends BaseController
 
         $markerArray = array_merge((array) $markerArray, (array) $this->languageMarker);
 
-        $content = $this->cObj->substituteMarkerArray($content, $markerArray, '', true, true);
+        $content = $this->templateService->substituteMarkerArray($content, $markerArray, '', true, true);
 
         return ltrim($content);
     }

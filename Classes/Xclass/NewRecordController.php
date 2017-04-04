@@ -93,9 +93,12 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
         ) {
             // Create link to new page inside:
             $newPageLinks[] = $this->linkWrap(
-                $this->moduleTemplate->getIconFactory()->getIconForRecord($table, array(), Icon::SIZE_SMALL)->render()
-                . $lang->sL($v['ctrl']['title'], true) . ' ('
-                . $lang->sL('LLL:EXT:lang/locallang_core.xlf:db_new.php.inside', true) . ')',
+                $this->moduleTemplate->getIconFactory()->getIconForRecord($table, [], Icon::SIZE_SMALL)->render()
+                . htmlspecialchars($lang->sL($v['ctrl']['title'])) . ' ('
+                . htmlspecialchars($lang->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:db_new.php.inside'
+                ))
+                . ')',
                 $table,
                 $this->id
             );
@@ -115,8 +118,10 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
             $this->pageinfo['uid'] = $categoryRepository->getParentCategory($backup);
 
             $newPageLinks[] = $this->linkWrap(
-                $pageIcon . $lang->sL($v['ctrl']['title'], true) . ' ('
-                . $lang->sL('LLL:EXT:lang/locallang_core.xlf:db_new.php.after', true)
+                $pageIcon . htmlspecialchars($lang->sL($v['ctrl']['title'])) . ' ('
+                . htmlspecialchars($lang->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:db_new.php.after'
+                ))
                 . ')',
                 'tx_commerce_categories',
                 $this->pageinfo['pid']
@@ -175,7 +180,7 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
                         $thisTitle = '';
                         // Create new link for record:
                         $newLink = $this->linkWrap(
-                            $newRecordIcon . $lang->sL($v['ctrl']['title'], true),
+                            $newRecordIcon . htmlspecialchars($lang->sL($v['ctrl']['title'])),
                             $table,
                             $this->id
                         );

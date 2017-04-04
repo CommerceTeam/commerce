@@ -30,7 +30,7 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
      */
     public function getSubModuleContent()
     {
-        $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_list.xlf');
+        $this->getLanguageService()->includeLLFile('EXT:lang/Resources/Private/Language/locallang_mod_web_list.xlf');
         $this->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/AjaxDataHandler');
 
         $out = '<h1>' . $this->getLanguageService()->sL(
@@ -115,7 +115,7 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
             $onClickAction = 'onclick="' . htmlspecialchars(BackendUtility::editOnClick($params, '', -1)) . '"';
             $iconIdentifier = 'actions-open';
             $editAction = '<a class="btn btn-default" href="#" ' . $onClickAction .
-                ' title="' . $this->getLanguageService()->getLL('edit', true) . '">' .
+                ' title="' . htmlspecialchars($this->getLanguageService()->getLL('edit')) . '">' .
                 $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render() .
                 '</a>';
 
@@ -124,12 +124,16 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
             $refCountMsg = BackendUtility::referenceCount(
                 $this->table,
                 $attribute['uid'],
-                ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.referencesToRecord'),
+                ' ' . $this->getLanguageService()->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.referencesToRecord'
+                ),
                 $this->getReferenceCount($this->table, $attribute['uid'])
             ) . BackendUtility::translationCount(
                 $this->table,
                 $attribute['uid'],
-                ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.translationsOfRecord')
+                ' ' . $this->getLanguageService()->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.translationsOfRecord'
+                )
             );
             $titleOrig = BackendUtility::getRecordTitle($this->table, $attribute, false, true);
             $title = str_replace('\\', '\\\\', GeneralUtility::fixed_lgd_cs($titleOrig, 30));
@@ -138,7 +142,7 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
 
             $params = 'cmd[' . $this->table . '][' . $attribute['uid'] . '][delete]=1';
             $icon = $this->iconFactory->getIcon('actions-edit-' . $actionName, Icon::SIZE_SMALL)->render();
-            $linkTitle = $this->getLanguageService()->getLL($actionName, true);
+            $linkTitle = htmlspecialchars($this->getLanguageService()->getLL($actionName));
             $deleteAction = '<a class="btn btn-default t3js-record-delete" href="#" '
                 . ' data-l10parent="' . htmlspecialchars($attribute['l10n_parent']) . '"'
                 . ' data-params="' . htmlspecialchars($params) . '" data-title="'

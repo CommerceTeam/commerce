@@ -165,7 +165,7 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
             $id = (int)$this->linkParts['category'];
             $categoryRow = BackendUtility::getRecordWSOL('tx_commerce_categories', $id);
 
-            $title = $lang->getLL('tx_commerce_categories', true);
+            $title = htmlspecialchars($lang->getLL('tx_commerce_categories'));
             $path .= ' \'' . htmlspecialchars(GeneralUtility::fixed_lgd_cs($categoryRow['title'], $titleLen)) . '\''
                 . ' (ID:' . $id . ')';
         }
@@ -174,7 +174,7 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
             $id = (int)$this->linkParts['product'];
             $productRow = BackendUtility::getRecordWSOL('tx_commerce_products', $id);
 
-            $title = $lang->getLL('tx_commerce_products', true);
+            $title = htmlspecialchars($lang->getLL('tx_commerce_products'));
             $path .= ' \'' . htmlspecialchars(GeneralUtility::fixed_lgd_cs($productRow['title'], $titleLen)) . '\''
                 . ' (ID:' . $id . ')';
         }

@@ -33,10 +33,12 @@ return [
     'columns' => [
         'editlock' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_tca.php:editlock',
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_tca.xlf:editlock',
             'config' => [
                 'type' => 'check',
-                'items' => ['1' => ['0' => 'LLL:EXT:lang/locallang_core.xlf:labels.enabled']],
+                'items' => [
+                    '1' => ['0' => 'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.enabled']
+                ],
             ],
         ],
         'hidden' => [
@@ -263,8 +265,8 @@ return [
                 'minitems' => 0,
                 'maxitems' => 20,
                 'foreign_table' => 'tx_commerce_categories',
-                'foreign_table_where' => 'AND tx_commerce_categories.sys_language_uid IN (-1,0)
-                    AND tx_commerce_categories.uid != ###THIS_UID###
+                'foreign_table_where' => 'AND tx_commerce_categories.sys_language_uid IN (-1,0) ' .
+                    ' AND tx_commerce_categories.uid != ###THIS_UID###
                     ORDER BY tx_commerce_categories.sorting ASC',
                 'MM' => 'tx_commerce_categories_parent_category_mm',
                 'enableMultiSelectFilterTextfield' => true,

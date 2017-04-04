@@ -48,7 +48,7 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
 
             // Edit link:
             $adminLink = '<a href="#" ' . $onClickAction . ' title="' .
-                $language->sL('LLL:EXT:lang/locallang_core.xlf:cm.edit') . '">' .
+                $language->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:cm.edit') . '">' .
                 $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render() . '</a>';
 
             // Delete link:
@@ -56,7 +56,9 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
                 htmlspecialchars(BackendUtility::getLinkToDataHandlerAction(
                     '&cmd[' . $table . '][' . $row['uid'] . '][delete]=1'
                 )) .
-                '" title="' . $language->sL('LLL:EXT:lang/locallang_core.xlf:cm.delete', true) . '">' .
+                '" title="' . htmlspecialchars($language->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:cm.delete'
+                )) . '">' .
                 $iconFactory->getIcon('actions-edit-delete', Icon::SIZE_SMALL)->render() . '</a>';
 
             if ($row['pid'] == -1) {

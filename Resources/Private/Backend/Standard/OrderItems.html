@@ -45,9 +45,9 @@
 								<f:case value="price_gross">
 									<td style="text-align: right"><f:format.number decimals="2">{item.{field}}</f:format.number></td>
 								</f:case>
-								<f:case default="true">
+								<f:defaultCase>
 									<td>{item.{field}}</td>
-								</f:case>
+								</f:defaultCase>
 							</f:switch>
 						</f:for>
 					</tr>
@@ -66,9 +66,9 @@
 							<f:case value="price_gross">
 								<td style="text-align: right"><f:format.number decimals="2">{sum.{field}}</f:format.number></td>
 							</f:case>
-							<f:case default="true">
+							<f:defaultCase>
 								<td>{sum.{field}}</td>
-							</f:case>
+							</f:defaultCase>
 						</f:switch>
 					</f:for>
 				</tr>

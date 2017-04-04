@@ -21,6 +21,7 @@ use CommerceTeam\Commerce\Domain\Model\Product;
 use CommerceTeam\Commerce\Factory\HookFactory;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use CommerceTeam\Commerce\ViewHelpers\MoneyViewHelper;
+use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -48,6 +49,11 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      * @param array
      */
     public $conf = [];
+
+    /**
+     * @var MarkerBasedTemplateService
+     */
+    protected $templateService;
 
     /**
      * If set to TRUE some debug message will be printed.
@@ -258,6 +264,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $this->pi_loadLL();
         $this->pi_initPIflexForm();
 
+        $this->templateService = GeneralUtility::makeInstance(MarkerBasedTemplateService::class);
+
         \CommerceTeam\Commerce\Utility\GeneralUtility::initializeFeUserBasket();
 
         $this->pid = $this->getTypoScriptFrontendController()->id;
@@ -387,7 +395,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 
         $templateArray = [];
         foreach ($subpartNameArray as $oneSubpartName) {
-            $templateArray[] = $this->cObj->getSubpart($this->templateCode, $oneSubpartName);
+            $templateArray[] = $this->templateService->getSubpart($this->templateCode, $oneSubpartName);
         }
 
         if (!$this->product_attributes) {
@@ -432,8 +440,18 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                     'tx_commerce_attributes'
                 );
                 $marker['PRODUCT_ATTRIBUTES_TITLE'] = $matrix[$myAttributeUid]['title'];
-                $productAttribute = $this->cObj->substituteMarkerArray($templateArray[$i], $markerArray, '###|###', 1);
-                $productAttributes .= $this->cObj->substituteMarkerArray($productAttribute, $marker, '###|###', 1);
+                $productAttribute = $this->templateService->substituteMarkerArray(
+                    $templateArray[$i],
+                    $markerArray,
+                    '###|###',
+                    true
+                );
+                $productAttributes .= $this->templateService->substituteMarkerArray(
+                    $productAttribute,
+                    $marker,
+                    '###|###',
+                    true
+                );
                 ++$i;
             }
 
@@ -464,7 +482,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     ) {
         $templateArray = [];
         foreach ($subpartNameArray as $oneSubpartName) {
-            $tmpCode = $this->cObj->getSubpart($this->templateCode, $oneSubpartName);
+            $tmpCode = $this->templateService->getSubpart($this->templateCode, $oneSubpartName);
             if (strlen($tmpCode) > 0) {
                 $templateArray[] = $tmpCode;
             }
@@ -508,7 +526,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 );
                 $marker['ARTICLE_ATTRIBUTES_TITLE'] = $matrix[$myAttributeUid]['title'];
 
-                $articleShallAttributesString .= $this->cObj->substituteMarkerArray(
+                $articleShallAttributesString .= $this->templateService->substituteMarkerArray(
                     $templateArray[$i],
                     $markerArray,
                     '###|###',
@@ -553,7 +571,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 );
                 $marker['ARTICLE_ATTRIBUTES_TITLE'] = $matrix[$myAttributeUid]['title'];
 
-                $articleCanAttributesString .= $this->cObj->substituteMarkerArray(
+                $articleCanAttributesString .= $this->templateService->substituteMarkerArray(
                     $templateArray[$i],
                     $markerArray,
                     '###|###',
@@ -683,14 +701,18 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                  * @deprecated
                  * Please use TYPOLINK instead
                  */
-                $linkContent = $this->cObj->getSubpart($tmpCategory, '###CATEGORY_ITEM_DETAILLINK###');
+                $linkContent = $this->templateService->getSubpart($tmpCategory, '###CATEGORY_ITEM_DETAILLINK###');
                 if ($linkContent) {
                     $link = $this->pi_linkTP_keepPIvars($linkContent, $linkArray, true, 0, $this->conf['overridePid']);
                 } else {
                     $link = '';
                 }
 
-                $tmpCategory = $this->cObj->substituteSubpart($tmpCategory, '###CATEGORY_ITEM_DETAILLINK###', $link);
+                $tmpCategory = $this->templateService->substituteSubpart(
+                    $tmpCategory,
+                    '###CATEGORY_ITEM_DETAILLINK###',
+                    $link
+                );
 
                 if ($this->conf['groupProductsByCategory']
                     && !$this->conf['hideProductsInList']
@@ -708,25 +730,24 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                         $this->conf['templateMarker.']['categoryProductList.'],
                         $this->conf['templateMarker.']['categoryProductListIterations']
                     );
-
-                    /*
-                     * Insert the Productlist
-                     */
-                    $tmpCategory = $this->cObj->substituteMarker(
-                        $tmpCategory,
-                        '###CATEGORY_ITEM_PRODUCTLIST###',
-                        $productList
-                    );
                 } else {
-                    $tmpCategory = $this->cObj->substituteMarker($tmpCategory, '###CATEGORY_ITEM_PRODUCTLIST###', '');
+                    $productList = '';
                 }
+                /*
+                 * Insert the Productlist
+                 */
+                $tmpCategory = $this->templateService->substituteMarker(
+                    $tmpCategory,
+                    '###CATEGORY_ITEM_PRODUCTLIST###',
+                    $productList
+                );
 
                 $categoryOutput .= $tmpCategory;
             }
         }
 
-        $categoryListSubpart = $this->cObj->getSubpart($this->template, '###CATEGORY_LIST###');
-        $markerArray['CATEGORY_SUB_LIST'] = $this->cObj->substituteSubpart(
+        $categoryListSubpart = $this->templateService->getSubpart($this->template, '###CATEGORY_LIST###');
+        $markerArray['CATEGORY_SUB_LIST'] = $this->templateService->substituteSubpart(
             $categoryListSubpart,
             '###CATEGORY_LIST_ITEM###',
             $categoryOutput
@@ -823,9 +844,9 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 
         $markerArray = $this->addFormMarker($markerArray);
 
-        $template = $this->cObj->getSubpart($this->templateCode, $templateMarker);
-        $content = $this->cObj->substituteMarkerArray($template, $markerArray, '###|###', 1);
-        $content = $this->cObj->substituteMarkerArray($content, $this->languageMarker);
+        $template = $this->templateService->getSubpart($this->templateCode, $templateMarker);
+        $content = $this->templateService->substituteMarkerArray($template, $markerArray, '###|###', 1);
+        $content = $this->templateService->substituteMarkerArray($content, $this->languageMarker);
 
         return $content;
     }
@@ -979,9 +1000,9 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     public function makeAdressView(array $address, $subpartTemplate)
     {
-        $template = $this->cObj->getSubpart($this->templateCode, $subpartTemplate);
+        $template = $this->templateService->getSubpart($this->templateCode, $subpartTemplate);
 
-        $content = $this->cObj->substituteMarkerArray($template, $address, '###|###', 1);
+        $content = $this->templateService->substituteMarkerArray($template, $address, '###|###', 1);
 
         return $content;
     }
@@ -1004,7 +1025,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         array $articletypes = [],
         $lineTemplate = '###LISTING_ARTICLE###'
     ) {
-        $template = $this->cObj->getSubpart($this->templateCode, $subpartTemplate);
+        $template = $this->templateService->getSubpart($this->templateCode, $subpartTemplate);
 
         if (!is_array($lineTemplate)) {
             $temp = $lineTemplate;
@@ -1016,7 +1037,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
              */
             $tmpArray = [];
             foreach ($lineTemplate as $subpartMarker) {
-                $subpartContent = $this->cObj->getSubpart($template, $subpartMarker);
+                $subpartContent = $this->templateService->getSubpart($template, $subpartMarker);
                 if (!empty($subpartContent)) {
                     $tmpArray[] = $subpartMarker;
                 }
@@ -1052,13 +1073,13 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 ++$count;
             }
 
-            $content = $this->cObj->substituteSubpart($template, '###LISTING_ARTICLE###', $articleLines);
+            $content = $this->templateService->substituteSubpart($template, '###LISTING_ARTICLE###', $articleLines);
             // Unset Subparts, if not used
             foreach ($lineTemplate as $subpartMarker) {
-                $content = $this->cObj->substituteSubpart($content, $subpartMarker, '');
+                $content = $this->templateService->substituteSubpart($content, $subpartMarker, '');
             }
         } else {
-            $content = $this->cObj->substituteSubpart($template, '###LISTING_ARTICLE###', '');
+            $content = $this->templateService->substituteSubpart($template, '###LISTING_ARTICLE###', '');
         }
 
         $hooks = HookFactory::getHooks('Controller/BaseController', 'makeBasketView');
@@ -1068,7 +1089,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             }
         }
 
-        $content = $this->cObj->substituteSubpart(
+        $content = $this->templateService->substituteSubpart(
             $content,
             '###LISTING_BASKET_WEB###',
             $this->makeBasketInformation($basketObj, '###LISTING_BASKET_WEB###')
@@ -1100,7 +1121,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     public function makeBasketInformation(Basket $basket, $subpartTemplate)
     {
-        $template = $this->cObj->getSubpart($this->templateCode, $subpartTemplate);
+        $template = $this->templateService->getSubpart($this->templateCode, $subpartTemplate);
         $basket->recalculateSums();
         $markerArray['###SUM_NET###'] = MoneyViewHelper::format(
             $basket->getSumNet(),
@@ -1161,7 +1182,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $this->showCurrency
         );
 
-        $taxRateTemplate = $this->cObj->getSubpart($template, '###TAX_RATE_SUMS###');
+        $taxRateTemplate = $this->templateService->getSubpart($template, '###TAX_RATE_SUMS###');
         $taxRates = $basket->getTaxRateSums();
         $taxRateRows = '';
         foreach ($taxRates as $taxRate => $taxRateSum) {
@@ -1173,7 +1194,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 $this->showCurrency
             );
 
-            $taxRateRows .= $this->cObj->substituteMarkerArray($taxRateTemplate, $taxRowArray);
+            $taxRateRows .= $this->templateService->substituteMarkerArray($taxRateTemplate, $taxRowArray);
         }
 
         /*
@@ -1186,7 +1207,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             }
         }
 
-        $template = $this->cObj->substituteSubpart($template, '###TAX_RATE_SUMS###', $taxRateRows);
+        $template = $this->templateService->substituteSubpart($template, '###TAX_RATE_SUMS###', $taxRateRows);
 
         /*
          * Hook for processing Marker Array
@@ -1197,8 +1218,8 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             }
         }
 
-        $content = $this->cObj->substituteMarkerArray($template, $markerArray);
-        $content = $this->cObj->substituteMarkerArray($content, $this->languageMarker);
+        $content = $this->templateService->substituteMarkerArray($template, $markerArray);
+        $content = $this->templateService->substituteMarkerArray($content, $this->languageMarker);
 
         return $content;
     }
@@ -1230,7 +1251,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     public function makeLineView(BasketItem $basketItem, $subpartTemplate)
     {
         $markerArray = [];
-        $template = $this->cObj->getSubpart($this->templateCode, $subpartTemplate);
+        $template = $this->templateService->getSubpart($this->templateCode, $subpartTemplate);
 
         /*
          * Basket Item Elements
@@ -1282,18 +1303,18 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             }
         }
 
-        $content = $this->cObj->substituteMarkerArray($template, $markerArray);
+        $content = $this->templateService->substituteMarkerArray($template, $markerArray);
 
         /*
          * Basket Artikcel Lementes
          */
         $productArray = $basketItem->getProductAssocArray('PRODUCT_');
-        $content = $this->cObj->substituteMarkerArray($content, $productArray, '###|###', 1);
+        $content = $this->templateService->substituteMarkerArray($content, $productArray, '###|###', 1);
 
         $articleArray = $basketItem->getArticleAssocArray('ARTICLE_');
-        $content = $this->cObj->substituteMarkerArray($content, $articleArray, '###|###', 1);
+        $content = $this->templateService->substituteMarkerArray($content, $articleArray, '###|###', 1);
 
-        $content = $this->cObj->substituteMarkerArray($content, $this->languageMarker, '###|###', 1);
+        $content = $this->templateService->substituteMarkerArray($content, $this->languageMarker, '###|###', 1);
 
         return $content;
     }
@@ -1601,7 +1622,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             );
         }
 
-        $output = $this->cObj->getSubpart($template, $subpartName);
+        $output = $this->templateService->getSubpart($template, $subpartName);
         if (empty($output)) {
             return $this->error(
                 'renderElement',
@@ -1628,7 +1649,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $markerWrap .= '|###';
 
         if (is_array($markerArray) && !empty($markerArray)) {
-            $output = $this->cObj->substituteMarkerArray($output, $markerArray, $markerWrap, 1);
+            $output = $this->templateService->substituteMarkerArray($output, $markerArray, $markerWrap, 1);
             $output = $this->cObj->stdWrap($output, $typoscript['stdWrap.']);
         } else {
             $output = '';
@@ -1819,7 +1840,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 if ($iterationCount >= $iterations) {
                     $iterationCount = 0;
                 }
-                $template = $this->cObj->getSubpart(
+                $template = $this->templateService->getSubpart(
                     $this->templateCode,
                     '###' . $templateMarker[$iterationCount] . '###'
                 );
@@ -1838,7 +1859,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 
                 if ($this->conf['useStockHandling'] == 1 and $product->hasStock() === false) {
                     $typoScript = $this->conf['listView' . $typoscriptMarker . '.']['products.']['nostock.'];
-                    $tempTemplate = $this->cObj->getSubpart(
+                    $tempTemplate = $this->templateService->getSubpart(
                         $this->templateCode,
                         '###' . $templateMarker[$iterationCount] . '_NOSTOCK###'
                     );
@@ -1861,7 +1882,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $markerArray = $this->addFormMarker($markerArray);
 
             $content = $this->cObj->stdWrap(
-                $this->cObj->substituteMarkerArray($categoryItemsListview, $markerArray, '###|###', 1),
+                $this->templateService->substituteMarkerArray($categoryItemsListview, $markerArray, '###|###', 1),
                 $this->conf['listView.']['products.']['stdWrap.']
             );
         }
@@ -1940,7 +1961,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             'PRODUCT_',
             'tx_commerce_products'
         );
-        $markerArray = $this->cObj->fillInMarkerArray(
+        $markerArray = $this->templateService->fillInMarkerArray(
             [],
             $markerArray,
             implode(',', array_keys($markerArray)),
@@ -1990,7 +2011,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             '|',
             $this->pi_list_linkSingle('|', $product->getUid(), true, $linkArray, false, $this->conf['overridePid'])
         );
-        $articleTemplate = $this->cObj->getSubpart($template, '###' . strtoupper($articleSubpart) . '###');
+        $articleTemplate = $this->templateService->getSubpart($template, '###' . strtoupper($articleSubpart) . '###');
 
         if ($this->conf['useStockHandling'] == 1) {
             $product = \CommerceTeam\Commerce\Utility\GeneralUtility::removeNoStockArticles(
@@ -2186,12 +2207,12 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 
         // Finding subparts and substituting them with the subpart as a marker
         foreach ($sPkeys as $sPk) {
-            $content = $this->cObj->substituteSubpart($content, $sPk, $sPk);
+            $content = $this->templateService->substituteSubpart($content, $sPk, $sPk);
         }
 
         // Finding subparts and wrapping them with markers
         foreach ($wPkeys as $wPk) {
-            $content = $this->cObj->substituteSubpart($content, $wPk, [$wPk, $wPk]);
+            $content = $this->templateService->substituteSubpart($content, $wPk, [$wPk, $wPk]);
         }
 
         // traverse keys and quote them for reg ex.

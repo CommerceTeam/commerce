@@ -856,8 +856,12 @@ class CommandMapHook
          */
         $errorDocument = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
 
-        $errorHeadline = $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:error', 1);
-        $submitLabel = $language->sL('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:continue', 1);
+        $errorHeadline = htmlspecialchars($language->sL(
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:error'
+        ));
+        $submitLabel = htmlspecialchars($language->sL(
+            'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:continue'
+        ));
         $onClickAction = 'onclick="document.location=\'' . htmlspecialchars($_SERVER['HTTP_REFERER']) .
             '\'; return false;"';
 
@@ -872,7 +876,7 @@ class CommandMapHook
 				<tr class="bgColor4">
 					<td valign="top">' . $iconFactory->getIcon('status-dialog-error', Icon::SIZE_SMALL)->render()
             . '</td>
-					<td>' . $language->sL($error, 0) . '</td>
+					<td>' . $language->sL($error) . '</td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center">

@@ -15,6 +15,7 @@ namespace CommerceTeam\Commerce\Hooks;
 use CommerceTeam\Commerce\Domain\Repository\AddressRepository;
 use CommerceTeam\Commerce\Domain\Repository\MoveOrderMailRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
+use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -26,11 +27,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class OrdermailHook
 {
     /**
-     * Content object.
-     *
-     * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
+     * @var MarkerBasedTemplateService
      */
-    protected $cObj;
+    protected $templateService;
 
     /**
      * The Conversionobject.
@@ -80,7 +79,7 @@ class OrdermailHook
      */
     public function __construct()
     {
-        $this->cObj = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
+        $this->templateService = GeneralUtility::makeInstance(MarkerBasedTemplateService::class);
         $this->csConvObj = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
         $this->templatePath = PATH_site . 'uploads/tx_commerce/';
     }
@@ -266,8 +265,8 @@ class OrdermailHook
      */
     protected function makeAdressView(array $addressArray, $subpartMarker, $template)
     {
-        $template = $this->cObj->getSubpart($template, $subpartMarker);
-        $content = $this->cObj->substituteMarkerArray($template, $addressArray, '###|###', 1);
+        $template = $this->templateService->getSubpart($template, $subpartMarker);
+        $content = $this->templateService->substituteMarkerArray($template, $addressArray, '###|###', 1);
 
         return $content;
     }
@@ -290,7 +289,7 @@ class OrdermailHook
 
         $markerArray = ['###ORDERID###' => $orderUid];
 
-        $content = $this->cObj->getSubpart($templateCode, '###MAILCONTENT###');
+        $content = $this->templateService->getSubpart($templateCode, '###MAILCONTENT###');
 
         // Get The addresses
         $deliveryAdress = '';
@@ -300,7 +299,7 @@ class OrdermailHook
                 $deliveryAdress = $this->makeAdressView($data, '###DELIVERY_ADDRESS###', $content);
             }
         }
-        $content = $this->cObj->substituteSubpart($content, '###DELIVERY_ADDRESS###', $deliveryAdress);
+        $content = $this->templateService->substituteSubpart($content, '###DELIVERY_ADDRESS###', $deliveryAdress);
 
         $billingAdress = '';
         if ($orderData['cust_invoice']) {
@@ -310,9 +309,9 @@ class OrdermailHook
                 $this->customermailadress = $data['email'];
             }
         }
-        $content = $this->cObj->substituteSubpart($content, '###BILLING_ADDRESS###', $billingAdress);
 
-        $content = $this->cObj->substituteSubpart($content, '###INVOICE_VIEW###', '');
+        $content = $this->templateService->substituteSubpart($content, '###BILLING_ADDRESS###', $billingAdress);
+        $content = $this->templateService->substituteSubpart($content, '###INVOICE_VIEW###', '');
 
         /*
          * Hook for processing Marker Array
@@ -322,7 +321,7 @@ class OrdermailHook
             $markerArray = $hookObject->processMarker($markerArray, $this);
         }
 
-        $content = $this->cObj->substituteMarkerArray($content, $markerArray);
+        $content = $this->templateService->substituteMarkerArray($content, $markerArray);
 
         // Since The first line of the mail is the Subject, trim the template
         return ltrim($content);

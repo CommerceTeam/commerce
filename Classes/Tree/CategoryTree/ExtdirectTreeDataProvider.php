@@ -171,10 +171,9 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTree
             if (!$isAdmin && !in_array($table, $allowedTables)) {
                 continue;
             }
-            $label = $this->getLanguageService()->sL(
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:' . $table,
-                true
-            );
+            $label = htmlspecialchars($this->getLanguageService()->sL(
+                'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:' . $table
+            ));
             $icon = $this->iconFactory->getIconForRecord($table, [], Icon::SIZE_SMALL)->render();
             $output[] = [
                 'nodeType' => $table,
@@ -201,20 +200,22 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTree
         $commerceFile = 'LLL:EXT:commerce/Resources/Private/Language/locallang_tree.xlf:';
         $configuration = [
             'LLL' => [
-                'copyHint' => $lang->sL($file . 'tree.copyHint', true),
-                'fakeNodeHint' => $lang->sL($file . 'mess.please_wait', true),
-                'activeFilterMode' => $lang->sL($file . 'tree.activeFilterMode', true),
-                'dropToRemove' => $lang->sL($file . 'tree.dropToRemove', true),
-                'buttonRefresh' => $lang->sL($file . 'labels.refresh', true),
-                'buttonNewNode' => $lang->sL($file . 'tree.buttonNewNode', true),
-                'buttonFilter' => $lang->sL($file . 'tree.buttonFilter', true),
-                'dropZoneElementRemoved' => $lang->sL($file . 'tree.dropZoneElementRemoved', true),
-                'dropZoneElementRestored' => $lang->sL($commerceFile . 'tree.dropZoneElementRestored', true),
-                'searchTermInfo' => $lang->sL($file . 'tree.searchTermInfo', true),
-                'temporaryMountPointIndicatorInfo' => $lang->sL($file . 'labels.temporaryDBmount', true),
-                'deleteDialogTitle' => $lang->sL($backendFile . 'deleteItem', true),
-                'deleteDialogMessage' => $lang->sL($backendFile . 'deleteWarning', true),
-                'recursiveDeleteDialogMessage' => $lang->sL($backendFile . 'recursiveDeleteWarning', true)
+                'copyHint' => htmlspecialchars($lang->sL($file . 'tree.copyHint')),
+                'fakeNodeHint' => htmlspecialchars($lang->sL($file . 'mess.please_wait')),
+                'activeFilterMode' => htmlspecialchars($lang->sL($file . 'tree.activeFilterMode')),
+                'dropToRemove' => htmlspecialchars($lang->sL($file . 'tree.dropToRemove')),
+                'buttonRefresh' => htmlspecialchars($lang->sL($file . 'labels.refresh')),
+                'buttonNewNode' => htmlspecialchars($lang->sL($file . 'tree.buttonNewNode')),
+                'buttonFilter' => htmlspecialchars($lang->sL($file . 'tree.buttonFilter')),
+                'dropZoneElementRemoved' => htmlspecialchars($lang->sL($file . 'tree.dropZoneElementRemoved')),
+                'dropZoneElementRestored' => htmlspecialchars($lang->sL(
+                    $commerceFile . 'tree.dropZoneElementRestored'
+                )),
+                'searchTermInfo' => htmlspecialchars($lang->sL($file . 'tree.searchTermInfo')),
+                'temporaryMountPointIndicatorInfo' => htmlspecialchars($lang->sL($file . 'labels.temporaryDBmount')),
+                'deleteDialogTitle' => htmlspecialchars($lang->sL($backendFile . 'deleteItem')),
+                'deleteDialogMessage' => htmlspecialchars($lang->sL($backendFile . 'deleteWarning')),
+                'recursiveDeleteDialogMessage' => htmlspecialchars($lang->sL($backendFile . 'recursiveDeleteWarning')),
             ],
             'Configuration' => [
                 'hideFilter' => $backendUser->getTSConfigVal('options.pageTree.hideFilter'),

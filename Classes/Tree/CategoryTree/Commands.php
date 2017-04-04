@@ -182,10 +182,9 @@ class Commands
         }
 
         $data[$table][$placeholder]['pid'] = $pid;
-        $data[$table][$placeholder]['title'] = self::getLanguageService()->sL(
-            'LLL:EXT:lang/locallang_core.xlf:tree.defaultPageTitle',
-            true
-        );
+        $data[$table][$placeholder]['title'] = htmlspecialchars(self::getLanguageService()->sL(
+            'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:tree.defaultPageTitle'
+        ));
 
         if ($parentNode->getType() == 'tx_commerce_categories') {
             if ($type == 'tx_category_categories') {
@@ -372,9 +371,9 @@ class Commands
             $text = $record['nav_title'];
         }
         if (trim($text) === '') {
-            $visibleText = '['
-                . self::getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.no_title', true)
-                . ']';
+            $visibleText = '[' . htmlspecialchars(self::getLanguageService()->sL(
+                'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.no_title'
+            )) . ']';
         } else {
             $visibleText = $text;
         }
@@ -469,7 +468,9 @@ class Commands
         }
         if (trim($text) === '') {
             $visibleText = '['
-                . self::getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.no_title', true)
+                . htmlspecialchars(self::getLanguageService()->sL(
+                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.no_title'
+                ))
                 . ']';
         } else {
             $visibleText = $text;
@@ -567,9 +568,9 @@ class Commands
             $text = $record['nav_title'];
         }
         if (trim($text) === '') {
-            $visibleText = '['
-                . self::getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.no_title', true)
-                . ']';
+            $visibleText = '[' . htmlspecialchars(self::getLanguageService()->sL(
+                'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.no_title'
+            )) . ']';
         } else {
             $visibleText = $text;
         }

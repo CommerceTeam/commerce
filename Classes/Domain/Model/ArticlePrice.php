@@ -231,35 +231,33 @@ class ArticlePrice extends AbstractEntity
             $feGroups = is_array($params['row']['fe_group']) ?
                 implode(',', $params['row']['fe_group']) :
                 $params['row']['fe_group'];
-            $feGroup = $languageService->sL(BackendUtility::getItemLabel('tx_commerce_article_prices', 'fe_group'), 1) .
-                BackendUtility::getProcessedValueExtra(
-                    'tx_commerce_article_prices',
-                    'fe_group',
-                    $feGroups,
-                    100,
-                    $params['row']['uid']
-                );
+            $feGroup = htmlspecialchars($languageService->sL(
+                BackendUtility::getItemLabel('tx_commerce_article_prices', 'fe_group')
+            )) .
+            BackendUtility::getProcessedValueExtra(
+                'tx_commerce_article_prices',
+                'fe_group',
+                $feGroups,
+                100,
+                $params['row']['uid']
+            );
         }
 
-        $params['title'] = $languageService->sL(
-            BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_gross'),
-            1
-        ) .
+        $params['title'] = htmlspecialchars($languageService->sL(
+            BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_gross')
+        )) .
         ': ' . sprintf('%01.2f', $params['row']['price_gross']) .
-        ', ' . $languageService->sL(
-            BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_net'),
-            1
-        ) .
+        ', ' . htmlspecialchars($languageService->sL(
+            BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_net')
+        )) .
         ': ' . sprintf('%01.2f', $params['row']['price_net']) .
-        ' (' . $languageService->sL(
-            BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_start'),
-            1
-        ) .
+        ' (' . htmlspecialchars($languageService->sL(
+            BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_start')
+        )) .
         ': ' . $params['row']['price_scale_amount_start'] .
-        ' ' . $languageService->sL(
-            BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_end'),
-            1
-        ) .
+        ' ' . htmlspecialchars($languageService->sL(
+            BackendUtility::getItemLabel('tx_commerce_article_prices', 'price_scale_amount_end')
+        )) .
         ': ' . $params['row']['price_scale_amount_end'] . ') ' . $feGroup;
     }
 

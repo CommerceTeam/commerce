@@ -459,8 +459,8 @@ class ListController extends BaseController
                     $subpartName,
                     $subpartNameNostock
                 );
-                $this->content = $this->cObj->substituteMarkerArray($this->content, $this->languageMarker);
-                $this->content = $this->cObj->substituteMarkerArray(
+                $this->content = $this->templateService->substituteMarkerArray($this->content, $this->languageMarker);
+                $this->content = $this->templateService->substituteMarkerArray(
                     $this->content,
                     $this->addFormMarker([]),
                     '###|###',
@@ -572,10 +572,10 @@ class ListController extends BaseController
             return $result;
         }
 
-        $template = $this->cObj->getSubpart($this->templateCode, $subpartName);
+        $template = $this->templateService->getSubpart($this->templateCode, $subpartName);
         if ($this->conf['useStockHandling'] == 1 && !$product->hasStock()) {
             $productTypoScript = $this->conf['singleView.']['products.']['nostock.'];
-            $noStockTemplate = $this->cObj->getSubpart($this->templateCode, $subpartNameNostock);
+            $noStockTemplate = $this->templateService->getSubpart($this->templateCode, $subpartNameNostock);
             if ($noStockTemplate != '') {
                 $template = $noStockTemplate;
             }
@@ -604,14 +604,14 @@ class ListController extends BaseController
         );
 
         // Substitute the subpart
-        $content = $this->cObj->substituteSubpart(
+        $content = $this->templateService->substituteSubpart(
             $content,
             '###' . strtoupper($this->conf['templateMarker.']['categorySingleViewMarker']) . '###',
             $categorySubpart
         );
 
         // Build the link to the category
-        $categoryLinkContent = $this->cObj->getSubpart($content, '###CATEGORY_ITEM_DETAILLINK###');
+        $categoryLinkContent = $this->templateService->getSubpart($content, '###CATEGORY_ITEM_DETAILLINK###');
         if ($categoryLinkContent) {
             $link = $this->pi_linkTP(
                 $categoryLinkContent,
@@ -621,19 +621,19 @@ class ListController extends BaseController
         } else {
             $link = '';
         }
-        $content = $this->cObj->substituteSubpart($content, '###CATEGORY_ITEM_DETAILLINK###', $link);
+        $content = $this->templateService->substituteSubpart($content, '###CATEGORY_ITEM_DETAILLINK###', $link);
 
         // Render related products
         $relatedProductsSubpart = '';
-        $relatedProductsParentSubpart = $this->cObj->getSubpart(
+        $relatedProductsParentSubpart = $this->templateService->getSubpart(
             $template,
             '###' . strtoupper($this->conf['templateMarker.']['relatedProductList']) . '###'
         );
-        $relatedProductsSubpartTemplateStock = $this->cObj->getSubpart(
+        $relatedProductsSubpartTemplateStock = $this->templateService->getSubpart(
             $relatedProductsParentSubpart,
             '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '###'
         );
-        $relatedProductsSubpartTemplateNoStock = $this->cObj->getSubpart(
+        $relatedProductsSubpartTemplateNoStock = $this->templateService->getSubpart(
             $relatedProductsParentSubpart,
             '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '_NOSTOCK###'
         );
@@ -666,20 +666,20 @@ class ListController extends BaseController
         // So we will change this here. In thought of sorting, we can't split entries.
         if ($relatedProductsSubpart != '') {
             // Set first subpart empty
-            $content = $this->cObj->substituteSubpart(
+            $content = $this->templateService->substituteSubpart(
                 $content,
                 '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '###',
                 $relatedProductsSubpart
             );
             // Fill the second with our data
-            $content = $this->cObj->substituteSubpart(
+            $content = $this->templateService->substituteSubpart(
                 $content,
                 '###' . strtoupper($this->conf['templateMarker.']['relatedProductSingle']) . '_NOSTOCK###',
                 ''
             );
         } else {
             // When we have no related products, then overwrite the header
-            $content = $this->cObj->substituteSubpart(
+            $content = $this->templateService->substituteSubpart(
                 $content,
                 '###' . strtoupper($this->conf['templateMarker.']['relatedProductList']) . '###',
                 ''
@@ -693,7 +693,7 @@ class ListController extends BaseController
             }
         }
 
-        $content = $this->cObj->substituteMarkerArray($content, $markerArray);
+        $content = $this->templateService->substituteMarkerArray($content, $markerArray);
 
         return $content;
     }
@@ -753,19 +753,19 @@ class ListController extends BaseController
         $markerArray = [];
         if ($product->getRenderMaxArticles() > $product->getArticlesCount()) {
             // Only if the number of articles is smaller than defined
-            $templateAttrSelectorDropdown = $this->cObj->getSubpart(
+            $templateAttrSelectorDropdown = $this->templateService->getSubpart(
                 $this->templateCode,
                 '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorDropdown']) . '###'
             );
-            $templateAttrSelectorDropdownItem = $this->cObj->getSubpart(
+            $templateAttrSelectorDropdownItem = $this->templateService->getSubpart(
                 $templateAttrSelectorDropdown,
                 '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorDropdown']) . '_ITEM###'
             );
-            $templateAttrSelectorRadiobutton = $this->cObj->getSubpart(
+            $templateAttrSelectorRadiobutton = $this->templateService->getSubpart(
                 $this->templateCode,
                 '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorRadiobutton']) . '###'
             );
-            $templateAttrSelectorRadiobuttonItem = $this->cObj->getSubpart(
+            $templateAttrSelectorRadiobuttonItem = $this->templateService->getSubpart(
                 $templateAttrSelectorRadiobutton,
                 '###' . strtoupper($this->conf['templateMarker.']['productAttributesSelectorRadiobutton']) . '_ITEM###'
             );
@@ -776,7 +776,7 @@ class ListController extends BaseController
             if (is_array($this->conf['templateMarker.'][$viewKind . '_selectAttributes.'])) {
                 foreach ($this->conf['templateMarker.'][$viewKind . '_selectAttributes.'] as $oneMarker) {
                     $templateMarkerAttr = '###' . strtoupper($oneMarker) . '###';
-                    $tCode = $this->cObj->getSubpart($this->templateCode, $templateMarkerAttr);
+                    $tCode = $this->templateService->getSubpart($this->templateCode, $templateMarkerAttr);
                     if ($tCode) {
                         $templateAttr[] = $tCode;
                     }
@@ -785,7 +785,7 @@ class ListController extends BaseController
                 $templateMarkerAttr = '###' . strtoupper(
                     $this->conf['templateMarker.'][$viewKind . '_selectAttributes']
                 ) . '###';
-                $templateAttr[] = $this->cObj->getSubpart($this->templateCode, $templateMarkerAttr);
+                $templateAttr[] = $this->templateService->getSubpart($this->templateCode, $templateMarkerAttr);
             }
 
             $countTemplateInterations = count($templateAttr);
@@ -870,7 +870,10 @@ class ListController extends BaseController
                             }
                             $markerArray['###SELECT_ATTRIBUTES_UNIT###'] = $myAttribute['unit'];
                             $numTemplate = $ct % $countTemplateInterations;
-                            $attCode .= $this->cObj->substituteMarkerArray($templateAttr[$numTemplate], $markerArray);
+                            $attCode .= $this->templateService->substituteMarkerArray(
+                                $templateAttr[$numTemplate],
+                                $markerArray
+                            );
                             ++$ct;
                         }
                     }
@@ -890,7 +893,10 @@ class ListController extends BaseController
                             );
                         }
                     }
-                    $templateAttributes = $this->cObj->getSubpart($template, $templateMarker[($i % $templateCount)]);
+                    $templateAttributes = $this->templateService->getSubpart(
+                        $template,
+                        $templateMarker[($i % $templateCount)]
+                    );
                     /**
                      * Article.
                      *
@@ -898,7 +904,7 @@ class ListController extends BaseController
                      */
                     $article = $product->getArticle($product->getArticleUid($i));
                     if ($this->conf['useStockHandling'] == 1 and $article->getStock() <= 0) {
-                        $tempTemplate = $this->cObj->getSubpart(
+                        $tempTemplate = $this->templateService->getSubpart(
                             $template,
                             $templateMarkerNostock[($i % $templateCount)]
                         );
@@ -907,7 +913,12 @@ class ListController extends BaseController
                         }
                     }
 
-                    $content .= $this->cObj->substituteMarkerArray($templateAttributes, $markerArray, '###|###', 1);
+                    $content .= $this->templateService->substituteMarkerArray(
+                        $templateAttributes,
+                        $markerArray,
+                        '###|###',
+                        true
+                    );
                 }
             } else {
                 $sortedAttributeArray = [];
@@ -1028,16 +1039,19 @@ class ListController extends BaseController
                                     );
                                 }
                             }
-                            $itemsContent .= $this->cObj->substituteMarkerArray(
+                            $itemsContent .= $this->templateService->substituteMarkerArray(
                                 $templateAttrSelectorItem,
                                 $markerArrayItem
                             );
                             ++$i;
                         }
-                        $attributeContent = $this->cObj->substituteMarkerArray($templateAttrSelector, $markerArray);
+                        $attributeContent = $this->templateService->substituteMarkerArray(
+                            $templateAttrSelector,
+                            $markerArray
+                        );
 
                         if ($iconMode) {
-                            $attCode .= $this->cObj->substituteSubpart(
+                            $attCode .= $this->templateService->substituteSubpart(
                                 $attributeContent,
                                 '###' . strtoupper(
                                     $this->conf['templateMarker.']['productAttributesSelectorRadiobutton']
@@ -1045,7 +1059,7 @@ class ListController extends BaseController
                                 $itemsContent
                             );
                         } else {
-                            $attCode .= $this->cObj->substituteSubpart(
+                            $attCode .= $this->templateService->substituteSubpart(
                                 $attributeContent,
                                 '###' . strtoupper(
                                     $this->conf['templateMarker.']['productAttributesSelectorDropdown']
@@ -1070,7 +1084,7 @@ class ListController extends BaseController
                     }
                 }
 
-                $templateAttributes = $this->cObj->getSubpart($template, $templateMarker[0]);
+                $templateAttributes = $this->templateService->getSubpart($template, $templateMarker[0]);
                 /**
                  * Article.
                  *
@@ -1078,18 +1092,23 @@ class ListController extends BaseController
                  */
                 $article = $product->getArticle($artId);
                 if ($this->conf['useStockHandling'] == 1 and $article->getStock() <= 0) {
-                    $tempTemplate = $this->cObj->getSubpart($template, $templateMarkerNostock[0]);
+                    $tempTemplate = $this->templateService->getSubpart($template, $templateMarkerNostock[0]);
                     if ($tempTemplate != '') {
                         $templateAttributes = $tempTemplate;
                     }
                 }
 
-                $content .= $this->cObj->substituteMarkerArray($templateAttributes, $markerArray, '###|###', 1);
+                $content .= $this->templateService->substituteMarkerArray(
+                    $templateAttributes,
+                    $markerArray,
+                    '###|###',
+                    true
+                );
             }
         } else {
             // Special Marker and rendering when more articles are existing than
             // are allowed to render
-            $localContent = $this->cObj->getSubpart($template, reset($templateMarkerMoreThanMax));
+            $localContent = $this->templateService->getSubpart($template, reset($templateMarkerMoreThanMax));
 
             $cat = $this->cat;
             $productCategories = $product->getParentCategories();
@@ -1115,7 +1134,7 @@ class ListController extends BaseController
                     $this->basketHashValue;
             }
             $markerArray['LINKTOPRODUCT'] = $this->cObj->typoLink($this->pi_getLL('lang_toproduct'), $typoLinkConf);
-            $content = $this->cObj->substituteMarkerArray($localContent, $markerArray, '###|###', 1);
+            $content = $this->templateService->substituteMarkerArray($localContent, $markerArray, '###|###', 1);
 
             $markerArray = [];
             foreach ($hooks as $hookObj) {
@@ -1124,7 +1143,7 @@ class ListController extends BaseController
                 }
             }
         }
-        $content = $this->cObj->substituteMarkerArray($content, $markerArray);
+        $content = $this->templateService->substituteMarkerArray($content, $markerArray);
 
         return $content;
     }

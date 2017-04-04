@@ -61,9 +61,6 @@ $tempColumns = [
                     'localize' => false,
                 ],
             ],
-            'behaviour' => [
-                'localizationMode' => 'select',
-            ],
         ],
     ],
 ];

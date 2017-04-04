@@ -37,7 +37,7 @@ class ExistingArticlesElement extends AbstractFormElement
     {
         $articles = $this->data['databaseRow']['articles'];
 
-        $this->getLanguageService()->includeLLFile('EXT:lang/locallang_mod_web_list.xlf');
+        $this->getLanguageService()->includeLLFile('EXT:lang/Resources/Private/Language/locallang_mod_web_list.xlf');
         $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_db.xlf');
 
         $resultArray = $this->initializeResultArray();

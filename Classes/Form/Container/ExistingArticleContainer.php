@@ -143,7 +143,7 @@ class ExistingArticleContainer
         $iconIdentifier = 'actions-open';
         $editAction = '<a class="btn btn-default" href="#" onclick="' .
             htmlspecialchars(BackendUtility::editOnClick($params, '', -1)) . '" title="' .
-            $this->getLanguageService()->getLL('edit', true) . '">' .
+            htmlspecialchars($this->getLanguageService()->getLL('edit')) . '">' .
             $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render() .
             '</a>';
 
@@ -163,12 +163,16 @@ class ExistingArticleContainer
         $refCountMsg = BackendUtility::referenceCount(
             $this->table,
             $article['uid'],
-            ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.referencesToRecord'),
+            ' ' . $this->getLanguageService()->sL(
+                'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.referencesToRecord'
+            ),
             $article['_reference_count']
         ) . BackendUtility::translationCount(
             $this->table,
             $article['uid'],
-            ' ' . $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.translationsOfRecord')
+            ' ' . $this->getLanguageService()->sL(
+                'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.translationsOfRecord'
+            )
         );
         $titleOrig = BackendUtility::getRecordTitle($this->table, $article, false, true);
         $title = str_replace('\\', '\\\\', GeneralUtility::fixed_lgd_cs($titleOrig, 30));
@@ -177,7 +181,7 @@ class ExistingArticleContainer
 
         $params = 'cmd[' . $this->table . '][' . $article['uid'] . '][delete]=1';
         $icon = $this->iconFactory->getIcon('actions-edit-' . $actionName, Icon::SIZE_SMALL)->render();
-        $linkTitle = $this->getLanguageService()->getLL($actionName, true);
+        $linkTitle = htmlspecialchars($this->getLanguageService()->getLL($actionName));
         $deleteAction = '<a class="btn btn-default t3js-record-delete" href="#" '
             . ' data-l10parent="' . htmlspecialchars($article['l10n_parent'])
             . '" data-params="' . htmlspecialchars($params)
@@ -199,8 +203,8 @@ class ExistingArticleContainer
      */
     protected function getHideAction($article, $articleUid)
     {
-        $hideTitle = $this->getLanguageService()->getLL('hide', true);
-        $unhideTitle = $this->getLanguageService()->getLL('unHide', true);
+        $hideTitle = htmlspecialchars($this->getLanguageService()->getLL('hide'));
+        $unhideTitle = htmlspecialchars($this->getLanguageService()->getLL('unHide'));
         if ($article['hidden']) {
             $params = 'data[' . $this->table . '][' . $articleUid . '][hidden]=0';
             $hideAction = '<a class="btn btn-default t3js-record-hide" data-state="hidden" href="#"'
@@ -250,7 +254,7 @@ class ExistingArticleContainer
                     'return jumpToUrl(' . BackendUtility::getLinkToDataHandlerAction($params, -1) . ');'
                 ) .
                 '" title="' .
-                $this->getLanguageService()->getLL('moveUp', true) . '">' .
+                htmlspecialchars($this->getLanguageService()->getLL('moveUp')) . '">' .
                 $this->iconFactory->getIcon('actions-move-up', Icon::SIZE_SMALL)->render() .
                 '</a>';
         } else {
@@ -280,7 +284,7 @@ class ExistingArticleContainer
                     'return jumpToUrl(' . BackendUtility::getLinkToDataHandlerAction($params, -1) . ');'
                 ) .
                 '" title="' .
-                $this->getLanguageService()->getLL('moveDown', true) . '">' .
+                htmlspecialchars($this->getLanguageService()->getLL('moveDown')) . '">' .
                 $this->iconFactory->getIcon('actions-move-down', Icon::SIZE_SMALL)->render() .
                 '</a>';
         } else {
@@ -301,7 +305,7 @@ class ExistingArticleContainer
         $onClick = 'top.launchView(' . GeneralUtility::quoteJSvalue($this->table) . ', ' . (int)$article['uid'] .
             '); return false;';
         $viewBigAction = '<a class="btn btn-default" href="#" onclick="' . htmlspecialchars($onClick) . '" title="' .
-            $this->getLanguageService()->getLL('showInfo', true) . '">' .
+            htmlspecialchars($this->getLanguageService()->getLL('showInfo')) . '">' .
             $this->iconFactory->getIcon('actions-document-info', Icon::SIZE_SMALL)->render() .
             '</a>';
 

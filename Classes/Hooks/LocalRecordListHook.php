@@ -106,24 +106,30 @@ class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordList
                     // Path
                     case '_PATH_':
                         $headerColumns[$fCol] = '<i>[' .
-                            $language->sL('LLL:EXT:lang/locallang_core.xlf:labels._PATH_', 1) . ']</i>';
+                            htmlspecialchars($language->sL(
+                                'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels._PATH_'
+                            )) . ']</i>';
                         break;
 
                     // References
                     case '_REF_':
                         $headerColumns[$fCol] = '<i>[' .
-                            $language->sL('LLL:EXT:lang/locallang_mod_file_list.xlf:c__REF_', 1) . ']</i>';
+                            htmlspecialchars($language->sL(
+                                'LLL:EXT:lang/Resources/Private/Language/locallang_mod_file_list.xlf:c__REF_'
+                            )) . ']</i>';
                         break;
 
                     // Path
                     case '_LOCALIZATION_':
                         $headerColumns[$fCol] = '<i>[' .
-                            $language->sL('LLL:EXT:lang/locallang_core.xlf:labels._LOCALIZATION_', 1) . ']</i>';
+                            htmlspecialchars($language->sL(
+                                'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels._LOCALIZATION_'
+                            )) . ']</i>';
                         break;
 
                     // Path
                     case '_LOCALIZATION_b':
-                        $headerColumns[$fCol] = $language->getLL('Localize', 1);
+                        $headerColumns[$fCol] = htmlspecialchars($language->getLL('Localize'));
                         break;
 
                     // Clipboard:
@@ -172,13 +178,15 @@ class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordList
                                     $icon = '<a href="#" onclick="' . htmlspecialchars(
                                         'return jumpExt(\'' . $newContentWizScriptPath . '?id=' . $parentObject->id .
                                         '\');'
-                                    ) . '" title="' . $language->getLL('new', true) . '">' . $sprite . '</a>';
+                                    ) . '" title="' . htmlspecialchars($language->getLL('new'))
+                                        . '">' . $sprite . '</a>';
                                 } elseif ($table == 'pages' && $parentObject->newWizards) {
                                     $icon = '<a href="' . htmlspecialchars(
                                         'db_new.php?id=' . $parentObject->id .
                                         '&pagesOnly=1&returnUrl=' .
                                         rawurlencode(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI'))
-                                    ) . '" title="' . $language->getLL('new', true) . '">' . $sprite . '</a>';
+                                    ) . '" title="' . htmlspecialchars($language->getLL('new')) . '">'
+                                        . $sprite . '</a>';
                                 } else {
                                     $params = '&edit[' . $table . '][' . $parentObject->id . ']=new';
                                     if ($table == 'pages_language_overlay') {
@@ -188,7 +196,8 @@ class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordList
 
                                     $icon = '<a href="#" onclick="' . htmlspecialchars(
                                         BackendUtility::editOnClick($params, '', -1)
-                                    ) . '" title="' . $language->getLL('new', true) . '">' . $sprite . '</a>';
+                                    ) . '" title="' . htmlspecialchars($language->getLL('new'))
+                                        . '">' . $sprite . '</a>';
                                 }
                             }
 
@@ -203,7 +212,7 @@ class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordList
                                     implode(',', $parentObject->fieldArray) . '&disHelp=1';
                                 $icon .= '<a href="#" onclick="' . htmlspecialchars(
                                     BackendUtility::editOnClick($params, '', -1)
-                                ) . '" title="' . $language->getLL('editShownColumns', true) . '">'
+                                ) . '" title="' . htmlspecialchars($language->getLL('editShownColumns')) . '">'
                                     . $this->iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render()
                                     . '</a>';
                             }
@@ -227,7 +236,7 @@ class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordList
                             if ($parentObject->clipNumPane()) {
                                 $headerColumns[$fCol] .= '<a href="' . htmlspecialchars(
                                     $parentObject->listURL('', -1) . '&duplicateField=' . $fCol
-                                ) . '" title="' . $language->getLL('clip_duplicates', true)
+                                ) . '" title="' . htmlspecialchars($language->getLL('clip_duplicates'))
                                     . '">'
                                     .  $this->iconFactory->getIcon(
                                         'actions-document-duplicates-select',

@@ -170,7 +170,7 @@ class AddressesController extends BaseController
         }
 
         // add removal of remaining empty markers
-        $content = $this->cObj->substituteMarkerArray($content, [], '', true, true);
+        $content = $this->templateService->substituteMarkerArray($content, [], '', true, true);
 
         return $this->pi_wrapInBaseClass($content);
     }
@@ -249,13 +249,13 @@ class AddressesController extends BaseController
      */
     protected function noUser()
     {
-        $template = $this->cObj->getSubpart($this->templateCode, '###NOT_LOGGED###');
+        $template = $this->templateService->getSubpart($this->templateCode, '###NOT_LOGGED###');
 
         $markerArray = [
             '###NOT_LOGGED_IN###' => $this->pi_getLL('not_logged_in'),
         ];
 
-        return $this->cObj->substituteMarkerArray($template, $markerArray);
+        return $this->templateService->substituteMarkerArray($template, $markerArray);
     }
 
     /**
@@ -280,21 +280,21 @@ class AddressesController extends BaseController
         $hooks = HookFactory::getHooks('Controller/AddressesController', 'getListing');
 
         if ($this->conf[$addressType . '.']['subpartMarker.']['listWrap']) {
-            $tplBase = $this->cObj->getSubpart(
+            $tplBase = $this->templateService->getSubpart(
                 $this->templateCode,
                 strtoupper($this->conf[$addressType . '.']['subpartMarker.']['listWrap'])
             );
         } else {
-            $tplBase = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_LISTING###');
+            $tplBase = $this->templateService->getSubpart($this->templateCode, '###ADDRESS_LISTING###');
         }
 
         if ($this->conf[$addressType . '.']['subpartMarker.']['listItem']) {
-            $tplItem = $this->cObj->getSubpart(
+            $tplItem = $this->templateService->getSubpart(
                 $this->templateCode,
                 strtoupper($this->conf[$addressType . '.']['subpartMarker.']['listItem'])
             );
         } else {
-            $tplItem = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_ITEM###');
+            $tplItem = $this->templateService->getSubpart($this->templateCode, '###ADDRESS_ITEM###');
         }
 
         if (!is_array($this->conf['formFields.'])) {
@@ -634,28 +634,28 @@ class AddressesController extends BaseController
 
         // Get the templates
         if ($this->conf[$addressType . '.']['subpartMarker.']['editWrap']) {
-            $tplBase = $this->cObj->getSubpart(
+            $tplBase = $this->templateService->getSubpart(
                 $this->templateCode,
                 strtoupper($this->conf[$addressType . '.']['subpartMarker.']['editWrap'])
             );
         } else {
-            $tplBase = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_EDIT###');
+            $tplBase = $this->templateService->getSubpart($this->templateCode, '###ADDRESS_EDIT###');
         }
         if ($this->conf[$addressType . '.']['subpartMarker.']['editItem']) {
-            $tplForm = $this->cObj->getSubpart(
+            $tplForm = $this->templateService->getSubpart(
                 $this->templateCode,
                 strtoupper($this->conf[$addressType . '.']['subpartMarker.']['editItem'])
             );
         } else {
-            $tplForm = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_EDIT_FORM###');
+            $tplForm = $this->templateService->getSubpart($this->templateCode, '###ADDRESS_EDIT_FORM###');
         }
         if ($this->conf[$addressType . '.']['subpartMarker.']['editField']) {
-            $tplField = $this->cObj->getSubpart(
+            $tplField = $this->templateService->getSubpart(
                 $this->templateCode,
                 strtoupper($this->conf[$addressType . '.']['subpartMarker.']['editField'])
             );
         } else {
-            $tplField = $this->cObj->getSubpart($this->templateCode, '###SINGLE_INPUT###');
+            $tplField = $this->templateService->getSubpart($this->templateCode, '###SINGLE_INPUT###');
         }
 
         // Create form fields
@@ -688,10 +688,11 @@ class AddressesController extends BaseController
             );
 
             // Get field item
-            $fieldsMarkerArray['###FIELD_' . strtoupper($fieldName) . '###'] = $this->cObj->substituteMarkerArray(
-                $tplField,
-                $fieldMarkerArray
-            );
+            $fieldsMarkerArray['###FIELD_' . strtoupper($fieldName) . '###'] =
+                $this->templateService->substituteMarkerArray(
+                    $tplField,
+                    $fieldMarkerArray
+                );
             $fieldsMarkerArray['###LABEL_' . strtoupper($fieldName) . '###'] = $fieldLabel;
         }
 
@@ -710,7 +711,7 @@ class AddressesController extends BaseController
         }
 
         // Merge fields with form template
-        $formCode = $this->cObj->substituteMarkerArray($tplForm, $fieldsMarkerArray);
+        $formCode = $this->templateService->substituteMarkerArray($tplForm, $fieldsMarkerArray);
 
         // Create submit button and some hidden fields
         $submitCode = '<input type="hidden" name="' . $this->prefixId . '[action]" value="' . $action . '" />';
@@ -784,7 +785,7 @@ class AddressesController extends BaseController
         }
 
         return '<form method="post" action="' . $link . '" ' . $this->conf[$addressType . '.']['formParams'] . '>' .
-            $this->cObj->substituteMarkerArray($tplBase, $baseMarkerArray) . '</form>';
+            $this->templateService->substituteMarkerArray($tplBase, $baseMarkerArray) . '</form>';
     }
 
     /**
@@ -795,7 +796,7 @@ class AddressesController extends BaseController
      */
     protected function deleteAddressQuestion()
     {
-        $tplBase = $this->cObj->getSubpart($this->templateCode, '###ADDRESS_DELETE###');
+        $tplBase = $this->templateService->getSubpart($this->templateCode, '###ADDRESS_DELETE###');
 
         // Fill address data to marker
         foreach ($this->fieldList as $name) {
@@ -818,7 +819,7 @@ class AddressesController extends BaseController
             $this->pi_linkTP_keepPIvars('|', ['action' => 'listing'])
         );
 
-        $content = $this->cObj->substituteMarkerArray($tplBase, $baseMarkerArray, '###|###', 1);
+        $content = $this->templateService->substituteMarkerArray($tplBase, $baseMarkerArray, '###|###', 1);
 
         return $this->substituteMarkerArrayNoCached($content, [], [], $linkMarkerArray);
     }
