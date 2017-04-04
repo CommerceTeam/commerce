@@ -60,8 +60,6 @@ class CategoryTreeElement extends SelectMultipleSideBySideElement implements Lin
 
         $parameterArray = $this->data['parameterArray'];
         $config = $parameterArray['fieldConf']['config'];
-        $tableName = $this->data['tableName'];
-        $fieldName = $this->data['fieldName'];
         $elementName = $parameterArray['itemFormElName'];
 
         if ($config['readOnly']) {
@@ -191,11 +189,6 @@ class CategoryTreeElement extends SelectMultipleSideBySideElement implements Lin
         $itemsToSelect[] =              ' data-formengine-input-name="' . htmlspecialchars($elementName) . '"';
         $itemsToSelect[] =              ' class="form-control t3js-commerce-categorytree-itemstoselect"';
         $itemsToSelect[] =              ' size="' . $size . '"';
-        $itemsToSelect[] =              ' data-fieldchanged-values="{';
-        $itemsToSelect[] =                  'tableName: \'' . htmlspecialchars($tableName) . '\',';
-        $itemsToSelect[] =                  'uid:' . $this->data['vanillaUid'] . ',';
-        $itemsToSelect[] =                  'fieldName: \'' . htmlspecialchars($fieldName) . '\',';
-        $itemsToSelect[] =                  'element: \'' . htmlspecialchars($elementName) . '\'}" ';
         $itemsToSelect[] =              ' data-formengine-validation-rules="' .
             htmlspecialchars($this->getValidationDataAsJsonString($config)) . '"';
         $itemsToSelect[] =              $selectableListStyle;
@@ -237,6 +230,7 @@ class CategoryTreeElement extends SelectMultipleSideBySideElement implements Lin
         $html[] =                               ' class="' . implode(' ', $classes) . '"';
         $html[] =                               $multipleAttribute;
         $html[] =                               ' data-formengine-input-name="' . htmlspecialchars($elementName) . '"';
+        $html[] =                               ' data-selected-values="' . json_encode($listOfSelectedValues) . '"';
         $html[] =                               $selectedListStyle;
         $html[] =                           '>';
         $html[] =                               implode(LF, $selectedItemsHtml);
