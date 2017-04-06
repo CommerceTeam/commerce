@@ -254,9 +254,17 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
             );
             $dblist->setDispFields();
             // Render versioning selector:
-            if (ExtensionManagementUtility::isLoaded('version')) {
-                /** @noinspection PhpInternalEntityUsedInspection */
-                $dblist->HTMLcode .= $this->moduleTemplate->getVersionSelector($this->id);
+            if (ExtensionManagementUtility::isLoaded('version')
+                && ExtensionManagementUtility::isLoaded('compatibility7')
+                && !ExtensionManagementUtility::isLoaded('workspaces')
+            ) {
+                /**
+                 * For Code Completion
+                 *
+                 * @var $versionGuiObj \TYPO3\CMS\Compatibility7\View\VersionView
+                 */
+                $versionGuiObj = GeneralUtility::makeInstance(\TYPO3\CMS\Compatibility7\View\VersionView::class);
+                $dblist->HTMLcode .= $versionGuiObj->getVersionSelector($this->id, false);
             }
             // Render the list of tables:
             $dblist->generateList();

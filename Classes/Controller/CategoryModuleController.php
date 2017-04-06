@@ -23,6 +23,7 @@ use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Core\Imaging\Icon;
@@ -297,9 +298,17 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             $dbList->perms_clause = $this->perms_clause;
             $dbList->setDispFields();
             // Render versioning selector:
-            if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('version')) {
-                /** @noinspection PhpInternalEntityUsedInspection */
-                $dbList->HTMLcode .= $this->moduleTemplate->getVersionSelector($this->id);
+            if (ExtensionManagementUtility::isLoaded('version')
+                && ExtensionManagementUtility::isLoaded('compatibility7')
+                && !ExtensionManagementUtility::isLoaded('workspaces')
+            ) {
+                /**
+                 * For Code Completion
+                 *
+                 * @var $versionGuiObj \TYPO3\CMS\Compatibility7\View\VersionView
+                 */
+                $versionGuiObj = GeneralUtility::makeInstance(\TYPO3\CMS\Compatibility7\View\VersionView::class);
+                $dbList->HTMLcode .= $versionGuiObj->getVersionSelector($this->id, false);
             }
             // Render the list of tables:
             $dbList->generateList();

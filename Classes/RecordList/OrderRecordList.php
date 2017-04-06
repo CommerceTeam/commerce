@@ -21,6 +21,7 @@ use TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -562,17 +563,47 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                         // If localization view is enabled it means that the selected records are
                         // either default or All language and here we will not select translations
                         // which point to the main record:
-                        if ($this->localizationView && $l10nEnabled) {
+                        if ($this->localizationView && $l10nEnabled && $this->searchString === '') {
                             // For each available translation, render the record:
                             if (is_array($this->translations)) {
                                 foreach ($this->translations as $lRow) {
                                     // $lRow isn't always what we want - if record was moved we've to work with the
                                     // placeholder records otherwise the list is messed up a bit
                                     if ($row['_MOVE_PLH_uid'] && $row['_MOVE_PLH_pid']) {
-                                        $where = 't3ver_move_id="' . (int)$lRow['uid'] . '" AND pid="' .
-                                            $row['_MOVE_PLH_pid'] . '" AND t3ver_wsid=' . $row['t3ver_wsid'] .
-                                            BackendUtility::deleteClause($table);
-                                        $tmpRow = BackendUtility::getRecordRaw($table, $where, $selFieldList);
+                                        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+                                        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                                            ->getQueryBuilderForTable($table);
+                                        $queryBuilder->getRestrictions()
+                                            ->removeAll()
+                                            ->add($deleteRestriction);
+                                        $predicates = [
+                                            $queryBuilder->expr()->eq(
+                                                't3ver_move_id',
+                                                $queryBuilder->createNamedParameter((int)$lRow['uid'], \PDO::PARAM_INT)
+                                            ),
+                                            $queryBuilder->expr()->eq(
+                                                'pid',
+                                                $queryBuilder->createNamedParameter(
+                                                    (int)$row['_MOVE_PLH_pid'],
+                                                    \PDO::PARAM_INT
+                                                )
+                                            ),
+                                            $queryBuilder->expr()->eq(
+                                                't3ver_wsid',
+                                                $queryBuilder->createNamedParameter(
+                                                    (int)$row['t3ver_wsid'],
+                                                    \PDO::PARAM_INT
+                                                )
+                                            ),
+                                        ];
+
+                                        $tmpRow = $queryBuilder
+                                            ->select(...$selFieldList)
+                                            ->from($table)
+                                            ->andWhere(...$predicates)
+                                            ->execute()
+                                            ->fetch();
+
                                         $lRow = is_array($tmpRow) ? $tmpRow : $lRow;
                                     }
                                     // In offline workspace, look for alternative record:

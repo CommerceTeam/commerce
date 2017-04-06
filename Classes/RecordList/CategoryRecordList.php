@@ -633,10 +633,40 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                                     // $lRow isn't always what we want - if record was moved we've to work with the
                                     // placeholder records otherwise the list is messed up a bit
                                     if ($row['_MOVE_PLH_uid'] && $row['_MOVE_PLH_pid']) {
-                                        $where = 't3ver_move_id="' . (int)$lRow['uid'] . '" AND pid="'
-                                            . $row['_MOVE_PLH_pid'] . '" AND t3ver_wsid=' . $row['t3ver_wsid']
-                                            . BackendUtility::deleteClause($table);
-                                        $tmpRow = BackendUtility::getRecordRaw($table, $where, $selFieldList);
+                                        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+                                        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                                            ->getQueryBuilderForTable($table);
+                                        $queryBuilder->getRestrictions()
+                                            ->removeAll()
+                                            ->add($deleteRestriction);
+                                        $predicates = [
+                                            $queryBuilder->expr()->eq(
+                                                't3ver_move_id',
+                                                $queryBuilder->createNamedParameter((int)$lRow['uid'], \PDO::PARAM_INT)
+                                            ),
+                                            $queryBuilder->expr()->eq(
+                                                'pid',
+                                                $queryBuilder->createNamedParameter(
+                                                    (int)$row['_MOVE_PLH_pid'],
+                                                    \PDO::PARAM_INT
+                                                )
+                                            ),
+                                            $queryBuilder->expr()->eq(
+                                                't3ver_wsid',
+                                                $queryBuilder->createNamedParameter(
+                                                    (int)$row['t3ver_wsid'],
+                                                    \PDO::PARAM_INT
+                                                )
+                                            ),
+                                        ];
+
+                                        $tmpRow = $queryBuilder
+                                            ->select(...$selFieldList)
+                                            ->from($table)
+                                            ->andWhere(...$predicates)
+                                            ->execute()
+                                            ->fetch();
+
                                         $lRow = is_array($tmpRow) ? $tmpRow : $lRow;
                                     }
                                     // In offline workspace, look for alternative record:
@@ -836,15 +866,22 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         $queryParameters = $this->buildQueryParameters($table, $pageId, ['*'], $constraints);
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($queryParameters['table']);
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        /** @var $workspaceRestriction $workspaceRestriction */
+        $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
         $queryBuilder->getRestrictions()
             ->removeAll()
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
-            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+            ->add($deleteRestriction)
+            ->add($workspaceRestriction);
         $queryBuilder
+            ->count('*')
             ->from($queryParameters['table'], 't')
             ->where(...$queryParameters['where']);
 
-        $this->totalItems = (int)$queryBuilder->count('*')
+        $queryBuilder = $this->addCommerceWhereParts($queryBuilder, $table);
+
+        $this->totalItems = (int)$queryBuilder
             ->execute()
             ->fetchColumn();
     }
@@ -902,6 +939,19 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             $queryBuilder->groupBy($queryParameters['groupBy']);
         }
 
+        $queryBuilder = $this->addCommerceWhereParts($queryBuilder, $table);
+
+        return $queryBuilder;
+    }
+
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param string $table
+     *
+     * @return QueryBuilder
+     */
+    protected function addCommerceWhereParts($queryBuilder, $table)
+    {
         if ($table == 'tx_commerce_categories') {
             $queryBuilder->innerJoin(
                 't',
@@ -2254,9 +2304,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
             case 'info':
                 // "Info": (All records)
-                $code = '<a href="#" onclick="' . htmlspecialchars(('top.launchView(\'' . $table . '\', \''
-                    . $row['uid'] . '\'); return false;')) . '" title="' . htmlspecialchars($lang->getLL('showInfo')) . '">'
-                    . $code . '</a>';
+                $code = '<a href="#" onclick="' .
+                    htmlspecialchars('top.launchView(\'' . $table . '\', \'' . $row['uid'] . '\'); return false;') .
+                    '" title="' . htmlspecialchars($lang->getLL('showInfo')) . '">' . $code . '</a>';
                 break;
 
             default:
