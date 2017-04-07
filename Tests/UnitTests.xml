@@ -15,7 +15,7 @@
 >
 	<testsuites>
 		<testsuite name="Commerce tests">
-			<directory>./Unit</directory>
+			<directory>./Unit/</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

@@ -97,7 +97,7 @@ class ProductRepositoryTest extends \CommerceTeam\Commerce\Tests\Functional\Back
      */
     public function getTranslatedData()
     {
-        $this->markTestSkipped('getData only works in frontend context');
+        $this->markTestSkipped('getData with translation only works in frontend context');
     }
 
     /**
@@ -105,7 +105,7 @@ class ProductRepositoryTest extends \CommerceTeam\Commerce\Tests\Functional\Back
      */
     public function getDataOfDeletedProductLeadsToEmptyResult()
     {
-        $this->markTestSkipped('getData only works in frontend context');
+        $this->markTestSkipped('getData of deleted record only works in frontend context');
     }
 
     /**
@@ -113,7 +113,7 @@ class ProductRepositoryTest extends \CommerceTeam\Commerce\Tests\Functional\Back
      */
     public function getDataOfAccessRestrictedProductLeadsToEmptyResult()
     {
-        $this->markTestSkipped('getData only works in frontend context');
+        $this->markTestSkipped('getData of access restricted record only works in frontend context');
     }
 
 
