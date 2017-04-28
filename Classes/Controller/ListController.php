@@ -161,6 +161,8 @@ class ListController extends BaseController
         $this->master_cat = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'StartCategory', 's_product');
         if (!$this->master_cat) {
             $this->master_cat = $this->conf['catUid'];
+        } else {
+            $this->master_cat = str_replace('tx_commerce_categories_', '', $this->master_cat);
         }
         if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'listPid', 's_template')) {
             $this->conf['listPid'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'listPid', 's_template');

@@ -1406,6 +1406,12 @@ class NavigationViewHelper
             ];
         }
 
+        if ($this->entryLevel) {
+            for ($i = 0; $i < $this->entryLevel; $i++) {
+                array_shift($returnArray);
+            }
+        }
+
         return $returnArray;
     }
 
@@ -1508,7 +1514,6 @@ class NavigationViewHelper
          * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend $navigationCache
          */
         $navigationCache = GeneralUtility::makeInstance(CacheManager::class)->getCache('commerce_navigation');
-
         return $navigationCache->get($hash);
     }
 
