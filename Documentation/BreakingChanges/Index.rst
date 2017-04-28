@@ -17,3 +17,4 @@ Breaking Changes
 
    Since4/Index
    Since5/Index
+   Since6/Index

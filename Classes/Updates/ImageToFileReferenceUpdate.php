@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingmar Schlecht <ingmar@typo3.org>
  */
-class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
+class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpdate
 {
     /**
      * Number of records fetched per database query
@@ -286,7 +286,7 @@ class TceformsUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate
      */
     protected function getFinishedFields(): array
     {
-        $className = \CommerceTeam\Commerce\Updates\TceformsUpdateWizard::class;
+        $className = \CommerceTeam\Commerce\Updates\ImageToFileReferenceUpdate::class;
 
         return isset($GLOBALS['TYPO3_CONF_VARS']['INSTALL']['wizardDone'][$className]) ?
             explode(',', $GLOBALS['TYPO3_CONF_VARS']['INSTALL']['wizardDone'][$className]) : [];

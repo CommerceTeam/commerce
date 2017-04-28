@@ -232,7 +232,7 @@ call_user_func(function ($packageKey) {
         \CommerceTeam\Commerce\Hooks\VersionHook::class;
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['migrateCommerceImages'] =
-        \CommerceTeam\Commerce\Updates\TceformsUpdateWizard::class;
+        \CommerceTeam\Commerce\Updates\ImageToFileReferenceUpdate::class;
 
     // @todo check if needed
     $scOptions['t3lib/class.t3lib_tceforms_inline.php']['tceformsInlineHook']['commerce'] =
