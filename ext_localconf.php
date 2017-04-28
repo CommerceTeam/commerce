@@ -231,7 +231,7 @@ call_user_func(function ($packageKey) {
     $scOptions['t3lib/class.t3lib_tcemain.php']['processVersionSwapClass']['commerce'] =
         \CommerceTeam\Commerce\Hooks\VersionHook::class;
 
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['processedFilesChecksum'] =
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['migrateCommerceImages'] =
         \CommerceTeam\Commerce\Updates\TceformsUpdateWizard::class;
 
     // @todo check if needed
