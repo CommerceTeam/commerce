@@ -336,7 +336,7 @@ class DataMapHook
      */
     protected function centurionMultiplication($price)
     {
-        return intval(strval($price * 100));
+        return intval(strval(str_replace(',', '.', $price) * 100));
     }
 
     /**
