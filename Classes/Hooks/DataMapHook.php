@@ -658,7 +658,12 @@ class DataMapHook
             }
 
             // Unique the list
-            $fieldArray['parent_category'] = GeneralUtility::uniqueList($fieldArray['parent_category']);
+            $fieldArray['parent_category'] = implode(
+                ',',
+                $this->belib->getUidListFromList(
+                    explode(',', GeneralUtility::uniqueList($fieldArray['parent_category']))
+                )
+            );
 
             // abort if the user didn't assign a category - rights need not be checked then
             if ($fieldArray['parent_category'] == '') {
@@ -867,7 +872,9 @@ class DataMapHook
         // check new categories
         if (isset($data['categories'])) {
             $newCats = $this->singleDiffAssoc(
-                GeneralUtility::trimExplode(',', GeneralUtility::uniqueList($data['categories'])),
+                $this->belib->getUidListFromList(
+                    GeneralUtility::trimExplode(',', GeneralUtility::uniqueList($data['categories']))
+                ),
                 $parentCategories
             );
 
@@ -1279,7 +1286,7 @@ class DataMapHook
             $this->belib->getChildCategories($categoryUid, $childList, $categoryUid, 0, false);
 
             foreach ($childList as $childUid) {
-                $this->saveCategoryRelations($childUid, null, true, false);
+                $this->saveCategoryRelations($childUid, [], true, false);
             }
         }
     }
