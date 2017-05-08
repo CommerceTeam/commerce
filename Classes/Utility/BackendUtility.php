@@ -21,7 +21,7 @@ use CommerceTeam\Commerce\Domain\Repository\PageRepository;
 use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility as CoreGeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
@@ -61,11 +61,11 @@ class BackendUtility
         }
 
         /** @var AttributeRepository $attributeRepository */
-        $attributeRepository = GeneralUtility::makeInstance(AttributeRepository::class);
+        $attributeRepository = CoreGeneralUtility::makeInstance(AttributeRepository::class);
         $correlationTypes = $attributeRepository->findAllCorrelationTypes();
 
         /** @var ProductRepository $productRepository */
-        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        $productRepository = CoreGeneralUtility::makeInstance(ProductRepository::class);
         // get all attributes for the product
         $relations = $productRepository->getUniqueAttributeRelations($productUid);
 
@@ -143,7 +143,7 @@ class BackendUtility
                 }
 
                 /** @var CategoryRepository $categoryRepository */
-                $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+                $categoryRepository = CoreGeneralUtility::makeInstance(CategoryRepository::class);
                 $categories = $categoryRepository->getParentCategories($cUid);
                 foreach ($categories as $category) {
                     if ($recursive) {
@@ -184,7 +184,7 @@ class BackendUtility
             }
 
             /** @var CategoryRepository $categoryRepository */
-            $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+            $categoryRepository = CoreGeneralUtility::makeInstance(CategoryRepository::class);
             $categories = $categoryRepository->findByParentCategoryUid($cUid);
 
             if (!empty($categories)) {
@@ -235,7 +235,7 @@ class BackendUtility
         }
 
         /** @var CategoryRepository $categoryRepository */
-        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+        $categoryRepository = CoreGeneralUtility::makeInstance(CategoryRepository::class);
 
         foreach ($catList as $catUid) {
             $attributes = $categoryRepository->findAttributesByCategoryUid($catUid, $result);
@@ -273,7 +273,7 @@ class BackendUtility
 
         if ($ct != null) {
             /** @var ProductRepository $productRepository */
-            $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+            $productRepository = CoreGeneralUtility::makeInstance(ProductRepository::class);
             $product = $productRepository->findByArticleUid($articleUid);
 
             $productAttributes = $this->getAttributesForProduct((int)$product['uid']);
@@ -291,7 +291,7 @@ class BackendUtility
         }
 
         /** @var AttributeRepository $attributeRepository */
-        $attributeRepository = GeneralUtility::makeInstance(AttributeRepository::class);
+        $attributeRepository = CoreGeneralUtility::makeInstance(AttributeRepository::class);
         $result = $attributeRepository->findByArticleAndExcludingListed($articleUid, $excludeList);
         foreach ($result as &$row) {
             if ($row['has_valuelist']) {
@@ -317,7 +317,7 @@ class BackendUtility
 
         if (!empty($fullAttributeList)) {
             /** @var ArticleRepository $articleRepository */
-            $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+            $articleRepository = CoreGeneralUtility::makeInstance(ArticleRepository::class);
             $attributes = $articleRepository->getAttributeRelationsByArticleAndAttributeUid(
                 $articleUid,
                 $fullAttributeList
@@ -359,7 +359,7 @@ class BackendUtility
         $hash = $this->getArticleHash($articleUid, $fullAttributeList);
 
         /** @var ArticleRepository $articleRepository */
-        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $articleRepository = CoreGeneralUtility::makeInstance(ArticleRepository::class);
         $articleRepository->updateAttributeHash($articleUid, $hash);
     }
 
@@ -481,19 +481,19 @@ class BackendUtility
         $repository = null;
         switch ($relationTable) {
             case 'tx_commerce_articles_attributes_mm':
-                $repository = GeneralUtility::makeInstance(AttributeRepository::class);
+                $repository = CoreGeneralUtility::makeInstance(AttributeRepository::class);
                 break;
             case 'tx_commerce_categories_attributes_mm':
-                $repository = GeneralUtility::makeInstance(AttributeRepository::class);
+                $repository = CoreGeneralUtility::makeInstance(AttributeRepository::class);
                 break;
             case 'tx_commerce_categories_parent_category_mm':
-                $repository = GeneralUtility::makeInstance(CategoryRepository::class);
+                $repository = CoreGeneralUtility::makeInstance(CategoryRepository::class);
                 break;
             case 'tx_commerce_products_categories_mm':
-                $repository = GeneralUtility::makeInstance(ProductRepository::class);
+                $repository = CoreGeneralUtility::makeInstance(ProductRepository::class);
                 break;
             case 'tx_commerce_products_attributes_mm':
-                $repository = GeneralUtility::makeInstance(AttributeRepository::class);
+                $repository = CoreGeneralUtility::makeInstance(AttributeRepository::class);
                 break;
         }
 
@@ -561,13 +561,13 @@ class BackendUtility
     public function updateArticleXML(array $articleRelations, $add = false, $articleUid = null, $productUid = null)
     {
         /** @var ArticleRepository $articleRepository */
-        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $articleRepository = CoreGeneralUtility::makeInstance(ArticleRepository::class);
 
         $xmlData = [];
         if ($add && is_numeric($articleUid)) {
             $xmlData = $articleRepository->findByUid($articleUid);
             if (is_array($xmlData)) {
-                $xmlData = GeneralUtility::xml2array($xmlData['attributesedit']);
+                $xmlData = CoreGeneralUtility::xml2array($xmlData['attributesedit']);
             } else {
                 $xmlData = '';
             }
@@ -602,7 +602,7 @@ class BackendUtility
             }
         }
 
-        $xmlData = GeneralUtility::array2xml($xmlData, '', 0, 'T3FlexForms');
+        $xmlData = CoreGeneralUtility::array2xml($xmlData, '', 0, 'T3FlexForms');
 
         if ($articleUid) {
             $articleRepository->updateRecord($articleUid, ['attributesedit' => $xmlData]);
@@ -627,9 +627,9 @@ class BackendUtility
     public function updateXML($xmlField, $table, $uid, $_, array $ctList, $rebuild = false)
     {
         /** @var ProductRepository $productRepository */
-        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        $productRepository = CoreGeneralUtility::makeInstance(ProductRepository::class);
         /** @var CategoryRepository $categoryRepository */
-        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+        $categoryRepository = CoreGeneralUtility::makeInstance(CategoryRepository::class);
 
         $relList = null;
         switch ($table) {
@@ -647,7 +647,7 @@ class BackendUtility
                 $xmlData = [$xmlField => ''];
         }
 
-        $xmlData = GeneralUtility::xml2array($xmlData[$xmlField]);
+        $xmlData = CoreGeneralUtility::xml2array($xmlData[$xmlField]);
         if (!is_array($xmlData)) {
             $xmlData = [];
         }
@@ -690,7 +690,7 @@ class BackendUtility
         // build new XML
         if (is_array($xmlData)) {
             // Dump Quickfix
-            $xmlData = GeneralUtility::array2xml($xmlData, '', 0, 'T3FlexForms');
+            $xmlData = CoreGeneralUtility::array2xml($xmlData, '', 0, 'T3FlexForms');
         } else {
             $xmlData = '';
         }
@@ -798,7 +798,7 @@ class BackendUtility
     public function getProductsOfCategory($categoryUid)
     {
         /** @var ProductRepository $productRepository */
-        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        $productRepository = CoreGeneralUtility::makeInstance(ProductRepository::class);
         return $productRepository->findByCategoryUid($categoryUid);
     }
 
@@ -849,7 +849,7 @@ class BackendUtility
      */
     public function buildLocalisedAttributeValues($flexValue, $langIdent)
     {
-        $attributeFlexformData = GeneralUtility::xml2array($flexValue);
+        $attributeFlexformData = CoreGeneralUtility::xml2array($flexValue);
 
         $result = '';
         if (is_array($attributeFlexformData)) {
@@ -885,7 +885,7 @@ class BackendUtility
 
                 default:
             }
-            $result = GeneralUtility::array2xml($attributeFlexformData, '', 0, 'T3FlexForms');
+            $result = CoreGeneralUtility::array2xml($attributeFlexformData, '', 0, 'T3FlexForms');
         }
 
         return $result;
@@ -903,11 +903,11 @@ class BackendUtility
     public function savePriceFlexformWithArticle($priceUid, $articleUid, array $priceDataArray)
     {
         /** @var ArticleRepository $articleRepository */
-        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $articleRepository = CoreGeneralUtility::makeInstance(ArticleRepository::class);
         $prices = $articleRepository->findByUid($articleUid);
 
         if (strlen($prices['prices']) > 0) {
-            $data = GeneralUtility::xml2array($prices['prices']);
+            $data = CoreGeneralUtility::xml2array($prices['prices']);
         } else {
             $data = ['data' => ['sDEF' => ['lDEF']]];
         }
@@ -932,7 +932,7 @@ class BackendUtility
             'vDEF' => $priceDataArray['price_scale_amount_end']
         ];
 
-        $xml = GeneralUtility::array2xml($data, '', 0, 'T3FlexForms');
+        $xml = CoreGeneralUtility::array2xml($data, '', 0, 'T3FlexForms');
 
         return $articleRepository->updateRecord($articleUid, ['prices' => $xml]);
     }
@@ -958,7 +958,7 @@ class BackendUtility
         }
 
         /** @var PageRepository $pageRepository */
-        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
+        $pageRepository = CoreGeneralUtility::makeInstance(PageRepository::class);
         $rows = $pageRepository->findByPid($pid);
         if (!empty($rows)) {
             foreach ($rows as $returnData) {
@@ -988,7 +988,7 @@ class BackendUtility
     public function updatePriceXMLFromDatabase($articleUid)
     {
         /** @var ArticlePriceRepository $articlePriceRepository */
-        $articlePriceRepository = GeneralUtility::makeInstance(ArticlePriceRepository::class);
+        $articlePriceRepository = CoreGeneralUtility::makeInstance(ArticlePriceRepository::class);
         $prices = $articlePriceRepository->findByArticleUid($articleUid);
 
         $data = [
@@ -1011,10 +1011,10 @@ class BackendUtility
             $lDef['price_scale_amount_end_' . $priceUid] = ['vDEF' => $price['price_scale_amount_end']];
         }
 
-        $xml = GeneralUtility::array2xml($data, '', 0, 'T3FlexForms');
+        $xml = CoreGeneralUtility::array2xml($data, '', 0, 'T3FlexForms');
 
         /** @var ArticleRepository $articleRepository */
-        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $articleRepository = CoreGeneralUtility::makeInstance(ArticleRepository::class);
         return $articleRepository->updateRecord($articleUid, ['prices' => $xml]);
     }
 
@@ -1035,7 +1035,7 @@ class BackendUtility
         // verify params
         if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog(
+                CoreGeneralUtility::devLog(
                     'swapProductAttributes (' . self::class . ') gets passed invalid parameters.',
                     'commerce',
                     3
@@ -1054,7 +1054,7 @@ class BackendUtility
         }
 
         /** @var ProductRepository $productRepository */
-        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        $productRepository = CoreGeneralUtility::makeInstance(ProductRepository::class);
 
         if (!$copy) {
             // update the mm table with the new uids of the product
@@ -1088,7 +1088,7 @@ class BackendUtility
         // check params
         if (!is_numeric($pUidFrom) || !is_numeric($pUidTo)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog(
+                CoreGeneralUtility::devLog(
                     'swapProductArticles (' . self::class . ') gets passed invalid parameters.',
                     'commerce',
                     3
@@ -1107,7 +1107,7 @@ class BackendUtility
         }
 
         /** @var ArticleRepository $articleRepository */
-        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $articleRepository = CoreGeneralUtility::makeInstance(ArticleRepository::class);
         if (!$copy) {
             // give all articles of the old
             // product the product_uid of the new product
@@ -1146,7 +1146,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uid) || !is_numeric($uidProduct)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyArticle (belib) gets passed invalid parameters.', 'commerce', 3);
+                CoreGeneralUtility::devLog('copyArticle (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -1155,7 +1155,7 @@ class BackendUtility
         // check show right for this article under
         // all categories of the current parent product
         /** @var ProductRepository $productRepository */
-        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        $productRepository = CoreGeneralUtility::makeInstance(ProductRepository::class);
         $product = $productRepository->findByArticleUid($uid);
 
         if (!self::checkProductPerms((int)$product['uid'], 'show')) {
@@ -1170,7 +1170,7 @@ class BackendUtility
 
         // get uid of the last article in the articles table
         /** @var ArticleRepository $articleRepository */
-        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $articleRepository = CoreGeneralUtility::makeInstance(ArticleRepository::class);
         $article = $articleRepository->findLatestArticle();
 
         // if there are no articles at all, abort.
@@ -1187,7 +1187,7 @@ class BackendUtility
          *
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
-        $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
+        $tce = CoreGeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
 
         $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
         if (is_array($tcaDefaultOverride)) {
@@ -1248,7 +1248,7 @@ class BackendUtility
 
         // select all existing prices of the article
         /** @var ArticlePriceRepository $articlePriceRepository */
-        $articlePriceRepository = GeneralUtility::makeInstance(ArticlePriceRepository::class);
+        $articlePriceRepository = CoreGeneralUtility::makeInstance(ArticlePriceRepository::class);
         $rows = $articlePriceRepository->findByArticleUid($uidFrom);
 
         $newUid = 0;
@@ -1259,7 +1259,7 @@ class BackendUtility
              *
              * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
              */
-            $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
+            $tce = CoreGeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
 
             $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
             if (is_array($tcaDefaultOverride)) {
@@ -1302,7 +1302,7 @@ class BackendUtility
     public function overwriteArticleAttributes($uidFrom, $uidTo, $languageUid = 0)
     {
         /** @var ArticleRepository $articleRepository */
-        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $articleRepository = CoreGeneralUtility::makeInstance(ArticleRepository::class);
 
         if ($languageUid != 0) {
             // we want to overwrite the attributes of the locale
@@ -1332,7 +1332,7 @@ class BackendUtility
         }
 
         /** @var AttributeRepository $attributeRepository */
-        $attributeRepository = GeneralUtility::makeInstance(AttributeRepository::class);
+        $attributeRepository = CoreGeneralUtility::makeInstance(AttributeRepository::class);
 
         // delete existing attributes
         $attributeRepository->deleteAttributeRelationsByArticleUid($uidTo);
@@ -1366,7 +1366,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uid) || !is_numeric($categoryUid) || !is_numeric($sorting)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyProduct (belib) gets passed invalid parameters.', 'commerce', 3);
+                CoreGeneralUtility::devLog('copyProduct (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -1406,7 +1406,7 @@ class BackendUtility
         if ($sorting == 0) {
             // get uid of the last product in the products table
             /** @var ProductRepository $productRepository */
-            $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+            $productRepository = CoreGeneralUtility::makeInstance(ProductRepository::class);
             $row = $productRepository->findLatestProduct();
 
             // if there are no products at all, abort.
@@ -1427,7 +1427,7 @@ class BackendUtility
          *
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
-        $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
+        $tce = CoreGeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
 
         // set workspace bypass if requested
         $tce->bypassWorkspaceRestrictions = $ignoreWs;
@@ -1492,7 +1492,7 @@ class BackendUtility
         // check params
         if (!is_string($table) || !is_numeric($uidCopied) || !is_numeric($uidNew) || !is_numeric($languageUid)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyLocale (belib) gets passed invalid parameters.', 'commerce', 3);
+                CoreGeneralUtility::devLog('copyLocale (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -1519,7 +1519,7 @@ class BackendUtility
             foreach ($tableConfig['columns'] as $fN => $fCfg) {
                 // Otherwise, do not copy field (unless it is the
                 // language field or pointer to the original language)
-                if (GeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
+                if (CoreGeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
                     && $fN != $tableConfig['ctrl']['languageField']
                     && $fN != $tableConfig['ctrl']['transOrigPointerField']
                 ) {
@@ -1535,12 +1535,15 @@ class BackendUtility
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Article $article
                  */
-                $article = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Article::class, $uidNew);
+                $article = CoreGeneralUtility::makeInstance(
+                    \CommerceTeam\Commerce\Domain\Model\Article::class,
+                    $uidNew
+                );
                 $productUid = $article->getParentProductUid();
 
                 // load uid of the localized product
                 /** @var ProductRepository $productRepository */
-                $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+                $productRepository = CoreGeneralUtility::makeInstance(ProductRepository::class);
                 $row = $productRepository->findTranslationsByParentUidAndLanguage($productUid, $languageUid);
 
                 $rec[0]['uid_product'] = $row['uid'];
@@ -1557,7 +1560,7 @@ class BackendUtility
              *
              * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
              */
-            $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
+            $tce = CoreGeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
 
             // set workspace bypass if requested
             $tce->bypassWorkspaceRestrictions = $ignoreWs;
@@ -1610,7 +1613,7 @@ class BackendUtility
         // check params
         if (!is_string($table) || !is_numeric($uidCopied) || !is_numeric($uidOverwrite) || !is_numeric($loc)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyLocale (belib) gets passed invalid parameters.', 'commerce', 3);
+                CoreGeneralUtility::devLog('copyLocale (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -1643,7 +1646,7 @@ class BackendUtility
             foreach ($tableConfig['columns'] as $fN => $fCfg) {
                 // Otherwise, do not copy field (unless it is the
                 // language field or pointer to the original language)
-                if (GeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
+                if (CoreGeneralUtility::inList('exclude,noCopy,mergeIfNotBlank', $fCfg['l10n_mode'])
                     && $fN != $tableConfig['ctrl']['languageField']
                     && $fN != $tableConfig['ctrl']['transOrigPointerField']
                 ) {
@@ -1653,7 +1656,7 @@ class BackendUtility
                     && isset($recFrom[0][$fN])
                 ) {
                     if ($recFrom[0][$fN]) {
-                        $recFrom[0][$fN] = GeneralUtility::xml2array($recFrom[0][$fN]);
+                        $recFrom[0][$fN] = CoreGeneralUtility::xml2array($recFrom[0][$fN]);
 
                         if (trim($recFrom[0][$fN]) == '') {
                             unset($recFrom[0][$fN]);
@@ -1673,7 +1676,7 @@ class BackendUtility
              *
              * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
              */
-            $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
+            $tce = CoreGeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
 
             $tcaDefaultOverride = $backendUser->getTSConfigProp('TCAdefaults');
             if (is_array($tcaDefaultOverride)) {
@@ -1720,7 +1723,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uid) || !is_numeric($parentUid) || $uid == $parentUid) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('copyCategory (belib) gets passed invalid parameters.', 'commerce', 3);
+                CoreGeneralUtility::devLog('copyCategory (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -1744,7 +1747,7 @@ class BackendUtility
         if (0 == $sorting) {
             // get uid of the last category in the category table
             /** @var CategoryRepository $categoryRepository */
-            $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+            $categoryRepository = CoreGeneralUtility::makeInstance(CategoryRepository::class);
             $row = $categoryRepository->findLatestCategory();
 
             // if there are no categories at all, abort.
@@ -1765,7 +1768,7 @@ class BackendUtility
          *
          * @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce
          */
-        $tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
+        $tce = CoreGeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
 
         $backendUser = self::getBackendUserAuthentication();
 
@@ -1833,7 +1836,7 @@ class BackendUtility
         // check params
         if (!is_numeric($categoryUidTo) || !is_numeric($categoryUidFrom)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog(
+                CoreGeneralUtility::devLog(
                     'chmodCategoryByCategory (BackendUtility) gets passed invalid parameters.',
                     'commerce',
                     3
@@ -1844,7 +1847,7 @@ class BackendUtility
         }
 
         /** @var CategoryRepository $categoryRepository */
-        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+        $categoryRepository = CoreGeneralUtility::makeInstance(CategoryRepository::class);
 
         // select current perms
         $row = $categoryRepository->findByUid(
@@ -1883,11 +1886,11 @@ class BackendUtility
         $row = [];
         if ($table === 'tx_commerce_products') {
             /** @var ProductRepository $productRepository */
-            $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+            $productRepository = CoreGeneralUtility::makeInstance(ProductRepository::class);
             $row = $productRepository->findPreviousByUid($uid);
         } elseif ($table === 'tx_commerce_categories') {
             /** @var CategoryRepository $categoryRepository */
-            $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+            $categoryRepository = CoreGeneralUtility::makeInstance(CategoryRepository::class);
             $row = $categoryRepository->findPreviousByUid($uid);
         }
 
@@ -1917,7 +1920,7 @@ class BackendUtility
         // check params
         if (!is_numeric($catUidTo) || !is_numeric($catUidFrom)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog(
+                CoreGeneralUtility::devLog(
                     'copyProductsByCategory (belib) gets passed invalid parameters.',
                     'commerce',
                     3
@@ -1928,7 +1931,7 @@ class BackendUtility
         }
 
         /** @var ProductRepository $productRepository */
-        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        $productRepository = CoreGeneralUtility::makeInstance(ProductRepository::class);
         $products = $productRepository->findByCategoryUid($catUidFrom);
 
         $success = true;
@@ -1955,7 +1958,7 @@ class BackendUtility
         // check params
         if (!is_numeric($catUidTo) || !is_numeric($catUidFrom) || $catUidTo == $catUidFrom) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog(
+                CoreGeneralUtility::devLog(
                     'copyCategoriesByCategory (belib) gets passed invalid parameters.',
                     'commerce',
                     3
@@ -1966,7 +1969,7 @@ class BackendUtility
         }
 
         /** @var CategoryRepository $categoryRepository */
-        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+        $categoryRepository = CoreGeneralUtility::makeInstance(CategoryRepository::class);
         $categories = $categoryRepository->findByParentCategoryUid($catUidFrom);
 
         $success = true;
@@ -1992,7 +1995,7 @@ class BackendUtility
         // check params
         if (!is_numeric($prodUidTo) || !is_numeric($prodUidFrom)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog(
+                CoreGeneralUtility::devLog(
                     'copyArticlesByProduct (belib) gets passed invalid parameters.',
                     'commerce',
                     3
@@ -2005,7 +2008,7 @@ class BackendUtility
         $success = true;
 
         /** @var ArticleRepository $articleRepository */
-        $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
+        $articleRepository = CoreGeneralUtility::makeInstance(ArticleRepository::class);
         $rows = $articleRepository->findByProductUid($prodUidFrom);
         foreach ($rows as $row) {
             $singleSuccess = self::copyArticle($row['uid'], $prodUidTo, (array) $locale);
@@ -2050,7 +2053,7 @@ class BackendUtility
             // Make sure it's integer.
             $perms = (int) $perms;
             /** @var ExpressionBuilder $expressionBuilder */
-            $expressionBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            $expressionBuilder = CoreGeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_commerce_categories')
                 ->expr();
 
@@ -2076,7 +2079,7 @@ class BackendUtility
                     $expressionBuilder->andX(
                         $expressionBuilder->in(
                             $tableAlias . '.perms_groupid',
-                            GeneralUtility::intExplode(',', $backendUser->groupList)
+                            CoreGeneralUtility::intExplode(',', $backendUser->groupList)
                         ),
                         $expressionBuilder->comparison(
                             $expressionBuilder->bitAnd($tableAlias . '.perms_group', $perms),
@@ -2172,7 +2175,7 @@ class BackendUtility
     {
         if (!is_string($perm)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('getPermMask (belib) gets passed invalid parameters.', 'commerce', 3);
+                CoreGeneralUtility::devLog('getPermMask (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return 0;
@@ -2227,7 +2230,7 @@ class BackendUtility
         // check params
         if (!is_numeric($uid) || !is_string($perm)) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog('checkProductPerms (belib) gets passed invalid parameters.', 'commerce', 3);
+                CoreGeneralUtility::devLog('checkProductPerms (belib) gets passed invalid parameters.', 'commerce', 3);
             }
 
             return false;
@@ -2238,7 +2241,7 @@ class BackendUtility
 
         if (!$mask) {
             if (TYPO3_DLOG) {
-                GeneralUtility::devLog(
+                CoreGeneralUtility::devLog(
                     'checkProductPerms (belib) gets passed an invalid permission to check for.',
                     'commerce',
                     3
@@ -2250,7 +2253,7 @@ class BackendUtility
 
         // get parent categories
         /** @var ProductRepository $productRepository */
-        $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+        $productRepository = CoreGeneralUtility::makeInstance(ProductRepository::class);
         $parents = $productRepository->getParentCategories($uid);
 
         // check the permissions
@@ -2352,9 +2355,9 @@ class BackendUtility
                 // name or something...
                 $output = ' [#VEP#]' . $output;
             }
-            $output = '/' . GeneralUtility::fixed_lgd_cs(strip_tags($record['title']), $titleLimit) . $output;
+            $output = '/' . CoreGeneralUtility::fixed_lgd_cs(strip_tags($record['title']), $titleLimit) . $output;
             if ($fullTitleLimit) {
-                $fullOutput = '/' . GeneralUtility::fixed_lgd_cs(strip_tags($record['title']), $fullTitleLimit) .
+                $fullOutput = '/' . CoreGeneralUtility::fixed_lgd_cs(strip_tags($record['title']), $fullTitleLimit) .
                     $fullOutput;
             }
         }
@@ -2464,7 +2467,7 @@ class BackendUtility
 
         if (!isset($getCategoryForRootlineCache[$ident])) {
             /** @var CategoryRepository $categoryRepository */
-            $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+            $categoryRepository = CoreGeneralUtility::makeInstance(CategoryRepository::class);
             $row = $categoryRepository->findRootlineCategoryByUid($uid, $clause);
             if (!empty($row)) {
                 if ($workspaceOl) {
@@ -2495,7 +2498,7 @@ class BackendUtility
 
         if (!isset($getCategoryForRootlineCache[$ident])) {
             /** @var ProductRepository $productRepository */
-            $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
+            $productRepository = CoreGeneralUtility::makeInstance(ProductRepository::class);
             $row = $productRepository->findRootlineProductByUid($uid, $clause);
             if (!empty($row)) {
                 if ($workspaceOl) {
@@ -2532,7 +2535,7 @@ class BackendUtility
         }
 
         /** @var BackendUserUtility $backendUserUtility */
-        $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
+        $backendUserUtility = CoreGeneralUtility::makeInstance(BackendUserUtility::class);
         foreach ($categoryUids as $categoryUid) {
             // check if the category is in the commerce mounts
             if (!$backendUserUtility->isInWebMount($categoryUid)) {
@@ -2544,7 +2547,10 @@ class BackendUtility
              *
              * @var \CommerceTeam\Commerce\Domain\Model\Category $category
              */
-            $category = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Category::class, $categoryUid);
+            $category = CoreGeneralUtility::makeInstance(
+                \CommerceTeam\Commerce\Domain\Model\Category::class,
+                $categoryUid
+            );
             // check perms
             foreach ($permissions as $permission) {
                 if (!$category->isPermissionSet($permission)) {
