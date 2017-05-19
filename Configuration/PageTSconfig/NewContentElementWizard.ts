@@ -49,7 +49,7 @@ mod.wizards {
 			plugins {
 				elements {
 					commerce_pi1 {
-						icon = ../typo3conf/ext/commerce/Resources/Public/Icons/ce_wiz.gif
+						iconIdentifier = content-plugin-commerce-list
 						title = LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:tt_content.list_type_pi1
 						description = LLL:EXT:sessionplaner/Resources/Private/Language/locallang_be.xlf:tt_content.list_type_pi1.wiz_description
 						tt_content_defValues {
@@ -59,7 +59,7 @@ mod.wizards {
 					}
 
 					commerce_pi2 {
-						icon = ../typo3conf/ext/commerce/Resources/Public/Icons/ce_wiz.gif
+						iconIdentifier = content-plugin-commerce-list
 						title = LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:tt_content.list_type_pi2
 						description = LLL:EXT:sessionplaner/Resources/Private/Language/locallang_be.xlf:tt_content.list_type_pi2.wiz_description
 						tt_content_defValues {
@@ -69,7 +69,7 @@ mod.wizards {
 					}
 
 					commerce_pi3 {
-						icon = ../typo3conf/ext/commerce/Resources/Public/Icons/ce_wiz.gif
+						iconIdentifier = content-plugin-commerce-list
 						title = LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:tt_content.list_type_pi3
 						description = LLL:EXT:sessionplaner/Resources/Private/Language/locallang_be.xlf:tt_content.list_type_pi3.wiz_description
 						tt_content_defValues {
@@ -79,7 +79,7 @@ mod.wizards {
 					}
 
 					commerce_pi4 {
-						icon = ../typo3conf/ext/commerce/Resources/Public/Icons/ce_wiz.gif
+						iconIdentifier = content-plugin-commerce-list
 						title = LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:tt_content.list_type_pi4
 						description = LLL:EXT:sessionplaner/Resources/Private/Language/locallang_be.xlf:tt_content.list_type_pi4.wiz_description
 						tt_content_defValues {
@@ -89,7 +89,7 @@ mod.wizards {
 					}
 
 					commerce_pi6 {
-						icon = ../typo3conf/ext/commerce/Resources/Public/Icons/ce_wiz.gif
+						iconIdentifier = content-plugin-commerce-list
 						title = LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:tt_content.list_type_pi6
 						description = LLL:EXT:sessionplaner/Resources/Private/Language/locallang_be.xlf:tt_content.list_type_pi6.wiz_description
 						tt_content_defValues {

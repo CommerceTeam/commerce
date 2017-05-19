@@ -7,6 +7,13 @@ call_user_func(function ($packageKey) {
         'COMMERCE'
     );
 
+    $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        \TYPO3\CMS\Core\Imaging\IconRegistry::class
+    );
+    $iconProviderClassName = \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class;
+    $icon = ['source' => 'EXT:commerce/Resources/Public/Icons/ce_wiz.gif'];
+    $iconRegistry->registerIcon('content-plugin-commerce-list', $iconProviderClassName, $icon);
+
     if (TYPO3_MODE == 'BE') {
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('
         // add mod wizard config
