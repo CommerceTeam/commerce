@@ -69,8 +69,8 @@ call_user_func(function ($packageKey) {
 
         $iconRegistry->registerIcon(
             'module-commerce',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:commerce/Resources/Public/Icons/mod_main.gif']
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/t3-commerce-icon.svg']
         );
         $iconRegistry->registerIcon(
             'module-commerce-category',
