@@ -4,29 +4,29 @@
 	"description": "TYPO3 commerce shopping system",
 	"homepage": "https://github.com/CommerceTeam/commerce/",
 	"license": ["GPL-2.0+"],
-	"version": "5.0.0",
 
 	"support" : {
 		"issues" : "https://github.com/CommerceTeam/Commerce/issues"
 	},
+
 	"keywords": [
 		"TYPO3 CMS",
 		"commerce",
 		"eCommerce"
 	],
+
 	"replace": {
 		"commerce": "self.version",
 		"typo3-ter/commerce": "self.version",
 		"CommerceTeam/commerce": "self.version"
 	},
+
 	"require": {
 		"typo3/cms": "^8.7.0|dev-master",
 		"friendsoftypo3/tt-address": ">= 3.0",
 		"sjbr/static-info-tables": ">= 6.2.0"
 	},
-	"require-dev": {
-		"namelesscoder/typo3-repository-client": "^1.2.0"
-	},
+
 	"autoload": {
 		"psr-4": {
 			"CommerceTeam\\Commerce\\": "Classes/"
@@ -35,6 +35,7 @@
 			"Resources/PHP/ccvs-php/ccvs.inc"
 		]
 	},
+
 	"config": {
 		"vendor-dir": ".Build/vendor",
 		"bin-dir": ".Build/bin"
