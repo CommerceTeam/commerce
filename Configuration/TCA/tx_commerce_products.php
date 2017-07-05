@@ -196,9 +196,8 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
                 'type' => 'text',
                 'cols' => '30',
                 'rows' => '5',
-                'wizards' => [
-                    '_PADDING' => 2,
-                ],
+                'enableRichtext' => true,
+                'richtextConfiguration' => 'default',
             ]
         ],
         'images' => [
@@ -252,9 +251,8 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
                 'type' => 'text',
                 'cols' => '30',
                 'rows' => '5',
-                'wizards' => [
-                    '_PADDING' => 2,
-                ],
+                'enableRichtext' => true,
+                'richtextConfiguration' => 'default',
             ]
         ],
         'teaserimages' => [
@@ -400,34 +398,6 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
     ],
     'types' => [
         '0' => [
-            'columnsOverrides' => [
-                'description' => [
-                    'config' => [
-                        'enableRichtext' => true,
-                        'fieldControl' => [
-                            'fullScreenRichtext' => [
-                                'options' => [
-                                    'title' => 'Full screen Rich Text Editing'
-                                ]
-                            ]
-                        ],
-                        'richtextConfiguration' => 'default',
-                    ]
-                ],
-                'teaser' => [
-                    'config' => [
-                        'enableRichtext' => true,
-                        'fieldControl' => [
-                            'fullScreenRichtext' => [
-                                'options' => [
-                                    'title' => 'Full screen Rich Text Editing'
-                                ]
-                            ]
-                        ],
-                        'richtextConfiguration' => 'default',
-                    ]
-                ],
-            ],
             'showitem' => '
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
                     title, subtitle, navtitle, description, teaser, keywords, images, teaserimages,
