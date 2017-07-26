@@ -815,7 +815,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 BackendUtility::versioningPlaceholderClause($table) .
                 ' ' . $addWhere . $categoryWhere .
                 ' ' . $search,
-            'GROUPBY' => '',
+            'GROUPBY' => $table . '.uid',
             'LIMIT' => $limit,
         ];
         $tempOrderBy = [];
