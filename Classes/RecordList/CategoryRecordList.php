@@ -1539,48 +1539,42 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         // "Show" link (only tx_commerce_categories and tx_commerce_products elements)
         // @todo test url generation
         if ($table == 'tx_commerce_categories' || $table == 'tx_commerce_products') {
-            $pid = \CommerceTeam\Commerce\Utility\ConfigurationUtility::getInstance()
+            $pid = (int) \CommerceTeam\Commerce\Utility\ConfigurationUtility::getInstance()
                 ->getConfiguration('previewPageID');
 
-            $params = '&id=' . $pid . '&tx_commerce_pi1[catUid]=';
-            if ($table == 'tx_commerce_categories') {
-                if ($row['l18n_parent']) {
-                    $params .= $row['l18n_parent'] . '&L=' . $row['sys_language_uid'];
+            if ($pid > 0) {
+                $params = '&id=' . $pid . '&tx_commerce_pi1[catUid]=';
+                if ($table == 'tx_commerce_categories') {
+                    if ($row['l18n_parent']) {
+                        $params .= $row['l18n_parent'] . '&L=' . $row['sys_language_uid'];
+                    } else {
+                        $params .= $row['uid'];
+                    }
                 } else {
-                    $params .= $row['uid'];
+                    $params .= $this->categoryUid;
                 }
-            } else {
-                $params .= $this->categoryUid;
-            }
 
-            if ($table == 'tx_commerce_products') {
-                $params .= '&tx_commerce_pi1[showUid]=';
-                if ($row['l18n_parent']) {
-                    $params .= $row['l18n_parent'] . '&L=' . $row['sys_language_uid'];
-                } else {
-                    $params .= $row['uid'];
+                if ($table == 'tx_commerce_products') {
+                    $params .= '&tx_commerce_pi1[showUid]=';
+                    if ($row['l18n_parent']) {
+                        $params .= $row['l18n_parent'] . '&L=' . $row['sys_language_uid'];
+                    } else {
+                        $params .= $row['uid'];
+                    }
                 }
-            }
-            /** @var $cacheHash CacheHashCalculator */
-            $cacheHash = GeneralUtility::makeInstance(CacheHashCalculator::class);
-            $cHash = $cacheHash->generateForParameters($params);
-            $params .= $cHash ? '&cHash=' . $cHash : '';
+                /** @var $cacheHash CacheHashCalculator */
+                $cacheHash = GeneralUtility::makeInstance(CacheHashCalculator::class);
+                $cHash = $cacheHash->generateForParameters($params);
+                $params .= $cHash ? '&cHash=' . $cHash : '';
 
-            $viewAction = '<a class="btn btn-default" href="#" onclick="'
-                . htmlspecialchars(
-                    BackendUtility::viewOnClick(
-                        $this->previewPageId,
-                        '',
-                        '',
-                        '',
-                        '/index.php?id=' . $this->previewPageId . $params
-                    )
-                ) . '" title="'
-                . htmlspecialchars($this->getLanguageService()->sL(
-                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.showPage'
-                )) . '">'
-                . $this->iconFactory->getIcon('actions-view', Icon::SIZE_SMALL)->render() . '</a>';
-            $this->addActionToCellGroup($cells, $viewAction, 'view');
+                $viewAction = '<a class="btn btn-default" href="#" onclick="'
+                    . htmlspecialchars(BackendUtility::viewOnClick($this->previewPageId, '', '', '',
+                        '/index.php?id=' . $this->previewPageId . $params)) . '" title="'
+                    . htmlspecialchars($this->getLanguageService()
+                        ->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.showPage')) . '">'
+                    . $this->iconFactory->getIcon('actions-view', Icon::SIZE_SMALL)->render() . '</a>';
+                $this->addActionToCellGroup($cells, $viewAction, 'view');
+            }
         }
 
         // "Edit" link: ( Only if permissions to edit the page-record of the content of the parent page ($this->id)
