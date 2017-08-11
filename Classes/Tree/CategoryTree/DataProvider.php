@@ -17,7 +17,6 @@ use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNodeCollection;
 use TYPO3\CMS\Backend\Tree\TreeNodeCollection;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\BackendWorkspaceRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
@@ -713,7 +712,8 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         );
 
         // @todo fix this
-        //$where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(Permission::PAGE_SHOW);
+        // $where .= ' AND ' .
+        // \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(Permission::PAGE_SHOW);
 
         return $queryBuilder;
     }
@@ -769,7 +769,8 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         );
 
         // @todo fix this
-        //$where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(Permission::PAGE_SHOW);
+        // $where .= ' AND ' .
+        // \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(Permission::PAGE_SHOW);
 
         return $queryBuilder;
     }
@@ -825,12 +826,15 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function getCategories($id, $searchFilter = '')
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_commerce_categories');
+        $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_categories');
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        /** @var BackendWorkspaceRestriction $backendWorkspaceRestriction */
+        $backendWorkspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
         $queryBuilder->getRestrictions()
             ->removeAll()
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
-            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+            ->add($deleteRestriction)
+            ->add($backendWorkspaceRestriction);
 
         $where = '';
         // try to find articles and products with searchFilter to include the categories they are on to the result
@@ -877,17 +881,20 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function getProducts($categoryId, $searchFilter = '')
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_commerce_products');
+        $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_products');
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        /** @var BackendWorkspaceRestriction $backendWorkspaceRestriction */
+        $backendWorkspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
         $queryBuilder->getRestrictions()
             ->removeAll()
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
-            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+            ->add($deleteRestriction)
+            ->add($backendWorkspaceRestriction);
 
         $where = '';
         // try to find articles with searchFilter to include the products they are on to the result
         if ($searchFilter) {
-            $products = $this->searchProductWithMathingArticle($searchFilter);
+            $products = $this->searchProductWithMatchingArticle($searchFilter);
 
             if (!empty($products)) {
                 $productUids = [];
@@ -927,12 +934,15 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function getArticles($productId, $searchFilter = '')
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_commerce_articles');
+        $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_articles');
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        /** @var BackendWorkspaceRestriction $backendWorkspaceRestriction */
+        $backendWorkspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
         $queryBuilder->getRestrictions()
             ->removeAll()
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
-            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+            ->add($deleteRestriction)
+            ->add($backendWorkspaceRestriction);
 
         $queryBuilder = $this->setArticleWhereClause($queryBuilder, $productId, $searchFilter);
 
@@ -960,12 +970,15 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function searchCategoryWithMatchingArticle($searchFilter)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_commerce_categories');
+        $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_categories');
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        /** @var BackendWorkspaceRestriction $backendWorkspaceRestriction */
+        $backendWorkspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
         $queryBuilder->getRestrictions()
             ->removeAll()
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
-            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+            ->add($deleteRestriction)
+            ->add($backendWorkspaceRestriction);
 
         $queryBuilder = $this->setArticleWhereClause($queryBuilder, -1, $searchFilter);
 
@@ -995,12 +1008,15 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function searchCategoryWithMatchingProduct($searchFilter)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_commerce_categories');
+        $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_categories');
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        /** @var BackendWorkspaceRestriction $backendWorkspaceRestriction */
+        $backendWorkspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
         $queryBuilder->getRestrictions()
             ->removeAll()
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
-            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+            ->add($deleteRestriction)
+            ->add($backendWorkspaceRestriction);
 
         $queryBuilder = $this->setProductWhereClause($queryBuilder, -1, $searchFilter);
 
@@ -1028,14 +1044,17 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      * @param $searchFilter
      * @return array
      */
-    protected function searchProductWithMathingArticle($searchFilter)
+    protected function searchProductWithMatchingArticle($searchFilter)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_commerce_articles');
+        $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_articles');
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        /** @var BackendWorkspaceRestriction $backendWorkspaceRestriction */
+        $backendWorkspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
         $queryBuilder->getRestrictions()
             ->removeAll()
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
-            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+            ->add($deleteRestriction)
+            ->add($backendWorkspaceRestriction);
 
         $queryBuilder = $this->setArticleWhereClause($queryBuilder, -1, $searchFilter);
 
@@ -1062,12 +1081,15 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function hasNodeSubCategories($id)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_commerce_categories');
+        $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_categories');
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        /** @var BackendWorkspaceRestriction $backendWorkspaceRestriction */
+        $backendWorkspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
         $queryBuilder->getRestrictions()
             ->removeAll()
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
-            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+            ->add($deleteRestriction)
+            ->add($backendWorkspaceRestriction);
 
         $queryBuilder = $this->setCategoryWhereClause($queryBuilder, $id);
 
@@ -1088,12 +1110,15 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function hasNodeSubProducts($id)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_commerce_products');
+        $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_products');
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        /** @var BackendWorkspaceRestriction $backendWorkspaceRestriction */
+        $backendWorkspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
         $queryBuilder->getRestrictions()
             ->removeAll()
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
-            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+            ->add($deleteRestriction)
+            ->add($backendWorkspaceRestriction);
 
         $queryBuilder = $this->setProductWhereClause($queryBuilder, $id);
 
@@ -1116,12 +1141,15 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      */
     protected function hasNodeSubArticles($id)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_commerce_articles');
+        $queryBuilder = $this->getQueryBuilderForTable('tx_commerce_articles');
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        /** @var BackendWorkspaceRestriction $backendWorkspaceRestriction */
+        $backendWorkspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
         $queryBuilder->getRestrictions()
             ->removeAll()
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
-            ->add(GeneralUtility::makeInstance(BackendWorkspaceRestriction::class));
+            ->add($deleteRestriction)
+            ->add($backendWorkspaceRestriction);
 
         $queryBuilder = $this->setArticleWhereClause($queryBuilder, $id);
 
@@ -1142,5 +1170,17 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
     protected function getBackendUserAuthentication()
     {
         return $GLOBALS['BE_USER'];
+    }
+
+    /**
+     * @param string $table
+     *
+     * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
+     */
+    protected function getQueryBuilderForTable($table): \TYPO3\CMS\Core\Database\Query\QueryBuilder
+    {
+        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Database\ConnectionPool::class
+        )->getQueryBuilderForTable($table);
     }
 }
