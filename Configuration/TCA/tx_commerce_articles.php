@@ -23,6 +23,7 @@ return [
         'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'languageField' => 'sys_language_uid',
+        'translationSource' => 'l10n_source',
         'default_sortby' => 'ORDER BY sorting,crdate',
         'enablecolumns' => [
             'disabled' => 'hidden',
@@ -53,20 +54,18 @@ return [
         'starttime' => [
             'exclude' => true,
             'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
-            'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
                 'eval' => 'datetime',
                 'default' => 0
-            ]
+            ],
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly'
         ],
         'endtime' => [
             'exclude' => true,
             'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
-            'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
@@ -75,7 +74,9 @@ return [
                 'range' => [
                     'upper' => mktime(0, 0, 0, 1, 1, 2038)
                 ]
-            ]
+            ],
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly'
         ],
         'fe_group' => [
             'exclude' => true,
@@ -157,17 +158,17 @@ return [
         ],
 
         'title' => [
-            'exclude' => 1,
+            'l10n_mode' => 'prefixLangTitle',
             'label' => $languageFile . 'tx_commerce_articles.title',
             'config' => [
                 'type' => 'input',
-                'size' => '40',
-                'max' => '255',
+                'size' => 50,
+                'max' => 255,
                 'eval' => 'required,trim',
             ]
         ],
         'subtitle' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => $languageFile . 'tx_commerce_articles.subtitle',
             'config' => [
                 'type' => 'input',
@@ -177,7 +178,7 @@ return [
             ]
         ],
         'navtitle' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => $languageFile . 'tx_commerce_products.navtitle',
             'config' => [
                 'type' => 'input',
@@ -187,7 +188,7 @@ return [
             ]
         ],
         'images' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => $languageFile . 'tx_commerce_articles.images',
             'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig('images', [
                 'appearance' => [
@@ -231,29 +232,29 @@ return [
             ], $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']),
         ],
         'ordernumber' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => $languageFile . 'tx_commerce_articles.ordernumber',
-            'l10n_mode' => 'exclude',
             'config' => [
                 'type' => 'input',
                 'size' => '40',
                 'max' => '80',
                 'eval' => 'trim',
-            ]
+            ],
+            'l10n_mode' => 'exclude',
         ],
         'eancode' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => $languageFile . 'tx_commerce_articles.eancode',
-            'l10n_mode' => 'exclude',
             'config' => [
                 'type' => 'input',
                 'size' => '20',
                 'max' => '20',
                 'eval' => 'trim',
-            ]
+            ],
+            'l10n_mode' => 'exclude',
         ],
         'description_extra' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => $languageFile . 'tx_commerce_articles.description_extra',
             'config' => [
                 'type' => 'text',
@@ -265,7 +266,7 @@ return [
             ]
         ],
         'plain_text' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => $languageFile . 'tx_commerce_articles.plain_text',
             'config' => [
                 'type' => 'text',
@@ -274,9 +275,8 @@ return [
             ]
         ],
         'prices' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => $languageFile . 'tx_commerce_articles.prices',
-            'l10n_mode' => 'exclude',
             'config' => [
                 'type' => 'inline',
                 'appearance' => [
@@ -285,22 +285,22 @@ return [
                 ],
                 'foreign_table' => 'tx_commerce_article_prices',
                 'foreign_field' => 'uid_article',
-            ]
+            ],
+            'l10n_mode' => 'exclude',
         ],
         'tax' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => $languageFile . 'tx_commerce_articles.tax',
-            'l10n_mode' => 'exclude',
             'config' => [
                 'type' => 'input',
                 'size' => '30',
                 'eval' => 'double2,nospace',
-            ]
+            ],
+            'l10n_mode' => 'exclude',
         ],
         'supplier_uid' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => $languageFile . 'tx_commerce_supplier.title',
-            'l10n_mode' => 'exclude',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -311,12 +311,12 @@ return [
                         0,
                     ],
                 ],
-            ]
+            ],
+            'l10n_mode' => 'exclude',
         ],
         'article_type_uid' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => $languageFile . 'tx_commerce_articles.article_type_uid',
-            'l10n_mode' => 'exclude',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -325,10 +325,11 @@ return [
                 'minitems' => 0,
                 'maxitems' => 1,
                 'default' => 1,
-            ]
+            ],
+            'l10n_mode' => 'exclude',
         ],
         'item_category' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => $languageFile . 'tx_commerce_articles.item_category',
             'config' => [
                 'type' => 'select',
@@ -346,7 +347,7 @@ return [
             ]
         ],
         'relatedpage' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => $languageFile . 'tx_commerce_articles.relatedpage',
             'config' => [
                 'type' => 'group',
@@ -358,9 +359,8 @@ return [
             ]
         ],
         'uid_product' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => $languageFile . 'tx_commerce_articles.products_uid',
-            'l10n_mode' => 'exclude',
             'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -368,26 +368,27 @@ return [
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
-            ]
+            ],
+            'l10n_mode' => 'exclude',
         ],
         'attributesedit' => [
             'label' => $languageFile . 'tx_commerce_products.edit_attributes',
-            'l10n_display' => 'hideDiff',
             'config' => [
                 'type' => 'flex',
                 'ds' => [
                     'default' => 'FILE:EXT:commerce/Configuration/FlexForms/attributes.xml',
                 ],
-            ]
+            ],
+            'l10n_display' => 'hideDiff',
         ],
         'classname' => [
             'label' => $languageFile . 'tx_commerce_articles.classname',
-            'l10n_display' => 'exclude',
             'displayCond' => 'FIELD:classname:REQ:true',
             'config' => [
                 'type' => 'input',
                 'readOnly' => true,
-            ]
+            ],
+            'l10n_display' => 'exclude',
         ],
     ],
     'types' => [
