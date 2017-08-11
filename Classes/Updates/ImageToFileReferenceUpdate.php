@@ -178,7 +178,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
      *
      * @return boolean TRUE if an update is needed, FALSE otherwise
      */
-    public function checkForUpdate(&$description): boolean
+    public function checkForUpdate(&$description): bool
     {
         $description = 'This update wizard goes through all files that are referenced in the commerce tables'
             . 'and adds the files to the new File Index.<br />'
@@ -218,7 +218,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
      *
      * @return boolean TRUE on success, FALSE on error
      */
-    public function performUpdate(array &$dbQueries, &$customMessages): boolean
+    public function performUpdate(array &$dbQueries, &$customMessages): bool
     {
         if ($this->versionNumber < 6000000) {
             // Nothing to do
