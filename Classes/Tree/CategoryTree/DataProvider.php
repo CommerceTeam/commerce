@@ -708,6 +708,10 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
             $queryBuilder->andWhere($searchParts);
         }
 
+        $queryBuilder->andWhere(
+            $expressionBuilder->eq('c.l18n_parent', 0)
+        );
+
         // @todo fix this
         //$where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(Permission::PAGE_SHOW);
 
@@ -759,6 +763,10 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
 
             $queryBuilder->andWhere($searchParts);
         }
+
+        $queryBuilder->andWhere(
+            $expressionBuilder->eq('p.l18n_parent', 0)
+        );
 
         // @todo fix this
         //$where .= ' AND ' . \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(Permission::PAGE_SHOW);
