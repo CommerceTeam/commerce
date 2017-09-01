@@ -424,7 +424,7 @@ class ListController extends BaseController
      * Main function called by insert plugin.
      *
      * @param string $content Content
-     * @param string $conf Configuration
+     * @param array $conf Configuration
      *
      * @return string HTML-Content
      */
