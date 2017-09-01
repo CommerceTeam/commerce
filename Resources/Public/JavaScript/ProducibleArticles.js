@@ -33,8 +33,8 @@ define(['jquery'], function($) {
 	/**
 	 * Call ajax to create article
 	 *
-	 * @param int product
-	 * @param object|array attributeValue
+	 * @param {int} product
+	 * @param {object|array} attributeValue
 	 */
 	ProducibleArticles.createArticle = function(product, attributeValue) {
 		$.ajax({
@@ -60,7 +60,7 @@ define(['jquery'], function($) {
 	/**
 	 * Add article row html to the end of article list
 	 *
-	 * @param string articleRow
+	 * @param {string} articleRow
 	 */
 	ProducibleArticles.addArticleRowToList = function(articleRow) {
 		$(ProducibleArticles.options.articleListSelector).find('tbody').append(articleRow);
@@ -99,7 +99,9 @@ define(['jquery'], function($) {
 	 * Calls the refresh tree method of the category tree
 	 */
 	ProducibleArticles.refreshCategoryTree = function() {
-		top.TYPO3.Backend.NavigationContainer.CategoryTree.refreshTree();
+		//if (typeof top.Ext.getCmp('typo3-pagetree') !== 'undefined') {
+			top.Ext.getCmp('commerce-categorytree').activeTree.refreshTree();
+		//}
 	};
 
 	/**

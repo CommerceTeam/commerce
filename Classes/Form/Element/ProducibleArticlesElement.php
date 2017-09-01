@@ -15,6 +15,7 @@ namespace CommerceTeam\Commerce\Form\Element;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -117,6 +118,10 @@ class ProducibleArticlesElement extends AbstractFormElement
                 </table>
             </div>';
         $resultArray['requireJsModules'][] = 'TYPO3/CMS/Commerce/ProducibleArticles';
+
+        /** @var PageRenderer $pageRenderer */
+        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+        $pageRenderer->loadExtJS();
 
         return $resultArray;
     }
