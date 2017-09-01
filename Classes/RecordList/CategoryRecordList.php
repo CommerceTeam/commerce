@@ -1375,6 +1375,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                                     . $spriteIcon . '</a>';
                             } else {
                                 $params = '&edit[' . $table . '][' . $this->id . ']=new';
+                                $categoryField = $table == 'tx_commerce_categories' ? 'parent_category' : 'categories';
+                                $params .= '&defVals[' . $table . '][' . $categoryField . ']=' . $this->categoryUid;
                                 $icon = '<a class="btn btn-default" href="#" onclick="'
                                     . htmlspecialchars(BackendUtility::editOnClick($params, '', -1))
                                     . '" title="' . htmlspecialchars($lang->getLL('new')) . '">' . $spriteIcon . '</a>';
@@ -1679,7 +1681,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                             $row['_MOVE_PLH'] ? $row['_MOVE_PLH_uid'] : $row['uid']
                         ) . ']=new';
                         $categoryField = $table == 'tx_commerce_categories' ? 'parent_category' : 'categories';
-                        $params .= '&defVals[' . $table . '][' . $categoryField . '] = ' . $this->categoryUid;
+                        $params .= '&defVals[' . $table . '][' . $categoryField . ']=' . $this->categoryUid;
 
                         $icon = $this->iconFactory->getIcon('actions-add', Icon::SIZE_SMALL)->render();
                         $titleLabel = 'new';
