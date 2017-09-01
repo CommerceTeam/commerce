@@ -66,8 +66,6 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
 
     /**
      * Initialization.
-     *
-     * @return void
      */
     public function init()
     {
@@ -106,8 +104,6 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
 
     /**
      * Main function of the module. Write the content to $this->content.
-     *
-     * @return void
      */
     public function main()
     {
@@ -177,7 +173,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
         $dblist->newWizards = $this->modTSconfig['properties']['newWizards'] ? 1 : 0;
         $dblist->pageRow = $this->pageinfo;
         $dblist->counter++;
-        $dblist->MOD_MENU = array('bigControlPanel' => '', 'clipBoard' => '', 'localization' => '');
+        $dblist->MOD_MENU = ['bigControlPanel' => '', 'clipBoard' => '', 'localization' => ''];
         $dblist->modTSconfig = $this->modTSconfig;
         $clickTitleMode = trim($this->modTSconfig['properties']['clickTitleMode']);
         $dblist->clickTitleMode = $clickTitleMode === '' ? 'edit' : $clickTitleMode;
@@ -223,14 +219,14 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
             if ($this->cmd == 'delete') {
                 $items = $dblist->clipObj->cleanUpCBC(GeneralUtility::_POST('CBC'), $this->cmd_table, 1);
                 if (!empty($items)) {
-                    $cmd = array();
+                    $cmd = [];
                     foreach ($items as $iK => $value) {
                         $iKParts = explode('|', $iK);
                         $cmd[$iKParts[0]][$iKParts[1]]['delete'] = 1;
                     }
                     $tce = GeneralUtility::makeInstance(DataHandler::class);
                     $tce->stripslashes_values = 0;
-                    $tce->start(array(), $cmd);
+                    $tce->start([], $cmd);
                     $tce->process_cmdmap();
                     if (isset($cmd['tx_commerce_orders'])) {
                         BackendUtility::setUpdateSignal('updateOrderTree');
@@ -305,7 +301,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
 					window.location.href="'
                 . BackendUtility::getModuleUrl(
                     'record_edit',
-                    array('returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'))
+                    ['returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')]
                 )
                 . '&edit["+table+"]["+idList+"]=edit"+addParams;
 				}

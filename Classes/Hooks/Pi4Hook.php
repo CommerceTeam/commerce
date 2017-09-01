@@ -43,8 +43,6 @@ class Pi4Hook
      * insert address operations.
      *
      * @param int $uid Address uid
-     *
-     * @return void
      */
     public function afterAddressSave($uid)
     {
@@ -58,8 +56,6 @@ class Pi4Hook
      * update address operations.
      *
      * @param int $uid Uid
-     *
-     * @return void
      */
     public function afterAddressEdit($uid)
     {

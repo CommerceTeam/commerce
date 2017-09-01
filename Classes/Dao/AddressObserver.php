@@ -54,8 +54,6 @@ class AddressObserver
      * Communicate using push principle to avoid errors.
      *
      * @param string $id Database table id
-     *
-     * @return void
      */
     public static function update($id)
     {
@@ -131,7 +129,6 @@ class AddressObserver
 
         return $msg;
     }
-
 
     /**
      * Get language service.

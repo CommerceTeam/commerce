@@ -238,7 +238,7 @@ class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordList
                                     $parentObject->listURL('', -1) . '&duplicateField=' . $fCol
                                 ) . '" title="' . htmlspecialchars($language->getLL('clip_duplicates'))
                                     . '">'
-                                    .  $this->iconFactory->getIcon(
+                                    . $this->iconFactory->getIcon(
                                         'actions-document-duplicates-select',
                                         Icon::SIZE_SMALL
                                     )->render()
@@ -295,7 +295,6 @@ class LocalRecordListHook implements \TYPO3\CMS\Recordlist\RecordList\RecordList
     {
         return $cells;
     }
-
 
     /**
      * Get language service.

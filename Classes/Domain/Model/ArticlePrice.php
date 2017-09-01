@@ -261,7 +261,6 @@ class ArticlePrice extends AbstractEntity
         ': ' . $params['row']['price_scale_amount_end'] . ') ' . $feGroup;
     }
 
-
     /**
      * Get language service.
      *

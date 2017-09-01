@@ -24,8 +24,6 @@ class FeuserDao extends BasicDao
 {
     /**
      * Initialization.
-     *
-     * @return void
      */
     protected function init()
     {

@@ -54,7 +54,6 @@ class Commands
      * Visibly the record
      *
      * @param NodeInterface $node
-     * @return void
      */
     public static function visiblyNode(NodeInterface $node)
     {
@@ -66,7 +65,6 @@ class Commands
      * Hide the page
      *
      * @param NodeInterface $node
-     * @return void
      */
     public static function disableNode(NodeInterface $node)
     {
@@ -78,7 +76,6 @@ class Commands
      * Delete the page
      *
      * @param NodeInterface $node
-     * @return void
      */
     public static function deleteNode(NodeInterface $node)
     {
@@ -91,7 +88,6 @@ class Commands
      *
      * @param NodeInterface $node
      * @param int $targetId
-     * @return void
      */
     public static function restoreNode(NodeInterface $node, $targetId)
     {
@@ -107,7 +103,6 @@ class Commands
      *
      * @param NodeInterface $node
      * @param string $updatedLabel
-     * @return void
      */
     public static function updateNodeLabel(NodeInterface $node, $updatedLabel)
     {
@@ -150,7 +145,6 @@ class Commands
      *
      * @param NodeInterface $node
      * @param int $targetId
-     * @return void
      */
     public static function moveNode(NodeInterface $node, $targetId)
     {
@@ -275,7 +269,6 @@ class Commands
         return '/' . implode('/', $path);
     }
 
-
     /**
      * Returns a node from the given node id
      *
@@ -328,7 +321,6 @@ class Commands
         $sysDomainRepository = GeneralUtility::makeInstance(SysDomainRepository::class);
         return $sysDomainRepository->findFirstByPid($uid);
     }
-
 
     /**
      * Creates a node with the given record information
@@ -625,7 +617,6 @@ class Commands
         }
         return $articleNode;
     }
-
 
     /**
      * Get database connection.

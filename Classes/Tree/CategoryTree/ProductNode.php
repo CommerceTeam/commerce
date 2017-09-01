@@ -63,7 +63,7 @@ class ProductNode extends CategoryNode implements NodeInterface
     {
         $params = '&edit[' . $this->getType() . '][' . $this->getId() . ']=edit';
         $id = FolderRepository::initFolders('Products', FolderRepository::initFolders());
-// @todo change returnUrl
+        // @todo change returnUrl
         return BackendUtility::getModuleUrl('record_edit') . '&id=' . $id . $params . '&returnUrl=T3_THIS_LOCATION';
     }
 
@@ -85,7 +85,6 @@ class ProductNode extends CategoryNode implements NodeInterface
      * Sets data of the node by a given data array
      *
      * @param array $data
-     * @return void
      */
     public function dataFromArray($data)
     {

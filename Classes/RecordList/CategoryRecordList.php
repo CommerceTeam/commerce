@@ -13,15 +13,14 @@ namespace CommerceTeam\Commerce\RecordList;
  */
 
 use CommerceTeam\Commerce\Controller\CategoryModuleController;
-use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface;
 use TYPO3\CMS\Backend\Routing\Router;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\BackendWorkspaceRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
@@ -118,7 +117,6 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      * @param string $search Search word, if any
      * @param int $levels Number of levels to search down the page tree
      * @param int $showLimit Limit of records to be listed.
-     * @return void
      */
     public function start($id, $table, $pointer, $search = '', $levels = 0, $showLimit = 0)
     {
@@ -342,7 +340,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
         // Init
         $addWhere = '';
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
+        $queryBuilder = $this->getQueryBuilderForTable($table);
         $titleCol = $tableConfig['ctrl']['label'];
         $thumbsCol = $tableConfig['ctrl']['thumbnail'];
         $l10nEnabled = $tableConfig['ctrl']['languageField'] &&
@@ -633,9 +631,9 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                                     // $lRow isn't always what we want - if record was moved we've to work with the
                                     // placeholder records otherwise the list is messed up a bit
                                     if ($row['_MOVE_PLH_uid'] && $row['_MOVE_PLH_pid']) {
+                                        /** @var DeletedRestriction $deleteRestriction */
                                         $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
-                                        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                                            ->getQueryBuilderForTable($table);
+                                        $queryBuilder = $this->getQueryBuilderForTable($table);
                                         $queryBuilder->getRestrictions()
                                             ->removeAll()
                                             ->add($deleteRestriction);
@@ -864,11 +862,10 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
     public function setTotalItems(string $table, int $pageId, array $constraints)
     {
         $queryParameters = $this->buildQueryParameters($table, $pageId, ['*'], $constraints);
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable($queryParameters['table']);
+        $queryBuilder = $this->getQueryBuilderForTable($queryParameters['table']);
         /** @var DeletedRestriction $deleteRestriction */
         $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
-        /** @var $workspaceRestriction $workspaceRestriction */
+        /** @var BackendWorkspaceRestriction $workspaceRestriction */
         $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
         $queryBuilder->getRestrictions()
             ->removeAll()
@@ -901,15 +898,13 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         int $pageId,
         array $additionalConstraints = [],
         array $fields = ['*']
-    ) : QueryBuilder
-    {
+    ) : QueryBuilder {
         $queryParameters = $this->buildQueryParameters($table, $pageId, $fields, $additionalConstraints);
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable($queryParameters['table']);
+        $queryBuilder = $this->getQueryBuilderForTable($queryParameters['table']);
         /** @var DeletedRestriction $deleteRestriction */
         $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
-        /** @var $workspaceRestriction $workspaceRestriction */
+        /** @var BackendWorkspaceRestriction $workspaceRestriction */
         $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
         $queryBuilder->getRestrictions()
             ->removeAll()
@@ -997,11 +992,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         int $pageId,
         array $fieldList = ['*'],
         array $additionalConstraints = []
-    ) : array
-    {
-        $expressionBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable($table)
-            ->expr();
+    ) : array {
+        $expressionBuilder = $this->getQueryBuilderForTable($table)->expr();
 
         $fieldList = array_map(
             function ($field) {
@@ -1570,8 +1562,13 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                 $params .= $cHash ? '&cHash=' . $cHash : '';
 
                 $viewAction = '<a class="btn btn-default" href="#" onclick="'
-                    . htmlspecialchars(BackendUtility::viewOnClick($this->previewPageId, '', '', '',
-                        '/index.php?id=' . $this->previewPageId . $params)) . '" title="'
+                    . htmlspecialchars(BackendUtility::viewOnClick(
+                        $this->previewPageId,
+                        '',
+                        '',
+                        '',
+                        '/index.php?id=' . $this->previewPageId . $params
+                    )) . '" title="'
                     . htmlspecialchars($this->getLanguageService()
                         ->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.showPage')) . '">'
                     . $this->iconFactory->getIcon('actions-view', Icon::SIZE_SMALL)->render() . '</a>';
@@ -1610,7 +1607,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
             $linkTitleLL = htmlspecialchars($this->getLanguageService()->getLL(
                 'move_' . ($table === 'tx_commerce_products' ? 'record' : 'page')
             ));
-            $icon = ($table == 'tx_commerce_categories' ?
+            $icon = (
+                $table == 'tx_commerce_categories' ?
                 $this->iconFactory->getIcon('actions-page-move', Icon::SIZE_SMALL)->render() :
                 $this->iconFactory->getIcon('actions-document-move', Icon::SIZE_SMALL)->render()
             );
@@ -1766,7 +1764,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
 
             // "Delete" link:
             if ($permsEdit
-                && ($table === 'tx_commerce_categories'
+                && (
+                    $table === 'tx_commerce_categories'
                     && $localCalcPerms & Permission::PAGE_DELETE
                     || $table !== 'tx_commerce_categories'
                     && $this->calcPerms & Permission::CONTENT_EDIT
@@ -1908,7 +1907,8 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         }
         $output = '<!-- CONTROL PANEL: ' . $table . ':' . $row['uid'] . ' -->';
         foreach ($cells as $classification => $actions) {
-            $visibilityClass = ($classification !== 'primary' && !$module->MOD_SETTINGS['bigControlPanel'] ?
+            $visibilityClass = (
+                $classification !== 'primary' && !$module->MOD_SETTINGS['bigControlPanel'] ?
                 'collapsed' :
                 'expanded'
             );
@@ -2318,7 +2318,6 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         return $code;
     }
 
-
     /**
      * Check if the current record is locked by editlock. Categories are locked if their editlock flag is set,
      * records are if they are locked themselves or if the page they are on is locked (a page’s editlock
@@ -2349,7 +2348,6 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         return $editPermission;
     }
 
-
     /**
      * Get controller.
      *
@@ -2371,5 +2369,17 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
         // of the times) These class do not inherit from any common class,
         // but they all seem to have a "doc" member
         return $this->getController()->doc;
+    }
+
+    /**
+     * @param string $table
+     *
+     * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
+     */
+    protected function getQueryBuilderForTable($table): \TYPO3\CMS\Core\Database\Query\QueryBuilder
+    {
+        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Database\ConnectionPool::class
+        )->getQueryBuilderForTable($table);
     }
 }

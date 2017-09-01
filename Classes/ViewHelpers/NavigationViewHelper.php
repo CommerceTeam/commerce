@@ -546,8 +546,6 @@ class NavigationViewHelper
      *
      * @param array $pathArray Path by reference
      * @param int $chosenCatUid Choosen category uid
-     *
-     * @return void
      */
     public function fixPathParents(array &$pathArray, $chosenCatUid)
     {
@@ -591,11 +589,11 @@ class NavigationViewHelper
 
             if (count($chosenCatUid) == 1) {
                 return $chosenCatUid[0];
-            } elseif (count($chosenCatUid) > 1) {
-                return $chosenCatUid[0];
-            } else {
-                return $this->mConf['category'];
             }
+            if (count($chosenCatUid) > 1) {
+                return $chosenCatUid[0];
+            }
+            return $this->mConf['category'];
         }
 
         return $this->mConf['category'];
@@ -1036,8 +1034,6 @@ class NavigationViewHelper
      * @param array $treeArray Tree
      * @param array $path Path of the itemMen
      * @param int $mDepth Depth of the itemMenu
-     *
-     * @return void
      */
     public function processArrayPostRender(array &$treeArray, array $path = [], $mDepth = 0)
     {
@@ -1481,10 +1477,8 @@ class NavigationViewHelper
      *
      * @param string $hash Hash string 32 bit (eg. a md5 hash of a serialized
      *      array identifying the data being stored)
-     * @param string $data The data string. If you want to store an array,
+     * @param array $data The data string. If you want to store an array,
      *      then just serialize it first.
-     *
-     * @return void
      */
     public function storeHash($hash, $data)
     {
@@ -1522,8 +1516,6 @@ class NavigationViewHelper
      *
      * @param array $arr1 Array one
      * @param array $arr2 Array two
-     *
-     * @return void
      */
     public function arrayMerge(array &$arr1, array &$arr2)
     {
@@ -1556,24 +1548,23 @@ class NavigationViewHelper
 
                 $result = $aPath;
                 break;
-            } else {
-                if (is_array($val)) {
-                    if (!$val['subChildTable']) {
-                        break;
-                    }
-                    if ($val['--subLevel--']) {
-                        $path = $this->getRootLine($val['--subLevel--'], $choosencat, $expand);
-                        if ($path) {
-                            if (is_array($path)) {
-                                $aPath = $path;
-                            } else {
-                                $aPath = explode(',', $path);
-                                $aPath = array_reverse($aPath);
-                            }
-
-                            $result = $aPath;
-                            break;
+            }
+            if (is_array($val)) {
+                if (!$val['subChildTable']) {
+                    break;
+                }
+                if ($val['--subLevel--']) {
+                    $path = $this->getRootLine($val['--subLevel--'], $choosencat, $expand);
+                    if ($path) {
+                        if (is_array($path)) {
+                            $aPath = $path;
+                        } else {
+                            $aPath = explode(',', $path);
+                            $aPath = array_reverse($aPath);
                         }
+
+                        $result = $aPath;
+                        break;
                     }
                 }
             }
@@ -1699,8 +1690,6 @@ class NavigationViewHelper
      *
      * @param array $treeArray Tree
      * @param string $sortType Sort type
-     *
-     * @return void
      */
     public function sortAllMenuArray(array &$treeArray, $sortType = 'alphabetiDesc')
     {
@@ -1771,7 +1760,6 @@ class NavigationViewHelper
 
         return $this->repositoryStack[$repositoryName];
     }
-
 
     /**
      * Get typoscript frontend controller.

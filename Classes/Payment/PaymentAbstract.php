@@ -146,7 +146,6 @@ abstract class PaymentAbstract implements PaymentInterface
     /**
      * Find configured criterion.
      *
-     * @return void
      * @throws \Exception If configured criterion class is not of correct interface
      */
     protected function findCriterion()
@@ -186,7 +185,6 @@ abstract class PaymentAbstract implements PaymentInterface
     /**
      * Find appropriate provider for this payment.
      *
-     * @return void
      * @throws \Exception If payment provider is not of corret interface
      */
     protected function findProvider()
@@ -210,7 +208,7 @@ abstract class PaymentAbstract implements PaymentInterface
                         1307705798
                     );
                 }
-                    // Check if provider is allowed and break if so
+                // Check if provider is allowed and break if so
                 if ($provider->isAllowed()) {
                     $this->provider = $provider;
                     break;
@@ -311,8 +309,6 @@ abstract class PaymentAbstract implements PaymentInterface
      *
      * @param int $orderUid Id of this order
      * @param array $session Session data
-     *
-     * @return void
      */
     public function updateOrder($orderUid, array $session = [])
     {

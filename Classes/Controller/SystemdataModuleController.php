@@ -12,19 +12,19 @@ namespace CommerceTeam\Commerce\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Domain\Repository\SysRefindexRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Template\Components\Buttons\LinkButton;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
-use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 /**
  * Module 'Systemdata' for the 'commerce' extension.
@@ -114,8 +114,6 @@ abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\Base
 
     /**
      * Initialization.
-     *
-     * @return void
      */
     public function init()
     {
@@ -126,8 +124,6 @@ abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\Base
 
     /**
      * Main method.
-     *
-     * @return void
      */
     public function main()
     {
@@ -256,8 +252,6 @@ abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\Base
 
     /**
      * Create the panel of buttons for submitting the form or other operations.
-     *
-     * @return void
      */
     public function getButtons()
     {
@@ -350,7 +344,6 @@ abstract class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\Base
 
         return $this->referenceCount[$tableName][$uid];
     }
-
 
     /**
      * @return \TYPO3\CMS\Extbase\Object\ObjectManager

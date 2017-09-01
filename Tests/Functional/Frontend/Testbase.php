@@ -5,8 +5,6 @@ class Testbase extends \TYPO3\TestingFramework\Core\Testbase
 {
     /**
      * Define TYPO3_MODE to FE
-     *
-     * @return void
      */
     public function defineTypo3ModeFe()
     {

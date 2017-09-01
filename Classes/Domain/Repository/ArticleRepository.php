@@ -155,13 +155,12 @@ class ArticleRepository extends AbstractRepository
                 }
 
                 return $priceUidList;
-            } else {
-                $this->error(
-                    'SELECT uid FROM tx_commerce_article_prices WHERE uid_article = ' . $uid . '; # returns no Result'
-                );
-
-                return [];
             }
+            $this->error(
+                'SELECT uid FROM tx_commerce_article_prices WHERE uid_article = ' . $uid . '; # returns no Result'
+            );
+
+            return [];
         }
 
         return [];
@@ -204,14 +203,13 @@ class ArticleRepository extends AbstractRepository
                 }
 
                 return $priceUidList;
-            } else {
-                $this->error(
-                    'SELECT uid FROM tx_commerce_article_prices WHERE uid_article = ' . $uid .
-                    ' AND price_scale_amount_start >= ' . $count . '; # returns no Result'
-                );
-
-                return [];
             }
+            $this->error(
+                'SELECT uid FROM tx_commerce_article_prices WHERE uid_article = ' . $uid .
+                ' AND price_scale_amount_start >= ' . $count . '; # returns no Result'
+            );
+
+            return [];
         }
 
         return [];
@@ -372,9 +370,8 @@ class ArticleRepository extends AbstractRepository
                     if (!empty($valueData)) {
                         if ($valueListAsUid == true) {
                             return $valueData['uid'];
-                        } else {
-                            return $valueData['value'];
                         }
+                        return $valueData['value'];
                     }
                 } else {
                     // attribute has no valuelist, so do normal query
@@ -398,12 +395,10 @@ class ArticleRepository extends AbstractRepository
                     if (!empty($valueData)) {
                         if ($valueData['value_char']) {
                             return $valueData['value_char'];
-                        } else {
-                            return $valueData['default_value'];
                         }
-                    } else {
-                        $this->error('More than one Value for thsi attribute');
+                        return $valueData['default_value'];
                     }
+                    $this->error('More than one Value for thsi attribute');
                 }
             } else {
                 $this->error('Could not get Attribute for call');
@@ -425,7 +420,6 @@ class ArticleRepository extends AbstractRepository
      * @param int $valueList
      * @param string $characterValue
      * @param float $defaultValue
-     * @return void
      */
     public function addAttributeRelation(
         $articleUid,
@@ -484,6 +478,7 @@ class ArticleRepository extends AbstractRepository
     /**
      * @param int $articleUid
      * @param int $attributeUid
+     *
      * @return array
      */
     public function findAttributeRelationsByArticleAndAttribute($articleUid, $attributeUid)
@@ -807,7 +802,7 @@ class ArticleRepository extends AbstractRepository
                 ),
                 $queryBuilder->expr()->eq(
                     'uid_foreign',
-                    $queryBuilder->createNamedParameter($attributeUid. \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($attributeUid . \PDO::PARAM_INT)
                 )
             )
             ->execute()
@@ -891,7 +886,7 @@ class ArticleRepository extends AbstractRepository
      * @param int $productUidFrom
      * @param int $productUidTo
      *
-     * @return string
+     * @return array
      */
     public function updateProductUid($productUidFrom, $productUidTo)
     {

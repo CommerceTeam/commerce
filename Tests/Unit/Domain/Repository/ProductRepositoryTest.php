@@ -24,7 +24,7 @@ class ProductRepositoryTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCa
     /**
      * @test
      */
-    public function mockIsInstancOfGivenClass()
+    public function mockIsInstanceOfGivenClass()
     {
         $subject = $this->getMockObjectGenerator()->getMock(ProductRepository::class);
         $this->assertEquals(

@@ -1078,7 +1078,7 @@ class AddressesController extends BaseController
                         break;
 
                     case 'int':
-                        if (!is_integer($value)) {
+                        if (!is_int($value)) {
                             $this->setFormError($name, $this->pi_getLL('error_field_int'));
                             $result = false;
                         }

@@ -74,7 +74,7 @@ class StatisticModuleCompleteAggregationController extends StatisticModuleContro
 
             $result = $language->getLL('may_take_long_periode') . '<br /><br />';
             $result .= '<input type="submit" name="fullaggregation" value="' .
-                $language->getLL('complete_aggregation') .  '" ' . $onClickAction . ' />';
+                $language->getLL('complete_aggregation') . '" ' . $onClickAction . ' />';
         }
 
         return $result;

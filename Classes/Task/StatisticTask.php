@@ -40,8 +40,6 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
     /**
      * Initialization.
-     *
-     * @return void
      */
     protected function init()
     {
@@ -50,7 +48,7 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             $excludeStatisticFolders = ConfigurationUtility::getInstance()->getExtConf('excludeStatisticFolders');
         }
 
-        $this->statistics = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\StatisticsUtility::Class);
+        $this->statistics = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\StatisticsUtility::class);
         $this->statistics->init($excludeStatisticFolders);
     }
 
@@ -99,8 +97,6 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
     /**
      * Incremental aggregation.
-     *
-     * @return void
      */
     protected function incrementalAggregation()
     {
@@ -191,8 +187,6 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
     /**
      * Complete aggregation.
-     *
-     * @return void
      */
     protected function completeAggregation()
     {
@@ -238,8 +232,6 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      * @param string $message Message
      * @param int $status Status
      * @param string $code Code
-     *
-     * @return void
      */
     public function log($message, $status = 0, $code = 'commerce')
     {
@@ -252,7 +244,6 @@ class StatisticTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             []
         );
     }
-
 
     /**
      * @return \TYPO3\CMS\Extbase\Object\ObjectManager

@@ -25,8 +25,6 @@ class AddressDao extends BasicDao
 {
     /**
      * Initialization.
-     *
-     * @return void
      */
     protected function init()
     {

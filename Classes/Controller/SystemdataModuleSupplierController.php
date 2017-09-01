@@ -14,9 +14,9 @@ namespace CommerceTeam\Commerce\Controller;
 
 use CommerceTeam\Commerce\Domain\Repository\SupplierRepository;
 use CommerceTeam\Commerce\Utility\ConfigurationUtility;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 class SystemdataModuleSupplierController extends SystemdataModuleController
 {

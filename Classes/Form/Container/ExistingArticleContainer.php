@@ -12,10 +12,10 @@ namespace CommerceTeam\Commerce\Form\Container;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 class ExistingArticleContainer
 {
@@ -24,7 +24,7 @@ class ExistingArticleContainer
      *
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * @var string
@@ -244,7 +244,7 @@ class ExistingArticleContainer
             // there are more the one previous article so use the negative uid of the previous article
             if (isset($articles[$i - 2])) {
                 $moveItTo = '-' . (int)$articles[$i - 2]['uid'];
-            // there is only one previous article so use the pageid
+                // there is only one previous article so use the pageid
             } else {
                 $moveItTo = (int)$article['pid'];
             }
@@ -311,7 +311,6 @@ class ExistingArticleContainer
 
         return $viewBigAction;
     }
-
 
     /**
      * Returns LanguageService

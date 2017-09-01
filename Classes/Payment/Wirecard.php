@@ -189,15 +189,14 @@ class Wirecard
 
         curl_close($ch);
 
-            // das von wirecard zur�ckgelieferte XML Parsen
+        // das von wirecard zur�ckgelieferte XML Parsen
         $this->parseResult($result);
 
-            // return 1 = alles ok return = 0 es gab errors
+        // return 1 = alles ok return = 0 es gab errors
         if ($this->isError()) {
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     /**
@@ -267,7 +266,7 @@ class Wirecard
 
                 default:
             }
-        };
+        }
 
         return 1;
     }
@@ -339,7 +338,7 @@ class Wirecard
 				<ExpirationMonth>' . $this->paymentData['exp_month'] . '</ExpirationMonth>
 				<CardHolderName>' . $this->paymentData['holder'] . '</CardHolderName>
 			</CREDIT_CARD_DATA>';
-        };
+        }
 
         return $xml;
     }

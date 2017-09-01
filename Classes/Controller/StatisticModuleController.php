@@ -13,13 +13,13 @@ namespace CommerceTeam\Commerce\Controller;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use CommerceTeam\Commerce\Utility\ConfigurationUtility;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 /**
  * Module 'Statistics' for the commerce extension.
@@ -87,8 +87,6 @@ abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseS
 
     /**
      * Initialization.
-     *
-     * @return void
      */
     public function init()
     {
@@ -127,8 +125,6 @@ abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseS
 
     /**
      * Main function of the module. Write the content to $this->content.
-     *
-     * @return void
      */
     public function main()
     {
@@ -156,9 +152,6 @@ abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseS
 
     /**
      * Generates the menu based on $this->MOD_MENU
-     *
-     * @return void
-     * @throws \InvalidArgumentException
      */
     protected function generateMenu()
     {
@@ -289,7 +282,6 @@ abstract class StatisticModuleController extends \TYPO3\CMS\Backend\Module\BaseS
      * @return mixed
      */
     abstract protected function getSubModuleContent();
-
 
     /**
      * @return \TYPO3\CMS\Extbase\Object\ObjectManager

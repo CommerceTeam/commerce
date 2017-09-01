@@ -51,7 +51,6 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\Pagetree\Extdire
         return $nodeCollection->toArray();
     }
 
-
     /**
      * Get backend user authentication
      *

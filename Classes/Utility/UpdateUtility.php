@@ -164,8 +164,6 @@ class UpdateUtility
 
     /**
      * Rename old article attribute relation table
-     *
-     * @return void
      */
     public function renameRelationTable()
     {
@@ -176,8 +174,6 @@ class UpdateUtility
 
     /**
      * Update pages and set tx_commerce_foldername to the same content as graytree_foldername
-     *
-     * @return void
      */
     public function migrateOldColumn()
     {
@@ -185,7 +181,6 @@ class UpdateUtility
         $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
         $pageRepository->migrateOldFolderColumns();
     }
-
 
     /**
      * Check if the Ipdate is necessary.

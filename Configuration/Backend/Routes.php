@@ -1,5 +1,5 @@
 <?php
-use \CommerceTeam\Commerce\Controller;
+use CommerceTeam\Commerce\Controller;
 
 return [
     'commerce_systemdata_navigation' => [

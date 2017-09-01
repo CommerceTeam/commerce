@@ -82,12 +82,12 @@ call_user_func(function ($packageKey) {
         $typo3ConfVars['SYS']['caching']['cacheConfigurations']['commerce_navigation'] = [
             'frontend' => \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class,
             'backend' => \TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend::class,
-            'options' => array(
+            'options' => [
                 'compression' => true,
                 // 30 days; set this to a lower value in case your cache gets too big
                 'defaultLifetime' => 2592000,
-            ),
-            'groups' => array('pages', 'all')
+            ],
+            'groups' => ['pages', 'all']
         ];
     }
 
@@ -163,7 +163,6 @@ call_user_func(function ($packageKey) {
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals']
             [\CommerceTeam\Commerce\Evaluation\FloatEvaluator::class] = '';
 
-
         // CLI Script configuration
         // Add statistic task
         $scOptions['scheduler']['tasks'][\CommerceTeam\Commerce\Task\StatisticTask::class] = [
@@ -195,11 +194,9 @@ call_user_func(function ($packageKey) {
     $typo3ConfVars['EXTCONF']['commerce/Controller/AddressesController']['saveAddress']['commerce'] =
         \CommerceTeam\Commerce\Hooks\Pi4Hook::class;
 
-
     // register for RteHtmlParser::TS_links_rte and ContentObjectRenderer::resolveMixedLinkParameter
     $scOptions['tslib/class.tslib_content.php']['typolinkLinkHandler']['commerce'] =
         \CommerceTeam\Commerce\LinkHandler\CommerceLinkHandler::class;
-
 
     // Hooks for datamap processing
     // For processing the order sfe, when changing the pid

@@ -31,8 +31,6 @@ class FeuserDaoMapper extends BasicDaoMapper
 
     /**
      * Initialization.
-     *
-     * @return void
      */
     public function init()
     {

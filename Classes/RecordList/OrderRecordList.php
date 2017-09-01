@@ -153,7 +153,6 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
      * @param string $search Search word, if any
      * @param int $levels Number of levels to search down the page tree
      * @param int $showLimit Limit of records to be listed.
-     * @return void
      */
     public function start($id, $table, $pointer, $search = '', $levels = 0, $showLimit = 0)
     {
@@ -210,7 +209,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 $buttonBar->addButton($csvButton, ButtonBar::BUTTON_POSITION_LEFT, 40);
                 // Export
                 if (ExtensionManagementUtility::isLoaded('impexp')) {
-                    $url = BackendUtility::getModuleUrl('xMOD_tximpexp', array('tx_impexp[action]' => 'export'));
+                    $url = BackendUtility::getModuleUrl('xMOD_tximpexp', ['tx_impexp[action]' => 'export']);
                     $exportButton = $buttonBar->makeLinkButton()
                         ->setHref($url . '&tx_impexp[list][]=' . rawurlencode($this->table . ':' . $this->id))
                         ->setTitle($lang->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:rm.export'))
@@ -279,7 +278,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         $this->spaceIcon = '<span class="btn btn-default disabled">' .
             $this->iconFactory->getIcon('empty-empty', Icon::SIZE_SMALL)->render() . '</span>';
         // Cleaning rowlist for duplicates and place the $titleCol as the first column always!
-        $this->fieldArray = array();
+        $this->fieldArray = [];
         // title Column
         // Add title column
         $this->fieldArray[] = $titleCol;
@@ -347,7 +346,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         if (is_array($GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])) {
             $selectFields = array_merge($selectFields, $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']);
         }
-        foreach (array('type', 'typeicon_column', 'editlock') as $field) {
+        foreach (['type', 'typeicon_column', 'editlock'] as $field) {
             if ($GLOBALS['TCA'][$table]['ctrl'][$field]) {
                 $selectFields[] = $GLOBALS['TCA'][$table]['ctrl'][$field];
             }
@@ -467,7 +466,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 $tableTitle = $table;
             }
             // Header line is drawn
-            $theData = array();
+            $theData = [];
             if ($this->disableSingleTableView) {
                 $theData[$titleCol] = '<span class="c-table">' . BackendUtility::wrapInHelp($table, '', $tableTitle)
                     . '</span> (<span class="t3js-table-total-items">' . $this->totalItems . '</span>)';
@@ -510,8 +509,8 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             $rowOutput = '';
             if (!$listOnlyInSingleTableMode || $this->table) {
                 // Fixing an order table for sortby tables
-                $this->currentTable = array();
-                $currentIdList = array();
+                $this->currentTable = [];
+                $currentIdList = [];
                 $doSort = $GLOBALS['TCA'][$table]['ctrl']['sortby'] && !$this->sortField;
                 $prevUid = 0;
                 $prevPrevUid = 0;
@@ -522,7 +521,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                     $row = $queryResult->fetch();
                     $prevUid = $row['uid'];
                 }
-                $accRows = array();
+                $accRows = [];
                 // Accumulate rows here
                 while ($row = $queryResult->fetch()) {
                     if (!$this->isRowListingConditionFulfilled($table, $row)) {
@@ -550,8 +549,8 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                     $this->initCSV();
                 }
                 // Render items:
-                $this->CBnames = array();
-                $this->duplicateStack = array();
+                $this->CBnames = [];
+                $this->duplicateStack = [];
                 $this->eCounter = $this->firstElementNumber;
                 $cc = 0;
                 foreach ($accRows as $row) {
@@ -870,7 +869,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             BackendUtility::wrapClickMenuOnIcon($iconImg, $table, $row['uid']) :
             $iconImg;
         // Preparing and getting the data-array
-        $theData = array();
+        $theData = [];
         $localizationMarkerClass = '';
         /** @var OrderArticleRepository $orderArticleRepository */
         $orderArticleRepository = GeneralUtility::makeInstance(OrderArticleRepository::class);
@@ -1077,10 +1076,10 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         if (ExtensionManagementUtility::isLoaded('version') && isset($row['_ORIG_uid'])) {
             $rowUid = $row['_ORIG_uid'];
         }
-        $cells = array(
-            'primary' => array(),
-            'secondary' => array()
-        );
+        $cells = [
+            'primary' => [],
+            'secondary' => []
+        ];
         // If the listed table is 'pages' we have to request the permission settings for each page:
         $localCalcPerms = 0;
         if ($table == 'pages') {
@@ -1151,7 +1150,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         // If the table is NOT a read-only table, then show these links:
         if ($this->isEditable($table)) {
             // "Revert" link (history/undo)
-            $moduleUrl = BackendUtility::getModuleUrl('record_history', array('element' => $table . ':' . $row['uid']));
+            $moduleUrl = BackendUtility::getModuleUrl('record_history', ['element' => $table . ':' . $row['uid']]);
             $onClick = 'return jumpExt(' . GeneralUtility::quoteJSvalue($moduleUrl) . ',\'#latest\');';
             $historyAction = '<a class="btn btn-default" href="#" onclick="' . htmlspecialchars($onClick) . '" title="'
                 . htmlspecialchars($this->getLanguageService()->getLL('history')) . '">'
@@ -1171,9 +1170,9 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                 );
                 // If table can be versionized.
                 if (is_array($vers)) {
-                    $href = BackendUtility::getModuleUrl('web_txversionM1', array(
+                    $href = BackendUtility::getModuleUrl('web_txversionM1', [
                         'table' => $table, 'uid' => $row['uid']
-                    ));
+                    ]);
                     $versionAction = '<a class="btn btn-default" href="' . htmlspecialchars($href) . '" title="'
                         . htmlspecialchars($this->getLanguageService()->getLL('displayVersions')) . '">'
                         . $this->iconFactory->getIcon('actions-version-page-open', Icon::SIZE_SMALL)->render() . '</a>';
@@ -1390,7 +1389,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
          */
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks'])) {
             $stat = '';
-            $_params = array($table, $row['uid']);
+            $_params = [$table, $row['uid']];
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks'] as $_funcRef) {
                 $stat .= GeneralUtility::callUserFunction($_funcRef, $_params, $this);
             }
@@ -1501,7 +1500,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
             ];
         }
         // Load already selected fields, if any:
-        $setFields = is_array($this->setFields[$table]) ? $this->setFields[$table] : array();
+        $setFields = is_array($this->setFields[$table]) ? $this->setFields[$table] : [];
         // Request fields from table:
         // $fields = $this->makeFieldList($table, false, true);
         $fields = $this->additionalFieldArray;
@@ -1512,7 +1511,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         $fields[] = '_CONTROL_';
         $fields[] = '_CLIPBOARD_';
         // Create a checkbox for each field:
-        $checkboxes = array();
+        $checkboxes = [];
         $checkAllChecked = true;
         foreach ($fields as $fieldName) {
             // Determine, if checkbox should be checked
@@ -1572,7 +1571,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
      */
     public function makeQueryArray($table, $id, $addWhere = '', $fieldList = '*')
     {
-        $hookObjectsArr = array();
+        $hookObjectsArr = [];
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'] as
                      $classRef) {
@@ -1701,12 +1700,12 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         // Apply hook as requested in http://forge.typo3.org/issues/16634
         foreach ($hookObjectsArr as $hookObj) {
             if (method_exists($hookObj, 'makeQueryArray_post')) {
-                $_params = array(
+                $_params = [
                     'orderBy' => $orderBy,
                     'limit' => $limit,
                     'pC' => $pC,
                     'search' => $search
-                );
+                ];
                 $hookObj->makeQueryArray_post($queryParts, $this, $table, $id, $addWhere, $fieldList, $_params);
             }
         }
@@ -1738,7 +1737,6 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
         }
         return $fieldListArr;
     }
-
 
     /**
      * Query the table to build dropdown list.
@@ -1799,7 +1797,7 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
                     // Regular fields header:
                 default:
                     $theData[$fCol] = '';
-            };
+            }
         }
 
         // Create and return header table row:

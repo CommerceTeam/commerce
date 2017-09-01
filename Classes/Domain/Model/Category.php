@@ -347,8 +347,6 @@ class Category extends AbstractEntity
      * Set child categories.
      *
      * @param array $categories Child categories
-     *
-     * @return void
      */
     public function setChildCategories(array $categories)
     {
@@ -666,12 +664,11 @@ class Category extends AbstractEntity
     {
         if (!empty($this->images_array[0])) {
             return $this->images_array[0];
-        } else {
-            if (($parentCategory = $this->getParentCategory())) {
-                $parentCategory->loadData();
+        }
+        if (($parentCategory = $this->getParentCategory())) {
+            $parentCategory->loadData();
 
-                return $parentCategory->getTeaserImage();
-            }
+            return $parentCategory->getTeaserImage();
         }
 
         return false;
@@ -739,7 +736,7 @@ class Category extends AbstractEntity
      * @param bool $translationMode Translation mode of the record,
      *      default FALSE to use the default way of translation
      *
-     * @return void
+     * @return array
      */
     public function loadData($translationMode = false)
     {
@@ -757,12 +754,11 @@ class Category extends AbstractEntity
             );
             $this->data_loaded = true;
         }
+        return $this->data;
     }
 
     /**
      * Loads the permissions.
-     *
-     * @return void
      */
     public function loadPermissions()
     {
@@ -896,9 +892,9 @@ class Category extends AbstractEntity
         } else {
             return false;
         }
-            // Update parent_category
+        // Update parent_category
         $set = $this->getRepository()->updateRecord($this->uid, ['parent_category' => $parentUid]);
-            // Only update relations if parent_category was successfully set
+        // Only update relations if parent_category was successfully set
         if ($set) {
             $catList = [$parentUid];
             $catList = BackendUtility::getUidListFromList($catList);

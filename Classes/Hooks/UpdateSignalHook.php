@@ -21,8 +21,6 @@ class UpdateSignalHook
 {
     /**
      * @param array $result
-     *
-     * @return void Result returned via reference
      */
     public function updateCategoryTree(array &$result)
     {
@@ -35,8 +33,6 @@ class UpdateSignalHook
 
     /**
      * @param array $result
-     *
-     * @return void Result returned via reference
      */
     public function updateOrderTree(array &$result)
     {

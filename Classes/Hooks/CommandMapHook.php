@@ -79,7 +79,6 @@ class CommandMapHook
         $this->belib = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Utility\BackendUtility::class);
     }
 
-
     /**
      * This hook is processed Before a commandmap is processed (delete, etc.)
      * Do Nothing if the command is lokalize an table is article.
@@ -89,8 +88,6 @@ class CommandMapHook
      * @param int $id The uid of the dataset we're working on
      * @param mixed $_ Value
      * @param DataHandler $dataHandler Parent
-     *
-     * @return void
      */
     public function processCmdmap_preProcess(&$command, $table, &$id, $_, DataHandler $dataHandler)
     {
@@ -118,8 +115,6 @@ class CommandMapHook
      *
      * @param string $command Command
      * @param int $categoryUid Category uid
-     *
-     * @return void
      */
     protected function preProcessCategory(&$command, &$categoryUid)
     {
@@ -171,8 +166,6 @@ class CommandMapHook
      *
      * @param string $command Command
      * @param int $productUid Product uid
-     *
-     * @return void
      */
     protected function preProcessProduct(&$command, &$productUid)
     {
@@ -240,8 +233,6 @@ class CommandMapHook
      *
      * @param string $command Command
      * @param int $articleUid Article uid
-     *
-     * @return void
      */
     protected function preProcessArticle(&$command, &$articleUid)
     {
@@ -291,7 +282,6 @@ class CommandMapHook
         }
     }
 
-
     /**
      * This hook is processed AFTER a commandmap is processed (delete, etc.)
      * Calculation of missing price.
@@ -301,8 +291,6 @@ class CommandMapHook
      * @param int $id The uid of the dataset we're working on
      * @param int $value Value
      * @param DataHandler $dataHandler The instance of the BE data handler
-     *
-     * @return void
      */
     public function processCmdmap_postProcess(&$command, $table, $id, $value, DataHandler $dataHandler)
     {
@@ -330,8 +318,6 @@ class CommandMapHook
      *
      * @param string $command Command
      * @param int $categoryUid Category uid
-     *
-     * @return void
      */
     protected function postProcessCategory($command, $categoryUid)
     {
@@ -352,8 +338,6 @@ class CommandMapHook
      * @param string $command Command
      * @param int $productUid Product uid
      * @param int $value Value
-     *
-     * @return void
      */
     protected function postProcessProduct(&$command, $productUid, $value)
     {
@@ -377,8 +361,6 @@ class CommandMapHook
      *
      * @param int $productUid The uid of the dataset we're working on
      * @param int $value Value
-     *
-     * @return void
      */
     protected function translateArticlesAndAttributesOfProduct($productUid, $value)
     {
@@ -404,8 +386,6 @@ class CommandMapHook
      * @param int $productUid Product uid
      * @param int $localizedProductUid Localized product uid
      * @param int $value Value
-     *
-     * @return void
      */
     protected function translateAttributesOfProduct($productUid, $localizedProductUid, $value)
     {
@@ -487,8 +467,6 @@ class CommandMapHook
      * @param int $productUid Product uid
      * @param int $localizedProductUid Localized product uid
      * @param int $value Value
-     *
-     * @return void
      */
     protected function translateArticlesOfProduct($productUid, $localizedProductUid, $value)
     {
@@ -588,8 +566,6 @@ class CommandMapHook
      * Change category of copied product.
      *
      * @param int $productUid Product uid
-     *
-     * @return void
      */
     protected function changeCategoryOfCopiedProduct($productUid)
     {
@@ -623,8 +599,6 @@ class CommandMapHook
      *
      * @param int $oldProductUid Old product uid
      * @param int $newProductUid New product uid
-     *
-     * @return void
      */
     protected function copyProductTanslations($oldProductUid, $newProductUid)
     {
@@ -672,8 +646,6 @@ class CommandMapHook
      * restore deleted categories, products or articles.
      *
      * @param int $categoryUid Category uid
-     *
-     * @return void
      */
     protected function deleteChildCategoriesProductsArticlesPricesOfCategory($categoryUid)
     {
@@ -721,8 +693,6 @@ class CommandMapHook
      * If a product is deleted, delete all articles below and their locales.
      *
      * @param int $productUid Product uid
-     *
-     * @return void
      */
     protected function deleteArticlesAndPricesOfProduct($productUid)
     {
@@ -740,8 +710,6 @@ class CommandMapHook
      * Flag categories as deleted for category uid list.
      *
      * @param array $categoryUids Category list
-     *
-     * @return void
      */
     protected function deleteCategoriesByCategoryList(array $categoryUids)
     {
@@ -753,8 +721,6 @@ class CommandMapHook
      * Flag category translations as deleted for category uid list.
      *
      * @param array $categoryUids Category list
-     *
-     * @return void
      */
     protected function deleteCategoryTranslationsByCategoryList(array $categoryUids)
     {
@@ -766,8 +732,6 @@ class CommandMapHook
      * Flag product as deleted for product uid list.
      *
      * @param array $productUids Product list
-     *
-     * @return void
      */
     protected function deleteProductsByProductList(array $productUids)
     {
@@ -780,8 +744,6 @@ class CommandMapHook
      * Flag product translations as deleted for productList.
      *
      * @param array $productUids Product uid list
-     *
-     * @return void
      */
     protected function deleteProductTranslationsByProductList(array $productUids)
     {
@@ -810,8 +772,6 @@ class CommandMapHook
      * Flag articles and prices as deleted for article uids.
      *
      * @param array $articleUids Article list
-     *
-     * @return void
      */
     protected function deleteArticlesByArticleList(array $articleUids)
     {
@@ -826,8 +786,6 @@ class CommandMapHook
      * Flag prices as deleted for article uids.
      *
      * @param array $articleUids Article uid list
-     *
-     * @return void
      */
     protected function deletePricesByArticleList(array $articleUids)
     {
@@ -840,8 +798,6 @@ class CommandMapHook
      * Prints out the error.
      *
      * @param string $error Error
-     *
-     * @return void
      */
     protected function error($error)
     {
@@ -893,7 +849,6 @@ class CommandMapHook
         exit;
     }
 
-
     /**
      * @param DataHandler $dataHandler
      * @return bool
@@ -924,7 +879,6 @@ class CommandMapHook
 
         return $isEnableFieldSet;
     }
-
 
     /**
      * Get backend user.

@@ -14,8 +14,6 @@ namespace CommerceTeam\Commerce\Domain\Repository;
 
 /**
  * Class SupplierRepository
- *
- * @package CommerceTeam\Commerce\Domain\Repository
  */
 class SysDomainRepository extends AbstractRepository
 {

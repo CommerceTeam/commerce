@@ -212,7 +212,6 @@ class BackendUserUtility implements SingletonInterface
         return $mountPoints;
     }
 
-
     /**
      * Get backend user.
      *

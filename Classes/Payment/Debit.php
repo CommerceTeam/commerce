@@ -61,8 +61,6 @@ class Debit extends PaymentAbstract
      * Get configuration of additional fields.
      *
      * @return array
-     *
-     * @return void
      */
     public function getAdditionalFieldsConfig()
     {
@@ -123,8 +121,6 @@ class Debit extends PaymentAbstract
      *
      * @param int $orderUid Id of this order
      * @param array $session  Session data
-     *
-     * @return void
      */
     public function updateOrder($orderUid, array $session = [])
     {

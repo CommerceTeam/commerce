@@ -13,9 +13,9 @@ namespace CommerceTeam\Commerce\LinkHandler;
  */
 
 use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
-use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use CommerceTeam\Commerce\Tree\View\ElementBrowserCategoryTreeView;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
+use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
@@ -306,7 +306,6 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
 
         return $out;
     }
-
 
     /**
      * Main function to render urls in frontend with ContentObjectRenderer::resolveMixedLinkParameter

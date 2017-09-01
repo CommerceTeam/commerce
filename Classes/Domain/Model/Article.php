@@ -293,13 +293,12 @@ class Article extends AbstractEntity
              * When only one scale is given
              */
             return $this->getPriceUid();
-        } else {
-            foreach ($arrayOfPrices as $startCount => $tempArray) {
-                if ($startCount <= $count) {
-                    foreach ($tempArray as $endCount => $priceUid) {
-                        if ($endCount >= $count) {
-                            return $priceUid;
-                        }
+        }
+        foreach ($arrayOfPrices as $startCount => $tempArray) {
+            if ($startCount <= $count) {
+                foreach ($tempArray as $endCount => $priceUid) {
+                    if ($endCount >= $count) {
+                        return $priceUid;
                     }
                 }
             }
@@ -662,7 +661,7 @@ class Article extends AbstractEntity
      */
     public function getTax()
     {
-        return doubleval($this->tax);
+        return floatval($this->tax);
     }
 
     /**
@@ -680,7 +679,7 @@ class Article extends AbstractEntity
      *
      * @param bool $translationMode Translation mode
      *
-     * @return void
+     * @return array
      */
     public function loadData($translationMode = false)
     {
@@ -688,6 +687,8 @@ class Article extends AbstractEntity
         $this->loadPrices($translationMode);
         $this->images_array = GeneralUtility::trimExplode(',', $this->images);
         $this->calculateDeliveryCosts();
+
+        return $this->data;
     }
 
     /**

@@ -82,8 +82,6 @@ class ConfigurationUtility implements SingletonInterface
     /**
      * Get settings if they are not set fill
      * them with values of TYPO3_CONF_VARS EXTCONF.
-     *
-     * @return void
      */
     protected function getSettings()
     {

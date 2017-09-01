@@ -108,8 +108,6 @@ class ArticleAjaxController
      *
      * @param Product $product
      * @param array $attributeValue
-     *
-     * @return void
      */
     protected function init($product, $attributeValue)
     {
@@ -255,7 +253,6 @@ class ArticleAjaxController
      * @param Product $product
      * @param array $attributeValue
      * @param int $articleUid
-     * @return void
      */
     protected function createArticleAttributeRelations($product, $attributeValue, $articleUid)
     {
@@ -435,13 +432,10 @@ class ArticleAjaxController
         return $content;
     }
 
-
     /**
      * Updates all articles.
      * This adds new attributes to all existing articles that where added
      * to the parent product or categories.
-     *
-     * @return void
      */
     public function updateArticles()
     {

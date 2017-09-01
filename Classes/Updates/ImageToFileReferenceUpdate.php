@@ -49,7 +49,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
      *
      * @var array
      */
-    protected $tables = array(
+    protected $tables = [
         'tx_commerce_articles' => [
             'images' => [
                 'sourcePath' => 'uploads/tx_commerce',
@@ -136,7 +136,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
                 'targetPath' => '_migrated/tx_commerce/user_states/',
             ]
         ],
-    );
+    ];
 
     /**
      * @var \TYPO3\CMS\Core\Registry
@@ -176,7 +176,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
      *
      * @param string &$description The description for the update
      *
-     * @return boolean TRUE if an update is needed, FALSE otherwise
+     * @return bool TRUE if an update is needed, FALSE otherwise
      */
     public function checkForUpdate(&$description): bool
     {
@@ -216,7 +216,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
      * @param array &$dbQueries Queries done in this update
      * @param mixed &$customMessages Custom messages
      *
-     * @return boolean TRUE on success, FALSE on error
+     * @return bool TRUE on success, FALSE on error
      */
     public function performUpdate(array &$dbQueries, &$customMessages): bool
     {
@@ -236,7 +236,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
                         // this field was already migrated
                         continue;
                     }
-                    $fieldsToGet = array($fieldToMigrate);
+                    $fieldsToGet = [$fieldToMigrate];
                     if (isset($fieldConfiguration['titleTexts'])) {
                         $fieldsToGet[] = $fieldConfiguration['titleTexts'];
                     }
@@ -306,7 +306,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
      */
     protected function getRecordsFromTable($table, $fieldToMigrate, $relationFields, $limit): Statement
     {
-        $fields = implode(',', array_merge($relationFields, array('uid', 'pid')));
+        $fields = implode(',', array_merge($relationFields, ['uid', 'pid']));
         $deletedCheck = isset($GLOBALS['TCA'][$table]['ctrl']['delete']) ?
             ' AND ' . $GLOBALS['TCA'][$table]['ctrl']['delete'] . '=0' : '';
         $where = $fieldToMigrate . ' IS NOT NULL AND ' . $fieldToMigrate . ' != \'\'' . ' AND CAST(CAST('
@@ -433,7 +433,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
                     $this->logger->notice(
                         'File ' . $fieldConfiguration['sourcePath'] . $item
                         . ' does not exist. Reference was not migrated.',
-                        array('table' => $table, 'record' => $row, 'field' => $fieldname)
+                        ['table' => $table, 'record' => $row, 'field' => $fieldname]
                     );
 
                     $format =
@@ -452,7 +452,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
             }
 
             if ($fileUid > 0) {
-                $fields = array(
+                $fields = [
                     'fieldname' => $fieldname,
                     'table_local' => 'sys_file',
                     // the sys_file_reference record should always placed on the same page
@@ -465,7 +465,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
                     'tstamp' => time(),
                     'sorting' => ($i + 256),
                     'sorting_foreign' => $i,
-                );
+                ];
                 if (isset($titleTextField)) {
                     $fields['title'] = trim($titleTextContents[$i]);
                 }

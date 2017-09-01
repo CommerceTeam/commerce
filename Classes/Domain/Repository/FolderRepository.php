@@ -152,26 +152,23 @@ class FolderRepository
         return (int)$connection->lastInsertId('pages');
     }
 
-
     /**
      * Initializes the basic folders for ext:commerce.
-     *
-     * @return void
      */
     protected static function createBasicFolders()
     {
         /*
          * Folder Creation
          */
-        $modulePid = FolderRepository::initFolders();
-        $productPid = FolderRepository::initFolders('Products', $modulePid);
-        FolderRepository::initFolders('Attributes', $modulePid);
+        $modulePid = self::initFolders();
+        $productPid = self::initFolders('Products', $modulePid);
+        self::initFolders('Attributes', $modulePid);
 
-        $orderPid = FolderRepository::initFolders('Orders', $modulePid);
-        FolderRepository::initFolders('Incoming', $orderPid);
-        FolderRepository::initFolders('Working', $orderPid);
-        FolderRepository::initFolders('Waiting', $orderPid);
-        FolderRepository::initFolders('Delivered', $orderPid);
+        $orderPid = self::initFolders('Orders', $modulePid);
+        self::initFolders('Incoming', $orderPid);
+        self::initFolders('Working', $orderPid);
+        self::initFolders('Waiting', $orderPid);
+        self::initFolders('Delivered', $orderPid);
 
         // Create System Product for payment and other things.
         $addArray = [
@@ -214,8 +211,6 @@ class FolderRepository
      * @param int $categoryUid Category uid
      * @param string $type Type
      * @param array $addArray Additional Values
-     *
-     * @return void
      */
     protected static function makeSystemCategoriesProductsArticlesAndPrices($categoryUid, $type, array $addArray)
     {
@@ -319,7 +314,6 @@ class FolderRepository
 
         return $articleUid;
     }
-
 
     /**
      * @param $table

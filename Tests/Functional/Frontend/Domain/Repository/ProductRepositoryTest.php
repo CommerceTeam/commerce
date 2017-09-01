@@ -70,8 +70,6 @@ class ProductRepositoryTest extends \CommerceTeam\Commerce\Tests\Functional\Fron
 
     /**
      * Sets up this test suite.
-     *
-     * @return void
      */
     protected function setUp()
     {
@@ -80,7 +78,6 @@ class ProductRepositoryTest extends \CommerceTeam\Commerce\Tests\Functional\Fron
 
         $this->subject = new \CommerceTeam\Commerce\Domain\Repository\ProductRepository();
     }
-
 
     /**
      * @test
@@ -140,7 +137,6 @@ class ProductRepositoryTest extends \CommerceTeam\Commerce\Tests\Functional\Fron
             $response
         );
     }
-
 
     /**
      * @test

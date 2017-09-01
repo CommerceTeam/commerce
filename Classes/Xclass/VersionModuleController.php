@@ -37,78 +37,77 @@ class VersionModuleController extends \TYPO3\CMS\Version\Controller\VersionModul
     {
         if ($table !== 'tx_commerce_products') {
             return parent::adminLinks($table, $row);
-        } else {
-            /** @var IconFactory $iconFactory */
-            $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-            $language = $this->getLanguageService();
+        }
 
-            $onClickAction = 'onclick="' . htmlspecialchars(
-                BackendUtility::editOnClick('&edit[' . $table . '][' . $row['uid'] . ']=edit')
-            ) . '"';
+        /** @var IconFactory $iconFactory */
+        $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+        $language = $this->getLanguageService();
 
-            // Edit link:
-            $adminLink = '<a href="#" ' . $onClickAction . ' title="' .
-                $language->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:cm.edit') . '">' .
-                $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render() . '</a>';
+        $onClickAction = 'onclick="' . htmlspecialchars(
+            BackendUtility::editOnClick('&edit[' . $table . '][' . $row['uid'] . ']=edit')
+        ) . '"';
 
-            // Delete link:
-            $adminLink .= '<a href="' .
-                htmlspecialchars(BackendUtility::getLinkToDataHandlerAction(
-                    '&cmd[' . $table . '][' . $row['uid'] . '][delete]=1'
-                )) .
-                '" title="' . htmlspecialchars($language->sL(
-                    'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:cm.delete'
-                )) . '">' .
-                $iconFactory->getIcon('actions-edit-delete', Icon::SIZE_SMALL)->render() . '</a>';
+        // Edit link:
+        $adminLink = '<a href="#" ' . $onClickAction . ' title="' .
+            $language->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:cm.edit') . '">' .
+            $iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render() . '</a>';
 
-            if ($row['pid'] == -1) {
-                // get page TSconfig
-                $pagesTyposcriptConfig = BackendUtility::getPagesTSconfig(GeneralUtility::_POST('popViewId'));
-                if ($pagesTyposcriptConfig['tx_commerce.']['singlePid']) {
-                    $previewPageId = $pagesTyposcriptConfig['tx_commerce.']['singlePid'];
-                } else {
-                    $previewPageId = ConfigurationUtility::getInstance()->getExtConf('previewPageID');
-                }
+        // Delete link:
+        $adminLink .= '<a href="' .
+            htmlspecialchars(BackendUtility::getLinkToDataHandlerAction(
+                '&cmd[' . $table . '][' . $row['uid'] . '][delete]=1'
+            )) .
+            '" title="' . htmlspecialchars($language->sL(
+                'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:cm.delete'
+            )) . '">' .
+            $iconFactory->getIcon('actions-edit-delete', Icon::SIZE_SMALL)->render() . '</a>';
 
-                $sysLanguageUid = (int) $row['sys_language_uid'];
-
-                /**
-                 * Product.
-                 *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Product $product
-                 */
-                $product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    \CommerceTeam\Commerce\Domain\Model\Product::class,
-                    $row['t3ver_oid'],
-                    $sysLanguageUid
-                );
-                $product->loadData();
-
-                $getVars = ($sysLanguageUid > 0 ? '&L=' . $sysLanguageUid : '') .
-                    '&ADMCMD_vPrev[' . rawurlencode($table . ':' . $row['t3ver_oid']) . ']=' . $row['uid'] .
-                    '&no_cache=1&tx_commerce_pi1[showUid]=' . $product->getUid() .
-                    '&tx_commerce_pi1[catUid]=' . $product->getMasterparentCategory();
-
-                $onClickAction = 'onclick="' . htmlspecialchars(
-                    BackendUtility::viewOnClick(
-                        $previewPageId,
-                        '',
-                        BackendUtility::BEgetRootLine($row['_REAL_PID']),
-                        '',
-                        '',
-                        $getVars
-                    )
-                ) . '"';
-
-                $adminLink .= '<a href="#" ' . $onClickAction . '>' .
-                    $iconFactory->getIcon('actions-document-view', Icon::SIZE_SMALL)->render() .
-                    '</a>';
+        if ($row['pid'] == -1) {
+            // get page TSconfig
+            $pagesTyposcriptConfig = BackendUtility::getPagesTSconfig(GeneralUtility::_POST('popViewId'));
+            if ($pagesTyposcriptConfig['tx_commerce.']['singlePid']) {
+                $previewPageId = $pagesTyposcriptConfig['tx_commerce.']['singlePid'];
+            } else {
+                $previewPageId = ConfigurationUtility::getInstance()->getExtConf('previewPageID');
             }
 
-            return $adminLink;
-        }
-    }
+            $sysLanguageUid = (int) $row['sys_language_uid'];
 
+            /**
+             * Product.
+             *
+             * @var \CommerceTeam\Commerce\Domain\Model\Product $product
+             */
+            $product = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                \CommerceTeam\Commerce\Domain\Model\Product::class,
+                $row['t3ver_oid'],
+                $sysLanguageUid
+            );
+            $product->loadData();
+
+            $getVars = ($sysLanguageUid > 0 ? '&L=' . $sysLanguageUid : '') .
+                '&ADMCMD_vPrev[' . rawurlencode($table . ':' . $row['t3ver_oid']) . ']=' . $row['uid'] .
+                '&no_cache=1&tx_commerce_pi1[showUid]=' . $product->getUid() .
+                '&tx_commerce_pi1[catUid]=' . $product->getMasterparentCategory();
+
+            $onClickAction = 'onclick="' . htmlspecialchars(
+                BackendUtility::viewOnClick(
+                    $previewPageId,
+                    '',
+                    BackendUtility::BEgetRootLine($row['_REAL_PID']),
+                    '',
+                    '',
+                    $getVars
+                )
+            ) . '"';
+
+            $adminLink .= '<a href="#" ' . $onClickAction . '>' .
+                $iconFactory->getIcon('actions-document-view', Icon::SIZE_SMALL)->render() .
+                '</a>';
+        }
+
+        return $adminLink;
+    }
 
     /**
      * Get language service.

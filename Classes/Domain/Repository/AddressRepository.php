@@ -114,8 +114,6 @@ class AddressRepository extends AbstractRepository
      * @param int $pid
      * @param int $feUserUid
      * @param int $addressType
-     *
-     * @return void
      */
     public function removeIsMainAddress($pid, $feUserUid, $addressType)
     {
@@ -147,8 +145,6 @@ class AddressRepository extends AbstractRepository
      * @param int $addressUid
      * @param int $userUid
      * @param array $data
-     *
-     * @return void
      */
     public function updateAddressOfUser($addressUid, $userUid, $data)
     {
@@ -181,7 +177,7 @@ class AddressRepository extends AbstractRepository
      *
      * @param int $uid Identifier of the address record
      *
-     * @return string Error message if query went wrong
+     * @return array Error message if query went wrong
      */
     public function deleteAddress($uid)
     {

@@ -128,8 +128,6 @@ class BackendUtility
      *      cUid is not processed at all
      * @param bool $recursive If true, this method calls itself for each
      *      category if finds
-     *
-     * @return void
      */
     public function getParentCategories($cUid, array &$cUidList, $dontAdd = 0, $excludeUid = 0, $recursive = true)
     {
@@ -170,8 +168,6 @@ class BackendUtility
      *      cUid is not processed at all
      * @param bool $recursive If true, this method calls itself for each
      *      category if finds
-     *
-     * @return void
      */
     public function getChildCategories($cUid, array &$categoryUidList, $dontAdd = 0, $excludeUid = 0, $recursive = true)
     {
@@ -208,8 +204,6 @@ class BackendUtility
      * The result will be written into the argument cUidList.
      *
      * @param array $cUidList List of category UIDs PASSED BY REFERENCE
-     *
-     * @return void
      */
     public function getParentCategoriesFromList(array &$cUidList)
     {
@@ -341,8 +335,6 @@ class BackendUtility
      * @param int $articleUid Uid of the article
      * @param array $fullAttributeList The list of uids for the attributes
      *      that are assigned to the article
-     *
-     * @return void
      */
     public function updateArticleHash($articleUid, array $fullAttributeList = [])
     {
@@ -464,8 +456,6 @@ class BackendUtility
      * @param bool $delete Delete all old relations
      * @param bool $withReference If true, the field "is_reference" is
      *      inserted into the database
-     *
-     * @return void
      */
     public static function saveRelations(
         $uidLocal,
@@ -898,7 +888,7 @@ class BackendUtility
      * @param int $articleUid ID of article which the flexform is for
      * @param array $priceDataArray Priceinformation for the article
      *
-     * @return boolean Status of method
+     * @return bool Status of method
      */
     public function savePriceFlexformWithArticle($priceUid, $articleUid, array $priceDataArray)
     {
@@ -1393,7 +1383,7 @@ class BackendUtility
             return false;
         }
 
-            // check editcontent right for uid_category
+        // check editcontent right for uid_category
         if (!self::readCategoryAccess($categoryUid, self::getCategoryPermsClause(self::getPermMask('editcontent')))) {
             return false;
         }
@@ -2093,9 +2083,8 @@ class BackendUtility
             $constraint = ' (' . (string)$constraint . ')';
 
             return $constraint;
-        } else {
-            return ' 1=0';
         }
+        return ' 1=0';
     }
 
     /**
@@ -2364,9 +2353,8 @@ class BackendUtility
 
         if ($fullTitleLimit) {
             return [$output, $fullOutput];
-        } else {
-            return $output;
         }
+        return $output;
     }
 
     /**
@@ -2562,7 +2550,6 @@ class BackendUtility
 
         return true;
     }
-
 
     /**
      * Get backend user.

@@ -102,7 +102,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      * @param int $mountPoint Mount point
      * @param int $level Internally used variable as a recursion limiter
      *
-     * @return void
+     * @return \TYPO3\CMS\Backend\Tree\TreeNodeCollection
      */
     public function getNodes(\TYPO3\CMS\Backend\Tree\TreeNode $node, $mountPoint = 0, $level = 0)
     {
@@ -114,6 +114,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode|CategoryNode|ProductNode $node
      * @param int $mountPoint
      * @param int $level internally used variable as a recursion limiter
+     *
      * @return \TYPO3\CMS\Backend\Tree\TreeNodeCollection
      */
     public function getCategoryNodes(CategoryNode $node, $mountPoint = 0, $level = 0)
@@ -286,13 +287,13 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         return $nodeCollection;
     }
 
-
     /**
      * Returns a node collection of filtered nodes
      *
      * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode|CategoryNode $node
      * @param string $searchFilter
      * @param int $mountPoint
+     *
      * @return PagetreeNodeCollection the filtered nodes
      */
     public function getFilteredCategoryNodes(CategoryNode $node, $searchFilter, $mountPoint = 0)
@@ -302,7 +303,8 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         $subCategories = $this->getCategories(-1, $searchFilter);
         if (!is_array($subCategories) || empty($subCategories)) {
             return $nodeCollection;
-        } elseif (count($subCategories) > 500) {
+        }
+        if (count($subCategories) > 500) {
             return $nodeCollection;
         }
         $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
@@ -438,6 +440,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode|CategoryNode $node
      * @param string $searchFilter
      * @param int $mountPoint
+     *
      * @return PagetreeNodeCollection the filtered nodes
      */
     public function getFilteredProductNodes(CategoryNode $node, $searchFilter, $mountPoint = 0)
@@ -447,7 +450,8 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         $records = $this->getProducts($node->getId(), $searchFilter);
         if (!is_array($records) || empty($records)) {
             return $nodeCollection;
-        } elseif (count($records) > 500) {
+        }
+        if (count($records) > 500) {
             return $nodeCollection;
         }
         $isNumericSearchFilter = is_numeric($searchFilter) && $searchFilter > 0;
@@ -523,6 +527,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      * @param \TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode|ProductNode $node
      * @param string $searchFilter
      * @param int $mountPoint
+     *
      * @return PagetreeNodeCollection the filtered nodes
      */
     public function getFilteredArticleNodes(ProductNode $node, $searchFilter, $mountPoint = 0)
@@ -532,7 +537,8 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         $records = $this->getArticles($node->getId(), $searchFilter);
         if (!is_array($records) || empty($records)) {
             return $nodeCollection;
-        } elseif (count($records) > 500) {
+        }
+        if (count($records) > 500) {
             return $nodeCollection;
         }
         $isNumericSearchFilter = is_numeric($searchFilter) && $searchFilter > 0;
@@ -586,14 +592,13 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         return $nodeCollection;
     }
 
-
-
     /**
      * Returns the page tree mounts for the current user
      *
      * Note: If you add the search filter parameter, the nodes will be filtered by this string.
      *
      * @param string $searchFilter
+     *
      * @return PagetreeNodeCollection
      */
     public function getTreeMounts($searchFilter = '')
@@ -659,7 +664,6 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         }
         return $nodeCollection;
     }
-
 
     /**
      * Returns the where clause for fetching pages
@@ -816,12 +820,12 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         return $queryBuilder;
     }
 
-
     /**
      * Returns all sub-pages of a given id
      *
      * @param int $id
      * @param string $searchFilter
+     *
      * @return array
      */
     protected function getCategories($id, $searchFilter = '')
@@ -966,6 +970,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      * search pattern
      *
      * @param string $searchFilter
+     *
      * @return array
      */
     protected function searchCategoryWithMatchingArticle($searchFilter)
@@ -1004,6 +1009,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      * search pattern
      *
      * @param string $searchFilter
+     *
      * @return array
      */
     protected function searchCategoryWithMatchingProduct($searchFilter)
@@ -1041,7 +1047,8 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      * the search. The search in product takes these ids as part of the
      * search pattern
      *
-     * @param $searchFilter
+     * @param string $searchFilter
+     *
      * @return array
      */
     protected function searchProductWithMatchingArticle($searchFilter)
@@ -1072,11 +1079,11 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
         return $return;
     }
 
-
     /**
      * Returns TRUE if the node has child's
      *
      * @param int $id
+     *
      * @return bool
      */
     protected function hasNodeSubCategories($id)
@@ -1106,6 +1113,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      * Returns TRUE if the node has child's
      *
      * @param int $id
+     *
      * @return bool
      */
     protected function hasNodeSubProducts($id)
@@ -1137,7 +1145,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
      *
      * @param int $id Page id
      *
-     * @return boolean
+     * @return bool
      */
     protected function hasNodeSubArticles($id)
     {
@@ -1160,7 +1168,6 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTreeDataProvider
 
         return (bool)$count;
     }
-
 
     /**
      * Get backend user authentication

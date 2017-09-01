@@ -32,8 +32,6 @@ class ArticleHook
      *
      * @param int $netPrice Net price
      * @param \CommerceTeam\Commerce\Domain\Model\Article $article Article
-     *
-     * @return void
      */
     public function calculateDeliveryCostNet(&$netPrice, \CommerceTeam\Commerce\Domain\Model\Article &$article)
     {
@@ -51,8 +49,6 @@ class ArticleHook
      *
      * @param int $grossPrice Gross price
      * @param \CommerceTeam\Commerce\Domain\Model\Article $article Article
-     *
-     * @return void
      */
     public function calculateDeliveryCostGross(&$grossPrice, \CommerceTeam\Commerce\Domain\Model\Article &$article)
     {

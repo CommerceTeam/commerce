@@ -26,8 +26,6 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
 {
     /**
      * Create a regular new element (pages and records)
-     *
-     * @return void
      */
     public function regularNew()
     {
@@ -39,15 +37,14 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
             || !isset($defaultValue['tx_commerce_categories']['uid'])) {
             parent::regularNew();
             return;
-        } else {
-            $this->newPagesInto = 1;
-            $this->newPagesAfter = 1;
-
-            $this->pageinfo = $categoryRepository->findByUid($defaultValue['tx_commerce_categories']['uid']);
-
-            // needed for table allowed checks
-            $this->pageinfo['doktype'] = 254;
         }
+        $this->newPagesInto = 1;
+        $this->newPagesAfter = 1;
+
+        $this->pageinfo = $categoryRepository->findByUid($defaultValue['tx_commerce_categories']['uid']);
+
+        // needed for table allowed checks
+        $this->pageinfo['doktype'] = 254;
 
         $lang = $this->getLanguageService();
         // load additional language file
@@ -134,7 +131,7 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
         if ($this->newPagesSelectPosition && $this->showNewRecLink('tx_commerce_categories')) {
             // Link to page-wizard:
             $newPageLinks[] = '<a href="'
-                . htmlspecialchars(GeneralUtility::linkThisScript(array('pagesOnly' => 1))) . '">' . $pageIcon
+                . htmlspecialchars(GeneralUtility::linkThisScript(['pagesOnly' => 1])) . '">' . $pageIcon
                 . htmlspecialchars($lang->getLL('categorySelectPosition')) . '</a>';
         }
         // Assemble all new page links
@@ -173,7 +170,7 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
                     ) {
                         $newRecordIcon = $this->moduleTemplate->getIconFactory()->getIconForRecord(
                             $table,
-                            array(),
+                            [],
                             Icon::SIZE_SMALL
                         )->render();
                         $rowContent = '';
@@ -231,7 +228,7 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
                                         $extPath = ExtensionManagementUtility::extPath($_EXTKEY);
                                         $extEmConfFile = $extPath . 'ext_emconf.php';
                                         if (!$thisTitle && is_file($extEmConfFile)) {
-                                            $EM_CONF = array();
+                                            $EM_CONF = [];
                                             include $extEmConfFile;
                                             $thisTitle = $EM_CONF[$_EXTKEY]['title'];
                                         }
@@ -283,9 +280,9 @@ class NewRecordController extends \TYPO3\CMS\Backend\Controller\NewRecordControl
                 true
             );
         }
-        uksort($this->tRows, array($this, 'sortNewRecordsByConfig'));
+        uksort($this->tRows, [$this, 'sortNewRecordsByConfig']);
         // Compile table row:
-        $finalRows = array();
+        $finalRows = [];
         $finalRows[] = implode('', $startRows);
         foreach ($this->tRows as $key => $value) {
             $row = '<li>' . $iconFile[$key] . ' <strong>' . $value['title'] . '</strong><ul>';

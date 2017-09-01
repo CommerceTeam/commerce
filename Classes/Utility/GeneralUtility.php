@@ -427,7 +427,6 @@ class GeneralUtility
         return $basketStoragePid;
     }
 
-
     /**
      * Get typoscript frontend controller.
      *

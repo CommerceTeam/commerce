@@ -29,8 +29,6 @@ class IrreHook implements \TYPO3\CMS\Backend\Form\Element\InlineElementHookInter
      * @param bool $isVirtual Defines whether the current records is only virtually
      *      shown and not physically part of the parent record
      * @param array $enabledControls Associative array with the enabled control items
-     *
-     * @return void
      */
     public function renderForeignRecordHeaderControl_preProcess(
         $parentUid,
@@ -68,8 +66,6 @@ class IrreHook implements \TYPO3\CMS\Backend\Form\Element\InlineElementHookInter
      *      virtually shown and not physically part of the parent record
      * @param array  $controlItems Associative array with the currently
      *      available control items
-     *
-     * @return void
      */
     public function renderForeignRecordHeaderControl_postProcess(
         $parentUid,

@@ -108,8 +108,6 @@ class AttributeValue extends AbstractEntity
      *
      * @param int $uid Attribute
      * @param int $languageUid Language uid, default 0
-     *
-     * @return void
      */
     public function init($uid, $languageUid = 0)
     {
@@ -155,7 +153,8 @@ class AttributeValue extends AbstractEntity
     {
         if ($checkvalue && $this->showvalue) {
             return $this->value;
-        } elseif ($checkvalue == false) {
+        }
+        if ($checkvalue == false) {
             return $this->value;
         }
 

@@ -12,8 +12,8 @@ namespace CommerceTeam\Commerce\Form\FormDataProvider;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
 use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
+use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
 use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
 use CommerceTeam\Commerce\Domain\Repository\SysRefindexRepository;
 use CommerceTeam\Commerce\Utility\BackendUtility;

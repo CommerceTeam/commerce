@@ -92,7 +92,6 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
      * Get stored tree structure AND updating it if needed according to incoming PM GET var.
      * - Here we just set it to nothing since we want to just render the tree, nothing more.
      *
-     * @return void
      * @access private
      */
     public function initializePositionSaving()
@@ -136,7 +135,6 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
         return $title;
     }
 
-
     /**
      * Getting the tree data: Selecting/Initializing data pointer to items for a certain parent id.
      * For tables: This will make a database query to select all children to "parent"
@@ -158,22 +156,22 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
                 reset($this->dataLookup[$parentId][$this->subLevelID]);
             }
             return $parentId;
-        } else {
-            $queryBuilder = $this->getQueryBuilderForTable($this->table);
+        }
+        $queryBuilder = $this->getQueryBuilderForTable($this->table);
 
-            /** @var DeletedRestriction $deleteRestriction */
-            $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
-            /** @var BackendWorkspaceRestriction $workspaceRestriction */
-            $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        /** @var BackendWorkspaceRestriction $workspaceRestriction */
+        $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
 
-            $queryBuilder->getRestrictions()
+        $queryBuilder->getRestrictions()
                 ->removeAll()
                 ->add($deleteRestriction)
                 ->add($workspaceRestriction);
 
-            call_user_func_array([$queryBuilder, 'select'], $this->fieldArray);
+        call_user_func_array([$queryBuilder, 'select'], $this->fieldArray);
 
-            $result = $queryBuilder
+        $result = $queryBuilder
                 ->from($this->table, 't')
                 ->innerJoin('t', 'tx_commerce_categories_parent_category_mm', 'mm', 't.uid = mm.uid_local')
                 ->where(
@@ -185,8 +183,7 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
                 ->orderBy('t.' . $this->orderByFields)
                 ->execute();
 
-            return $result;
-        }
+        return $result;
     }
 
     /**
@@ -201,19 +198,19 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
         if (is_array($this->data)) {
             $res = $this->getDataInit($uid);
             return $this->getDataCount($res);
-        } else {
-            $queryBuilder = $this->getQueryBuilderForTable($this->table);
+        }
+        $queryBuilder = $this->getQueryBuilderForTable($this->table);
 
-            /** @var BackendWorkspaceRestriction $workspaceRestriction */
-            $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
-            /** @var DeletedRestriction $deleteRestriction */
-            $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
-            $queryBuilder->getRestrictions()
+        /** @var BackendWorkspaceRestriction $workspaceRestriction */
+        $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        $queryBuilder->getRestrictions()
                 ->removeAll()
                 ->add($deleteRestriction)
                 ->add($workspaceRestriction);
 
-            $count = $queryBuilder
+        $count = $queryBuilder
                 ->count('t.uid')
                 ->from($this->table, 't')
                 ->innerJoin('t', 'tx_commerce_categories_parent_category_mm', 'mm', 't.uid = mm.uid_local')
@@ -226,8 +223,7 @@ class CategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView
                 ->execute()
                 ->fetchColumn();
 
-            return $count;
-        }
+        return $count;
     }
 
     /**

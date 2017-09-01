@@ -109,7 +109,7 @@ class StatisticModuleIncrementalAggregationController extends StatisticModuleCon
 
             $result = $language->getLL('may_take_long_periode') . '<br /><br />';
             $result .= '<input type="submit" name="fullaggregation" value="' .
-                $language->getLL('incremental_aggregation') .  '" ' . $onClickAction . ' />';
+                $language->getLL('incremental_aggregation') . '" ' . $onClickAction . ' />';
         }
 
         return $result;

@@ -18,8 +18,6 @@ use TYPO3\CMS\Saltedpasswords\Evaluation\Evaluator;
 
 /**
  * Class FrontendEvaluator
- *
- * @package CommerceTeam\Commerce\Evaluation
  */
 class FloatEvaluator extends Evaluator
 {

@@ -114,8 +114,6 @@ interface PaymentInterface
      *
      * @param int $orderUid Id of this order
      * @param array $session Session data
-     *
-     * @return void
      */
     public function updateOrder($orderUid, array $session = []);
 

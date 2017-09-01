@@ -69,8 +69,6 @@ class FeuserDaoObject extends BasicDaoObject
      * Setter.
      *
      * @param string $name Name
-     *
-     * @return void
      */
     public function setName($name)
     {
@@ -91,8 +89,6 @@ class FeuserDaoObject extends BasicDaoObject
      * Setter.
      *
      * @param int $value Value
-     *
-     * @return void
      */
     public function setTxCommerceTtAddressId($value)
     {

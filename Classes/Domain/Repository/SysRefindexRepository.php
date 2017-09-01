@@ -14,8 +14,6 @@ namespace CommerceTeam\Commerce\Domain\Repository;
 
 /**
  * Class SysRefindexRepository
- *
- * @package CommerceTeam\Commerce\Domain\Repository
  */
 class SysRefindexRepository extends \CommerceTeam\Commerce\Domain\Repository\AbstractRepository
 {

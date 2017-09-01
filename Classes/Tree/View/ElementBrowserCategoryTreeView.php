@@ -72,7 +72,6 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
      *
      * @param string $clause Additional clause for selecting pages.
      * @param string $orderByFields record ORDER BY field
-     * @return void
      */
     public function init($clause = '', $orderByFields = '')
     {
@@ -90,8 +89,6 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
 
     /**
      * @param LinkParameterProviderInterface $linkParameterProvider
-     *
-     * @return void
      */
     public function setLinkParameterProvider(LinkParameterProviderInterface $linkParameterProvider)
     {
@@ -105,6 +102,7 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
      * @param string $title Title, (must be ready for output, that means it must be htmlspecialchars()'ed).
      * @param array $v The record
      * @param bool $ext_pArrPages (ignored)
+     *
      * @return string Wrapping title string.
      */
     public function wrapTitle($title, $v, $ext_pArrPages = false)
@@ -112,9 +110,8 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
         if ($this->ext_isLinkable($v['uid'])) {
             return '<span class="list-tree-title"><a href="#" class="t3js-pageLink" data-id="commerce:c:'
                 . (int)$v['uid'] . '">' . $title . '</a></span>';
-        } else {
-            return '<span class="list-tree-title text-muted">' . $title . '</span>';
         }
+        return '<span class="list-tree-title text-muted">' . $title . '</span>';
     }
 
     /**
@@ -230,19 +227,19 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
                 reset($this->dataLookup[$parentId][$this->subLevelID]);
             }
             return $parentId;
-        } else {
-            $queryBuilder = $this->getQueryBuilderForTable($this->table);
+        }
+        $queryBuilder = $this->getQueryBuilderForTable($this->table);
 
-            /** @var BackendWorkspaceRestriction $workspaceRestriction */
-            $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
-            /** @var DeletedRestriction $deleteRestriction */
-            $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
-            $queryBuilder->getRestrictions()
+        /** @var BackendWorkspaceRestriction $workspaceRestriction */
+        $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        $queryBuilder->getRestrictions()
                 ->removeAll()
                 ->add($deleteRestriction)
                 ->add($workspaceRestriction);
 
-            $result = $queryBuilder
+        $result = $queryBuilder
                 ->select('t.uid', 't.title', 'mm.uid_foreign AS parent_category')
                 ->from($this->table, 't')
                 ->innerJoin('t', 'tx_commerce_categories_parent_category_mm', 'mm', 't.uid = mm.uid_local')
@@ -255,8 +252,7 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
                 ->orderBy('t.' . $this->orderByFields)
                 ->execute();
 
-            return $result;
-        }
+        return $result;
     }
 
     /**
@@ -271,19 +267,19 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
         if (is_array($this->data)) {
             $res = $this->getDataInit($uid);
             return $this->getDataCount($res);
-        } else {
-            $queryBuilder = $this->getQueryBuilderForTable($this->table);
+        }
+        $queryBuilder = $this->getQueryBuilderForTable($this->table);
 
-            /** @var BackendWorkspaceRestriction $workspaceRestriction */
-            $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
-            /** @var DeletedRestriction $deleteRestriction */
-            $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
-            $queryBuilder->getRestrictions()
+        /** @var BackendWorkspaceRestriction $workspaceRestriction */
+        $workspaceRestriction = GeneralUtility::makeInstance(BackendWorkspaceRestriction::class);
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        $queryBuilder->getRestrictions()
                 ->removeAll()
                 ->add($deleteRestriction)
                 ->add($workspaceRestriction);
 
-            $count = $queryBuilder
+        $count = $queryBuilder
                 ->count('t.uid')
                 ->from($this->table, 't')
                 ->innerJoin('t', 'tx_commerce_categories_parent_category_mm', 'mm', 't.uid = mm.uid_local')
@@ -296,8 +292,7 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
                 ->execute()
                 ->fetchColumn();
 
-            return $count;
-        }
+        return $count;
     }
 
     /**
@@ -427,7 +422,6 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
         return $icon;
     }
 
-
     /**
      * Returns an array with the webmounts.
      * If no webmounts, and empty array is returned.
@@ -441,15 +435,15 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
         /** @noinspection PhpInternalEntityUsedInspection */
         $groupData = $this->getBackendUser()->groupData;
 
-        $mountpoints = (string)$groupData['tx_commerce_mountpoints'] != '' ?
+        $mountPoints = (string)$groupData['tx_commerce_mountpoints'] != '' ?
             explode(',', $groupData['tx_commerce_mountpoints']) :
             [];
 
-        if (empty($mountpoints) && $this->getBackendUser()->isAdmin()) {
-            $mountpoints = [ '0' ];
+        if (empty($mountPoints) && $this->getBackendUser()->isAdmin()) {
+            $mountPoints = [ '0' ];
         }
 
-        return $mountpoints;
+        return $mountPoints;
     }
 
     /**

@@ -220,7 +220,6 @@ class AttributeRepository extends AbstractRepository
         return is_array($result) ? $result : [];
     }
 
-
     /**
      * @param array $articleUids
      *
@@ -316,7 +315,6 @@ class AttributeRepository extends AbstractRepository
      */
     public function findByProductArticleAndAttribute($productUid, $articleList, $attributeUid)
     {
-
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
         $queryBuilder
             ->addSelectLiteral('DISTINCT mm.uid_valuelist')

@@ -64,8 +64,6 @@ abstract class BasicDao
 
     /**
      * Initialization.
-     *
-     * @return void
      */
     abstract protected function init();
 
@@ -83,8 +81,6 @@ abstract class BasicDao
      * Setter.
      *
      * @param BasicDaoObject $object Object
-     *
-     * @return void
      */
     public function setObject(BasicDaoObject &$object)
     {
@@ -142,8 +138,6 @@ abstract class BasicDao
      *
      * @param string $propertyName Property name
      * @param mixed $value Value
-     *
-     * @return void
      */
     public function set($propertyName, $value)
     {
@@ -190,8 +184,6 @@ abstract class BasicDao
 
     /**
      * Load object.
-     *
-     * @return void
      */
     public function load()
     {
@@ -200,8 +192,6 @@ abstract class BasicDao
 
     /**
      * Save object.
-     *
-     * @return void
      */
     public function save()
     {
@@ -210,8 +200,6 @@ abstract class BasicDao
 
     /**
      * Remove object.
-     *
-     * @return void
      */
     public function remove()
     {

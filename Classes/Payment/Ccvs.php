@@ -62,10 +62,10 @@ class Ccvs extends \CreditCardValidationSolution
      *                                  <li> Visa                </li></ul>
      * @param   string   $RequireExp  should the expiration date be
      *                                  checked?  Y or N.
-     * @param   integer  $Month       the card's expiration month
+     * @param   int  $Month       the card's expiration month
      *                                  in M, 0M or MM foramt.
-     * @param   integer  $Year        the card's expiration year in YYYY format.
-     * @return  boolean  TRUE if everything is fine.  FALSE if problems.
+     * @param   int  $Year        the card's expiration year in YYYY format.
+     * @return  bool  TRUE if everything is fine.  FALSE if problems.
      *
      * @version    $Name: rel-5-14 $
      * @author     Daniel Convissor <danielc@analysisandsolutions.com>

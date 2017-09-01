@@ -159,8 +159,6 @@ class OrdermailHook
      * @param array $detaildata Containing the detaildata to Order like
      *      order_id and CustomerUIDs
      * @param int $mailkind Mail kind
-     *
-     * @return void
      */
     protected function processOrdermails(array &$orderdata, array &$detaildata, $mailkind)
     {
@@ -228,8 +226,6 @@ class OrdermailHook
      *      PID after moving
      * @param array $detaildata Containing the detaildata to Order like
      *      order_id and CustomerUIDs
-     *
-     * @return void
      */
     public function moveOrdersPreMoveOrder(array &$orderdata, array &$detaildata)
     {
@@ -244,8 +240,6 @@ class OrdermailHook
      *      PID before moving
      * @param array $detaildata Containing the detaildata to Order like
      *      order_id and CustomerUIDs
-     *
-     * @return void
      */
     public function moveOrdersPostMoveOrder(array &$orderdata, array &$detaildata)
     {
@@ -326,7 +320,6 @@ class OrdermailHook
         // Since The first line of the mail is the Subject, trim the template
         return ltrim($content);
     }
-
 
     /**
      * Get database connection.

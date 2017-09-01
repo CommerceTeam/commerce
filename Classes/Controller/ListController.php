@@ -98,8 +98,6 @@ class ListController extends BaseController
      * Inits the main params for using in the script.
      *
      * @param array $conf Configuration
-     *
-     * @return void
      */
     public function init(array $conf = [])
     {

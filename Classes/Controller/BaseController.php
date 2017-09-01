@@ -244,8 +244,6 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      * Initializing.
      *
      * @param array $conf Configuration
-     *
-     * @return void
      */
     protected function init(array $conf = [])
     {
@@ -332,8 +330,6 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 
     /**
      * Getting additional locallang-files through an Hook.
-     *
-     *  @return void
      */
     public function addAdditionalLocallang()
     {
@@ -348,22 +344,16 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     /**
      * Gets all "lang_ and label_" Marker for
      * substition with substituteMarkerArray.
-     *
-     * @return void
      */
     public function generateLanguageMarker()
     {
-        if (is_array($this->LOCAL_LANG[$this->getTypoScriptFrontendController()->tmpl->setup['config.']['language']])
-            && is_array($this->LOCAL_LANG['default'])
-        ) {
-            $markerArr = $this->LOCAL_LANG[$this->getTypoScriptFrontendController()
-                    ->tmpl->setup['config.']['language']] +
-                $this->LOCAL_LANG['default'];
+        $language = $this->getTypoScriptFrontendController()->tmpl->setup['config.']['language'];
+        if (is_array($this->LOCAL_LANG[$language]) && is_array($this->LOCAL_LANG['default'])) {
+            $markerArr = array_merge($this->LOCAL_LANG[$language], $this->LOCAL_LANG['default']);
         } elseif (is_array($this->LOCAL_LANG['default'])) {
             $markerArr = $this->LOCAL_LANG['default'];
         } else {
-            $markerArr = $this->LOCAL_LANG[$this->getTypoScriptFrontendController()
-                ->tmpl->setup['config.']['language']];
+            $markerArr = $this->LOCAL_LANG[$language];
         }
 
         foreach (array_keys($markerArr) as $languageKey) {
@@ -653,7 +643,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 }
 
                 /*
-                 *  Build TS for Linking the Catergory Images
+                 *  Build TS for Linking the Category Images
                  */
                 $localTs = $this->conf['categoryListView.']['categories.'];
 
@@ -1756,8 +1746,6 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      * @param mixed $var Var
      * @param string $header Header
      * @param string $group Group
-     *
-     * @return void
      */
     protected function debug($var, $header, $group)
     {
@@ -2257,7 +2245,6 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     {
         return $this->handle;
     }
-
 
     /**
      * @return \TYPO3\CMS\Extbase\Object\ObjectManager

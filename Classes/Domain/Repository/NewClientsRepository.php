@@ -14,8 +14,6 @@ namespace CommerceTeam\Commerce\Domain\Repository;
 
 /**
  * Class NewClientsRepository
- *
- * @package CommerceTeam\Commerce\Domain\Repository
  */
 class NewClientsRepository extends AbstractRepository
 {
@@ -24,9 +22,6 @@ class NewClientsRepository extends AbstractRepository
      */
     protected $databaseTable = 'tx_commerce_newclients';
 
-    /**
-     * @return void
-     */
     public function truncate()
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);

@@ -14,8 +14,6 @@ namespace CommerceTeam\Commerce\Domain\Repository;
 
 /**
  * Class SalesFiguresRepository
- *
- * @package CommerceTeam\Commerce\Domain\Repository#
  */
 class SalesFiguresRepository extends AbstractRepository
 {
@@ -24,9 +22,6 @@ class SalesFiguresRepository extends AbstractRepository
      */
     protected $databaseTable = 'tx_commerce_salesfigures';
 
-    /**
-     * @return void
-     */
     public function truncate()
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);

@@ -265,8 +265,6 @@ abstract class AbstractRepository implements SingletonInterface
      * Error Handling Funktion.
      *
      * @param string $err Errortext
-     *
-     * @return void
      */
     public function error($err)
     {
@@ -467,7 +465,6 @@ abstract class AbstractRepository implements SingletonInterface
 
         return in_array($tableName, $tables);
     }
-
 
     /**
      * @return \TYPO3\CMS\Extbase\Object\ObjectManager

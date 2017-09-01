@@ -63,7 +63,6 @@ abstract class ProviderAbstract implements ProviderInterface
     /**
      * Load configured criteria.
      *
-     * @return void
      * @throws \Exception If criteria was not of correct interface
      */
     protected function loadCriteria()
@@ -214,8 +213,6 @@ abstract class ProviderAbstract implements ProviderInterface
      *
      * @param int $orderUid Id of this order
      * @param array $session  Session data
-     *
-     * @return void
      */
     public function updateOrder($orderUid, array $session = [])
     {

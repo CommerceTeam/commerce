@@ -153,11 +153,9 @@ class CheckoutController extends BaseController
     public $isHtmlMail;
 
     /**
-     * Init Method, autmatically called $this->main.
+     * Init Method, automatically called $this->main.
      *
      * @param array $conf Configuration
-     *
-     * @return void
      */
     public function init(array $conf = [])
     {
@@ -355,8 +353,6 @@ class CheckoutController extends BaseController
 
     /**
      * Store request data in session.
-     *
-     * @return void
      */
     protected function storeRequestDataIntoSession()
     {
@@ -416,8 +412,6 @@ class CheckoutController extends BaseController
 
     /**
      * Fetch billing, delivery and payment from session.
-     *
-     * @return void
      */
     protected function fetchSessionDataIntoSessionAttribute()
     {
@@ -449,8 +443,6 @@ class CheckoutController extends BaseController
 
     /**
      * Store the session data.
-     *
-     * @return void
      */
     public function storeSessionData()
     {
@@ -1149,7 +1141,8 @@ class CheckoutController extends BaseController
             && $paymentObj->hasSpecialFinishingForm($_REQUEST)
             && method_exists($paymentObj, 'getSpecialFinishingForm')) {
             return $paymentObj->getSpecialFinishingForm($config, $this->sessionData, $basket);
-        } elseif (!$paymentObj->finishingFunction($config, $this->sessionData, $basket)) {
+        }
+        if (!$paymentObj->finishingFunction($config, $this->sessionData, $basket)) {
             return $this->handlePayment($paymentObj);
         }
 
@@ -1591,7 +1584,7 @@ class CheckoutController extends BaseController
                         break;
 
                     case 'int':
-                        if (!is_integer($value) && preg_match('/^\d+$/', $value) !== 1) {
+                        if (!is_int($value) && preg_match('/^\d+$/', $value) !== 1) {
                             $this->formError[$name] = $this->pi_getLL('error_field_int');
                             $returnVal = false;
                         }
@@ -1712,7 +1705,6 @@ class CheckoutController extends BaseController
     /**
      * Get payment from request if set.
      *
-     * @return void
      * @throws \Exception If no payment article could be found
      */
     public function getPaymentFromRequest()
@@ -3047,8 +3039,6 @@ class CheckoutController extends BaseController
 
     /**
      * Initialize Backend user for TCEmain.
-     *
-     * @return void
      */
     protected function initializeBackendUser()
     {
@@ -3081,8 +3071,6 @@ class CheckoutController extends BaseController
 
     /**
      * Initialize language for TCEmain.
-     *
-     * @return void
      */
     protected function initializeLanguage()
     {

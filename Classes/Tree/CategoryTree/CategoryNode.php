@@ -77,7 +77,6 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      * Sets the background color
      *
      * @param string $backgroundColor
-     * @return void
      */
     public function setBackgroundColor($backgroundColor)
     {
@@ -98,7 +97,6 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      * Set's the original id of the element
      *
      * @param int $workspaceId
-     * @return void
      */
     public function setWorkspaceId($workspaceId)
     {
@@ -139,7 +137,6 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      * Sets the mount point id
      *
      * @param int $mountPoint
-     * @return void
      */
     public function setMountPoint($mountPoint)
     {
@@ -160,7 +157,6 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      * Sets the indicator if the node is a mount point
      *
      * @param bool $isMountPoint
-     * @return void
      */
     public function setIsMountPoint($isMountPoint)
     {
@@ -181,7 +177,6 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      * Sets the readable rootline
      *
      * @param string $rootline
-     * @return void
      */
     public function setReadableRootline($rootline)
     {
@@ -270,11 +265,10 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      */
     public function canBeCut()
     {
-        return (
+        return
             $this->canEdit()
             && !VersionState::cast($this->record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
-            && $this->getBackendUser()->checkLanguageAccess(0)
-        );
+            && $this->getBackendUser()->checkLanguageAccess(0);
     }
 
     /**
@@ -294,11 +288,10 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      */
     public function canBeCopied()
     {
-        return (
+        return
             $this->canCreate()
             && !VersionState::cast($this->record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
-            && $this->getBackendUser()->checkLanguageAccess(0)
-        );
+            && $this->getBackendUser()->checkLanguageAccess(0);
     }
 
     /**
@@ -318,11 +311,10 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      */
     public function canBeRemoved()
     {
-        return (
+        return
             $this->canRemove()
             && !VersionState::cast($this->record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
-            && $this->getBackendUser()->checkLanguageAccess(0)
-        );
+            && $this->getBackendUser()->checkLanguageAccess(0);
     }
 
     /**
@@ -332,11 +324,10 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      */
     public function canBePastedInto()
     {
-        return (
+        return
             $this->canCreate()
             && !VersionState::cast($this->record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
-            && $this->getBackendUser()->checkLanguageAccess(0)
-        );
+            && $this->getBackendUser()->checkLanguageAccess(0);
     }
 
     /**
@@ -346,11 +337,10 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      */
     public function canBePastedAfter()
     {
-        return (
+        return
             $this->canCreate()
             && !VersionState::cast($this->record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
-            && $this->getBackendUser()->checkLanguageAccess(0)
-        );
+            && $this->getBackendUser()->checkLanguageAccess(0);
     }
 
     /**
@@ -403,10 +393,10 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      */
     public function isDeleted()
     {
-        return (
+        return
             !empty($this->record['deleted'])
             || VersionState::cast($this->record['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)
-        );
+        ;
     }
 
     /**
@@ -431,7 +421,7 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
     public function getJumpUrl()
     {
         $params = '&control[categoryUid]=' . $this->getId();
-// @todo change returnUrl
+        // @todo change returnUrl
         return $params;
     }
 
@@ -475,7 +465,6 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
      * Sets data of the node by a given data array
      *
      * @param array $data
-     * @return void
      */
     public function dataFromArray($data)
     {
@@ -487,7 +476,6 @@ class CategoryNode extends \TYPO3\CMS\Backend\Tree\ExtDirectNode implements Node
         $this->setIsMountPoint($data['isMountPoint']);
         $this->setBackgroundColor($data['backgroundColor']);
     }
-
 
     /**
      * Get backend user authentication

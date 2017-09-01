@@ -29,7 +29,8 @@ class MetaInformation extends \TYPO3\CMS\Backend\Template\Components\MetaInforma
         $pageRecord = $this->recordArray;
         if (empty($pageRecord)) {
             return '';
-        } elseif (!isset($pageRecord['_is_category'])) {
+        }
+        if (!isset($pageRecord['_is_category'])) {
             return parent::getRecordInformation();
         }
 

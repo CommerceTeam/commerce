@@ -416,6 +416,8 @@ class Product extends AbstractEntity
         $articleUids = [];
         if (is_array($attributes)) {
             foreach ($attributes as $uidValuePair) {
+                // @todo change to article repository usage
+                /** @var \TYPO3\CMS\Core\Database\Query\QueryBuilder $queryBuilder */
                 $queryBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ConnectionPool::class)
                     ->getQueryBuilderForTable('tx_commerce_articles');
 
@@ -969,8 +971,6 @@ class Product extends AbstractEntity
      * Sets renderMaxArticles Value in the Object.
      *
      * @param int $count New Value
-     *
-     * @return void
      */
     public function setRenderMaxArticles($count)
     {
@@ -1312,9 +1312,8 @@ class Product extends AbstractEntity
                 }
 
                 return $this->articles_uids;
-            } else {
-                return [];
             }
+            return [];
         }
 
         return $this->articles_uids;
@@ -1402,8 +1401,6 @@ class Product extends AbstractEntity
      * Remove article uid from array by index.
      *
      * @param int $index Index
-     *
-     * @return void
      */
     public function removeArticleUid($index)
     {
@@ -1415,8 +1412,6 @@ class Product extends AbstractEntity
      * Remove article object from array by uid.
      *
      * @param int $uid Uid
-     *
-     * @return void
      */
     public function removeArticle($uid)
     {

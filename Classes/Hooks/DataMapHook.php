@@ -76,8 +76,6 @@ class DataMapHook
      * @param array $incomingFieldArray Fields that where changed in BE
      * @param string $table Table the data will be stored in
      * @param int $id The uid of the dataset we're working on
-     *
-     * @return void
      */
     public function processDatamap_preProcessFieldArray(array &$incomingFieldArray, $table, $id)
     {
@@ -188,11 +186,10 @@ class DataMapHook
 
     /**
      * Preprocess product.
-
      *
-*@param array $incomingFieldArray Incoming field array
+     * @param array $incomingFieldArray Incoming field array
      * @param int $productUid Id
-
+     *
      * @return array
      */
     protected function preProcessProduct(array $incomingFieldArray, $productUid)
@@ -412,8 +409,6 @@ class DataMapHook
      * Recalculate Order sum.
      *
      * @param int $orderArticleUid Order article id
-     *
-     * @return void
      */
     protected function preProcessOrderArticle($orderArticleUid)
     {
@@ -501,7 +496,6 @@ class DataMapHook
         return $incomingFieldArray;
     }
 
-
     /**
      * Change FieldArray after operations have been executed and just before
      * it is passed to the db.
@@ -511,8 +505,6 @@ class DataMapHook
      * @param int $id UID of the Item we are operating on
      * @param array $fieldArray Fields to be inserted into the db
      * @param DataHandler $pObj Reference to the BE Form Object of the caller
-     *
-     * @return void
      */
     public function processDatamap_postProcessFieldArray($status, $table, $id, array &$fieldArray, DataHandler $pObj)
     {
@@ -544,8 +536,6 @@ class DataMapHook
      * @param int|string $id Id
      * @param array $fieldArray Field array
      * @param DataHandler $pObj Parent object
-     *
-     * @return void
      */
     protected function postProcessCategory($status, $table, $id, array &$fieldArray, DataHandler $pObj)
     {
@@ -882,7 +872,7 @@ class DataMapHook
                 $newCats,
                 ['editcontent']
             )) {
-                $pObj->newlog('You do not have the permissions to add one or all categories you added.'.
+                $pObj->newlog('You do not have the permissions to add one or all categories you added.' .
                     GeneralUtility::uniqueList($data['categories']), 1);
                 $fieldArray = [];
             }
@@ -902,8 +892,6 @@ class DataMapHook
      * @param int|string $id Id
      * @param array $fieldArray Field array
      * @param DataHandler $pObj Parent object
-     *
-     * @return void
      */
     protected function postProcessArticle($status, $id, array &$fieldArray, DataHandler $pObj)
     {
@@ -955,7 +943,6 @@ class DataMapHook
         }
     }
 
-
     /**
      * When all operations in the database where made from TYPO3 side, we
      * have to make some special entries for the shop. Because we don't use
@@ -970,8 +957,6 @@ class DataMapHook
      * @param int $id Id
      * @param array $fieldArray Field array
      * @param DataHandler $dataHandler Parent object
-     *
-     * @return void
      */
     public function processDatamap_afterDatabaseOperations(
         $status,
@@ -1014,8 +999,6 @@ class DataMapHook
      * @param string|int $id Id
      * @param array $fieldArray Field array
      * @param DataHandler $dataHandler Parent object
-     *
-     * @return void
      */
     protected function afterDatabaseCategory($table, $id, array $fieldArray, DataHandler $dataHandler)
     {
@@ -1057,8 +1040,6 @@ class DataMapHook
      * @param string|int $id Id
      * @param array $fieldArray Field array
      * @param DataHandler $dataHandler Parent object
-     *
-     * @return void
      */
     protected function afterDatabaseProduct($status, $table, $id, array $fieldArray, DataHandler $dataHandler)
     {
@@ -1105,8 +1086,6 @@ class DataMapHook
      *
      * @param array $fieldArray Field array
      * @param int $id Id
-     *
-     * @return void
      */
     protected function afterDatabasePrice(array $fieldArray, $id)
     {
@@ -1128,8 +1107,6 @@ class DataMapHook
      *
      * @param array $incomingFieldArray Incoming field array
      * @param int $id Id
-     *
-     * @return void
      */
     protected function updateArticleAttributeRelations(array $incomingFieldArray, $id)
     {
@@ -1198,8 +1175,6 @@ class DataMapHook
      * @param bool $saveAnyway Save anyway
      * @param bool $delete Delete
      * @param bool $updateXml Update xml
-     *
-     * @return void
      */
     protected function saveCategoryRelations(
         $categoryUid,
@@ -1293,12 +1268,9 @@ class DataMapHook
 
     /**
      * Saves all relations between products and his attributes.
-
      *
-*@param int $productUid The UID of the product
+     * @param int $productUid The UID of the product
      * @param array $fieldArray Field array
-
-     * @return void
      */
     protected function saveProductRelations($productUid, array $fieldArray = null)
     {
@@ -1665,6 +1637,7 @@ class DataMapHook
     /**
      * @param string $table
      * @param array $fieldArray
+     *
      * @return bool
      */
     protected function isUpdateSignalAllowed($table, $fieldArray)
@@ -1685,7 +1658,6 @@ class DataMapHook
         }
         return $isEnableFieldSet;
     }
-
 
     /**
      * Get backend user.

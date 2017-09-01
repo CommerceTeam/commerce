@@ -83,8 +83,6 @@ class AddressDaoObject extends BasicDaoObject
      * Setter.
      *
      * @param string $name Name
-     *
-     * @return void
      */
     public function setName($name)
     {

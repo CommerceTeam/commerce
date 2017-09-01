@@ -120,7 +120,7 @@ class Creditcard extends PaymentAbstract
                         break;
 
                     case 'int':
-                        if (!is_integer($value)) {
+                        if (!is_int($value)) {
                             $this->formError[$name] = $this->parentObject->pi_getLL('error_field_int');
                             $result = false;
                         }
@@ -160,7 +160,6 @@ class Creditcard extends PaymentAbstract
 
         return $result;
     }
-
 
     /**
      * Get typoscript frontend controller.

@@ -19,8 +19,6 @@ class CheckoutController extends \CommerceTeam\Commerce\Tests\Functional\Fronten
 {
     /**
      * Sets up this test suite.
-     *
-     * @return void
      */
     protected function setUp()
     {

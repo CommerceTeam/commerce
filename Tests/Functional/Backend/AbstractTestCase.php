@@ -37,11 +37,8 @@ abstract class AbstractTestCase extends \TYPO3\TestingFramework\Core\Functional\
      */
     protected $fixturePath = 'typo3conf/ext/commerce/Tests/Functional/Fixtures/';
 
-
     /**
      * Sets up this test suite.
-     *
-     * @return void
      */
     protected function setUp()
     {
@@ -57,11 +54,8 @@ abstract class AbstractTestCase extends \TYPO3\TestingFramework\Core\Functional\
         $this->expectedLogEntries = 0;
     }
 
-
     /**
      * Tears down this test case.
-     *
-     * @return void
      */
     protected function tearDown()
     {
@@ -72,11 +66,8 @@ abstract class AbstractTestCase extends \TYPO3\TestingFramework\Core\Functional\
         parent::tearDown();
     }
 
-
     /**
      * Assert that no sys_log entries had been written.
-     *
-     * @return void
      */
     protected function assertNoLogEntries()
     {

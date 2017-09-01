@@ -46,8 +46,6 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTree
 
     /**
      * Sets the data provider
-     *
-     * @return void
      */
     protected function initDataProvider()
     {
@@ -242,7 +240,6 @@ class ExtdirectTreeDataProvider extends \TYPO3\CMS\Backend\Tree\AbstractTree
         ];
         return $configuration;
     }
-
 
     /**
      * Get language service

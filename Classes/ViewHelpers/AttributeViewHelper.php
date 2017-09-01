@@ -42,7 +42,6 @@ class AttributeViewHelper
         $attributeUid = $parameter['fieldConf']['config']['aUid'];
         $articleUid = $parameter['row']['uid'];
 
-
         $relationData = $articleRepository->findAttributeRelationsByArticleAndAttribute($articleUid, $attributeUid);
         $attributeData = $attributeRepository->findByUid($attributeUid);
 

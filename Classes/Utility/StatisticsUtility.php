@@ -45,8 +45,6 @@ class StatisticsUtility
      * Initialization.
      *
      * @param string $excludePids Exclude pids
-     *
-     * @return void
      */
     public function init($excludePids)
     {
@@ -270,7 +268,6 @@ class StatisticsUtility
             strftime('%Y', $timestamp)
         );
     }
-
 
     /**
      * Get database connection.

@@ -150,12 +150,11 @@ class Wirecard extends ProviderAbstract
             $this->errorMessages = array_merge($this->errorMessages, (array) $paymentLib->getError());
 
             return false;
-        } else {
-            $this->paymentRefId = $paymentLib->referenzID;
-            // The ReferenceID should be stored here, so that it can be
-            // added to the record in updateOrder()
-            return true;
         }
+        $this->paymentRefId = $paymentLib->referenzID;
+        // The ReferenceID should be stored here, so that it can be
+        // added to the record in updateOrder()
+        return true;
     }
 
     /**
@@ -163,8 +162,6 @@ class Wirecard extends ProviderAbstract
      *
      * @param int $orderUid Id of this order
      * @param array $session Session data
-     *
-     * @return void
      */
     public function updateOrder($orderUid, array $session = [])
     {

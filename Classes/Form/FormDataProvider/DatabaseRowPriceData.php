@@ -5,8 +5,6 @@ use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 
 /**
  * Provider to fix centurion division
- *
- * @package CommerceTeam\Commerce\Form\FormDataProvider
  */
 class DatabaseRowPriceData implements FormDataProviderInterface
 {

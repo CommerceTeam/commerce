@@ -16,11 +16,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Module\BaseScriptClass;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
-use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 /**
  * Main script class for the systemData navigation frame.
@@ -57,8 +57,6 @@ class SystemdataNavigationFrameController extends BaseScriptClass
 
     /**
      * Initialization.
-     *
-     * @return void
      */
     public function init()
     {
@@ -90,8 +88,6 @@ class SystemdataNavigationFrameController extends BaseScriptClass
 
     /**
      * Main method.
-     *
-     * @return void
      */
     public function main()
     {
@@ -151,8 +147,6 @@ class SystemdataNavigationFrameController extends BaseScriptClass
     /**
      * Create the panel of buttons for submitting the
      * form or otherwise perform operations.
-     *
-     * @return void
      */
     protected function getButtons()
     {

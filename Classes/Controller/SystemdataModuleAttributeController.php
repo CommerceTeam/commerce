@@ -14,9 +14,9 @@ namespace CommerceTeam\Commerce\Controller;
 
 use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
 use CommerceTeam\Commerce\Domain\Repository\AttributeValueRepository;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 class SystemdataModuleAttributeController extends SystemdataModuleController
 {
@@ -217,7 +217,6 @@ class SystemdataModuleAttributeController extends SystemdataModuleController
             $output .= '<tr data-uid="' . $attribute['uid'] . '">';
             $output .= '<td class="col-icon">' . $iconImg . '</td>
                 <td nowrap="nowrap">' . $fields . '</td>';
-
 
             $output .= '<td class="col-control">' . $editAction . $deleteAction . '</td>
                 <td>' . $valueList . '</td>

@@ -108,7 +108,6 @@ class CategoryAjaxController implements LinkParameterProviderInterface
         return $categoryTree;
     }
 
-
     /**
      * @return string
      */

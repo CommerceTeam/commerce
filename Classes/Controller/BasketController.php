@@ -14,8 +14,8 @@ namespace CommerceTeam\Commerce\Controller;
 
 use CommerceTeam\Commerce\Domain\Model\Article;
 use CommerceTeam\Commerce\Domain\Model\Product;
-use CommerceTeam\Commerce\ViewHelpers\MoneyViewHelper;
 use CommerceTeam\Commerce\Factory\HookFactory;
+use CommerceTeam\Commerce\ViewHelpers\MoneyViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -96,8 +96,6 @@ class BasketController extends BaseController
      * Standard Init Method for all pi plugins of tx_commerce.
      *
      * @param array $conf Configuration
-     *
-     * @return void
      */
     protected function init(array $conf = [])
     {
@@ -140,8 +138,6 @@ class BasketController extends BaseController
 
     /**
      * Initialize basket.
-     *
-     * @return void
      */
     public function initBasket()
     {
@@ -233,8 +229,6 @@ class BasketController extends BaseController
     /**
      * Main method to handle the basket. Is called when data in the basket is changed
      * Changes the basket object and stores the data in the frontend user session.
-     *
-     * @return void
      */
     public function handleBasket()
     {
@@ -248,8 +242,6 @@ class BasketController extends BaseController
 
     /**
      * Handle basket deletion.
-     *
-     * @return void
      */
     public function handleDeleteBasket()
     {
@@ -267,8 +259,6 @@ class BasketController extends BaseController
 
     /**
      * Handle adding article.
-     *
-     * @return void
      */
     public function handleAddArticle()
     {
@@ -411,8 +401,6 @@ class BasketController extends BaseController
 
     /**
      * Handle payment articles.
-     *
-     * @return void
      */
     public function handlePaymentArticle()
     {
@@ -443,8 +431,6 @@ class BasketController extends BaseController
 
     /**
      * Handle delivery articles.
-     *
-     * @return void
      */
     public function handleDeliveryArticle()
     {
@@ -474,8 +460,6 @@ class BasketController extends BaseController
 
     /**
      * Returns a list of markers to generate a quick-view of the basket.
-     *
-     * @return void
      */
     public function getQuickView()
     {
@@ -507,8 +491,6 @@ class BasketController extends BaseController
 
     /**
      * Generates HTML-Code of the basket and stores content.
-     *
-     * @return void
      */
     public function generateBasket()
     {
@@ -1175,8 +1157,6 @@ class BasketController extends BaseController
      * Setter.
      *
      * @param string $templateCode Template code
-     *
-     * @return void
      */
     public function setTemplateCode($templateCode)
     {
@@ -1197,8 +1177,6 @@ class BasketController extends BaseController
      * Setter.
      *
      * @param string $content Content
-     *
-     * @return void
      */
     public function setContent($content)
     {
@@ -1219,8 +1197,6 @@ class BasketController extends BaseController
      * Setter.
      *
      * @param int $priceLimitForBasket Limit for basket
-     *
-     * @return void
      */
     public function setPriceLimitForBasket($priceLimitForBasket)
     {

@@ -15,8 +15,8 @@ namespace CommerceTeam\Commerce\Domain\Model;
 use CommerceTeam\Commerce\Domain\Repository\AbstractRepository;
 use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
 use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
-use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
 use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
+use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
 
 /*
  * Constants definition for Attribute correlation_types
@@ -211,8 +211,6 @@ class AbstractEntity
      *
      * @param string $field Fieldname
      * @param mixed $value Value
-     *
-     * @return void
      */
     public function setField($field, $value)
     {
@@ -319,8 +317,6 @@ class AbstractEntity
      * and calls $this->add_fields_to_fieldlist.
      *
      * @param string $fieldname Database fieldname
-     *
-     * @return void
      */
     public function addFieldToFieldlist($fieldname)
     {
@@ -332,8 +328,6 @@ class AbstractEntity
      * used for hooks to add own fields to the output.
      *
      * @param array $fieldarray Databse filednames
-     *
-     * @return void
      */
     public function addFieldsToFieldlist(array $fieldarray)
     {
@@ -393,8 +387,6 @@ class AbstractEntity
      * Sets the PageTitle titile from via the TSFE.
      *
      * @param string $field Setting of page title
-     *
-     * @return void
      */
     public function setPageTitle($field = 'title')
     {
@@ -403,7 +395,6 @@ class AbstractEntity
         // set pagetitle for indexed search also
         $this->getTypoScriptFrontendController()->indexedDocTitle = $title;
     }
-
 
     /**
      * @return AbstractRepository|CategoryRepository|ProductRepository|ArticleRepository|AttributeRepository

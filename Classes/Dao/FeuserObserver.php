@@ -52,8 +52,6 @@ class FeuserObserver
      * Communicate using push principle to avoid errors.
      *
      * @param string $id Database table
-     *
-     * @return void
      */
     public static function update($id)
     {

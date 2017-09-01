@@ -62,8 +62,6 @@ class BasicDaoParser
      *
      * @param array $model Model
      * @param BasicDaoObject $object Object
-     *
-     * @return void
      */
     public function parseModelToObject(array $model, BasicDaoObject &$object)
     {
@@ -87,8 +85,6 @@ class BasicDaoParser
      *
      * @param array $model Model
      * @param int $pid Page id
-     *
-     * @return void
      */
     public function setPid(array &$model, $pid)
     {

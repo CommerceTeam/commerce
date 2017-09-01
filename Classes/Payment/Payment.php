@@ -96,8 +96,6 @@ class Payment extends Wirecard
      * Set url.
      *
      * @param string $url Url
-     *
-     * @return void
      */
     public function setUrl($url)
     {
@@ -108,8 +106,6 @@ class Payment extends Wirecard
      * Set data.
      *
      * @param array $data Data
-     *
-     * @return void
      */
     public function setData(array $data)
     {
@@ -129,8 +125,6 @@ class Payment extends Wirecard
      * Set payment data for transfer.
      *
      * @param array $data Data
-     *
-     * @return void
      */
     public function setPaymentData(array $data)
     {
@@ -150,8 +144,6 @@ class Payment extends Wirecard
      * Set the data for the transaction.
      *
      * @param array $data Data
-     *
-     * @return void
      */
     public function setTransactionData(array $data)
     {
@@ -166,8 +158,6 @@ class Payment extends Wirecard
      * Set payment method.
      *
      * @param string $method Method
-     *
-     * @return void
      */
     public function setPaymentmethod($method)
     {
@@ -178,8 +168,6 @@ class Payment extends Wirecard
      * Set payment type.
      *
      * @param object $type Type
-     *
-     * @return void
      */
     public function setPaymenttype($type)
     {
@@ -190,8 +178,6 @@ class Payment extends Wirecard
      * Set reference id.
      *
      * @param string $referenceId Reference id
-     *
-     * @return void
      */
     public function setReferenzId($referenceId = '')
     {

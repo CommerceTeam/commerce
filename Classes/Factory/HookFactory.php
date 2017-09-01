@@ -87,8 +87,6 @@ class HookFactory
      * Map old class name hooks.
      *
      * @param string $className Class name
-     *
-     * @return void
      */
     protected static function mapClassName($className)
     {
@@ -113,8 +111,6 @@ class HookFactory
      *
      * @param string $className Class name
      * @param string $hookName Hook name
-     *
-     * @return void
      */
     protected static function mapHookName($className, $hookName)
     {

@@ -138,8 +138,6 @@ class OrderEditViewhelper
      * Selects only the order folders from the pages List.
      *
      * @param array $data Data
-     *
-     * @return void
      */
     public function orderStatus(array &$data)
     {

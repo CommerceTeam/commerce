@@ -14,8 +14,8 @@ namespace CommerceTeam\Commerce\Controller;
 
 use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
 use CommerceTeam\Commerce\Tree\View\CategoryTreeView;
+use CommerceTeam\Commerce\Utility\BackendUtility as CommerceBackendUtility;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
-use \CommerceTeam\Commerce\Utility\BackendUtility as CommerceBackendUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Imaging\Icon;
@@ -85,8 +85,6 @@ class PermissionModuleController extends ActionController
 
     /**
      * Initialize action
-     *
-     * @return void
      */
     protected function initializeAction()
     {
@@ -116,7 +114,6 @@ class PermissionModuleController extends ActionController
      * Initializes view
      *
      * @param ViewInterface $view The view to be initialized
-     * @return void
      */
     protected function initializeView(ViewInterface $view)
     {
@@ -149,9 +146,6 @@ class PermissionModuleController extends ActionController
 
     /**
      * Registers the Icons into the docheader
-     *
-     * @return void
-     * @throws \InvalidArgumentException
      */
     protected function registerDocHeaderButtons()
     {
@@ -191,8 +185,6 @@ class PermissionModuleController extends ActionController
 
     /**
      * Index action
-     *
-     * @return void
      */
     public function indexAction()
     {
@@ -269,11 +261,8 @@ class PermissionModuleController extends ActionController
         ));
     }
 
-
     /**
      * Edit action
-     *
-     * @return void
      */
     public function editAction()
     {
@@ -386,13 +375,11 @@ class PermissionModuleController extends ActionController
         return $options;
     }
 
-
     /**
      * Update action
      *
      * @param array $data
      * @param array $mirror
-     * @return void
      */
     protected function updateAction(array $data, array $mirror)
     {
@@ -419,7 +406,6 @@ class PermissionModuleController extends ActionController
         }
         $this->redirect('index', null, null, ['categoryUid' => $this->returnId, 'depth' => $this->depth]);
     }
-
 
     /**
      * Get backend user authentication

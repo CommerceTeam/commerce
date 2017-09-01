@@ -83,8 +83,6 @@ class Basket extends BasicBasket implements SingletonInterface
      * Set the session ID.
      *
      * @param string $sessionId Session ID
-     *
-     * @return void
      */
     public function setSessionId($sessionId)
     {
@@ -103,8 +101,6 @@ class Basket extends BasicBasket implements SingletonInterface
 
     /**
      * Finish order.
-     *
-     * @return void
      */
     public function finishOrder()
     {
@@ -125,8 +121,6 @@ class Basket extends BasicBasket implements SingletonInterface
 
     /**
      * Set finish date in database.
-     *
-     * @return void
      */
     protected function finishOrderInDatabase()
     {
@@ -138,8 +132,6 @@ class Basket extends BasicBasket implements SingletonInterface
      * on $this->storageType
      * Only database storage is implemented until now
      * cloud be used as per session or per user /presistent).
-     *
-     * @return void
      */
     public function loadData()
     {
@@ -167,8 +159,6 @@ class Basket extends BasicBasket implements SingletonInterface
 
     /**
      * Set unloaded.
-     *
-     * @return void
      */
     public function setUnloaded()
     {
@@ -177,8 +167,6 @@ class Basket extends BasicBasket implements SingletonInterface
 
     /**
      * Set loaded.
-     *
-     * @return void
      */
     public function setLoaded()
     {
@@ -187,8 +175,6 @@ class Basket extends BasicBasket implements SingletonInterface
 
     /**
      * Loads basket data from database.
-     *
-     * @return void
      */
     protected function loadDataFromDatabase()
     {
@@ -230,7 +216,6 @@ class Basket extends BasicBasket implements SingletonInterface
      *
      * @param string $sessionId Session id
      *
-     * @return void
      * @todo handling for special prices
      */
     protected function loadPersistentDataFromDatabase($sessionId)
@@ -257,8 +242,6 @@ class Basket extends BasicBasket implements SingletonInterface
 
     /**
      * Restores the Basket from the persistent storage.
-     *
-     * @return void
      */
     private function restoreBasket()
     {
@@ -281,8 +264,6 @@ class Basket extends BasicBasket implements SingletonInterface
      * Store basket data in session / database depending
      * on $this->storageType
      * Only database storage is implemented until now.
-     *
-     * @return void
      */
     public function storeData()
     {
@@ -299,8 +280,6 @@ class Basket extends BasicBasket implements SingletonInterface
 
     /**
      * Store basket data to database.
-     *
-     * @return void
      */
     protected function storeDataToDatabase()
     {

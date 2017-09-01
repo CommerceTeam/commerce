@@ -101,8 +101,6 @@ class BasicDaoMapper
 
     /**
      * Initialization.
-     *
-     * @return void
      */
     protected function init()
     {
@@ -112,8 +110,6 @@ class BasicDaoMapper
      * Load object.
      *
      * @param BasicDaoObject $object Object
-     *
-     * @return void
      */
     public function load(BasicDaoObject $object)
     {
@@ -126,8 +122,6 @@ class BasicDaoMapper
      * Save object.
      *
      * @param BasicDaoObject $object Object
-     *
-     * @return void
      */
     public function save(BasicDaoObject $object)
     {
@@ -142,8 +136,6 @@ class BasicDaoMapper
      * Remove object.
      *
      * @param BasicDaoObject $object Object
-     *
-     * @return void
      */
     public function remove(BasicDaoObject $object)
     {
@@ -156,8 +148,6 @@ class BasicDaoMapper
      * Db add object.
      *
      * @param BasicDaoObject $object Object
-     *
-     * @return void
      */
     protected function dbInsert(BasicDaoObject $object)
     {
@@ -186,8 +176,6 @@ class BasicDaoMapper
      *
      * @param int $uid Uid
      * @param BasicDaoObject $object Object
-     *
-     * @return void
      */
     protected function dbUpdate($uid, BasicDaoObject $object)
     {
@@ -210,8 +198,6 @@ class BasicDaoMapper
      *
      * @param int $uid Uid
      * @param BasicDaoObject $object Object
-     *
-     * @return void
      */
     protected function dbDelete($uid, BasicDaoObject $object)
     {
@@ -234,8 +220,6 @@ class BasicDaoMapper
      *
      * @param int $uid Uid
      * @param BasicDaoObject $object Object
-     *
-     * @return void
      */
     protected function dbSelectById($uid, BasicDaoObject $object)
     {
@@ -254,8 +238,6 @@ class BasicDaoMapper
      * Add error message.
      *
      * @param array $error Error
-     *
-     * @return void
      */
     protected function addError(array $error)
     {

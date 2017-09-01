@@ -276,8 +276,6 @@ class BasketItem
      *
      * @param string $field Fieldname
      * @param mixed $value Value
-     *
-     * @return void
      */
     public function setField($field, $value)
     {
@@ -332,7 +330,7 @@ class BasketItem
      */
     public function getItemSumTax($recalculate = false)
     {
-        return ($this->getItemSumGross($recalculate) - $this->getItemSumNet($recalculate));
+        return $this->getItemSumGross($recalculate) - $this->getItemSumNet($recalculate);
     }
 
     /**
@@ -369,8 +367,6 @@ class BasketItem
      * Sets pre gross price.
      *
      * @param int $value New Price Value
-     *
-     * @return void
      */
     public function setPriceGross($value)
     {
@@ -392,8 +388,6 @@ class BasketItem
      * Sets the net price.
      *
      * @param int $value New Price Value
-     *
-     * @return void
      */
     public function setPriceNet($value)
     {
@@ -513,8 +507,6 @@ class BasketItem
      * This Method Sets the Tax Calculation method (pricefromnet).
      *
      * @param bool $priceFromNet Switch if calculating from net or not
-     *
-     * @return void
      */
     public function setTaxCalculationMethod($priceFromNet)
     {
@@ -525,8 +517,6 @@ class BasketItem
      * Sets the Title.
      *
      * @param string $title Title
-     *
-     * @return void
      */
     public function setTitle($title)
     {
@@ -628,8 +618,6 @@ class BasketItem
      *
      * @param bool $useValues Use the stored values instead
      *      of calculating gross or net price
-     *
-     * @return void
      */
     public function recalculateItemSums($useValues = false)
     {

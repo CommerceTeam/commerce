@@ -38,9 +38,8 @@ class CategoryTreeElementCategoryTreeView extends ElementBrowserCategoryTreeView
         if ($this->ext_isLinkable($v['uid'])) {
             return '<a class="list-tree-title" data-value="' . (int)$v['uid'] . '" title="' . $title . '">'
                 . $title . '</a>';
-        } else {
-            return '<span class="list-tree-title text-muted">' . $title . '</span>';
         }
+        return '<span class="list-tree-title text-muted">' . $title . '</span>';
     }
 
     /**

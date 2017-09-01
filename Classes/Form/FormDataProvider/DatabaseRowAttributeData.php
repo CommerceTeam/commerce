@@ -6,8 +6,6 @@ use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 /**
  * Provider to fix some error with AbstractItemProvider::processDatabaseFieldValue
  * @todo remove if AbstractItemProvider::processDatabaseFieldValue is array aware
- *
- * @package CommerceTeam\Commerce\Form\FormDataProvider
  */
 class DatabaseRowAttributeData implements FormDataProviderInterface
 {

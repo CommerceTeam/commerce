@@ -16,21 +16,21 @@ use CommerceTeam\Commerce\Domain\Repository\FolderRepository;
 use CommerceTeam\Commerce\Template\ModuleTemplate;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use TYPO3\CMS\Backend\Clipboard\Clipboard;
+use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Template\Components\Buttons\LinkButton;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
+use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Template\Components\ButtonBar;
-use TYPO3\CMS\Core\Imaging\Icon;
-use TYPO3\CMS\Extbase\Service\TypoScriptService;
 
 /**
- * Class \CommerceTeam\Commerce\Controller\CategoryModuleController
+ * Class CategoryModuleController
  */
 class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
 {
@@ -67,8 +67,6 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
 
     /**
      * Initializing the module.
-     *
-     * @return void
      */
     public function init()
     {
@@ -121,8 +119,6 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
 
     /**
      * Main function, starting the rendering of the list.
-     *
-     * @return void
      */
     public function main()
     {
@@ -267,14 +263,14 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
             if ($this->cmd == 'delete') {
                 $items = $dbList->clipObj->cleanUpCBC(GeneralUtility::_POST('CBC'), $this->cmd_table, 1);
                 if (!empty($items)) {
-                    $cmd = array();
+                    $cmd = [];
                     foreach ($items as $iK => $value) {
                         $iKParts = explode('|', $iK);
                         $cmd[$iKParts[0]][$iKParts[1]]['delete'] = 1;
                     }
                     $tce = GeneralUtility::makeInstance(DataHandler::class);
                     $tce->stripslashes_values = 0;
-                    $tce->start(array(), $cmd);
+                    $tce->start([], $cmd);
                     $tce->process_cmdmap();
                     if (isset($cmd['tx_commerce_categories'])
                         || isset($cmd['tx_commerce_products'])

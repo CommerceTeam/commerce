@@ -83,6 +83,11 @@ class InvoiceController extends BaseController
     protected $orderDelivery;
 
     /**
+     * @var array
+     */
+    protected $template;
+
+    /**
      * Main Method.
      *
      * @param string $content Content of this plugin
@@ -112,7 +117,8 @@ class InvoiceController extends BaseController
             && $_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']
         ) {
             return $this->pi_getLL('not_logged_in');
-        } elseif ($user && !$backendUser['uid']) {
+        }
+        if ($user && !$backendUser['uid']) {
             $this->user = $user;
         }
 
@@ -201,7 +207,7 @@ class InvoiceController extends BaseController
             $markerArray['###ORDER_ID###'] = $this->order['order_id'];
             $markerArray['###ORDER_DATE###'] = strftime($this->conf['orderDateFormat'], $this->order['crdate']);
 
-                // Fill some of the content from typoscript settings, to ease the
+            // Fill some of the content from typoscript settings, to ease the
             $markerArray['###INVOICE_HEADER###'] = $this->cObj->cObjGetSingle(
                 $this->conf['invoiceheader'],
                 $this->conf['invoiceheader.']
@@ -269,8 +275,6 @@ class InvoiceController extends BaseController
      * Check Access.
      *
      * @param bool|string $enabled Optional, default FALSE
-     *
-     * @return void
      */
     protected function invoiceBackendOnly($enabled = false)
     {

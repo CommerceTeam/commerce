@@ -64,10 +64,10 @@ class ExtdirectTreeCommands
             $newNode->setLeaf($node->isLeafNode());
             $returnValue = $newNode->toArray();
         } catch (\Exception $exception) {
-            $returnValue = array(
+            $returnValue = [
                 'success' => false,
                 'error' => $exception->getMessage()
-            );
+            ];
         }
         return $returnValue;
     }
@@ -87,10 +87,10 @@ class ExtdirectTreeCommands
             $newNode->setLeaf($node->isLeafNode());
             $returnValue = $newNode->toArray();
         } catch (\Exception $exception) {
-            $returnValue = array(
+            $returnValue = [
                 'success' => false,
                 'message' => $exception->getMessage()
-            );
+            ];
         }
         return $returnValue;
     }
@@ -106,7 +106,7 @@ class ExtdirectTreeCommands
         $node = $this->getNode($nodeData);
         try {
             Commands::deleteNode($node);
-            $returnValue = array();
+            $returnValue = [];
             if ($GLOBALS['BE_USER']->workspace) {
                 $record = Commands::getNodeRecord($node->getType(), $node->getId());
                 if ($record['_ORIG_uid']) {
@@ -126,10 +126,10 @@ class ExtdirectTreeCommands
                 }
             }
         } catch (\Exception $exception) {
-            $returnValue = array(
+            $returnValue = [
                 'success' => false,
                 'message' => $exception->getMessage()
-            );
+            ];
         }
         return $returnValue;
     }
@@ -149,10 +149,10 @@ class ExtdirectTreeCommands
             $newNode = Commands::getNode($node->getType(), $node->getId());
             $returnValue = $newNode->toArray();
         } catch (\Exception $exception) {
-            $returnValue = array(
+            $returnValue = [
                 'success' => false,
                 'message' => $exception->getMessage()
-            );
+            ];
         }
         return $returnValue;
     }
@@ -168,22 +168,22 @@ class ExtdirectTreeCommands
     public function updateLabel($nodeData, $updatedLabel)
     {
         if ($updatedLabel === '') {
-            return array();
+            return [];
         }
 
         $node = $this->getNode($nodeData);
         try {
             Commands::updateNodeLabel($node, $updatedLabel);
             $shortendedText = GeneralUtility::fixed_lgd_cs($updatedLabel, (int)$GLOBALS['BE_USER']->uc['titleLen']);
-            $returnValue = array(
+            $returnValue = [
                 'editableText' => $updatedLabel,
                 'updatedText' => htmlspecialchars($shortendedText)
-            );
+            ];
         } catch (\Exception $exception) {
-            $returnValue = array(
+            $returnValue = [
                 'success' => false,
                 'message' => $exception->getMessage()
-            );
+            ];
         }
         return $returnValue;
     }
@@ -219,10 +219,10 @@ class ExtdirectTreeCommands
             $newNode->setLeaf($node->isLeafNode());
             $returnValue = $newNode->toArray();
         } catch (\Exception $exception) {
-            $returnValue = array(
+            $returnValue = [
                 'success' => false,
                 'message' => $exception->getMessage()
-            );
+            ];
         }
         return $returnValue;
     }
@@ -243,10 +243,10 @@ class ExtdirectTreeCommands
             $newNode->setLeaf($node->isLeafNode());
             $returnValue = $newNode->toArray();
         } catch (\Exception $exception) {
-            $returnValue = array(
+            $returnValue = [
                 'success' => false,
                 'message' => $exception->getMessage()
-            );
+            ];
         }
         return $returnValue;
     }
@@ -268,10 +268,10 @@ class ExtdirectTreeCommands
             $newNode->setLeaf($node->isLeafNode());
             $returnValue = $newNode->toArray();
         } catch (\Exception $exception) {
-            $returnValue = array(
+            $returnValue = [
                 'success' => false,
                 'message' => $exception->getMessage()
-            );
+            ];
         }
         return $returnValue;
     }
@@ -293,10 +293,10 @@ class ExtdirectTreeCommands
             $newNode->setLeaf($node->isLeafNode());
             $returnValue = $newNode->toArray();
         } catch (\Exception $exception) {
-            $returnValue = array(
+            $returnValue = [
                 'success' => false,
                 'message' => $exception->getMessage()
-            );
+            ];
         }
         return $returnValue;
     }
@@ -315,10 +315,10 @@ class ExtdirectTreeCommands
             $newPageId = Commands::createNode($node, $node->getId(), $type);
             $returnValue = Commands::getNode($type, $newPageId)->toArray();
         } catch (\Exception $exception) {
-            $returnValue = array(
+            $returnValue = [
                 'success' => false,
                 'message' => $exception->getMessage()
-            );
+            ];
         }
         return $returnValue;
     }
@@ -338,10 +338,10 @@ class ExtdirectTreeCommands
             $newPageId = Commands::createNode($node, -$destination, $type);
             $returnValue = Commands::getNode($type, $newPageId)->toArray();
         } catch (\Exception $exception) {
-            $returnValue = array(
+            $returnValue = [
                 'success' => false,
                 'message' => $exception->getMessage()
-            );
+            ];
         }
         return $returnValue;
     }
@@ -359,7 +359,7 @@ class ExtdirectTreeCommands
         $extractedLink = '';
         if (preg_match('/window\\.open\\(\'([^\']+)\'/i', $javascriptLink, $match)) {
             $extractedLink = json_decode('"' . trim($match[1], '"') . '"', JSON_HEX_AMP);
-        };
+        }
         return $extractedLink;
     }
 
@@ -410,7 +410,7 @@ class ExtdirectTreeCommands
             '',
             $this->getBackendUserAuthentication()->workspace != 0
         );
-        $rootlineIds = array();
+        $rootlineIds = [];
         foreach ($rootline as $pageData) {
             $rootlineIds[] = (int)$pageData['uid'];
         }

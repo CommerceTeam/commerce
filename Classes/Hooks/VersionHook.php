@@ -29,8 +29,6 @@ class VersionHook
      * @param int $swapWith Id of the Offline Version to swap with
      * @param int $swapIntoWorkspace If set, swaps online into workspace
      *      instead of publishing out of workspace.
-     *
-     * @return void
      */
     public function processSwap_postProcessSwap($table, $id, $swapWith, $swapIntoWorkspace)
     {

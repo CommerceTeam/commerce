@@ -64,8 +64,6 @@ class OrderRepository extends AbstractRepository
      *
      * @param string $orderId Order id
      * @param array $data Data
-     *
-     * @return void
      */
     public function updateByOrderId($orderId, array $data)
     {

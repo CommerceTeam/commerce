@@ -32,8 +32,6 @@ class AddressDaoMapper extends BasicDaoMapper
 
     /**
      * Initialization.
-     *
-     * @return void
      */
     protected function init()
     {

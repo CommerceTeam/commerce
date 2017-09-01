@@ -72,8 +72,6 @@ class ProductRepositoryTest extends \CommerceTeam\Commerce\Tests\Functional\Back
 
     /**
      * Sets up this test suite.
-     *
-     * @return void
      */
     protected function setUp()
     {
@@ -82,7 +80,6 @@ class ProductRepositoryTest extends \CommerceTeam\Commerce\Tests\Functional\Back
 
         $this->subject = new \CommerceTeam\Commerce\Domain\Repository\ProductRepository();
     }
-
 
     /**
      * @test
@@ -115,7 +112,6 @@ class ProductRepositoryTest extends \CommerceTeam\Commerce\Tests\Functional\Back
     {
         $this->markTestSkipped('getData of access restricted record only works in frontend context');
     }
-
 
     /**
      * @test

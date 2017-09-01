@@ -413,8 +413,6 @@ class BasicBasket
 
     /**
      * Set to read only, for checkout.
-     *
-     * @return void
      */
     public function setReadOnly()
     {
@@ -445,8 +443,6 @@ class BasicBasket
      * Setter for pricefromnet.
      *
      * @param int $pricefromnet Price from net
-     *
-     * @return void
      */
     public function setPricefromnet($pricefromnet)
     {
@@ -589,8 +585,6 @@ class BasicBasket
 
     /**
      * Load basket data from session / database.
-     *
-     * @return void
      */
     public function loadData()
     {
@@ -678,8 +672,6 @@ class BasicBasket
      * @param int $articleUid Arcicle uid
      * @param int $newPriceGross New price gross
      * @param int $newPriceNet New price net
-     *
-     * @return void
      */
     public function changePrices($articleUid, $newPriceGross, $newPriceNet)
     {
@@ -705,8 +697,6 @@ class BasicBasket
      *
      * @param int $articleUid Article uid
      * @param string $newtitle New article title
-     *
-     * @return void
      */
     public function changeTitle($articleUid, $newtitle)
     {
@@ -805,8 +795,6 @@ class BasicBasket
 
     /**
      * Recalculate price sums.
-     *
-     * @return void
      */
     public function recalculateSums()
     {
@@ -828,8 +816,6 @@ class BasicBasket
      * This Method Sets the Tax Calculation method (pricefromnet).
      *
      * @param bool $priceFromNet Switch if calculating from net or not
-     *
-     * @return void
      */
     public function setTaxCalculationMethod($priceFromNet)
     {
@@ -857,8 +843,6 @@ class BasicBasket
 
     /**
      * Set read only state to false.
-     *
-     * @return void
      */
     public function releaseReadOnly()
     {
@@ -889,8 +873,6 @@ class BasicBasket
 
     /**
      * Remove current payment article from basket.
-     *
-     * @return void
      */
     public function removeCurrentPaymentArticle()
     {
@@ -902,8 +884,6 @@ class BasicBasket
 
     /**
      * Remove current delivery article from basket.
-     *
-     * @return void
      */
     public function removeCurrentDeliveryArticle()
     {
@@ -912,7 +892,6 @@ class BasicBasket
             $this->deleteArticle($deliveryBasketItem->getArticleUid());
         }
     }
-
 
     /**
      * Get typoscript frontend controller.

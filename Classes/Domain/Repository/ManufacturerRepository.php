@@ -14,8 +14,6 @@ namespace CommerceTeam\Commerce\Domain\Repository;
 
 /**
  * Class ManufacturerRepository
- *
- * @package CommerceTeam\Commerce\Domain\Repository
  */
 class ManufacturerRepository extends AbstractRepository
 {
