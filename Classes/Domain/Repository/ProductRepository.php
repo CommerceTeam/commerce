@@ -661,7 +661,8 @@ class ProductRepository extends AbstractRepository
                 )
             )
             ->groupBy('p.title', 'p.uid', 'p.sys_language_uid')
-            ->orderBy('p.title', 'p.sys_language_uid');
+            ->orderBy('p.title', 'ASC')
+            ->addOrderBy('p.sys_language_uid', 'ASC');
 
         if ($sysLanguageUid > 0) {
             $queryBuilder->andWhere(
