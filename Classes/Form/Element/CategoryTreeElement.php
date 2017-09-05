@@ -90,7 +90,7 @@ class CategoryTreeElement extends SelectMultipleSideBySideElement implements Lin
         $selectedItemsHtml = [];
         foreach ($selectedItems as $itemNumber => $itemValue) {
             foreach ($possibleItems as $possibleItem) {
-                if ($possibleItem[1] === $itemValue) {
+                if ($possibleItem[1] == $itemValue) {
                     $title = $possibleItem[0];
                     $listOfSelectedValues[] = $itemValue;
                     $selectedItemsHtml[] = '<option value="' . htmlspecialchars($itemValue) .

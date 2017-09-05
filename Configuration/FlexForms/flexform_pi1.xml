@@ -57,19 +57,12 @@
 							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xlf:tx_commerce_pi1.pi_flexform.category_selection</label>
 							<config>
 								<type>select</type>
+								<renderType>selectCommerceCategoryTree</renderType>
 								<foreign_table>tx_commerce_categories</foreign_table>
 								<foreign_table_where> AND sys_language_uid = 0</foreign_table_where>
 								<size>10</size>
 								<minitems>0</minitems>
 								<maxitems>1</maxitems>
-								<!-- <renderMode>tree</renderMode> -->
-								<treeConfig>
-									<expandAll>1</expandAll>
-									<parentField>parent_category</parentField>
-									<appearance>
-										<showHeader>1</showHeader>
-									</appearance>
-								</treeConfig>
 							</config>
 						</TCEforms>
 					</StartCategory>

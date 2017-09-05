@@ -76,7 +76,9 @@ class TcaSelectItems extends AbstractItemProvider implements FormDataProviderInt
             $rows = $categoryRepository->findUntranslatedByRelationTable($mmTable, $result['databaseRow']['uid']);
         } elseif ($result['databaseRow']['tx_commerce_mountpoints']) {
             // this is the case for be_user and be_group mounts where the selected categories are stored as uid list
-            $uidList = GeneralUtility::intExplode(',', $result['databaseRow']['tx_commerce_mountpoints'], true);
+            $uidList = is_array($result['databaseRow']['tx_commerce_mountpoints']) ?
+                $result['databaseRow']['tx_commerce_mountpoints'] :
+                GeneralUtility::intExplode(',', $result['databaseRow']['tx_commerce_mountpoints'], true);
             $rows = $categoryRepository->findUntranslatedByUidList($uidList);
         }
 
