@@ -63,6 +63,16 @@ class DatabaseRowArticleData implements FormDataProviderInterface
         $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
         $attributes = $categoryRepository->findAttributesByCategoryUid($result['vanillaUid']);
 
+        if (empty($attributes)) {
+            return $result;
+        }
+        $result['processedTca']['columns']['attributes']['config'] = [
+            'type' => 'flex',
+            'ds' => [
+                'default' => 'FILE:EXT:commerce/Configuration/FlexForms/attributes.xml',
+            ],
+        ];
+
         /** @var AttributeRepository $attributeRepository */
         $attributeRepository = GeneralUtility::makeInstance(AttributeRepository::class);
         $correlationTypes = $attributeRepository->findAllCorrelationTypes();
