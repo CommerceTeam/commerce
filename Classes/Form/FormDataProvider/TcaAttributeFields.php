@@ -260,7 +260,10 @@ class TcaAttributeFields extends AbstractItemProvider implements FormDataProvide
     {
         // only assign these two values to keep displayCond if set previously
         $result['processedTca']['columns'][$fieldName]['label'] = '';
-        $result['processedTca']['columns'][$fieldName]['config'] = ['type' => 'none'];
+        $result['processedTca']['columns'][$fieldName]['config'] = [
+            'type' => 'none',
+            'pass_content' => true,
+        ];
         $result['databaseRow'][$fieldName] = $this->getLanguageService()->sL(
             'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce.no_attributes_available'
         );

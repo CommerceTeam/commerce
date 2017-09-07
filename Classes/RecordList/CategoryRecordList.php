@@ -985,13 +985,16 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      * @param int $pageId Page id Only used to build the search constraints, $this->pidList is used for restrictions
      * @param string[] $fieldList List of fields to select from the table
      * @param string[] $additionalConstraints Additional part for where clause
+     * @param bool $addSorting Add sorting fields to query
+     *
      * @return array
      */
     protected function buildQueryParameters(
         string $table,
         int $pageId,
         array $fieldList = ['*'],
-        array $additionalConstraints = []
+        array $additionalConstraints = [],
+        bool $addSorting = true
     ) : array {
         $expressionBuilder = $this->getQueryBuilderForTable($table)->expr();
 

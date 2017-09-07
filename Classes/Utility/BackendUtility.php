@@ -896,7 +896,7 @@ class BackendUtility
         $articleRepository = CoreGeneralUtility::makeInstance(ArticleRepository::class);
         $prices = $articleRepository->findByUid($articleUid);
 
-        if (strlen($prices['prices']) > 0) {
+        if (strlen($prices['prices']) > 10) {
             $data = CoreGeneralUtility::xml2array($prices['prices']);
         } else {
             $data = ['data' => ['sDEF' => ['lDEF']]];
