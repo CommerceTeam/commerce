@@ -102,8 +102,7 @@ class ProductRepository extends AbstractRepository
                 $return = $articleUids;
             } else {
                 $this->error(
-                    'SELECT uid FROM tx_commerce_articles WHERE uid_product = '
-                    . $uid . '; #returns no Result'
+                    'query found no article for uid: ' . $uid . '; #returns no Result'
                 );
             }
         }
@@ -112,50 +111,35 @@ class ProductRepository extends AbstractRepository
     }
 
     /**
-     * Gets all attributes form database related to this product
-     * where corelation type = 4.
+     * Gets all attributes form database related to this product where correlation type = 4.
      *
      * @param int $uid Product uid
-     * @param array|int $correlationtypes Correlation types
+     * @param array|int $correlationTypes Correlation types
      *
-     * @return array of Article UID
+     * @return array of attribute UID
      */
-    public function getAttributes($uid, $correlationtypes)
+    public function getAttributes($uid, array $correlationTypes = [])
     {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseAttributeRelationTable);
+        $queryBuilder
+            ->addSelectLiteral('DISTINCT(uid_foreign) AS uid')
+            ->select('sorting')
+            ->from($this->databaseAttributeRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq('uid_local', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT))
+            );
+
+        if (!empty($correlationTypes)) {
+            $queryBuilder->andWhere($queryBuilder->expr()->in('uid_correlationtype', $correlationTypes));
+        }
+
+        $result = $queryBuilder
+            ->orderBy('sorting')
+            ->execute();
+
         $return = [];
-        $uid = (int) $uid;
-        if ($uid) {
-            if (!is_array($correlationtypes)) {
-                $correlationtypes = [$correlationtypes];
-            }
-
-            $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
-            $result = $queryBuilder
-                ->select('at.*')
-                ->from($this->databaseTable, 'p')
-                ->innerJoin('p', $this->databaseAttributeRelationTable, 'mm', 'p.uid = mm.uid_local')
-                ->innerJoin('mm', 'tx_commerce_attributes', 'at', 'mm.uid_foreign = at.uid')
-                ->where(
-                    $queryBuilder->expr()->eq(
-                        'p.uid',
-                        $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
-                    ),
-                    $queryBuilder->expr()->in(
-                        'mm.uid_correlationtype',
-                        $correlationtypes
-                    )
-                )
-                ->groupBy('at.uid')
-                ->orderBy('mm.sorting')
-                ->execute();
-
-            $attributeUids = [];
-            if ($result->rowCount()) {
-                while ($row = $result->fetch()) {
-                    $attributeUids[] = (int) $row['uid'];
-                }
-                $return = $attributeUids;
-            }
+        while ($row = $result->fetch()) {
+            $return[] = (int) $row['uid'];
         }
 
         return $return;
@@ -785,7 +769,7 @@ class ProductRepository extends AbstractRepository
      * @param int $productUid
      * @param array $data
      *
-     * @return string
+     * @return array
      */
     public function addAttributeRelation($productUid, $data)
     {
@@ -803,7 +787,7 @@ class ProductRepository extends AbstractRepository
      * @param int $productUidFrom
      * @param int $productUidTo
      *
-     * @return string
+     * @return array
      */
     public function updateAttributeRelation($productUidFrom, $productUidTo)
     {
@@ -826,7 +810,7 @@ class ProductRepository extends AbstractRepository
      * @param int $attributeUid
      * @param array $data
      *
-     * @return string
+     * @return array
      */
     public function updateAttributeRelationValues($productUid, $attributeUid, array $data)
     {
