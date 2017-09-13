@@ -638,7 +638,7 @@ class ProductRepository extends AbstractRepository
 
         $result = $queryBuilder
             ->execute()
-            ->fetch();
+            ->fetchAll();
         return is_array($result) ? $result : [];
     }
 
