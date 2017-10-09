@@ -203,7 +203,7 @@ class CategoryRepository extends AbstractRepository
             }
         }
 
-        return [];
+        return $data;
     }
 
     /**
