@@ -17,11 +17,7 @@ namespace CommerceTeam\Commerce\Tree;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Gives functionality for Categorymounts.
- *
  * Class \CommerceTeam\Commerce\Tree\CategoryMounts
- *
- * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
 class CategoryMounts extends \CommerceTeam\Commerce\Tree\Leaf\Mounts
 {
@@ -45,14 +41,14 @@ class CategoryMounts extends \CommerceTeam\Commerce\Tree\Leaf\Mounts
         $this->resetPointer();
 
         // Walk the Mounts and create the tupels of 'uid' and 'label'
-        $tupels = array();
+        $tupels = [];
 
         while (false !== ($id = $this->walk())) {
-            // If the mountpoint is the root
+            // If the mount point is the root
             if ($id == 0) {
                 $tupels[] = $backendUser->isAdmin() ?
-                    array($id, $this->getLL('leaf.category.root')) :
-                    array($id, $this->getLL('leaf.restrictedAccess'));
+                    [$id, $this->getLL('leaf.category.root')] :
+                    [$id, $this->getLL('leaf.restrictedAccess')];
             } else {
                 // Get the title
                 /**
@@ -60,14 +56,14 @@ class CategoryMounts extends \CommerceTeam\Commerce\Tree\Leaf\Mounts
                  *
                  * @var \CommerceTeam\Commerce\Domain\Model\Category $category
                  */
-                $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $id);
+                $category = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Category::class, $id);
                 $category->loadData();
 
                 $title = ($category->isPermissionSet('show') && $this->isInCommerceMounts($category->getUid())) ?
                     $category->getTitle() :
                     $this->getLL('leaf.restrictedAccess');
 
-                $tupels[] = array($id, $title);
+                $tupels[] = [$id, $title];
             }
         }
 
@@ -89,7 +85,7 @@ class CategoryMounts extends \CommerceTeam\Commerce\Tree\Leaf\Mounts
 
         $categories = $this->getMountData();
 
-        // is user admin? has mount 0? is parentcategory in mounts?
+        // is user admin? has mount 0? is parent category in mounts?
         if ($backendUser->isAdmin() || in_array(0, $categories) || in_array($categoryUid, $categories)) {
             return true;
         }
@@ -104,9 +100,9 @@ class CategoryMounts extends \CommerceTeam\Commerce\Tree\Leaf\Mounts
         /**
          * Category.
          *
-         *@var \CommerceTeam\Commerce\Domain\Model\Category
+         * @var \CommerceTeam\Commerce\Domain\Model\Category
          */
-        $category = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Domain\\Model\\Category', $categoryUid);
+        $category = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Category::class, $categoryUid);
         $category->loadData();
 
         $tmpCats = $category->getParentCategories();
