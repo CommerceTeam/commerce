@@ -498,6 +498,14 @@ abstract class AbstractRepository implements SingletonInterface
     }
 
     /**
+     * @return int
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    /**
      * @return \TYPO3\CMS\Extbase\Object\ObjectManager
      */
     protected function getObjectManager(): \TYPO3\CMS\Extbase\Object\ObjectManager
