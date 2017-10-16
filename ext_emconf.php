@@ -28,6 +28,7 @@ $EM_CONF['commerce'] = [
             'typo3' => '8.6.0-8.9.99',
             'tt_address' => '3.0.0-',
             'static_info_tables' => '6.2.1-',
+            'beuser' => '8.7.0-',
         ],
     ],
 ];

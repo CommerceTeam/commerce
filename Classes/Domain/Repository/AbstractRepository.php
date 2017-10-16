@@ -455,6 +455,11 @@ abstract class AbstractRepository implements SingletonInterface
         return in_array($columnName, $columns);
     }
 
+    /**
+     * @param string $tableName
+     *
+     * @return bool
+     */
     public function hasTable($tableName)
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
@@ -464,6 +469,32 @@ abstract class AbstractRepository implements SingletonInterface
             ->listTableNames();
 
         return in_array($tableName, $tables);
+    }
+
+    /**
+     * Deletes all localizations of a record
+     * Note that no permission check is made whatsoever!
+     * Check perms if you implement this beforehand.
+     *
+     * @param int $uid Uid of the record
+     *
+     * @return bool Success
+     */
+    public function deleteTranslations($uid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder
+            ->update($this->databaseTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'l18n_parent',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->set('deleted', 1)
+            ->execute();
+
+        return true;
     }
 
     /**
