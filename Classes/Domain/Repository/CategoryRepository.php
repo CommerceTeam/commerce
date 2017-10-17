@@ -77,6 +77,14 @@ class CategoryRepository extends AbstractRepository
     /**
      * @return int
      */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    /**
+     * @return int
+     */
     public function getSystemCategoryUid()
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);

@@ -66,13 +66,6 @@ abstract class AbstractRepository implements SingletonInterface
     protected $translationMode = 'hideNonTranslated';
 
     /**
-     * Uid.
-     *
-     * @var int
-     */
-    protected $uid;
-
-    /**
      * Get data.
      *
      * @param int $uid UID for Data
@@ -495,14 +488,6 @@ abstract class AbstractRepository implements SingletonInterface
             ->execute();
 
         return true;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUid()
-    {
-        return $this->uid;
     }
 
     /**
