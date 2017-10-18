@@ -14,6 +14,7 @@ namespace CommerceTeam\Commerce\Updates;
 
 use Doctrine\DBAL\Driver\Statement;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 /**
  * Upgrade wizard which goes through all files referenced in the tt_content.image filed
@@ -185,7 +186,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
             . 'It also moves the files from uploads/ to the fileadmin/_migrated/ path.<br /><br />'
             . 'This update wizard can be called multiple times in case it didn\'t finish after running once.';
 
-        if ($this->versionNumber < 6000000) {
+        if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version) < 6000000) {
             // Nothing to do
             return false;
         }
@@ -220,7 +221,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
      */
     public function performUpdate(array &$dbQueries, &$customMessages): bool
     {
-        if ($this->versionNumber < 6000000) {
+        if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version) < 6000000) {
             // Nothing to do
             return true;
         }
@@ -333,22 +334,22 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
      *
      * @param string $table
      * @param array $row
-     * @param string $fieldname
+     * @param string $fieldName
      * @param array $fieldConfiguration
      * @param string $customMessages
      *
      * @return array A list of performed database queries
      * @throws \Exception
      */
-    protected function migrateField($table, $row, $fieldname, $fieldConfiguration, &$customMessages): array
+    protected function migrateField($table, $row, $fieldName, $fieldConfiguration, &$customMessages): array
     {
         $titleTextContents = [];
         $alternativeTextContents = [];
         $captionContents = [];
         $linkContents = [];
 
-        $fieldItems = GeneralUtility::trimExplode(',', $row[$fieldname], true);
-        if (empty($fieldItems) || is_numeric($row[$fieldname])) {
+        $fieldItems = GeneralUtility::trimExplode(',', $row[$fieldName], true);
+        if (empty($fieldItems) || is_numeric($row[$fieldName])) {
             return [];
         }
         if (isset($fieldConfiguration['titleTexts'])) {
@@ -433,7 +434,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
                     $this->logger->notice(
                         'File ' . $fieldConfiguration['sourcePath'] . $item
                         . ' does not exist. Reference was not migrated.',
-                        ['table' => $table, 'record' => $row, 'field' => $fieldname]
+                        ['table' => $table, 'record' => $row, 'field' => $fieldName]
                     );
 
                     $format =
@@ -443,7 +444,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
                         $fieldConfiguration['sourcePath'] . $item,
                         $table,
                         $row['uid'],
-                        $fieldname
+                        $fieldName
                     );
                     $customMessages .= PHP_EOL . $message;
 
@@ -453,7 +454,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
 
             if ($fileUid > 0) {
                 $fields = [
-                    'fieldname' => $fieldname,
+                    'fieldname' => $fieldName,
                     'table_local' => 'sys_file',
                     // the sys_file_reference record should always placed on the same page
                     // as the record to link to, see issue #46497
@@ -499,7 +500,7 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
                         $tableQueryBuilder->createNamedParameter($row['uid'], \PDO::PARAM_INT)
                     )
                 )
-                ->set($fieldname, $i);
+                ->set($fieldName, $i);
             $databaseQueries[] = $tableQueryBuilder->getSQL();
             $tableQueryBuilder->execute();
         } else {
