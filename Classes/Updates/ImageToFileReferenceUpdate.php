@@ -13,6 +13,7 @@ namespace CommerceTeam\Commerce\Updates;
  */
 
 use Doctrine\DBAL\Driver\Statement;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
@@ -53,31 +54,31 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
     protected $tables = [
         'tx_commerce_articles' => [
             'images' => [
-                'sourcePath' => 'uploads/tx_commerce',
+                'sourcePath' => 'uploads/tx_commerce/',
                 // Relative to fileadmin
                 'targetPath' => '_migrated/tx_commerce/article_images/',
             ],
         ],
         'tx_commerce_categories' => [
             'images' => [
-                'sourcePath' => 'uploads/tx_commerce',
+                'sourcePath' => 'uploads/tx_commerce/',
                 // Relative to fileadmin
                 'targetPath' => '_migrated/tx_commerce/categories_images/',
             ],
             'teaserimages' => [
-                'sourcePath' => 'uploads/tx_commerce',
+                'sourcePath' => 'uploads/tx_commerce/',
                 // Relative to fileadmin
                 'targetPath' => '_migrated/tx_commerce/categories_teaserimages/',
             ],
         ],
         'tx_commerce_products' => [
             'images' => [
-                'sourcePath' => 'uploads/tx_commerce',
+                'sourcePath' => 'uploads/tx_commerce/',
                 // Relative to fileadmin
                 'targetPath' => '_migrated/tx_commerce/categories_images/',
             ],
             'teaserimages' => [
-                'sourcePath' => 'uploads/tx_commerce',
+                'sourcePath' => 'uploads/tx_commerce/',
                 // Relative to fileadmin
                 'targetPath' => '_migrated/tx_commerce/categories_teaserimages/',
             ],
@@ -85,54 +86,54 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
 
         'tx_commerce_attributes' => [
             'icon' => [
-                'sourcePath' => 'uploads/tx_commerce',
+                'sourcePath' => 'uploads/tx_commerce/',
                 // Relative to fileadmin
                 'targetPath' => '_migrated/tx_commerce/attribute_icon/',
             ],
         ],
         'tx_commerce_attribute_values' => [
             'icon' => [
-                'sourcePath' => 'uploads/tx_commerce',
+                'sourcePath' => 'uploads/tx_commerce/',
                 // Relative to fileadmin
                 'targetPath' => '_migrated/tx_commerce/attribute_values_icon/',
             ],
         ],
         'tx_commerce_manufacturer' => [
             'logo' => [
-                'sourcePath' => 'uploads/tx_commerce',
+                'sourcePath' => 'uploads/tx_commerce/',
                 // Relative to fileadmin
                 'targetPath' => '_migrated/tx_commerce/manufacturer_logo/',
             ],
         ],
         'tx_commerce_moveordermails' => [
             'mailtemplate' => [
-                'sourcePath' => 'uploads/tx_commerce',
+                'sourcePath' => 'uploads/tx_commerce/',
                 // Relative to fileadmin
                 'targetPath' => '_migrated/tx_commerce/ordermail_mailtemplate/',
             ],
             'htmltemplate' => [
-                'sourcePath' => 'uploads/tx_commerce',
+                'sourcePath' => 'uploads/tx_commerce/',
                 // Relative to fileadmin
                 'targetPath' => '_migrated/tx_commerce/ordermail_htmltemplate/',
             ]
         ],
         'tx_commerce_order_types' => [
             'icon' => [
-                'sourcePath' => 'uploads/tx_commerce',
+                'sourcePath' => 'uploads/tx_commerce/',
                 // Relative to fileadmin
                 'targetPath' => '_migrated/tx_commerce/order_types_logo/',
             ]
         ],
         'tx_commerce_supplier' => [
             'logo' => [
-                'sourcePath' => 'uploads/tx_commerce',
+                'sourcePath' => 'uploads/tx_commerce/',
                 // Relative to fileadmin
                 'targetPath' => '_migrated/tx_commerce/supplier_logo/',
             ]
         ],
         'tx_commerce_user_states' => [
             'icon' => [
-                'sourcePath' => 'uploads/tx_commerce',
+                'sourcePath' => 'uploads/tx_commerce/',
                 // Relative to fileadmin
                 'targetPath' => '_migrated/tx_commerce/user_states/',
             ]
@@ -214,12 +215,12 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
     /**
      * Performs the database update.
      *
-     * @param array &$dbQueries Queries done in this update
+     * @param array &$databaseQueries Queries done in this update
      * @param mixed &$customMessages Custom messages
      *
      * @return bool TRUE on success, FALSE on error
      */
-    public function performUpdate(array &$dbQueries, &$customMessages): bool
+    public function performUpdate(array &$databaseQueries, &$customMessages): bool
     {
         if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version) < 6000000) {
             // Nothing to do
@@ -257,7 +258,13 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
 
                     do {
                         $limit = self::RECORDS_PER_QUERY;
-                        $queryResult = $this->getRecordsFromTable($table, $fieldToMigrate, $fieldsToGet, $limit);
+                        $queryResult = $this->getRecordsFromTable(
+                            $table,
+                            $fieldToMigrate,
+                            $fieldsToGet,
+                            $limit,
+                            $databaseQueries
+                        );
                         while ($record = $queryResult->fetch()) {
                             $this->migrateField($table, $record, $fieldToMigrate, $fieldConfiguration, $customMessages);
                         }
@@ -301,21 +308,31 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
      * @param string $fieldToMigrate
      * @param array $relationFields
      * @param int $limit Maximum number records to select
+     * @param array $databaseQueries
      *
      * @return Statement
      * @throws \RuntimeException
      */
-    protected function getRecordsFromTable($table, $fieldToMigrate, $relationFields, $limit): Statement
-    {
-        $fields = implode(',', array_merge($relationFields, ['uid', 'pid']));
-        $deletedCheck = isset($GLOBALS['TCA'][$table]['ctrl']['delete']) ?
-            ' AND ' . $GLOBALS['TCA'][$table]['ctrl']['delete'] . '=0' : '';
-        $where = $fieldToMigrate . ' IS NOT NULL AND ' . $fieldToMigrate . ' != \'\'' . ' AND CAST(CAST('
-            . $fieldToMigrate . ' AS DECIMAL) AS CHAR) <> CAST(' . $fieldToMigrate . ' AS CHAR)' . $deletedCheck;
+    protected function getRecordsFromTable(
+        $table,
+        $fieldToMigrate,
+        $relationFields,
+        $limit,
+        &$databaseQueries
+    ): Statement {
+        $fields = explode(',', implode(',', array_merge($relationFields, ['uid', 'pid'])));
+        $where = $fieldToMigrate . ' IS NOT NULL AND ' . $fieldToMigrate . ' != \'\'' .
+            ' AND NOT ' . $fieldToMigrate . ' REGEXP \'^[[:digit:]]+$\'';
 
-        $queryResult = $this->getQueryBuilderForTable($table)
-            ->select($fields)
-            ->from($table)
+        $queryBuilder = $this->getQueryBuilderForTable($table);
+
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        $queryBuilder->getRestrictions()->removeAll()->add($deleteRestriction);
+
+        call_user_func_array([$queryBuilder, 'select'], $fields);
+
+        $queryResult = $queryBuilder->from($table)
             ->where($where)
             ->orderBy('uid')
             ->setFirstResult($this->recordOffset[$table])
@@ -325,6 +342,8 @@ class ImageToFileReferenceUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpda
         if ($queryResult->errorCode() === null) {
             throw new \RuntimeException('Database query failed. Error was: ' . $queryResult->errorInfo());
         }
+
+        $databaseQueries[] = $queryBuilder->getSQL();
 
         return $queryResult;
     }
