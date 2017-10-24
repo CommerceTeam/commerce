@@ -12,6 +12,7 @@ namespace CommerceTeam\Commerce\ViewHelpers;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
 use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -261,11 +262,10 @@ class NavigationViewHelper
      * @var array
      */
     protected $repositoryNames = [
-        'tx_commerce_categories' => \CommerceTeam\Commerce\Domain\Repository\CategoryRepository::class,
-        'tx_commerce_products' => \CommerceTeam\Commerce\Domain\Repository\ProductRepository::class,
-        'tx_commerce_categories_parent_category_mm' =>
-            \CommerceTeam\Commerce\Domain\Repository\CategoryRepository::class,
-        'tx_commerce_products_categories_mm' => \CommerceTeam\Commerce\Domain\Repository\ProductRepository::class,
+        'tx_commerce_categories' => CategoryRepository::class,
+        'tx_commerce_products' => ProductRepository::class,
+        'tx_commerce_categories_parent_category_mm' => CategoryRepository::class,
+        'tx_commerce_products_categories_mm' => ProductRepository::class,
     ];
 
     /**
@@ -941,7 +941,7 @@ class NavigationViewHelper
                 )
             );
         }
-$sql = $queryBuilder->getSQL();
+
         $rows = $queryBuilder->execute()->fetchAll();
 
         foreach ($rows as $row) {

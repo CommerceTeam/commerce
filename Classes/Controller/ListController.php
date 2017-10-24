@@ -913,12 +913,14 @@ class ListController extends BaseController
                         }
                     }
 
-                    $content .= $this->templateService->substituteMarkerArray(
-                        $templateAttributes,
-                        $markerArray,
-                        '###|###',
-                        true
-                    );
+                    if (!empty($markerArray)) {
+                        $content .= $this->templateService->substituteMarkerArray(
+                            $templateAttributes,
+                            $markerArray,
+                            '###|###',
+                            true
+                        );
+                    }
                 }
             } else {
                 $sortedAttributeArray = [];
@@ -1098,12 +1100,14 @@ class ListController extends BaseController
                     }
                 }
 
-                $content .= $this->templateService->substituteMarkerArray(
-                    $templateAttributes,
-                    $markerArray,
-                    '###|###',
-                    true
-                );
+                if (!empty($markerArray)) {
+                    $content .= $this->templateService->substituteMarkerArray(
+                        $templateAttributes,
+                        $markerArray,
+                        '###|###',
+                        true
+                    );
+                }
             }
         } else {
             // Special Marker and rendering when more articles are existing than
