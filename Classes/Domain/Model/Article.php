@@ -448,7 +448,7 @@ class Article extends AbstractEntity
     /**
      * Price gross.
      *
-     * @return float
+     * @return int
      */
     public function getPriceGross()
     {
@@ -464,7 +464,7 @@ class Article extends AbstractEntity
     /**
      * Price net.
      *
-     * @return float
+     * @return int
      */
     public function getPriceNet()
     {

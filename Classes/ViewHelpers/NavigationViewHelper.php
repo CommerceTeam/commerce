@@ -315,7 +315,7 @@ class NavigationViewHelper
 
         /*
          * Detect if a user is logged in and if he has usergroups as we have to take in
-         * accout, that different usergroups may have different rights on the commerce
+         * account, that different usergroups may have different rights on the commerce
          * tree, so consider this we calculation the cache hash.
          */
         $usergroups = '';
@@ -361,7 +361,7 @@ class NavigationViewHelper
         );
 
         /*
-         * Render Menue Array and store in cache, if possible
+         * Render menu Array and store in cache, if possible
          */
         if ($this->getTypoScriptFrontendController()->no_cache) {
             // Build directly and don't sore, if no_cache=1'
@@ -393,7 +393,7 @@ class NavigationViewHelper
                 // User the cached version
                 $this->mTree = $cachedMatrix;
             } else {
-                // no cache present buld data and stor it in cache
+                // no cache present build data and store it in cache
                 $this->mTree = $this->makeArrayPostRender(
                     $this->pid,
                     'tx_commerce_categories',
@@ -421,8 +421,7 @@ class NavigationViewHelper
         }
 
         /*
-         * Finish menue array rendering, now postprocessing
-         * with current status of menue
+         * Finish menu array rendering, now postprocessing with current status of menu
          */
         $keys = array_keys($this->mTree);
 
@@ -437,7 +436,7 @@ class NavigationViewHelper
         } elseif ($this->showUid) {
             /*
              * If a product is shown, we have to detect the parent category as well
-             * even if wo haven't walked thrue the categories
+             * even if wo haven't walked through the categories
              */
             /**
              * Product.
@@ -470,7 +469,7 @@ class NavigationViewHelper
             $aPath = $this->getRootLine($this->mTree, $this->choosenCat, $this->expandAll);
             if (!$aPath) {
                 /*
-                 * If the methode getRootLine fail, we take the path direct from the DB.
+                 * If the method getRootLine fail, we take the path direct from the DB.
                  */
                 $tmpArray = $category->getParentCategoriesUidlist();
                 $this->fixPathParents($tmpArray, $this->cat);
@@ -504,7 +503,7 @@ class NavigationViewHelper
             }
         } else {
             /*
-             * If no Category is choosen by the user, so you just render the default menue
+             * If no Category is chosen by the user, so you just render the default menu
              * no rootline for the categories is needed and the depth is 0
              */
             $this->pathParents = [];
@@ -516,17 +515,17 @@ class NavigationViewHelper
          * we strip away the number of array levels of the entry level value
          */
         if ($this->entryLevel > 0) {
-            $newParentes = array_reverse($this->pathParents);
+            $newParents = array_reverse($this->pathParents);
 
             /**
              * Foreach entry level detect the array for this level and remove
              * it from $this->mTree.
              */
             for ($i = 0; $i < $this->entryLevel; ++$i) {
-                $this->mTree = $this->mTree[$newParentes[$i]]['--subLevel--'];
+                $this->mTree = $this->mTree[$newParents[$i]]['--subLevel--'];
 
                 /*
-                 * Reduce elementes in pathParents and decrese menue depth
+                 * Reduce elements in pathParents and decrease menu depth
                  */
                 array_pop($this->pathParents);
                 --$this->mDepth;
@@ -697,24 +696,21 @@ class NavigationViewHelper
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($mainTable);
-        $result = $queryBuilder
+        $rows = $queryBuilder
             ->select('mm.*')
             ->from($mainTable, 't')
             ->innerJoin('t', $tableMm, 'mm', 't.uid = mm.uid_local')
             ->where(
-                $queryBuilder->expr()->neq(
-                    'mm.uid_local',
-                    $queryBuilder->createNamedParameter('', \PDO::PARAM_STR)
-                ),
                 $queryBuilder->expr()->eq(
                     'mm.uid_foreign',
                     $queryBuilder->createNamedParameter($uidRoot, \PDO::PARAM_INT)
                 )
             )
-            ->orderBy(str_replace($mainTable, 't', str_replace('ORDER BY', '', $sorting)))
-            ->execute();
+            ->orderBy(str_replace($mainTable, 't', trim(str_replace('ORDER BY', '', $sorting))))
+            ->execute()
+            ->fetchAll();
 
-        while ($row = $result->fetch()) {
+        foreach ($rows as $row) {
             $nodeArray = [];
             $dataRow = $this->getDataRow($row['uid_local'], $mainTable);
 
@@ -802,8 +798,7 @@ class NavigationViewHelper
                             $tableSubMm,
                             $row['uid_local'],
                             $mDepth + 1,
-                            $nodeArray['path'],
-                            $maxLevel
+                            $nodeArray['path']
                         );
 
                         $this->arrayMerge($nodeArray['--subLevel--'], $arraySubChild);
@@ -820,8 +815,7 @@ class NavigationViewHelper
                                 $tableSubMm,
                                 $row['uid_local'],
                                 $mDepth + 1,
-                                $nodeArray['path'],
-                                $maxLevel
+                                $nodeArray['path']
                             );
                             $this->arrayMerge($nodeArray['--subLevel--'], $arraySubChild);
                         }
@@ -864,7 +858,8 @@ class NavigationViewHelper
 
                 $nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' .
                     $this->generateChash(
-                        $nodeArray['_ADD_GETVARS'] . $this->getTypoScriptFrontendController()->linkVars
+                        $this->separator . 'id=' . $row['uid_local'] . $nodeArray['_ADD_GETVARS'] .
+                        $this->getTypoScriptFrontendController()->linkVars
                     );
 
                 $treeList[$row['uid_local']] = $nodeArray;
@@ -879,8 +874,7 @@ class NavigationViewHelper
                 $tableSubMm,
                 $uidRoot,
                 $mDepth,
-                $path,
-                $maxLevel
+                $path
             );
         }
 
@@ -932,16 +926,12 @@ class NavigationViewHelper
             ->from($mainTable, 't')
             ->innerJoin('t', $mmTable, 'mm', 't.uid = mm.uid_local')
             ->where(
-                $queryBuilder->expr()->neq(
-                    'mm.uid_local',
-                    $queryBuilder->createNamedParameter('', \PDO::PARAM_STR)
-                ),
-                $queryBuilder->expr()->neq(
+                $queryBuilder->expr()->eq(
                     'mm.uid_foreign',
                     $queryBuilder->createNamedParameter($categoryUid, \PDO::PARAM_INT)
-                ) // $sqlManufacturer
+                )
             )
-            ->orderBy(str_replace($mainTable, 't', str_replace('ORDER BY', '', $sorting)));
+            ->orderBy(str_replace($mainTable, 't', trim(str_replace('ORDER BY', '', $sorting))));
 
         if (is_numeric($manufacturerUid)) {
             $queryBuilder->andWhere(
@@ -951,10 +941,10 @@ class NavigationViewHelper
                 )
             );
         }
+$sql = $queryBuilder->getSQL();
+        $rows = $queryBuilder->execute()->fetchAll();
 
-        $result = $queryBuilder->execute();
-
-        while ($row = $result->fetch()) {
+        foreach ($rows as $row) {
             $nodeArray = [];
             $dataRow = $this->getDataRow($row['uid_local'], $mainTable);
             if ($dataRow['deleted'] == '0') {
@@ -1008,7 +998,8 @@ class NavigationViewHelper
 
                 $nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' .
                     $this->generateChash(
-                        $nodeArray['_ADD_GETVARS'] . $this->getTypoScriptFrontendController()->linkVars
+                        $this->separator . 'id=' . $dataRow['uid'] . $nodeArray['_ADD_GETVARS'] .
+                        $this->getTypoScriptFrontendController()->linkVars
                     );
 
                 if ($this->gpVars['manufacturer']) {
@@ -1373,7 +1364,8 @@ class NavigationViewHelper
             );
             $category->loadData();
 
-            $addGetvars = $this->separator . $this->prefixId . '[showUid]=' . $product->getUid() .
+            $addGetvars = $this->separator . 'id=' . $this->pid .
+                $this->separator . $this->prefixId . '[showUid]=' . $product->getUid() .
                 $this->separator . $this->prefixId . '[catUid]=' . $category->getUid();
             if (is_string($this->gpVars['basketHashValue'])) {
                 $addGetvars .= $this->separator . $this->prefixId . '[basketHashValue]=' .
@@ -1441,7 +1433,8 @@ class NavigationViewHelper
                 }
             }
 
-            $additionalParams = $this->separator . $this->prefixId . '[showUid]=' .
+            $additionalParams = $this->separator . 'id=' . $this->pid .
+                $this->separator . $this->prefixId . '[showUid]=' .
                 $this->separator . $this->prefixId . '[catUid]=' . $category->getUid();
 
             if (is_string($this->gpVars['basketHashValue'])) {
@@ -1620,7 +1613,7 @@ class NavigationViewHelper
         $firstPath = $path;
         foreach ($products as $productRow) {
             if ($productRow['manufacturer_uid']) {
-                // @todo not a realy good solution
+                // @todo not a really good solution
                 $path = $this->manufacturerIdentifier . $productRow['manufacturer_uid'] . ',' . $firstPath;
 
                 /**
@@ -1635,7 +1628,8 @@ class NavigationViewHelper
                 $product->loadData();
 
                 $manufacturerTitle = htmlspecialchars(strip_tags($product->getManufacturerTitle()));
-                $addGet = $this->separator . $this->prefixId . '[catUid]=' . $categoryUid .
+                $addGet = $this->separator . 'id=' . $uidPage .
+                    $this->separator . $this->prefixId . '[catUid]=' . $categoryUid .
                     $this->separator . $this->prefixId . '[manufacturer]=' . $productRow['manufacturer_uid'];
                 $cHash = $this->generateChash($addGet . $this->getTypoScriptFrontendController()->linkVars);
                 $addGet .= $this->separator . 'cHash=' . $cHash;

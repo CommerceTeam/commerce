@@ -354,7 +354,7 @@ abstract class AbstractRepository implements SingletonInterface
     /**
      * @param array $data field values for use for new record
      *
-     * @return int uid of the new record
+     * @return string uid of the new record
      */
     public function addRecord($data)
     {
