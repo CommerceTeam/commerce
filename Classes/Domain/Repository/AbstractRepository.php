@@ -139,7 +139,7 @@ abstract class AbstractRepository implements SingletonInterface
                 }
             }
 
-            return $returnData;
+            return is_array($returnData) ? $returnData : [];
         }
 
         // error Handling
