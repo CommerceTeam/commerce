@@ -13,10 +13,10 @@ namespace CommerceTeam\Commerce\Tests\Functional\Backend\Domain\Repository;
  */
 
 /**
- * Test case for \CommerceTeam\Commerce\Domain\Repository\ProductRepository
+ * Test case for \CommerceTeam\Commerce\Domain\Repository\AbstractRepository
  */
-class ProductRepositoryTest extends
- \CommerceTeam\Commerce\Tests\Functional\Frontend\Domain\Repository\ProductRepositoryTest
+class AbstractRepositoryTest extends
+ \CommerceTeam\Commerce\Tests\Functional\Frontend\Domain\Repository\AbstractRepositoryTest
 {
     /**
      * @var string BE|FE

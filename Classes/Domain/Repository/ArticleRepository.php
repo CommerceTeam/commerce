@@ -821,7 +821,7 @@ class ArticleRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid_product',
-                    $queryBuilder->createNamedParameter($productUid)
+                    $queryBuilder->createNamedParameter($productUid, \PDO::PARAM_INT)
                 )
             );
 

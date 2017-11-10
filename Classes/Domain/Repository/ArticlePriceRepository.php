@@ -13,12 +13,12 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  */
 
 /**
- * Database Class for tx_commerce_article_prices. All database calle should
- * be made by this class. In most cases you should use the methodes
- * provided by tx_commerce_article_price to get informations for articles.
+ * Database class for tx_commerce_article_prices. All database calls should
+ * be made by this class. In most cases you should use the methods
+ * provided by tx_commerce_article_price to get information for articles.
  *
- * Basic abtract Class for Database Query for
- * Database retrival class fro product
+ * Basic abstract class for database query for
+ * database retrieval class from product
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\ArticlePriceRepository
  */
@@ -37,11 +37,11 @@ class ArticlePriceRepository extends AbstractRepository
      *
      * @param int $uid UID for Data
      * @param int $langUid Language Uid
-     * @param bool $translationMode Translation Mode for recordset
+     * @param bool $translationMode Translation Mode for record set
      *
      * @return array assoc array with data
      */
-    public function getData($uid, $langUid = -1, $translationMode = false)
+    public function getData($uid, $langUid = -1, $translationMode = false): array
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
         $result = $queryBuilder
@@ -55,21 +55,20 @@ class ArticlePriceRepository extends AbstractRepository
             )
             ->execute();
 
-        // Result should contain only one Dataset
+        // result should contain only one data set
         if ($result->rowCount() == 1) {
             return $result->fetch();
         }
 
         $this->error(
-            'SELECT * FROM tx_commerce_article_prices WHERE uid = '
-            . $uid . '; # returns no or more than one Result'
+            'query tx_commerce_article_prices with uid ' . $uid . '; # returns no or more than one result'
         );
 
         return [];
     }
 
     /**
-     * @param int $articleUid Uid of the article to get the price off
+     * @param int $articleUid uid of the article to get the price off
      *
      * @return array
      */

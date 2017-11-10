@@ -365,31 +365,6 @@ class ProductRepository extends AbstractRepository
      *
      * @return array
      */
-    public function findRelationByForeignUid($foreignUid)
-    {
-        $queryBuilder = $this->getQueryBuilderForTable($this->databaseCategoryRelationTable);
-        $result = $queryBuilder
-            ->select('*')
-            ->from($this->databaseCategoryRelationTable)
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'uid_foreign',
-                    $queryBuilder->createNamedParameter($foreignUid, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetchAll();
-
-        return is_array($result) ? $result : [];
-    }
-
-    /**
-     * Get relation.
-     *
-     * @param int $foreignUid Foreign uid
-     *
-     * @return array
-     */
     public function findRelationByCategoryUid($foreignUid)
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseCategoryRelationTable);
@@ -446,7 +421,7 @@ class ProductRepository extends AbstractRepository
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
         $result = $queryBuilder
             ->select('p.*')
-            ->from($this->databaseTable)
+            ->from($this->databaseTable, 'p')
             ->innerJoin('p', $this->databaseCategoryRelationTable, 'mm', 'p.uid = mm.uid_local')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -666,7 +641,10 @@ class ProductRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'a.article_type_uid',
-                    $queryBuilder->createNamedParameter(NORMALARTICLETYPE, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(
+                        \CommerceTeam\Commerce\Domain\Model\Article::ARTICLE_TYPE_NORMAL,
+                        \PDO::PARAM_INT
+                    )
                 )
             )
             ->groupBy('p.title', 'p.uid', 'p.sys_language_uid')

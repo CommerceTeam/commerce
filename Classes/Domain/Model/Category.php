@@ -59,18 +59,14 @@ class Category extends AbstractEntity
     protected $description = '';
 
     /**
-     * Images.
-     *
-     * @var string
-     */
-    protected $images = '';
-
-    /**
-     * Images as array.
-     *
      * @var array
      */
-    protected $images_array = [];
+    protected $teaserimages;
+
+    /**
+     * @var array
+     */
+    protected $images;
 
     /**
      * Title for navigation an Menu Rendering.
@@ -134,20 +130,6 @@ class Category extends AbstractEntity
      * @var string
      */
     protected $teaser = '';
-
-    /**
-     * Teaser images.
-     *
-     * @var string
-     */
-    protected $teaserimages = '';
-
-    /**
-     * Images as array.
-     *
-     * @var array
-     */
-    protected $teaserImagesArray = [];
 
     /**
      * Is true when data is loaded.
@@ -237,10 +219,8 @@ class Category extends AbstractEntity
         'subtitle',
         'description',
         'teaser',
-        'teaserimages',
         'navtitle',
         'keywords',
-        'images',
         'ts_config',
         'l18n_parent',
     ];
@@ -251,7 +231,7 @@ class Category extends AbstractEntity
      * @param int $uid Category uid
      * @param int $languageUid Language uid
      */
-    public function __construct($uid, $languageUid = 0)
+    public function __construct($uid = 0, $languageUid = 0)
     {
         if ((int) $uid) {
             $this->init($uid, $languageUid);
@@ -335,6 +315,7 @@ class Category extends AbstractEntity
                  * @var \CommerceTeam\Commerce\Domain\Model\Category $childCategory
                  */
                 $childCategory = GeneralUtility::makeInstance(self::class, $childCategoryUid, $this->lang_uid);
+                $childCategory->loadData();
 
                 $this->categories[$childCategoryUid] = $childCategory;
             }
@@ -417,6 +398,7 @@ class Category extends AbstractEntity
                     $productUid,
                     $this->lang_uid
                 );
+                $product->loadData();
 
                 $this->products[$productUid] = $product;
             }
@@ -443,16 +425,6 @@ class Category extends AbstractEntity
     public function getEditlock()
     {
         return $this->editlock;
-    }
-
-    /**
-     * Returns an array of categoryimages.
-     *
-     * @return array Array of images;
-     */
-    public function getImages()
-    {
-        return $this->images_array;
     }
 
     /**
@@ -655,36 +627,6 @@ class Category extends AbstractEntity
     }
 
     /**
-     * Returns the first image, if not availiabe,
-     * walk recursive up, to get the image.
-     *
-     * @return mixed Image/FALSE, if no image found
-     */
-    public function getTeaserImage()
-    {
-        if (!empty($this->images_array[0])) {
-            return $this->images_array[0];
-        }
-        if (($parentCategory = $this->getParentCategory())) {
-            $parentCategory->loadData();
-
-            return $parentCategory->getTeaserImage();
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns an array of teaserimages.
-     *
-     * @return array Teaserimages;
-     */
-    public function getTeaserImages()
-    {
-        return $this->teaserImagesArray;
-    }
-
-    /**
      * Returns the title of the category.
      *
      * @return string Title
@@ -692,6 +634,26 @@ class Category extends AbstractEntity
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTeaserimages():array
+    {
+        $this->initializeFileReferences($this->teaserimages, 'teaserimages');
+
+        return $this->teaserimages;
+    }
+
+    /**
+     * @return array
+     */
+    public function getImages():array
+    {
+        $this->initializeFileReferences($this->images, 'images');
+
+        return $this->images;
     }
 
     /**
@@ -742,8 +704,6 @@ class Category extends AbstractEntity
     {
         if ($this->data_loaded == false) {
             parent::loadData($translationMode);
-            $this->images_array = GeneralUtility::trimExplode(',', $this->images, true);
-            $this->teaserImagesArray = GeneralUtility::trimExplode(',', $this->teaserimages, true);
 
             $this->categories_uid = array_unique(
                 $this->getRepository()->getChildCategories($this->uid, $this->lang_uid)
@@ -797,7 +757,7 @@ class Category extends AbstractEntity
         }
         $this->loadPermissions();
 
-        return BackendUtility::isPermissionSet($perm, $this->perms_record);
+        return is_array($this->perms_record) ? BackendUtility::isPermissionSet($perm, $this->perms_record) : false;
     }
 
     /**

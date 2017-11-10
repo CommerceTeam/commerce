@@ -107,6 +107,11 @@ class Attribute extends AbstractEntity
     protected $children = null;
 
     /**
+     * @var array
+     */
+    protected $icon;
+
+    /**
      * Constructor class, basically calls init.
      *
      * @param int $uid Attribute uid
@@ -290,6 +295,16 @@ class Attribute extends AbstractEntity
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIcon()
+    {
+        $this->initializeFileReferences($this->icon, 'icon');
+
+        return $this->icon;
     }
 
     /**

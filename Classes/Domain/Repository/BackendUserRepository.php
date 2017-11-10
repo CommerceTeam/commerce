@@ -13,9 +13,8 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  */
 
 /**
- * Database Class for be_users. All database calls should
- * be made by this class. In most cases you should use the methodes
- * provided by tx_commerce_product to get informations for articles.
+ * Database class for be_users. All database calls should
+ * be made by this class.
  *
  * Class \CommerceTeam\Commerce\Domain\Repository\BackendUsergroupRepository
  */
@@ -40,7 +39,10 @@ class BackendUserRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->in(
                     'uid',
-                    $groupList
+                    $queryBuilder->createNamedParameter(
+                        $groupList,
+                        \TYPO3\CMS\Core\Database\Connection::PARAM_INT_ARRAY
+                    )
                 )
             )
             ->execute()
@@ -60,9 +62,9 @@ class BackendUserRepository extends AbstractRepository
             ->select('*')
             ->from($this->databaseTable)
             ->where(
-                $queryBuilder->expr()->in(
+                $queryBuilder->expr()->eq(
                     'username',
-                    $username
+                    $queryBuilder->createNamedParameter($username, \PDO::PARAM_STR)
                 )
             )
             ->execute()

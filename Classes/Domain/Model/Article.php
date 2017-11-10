@@ -26,6 +26,21 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Article extends AbstractEntity
 {
     /**
+     * @var int
+     */
+    const ARTICLE_TYPE_DELIVERY = 3;
+
+    /**
+     * @var int
+     */
+    const ARTICLE_TYPE_NORMAL = 1;
+
+    /**
+     * @var int
+     */
+    const ARTICLE_TYPE_PAYMENT = 2;
+
+    /**
      * Database class name.
      *
      * @var string
@@ -92,18 +107,11 @@ class Article extends AbstractEntity
     protected $tax;
 
     /**
-     * Images.
-     *
-     * @var string
-     */
-    protected $images = '';
-
-    /**
      * Images for the article.
      *
      * @var array
      */
-    protected $images_array = [];
+    protected $images;
 
     /**
      * Ordernumber.
@@ -231,7 +239,7 @@ class Article extends AbstractEntity
      * @param int $uid Article uid
      * @param int $languageUid Language uid
      */
-    public function __construct($uid, $languageUid = 0)
+    public function __construct($uid = 0, $languageUid = 0)
     {
         if ((int) $uid) {
             $this->init($uid, $languageUid);
@@ -432,7 +440,9 @@ class Article extends AbstractEntity
      */
     public function getImages()
     {
-        return $this->images_array;
+        $this->initializeFileReferences($this->images, 'images');
+
+        return $this->images;
     }
 
     /**
@@ -685,7 +695,6 @@ class Article extends AbstractEntity
     {
         parent::loadData($translationMode);
         $this->loadPrices($translationMode);
-        $this->images_array = GeneralUtility::trimExplode(',', $this->images);
         $this->calculateDeliveryCosts();
 
         return $this->data;

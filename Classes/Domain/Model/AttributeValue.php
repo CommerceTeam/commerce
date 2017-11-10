@@ -79,9 +79,9 @@ class AttributeValue extends AbstractEntity
     /**
      * Icon for this Value.
      *
-     * @var string icon
+     * @var array
      */
-    protected $icon = '';
+    protected $icon;
 
     /**
      * Show icon.
@@ -125,10 +125,12 @@ class AttributeValue extends AbstractEntity
     /**
      * Gets the icon for this value.
      *
-     * @return string
+     * @return array
      */
     public function getIcon()
     {
+        $this->initializeFileReferences($this->icon, 'icon');
+
         return $this->icon;
     }
 

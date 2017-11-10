@@ -17,6 +17,7 @@ use CommerceTeam\Commerce\Domain\Repository\ArticleRepository;
 use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
 use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
 use CommerceTeam\Commerce\Domain\Repository\ProductRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
  * Constants definition for Attribute correlation_types
@@ -171,16 +172,16 @@ class AbstractEntity
     /**
      * Possible attributes.
      *
-     * @param array $attributeCorelationTypeList Attribut correlation types
+     * @param array $attributeCorrelationTypeList Attribute correlation types
      *
      * @return array
      */
-    public function getAttributes(array $attributeCorelationTypeList = [])
+    public function getAttributes(array $attributeCorrelationTypeList = [])
     {
         if ($this->attributes_uids == null) {
             $this->attributes_uids = $this->getRepository()->getAttributes(
                 $this->uid,
-                $attributeCorelationTypeList
+                $attributeCorrelationTypeList
             );
 
             foreach ($this->attributes_uids as $attributeUid) {
@@ -311,6 +312,23 @@ class AbstractEntity
     }
 
     /**
+     * @param array|null $field
+     * @param string $fieldName
+     */
+    protected function initializeFileReferences(&$field, $fieldName)
+    {
+        if (!is_array($field)) {
+            /** @var \TYPO3\CMS\Core\Resource\FileRepository $fileRepository */
+            $fileRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\FileRepository::class);
+            $field = $fileRepository->findByRelation(
+                $this->databaseConnection->getTable(),
+                $fieldName,
+                $this->uid
+            );
+        }
+    }
+
+    /**
      * Adds a field to the $fieldlist variable
      * used for hooks to add own fields to the output
      * Basically it creates an array with the string as value
@@ -362,7 +380,7 @@ class AbstractEntity
      */
     public function isValidUid()
     {
-        return $this->getRepository()->isUid($this->uid);
+        return $this->getRepository()->isValidUid($this->uid);
     }
 
     /**

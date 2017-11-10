@@ -3,6 +3,7 @@
 	<tx_commerce_products>
 		<uid>1</uid>
 		<pid>1</pid>
+		<hidden>0</hidden>
 		<title>product_default</title>
 	</tx_commerce_products>
 	<tx_commerce_products>
@@ -29,6 +30,50 @@
 		<uid>5</uid>
 		<pid>1</pid>
 		<fe_group>3,5</fe_group>
-		<title>deleted_product</title>
+		<title>product_with_group_set</title>
+	</tx_commerce_products>
+	<tx_commerce_products>
+		<uid>6</uid>
+		<pid>1</pid>
+		<uname>23,42</uname>
+		<title>product_with_group_set</title>
+	</tx_commerce_products>
+	<tx_commerce_products>
+		<uid>7</uid>
+		<pid>1</pid>
+		<title>product_to_delete</title>
+	</tx_commerce_products>
+	<tx_commerce_products>
+		<uid>9</uid>
+		<pid>1</pid>
+		<title>product_to_update_with_table</title>
+	</tx_commerce_products>
+	<tx_commerce_products>
+		<uid>10</uid>
+		<pid>1</pid>
+		<title>product_to_delete_with_table</title>
+	</tx_commerce_products>
+	<tx_commerce_products>
+		<uid>11</uid>
+		<pid>1</pid>
+		<l18n_parent>10</l18n_parent>
+		<sys_language_uid>1</sys_language_uid>
+		<title>product_translation_to_delete1</title>
+	</tx_commerce_products>
+	<tx_commerce_products>
+		<uid>12</uid>
+		<pid>1</pid>
+		<l18n_parent>10</l18n_parent>
+		<sys_language_uid>2</sys_language_uid>
+		<title>product_translation_to_delete2</title>
+	</tx_commerce_products>
+	<tx_commerce_products>
+		<uid>13</uid>
+		<pid>1</pid>
+		<l18n_parent>10</l18n_parent>
+		<sys_language_uid>2</sys_language_uid>
+		<title>product_with_uname</title>
+		<uname>product_with_uname</uname>
+		<categories>1</categories>
 	</tx_commerce_products>
 </dataset>

@@ -31,7 +31,7 @@ class FolderRepository
     protected static $folderIds = [];
 
     /**
-     * Find the extension folders.
+     * Find the extension folder uids.
      *
      * @param string $title Folder title as named in pages table
      * @param int $pid Parent Page id
@@ -45,11 +45,7 @@ class FolderRepository
         if (!isset(static::$folderIds[$cacheHash])) {
             $folder = self::getFolder($title, $pid, $module);
             if (empty($folder)) {
-                if ($title == 'Commerce') {
-                    // If the first folder that gets fetched is empty try to create all default folders
-                    self::createBasicFolders();
-                }
-                static::$folderIds[$cacheHash] = self::getFolder($title, $pid, $module);
+                static::$folderIds[$cacheHash] = self::createFolder($title, $pid, $module);
             } else {
                 static::$folderIds[$cacheHash] = (int)$folder['uid'];
             }
@@ -245,12 +241,12 @@ class FolderRepository
             return $pCheck;
         }
 
-        // noproduct was found, so we create one
+        // no product was found, so we create one
         // make the addArray
         $paArray = $addArray;
         $paArray['uname'] = $uname;
         $paArray['title'] = $uname;
-        $paArray['categories'] = $categoryUid;
+        $paArray['categories'] = 1;
 
         /** @var ProductRepository $productRepository */
         $productRepository = GeneralUtility::makeInstance(ProductRepository::class);
@@ -287,7 +283,7 @@ class FolderRepository
      * @param array $addArray Additional params for the inserts (like timestamp)
      * @return int
      */
-    public static function makeArticle($productUid, $classname, array $value, array $addArray)
+    public static function makeArticle($productUid, $classname, array $value, array $addArray): int
     {
         /** @var ArticleRepository $articleRepository */
         $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);

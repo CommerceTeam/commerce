@@ -85,8 +85,8 @@ class BasicBasket
      * Useful for geting the delivery cost.
      *
      * Example:
-     * $basket->getArticleTypeSumNet(PAYMENTARTICLETYPE)
-     * $basket->getArticleTypeSumNet(DELIVERYARTICLETYPE)
+     * $basket->getArticleTypeSumNet(\CommerceTeam\Commerce\Domain\Model\Article::ARTICLE_TYPE_PAYMENT)
+     * $basket->getArticleTypeSumNet(\CommerceTeam\Commerce\Domain\Model\Article::ARTICLE_TYPE_DELIVERY)
      *
      * @param int $articleTypeUid Article type uid
      *
@@ -131,8 +131,8 @@ class BasicBasket
      * Useful to geting the delivery cost.
      *
      * Example:
-     * $basket->getArticleTypeSumNet(PAYMENTARTICLETYPE)
-     * $basket->getArticleTypeSumNet(DELIVERYARTICLETYPE)
+     * $basket->getArticleTypeSumNet(\CommerceTeam\Commerce\Domain\Model\Article::ARTICLE_TYPE_PAYMENT)
+     * $basket->getArticleTypeSumNet(\CommerceTeam\Commerce\Domain\Model\Article::ARTICLE_TYPE_DELIVERY)
      *
      * @param int $articleTypeUid Article type uid
      *
@@ -169,8 +169,8 @@ class BasicBasket
      * Useful for geting the delivery cost.
      *
      * Example:
-     * $basket->getArticleTypeSumGross(PAYMENTARTICLETYPE)
-     * $basket->getArticleTypeSumGross(DELIVERYARTICLETYPE)
+     * $basket->getArticleTypeSumGross(\CommerceTeam\Commerce\Domain\Model\Article::ARTICLE_TYPE_PAYMENT)
+     * $basket->getArticleTypeSumGross(\CommerceTeam\Commerce\Domain\Model\Article::ARTICLE_TYPE_DELIVERY)
      *
      * @param int $articleTypeUid Article type uid
      *
@@ -231,7 +231,7 @@ class BasicBasket
         $basketArticles = [];
         /** @var \CommerceTeam\Commerce\Domain\Model\BasketItem $basketItem */
         foreach ($this->basketItems as $basketItem) {
-            if ($basketItem->getArticleTypeUid() === NORMALARTICLETYPE) {
+            if ($basketItem->getArticleTypeUid() === \CommerceTeam\Commerce\Domain\Model\Article::ARTICLE_TYPE_NORMAL) {
                 $basketArticles[] = $basketItem;
                 break;
             }
@@ -245,7 +245,7 @@ class BasicBasket
      */
     public function getDeliveryArticle()
     {
-        return $this->getCurrentBasketItemByArticleType(DELIVERYARTICLETYPE);
+        return $this->getCurrentBasketItemByArticleType(Article::ARTICLE_TYPE_DELIVERY);
     }
 
     /**
@@ -253,7 +253,7 @@ class BasicBasket
      */
     public function getPaymentArticle()
     {
-        return $this->getCurrentBasketItemByArticleType(PAYMENTARTICLETYPE);
+        return $this->getCurrentBasketItemByArticleType(Article::ARTICLE_TYPE_PAYMENT);
     }
 
     /**

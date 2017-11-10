@@ -18,9 +18,9 @@ use TYPO3\CMS\Core\SingletonInterface;
 /**
  * Abstract Class for handling almost all Database-Calls for all
  * FE Rendering processes. This Class is mostly extended by distinct
- * Classes for spezified Objects.
+ * classes for specified Objects.
  *
- * Basic abtract Class for Database Query for
+ * Basic abstract Class for Database Query for
  * tx_commerce_product
  * tx_commerce_article
  * tx_commerce_category
@@ -38,7 +38,7 @@ abstract class AbstractRepository implements SingletonInterface
     protected $databaseTable = '';
 
     /**
-     * Order field for most select statments.
+     * Order field for most select statements.
      *
      * @var string
      */
@@ -52,7 +52,7 @@ abstract class AbstractRepository implements SingletonInterface
     protected $databaseAttributeRelationTable = '';
 
     /**
-     * Debugmode for errorHandling.
+     * Debug mode for errorHandling.
      *
      * @var bool
      */
@@ -70,12 +70,12 @@ abstract class AbstractRepository implements SingletonInterface
      *
      * @param int $uid UID for Data
      * @param int $langUid Language Uid
-     * @param bool $translationMode Translation Mode for recordset
+     * @param bool $translationMode Translation Mode for record set
      *
      * @return array assoc Array with data
-     * @todo implement access_check concering category tree
+     * @todo implement access_check concerning category tree
      */
-    public function getData($uid, $langUid = -1, $translationMode = false)
+    public function getData($uid, $langUid = -1, $translationMode = false): array
     {
         $frontend = $this->getTypoScriptFrontendController();
 
@@ -95,7 +95,7 @@ abstract class AbstractRepository implements SingletonInterface
 
         $returnData = $this->findByUid($uid);
 
-        // Result should contain only one Dataset
+        // Result should contain only one data set
         if (!empty($returnData)) {
             // get workspace version if available
             if (!empty($frontend->sys_page)) {
@@ -116,7 +116,7 @@ abstract class AbstractRepository implements SingletonInterface
                     case 'basket':
                         // special Treatment for basket, so you could have
                         // a product not translated init a language
-                        // but the basket is in the not translated laguage
+                        // but the basket is in the not translated language
                         $newData = $frontend->sys_page->getRecordOverlay(
                             $this->databaseTable,
                             $returnData,
@@ -144,7 +144,7 @@ abstract class AbstractRepository implements SingletonInterface
 
         // error Handling
         $this->error(
-            'exec_SELECTquery(\'*\', ' . $this->databaseTable . ', "uid = ' . $uid . '"); returns no result'
+            'findByUid($uid) returns no result'
         );
 
         return [];
@@ -171,7 +171,7 @@ abstract class AbstractRepository implements SingletonInterface
                 )
             );
 
-        if ($additionalWhere !== '') {
+        if (!empty($additionalWhere)) {
             $queryBuilder->andWhere($additionalWhere);
         }
 
@@ -185,8 +185,9 @@ abstract class AbstractRepository implements SingletonInterface
      *
      * @return int
      */
-    public function countWithTableAndWhere($table, $where)
+    public function countWithTableAndWhere($table, $where): int
     {
+        // @todo For one usage another solution is needed
         $queryBuilder = $this->getQueryBuilderForTable($table);
         return (int) $queryBuilder
             ->count('*')
@@ -201,11 +202,11 @@ abstract class AbstractRepository implements SingletonInterface
      *
      * @param int $uid Uid
      *
-     * @return bool true id availiabe
+     * @return bool true id available
      */
-    public function isUid($uid)
+    public function isValidUid($uid): bool
     {
-        if (!$uid) {
+        if (!(int) $uid) {
             return false;
         }
 
@@ -225,7 +226,7 @@ abstract class AbstractRepository implements SingletonInterface
     }
 
     /**
-     * Checks in the Database if a UID is accessiblbe,
+     * Checks in the Database if a UID is accessible,
      * basically checks against the enableFields.
      *
      * @param int $uid Record Uid
@@ -233,9 +234,9 @@ abstract class AbstractRepository implements SingletonInterface
      * @return bool TRUE if is accessible
      *      FALSE if is not accessible
      */
-    public function isAccessible($uid)
+    public function isAccessible($uid): bool
     {
-        if (!$uid) {
+        if (!(int) $uid) {
             return false;
         }
 
@@ -255,11 +256,11 @@ abstract class AbstractRepository implements SingletonInterface
     }
 
     /**
-     * Error Handling Funktion.
+     * Error Handling.
      *
-     * @param string $err Errortext
+     * @param string $err error message
      */
-    public function error($err)
+    protected function error($err)
     {
         if ($this->debugMode) {
             debug('Error: ' . $err);
@@ -271,9 +272,10 @@ abstract class AbstractRepository implements SingletonInterface
      *
      * @param int $uid Uid of the item
      * @param array $data Assoc. array with update fields
+     *
      * @return bool
      */
-    public function updateRecord($uid, array $data)
+    public function updateRecord($uid, array $data): bool
     {
         if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) || empty($data)) {
             if (TYPO3_DLOG) {
@@ -327,7 +329,7 @@ abstract class AbstractRepository implements SingletonInterface
      * @return string
      * @deprecated method is not used anymore please use queryBuilder restrictions
      */
-    public function enableFields($tableName = '', $as = '', $showHiddenRecords = 0)
+    public function enableFields($tableName = '', $as = '', $showHiddenRecords = 0): string
     {
         \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
@@ -354,9 +356,9 @@ abstract class AbstractRepository implements SingletonInterface
     /**
      * @param array $data field values for use for new record
      *
-     * @return string uid of the new record
+     * @return int uid of the new record
      */
-    public function addRecord($data)
+    public function addRecord($data): int
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
         $queryBuilder
@@ -368,11 +370,14 @@ abstract class AbstractRepository implements SingletonInterface
     }
 
     /**
+     * This method really deletes the record instead of
+     * flagging it deleted = 1 which is not typical for TYPO3
+     *
      * @param int $uid
      *
-     * @return string
+     * @return int
      */
-    public function deleteRecord($uid)
+    public function deleteRecord($uid): int
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
         $result = $queryBuilder
@@ -384,7 +389,7 @@ abstract class AbstractRepository implements SingletonInterface
                 )
             )
             ->execute();
-        return $result->errorCode() ? $result->errorCode() : 0;
+        return (int)$result > 0;
     }
 
     /**
@@ -393,6 +398,7 @@ abstract class AbstractRepository implements SingletonInterface
      */
     public function insertWithTable($table, array $data)
     {
+        // @todo For five usages another solution is needed
         $queryBuilder = $this->getQueryBuilderForTable($table);
         $queryBuilder
             ->insert($table)
@@ -434,37 +440,6 @@ abstract class AbstractRepository implements SingletonInterface
     }
 
     /**
-     * @param string $columnName
-     *
-     * @return bool
-     */
-    public function hasColumn($columnName)
-    {
-        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
-        $columns = $queryBuilder
-            ->getConnection()
-            ->getSchemaManager()
-            ->listTableColumns($this->databaseTable);
-        return in_array($columnName, $columns);
-    }
-
-    /**
-     * @param string $tableName
-     *
-     * @return bool
-     */
-    public function hasTable($tableName)
-    {
-        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
-        $tables = $queryBuilder
-            ->getConnection()
-            ->getSchemaManager()
-            ->listTableNames();
-
-        return in_array($tableName, $tables);
-    }
-
-    /**
      * Deletes all localizations of a record
      * Note that no permission check is made whatsoever!
      * Check perms if you implement this beforehand.
@@ -491,6 +466,45 @@ abstract class AbstractRepository implements SingletonInterface
     }
 
     /**
+     * @param string $columnName
+     *
+     * @return bool
+     */
+    public function hasColumn($columnName): bool
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $columns = $queryBuilder
+            ->getConnection()
+            ->getSchemaManager()
+            ->listTableColumns($this->databaseTable);
+        return array_key_exists($columnName, $columns);
+    }
+
+    /**
+     * @param string $tableName
+     *
+     * @return bool
+     */
+    public function hasTable($tableName): bool
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $tables = $queryBuilder
+            ->getConnection()
+            ->getSchemaManager()
+            ->listTableNames();
+
+        return in_array($tableName, $tables);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTable(): string
+    {
+        return $this->databaseTable;
+    }
+
+    /**
      * @return \TYPO3\CMS\Extbase\Object\ObjectManager
      */
     protected function getObjectManager(): \TYPO3\CMS\Extbase\Object\ObjectManager
@@ -503,7 +517,7 @@ abstract class AbstractRepository implements SingletonInterface
     }
 
     /**
-     * @param $table
+     * @param string $table
      *
      * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
      */

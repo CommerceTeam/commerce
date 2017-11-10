@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<tx_commerce_categories>
+		<uid>1</uid>
+		<pid>1</pid>
+		<hidden>0</hidden>
+		<title>SYSTEM</title>
+		<uname>SYSTEM</uname>
+	</tx_commerce_categories>
+</dataset>

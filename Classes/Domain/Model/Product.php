@@ -60,9 +60,7 @@ class Product extends AbstractEntity
         'title',
         'subtitle',
         'description',
-        'images',
         'teaser',
-        'teaserimages',
         'relatedpage',
         'l18n_parent',
         'manufacturer_uid',
@@ -106,39 +104,21 @@ class Product extends AbstractEntity
     protected $description = '';
 
     /**
-     * Images.
-     *
-     * @var string
-     */
-    protected $images = '';
-
-    /**
-     * Images as array.
-     *
      * @var array
      */
-    protected $images_array = [];
+    protected $teaserimages;
+
+    /**
+     * @var array
+     */
+    protected $images;
 
     /**
      * Teaser.
      *
      * @var string
      */
-    public $teaser = '';
-
-    /**
-     * Teaser images.
-     *
-     * @var string
-     */
-    public $teaserimages = '';
-
-    /**
-     * Teaser images as array.
-     *
-     * @var array
-     */
-    protected $teaserImagesArray = [];
+    protected $teaser = '';
 
     /**
      * Related page
@@ -274,7 +254,7 @@ class Product extends AbstractEntity
      * @param int $uid Product uid
      * @param int $languageUid Language uid
      */
-    public function __construct($uid, $languageUid = 0)
+    public function __construct($uid = 0, $languageUid = 0)
     {
         if ((int) $uid) {
             $this->init($uid, $languageUid);
@@ -309,6 +289,14 @@ class Product extends AbstractEntity
         }
 
         return false;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArticles()
+    {
+        return $this->articles;
     }
 
     /**
@@ -414,98 +402,96 @@ class Product extends AbstractEntity
     {
         $first = true;
         $articleUids = [];
-        if (is_array($attributes)) {
-            foreach ($attributes as $uidValuePair) {
-                // @todo change to article repository usage
-                /** @var \TYPO3\CMS\Core\Database\Query\QueryBuilder $queryBuilder */
-                $queryBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable('tx_commerce_articles');
+        foreach ($attributes as $uidValuePair) {
+            // @todo change to article repository usage
+            /** @var \TYPO3\CMS\Core\Database\Query\QueryBuilder $queryBuilder */
+            $queryBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_commerce_articles');
 
-                $queryBuilder
-                    ->select('a.uid')
-                    ->from('tx_commerce_articles', 'a')
-                    ->innerJoin('a', 'tx_commerce_articles_attributes_mm', 'mm', 'a.uid = mm.uid_local')
-                    ->innerJoin('mm', 'tx_commerce_attributes', 'at', 'mm.uid_foreign = at.uid')
-                    ->groupBy('a.uid');
+            $queryBuilder
+                ->select('a.uid')
+                ->from('tx_commerce_articles', 'a')
+                ->innerJoin('a', 'tx_commerce_articles_attributes_mm', 'mm', 'a.uid = mm.uid_local')
+                ->innerJoin('mm', 'tx_commerce_attributes', 'at', 'mm.uid_foreign = at.uid')
+                ->groupBy('a.uid');
 
-                if ($proofUid) {
-                    $queryBuilder->where(
+            if ($proofUid) {
+                $queryBuilder->where(
+                    $queryBuilder->expr()->eq(
+                        'a.uid_product',
+                        $queryBuilder->createNamedParameter($this->uid, \PDO::PARAM_INT)
+                    )
+                );
+            }
+
+            $searchParts = $queryBuilder->expr()->orX();
+
+            // attribute char is not used, thats why we check for id
+            if (is_string($uidValuePair['AttributeValue'])) {
+                $searchParts->add(
+                    $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->eq(
-                            'a.uid_product',
-                            $queryBuilder->createNamedParameter($this->uid, \PDO::PARAM_INT)
+                            'at.uid',
+                            $queryBuilder->createNamedParameter($uidValuePair['AttributeUid'], \PDO::PARAM_INT)
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'mm.value_char',
+                            $queryBuilder->createNamedParameter($uidValuePair['AttributeValue'], \PDO::PARAM_STR)
                         )
-                    );
-                }
-
-                $searchParts = $queryBuilder->expr()->orX();
-
-                // attribute char is not used, thats why we check for id
-                if (is_string($uidValuePair['AttributeValue'])) {
-                    $searchParts->add(
-                        $queryBuilder->expr()->andX(
-                            $queryBuilder->expr()->eq(
-                                'at.uid',
-                                $queryBuilder->createNamedParameter($uidValuePair['AttributeUid'], \PDO::PARAM_INT)
-                            ),
-                            $queryBuilder->expr()->eq(
-                                'mm.value_char',
-                                $queryBuilder->createNamedParameter($uidValuePair['AttributeValue'], \PDO::PARAM_STR)
-                            )
-                        )
-                    );
-                }
-
-                // Nach dem charwert immer ueberpruefen, solange value_char noch nicht drin ist.
-                if (is_float($uidValuePair['AttributeValue']) || (int) $uidValuePair['AttributeValue']) {
-                    $searchParts->add(
-                        $queryBuilder->expr()->andX(
-                            $queryBuilder->expr()->eq(
-                                'at.uid',
-                                $queryBuilder->createNamedParameter($uidValuePair['AttributeUid'], \PDO::PARAM_INT)
-                            ),
-                            $queryBuilder->expr()->in(
-                                'mm.default_value',
-                                $uidValuePair['AttributeValue']
-                            )
-                        )
-                    );
-
-                    $searchParts->add(
-                        $queryBuilder->expr()->andX(
-                            $queryBuilder->expr()->eq(
-                                'at.uid',
-                                $queryBuilder->createNamedParameter($uidValuePair['AttributeUid'], \PDO::PARAM_INT)
-                            ),
-                            $queryBuilder->expr()->in(
-                                'mm.uid_valuelist',
-                                $uidValuePair['AttributeValue']
-                            )
-                        )
-                    );
-                }
-
-                $result = $queryBuilder
-                    ->andWhere($searchParts)
-                    ->execute();
-
-                $next = [];
-                while ($data = $result->fetch()) {
-                    $next[] = $data['uid'];
-                }
-
-                // Return only the first article that exists in all arrays that's why the
-                // first array get set and then array intersect checks the matching
-                if ($first) {
-                    $articleUids = $next;
-                    $first = false;
-                } else {
-                    $articleUids = array_intersect($articleUids, $next);
-                }
+                    )
+                );
             }
 
-            if (!empty($articleUids)) {
-                sort($articleUids);
+            // Nach dem charwert immer ueberpruefen, solange value_char noch nicht drin ist.
+            if (is_float($uidValuePair['AttributeValue']) || (int) $uidValuePair['AttributeValue']) {
+                $searchParts->add(
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->eq(
+                            'at.uid',
+                            $queryBuilder->createNamedParameter($uidValuePair['AttributeUid'], \PDO::PARAM_INT)
+                        ),
+                        $queryBuilder->expr()->in(
+                            'mm.default_value',
+                            $uidValuePair['AttributeValue']
+                        )
+                    )
+                );
+
+                $searchParts->add(
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->eq(
+                            'at.uid',
+                            $queryBuilder->createNamedParameter($uidValuePair['AttributeUid'], \PDO::PARAM_INT)
+                        ),
+                        $queryBuilder->expr()->in(
+                            'mm.uid_valuelist',
+                            $uidValuePair['AttributeValue']
+                        )
+                    )
+                );
             }
+
+            $result = $queryBuilder
+                ->andWhere($searchParts)
+                ->execute();
+
+            $next = [];
+            while ($data = $result->fetch()) {
+                $next[] = $data['uid'];
+            }
+
+            // Return only the first article that exists in all arrays that's why the
+            // first array get set and then array intersect checks the matching
+            if ($first) {
+                $articleUids = $next;
+                $first = false;
+            } else {
+                $articleUids = array_intersect($articleUids, $next);
+            }
+        }
+
+        if (!empty($articleUids)) {
+            sort($articleUids);
         }
 
         return $articleUids;
@@ -836,23 +822,12 @@ class Product extends AbstractEntity
     }
 
     /**
-     * Return Product description.
-     *
-     * @return string Product description
+     * @return Article
      */
-    public function getDescription()
+    public function getCheapestPrice()
     {
-        return $this->description;
-    }
-
-    /**
-     * Returns an Array of Images.
-     *
-     * @return array Images of this product
-     */
-    public function getImages()
-    {
-        return $this->images_array;
+        $cheapestArticleUid = $this->getCheapestArticle();
+        return $this->articles[$cheapestArticleUid];
     }
 
     /**
@@ -1226,16 +1201,6 @@ class Product extends AbstractEntity
     }
 
     /**
-     * Return product subtitle.
-     *
-     * @return string Product subtitle
-     */
-    public function getSubtitle()
-    {
-        return $this->subtitle;
-    }
-
-    /**
      * Returns the uid of the live version of this product.
      *
      * @return int UID of live version of this product
@@ -1256,6 +1221,26 @@ class Product extends AbstractEntity
     }
 
     /**
+     * Return product subtitle.
+     *
+     * @return string Product subtitle
+     */
+    public function getSubtitle()
+    {
+        return $this->subtitle;
+    }
+
+    /**
+     * Return Product description.
+     *
+     * @return string Product description
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
      * Returns the product teaser.
      *
      * @return string Product teaser
@@ -1266,13 +1251,23 @@ class Product extends AbstractEntity
     }
 
     /**
-     * Returns an Array of Images.
-     *
-     * @return array Images of this product
+     * @return array
      */
-    public function getTeaserImages()
+    public function getTeaserimages():array
     {
-        return $this->teaserImagesArray;
+        $this->initializeFileReferences($this->teaserimages, 'teaserimages');
+
+        return $this->teaserimages;
+    }
+
+    /**
+     * @return array
+     */
+    public function getImages():array
+    {
+        $this->initializeFileReferences($this->images, 'images');
+
+        return $this->images;
     }
 
     /**
@@ -1317,25 +1312,6 @@ class Product extends AbstractEntity
         }
 
         return $this->articles_uids;
-    }
-
-    /**
-     * Load data and divide comma sparated images in array
-     * inherited from parent.
-     *
-     * @param mixed $translationMode Translation mode of the record,
-     *     default FALSE to use the default way of translation
-     *
-     * @return array
-     */
-    public function loadData($translationMode = false)
-    {
-        $return = parent::loadData($translationMode);
-
-        $this->images_array = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->images);
-        $this->teaserImagesArray = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->teaserimages);
-
-        return $return;
     }
 
     /**
