@@ -362,14 +362,17 @@ return [
             'exclude' => true,
             'label' => $languageFile . 'tx_commerce_articles.products_uid',
             'config' => [
+                'readOnly' => true,
                 'type' => 'group',
                 'internal_type' => 'db',
                 'allowed' => 'tx_commerce_products',
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
+                'behaviour' => [
+                    'allowLanguageSynchronization' => false,
+                ]
             ],
-            'l10n_mode' => 'exclude',
         ],
         'attributesedit' => [
             'label' => $languageFile . 'tx_commerce_products.edit_attributes',
