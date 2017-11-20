@@ -21,7 +21,7 @@ return [
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ],
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_article_prices.gif',
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_article_prices.svg',
     ],
     'interface' => [
         'showRecordFieldList' => 'price_gross, price_net, purchase_price,

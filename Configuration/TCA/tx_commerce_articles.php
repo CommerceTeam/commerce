@@ -31,7 +31,7 @@ return [
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ],
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_articles.gif',
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_articles.svg',
     ],
     'interface' => [
         'showRecordFieldList' => 'title, subtitle, navtitle, description_extra, plain_text, price_gross, price_net,

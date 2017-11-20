@@ -22,7 +22,7 @@ return [
             'disabled' => 'hidden',
         ],
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_order_types.gif',
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_order_types.svg',
     ],
     'interface' => [
         'showRecordFieldList' => 'title, icon, sys_language_uid, l18n_parent',

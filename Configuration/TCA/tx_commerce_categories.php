@@ -23,7 +23,7 @@ return [
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ],
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_categories.gif',
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_categories.svg',
         'searchFields' => 'uid, title, subtitle, navtitle, description',
     ],
     'interface' => [

@@ -21,7 +21,7 @@ return [
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ],
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_moveordermails.gif',
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_moveordermails.svg',
     ],
     'interface' => [
         'showRecordFieldList' => 'name, mailkind, mailtemplate, htmltemplate, mailcharset, sendername, senderemail,

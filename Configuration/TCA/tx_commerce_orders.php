@@ -11,7 +11,7 @@ return [
         'title' => $languageFile . 'tx_commerce_orders',
         'delete' => 'deleted',
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_orders.gif',
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_orders.svg',
         'searchFields' => 'order_id, comment',
     ],
     'interface' => [

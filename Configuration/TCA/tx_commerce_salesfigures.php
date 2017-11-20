@@ -12,7 +12,7 @@ return [
         'readOnly' => '1',
         'adminOnly' => '1',
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_salesfigures.gif',
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_salesfigures.svg',
     ],
     'interface' => [
         'showRecordFieldList' => 'year, month, day, dow, hour, pricegross, pricenet, amount, orders',

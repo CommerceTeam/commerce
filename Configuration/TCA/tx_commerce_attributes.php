@@ -26,11 +26,11 @@ return [
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ],
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_attributes.gif',
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_attributes.svg',
         'typeicon_column' => 'has_valuelist',
         'typeicons' => [
-            '0' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_attributes_free.gif',
-            '1' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_attributes_list.gif',
+            '0' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_attributes_free.svg',
+            '1' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_attributes_list.svg',
         ],
     ],
     'interface' => [

@@ -10,7 +10,7 @@ return [
         'cruser_id' => 'cruser_id',
         'title' => $languageFile . 'tx_commerce_baskets',
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_baskets.gif',
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_baskets.svg',
     ],
     'interface' => [
         'showRecordFieldList' => 'sid, article_id, price_id, price_gross, price_net, quantity, finished_time, readonly',

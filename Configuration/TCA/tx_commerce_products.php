@@ -24,7 +24,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = [
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ],
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_products.gif',
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_products.svg',
         'searchFields' => 'uid, title, subtitle, navtitle, description',
     ],
     'interface' => [

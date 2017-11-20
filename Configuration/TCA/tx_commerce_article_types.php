@@ -21,7 +21,7 @@ return [
             'disabled' => 'hidden',
         ],
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_article_types.gif',
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_article_types.svg',
     ],
     'interface' => [
         'showRecordFieldList' => 'title, sys_language_uid, l18n_parent',

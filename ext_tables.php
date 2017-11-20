@@ -75,22 +75,22 @@ call_user_func(function ($packageKey) {
         $iconRegistry->registerIcon(
             'module-commerce-category',
             \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:commerce/Resources/Public/Icons/mod_category.gif']
+            ['source' => 'EXT:commerce/Resources/Public/Icons/mod_category.svg']
         );
         $iconRegistry->registerIcon(
             'module-commerce-orders',
             \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:commerce/Resources/Public/Icons/mod_orders.gif']
+            ['source' => 'EXT:commerce/Resources/Public/Icons/mod_orders.svg']
         );
         $iconRegistry->registerIcon(
             'module-commerce-systemdata',
             \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:commerce/Resources/Public/Icons/mod_systemdata.gif']
+            ['source' => 'EXT:commerce/Resources/Public/Icons/mod_systemdata.svg']
         );
         $iconRegistry->registerIcon(
             'module-commerce-statistic',
             \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:commerce/Resources/Public/Icons/mod_statistic.gif']
+            ['source' => 'EXT:commerce/Resources/Public/Icons/mod_statistic.svg']
         );
 
         $iconRegistry->registerIcon(
@@ -201,7 +201,7 @@ call_user_func(function ($packageKey) {
             ],
             [
                 'access' => 'user,group',
-                'icon' => 'EXT:beuser/Resources/Public/Icons/module-permission.svg',
+                'icon' => 'EXT:commerce/Resources/Public/Icons/mod_access.svg',
                 'labels' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_permission.xlf',
                 'navigationComponentId' => 'commerce-permissiontree'
             ]

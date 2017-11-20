@@ -12,7 +12,7 @@ return [
         'default_sortby' => 'ORDER BY crdate',
         'readOnly' => '1',
         'adminOnly' => '1',
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_newclients.gif',
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_newclients.svg',
     ],
     'interface' => [
         'showRecordFieldList' => 'year, month, day, dow, hour, registration',

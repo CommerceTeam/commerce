@@ -10,7 +10,7 @@ return [
         'cruser_id' => 'cruser_id',
         'title' => $languageFile . ':tx_commerce_order_articles',
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_order_articles.gif',
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_order_articles.svg',
     ],
     'interface' => [
         'showRecordFieldList' => 'order_id, article_type_uid, article_uid, article_number, title, subtitle, amount,

@@ -26,7 +26,7 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_attribute_values.gif',
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_attribute_values.svg',
     ],
     'interface' => [
         'showRecordFieldList' => 'value, showvalue, sys_language_uid, l18n_parent, starttime, endtime',

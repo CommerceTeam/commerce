@@ -16,7 +16,7 @@ return [
         'languageField' => 'sys_language_uid',
         'translationSource' => 'l10n_source',
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_user_states.gif',
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_user_states.svg',
     ],
     'interface' => [
         'showRecordFieldList' => 'title, icon, sys_language_uid, l18n_parent',

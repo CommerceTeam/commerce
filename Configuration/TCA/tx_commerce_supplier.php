@@ -16,7 +16,7 @@ return [
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_supplier.gif',
+        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_supplier.svg',
     ],
     'interface' => [
         'showRecordFieldList' => 'title, street, number, zip, city, country, phone, fax, email, internet,
