@@ -10,8 +10,8 @@ call_user_func(function ($packageKey) {
     $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
         \TYPO3\CMS\Core\Imaging\IconRegistry::class
     );
-    $iconProviderClassName = \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class;
-    $icon = ['source' => 'EXT:commerce/Resources/Public/Icons/ce_wiz.gif'];
+    $iconProviderClassName = \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class;
+    $icon = ['source' => 'EXT:commerce/Resources/Public/Icons/ce_wiz.svg'];
     $iconRegistry->registerIcon('content-plugin-commerce-list', $iconProviderClassName, $icon);
 
     if (TYPO3_MODE == 'BE') {
@@ -74,70 +74,70 @@ call_user_func(function ($packageKey) {
         );
         $iconRegistry->registerIcon(
             'module-commerce-category',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
             ['source' => 'EXT:commerce/Resources/Public/Icons/mod_category.svg']
         );
         $iconRegistry->registerIcon(
             'module-commerce-orders',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
             ['source' => 'EXT:commerce/Resources/Public/Icons/mod_orders.svg']
         );
         $iconRegistry->registerIcon(
             'module-commerce-systemdata',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
             ['source' => 'EXT:commerce/Resources/Public/Icons/mod_systemdata.svg']
         );
         $iconRegistry->registerIcon(
             'module-commerce-statistic',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
             ['source' => 'EXT:commerce/Resources/Public/Icons/mod_statistic.svg']
         );
 
         $iconRegistry->registerIcon(
             'extensions-commerce-globus',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/globus.gif']
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/globus.svg']
         );
         // icon to show for system folders with contains commerce selected
         $iconRegistry->registerIcon(
             'apps-pagetree-folder-contains-commerce',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/folder.gif']
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/folder.svg']
         );
         $iconRegistry->registerIcon(
             'orders-add',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_add.gif']
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_add.svg']
         );
         $iconRegistry->registerIcon(
             'orders-add-int',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_add_int.gif']
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_add_int.svg']
         );
         $iconRegistry->registerIcon(
             'orders-add-user',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_add_user.gif']
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_add_user.svg']
         );
         $iconRegistry->registerIcon(
             'orders-add-user-int',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_add_user_int.gif']
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_add_user_int.svg']
         );
         $iconRegistry->registerIcon(
             'orders-int',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_int.gif']
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_int.svg']
         );
         $iconRegistry->registerIcon(
             'orders-user',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_user.gif']
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_user.svg']
         );
         $iconRegistry->registerIcon(
             'orders-user-int',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_user_int.gif']
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:commerce/Resources/Public/Icons/Table/orders_user_int.svg']
         );
 
         // add contains type to display commerce folders with custom icon
