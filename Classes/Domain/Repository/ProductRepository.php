@@ -751,6 +751,31 @@ class ProductRepository extends AbstractRepository
     }
 
     /**
+     * Get relation.
+     *
+     * @param int $foreignUid Foreign uid
+     *
+     * @return array
+     */
+    public function findRelationByForeignUid($foreignUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseCategoryRelationTable);
+        $result = $queryBuilder
+            ->select('*')
+            ->from($this->databaseCategoryRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_foreign',
+                    $queryBuilder->createNamedParameter($foreignUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
      * @param int $productUid
      * @param int $categorUid
      */
