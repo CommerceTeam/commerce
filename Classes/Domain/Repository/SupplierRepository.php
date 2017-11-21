@@ -20,7 +20,7 @@ class SupplierRepository extends AbstractRepository
     /**
      * @var string
      */
-    protected $databaseTable = 'tx_commerce_manufacturer';
+    protected $databaseTable = 'tx_commerce_supplier';
 
     /**
      * @param int $pid
