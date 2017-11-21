@@ -26,11 +26,11 @@ return [
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ],
-        'iconfile' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_attributes.svg',
         'typeicon_column' => 'has_valuelist',
-        'typeicons' => [
-            '0' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_attributes_free.svg',
-            '1' => 'EXT:commerce/Resources/Public/Icons/tx_commerce_attributes_list.svg',
+        'typeicon_classes' => [
+            'default' => 'tx_commerce_attributes',
+            0 => 'tx_commerce_attributes-free',
+            1 => 'tx_commerce_attributes-list',
         ],
     ],
     'interface' => [

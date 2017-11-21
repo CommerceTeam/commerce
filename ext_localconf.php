@@ -65,6 +65,53 @@ call_user_func(function ($packageKey) {
         $extConf = serialize($extConf);
     }
 
+    $icons = [
+        'content-plugin-commerce-list' => 'ce_wiz.svg',
+        'module-commerce' => 't3-commerce-icon.svg',
+        'module-commerce-access' => 'mod_access.svg',
+        'module-commerce-category' => 'mod_category.svg',
+        'module-commerce-orders' => 'mod_orders.svg',
+        'module-commerce-systemdata' => 'mod_systemdata.svg',
+        'module-commerce-statistic' => 'mod_statistic.svg',
+        // icon to show for system folders with contains commerce selected
+        'extensions-commerce-globus' => 'Table/globus.svg',
+        'apps-pagetree-folder-contains-commerce' => 'Table/folder.svg',
+        'orders-add' => 'Table/orders_add.svg',
+        'orders-add-int' => 'Table/orders_add_int.svg',
+        'orders-add-user' => 'Table/orders_add_user.svg',
+        'orders-add-user-int' => 'Table/orders_add_user_int.svg',
+        'orders-int' => 'Table/orders_int.svg',
+        'orders-user' => 'Table/orders_user.svg',
+        'orders-user-int' => 'Table/orders_user_int.svg',
+        // database tables
+        'tx_commerce_attributes' => 'tx_commerce_attributes.svg',
+        'tx_commerce_attributes-free' => 'tx_commerce_attributes_free.svg',
+        'tx_commerce_attributes-list' => 'tx_commerce_attributes_list.svg',
+    ];
+
+    /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
+    $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        \TYPO3\CMS\Core\Imaging\IconRegistry::class
+    );
+
+    array_walk(
+        $icons,
+        function ($icon, $identifier, $iconRegistry) {
+            if (strpos($icon, '.svg') !== false) {
+                $iconProviderClassName = \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class;
+            } else {
+                $iconProviderClassName = \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class;
+            }
+            /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
+            $iconRegistry->registerIcon(
+                $identifier,
+                $iconProviderClassName,
+                ['source' => 'EXT:commerce/Resources/Public/Icons/' . $icon]
+            );
+        },
+        $iconRegistry
+    );
+
     // Add frontend plugins to content.default static template
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
         $packageKey,
