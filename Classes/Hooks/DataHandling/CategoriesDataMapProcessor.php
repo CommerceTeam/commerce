@@ -1,6 +1,7 @@
 <?php
 namespace CommerceTeam\Commerce\Hooks\DataHandling;
 
+use CommerceTeam\Commerce\Domain\Model\Category;
 use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -14,6 +15,26 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
      * @var array
      */
     protected $catList = [];
+
+    /**
+     * @var array
+     */
+    protected static $parentCategoriesPreProcessing = [];
+
+    /**
+     * @param DataHandler $dataHandler
+     */
+    public function beforeStart(DataHandler $dataHandler)
+    {
+        $categories = array_keys($dataHandler->datamap['tx_commerce_categories']);
+
+        foreach ($categories as $categoryUid) {
+            /** @var Category $category */
+            $category = GeneralUtility::makeInstance(Category::class, $categoryUid);
+
+            self::$parentCategoriesPreProcessing[$categoryUid] = $category->getParentCategories();
+        }
+    }
 
     /**
      * Remove current category uid from  parent_category
@@ -68,16 +89,16 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
                 /**
                  * Category.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
+                 * @var Category $category
                  */
-                $category = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Category::class, $checkId);
+                $category = GeneralUtility::makeInstance(Category::class, $checkId);
                 $category->loadData();
 
                 // Use the l18n parent as category for permission checks.
                 if ($l18nParent || $category->getField('l18n_parent') > 0) {
                     $checkId = $l18nParent ?: $category->getField('l18n_parent');
                     $category = GeneralUtility::makeInstance(
-                        \CommerceTeam\Commerce\Domain\Model\Category::class,
+                        Category::class,
                         $checkId
                     );
                 }
@@ -140,7 +161,7 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
                 /**
                  * Parent category.
                  *
-                 * @var \CommerceTeam\Commerce\Domain\Model\Category $category
+                 * @var Category $category
                  */
                 foreach ($parentCategories as $category) {
                     $existingParents[] = $category->getUid();
@@ -199,9 +220,9 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
                     /**
                      * Category
                      *
-                     * @var \CommerceTeam\Commerce\Domain\Model\Category $category
+                     * @var Category $category
                      */
-                    $category = GeneralUtility::makeInstance(\CommerceTeam\Commerce\Domain\Model\Category::class, $uid);
+                    $category = GeneralUtility::makeInstance(Category::class, $uid);
 
                     // abort if the parent category is not in the webmounts
                     /** @var BackendUserUtility $backendUserUtility */
@@ -274,10 +295,10 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
                     /**
                      * Category.
                      *
-                     * @var \CommerceTeam\Commerce\Domain\Model\Category $catDirect
+                     * @var Category $catDirect
                      */
                     $catDirect = GeneralUtility::makeInstance(
-                        \CommerceTeam\Commerce\Domain\Model\Category::class,
+                        Category::class,
                         $catUid
                     );
                     $catDirect->loadData();
@@ -286,7 +307,7 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
                     $tmpParents = null;
                     $i = 1000;
 
-                    /** @var \CommerceTeam\Commerce\Domain\Model\Category $cat */
+                    /** @var Category $cat */
                     while (!is_null($cat = @array_pop($tmpCats))) {
                         // Prevent endless recursion
                         if ($i < 0) {

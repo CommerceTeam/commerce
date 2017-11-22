@@ -20,6 +20,13 @@ abstract class AbstractDataMapProcessor
     }
 
     /**
+     * @param DataHandler $dataHandler
+     */
+    public function beforeStart(DataHandler $dataHandler)
+    {
+    }
+
+    /**
      * Remove any parent_category that has the same uid as the category we are
      * going to save.
      *
