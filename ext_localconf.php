@@ -226,8 +226,8 @@ call_user_func(function ($packageKey) {
     }
 
     // Add hook to handle orders while moving them to a different state
-    if (empty($typo3ConfVars['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders'])) {
-        $typo3ConfVars['EXTCONF']['commerce/Classes/Hook/DataMapHooks.php']['moveOrders']['commerce'] =
+    if (empty($typo3ConfVars['EXTCONF']['commerce/Classes/Hook/DataHandlerHook.php']['moveOrders'])) {
+        $typo3ConfVars['EXTCONF']['commerce/Classes/Hook/DataHandlerHook.php']['moveOrders']['commerce'] =
             \CommerceTeam\Commerce\Hooks\OrdermailHook::class;
     }
 
@@ -244,7 +244,7 @@ call_user_func(function ($packageKey) {
     // Hooks for datamap processing
     // For processing the order sfe, when changing the pid
     $scOptions['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['commerce'] =
-        \CommerceTeam\Commerce\Hooks\DataMapHook::class;
+        \CommerceTeam\Commerce\Hooks\DataHandlerHook::class;
     $scOptions['t3lib/class.t3lib_tcemain.php']['checkFlexFormValue']['commerce'] =
         \CommerceTeam\Commerce\Hooks\DataHandlerHook::class;
 
