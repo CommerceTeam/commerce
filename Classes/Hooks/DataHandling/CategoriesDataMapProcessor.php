@@ -3,19 +3,13 @@ namespace CommerceTeam\Commerce\Hooks\DataHandling;
 
 use CommerceTeam\Commerce\Domain\Model\Category;
 use CommerceTeam\Commerce\Domain\Repository\AttributeRepository;
+use CommerceTeam\Commerce\Domain\Repository\CategoryRepository;
 use CommerceTeam\Commerce\Utility\BackendUserUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class CategoriesDataMapProcessor extends AbstractDataMapProcessor
 {
-    /**
-     * Category list.
-     *
-     * @var array
-     */
-    protected $catList = [];
-
     /**
      * @var array
      */
@@ -31,6 +25,11 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
         foreach ($categories as $categoryUid) {
             /** @var Category $category */
             $category = GeneralUtility::makeInstance(Category::class, $categoryUid);
+            $category->loadData();
+
+            if ($category->getL18nParent()) {
+                $category = GeneralUtility::makeInstance(Category::class, $category->getL18nParent());
+            }
 
             self::$parentCategoriesPreProcessing[$categoryUid] = $category->getParentCategories();
         }
@@ -53,10 +52,7 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
 
         $incomingFieldArray['parent_category'] = !empty($categories) ? implode(',', $categories) : '';
 
-        // @todo get category from dataHandler
-        $this->catList = $this->belib->getUidListFromList($categories);
-
-        return $this->catList;
+        return $categories;
     }
 
     /**
@@ -86,21 +82,14 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
                 // check if we have the right to edit and are in commerce mounts
                 $checkId = $id;
 
-                /**
-                 * Category.
-                 *
-                 * @var Category $category
-                 */
+                /** @var Category $category */
                 $category = GeneralUtility::makeInstance(Category::class, $checkId);
                 $category->loadData();
 
                 // Use the l18n parent as category for permission checks.
                 if ($l18nParent || $category->getField('l18n_parent') > 0) {
                     $checkId = $l18nParent ?: $category->getField('l18n_parent');
-                    $category = GeneralUtility::makeInstance(
-                        Category::class,
-                        $checkId
-                    );
+                    $category = GeneralUtility::makeInstance(Category::class, $checkId);
                 }
 
                 /** @var BackendUserUtility $backendUserUtility */
@@ -146,46 +135,18 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
                 return;
             }
 
-            // check if we are allowed to create new categories under the newly assigned
-            // categories
-            // check if we are allowed to remove this category from the parent categories
-            // it was in before
+            // check if we are allowed to create new categories under the newly assigned categories
+            // check if we are allowed to remove this category from the parent categories it was in before
             $existingParents = [];
-
+            $newParents = [];
             if ($status != 'new') {
-                // if category is existing, check if it has parent categories that were deleted
-                // by a user who is not authorized to do so
-                // if that is the case, add those categories back in
-                $parentCategories = $category->getParentCategories();
-
-                /**
-                 * Parent category.
-                 *
-                 * @var Category $category
-                 */
-                foreach ($parentCategories as $category) {
-                    $existingParents[] = $category->getUid();
-
-                    // if the user has no right to see one of the parent categories or its not
-                    // in the mounts it would miss afterwards
-                    // by this its readded to the parent_category field
-                    /** @var BackendUserUtility $backendUserUtility */
-                    $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
-                    if (!$category->isPermissionSet('show')
-                        || !$backendUserUtility->isInWebMount($category->getUid())
-                    ) {
-                        $fieldArray['parent_category'] .= ',' . $category->getUid();
-                    }
-                }
+                $fieldArray = $this->restoreDeletedParentCategory(
+                    $fieldArray,
+                    $existingParents,
+                    $newParents,
+                    $category
+                );
             }
-
-            // Unique the list
-            $fieldArray['parent_category'] = implode(
-                ',',
-                $this->belib->getUidListFromList(
-                    explode(',', GeneralUtility::uniqueList($fieldArray['parent_category']))
-                )
-            );
 
             // abort if the user didn't assign a category - rights need not be checked then
             if ($fieldArray['parent_category'] == '') {
@@ -200,29 +161,15 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
                 return;
             }
 
-            // Check if any parent_category has been set that is not allowed because no
-            // child-records are to be set beneath it
-            // Only on parents that were newly added
-            $newParents = array_diff(explode(',', $fieldArray['parent_category']), $existingParents);
-
-            // work with keys because array_diff does not start with key 0 but keeps the
-            // old keys - that means gaps could exist
-            $keys = array_keys($newParents);
-            $l = count($keys);
-
-            if ($l) {
+            if (count($newParents)) {
                 $groupRights = false;
                 $groupId = 0;
 
-                for ($i = 0; $i < $l; ++$i) {
-                    $uid = (int) $newParents[$keys[$i]];
-
-                    /**
-                     * Category
-                     *
-                     * @var Category $category
-                     */
-                    $category = GeneralUtility::makeInstance(Category::class, $uid);
+                /** @var CategoryRepository $categoryRepository */
+                $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+                foreach ($newParents as $uid) {
+                    /** @var Category $parentCategory */
+                    $parentCategory = GeneralUtility::makeInstance(Category::class, $uid);
 
                     // abort if the parent category is not in the webmounts
                     /** @var BackendUserUtility $backendUserUtility */
@@ -237,23 +184,21 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
                         continue;
                     }
 
-                    $category->loadPermissions();
+                    $parentCategory->loadPermissions();
 
                     // remove category from list if it is not permitted
-                    if (!$category->isPermissionSet('new')) {
-                        $fieldArray['parent_category'] = GeneralUtility::rmFromList(
-                            $uid,
-                            $fieldArray['parent_category']
-                        );
+                    if (!$parentCategory->isPermissionSet('new')) {
+                        $categoryRepository->removeParentRelation($category->getUid(), $parentCategory->getUid());
+                        $fieldArray['parent_category']--;
                     } else {
                         // conversion to int is important, otherwise the binary & will not work properly
                         if ($groupRights === false) {
-                            $groupRights = (int) $category->getPermsGroup();
+                            $groupRights = (int) $parentCategory->getPermsGroup();
                         } else {
-                            $groupRights = ($groupRights & (int) $category->getPermsGroup());
+                            $groupRights = ($groupRights & (int) $parentCategory->getPermsGroup());
                         }
 
-                        $groupId = $category->getPermsGroupId();
+                        $groupId = $parentCategory->getPermsGroupId();
                     }
                 }
 
@@ -266,7 +211,7 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
 
             // if there is no parent_category left from the ones the user wanted to add,
             // abort and inform him.
-            if ($fieldArray['parent_category'] == '' && !empty($newParents)) {
+            if ($fieldArray['parent_category'] < 1 && !empty($newParents)) {
                 $pObj->newlog(
                     'You dont have the permissions to use any of the parent categories you chose as a parent.',
                     1
@@ -339,6 +284,63 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
                 }
             }
         }
+    }
+
+    /**
+     * If a user delete a parent category which is not accessible this restores the references
+     *
+     * @param array $fieldArray
+     * @param array $existingParents
+     * @param array $newParents
+     * @param Category $category
+     *
+     * @return array
+     */
+    protected function restoreDeletedParentCategory($fieldArray, &$existingParents, &$newParents, Category $category)
+    {
+        // due to the DataHandlerProcessor the current parent categories are already referenced in
+        // the database that's why we can resort on fetching them
+        $currentParentCategories = $category->getParentCategories();
+
+        /** @var BackendUserUtility $backendUserUtility */
+        $backendUserUtility = GeneralUtility::makeInstance(BackendUserUtility::class);
+        /** @var CategoryRepository $categoryRepository */
+        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+
+        /** @var Category $parentCategory */
+        /** @var Category $currentParentCategory */
+        foreach (self::$parentCategoriesPreProcessing[$category->getUid()] as $parentCategory) {
+            $found = false;
+            foreach ($currentParentCategories as $currentParentCategory) {
+                $newParents[] = $currentParentCategory->getUid();
+                if ($parentCategory->getUid() == $currentParentCategory->getUid()) {
+                    $found = true;
+                }
+            }
+            if ($found) {
+                $existingParents[] = $parentCategory->getUid();
+            } elseif (!$parentCategory->isPermissionSet('show')
+                || !$backendUserUtility->isInWebMount($parentCategory->getUid())
+            ) {
+                $existingParents[] = $parentCategory->getUid();
+                // field only contains the count
+                $fieldArray['parent_category']++;
+
+                $sorting = 1 + $categoryRepository->findHighestParentCategoryReferenceSorting($category->getUid());
+
+                $categoryRepository->insertParentRelation(
+                    $category->getUid(),
+                    $parentCategory->getUid(),
+                    $sorting
+                );
+            }
+        }
+
+        // remove all old references from current to get the new references
+        $newParents = array_diff(array_unique($newParents), $existingParents);
+        $newParents = array_values($newParents);
+
+        return $fieldArray;
     }
 
     /**

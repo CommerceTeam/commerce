@@ -14,13 +14,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ProductsDataMapProcessor extends AbstractDataMapProcessor
 {
     /**
-     * Category list.
-     *
-     * @var array
-     */
-    protected $catList = [];
-
-    /**
      * Preprocess product.
      *
      * @param array $incomingFieldArray Incoming field array
@@ -30,11 +23,6 @@ class ProductsDataMapProcessor extends AbstractDataMapProcessor
      */
     public function preProcess(array &$incomingFieldArray, $productUid)
     {
-        // @todo get category from dataHandler
-        $this->catList = $this->belib->getUidListFromList(
-            GeneralUtility::trimExplode(',', $incomingFieldArray['categories'])
-        );
-
         /** @var ArticleRepository $articleRepository */
         $articleRepository = GeneralUtility::makeInstance(ArticleRepository::class);
         $articles = $articleRepository->findByProductUid($productUid);
@@ -70,13 +58,14 @@ class ProductsDataMapProcessor extends AbstractDataMapProcessor
                     $incomingFieldArray['sys_language_uid'] > 0 ?
                         '&L=' . $incomingFieldArray['sys_language_uid'] :
                         ''
-                    ) . '&ADMCMD_vPrev&no_cache=1&tx_commerce_pi1[showUid]=' . $productUid . '&tx_commerce_pi1[catUid]='
-                    . $parentCategory;
+                    ) .
+                    '&ADMCMD_vPrev&no_cache=1&tx_commerce_pi1[showUid]=' . $productUid .
+                    '&tx_commerce_pi1[catUid]=' . $parentCategory;
                 $GLOBALS['_POST']['popViewId'] = $previewPageId;
             }
         }
 
-        return $this->catList;
+        return GeneralUtility::trimExplode(',', $incomingFieldArray['categories']);
     }
 
     /**
@@ -99,11 +88,11 @@ class ProductsDataMapProcessor extends AbstractDataMapProcessor
             /**
              * Product.
              *
-             * @var Product $item
+             * @var Product $product
              */
-            $item = GeneralUtility::makeInstance(Product::class, $id);
+            $product = GeneralUtility::makeInstance(Product::class, $id);
 
-            $parentCategories = $item->getParentCategories();
+            $parentCategories = $product->getParentCategories();
 
             // check existing categories
             if (!\CommerceTeam\Commerce\Utility\BackendUtility::checkPermissionsOnCategoryContent(
@@ -130,9 +119,7 @@ class ProductsDataMapProcessor extends AbstractDataMapProcessor
         // check new categories
         if (isset($data['categories'])) {
             $newCats = $this->singleDiffAssoc(
-                $this->belib->getUidListFromList(
-                    GeneralUtility::trimExplode(',', GeneralUtility::uniqueList($data['categories']))
-                ),
+                GeneralUtility::trimExplode(',', GeneralUtility::uniqueList($data['categories'])),
                 $parentCategories
             );
 

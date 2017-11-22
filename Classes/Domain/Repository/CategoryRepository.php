@@ -771,6 +771,29 @@ class CategoryRepository extends AbstractRepository
     }
 
     /**
+     * @param int $uidLocal
+     *
+     * @return int
+     */
+    public function findHighestParentCategoryReferenceSorting($uidLocal)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseParentCategoryRelationTable);
+        $row = $queryBuilder
+            ->select('')
+            ->from($this->databaseParentCategoryRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($uidLocal, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+
+        return is_array($row) && !empty($row) ? $row['sorting'] : 0;
+    }
+
+    /**
      * @param int $childUid
      * @param int $parentUid
      * @param int $sorting
@@ -785,6 +808,29 @@ class CategoryRepository extends AbstractRepository
                 'uid_foreign' => $parentUid,
                 'sorting' => $sorting
             ])
+            ->execute();
+    }
+
+    /**
+     * @param int $childUid
+     * @param int $parentUid
+     */
+    public function removeParentRelation($childUid, $parentUid)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable($this->databaseParentCategoryRelationTable);
+        $queryBuilder->getRestrictions()->removeAll();
+        $queryBuilder
+            ->delete($this->databaseParentCategoryRelationTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid_local',
+                    $queryBuilder->createNamedParameter($childUid, \PDO::PARAM_STR)
+                ),
+                $queryBuilder->expr()->eq(
+                    'uid_foreign',
+                    $queryBuilder->createNamedParameter($parentUid, \PDO::PARAM_STR)
+                )
+            )
             ->execute();
     }
 

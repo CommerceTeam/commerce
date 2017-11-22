@@ -145,9 +145,6 @@ class DataHandlerHook
             return $incomingFieldArray;
         }
 
-        // get all parent categories, excluding this
-        $this->belib->getParentCategoriesFromList($catList);
-
         $correlationTypes = [];
         // get all correlation types from flexform
         if (isset($incomingFieldArray['attributes'])

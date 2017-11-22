@@ -76,6 +76,7 @@ class Article extends AbstractEntity
         'relatedpage',
         'supplier_uid',
         'plain_text',
+        'images',
     ];
 
     /**

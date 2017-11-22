@@ -433,12 +433,10 @@ class BackendUtility
     {
         $keyData = [];
         $result = [];
-        if (is_array($list)) {
-            foreach ($list as $item) {
-                $uid = self::getUidFromKey($item, $keyData);
-                if ($uid > 0) {
-                    $result[] = $uid;
-                }
+        foreach ($list as $item) {
+            $uid = self::getUidFromKey($item, $keyData);
+            if ($uid > 0) {
+                $result[] = $uid;
             }
         }
 
