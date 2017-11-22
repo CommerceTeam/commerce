@@ -223,6 +223,8 @@ class Category extends AbstractEntity
         'keywords',
         'ts_config',
         'l18n_parent',
+        'teaserimages',
+        'images',
     ];
 
     /**
