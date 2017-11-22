@@ -67,7 +67,7 @@ call_user_func(function ($packageKey) {
 
     $icons = [
         'content-plugin-commerce-list' => 'ce_wiz.svg',
-        'module-commerce' => 't3-commerce-icon.svg',
+        'module-commerce' => 'mod_main.svg',
         'module-commerce-access' => 'mod_access.svg',
         'module-commerce-category' => 'mod_category.svg',
         'module-commerce-orders' => 'mod_orders.svg',
@@ -84,9 +84,9 @@ call_user_func(function ($packageKey) {
         'orders-user' => 'Table/orders_user.svg',
         'orders-user-int' => 'Table/orders_user_int.svg',
         // database tables
-        'tx_commerce_attributes' => 'tx_commerce_attributes.svg',
-        'tx_commerce_attributes-free' => 'tx_commerce_attributes_free.svg',
-        'tx_commerce_attributes-list' => 'tx_commerce_attributes_list.svg',
+        'tcarecords-tx_commerce_attributes-default' => 'tx_commerce_attributes.svg',
+        'tcarecords-tx_commerce_attributes-free' => 'tx_commerce_attributes_free.svg',
+        'tcarecords-tx_commerce_attributes-list' => 'tx_commerce_attributes_list.svg',
     ];
 
     /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
@@ -97,16 +97,12 @@ call_user_func(function ($packageKey) {
     array_walk(
         $icons,
         function ($icon, $identifier, $iconRegistry) {
-            if (strpos($icon, '.svg') !== false) {
-                $iconProviderClassName = \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class;
-            } else {
-                $iconProviderClassName = \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class;
-            }
+            $file = 'EXT:commerce/Resources/Public/Icons/' . $icon;
             /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
             $iconRegistry->registerIcon(
                 $identifier,
-                $iconProviderClassName,
-                ['source' => 'EXT:commerce/Resources/Public/Icons/' . $icon]
+                $iconRegistry->detectIconProvider($file),
+                ['source' => $file]
             );
         },
         $iconRegistry

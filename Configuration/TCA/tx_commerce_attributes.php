@@ -28,9 +28,9 @@ return [
         ],
         'typeicon_column' => 'has_valuelist',
         'typeicon_classes' => [
-            'default' => 'tx_commerce_attributes',
-            0 => 'tx_commerce_attributes-free',
-            1 => 'tx_commerce_attributes-list',
+            'default' => 'tcarecords-tx_commerce_attributes-default',
+            0 => 'tcarecords-tx_commerce_attributes-free',
+            1 => 'tcarecords-tx_commerce_attributes-list',
         ],
     ],
     'interface' => [
