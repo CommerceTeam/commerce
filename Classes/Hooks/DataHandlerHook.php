@@ -38,6 +38,17 @@ class DataHandlerHook
     }
 
     /**
+     * @param DataHandler $dataHandler
+     */
+    public function processDatamap_beforeStart(DataHandler $dataHandler)
+    {
+        $table = 'tx_commerce_categories';
+        if (isset($dataHandler->datamap[$table])) {
+            $this->getDataMapProcessor($table)->beforeStart($dataHandler);
+        }
+    }
+
+    /**
      * This hook is processed BEFORE a datamap is processed (save, update etc.)
      * We use this to check if a product or category is inheriting any attributes
      * from other categories (parents or similiar). It also removes invalid
