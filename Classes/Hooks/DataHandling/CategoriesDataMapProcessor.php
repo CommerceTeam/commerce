@@ -307,32 +307,34 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
         /** @var CategoryRepository $categoryRepository */
         $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
 
-        /** @var Category $parentCategory */
-        /** @var Category $currentParentCategory */
-        foreach (self::$parentCategoriesPreProcessing[$category->getUid()] as $parentCategory) {
-            $found = false;
-            foreach ($currentParentCategories as $currentParentCategory) {
-                $newParents[] = $currentParentCategory->getUid();
-                if ($parentCategory->getUid() == $currentParentCategory->getUid()) {
-                    $found = true;
+        if (isset(self::$parentCategoriesPreProcessing[$category->getUid()])) {
+            /** @var Category $parentCategory */
+            /** @var Category $currentParentCategory */
+            foreach (self::$parentCategoriesPreProcessing[$category->getUid()] as $parentCategory) {
+                $found = false;
+                foreach ($currentParentCategories as $currentParentCategory) {
+                    $newParents[] = $currentParentCategory->getUid();
+                    if ($parentCategory->getUid() == $currentParentCategory->getUid()) {
+                        $found = true;
+                    }
                 }
-            }
-            if ($found) {
-                $existingParents[] = $parentCategory->getUid();
-            } elseif (!$parentCategory->isPermissionSet('show')
-                || !$backendUserUtility->isInWebMount($parentCategory->getUid())
-            ) {
-                $existingParents[] = $parentCategory->getUid();
-                // field only contains the count
-                $fieldArray['parent_category']++;
+                if ($found) {
+                    $existingParents[] = $parentCategory->getUid();
+                } elseif (!$parentCategory->isPermissionSet('show')
+                    || !$backendUserUtility->isInWebMount($parentCategory->getUid())
+                ) {
+                    $existingParents[] = $parentCategory->getUid();
+                    // field only contains the count
+                    $fieldArray['parent_category']++;
 
-                $sorting = 1 + $categoryRepository->findHighestParentCategoryReferenceSorting($category->getUid());
+                    $sorting = 1 + $categoryRepository->findHighestParentCategoryReferenceSorting($category->getUid());
 
-                $categoryRepository->insertParentRelation(
-                    $category->getUid(),
-                    $parentCategory->getUid(),
-                    $sorting
-                );
+                    $categoryRepository->insertParentRelation(
+                        $category->getUid(),
+                        $parentCategory->getUid(),
+                        $sorting
+                    );
+                }
             }
         }
 
