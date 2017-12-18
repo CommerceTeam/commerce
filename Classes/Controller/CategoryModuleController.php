@@ -71,7 +71,8 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
     public function init()
     {
         $this->perms_clause = \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(
-            Permission::PAGE_SHOW
+            Permission::PAGE_SHOW,
+            't'
         );
         // In commerce context all categories and products are stored in only one folder so no need to use get vars
         $this->id = FolderRepository::initFolders('Products', FolderRepository::initFolders());
@@ -128,7 +129,7 @@ class CategoryModuleController extends \TYPO3\CMS\Recordlist\RecordList
         if ($this->categoryUid) {
             $this->pageinfo = \CommerceTeam\Commerce\Utility\BackendUtility::readCategoryAccess(
                 $this->categoryUid,
-                $this->perms_clause
+                \CommerceTeam\Commerce\Utility\BackendUtility::getCategoryPermsClause(Permission::PAGE_SHOW, 'c')
             );
         } else {
             $this->pageinfo = BackendUtility::readPageAccess(

@@ -108,7 +108,7 @@ class BackendUserUtility implements SingletonInterface
             $id = (int) $checkRec['t3ver_oid'];
         }
         if (!$readPerms) {
-            $readPerms = $this->getCategoryPermsClause(Permission::PAGE_SHOW);
+            $readPerms = $this->getCategoryPermsClause(Permission::PAGE_SHOW, 'c');
         }
         if ($id > 0) {
             $wM = $this->returnWebmounts();
@@ -143,10 +143,11 @@ class BackendUserUtility implements SingletonInterface
      * - in other words this will check read permissions.
      *
      * @param int $perms Permission mask to use, see function description
+     * @param string $alias Alias for request param
      *
      * @return string Part of where clause. Prefix " AND " to this.
      */
-    public function getCategoryPermsClause($perms)
+    public function getCategoryPermsClause($perms, $alias = 'tx_commerce_categories')
     {
         /** @noinspection PhpInternalEntityUsedInspection */
         if (is_array($this->getBackendUser()->user)) {
@@ -157,15 +158,15 @@ class BackendUserUtility implements SingletonInterface
             $perms = (int) $perms;
             // Make sure it's int.
             /** @noinspection PhpInternalEntityUsedInspection */
-            $str = ' ( (tx_commerce_categories.perms_everybody & ' . $perms . ' = ' . $perms .
-                ') OR (tx_commerce_categories.perms_userid = ' . $backenduser->user['uid'] .
-                ' AND tx_commerce_categories.perms_user & ' . $perms . ' = ' . $perms . ')';
+            $str = ' ( ('. $alias .'.perms_everybody & ' . $perms . ' = ' . $perms .
+                ') OR ('. $alias . '.perms_userid = ' . $backenduser->user['uid'] .
+                ' AND ' . $alias . '.perms_user & ' . $perms . ' = ' . $perms . ')';
 
             // User
             if ($backenduser->groupList) {
                 // Group (if any is set)
-                $str .= ' OR (tx_commerce_categories.perms_groupid in (' . $backenduser->groupList .
-                    ') AND tx_commerce_categories.perms_group & ' . $perms . ' = ' . $perms . ')';
+                $str .= ' OR (' . $alias . '.perms_groupid in (' . $backenduser->groupList .
+                    ') AND ' . $alias . '.perms_group & ' . $perms . ' = ' . $perms . ')';
             }
             $str .= ')';
 
