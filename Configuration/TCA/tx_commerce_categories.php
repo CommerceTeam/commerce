@@ -203,11 +203,16 @@ return [
         ],
         'images' => [
             'exclude' => 1,
+            'l10n_mode' => 'mergeIfNotBlank',
             'label' => $languageFile . 'tx_commerce_categories.images',
             'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig('images', [
                 'appearance' => [
                     'createNewRelationLinkTitle' =>
-                        'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
+                        'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference',
+                    'showPossibleLocalizationRecords' => true,
+                    'showRemovedLocalizationRecords' => true,
+                    'showAllLocalizationLink' => true,
+                    'showSynchronizationLink' => true
                 ],
                 // custom configuration for displaying fields in the overlay/reference table
                 // to use the imageoverlayPalette instead of the basicoverlayPalette
@@ -242,7 +247,16 @@ return [
                             --palette--;' . $langFile . 'sys_file_reference.imageoverlayPalette;imageoverlayPalette,
                             --palette--;;filePalette'
                     ]
-                ]
+                ],
+                'overrideChildTca' => [
+                    'types' => [
+                        \TYPO3\CMS\Core\Resource\File::FILETYPE_IMAGE => [
+                            'showitem' => '
+                                            --palette--;LLL:EXT:lang/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
+                                            --palette--;;filePalette'
+                        ],
+                    ],
+                ],
             ], $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']),
         ],
         'keywords' => [
