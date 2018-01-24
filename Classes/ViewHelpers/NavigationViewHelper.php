@@ -704,6 +704,14 @@ class NavigationViewHelper
                 $queryBuilder->expr()->eq(
                     'mm.uid_foreign',
                     $queryBuilder->createNamedParameter($uidRoot, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->in(
+                    't.sys_language_uid',
+                    [-1,0, $this->getTypoScriptFrontendController()->sys_language_uid]
+                ),
+                $queryBuilder->expr()->eq(
+                    't.l18n_parent',
+                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
                 )
             )
             ->orderBy(str_replace($mainTable, 't', trim(str_replace('ORDER BY', '', $sorting))))
@@ -929,6 +937,14 @@ class NavigationViewHelper
                 $queryBuilder->expr()->eq(
                     'mm.uid_foreign',
                     $queryBuilder->createNamedParameter($categoryUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->in(
+                    't.sys_language_uid',
+                    [-1,0, $this->getTypoScriptFrontendController()->sys_language_uid]
+                ),
+                $queryBuilder->expr()->eq(
+                    't.l18n_parent',
+                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
                 )
             )
             ->orderBy(str_replace($mainTable, 't', trim(str_replace('ORDER BY', '', $sorting))));
