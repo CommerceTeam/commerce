@@ -48,7 +48,9 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
      */
     public function __construct()
     {
-        $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_be.xlf');
+        if (TYPO3_MODE == 'BE') {
+            $this->getLanguageService()->includeLLFile('EXT:commerce/Resources/Private/Language/locallang_be.xlf');
+        }
     }
 
     /**
