@@ -560,7 +560,7 @@ class ListController extends BaseController
      */
     public function renderSingleView(Product $product, Category $category, $subpartName, $subpartNameNostock)
     {
-        $hooks = HookFactory::getHooks('Controller/CheckoutController', 'renderSingleView');
+        $hooks = HookFactory::getHooks('Controller/ListController', 'renderSingleView');
 
         $result = null;
         foreach ($hooks as $hookObj) {
