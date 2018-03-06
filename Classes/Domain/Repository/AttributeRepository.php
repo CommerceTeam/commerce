@@ -60,7 +60,7 @@ class AttributeRepository extends AbstractRepository
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
         $result = $queryBuilder
             ->select('uid')
-            ->from($this->databaseTable)
+            ->from($this->childDatabaseTable)
             ->where(
                 $queryBuilder->expr()->eq(
                     'attributes_uid',
