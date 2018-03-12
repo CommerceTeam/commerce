@@ -356,7 +356,11 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
      */
     public function afterDatabase($table, $id, array $fieldArray, DataHandler $dataHandler, $_)
     {
-        if (!empty($fieldArray)) {
+        /** @var CategoryRepository $categoryRepository */
+        $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
+        $currentCategory = $categoryRepository->findByUid($id);
+
+        if (!empty($fieldArray) && isset( $currentCategory['l18n_parent']) && $currentCategory['l18n_parent'] == 0) {
             if (isset($fieldArray['parent_category'])) {
                 // get the list of parent categories and save the relations in the database
                 if (!empty($dataHandler->datamap[$table][$id]['parent_category'])) {

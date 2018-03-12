@@ -13,7 +13,9 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  */
 
 use TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionContainerInterface;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Abstract Class for handling almost all Database-Calls for all
@@ -161,6 +163,13 @@ abstract class AbstractRepository implements SingletonInterface
     public function findByUid($uid, $additionalWhere = ''): array
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+
+        if (TYPO3_MODE !== 'FE') {
+            /** @var DeletedRestriction $deleteRestriction */
+            $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+            $queryBuilder->getRestrictions()->removeAll()->add($deleteRestriction);
+        }
+
         $queryBuilder
             ->select('*')
             ->from($this->databaseTable)
