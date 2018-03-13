@@ -114,7 +114,7 @@ class PageRepository extends AbstractRepository
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
         $result = (int) $queryBuilder
-            ->count('p.*')
+            ->count('*')
             ->from($this->databaseTable, 'p')
             ->where(
                 $queryBuilder->expr()->neq(

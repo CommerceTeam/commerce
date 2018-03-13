@@ -978,13 +978,15 @@ class ArticleRepository extends AbstractRepository
 
     public function migrateOldAttributeReferenceTable()
     {
-        $connection = $this->getQueryBuilderForTable($this->databaseTable);
-        $connection
-            ->getConnection()
-            ->getSchemaManager()
-            ->renameTable(
-                'tx_commerce_articles_article_attributes_mm',
-                $this->databaseAttributeRelationTable
-            );
+        if (!$this->hasTable($this->databaseAttributeRelationTable)) {
+            $connection = $this->getQueryBuilderForTable($this->databaseTable);
+            $connection
+                ->getConnection()
+                ->getSchemaManager()
+                ->renameTable(
+                    'tx_commerce_articles_article_attributes_mm',
+                    $this->databaseAttributeRelationTable
+                );
+        }
     }
 }

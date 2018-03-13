@@ -129,8 +129,10 @@ class UpdateUtility
 
         $result = $categoryRepository->findWithoutPermissionsSet();
         while ($row = $result->fetch()) {
-            $categoryRepository->updateRecord($row['uid'], $data);
-            $countRecords++;
+            if ($data['perms_user'] || $data['perms_group'] || $data['perms_everybody']) {
+                $categoryRepository->updateRecord($row['uid'], $data);
+                $countRecords++;
+            }
         }
 
         return $countRecords;
@@ -237,7 +239,7 @@ class UpdateUtility
         /** @var CategoryRepository $categoryRepository */
         $categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
 
-        $result = $categoryRepository->findWithoutParentReference();
+        $result = $categoryRepository->findWithoutPermissionsSet();
 
         return $result->rowCount() > 0;
     }
