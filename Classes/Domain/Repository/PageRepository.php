@@ -142,7 +142,7 @@ class PageRepository extends AbstractRepository
                     $queryBuilder->createNamedParameter('', \PDO::PARAM_STR)
                 )
             )
-            ->set('p.tx_commerce_foldername', 'p.tx_graytree_foldername')
+            ->set('p.tx_commerce_foldername', 'p.tx_graytree_foldername', false)
             ->execute();
     }
 }
