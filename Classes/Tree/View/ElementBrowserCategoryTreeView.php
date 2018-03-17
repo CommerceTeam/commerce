@@ -19,6 +19,7 @@ use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Recordlist\Tree\View\LinkParameterProviderInterface;
+use TYPO3\CMS\Core\LinkHandling\LinkService;
 
 class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
 {
@@ -107,11 +108,13 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
      */
     public function wrapTitle($title, $v, $ext_pArrPages = false)
     {
+
         if ($this->ext_isLinkable($v['uid'])) {
-            return '<span class="list-tree-title"><a href="#" class="t3js-pageLink" data-id="commerce:c:'
-                . (int)$v['uid'] . '">' . $title . '</a></span>';
+            $url = GeneralUtility::makeInstance(LinkService::class)->asString(['type' => 'commerce', 'catUid' => (int)$v['uid']]);
+            return '<span class="list-tree-title"><a href="' . htmlspecialchars($url) . '" class="t3js-pageLink">' . $title . '</a></span>';
         }
         return '<span class="list-tree-title text-muted">' . $title . '</span>';
+
     }
 
     /**
@@ -247,6 +250,10 @@ class ElementBrowserCategoryTreeView extends \TYPO3\CMS\Backend\Tree\View\Browse
                     $queryBuilder->expr()->eq(
                         $this->parentField,
                         $queryBuilder->createNamedParameter($parentId, \PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        't.l18n_parent',
+                        $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
                     )
                 )
                 ->orderBy('t.' . $this->orderByFields)

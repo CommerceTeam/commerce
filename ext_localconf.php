@@ -241,6 +241,12 @@ call_user_func(function ($packageKey) {
     $scOptions['tslib/class.tslib_content.php']['typolinkLinkHandler']['commerce'] =
         \CommerceTeam\Commerce\LinkHandler\CommerceLinkHandler::class;
 
+    $typo3ConfVars['SYS']['linkHandler']['commerce'] =
+        \CommerceTeam\Commerce\LinkHandler\CommerceLinkHandler::class;
+
+    $typo3ConfVars['FE']['typolinkBuilder']['commerce'] =
+        \CommerceTeam\Commerce\Typolink\CommerceLinkBuilder::class;
+
     // Hooks for datamap processing
     // For processing the order sfe, when changing the pid
     $scOptions['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['commerce'] =

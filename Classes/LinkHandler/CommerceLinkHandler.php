@@ -25,6 +25,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Recordlist\LinkHandler\AbstractLinkHandler;
 use TYPO3\CMS\Recordlist\LinkHandler\LinkHandlerInterface;
 use TYPO3\CMS\Recordlist\Tree\View\LinkParameterProviderInterface;
+use TYPO3\CMS\Core\LinkHandling\LinkService;
 
 /**
  * Class \CommerceTeam\Commerce\Hook\LinkhandlerHooks
@@ -42,6 +43,12 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
      * @var array
      */
     protected $linkParts = [];
+
+    /**
+     * The Base URN for this link handling to act on
+     * @var string
+     */
+    protected $baseUrn = 't3://commerce';
 
     /**
      * CommerceLinkHandler constructor.
@@ -185,6 +192,75 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
     }
 
     /**
+     * Returns all valid parameters for linking to a TYPO3 page as a string
+     *
+     * @param array $parameters
+     * @return string
+     */
+    public function asString(array $parameters): string
+    {
+        $urn = $this->baseUrn;
+        $divider = '?';
+
+        if (!empty($parameters['proUid'])) {
+            $urn .= $divider . 'p=' . $parameters['proUid'];
+            $divider = '&';
+        }
+
+        if (!empty($parameters['catUid'])) {
+            $urn .= $divider .'c=' . $parameters['catUid'];
+        }
+
+
+        if (!empty($parameters['type']) && $parameters['type'] == 'commerce') {
+            $url = str_replace('commerce:', '', $parameters['url']);
+
+            $url = $this->fixDeprecatedParameter($url, 'saving');
+
+            $parts = explode('|', $url);
+
+
+            foreach ($parts as $part) {
+                if (strpos($part, 'p') !== false) {
+                    $productParts = explode(':', $part);
+                    $urn .= $divider . 'p=' .(int)$productParts[1];
+                    $divider = '&';
+                }
+
+                if (strpos($part, 'c') !== false) {
+                    $categoryParts = explode(':', $part);
+                    $urn .= $divider . 'c=' . (int)$categoryParts[1];
+                }
+
+            }
+        }
+
+        return $urn;
+    }
+
+    /**
+     * Returns all relevant information built in the link to a page (see asString())
+     *
+     * @param array $data
+     * @return array
+     */
+    public function resolveHandlerData(array $data): array
+    {
+        $result = [];
+        if (isset($data['c'])) {
+            $result['catUid'] = $data['c'];
+            unset($data['c']);
+        }
+        if (isset($data['p'])) {
+            $result['proUid'] = $data['p'];
+            unset($data['p']);
+        }
+
+
+        return $result;
+    }
+
+    /**
      * Render the link handler
      *
      * @param ServerRequestInterface $request
@@ -282,6 +358,12 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
             if (!empty($this->linkParts) && (int)$this->linkParts['product'] === (int)$row['uid']) {
                 $selected = 'class="active"';
             }
+
+            $url = GeneralUtility::makeInstance(LinkService::class)->asString([
+                'type' => 'commerce',
+                'catUid' => (int)$expCategoryId,
+                'proUid' => (int)$row['uid']
+                ]);
             // Putting list element HTML together:
             $out .= '
 				<li ' . $selected . '>
@@ -290,10 +372,8 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
 							' . $icon . '
 						</span>
 						<span class="list-tree-title">
-							<a href="#" class="t3js-pageLink" data-id="commerce:c:' . (int)$expCategoryId
-                . '" data-anchor="|p:' . (int)$row['uid'] . '">
-								'
-                . htmlspecialchars(BackendUtility::getRecordTitle('tx_commerce_products', $row, true)) . '
+							<a href="' . htmlspecialchars($url) .'" class="t3js-pageLink">' .
+                                BackendUtility::getRecordTitle('tx_commerce_products', $row, true) . '
 							</a>
 						</span>
 					</span>
