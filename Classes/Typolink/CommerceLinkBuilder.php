@@ -25,7 +25,12 @@ use CommerceTeam\Commerce\Utility\ConfigurationUtility;
 class CommerceLinkBuilder extends AbstractTypolinkBuilder
 {
     /**
-     * @inheritdoc
+     * @param array $linkDetails parsed link details by the LinkService
+     * @param string $linkText the link text
+     * @param string $target the target to point to
+     * @param array $conf the TypoLink configuration array
+     * @return array an array with three parts (URL, Link Text, Target)
+     * @throws \RuntimeException if overridePid is neither in TypoScript nor in extension settings definded
      */
     public function build(array &$linkDetails, string $linkText, string $target, array $conf): array
     {
@@ -45,13 +50,14 @@ class CommerceLinkBuilder extends AbstractTypolinkBuilder
 
         $url = '';
         if (!empty($addParams)) {
-            $displayPageId = $this->getTypoScriptFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi1.']['overridePid'];
+            $displayPageId =
+                $this->getTypoScriptFrontendController()->tmpl->setup['plugin.']['tx_commerce_pi1.']['overridePid'];
             if (empty($displayPageId)) {
                 $displayPageId = ConfigurationUtility::getInstance()->getExtConf('previewPageID');
             }
             if (empty($displayPageId)) {
-                return 'ERROR: neither overridePid in TypoScript nor previewPageID in Extension Settings are configured to
-                    render commerce category and product urls';
+                throw new \RuntimeException('ERROR: neither overridePid in TypoScript nor previewPageID in 
+                Extension Settings are configured to render commerce category and product urls.', 1521539129);
             }
 
 
@@ -62,8 +68,7 @@ class CommerceLinkBuilder extends AbstractTypolinkBuilder
             $linkConfiguration['useCacheHash'] = true;
             $linkConfiguration['returnLast'] = 'url';
 
-
-
+            
             $url = $this->contentObjectRenderer->typoLink($linkText, $linkConfiguration);
         }
         return [$url, $linkText, $target];
