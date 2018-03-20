@@ -51,7 +51,7 @@ class CommerceLinkBuilder extends AbstractTypolinkBuilder
             }
             if (empty($displayPageId)) {
                 return 'ERROR: neither overridePid in TypoScript nor previewPageID in Extension Settings are configured to
-                    render commerce categor and product urls';
+                    render commerce category and product urls';
             }
 
 

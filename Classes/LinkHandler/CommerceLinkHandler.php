@@ -77,30 +77,41 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
 
         $url = $linkParts['url'];
 
-        $url = $this->fixDeprecatedParameter($url, 'picking');
+        if (is_array($url) && isset($url['catUid'])) {
+            $this->linkParts = $linkParts;
+            $this->linkParts['category'] = (int) $url['catUid'];
 
-        if (strpos($url, 'commerce:') === false) {
-            return false;
-        }
-
-        $url = str_replace('commerce:', '', $url);
-        $parts = explode('|', $url);
-
-        $this->linkParts = $linkParts;
-
-        foreach ($parts as $part) {
-            if (strpos($part, 'c') !== false) {
-                $categoryParts = explode(':', $part);
-                $this->linkParts['category'] = (int)$categoryParts[1];
+            if (isset($url['proUid'])) {
+                $this->linkParts['product'] = (int) $url['proUid'];
             }
 
-            if (strpos($part, 'p') !== false) {
-                $productParts = explode(':', $part);
-                $this->linkParts['product'] = (int)$productParts[1];
-            }
-        }
+            return true;
+        } elseif (isset($url['url'])) {
+            $url = $this->fixDeprecatedParameter($url['url'], 'picking');
 
-        return true;
+            if (strpos($url, 'commerce:') === false) {
+                return false;
+            }
+
+            $url = str_replace('commerce:', '', $url);
+            $parts = explode('|', $url);
+
+            $this->linkParts = $linkParts;
+
+            foreach ($parts as $part) {
+                if (strpos($part, 'c') !== false) {
+                    $categoryParts = explode(':', $part);
+                    $this->linkParts['category'] = (int)$categoryParts[1];
+                }
+
+                if (strpos($part, 'p') !== false) {
+                    $productParts = explode(':', $part);
+                    $this->linkParts['product'] = (int)$productParts[1];
+                }
+            }
+
+            return true;
+        }
     }
 
     /**
@@ -154,7 +165,10 @@ class CommerceLinkHandler extends AbstractLinkHandler implements LinkHandlerInte
         }
 
         return [
-            'data-current-link' => 'commerce:' . implode('|', $parts),
+            'data-current-link' => $this->asString([
+                'url' => 'commerce:' . implode('|', $parts) ,
+                'type' => 'commerce'
+            ]),
         ];
     }
 
