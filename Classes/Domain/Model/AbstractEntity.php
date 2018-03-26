@@ -323,7 +323,7 @@ class AbstractEntity
             $field = $fileRepository->findByRelation(
                 $this->databaseConnection->getTable(),
                 $fieldName,
-                $this->uid
+                $this->getLocalizedUid()?:$this->uid
             );
         }
     }
