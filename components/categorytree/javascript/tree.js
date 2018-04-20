@@ -236,8 +236,8 @@ TYPO3.Components.CategoryTree.Tree = Ext.extend(Ext.tree.TreePanel, {
 		this.on('contextmenu', function(node, event) {
 			require(['TYPO3/CMS/Backend/ContextMenu'], function(ContextMenu) {
 				// @todo change table gathering
-				var parameters = 'context=tree&table=pages&uid=' + node.attributes.nodeData.id;
-				ContextMenu.record = {table: 'pages', uid: node.attributes.nodeData.id};
+				var parameters = 'context=tree&table=tx_commerce_categories&uid=' + node.attributes.nodeData.id;
+				ContextMenu.record = {table: 'tx_commerce_categories', uid: node.attributes.nodeData.id};
 				ContextMenu.fetch(parameters);
 			});
 		});
