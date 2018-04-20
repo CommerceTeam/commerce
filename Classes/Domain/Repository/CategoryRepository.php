@@ -155,6 +155,7 @@ class CategoryRepository extends AbstractRepository
         $result = [];
         if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) && $uid) {
             $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+            $queryBuilder->getRestrictions()->removeAll();
             $result = $queryBuilder
                 ->select('perms_everybody', 'perms_user', 'perms_group', 'perms_userid', 'perms_groupid', 'editlock')
                 ->from($this->databaseTable)
@@ -649,6 +650,7 @@ class CategoryRepository extends AbstractRepository
         $andWhere = \TYPO3\CMS\Core\Database\Query\QueryHelper::stripLogicalOperatorPrefix($andWhere);
 
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder->getRestrictions()->removeAll();
         $queryBuilder
             ->select(
                 'c.uid',
