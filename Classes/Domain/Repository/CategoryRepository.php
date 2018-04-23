@@ -13,8 +13,10 @@ namespace CommerceTeam\Commerce\Domain\Repository;
  */
 
 use CommerceTeam\Commerce\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Database Class for tx_commerce_categories. All database calls should
@@ -576,6 +578,9 @@ class CategoryRepository extends AbstractRepository
     public function findUntranslatedByUidList(array $uidList)
     {
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
+        $queryBuilder->getRestrictions()->removeAll()->add($deleteRestriction);
         $result = $queryBuilder
             ->select('*')
             ->from($this->databaseTable)
@@ -610,7 +615,10 @@ class CategoryRepository extends AbstractRepository
      */
     public function findUntranslatedByRelationTable($mmTable, $uid)
     {
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
+        $queryBuilder->getRestrictions()->removeAll()->add($deleteRestriction);
         $result = $queryBuilder
             ->select('c.*')
             ->from($this->databaseTable, 'c')
@@ -649,8 +657,10 @@ class CategoryRepository extends AbstractRepository
         /** @noinspection PhpInternalEntityUsedInspection */
         $andWhere = \TYPO3\CMS\Core\Database\Query\QueryHelper::stripLogicalOperatorPrefix($andWhere);
 
+        /** @var DeletedRestriction $deleteRestriction */
+        $deleteRestriction = GeneralUtility::makeInstance(DeletedRestriction::class);
         $queryBuilder = $this->getQueryBuilderForTable($this->databaseTable);
-        $queryBuilder->getRestrictions()->removeAll();
+        $queryBuilder->getRestrictions()->removeAll()->add($deleteRestriction);
         $queryBuilder
             ->select(
                 'c.uid',
