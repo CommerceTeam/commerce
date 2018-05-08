@@ -59,6 +59,7 @@ class MoneyViewHelper
      * Examples:
      *      format (500, 'EUR');      --> '5,00 EUR'
      *      format (4.23, 'EUR');     --> FALSE
+     *      format (vier, 'EUR');     --> FALSE
      *      format ('872331', 'EUR'); --> '8.723,31 EUR'.
      *
      * @param int|string $amount Amount to be formatted. Must be the smalles unit
@@ -70,12 +71,12 @@ class MoneyViewHelper
      */
     public static function format($amount, $currencyKey, $withSymbol = true)
     {
-        if (is_float($amount)) {
+        if (is_float($amount) || !is_numeric($amount)) {
             return false;
         }
 
         $currency = self::getCurrency($currencyKey);
-        if (empty($currency)) {
+        if (empty($currency) || empty($currency['cu_sub_divisor'])) {
             return false;
         }
 
