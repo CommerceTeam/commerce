@@ -2182,7 +2182,7 @@ class CheckoutController extends BaseController
      */
     protected function getSelectInputField($fieldName, array $fieldConfig, $fieldValue = '', $step = '')
     {
-        $result = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step .
+        $output = '<select id="' . $step . '-' . $fieldName . '" name="' . $this->prefixId . '[' . $step .
             '][' . $fieldName . ']">';
 
         if ($fieldValue === '') {
@@ -2192,21 +2192,20 @@ class CheckoutController extends BaseController
         // If static items are set
         if (is_array($fieldConfig['values.'])) {
             foreach ($fieldConfig['values.'] as $key => $option) {
-                $result .= '<option value="' . $key . '"';
+                $output .= '<option value="' . $key . '"';
                 if ($fieldValue === $key) {
-                    $result .= ' selected="selected"';
+                    $output .= ' selected="selected"';
                 }
-                $result .= '>' . $option . '</option>' . LF;
+                $output .= '>' . $option . '</option>' . LF;
             }
         } else {
             // Try to fetch data from database
             $table = $fieldConfig['table'];
-            $fields = $fieldConfig['label'] . ' AS label, ' . $fieldConfig['value'] . ' AS value';
             $orderby = ($fieldConfig['orderby']) ? $fieldConfig['orderby'] : '';
 
             $queryBuilder = $this->getQueryBuilderForTable($table);
             $result = $queryBuilder
-                ->select($fields)
+                ->select($fieldConfig['label'] . ' AS label' , $fieldConfig['value'] . ' AS value')
                 ->from($table)
                 ->where(
                     $fieldConfig['select']
@@ -2215,16 +2214,16 @@ class CheckoutController extends BaseController
                 ->execute();
 
             while ($row = $result->fetch()) {
-                $result .= '<option value="' . $row['value'] . '"';
+                $output .= '<option value="' . $row['value'] . '"';
                 if ($fieldValue === $row['value']) {
-                    $result .= ' selected="selected"';
+                    $output .= ' selected="selected"';
                 }
-                $result .= '>' . $row['label'] . '</option>' . LF;
+                $output .= '>' . $row['label'] . '</option>' . LF;
             }
         }
-        $result .= '</select>';
+        $output .= '</select>';
 
-        return $result;
+        return $output;
     }
 
     /**
