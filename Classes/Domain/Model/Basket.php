@@ -290,7 +290,7 @@ class Basket extends BasicBasket implements SingletonInterface
      */
     private function restoreBasket()
     {
-        if ($$this->getFrontendUser()->user) {
+        if ($this->getFrontendUser()->user) {
             $userSessionId = $this->getFrontendUser()->getKey('user', 'txCommercePersistantSessionId');
             if ($userSessionId && $userSessionId != $this->sessionId) {
                 $this->loadPersistentDataFromDatabase($userSessionId);
