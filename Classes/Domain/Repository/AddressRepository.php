@@ -39,7 +39,7 @@ class AddressRepository extends AbstractRepository
     public function removeIsMainAddress($pid, $feUserUid, $addressType)
     {
         $this->getDatabaseConnection()->exec_UPDATEquery(
-            $this->getDatabaseConnection(),
+            $this->databaseTable,
             'pid = ' . (int) $pid
             . ' AND tx_commerce_fe_user_id = ' . (int) $feUserUid
             . ' AND tx_commerce_address_type_id = ' . (int) $addressType,
