@@ -1133,7 +1133,7 @@ class AddressesController extends BaseController
         $hooks = HookFactory::getHooks('Controller/AddressesController', 'saveAddress');
 
         $newData = [
-            'crdata' => $GLOBALS['EXEC_TIME'],
+            'crdate' => $GLOBALS['EXEC_TIME'],
             'tstamp' => $GLOBALS['EXEC_TIME'],
             'tx_commerce_is_main_address' => 0,
         ];
