@@ -111,7 +111,7 @@ class AttributeRepository extends AbstractRepository
         $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
             'uid',
             $this->childDatabaseTable,
-            'attributes_uid = ' . (int) $uid . $this->enableFields(),
+            'attributes_uid = ' . (int) $uid . $this->enableFields($this->childDatabaseTable),
             '',
             'sorting'
         );
