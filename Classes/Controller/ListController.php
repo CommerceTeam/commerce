@@ -813,7 +813,7 @@ class ListController extends BaseController
                     }
                 }
             }
-            if (is_array($arrAttSubmit)) {
+            if ($arrAttSubmit) {
                 $attributeMatrix = $product->getSelectAttributeValueMatrix($arrAttSubmit);
             } else {
                 $attributeMatrix = $product->getSelectAttributeValueMatrix();
