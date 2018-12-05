@@ -236,7 +236,7 @@ class BasicDaoMapper
         $model = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             '*',
             $this->dbTable,
-            'uid = ' . (int) $uid . 'AND deleted = 0'
+            'uid = ' . (int) $uid . ' AND deleted = 0'
         );
         $model = is_array($model) ? $model : [];
         if ($model) {
