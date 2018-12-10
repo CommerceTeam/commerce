@@ -921,7 +921,13 @@ class ListController extends BaseController
                     ++$i;
                 }
 
-                $artId = array_shift($product->getArticlesByAttributeArray($sortedAttributeArray));
+                /* if for some reason $sortedAttributeArray isn't set, then just take the
+                 * first article of the product. This at least prevents an error.
+                 */
+                if(!$sortedAttributeArray)
+                    $artId = $product->getArticleUid(0);
+                else
+                    $artId = array_shift($product->getArticlesByAttributeArray($sortedAttributeArray));
                 $attCode = '';
                 if (is_array($attributeMatrix)) {
                     $getVarList = ['catUid', 'showUid', 'pointer'];
