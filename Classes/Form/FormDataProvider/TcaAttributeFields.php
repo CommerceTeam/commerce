@@ -99,6 +99,9 @@ class TcaAttributeFields extends AbstractItemProvider implements FormDataProvide
         $attributeCount = $attributeRepository->countAttributes();
 
         $root = &$result['processedTca']['columns']['attributes']['config']['ds']['sheets']['sDEF']['ROOT']['el'];
+        if (empty($root) && !is_array($root)) {
+            $root = [];
+        }
         if ($attributeCount) {
             foreach ($correlationTypes as $correlationType) {
                 $config = $this->fieldConfig;
