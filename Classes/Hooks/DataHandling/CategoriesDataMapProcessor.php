@@ -128,6 +128,7 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
                 $fieldArray['perms_userid'] = $this->getBackendUserAuthentication()->user['uid'];
                 // 31 grants every right
                 $fieldArray['perms_user'] = 31;
+                $this->updatePermissions($pObj, $fieldArray);
             }
 
             // break if the parent_categories didn't change
@@ -491,5 +492,82 @@ class CategoriesDataMapProcessor extends AbstractDataMapProcessor
                 $this->saveCategoryRelations($childUid, [], true, false);
             }
         }
+    }
+
+    /**
+     * Set default permission
+     *
+     * @param DataHandler $dataHandler
+     * @param array $fieldArray
+     * @return void
+     */
+    protected function updatePermissions(DataHandler $dataHandler, &$fieldArray)
+    {
+        $tsConfig = $dataHandler->getTCEMAIN_TSconfig($fieldArray['pid']);
+
+        if (isset($tsConfig['permissions.']['commerce.'])) {
+            $permissions = $tsConfig['permissions.']['commerce.'];
+        } else {
+            $permissions = $tsConfig['permissions.'];
+        }
+
+        if (isset($permissions['groupid'])) {
+            $fieldArray['perms_groupid'] = (int)$permissions['groupid'];
+        }
+
+        if (isset($permissions['group'])) {
+            if (is_numeric($permissions['group'])) {
+                $fieldArray['perms_group'] = (int)$permissions['group'];
+            } else {
+                $fieldArray['perms_group'] =
+                    $this->calculatePermissionValueFromString($permissions['group']);
+            }
+
+        }
+
+        if (isset($permissions['everybody'])) {
+            if (is_numeric($permissions['everybody'])) {
+                $fieldArray['perms_everybody'] = (int)$permissions['everybody'];
+            } else {
+                $fieldArray['perms_everybody'] =
+                    $this->calculatePermissionValueFromString($permissions['everybody']);
+            }
+
+        }
+    }
+
+    /**
+     * Calculate permissions from comma separated list
+     *
+     * @param string $permissionString
+     * @return int
+     */
+    protected function calculatePermissionValueFromString(string $permissionString)
+    {
+        $permissionParts = GeneralUtility::trimExplode(',', $permissionString, true);
+        $permissionValue = 0;
+
+        foreach ($permissionParts as $singlePermission) {
+            switch ($singlePermission) {
+                case 'show':
+                    $permissionValue += 1;
+                    break;
+                case 'edit':
+                    $permissionValue += 2;
+                    break;
+                case 'delete':
+                    $permissionValue += 4;
+                    break;
+                case 'new':
+                    $permissionValue += 8;
+                    break;
+
+                case 'editcontent':
+                    $permissionValue += 16;
+                    break;
+            }
+        }
+
+        return $permissionValue;
     }
 }

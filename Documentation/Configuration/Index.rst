@@ -16,6 +16,7 @@ Configuration
    :glob:
 
    TypoScript/Index
+   TSConfig/Index
    Realurl/FixedPostVars/Index
    Realurl/PostVarSets/Index
    Tutorial/Index
