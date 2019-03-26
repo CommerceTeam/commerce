@@ -1704,6 +1704,7 @@ class NavigationViewHelper
     public function sortAllMenuArray(array &$treeArray, $sortType = 'alphabetiDesc')
     {
         if ($treeArray) {
+            $this->sortArrayList($treeArray, $sortType);
             foreach ($treeArray as $nodeUid => $node) {
                 if (is_array($node['--subLevel--'])) {
                     $this->sortArrayList($treeArray[$nodeUid]['--subLevel--'], $sortType);
