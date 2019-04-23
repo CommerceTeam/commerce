@@ -446,13 +446,13 @@ class Product extends AbstractEntity
                         ) . '") )';
                 }
 
-                $addwhere = ' AND (0 ' . $addwheretmp . ') ';
+                $addwhere = ' (0 ' . $addwheretmp . ') ';
 
                 $result = (array) $database->exec_SELECTgetRows(
                     'DISTINCT tx_commerce_articles.uid',
                     'tx_commerce_articles
-                    INNER JOIN tx_commerce_articles_attributes_mm AS mm ON tx_commerce_articles.uid = mm.uid_local
-                    INNER JOIN tx_commerce_attributes ON mm.uid_foreign = tx_commerce_attributes.uid',
+                    INNER JOIN tx_commerce_articles_attributes_mm ON tx_commerce_articles.uid = tx_commerce_articles_attributes_mm.uid_local
+                    INNER JOIN tx_commerce_attributes ON tx_commerce_articles_attributes_mm.uid_foreign = tx_commerce_attributes.uid',
                     $addwhere . ' AND tx_commerce_articles.hidden = 0 AND tx_commerce_articles.deleted = 0' . $whereUid
                 );
 
